@@ -41,8 +41,6 @@ class AppClient extends \ClientFence\App
             'my-data' => 'client', 'unsubscribe' => 'client',
             // ClientFence: the script policy's violation reports (Clientfence/CspReports.php).
             'csp-report' => 'clientfence',
-            // Older addresses under the product's earlier name (ClientFence/Controller/Client.php).
-            'billfence' => 'clientfence',
         ][$this->mod] ?? null;
         if ($pageModule !== null) {
             $this->di['mod']($pageModule)->registerClientRoutes($this);

@@ -317,6 +317,4 @@ test('top-level client pages are registered by the module that owns them (Client
     'users' => ['/users', 'client'],
     'two-factor code' => ['/two-factor/code', 'client'],
     'hosting account' => ['/hosting/12', 'servicehosting'],
-    'older receipt address' => ['/billfence/receipt/' . str_repeat('a', 32), 'clientfence'],
-    'older hosting address' => ['/billfence/hosting', 'clientfence'],
 ]);

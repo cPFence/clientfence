@@ -12,9 +12,8 @@ use ClientFence\Mod\Servicehosting\Panel\Panels;
  * /hosting lists the client's hosting accounts, /hosting/:id is one account's page, which loads
  * its usage from /hosting/:id/usage and its domains' DNS status from /hosting/:id/domains.
  * FOSSBilling routes a path to the module its first segment names, so a core change
- * (\ClientFence\AppClient's page map) gives /hosting to this module. The older
- * addresses go there: /billfence/hosting (ClientFence module) and /enhance, the retired Enhance
- * extension's page (.htaccess block CLIENTFENCE OLD HOSTING PAGE).
+ * (\ClientFence\AppClient's page map) gives /hosting to this module. /enhance, the retired Enhance
+ * extension's page, goes there too (.htaccess block CLIENTFENCE OLD HOSTING PAGE).
  */
 class Client implements \ClientFence\InjectionAwareInterface
 {
