@@ -1,0 +1,67 @@
+{# ClientFence, Google sign-in of the signed-in login (/google-sign-in, Google.php): the owner's
+   own, or an authorized user's own. Linked: the Google account and "Unlink"; an account made by
+   Google sign-up chooses a password first (lock-out protection). Not linked: the password, then
+   Google (Palisade theme, assets/src/js/palisade.js clientfenceGoogleLink). google comes from client_google_status. #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'google' %}
+
+{% block meta_title %}{{ 'Google sign-in'|trans }}{% endblock %}
+{% block page_header %}{{ 'Google sign-in'|trans }}{% endblock %}
+{% block body_class %}clientfence-google{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Google sign-in'|trans }}</li>{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>{{ 'Google sign-in'|trans }}</h1>
+    <p>{{ 'Link your Google account to sign in with Google instead of your password. Your password keeps working, and two-factor sign-in still asks for its code.'|trans }}</p>
+</div>
+
+{% if google.error %}
+    <div class="alert alert-danger" role="alert" data-clientfence-google-error>{{ google.error|trans }}</div>
+{% endif %}
+
+<div class="card" data-clientfence-google="{{ google.link ? 'linked' : 'not-linked' }}">
+    <div class="card-header"><h2>{{ 'Google account'|trans }}</h2></div>
+    <div class="card-body">
+        {% if google.link %}
+            <div class="alert alert-success" role="status">
+                {{ 'Linked to the Google account'|trans }} <strong dir="ltr">{{ google.link.email ?: 'a Google account'|trans }}</strong>
+            </div>
+            <p class="text-body-secondary small">
+                {{ 'Linked on'|trans }} {{ google.link.created_at|format_date }}{% if google.link.last_used_at %} · {{ 'Last used'|trans }}: {{ google.link.last_used_at|format_date }}{% endif %}
+            </p>
+            {% if google.needs_password %}
+                <div class="alert alert-info" role="status" data-clientfence-google-password>{{ 'You sign in with Google only. Choose a password so you can also sign in with your email; after that, you can unlink Google if you want.'|trans }}</div>
+                <form action="{{ 'client/google_password'|api_url }}" {{ fb_api_form({reload: true, message: 'Password saved'|trans}) }} autocomplete="off" data-clientfence-google-password-form>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="google_new_password">{{ 'Choose a password'|trans }}</label>
+                            <input class="form-control" id="google_new_password" type="password" name="password" autocomplete="new-password" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="google_new_password_confirm">{{ 'Confirm password'|trans }}</label>
+                            <input class="form-control" id="google_new_password_confirm" type="password" name="password_confirm" autocomplete="new-password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">{{ 'Save password'|trans }}</button>
+                </form>
+            {% else %}
+            <form action="{{ 'client/google_unlink'|api_url }}" {{ fb_api_form({reload: true, message: 'Google account unlinked'|trans}) }} data-clientfence-confirm="{{ 'Unlink your Google account? You then sign in with your password.'|trans }}">
+                <button type="submit" class="btn btn-outline-danger">{{ 'Unlink Google account'|trans }}</button>
+            </form>
+            {% endif %}
+        {% elseif google.on %}
+            <form action="{{ 'client/google_link'|api_url }}" {{ fb_api_form({callback: 'clientfenceGoogleLink'}) }} autocomplete="off">
+                <div class="mb-3">
+                    <label class="form-label" for="google_password">{{ 'Password'|trans }}</label>
+                    <input class="form-control" id="google_password" type="password" name="password" autocomplete="current-password" required>
+                    <div class="form-text">{{ 'Your password first; then Google asks which account to link.'|trans }}</div>
+                </div>
+                <button type="submit" class="btn btn-primary">{{ 'Link Google account'|trans }}</button>
+            </form>
+        {% else %}
+            <p class="mb-0 text-body-secondary">{{ 'Google sign-in is not available at the moment.'|trans }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{# ClientFence: the "System Health" tab of System > Settings > System (core patch in
+   mod_system_settings; Health.php). The last run's checks by state: needs attention, warnings,
+   passed. "Run checks now" runs them again (clientfence_health_run); "Copy as text" copies a plain
+   report (no secrets) for a ticket or chat. `report` and `groups` come from clientfence/health_page. #}
+{% set states = [
+    { 'key': 'bad', 'label': 'Needs attention'|trans, 'tone': 'bad', 'icon': 'alert-triangle' },
+    { 'key': 'warn', 'label': 'Warnings'|trans, 'tone': 'warn', 'icon': 'info-circle' },
+    { 'key': 'ok', 'label': 'Passed'|trans, 'tone': 'ok', 'icon': 'circle-check' }
+] %}
+{% set ratings = { 'excellent': 'Excellent'|trans, 'good': 'Good'|trans, 'attention': 'Needs attention'|trans } %}
+{% set company = guest.system_company %}
+<div class="bf-health"
+     data-bf-health
+     data-text="{{ {
+        'title': 'System health'|trans,
+        'company': company.name,
+        'ran': report ? report.ran_at : '',
+        'rating': report ? ratings[report.rating] ?? '' : '',
+        'groups': groups|map(g => g|trans),
+        'states': { 'bad': 'Needs attention'|trans, 'warn': 'Warnings'|trans, 'ok': 'Passed'|trans },
+        'copied': 'Copied'|trans,
+        'failed': 'The checks could not be run.'|trans
+     }|json_encode|e('html_attr') }}"
+     data-checks="{{ (report ? report.checks|map(c => c|merge({ 'title': c.title|trans })) : [])|json_encode|e('html_attr') }}">
+    <section class="bf-card bf-health-head">
+        <div class="bf-health-rating">
+            <span class="bf-tile bf-tone-{{ report ? { 'excellent': 'ok', 'good': 'ok', 'attention': 'bad' }[report.rating] ?? 'warn' : 'warn' }}" aria-hidden="true"><svg class="icon"><use href="#bf-health" /></svg></span>
+            <div>
+                <span class="bf-muted bf-small">{{ 'Overall rating'|trans }}</span>
+                <p class="bf-h bf-health-title">{{ report ? ratings[report.rating] ?? '' : 'Not checked yet'|trans }}</p>
+                <span class="bf-muted bf-small">
+                    {% if report %}{{ 'Last run :time ago'|trans({ ':time': report.ran_at|timeago }) }} · {{ 'checked hourly by cron'|trans }}{% else %}{{ 'The first run comes with the next cron run, or run the checks now.'|trans }}{% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="bf-health-actions">
+            {% if report %}<button type="button" class="bf-btn" data-bf-health-copy>{{ 'Copy as text'|trans }}</button>{% endif %}
+            <button type="button" class="btn btn-primary" data-bf-health-run>{{ 'Run checks now'|trans }}</button>
+        </div>
+        {% if report %}
+        <div class="bf-health-bar" role="img" aria-label="{{ ':percent% of the checks passed'|trans({ ':percent': report.passed }) }}">
+            <div class="bf-health-fill bf-w-{{ (report.passed / 5)|round(0, 'floor') * 5 }}{% if report.counts.bad > 0 %} bf-health-fill-bad{% elseif report.counts.warn > 0 %} bf-health-fill-warn{% endif %}"></div>
+        </div>
+        <div class="bf-health-counts">
+            {# A count jumps to its list (clientfence-admin.js; the page's # picks the tab). A count of 0
+               has no list to jump to. #}
+            {% for state in states %}
+            {% if report.counts[state.key] > 0 %}
+            <button type="button" class="bf-health-count bf-tone-{{ state.tone }}" data-bf-health-jump="{{ state.key }}">
+            {% else %}
+            <div class="bf-health-count bf-tone-{{ state.tone }}">
+            {% endif %}
+                <span class="bf-h bf-health-number">{{ report.counts[state.key] }}</span>
+                <span class="bf-small">{{ state.label }}</span>
+            {% if report.counts[state.key] > 0 %}</button>{% else %}</div>{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <p class="bf-small bf-health-error" data-bf-health-error role="status" hidden></p>
+    </section>
+
+    {% if report %}
+    {% for state in states %}
+    {% set rows = report.checks|filter(c => c.state == state.key) %}
+    {% if rows|length > 0 %}
+    <section class="bf-card" id="bf-health-{{ state.key }}" aria-labelledby="bf-health-{{ state.key }}-title">
+        <div class="bf-card-head">
+            <h2 class="bf-h bf-card-title" id="bf-health-{{ state.key }}-title">{{ state.label }}</h2>
+            <span class="bf-chip bf-tone-{{ state.tone }}">{{ rows|length }}</span>
+        </div>
+        {% for check in rows %}
+        <div class="bf-row bf-row-static bf-row-top">
+            <span class="bf-tile bf-tone-{{ state.tone }}" aria-hidden="true"><svg class="icon"><use href="#{{ state.icon }}" /></svg></span>
+            <span class="bf-row-main">
+                <span class="bf-strong">{{ check.title|trans }}</span>
+                <span class="bf-muted bf-small">{{ check.detail }}</span>
+            </span>
+            <span class="bf-chip">{{ (groups[check.group]|default(check.group))|trans }}</span>
+            {% if check.url %}<a class="bf-row-action" href="{{ check.url|url }}">{{ 'Open'|trans }}</a>{% endif %}
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</div>

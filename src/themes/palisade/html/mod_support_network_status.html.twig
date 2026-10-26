@@ -1,0 +1,67 @@
+{# ClientFence: the Network Status page, as WHMCS (Support/NetworkIssues.php): open issues, scheduled
+   work and resolved issues, each with what it affects, priority, status, start and end and the
+   description staff keep up to date. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'network-status' %}
+
+{% block meta_title %}{{ 'Network Status'|trans }}{% endblock %}
+{% block body_class %}network-status{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'Network Status'|trans }}</li>
+{% endblock %}
+
+{% block content %}
+{% set groups = { 'open': 'Open'|trans, 'scheduled': 'Scheduled'|trans, 'resolved': 'Resolved'|trans } %}
+{% set chips = { 'reported': 'bf-chip-warn', 'investigating': 'bf-chip-warn', 'in_progress': 'bf-chip-warn', 'outage': 'bf-chip-warn', 'scheduled': 'bf-chip-muted', 'resolved': 'bf-chip-ok' } %}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Network Status'|trans }}</h1>
+        <span class="bf-hint">{{ 'Outages and planned work on our servers and services.'|trans }}</span>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-body">
+        <ul class="nav nav-tabs mb-3">
+            {% for key, label in groups %}
+                <li class="nav-item">
+                    <a class="nav-link{% if group == key %} active{% endif %}" href="{{ 'network-status'|url(query: { 'group': key }) }}"{% if group == key %} aria-current="page"{% endif %}>
+                        {{ label }}{% if issues.counts[key]|default(0) %}&nbsp;<span class="badge text-bg-secondary">{{ issues.counts[key] }}</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% for issue in issues.list %}
+            <div class="border rounded p-3 mb-3">
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-start mb-2">
+                    <h2 class="h6 mb-0" dir="auto">{{ issue.title }}</h2>
+                    <span class="bf-chip {{ chips[issue.status]|default('bf-chip-muted') }}">{{ issue.status_title }}</span>
+                </div>
+                <div class="row g-2 small text-muted mb-2">
+                    <div class="col-sm-6 col-lg-3">{{ 'Affects'|trans }}: <span class="text-body" dir="auto">{{ issue.about }}</span></div>
+                    <div class="col-sm-6 col-lg-3">{{ 'Priority'|trans }}: <span class="text-body">{{ issue.priority_title }}</span></div>
+                    <div class="col-sm-6 col-lg-3">{{ 'Start'|trans }}: <span class="text-body">{{ issue.start_at|format_datetime }}</span></div>
+                    <div class="col-sm-6 col-lg-3">{{ 'End'|trans }}: <span class="text-body">{{ issue.end_at ? issue.end_at|format_datetime : '-' }}</span></div>
+                </div>
+                {% if issue.description %}
+                    <div dir="auto">{{ issue.description|nl2br }}</div>
+                {% endif %}
+                <div class="small text-muted mt-2">{{ 'Last updated'|trans }}: {{ issue.updated_at|format_datetime }}</div>
+            </div>
+        {% else %}
+            <p class="empty-state mb-0">
+                {% if group == 'open' %}{{ 'No open issues: everything is running normally.'|trans }}
+                {% elseif group == 'scheduled' %}{{ 'No planned work.'|trans }}
+                {% else %}{{ 'No resolved issues.'|trans }}{% endif %}
+            </p>
+        {% endfor %}
+
+        {% if issues.pages > 1 %}
+            <nav class="d-flex gap-2 mt-3" aria-label="{{ 'Pages'|trans }}">
+                {% if issues.page > 1 %}<a class="btn btn-outline-secondary btn-sm" href="{{ 'network-status'|url(query: { 'group': group, 'page': issues.page - 1 }) }}">{{ 'Previous'|trans }}</a>{% endif %}
+                {% if issues.page < issues.pages %}<a class="btn btn-outline-secondary btn-sm" href="{{ 'network-status'|url(query: { 'group': group, 'page': issues.page + 1 }) }}">{{ 'Next'|trans }}</a>{% endif %}
+            </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,551 @@
+{# ClientFence setup wizard (Controller/Admin.php get_setup, Setup.php, Branding.php): the basic
+   settings of a new install in a few steps, each saved by its own clientfence/setup_* call. Opens
+   by itself on a new install's dashboard until finished or skipped; System → Settings reopens it.
+   The page script is clientfence/clientfence-setup.js; the browser keeps no secret: saved
+   passwords and keys are never sent back, an empty field keeps them. #}
+{% extends 'layout_default.html.twig' %}
+
+{% set hide_menu = true %}
+{% set biz = setup.company %}
+{% set brand = setup.brand %}
+{% set gateways = setup.gateways %}
+{% set asset_version = include('partial_clientfence_asset_version.html.twig')|trim %}
+
+{% block meta_title %}{{ 'Quick setup'|trans }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ 'clientfence/clientfence-setup.css'|asset_url }}?v={{ asset_version }}">
+    <script nonce="{{ csp_nonce }}" type="module" src="{{ 'clientfence/clientfence-setup.js'|asset_url }}?v={{ asset_version }}"></script>
+{% endblock %}
+
+{% macro step_actions(skip = true, label = null) %}
+    <div class="cf-setup-actions">
+        <button type="button" class="btn btn-link link-secondary px-0 me-auto" data-cf-back>{{ 'Back'|trans }}</button>
+        {% if skip %}<button type="button" class="btn btn-ghost-secondary" data-cf-next>{{ 'Skip this step'|trans }}</button>{% endif %}
+        <button type="submit" class="btn btn-primary">{{ label ?? 'Save and continue'|trans }}</button>
+    </div>
+{% endmacro %}
+
+{% block content_wide %}
+<div class="cf-setup" data-cf-setup
+     data-dashboard="{{ '/'|url }}"
+     data-default-color="{{ setup.brand_default }}"
+     data-text-saved="{{ 'Saved'|trans }}"
+     data-text-uploading="{{ 'Uploading…'|trans }}"
+     data-text-not-image="{{ 'Choose a PNG, JPEG, GIF or WebP image.'|trans }}"
+     data-text-too-big="{{ 'The image is larger than 2 MB.'|trans }}"
+     data-text-test-sent="{{ 'Test email sent to your staff address.'|trans }}"
+     data-text-copied="{{ 'Copied'|trans }}"
+     data-text-from-logo="{{ 'From your logo'|trans }}"
+     data-text-contrast="{{ 'Button text contrast: :ratio to 1 (4.5 or more reads well).'|trans }}">
+
+    <header class="cf-setup-top">
+        <div class="cf-setup-title">
+            <span class="cf-setup-mark" aria-hidden="true">
+                <svg class="icon"><use href="#settings-bolt" /></svg>
+            </span>
+            <div>
+                <strong>{{ 'Quick setup'|trans }}</strong>
+                <span class="text-secondary">{{ 'The basics in a few minutes. Everything can be changed later in System → Settings.'|trans }}</span>
+            </div>
+        </div>
+        <button type="button" class="btn btn-ghost-secondary" data-cf-skip-all>{{ setup.pending ? 'Skip setup'|trans : 'Close'|trans }}</button>
+    </header>
+
+    <div class="cf-setup-body">
+        <nav class="cf-setup-steps" aria-label="{{ 'Setup steps'|trans }}">
+            <div class="cf-setup-progress" aria-hidden="true"><span data-cf-progress></span></div>
+            <ol>
+                {% for step in [
+                    { id: 'company', title: 'Your business'|trans, hint: 'Name and contact details'|trans },
+                    { id: 'branding', title: 'Branding'|trans, hint: 'Logo, color, sign-in page'|trans },
+                    { id: 'email', title: 'Email sending'|trans, hint: 'How invoices and notices go out'|trans },
+                    { id: 'payments', title: 'Payments & currency'|trans, hint: 'How clients pay you'|trans },
+                    { id: 'security', title: 'Security'|trans, hint: 'Admin address, captcha, sign-in'|trans },
+                    { id: 'store', title: 'Store'|trans, hint: 'Who can order'|trans },
+                    { id: 'product', title: 'First product'|trans, hint: 'Something to sell'|trans },
+                    { id: 'done', title: 'Done'|trans, hint: 'Next steps'|trans },
+                ] %}
+                    <li>
+                        <a href="{{ 'clientfence/setup'|url }}#{{ step.id }}" class="cf-setup-step" data-cf-step-link="{{ step.id }}">
+                            <span class="cf-setup-dot" aria-hidden="true"><span>{{ loop.index }}</span><svg class="icon"><use href="#check" /></svg></span>
+                            <span class="cf-setup-step-text">
+                                <span class="cf-setup-step-title">{{ step.title }}</span>
+                                <span class="cf-setup-step-hint">{{ step.hint }}</span>
+                            </span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ol>
+        </nav>
+
+        <main class="cf-setup-main">
+
+            {# ---- 1. Company ---------------------------------------------------------------- #}
+            <form class="cf-setup-pane" id="company" data-cf-pane="company" data-cf-endpoint="clientfence/setup_company" hidden>
+                <h1>{{ 'Your business'|trans }}</h1>
+                <p class="cf-setup-lead">{{ 'Shown on invoices, emails and the client area.'|trans }}</p>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required" for="cf-company-name">{{ 'Business name'|trans }}</label>
+                        <input class="form-control" id="cf-company-name" name="company_name" value="{{ biz.company_name }}" required maxlength="255" autocomplete="organization" data-cf-company-name>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="cf-company-email">{{ 'Business email'|trans }}</label>
+                        <input class="form-control" type="email" id="cf-company-email" name="company_email" value="{{ biz.company_email }}" maxlength="255" autocomplete="email">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="cf-company-tel">{{ 'Phone'|trans }}</label>
+                        <input class="form-control" type="tel" id="cf-company-tel" name="company_tel" value="{{ biz.company_tel }}" maxlength="100" autocomplete="tel">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="cf-company-address-1">{{ 'Address'|trans }}</label>
+                        <input class="form-control mb-2" id="cf-company-address-1" name="company_address_1" value="{{ biz.company_address_1 }}" maxlength="255" autocomplete="address-line1">
+                        <input class="form-control mb-2" name="company_address_2" value="{{ biz.company_address_2 }}" maxlength="255" autocomplete="address-line2" aria-label="{{ 'Address line 2'|trans }}">
+                        <input class="form-control" name="company_address_3" value="{{ biz.company_address_3 }}" maxlength="255" autocomplete="address-level2" aria-label="{{ 'Address line 3'|trans }}">
+                    </div>
+                </div>
+                {{ _self.step_actions(false) }}
+            </form>
+
+            {# ---- 2. Branding --------------------------------------------------------------- #}
+            <form class="cf-setup-pane cf-setup-pane-wide" id="branding" data-cf-pane="branding" data-cf-endpoint="clientfence/setup_brand" hidden>
+                <h1>{{ 'Branding'|trans }}</h1>
+                <p class="cf-setup-lead">{{ 'Your logo and color on the client area, the sign-in page, invoices and this admin area.'|trans }}</p>
+                <div class="cf-brand-grid">
+                    <div class="cf-brand-controls">
+                        <h2 class="cf-setup-h2">{{ 'Logos'|trans }}</h2>
+                        <div class="cf-drops">
+                            {% for drop in [
+                                { kind: 'logo', title: 'Logo'|trans, hint: 'For light backgrounds. Wide, up to 1200 × 400.'|trans, url: setup.logo_url, dark: false },
+                                { kind: 'logo_dark', title: 'Logo for dark backgrounds'|trans, hint: 'Light colored. The sign-in page and dark mode use it.'|trans, url: setup.logo_dark_url, dark: true },
+                                { kind: 'icon', title: 'Square icon'|trans, hint: 'Browser tab icon. Square, at least 64 × 64.'|trans, url: setup.icon_url, dark: false },
+                            ] %}
+                                <div class="cf-drop{% if drop.dark %} is-dark{% endif %}{% if drop.kind == 'icon' %} is-icon{% endif %}" data-cf-drop="{{ drop.kind }}" tabindex="0" role="button" aria-label="{{ 'Upload'|trans }}: {{ drop.title }}">
+                                    <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+                                    <div class="cf-drop-preview">
+                                        <img alt="" data-cf-drop-img{% if drop.url %} src="{{ drop.url }}"{% else %} hidden{% endif %}>
+                                        <svg class="icon cf-drop-empty" aria-hidden="true"{% if drop.url %} hidden{% endif %}><use href="#photo" /></svg>
+                                    </div>
+                                    <div class="cf-drop-text">
+                                        <strong>{{ drop.title }}</strong>
+                                        <span>{{ drop.hint }}</span>
+                                        <span class="cf-drop-cta">{{ 'Drop an image here or click to choose'|trans }}</span>
+                                    </div>
+                                    <div class="cf-drop-bar" aria-hidden="true"><span></span></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <p class="form-hint mt-2">{{ 'PNG, JPEG, GIF or WebP, up to 2 MB. Images are scaled down and saved as PNG.'|trans }}</p>
+
+                        <h2 class="cf-setup-h2 mt-4">{{ 'Brand color'|trans }}</h2>
+                        <div class="cf-swatches" role="radiogroup" aria-label="{{ 'Brand color'|trans }}" data-cf-swatches>
+                            {% for swatch in ['#2672e3', '#4f46e5', '#7c3aed', '#c026d3', '#db2777', '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#0d9488', '#0891b2', '#334155'] %}
+                                <button type="button" class="cf-swatch" data-cf-swatch="{{ swatch }}" aria-label="{{ swatch }}" role="radio" aria-checked="false"></button>
+                            {% endfor %}
+                        </div>
+                        <div class="cf-color-row">
+                            <input type="color" class="form-control form-control-color" value="{{ brand.color }}" data-cf-color-picker aria-label="{{ 'Pick any color'|trans }}">
+                            <div class="input-group">
+                                <span class="input-group-text">HEX</span>
+                                <input class="form-control font-monospace" name="color" value="{{ brand.color }}" maxlength="7" pattern="#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?" spellcheck="false" autocomplete="off" data-cf-color-hex aria-label="{{ 'Brand color'|trans }}">
+                            </div>
+                            <button type="button" class="btn btn-ghost-secondary" data-cf-color-reset>{{ 'Default'|trans }}</button>
+                        </div>
+                        <p class="form-hint" data-cf-contrast></p>
+
+                        <h2 class="cf-setup-h2 mt-4">{{ 'Sign-in page'|trans }}</h2>
+                        <div class="cf-styles" role="radiogroup" aria-label="{{ 'Sign-in page'|trans }}">
+                            {% for style in [
+                                { id: 'dark', title: 'Dark'|trans, hint: 'Deep navy with a hint of your color'|trans },
+                                { id: 'brand', title: 'Brand'|trans, hint: 'A gradient of your color'|trans },
+                                { id: 'light', title: 'Light'|trans, hint: 'Bright and minimal'|trans },
+                            ] %}
+                                <label class="cf-style-card">
+                                    <input type="radio" name="login_style" value="{{ style.id }}"{% if brand.login_style == style.id %} checked{% endif %} data-cf-login-style>
+                                    <span class="cf-style-thumb is-{{ style.id }}" aria-hidden="true"><span></span><span></span></span>
+                                    <span class="cf-style-name">{{ style.title }}</span>
+                                    <span class="cf-style-hint">{{ style.hint }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {# Live preview: mock pages, colored by the page script (CSSOM variables). #}
+                    <aside class="cf-preview" data-cf-preview aria-label="{{ 'Preview'|trans }}">
+                        <div class="cf-preview-label">{{ 'Live preview'|trans }}</div>
+
+                        <div class="cf-mock cf-mock-client">
+                            <div class="cf-mock-bar">
+                                <span class="cf-mock-logo" data-cf-preview-logo="logo"><img alt="" hidden><b data-cf-preview-name>{{ biz.company_name }}</b></span>
+                                <span class="cf-mock-nav"><i></i><i></i><i></i></span>
+                                <span class="cf-mock-btn">{{ 'Order now'|trans }}</span>
+                            </div>
+                            <div class="cf-mock-hero">
+                                <span class="cf-mock-h">{{ 'Welcome back'|trans }}</span>
+                                <span class="cf-mock-pill">{{ 'Active'|trans }}</span>
+                                <span class="cf-mock-line"></span><span class="cf-mock-line is-short"></span>
+                                <span class="cf-mock-link">{{ 'View invoices'|trans }} →</span>
+                            </div>
+                        </div>
+
+                        <div class="cf-mock cf-mock-login" data-cf-preview-login>
+                            <div class="cf-mock-side">
+                                <span class="cf-mock-logo" data-cf-preview-logo="side"><img alt="" hidden><b data-cf-preview-name>{{ biz.company_name }}</b></span>
+                                <span class="cf-mock-side-h">{{ 'Your client area'|trans }}</span>
+                                <span class="cf-mock-side-line"></span><span class="cf-mock-side-line is-short"></span>
+                            </div>
+                            <div class="cf-mock-form">
+                                <span class="cf-mock-h">{{ 'Sign in'|trans }}</span>
+                                <span class="cf-mock-input is-focus"></span>
+                                <span class="cf-mock-input"></span>
+                                <span class="cf-mock-btn is-block">{{ 'Sign in'|trans }}</span>
+                            </div>
+                        </div>
+
+                        <div class="cf-mock cf-mock-invoice">
+                            <div class="cf-mock-inv-head">
+                                <span class="cf-mock-logo" data-cf-preview-logo="logo"><img alt="" hidden><b data-cf-preview-name>{{ biz.company_name }}</b></span>
+                                <span class="cf-mock-inv-title">{{ 'Invoice'|trans }} <b>#0001</b></span>
+                            </div>
+                            <div class="cf-mock-inv-rows"><span></span><span></span><span class="is-total"></span></div>
+                            <div class="cf-mock-inv-foot">
+                                <span class="cf-mock-pill is-warn">{{ 'Unpaid'|trans }}</span>
+                                <span class="cf-mock-btn">{{ 'Pay now'|trans }}</span>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+                {{ _self.step_actions() }}
+            </form>
+
+            {# ---- 3. Email ------------------------------------------------------------------ #}
+            {% set mail = setup.email %}
+            <form class="cf-setup-pane" id="email" data-cf-pane="email" data-cf-endpoint="clientfence/setup_email" hidden>
+                <h1>{{ 'Email sending'|trans }}</h1>
+                <p class="cf-setup-lead">{{ 'Invoices, receipts, password resets and ticket replies are sent by email.'|trans }}</p>
+                {% set mail_other = mail.mailer in ['sendgrid', 'custom'] %}
+                <div class="cf-choice-grid{% if mail_other %} is-3{% endif %}">
+                    {% if mail_other %}
+                        <label class="cf-choice">
+                            <input type="radio" name="mailer" value="keep" checked data-cf-toggle="smtp">
+                            <span class="cf-choice-title">{{ 'Keep the current setting'|trans }}</span>
+                            <span class="cf-choice-hint">{{ mail.mailer == 'sendgrid' ? 'SendGrid, set up in System → Settings → Email.'|trans : 'Your own mail server address (DSN), set up in System → Settings → Email.'|trans }}</span>
+                        </label>
+                    {% endif %}
+                    <label class="cf-choice">
+                        <input type="radio" name="mailer" value="smtp"{% if mail.mailer == 'smtp' %} checked{% endif %} data-cf-toggle="smtp">
+                        <span class="cf-choice-title">{{ 'SMTP server'|trans }} <span class="badge bg-green-lt">{{ 'Recommended'|trans }}</span></span>
+                        <span class="cf-choice-hint">{{ 'Your email provider or a sending service. Best delivery.'|trans }}</span>
+                    </label>
+                    <label class="cf-choice">
+                        <input type="radio" name="mailer" value="sendmail"{% if mail.mailer == 'sendmail' or mail.mailer not in ['smtp', 'sendgrid', 'custom'] %} checked{% endif %} data-cf-toggle="smtp">
+                        <span class="cf-choice-title">{{ 'This server'|trans }}</span>
+                        <span class="cf-choice-hint">{{ 'PHP mail on this server. Works when the server is set up to send mail.'|trans }}</span>
+                    </label>
+                </div>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                        <label class="form-label required" for="cf-from-email">{{ 'Send from address'|trans }}</label>
+                        <input class="form-control" type="email" id="cf-from-email" name="from_email" value="{{ mail.from_email ?: biz.company_email }}" required maxlength="255">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="cf-from-name">{{ 'Sender name'|trans }}</label>
+                        <input class="form-control" id="cf-from-name" name="from_name" value="{{ mail.from_name }}" maxlength="255" placeholder="{{ biz.company_name }}">
+                    </div>
+                </div>
+                <div class="row g-3 mt-1" data-cf-when="smtp">
+                    <div class="col-md-8">
+                        <label class="form-label required" for="cf-smtp-host">{{ 'SMTP server'|trans }}</label>
+                        <input class="form-control" id="cf-smtp-host" name="smtp_host" value="{{ mail.smtp_host }}" maxlength="255" placeholder="smtp.example.com" spellcheck="false">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label required" for="cf-smtp-port">{{ 'Port'|trans }}</label>
+                        <input class="form-control" type="number" min="1" max="65535" id="cf-smtp-port" name="smtp_port" value="{{ mail.smtp_port ?: '587' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="cf-smtp-user">{{ 'Username'|trans }}</label>
+                        <input class="form-control" id="cf-smtp-user" name="smtp_username" value="{{ mail.smtp_username }}" maxlength="255" autocomplete="off" spellcheck="false">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="cf-smtp-pass">{{ 'Password'|trans }}</label>
+                        <input class="form-control" type="password" id="cf-smtp-pass" name="smtp_password" autocomplete="new-password" placeholder="{{ mail.password_saved ? 'Saved; leave empty to keep it'|trans : '' }}">
+                    </div>
+                </div>
+                <div class="cf-setup-note mt-3">
+                    <button type="button" class="btn btn-outline-primary" data-cf-test-email>{{ 'Save and send a test email'|trans }}</button>
+                    <span class="text-secondary">{{ 'Sent to your staff email address.'|trans }}</span>
+                </div>
+                {{ _self.step_actions() }}
+            </form>
+
+            {# ---- 4. Payments ---------------------------------------------------------------- #}
+            {% set custom = gateways.Custom|default({}) %}
+            {% set paypal = gateways.PayPalEmail|default({}) %}
+            {% set stripe = gateways.Stripe|default({}) %}
+            <form class="cf-setup-pane" id="payments" data-cf-pane="payments" data-cf-endpoint="clientfence/setup_payments" hidden>
+                <h1>{{ 'Payments & currency'|trans }}</h1>
+                <p class="cf-setup-lead">{{ 'Turn on the ways clients can pay. More payment gateways are in System → Payment Gateways.'|trans }}</p>
+
+                <div class="mb-4">
+                    <label class="form-label" for="cf-currency">{{ 'Main currency'|trans }}</label>
+                    {% if setup.currency_changeable %}
+                        <select class="form-select" id="cf-currency" name="currency">
+                            {% for code, name in setup.currencies %}
+                                <option value="{{ code }}"{% if code == setup.currency %} selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-hint">{{ 'Prices and invoices use it. More currencies can be added in System → Currencies.'|trans }}</div>
+                    {% else %}
+                        <input class="form-control" id="cf-currency" value="{{ setup.currencies[setup.currency] ?? setup.currency }}" disabled>
+                        <div class="form-hint">{{ 'Invoices, quotes or orders exist already: change the main currency in System → Currencies.'|trans }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="cf-toggle-card">
+                    <label class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" name="manual_enabled" value="1"{% if custom.enabled ?? true %} checked{% endif %} data-cf-toggle="manual">
+                        <span class="form-check-label"><strong>{{ 'Bank transfer or other manual payment'|trans }}</strong><span class="d-block text-secondary">{{ 'Clients see your instructions and you mark the invoice paid.'|trans }}</span></span>
+                    </label>
+                    <div class="mt-3" data-cf-when="manual">
+                        <label class="form-label required" for="cf-manual-text">{{ 'Payment instructions'|trans }}</label>
+                        <textarea class="form-control" id="cf-manual-text" name="manual_text" rows="3" maxlength="2000" placeholder="{{ 'Bank name, account holder, IBAN or account number, reference: the invoice number.'|trans }}">{{ custom.text ?? '' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="cf-toggle-card">
+                    <label class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" name="paypal_enabled" value="1"{% if paypal.enabled ?? false %} checked{% endif %} data-cf-toggle="paypal">
+                        <span class="form-check-label"><strong>PayPal</strong><span class="d-block text-secondary">{{ 'Payments to your PayPal account.'|trans }}</span></span>
+                    </label>
+                    <div class="mt-3" data-cf-when="paypal">
+                        <label class="form-label required" for="cf-paypal-email">{{ 'PayPal email address'|trans }}</label>
+                        <input class="form-control" type="email" id="cf-paypal-email" name="paypal_email" value="{{ paypal.email ?? '' }}" maxlength="255">
+                    </div>
+                </div>
+
+                <div class="cf-toggle-card">
+                    <label class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" name="stripe_enabled" value="1"{% if stripe.enabled ?? false %} checked{% endif %} data-cf-toggle="stripe">
+                        <span class="form-check-label"><strong>Stripe</strong><span class="d-block text-secondary">{{ 'Cards and wallets. Keys are in your Stripe dashboard under Developers → API keys.'|trans }}</span></span>
+                    </label>
+                    <div class="row g-3 mt-1" data-cf-when="stripe">
+                        <div class="col-md-6">
+                            <label class="form-label required" for="cf-stripe-pub">{{ 'Publishable key'|trans }}</label>
+                            <input class="form-control font-monospace" id="cf-stripe-pub" name="stripe_pub_key" value="{{ stripe.pub_key ?? '' }}" placeholder="pk_live_…" autocomplete="off" spellcheck="false">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required" for="cf-stripe-secret">{{ 'Secret key'|trans }}</label>
+                            <input class="form-control font-monospace" type="password" id="cf-stripe-secret" name="stripe_api_key" autocomplete="new-password" placeholder="{{ (stripe.secret_saved ?? false) ? 'Saved; leave empty to keep it'|trans : 'sk_live_…' }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="cf-stripe-webhook-url">{{ 'Webhook address'|trans }}</label>
+                            <div class="input-group">
+                                <input class="form-control font-monospace" id="cf-stripe-webhook-url" value="{{ stripe.webhook_url ?? '' }}" readonly data-cf-stripe-url>
+                                <button type="button" class="btn" data-cf-copy="#cf-stripe-webhook-url">{{ 'Copy'|trans }}</button>
+                            </div>
+                            <div class="form-hint">{{ 'In Stripe, add a webhook endpoint (Developers → Webhooks) with this address and the payment, invoice and subscription events, then copy its signing secret below. Without it, payments and renewals are not recorded.'|trans }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required" for="cf-stripe-webhook">{{ 'Webhook signing secret'|trans }}</label>
+                            <input class="form-control font-monospace" type="password" id="cf-stripe-webhook" name="stripe_webhook_secret" autocomplete="new-password" placeholder="{{ (stripe.webhook_saved ?? false) ? 'Saved; leave empty to keep it'|trans : 'whsec_…' }}">
+                        </div>
+                    </div>
+                </div>
+                {{ _self.step_actions() }}
+            </form>
+
+            {# ---- 5. Security ---------------------------------------------------------------- #}
+            {% set captcha = setup.captcha %}
+            {% set signin = admin.clientfence_signin_security_get %}
+            <form class="cf-setup-pane" id="security" data-cf-pane="security" data-cf-endpoint="clientfence/setup_security" hidden
+                  data-text-pin-sent="{{ 'We emailed you a PIN: enter it and save again.'|trans }}">
+                <h1>{{ 'Security'|trans }}</h1>
+                <p class="cf-setup-lead">{{ 'Keep bots out and make a stolen staff password useless on its own.'|trans }}</p>
+
+                <h2 class="cf-setup-h2">{{ 'Admin address'|trans }}</h2>
+                <p class="text-secondary">{{ 'A private address for this admin area is the first thing bots look for. Bookmark the new one: the old address stops working.'|trans }}</p>
+                <div class="input-group">
+                    <span class="input-group-text font-monospace">{{ setup.site_url }}</span>
+                    <input class="form-control font-monospace" name="admin_path" value="{{ setup.admin_path }}" maxlength="41" pattern="/?[a-z0-9][a-z0-9-]{3,39}" spellcheck="false" autocomplete="off" aria-label="{{ 'Admin address'|trans }}" data-cf-admin-path>
+                    <button type="button" class="btn" data-cf-admin-random>{{ 'Suggest one'|trans }}</button>
+                </div>
+                {% if setup.admin_path_default %}
+                    <div class="form-hint text-warning">{{ 'This is the usual address: choose your own.'|trans }}</div>
+                {% endif %}
+
+                <h2 class="cf-setup-h2 mt-4">{{ 'Captcha'|trans }}</h2>
+                <p class="text-secondary">{{ 'Protects sign-up, sign-in and contact forms. The keys come from the service you choose.'|trans }}</p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="cf-captcha">{{ 'Service'|trans }}</label>
+                        <select class="form-select" id="cf-captcha" name="captcha_provider" data-cf-select-toggle="captcha">
+                            <option value="none"{% if not captcha.enabled %} selected{% endif %}>{{ 'Not now'|trans }}</option>
+                            <option value="turnstile"{% if captcha.enabled and captcha.provider == 'turnstile' %} selected{% endif %}>Cloudflare Turnstile</option>
+                            <option value="hcaptcha"{% if captcha.enabled and captcha.provider == 'hcaptcha' %} selected{% endif %}>hCaptcha</option>
+                            <option value="recaptcha_v2"{% if captcha.enabled and captcha.provider == 'recaptcha_v2' %} selected{% endif %}>Google reCAPTCHA v2</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4" data-cf-when="captcha">
+                        <label class="form-label required" for="cf-captcha-site">{{ 'Site key'|trans }}</label>
+                        <input class="form-control font-monospace" id="cf-captcha-site" name="captcha_site_key" value="{{ captcha.site_key }}" autocomplete="off" spellcheck="false">
+                    </div>
+                    <div class="col-md-4" data-cf-when="captcha">
+                        <label class="form-label required" for="cf-captcha-secret">{{ 'Secret key'|trans }}</label>
+                        <input class="form-control font-monospace" type="password" id="cf-captcha-secret" name="captcha_secret_key" autocomplete="new-password" placeholder="{{ captcha.enabled ? 'Saved; leave empty to keep it'|trans : '' }}">
+                    </div>
+                </div>
+
+                <h2 class="cf-setup-h2 mt-4">{{ 'Staff sign-in'|trans }}</h2>
+                <p class="text-secondary">{{ 'More can be set in System → Settings → System → Sign-in security. Locked out? On the server run: php console.php clientfence:signin-security-off'|trans }}</p>
+                <div class="cf-toggle-card">
+                    <label class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" name="staff_pin" value="1"{% if signin.pin in ['staff', 'both'] %} checked{% endif %}>
+                        <span class="form-check-label"><strong>{{ 'Email PIN for staff'|trans }}</strong><span class="d-block text-secondary">{{ 'After the right password, a 6-digit PIN goes to the staff member\'s email. Turning it on first emails you a PIN, so email sending must work.'|trans }}</span></span>
+                    </label>
+                    <div class="mt-3" data-cf-pin-confirm hidden>
+                        <label class="form-label" for="cf-pin-confirm">{{ 'PIN sent to'|trans }} <span data-cf-pin-email></span></label>
+                        <input class="form-control" id="cf-pin-confirm" type="text" name="confirm_pin" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr">
+                    </div>
+                </div>
+                {% if signin.geoip_ready %}
+                    {% set chosen = signin.countries ?: (signin.ip_country ? [signin.ip_country] : []) %}
+                    <div class="cf-toggle-card">
+                        <label class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" name="countries_on" value="1"{% if signin.countries_on %} checked{% endif %} data-cf-toggle="countries">
+                            <span class="form-check-label"><strong>{{ 'Staff sign-in from chosen countries only'|trans }}</strong><span class="d-block text-secondary">{{ 'Other countries, and addresses whose country is not known, are refused. Addresses on the Allowed IPs list in Staff settings always pass.'|trans }}</span></span>
+                        </label>
+                        <div class="mt-3" data-cf-when="countries">
+                            <label class="form-label" for="cf-countries">{{ 'Countries'|trans }}</label>
+                            <select class="form-select js-multi-select" id="cf-countries" name="countries" multiple placeholder="{{ 'Choose countries'|trans }}">
+                                {% for code, name in signin.all_countries %}
+                                    <option value="{{ code }}"{% if code in chosen %} selected{% endif %}>{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-hint">
+                                {{ 'You are signing in from %ip%'|trans({'%ip%': signin.ip}) }}{% if signin.ip_country %} ({{ signin.all_countries[signin.ip_country] ?? signin.ip_country }}){% else %} ({{ 'country not known'|trans }}){% endif %}{% if signin.ip_listed %}, {{ 'on the Allowed IPs list'|trans }}{% endif %}.
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {{ _self.step_actions() }}
+            </form>
+
+            {# ---- 6. Store -------------------------------------------------------------------- #}
+            <form class="cf-setup-pane" id="store" data-cf-pane="store" data-cf-endpoint="clientfence/setup_store" hidden>
+                <h1>{{ 'Store'|trans }}</h1>
+                <p class="cf-setup-lead">{{ 'Decide when the store opens.'|trans }}</p>
+                <div class="cf-choice-grid is-3">
+                    {% for mode in [
+                        { id: 'closed', title: 'Closed'|trans, hint: 'Nobody can order yet. You can still create orders in the admin area.'|trans },
+                        { id: 'testers', title: 'Custom group'|trans, hint: 'Only clients in one client group can order.'|trans },
+                        { id: 'public', title: 'Open'|trans, hint: 'Everyone can see the products and order.'|trans },
+                    ] %}
+                        <label class="cf-choice">
+                            <input type="radio" name="store_mode" value="{{ mode.id }}"{% if setup.store_mode == mode.id %} checked{% endif %} data-cf-toggle="testers">
+                            <span class="cf-choice-title">{{ mode.title }}</span>
+                            <span class="cf-choice-hint">{{ mode.hint }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div class="mt-3" data-cf-when="testers">
+                    <label class="form-label required" for="cf-testers">{{ 'Client group that can order'|trans }}</label>
+                    <select class="form-select" id="cf-testers" name="store_testers_group">
+                        <option value="">{{ 'Choose a group'|trans }}</option>
+                        {% for id, title in setup.groups %}
+                            <option value="{{ id }}"{% if setup.store_testers_group == id ~ '' %} selected{% endif %}>{{ title }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if setup.groups is empty %}<div class="form-hint">{{ 'Add a client group in Clients → Groups first.'|trans }}</div>{% endif %}
+                </div>
+                {{ _self.step_actions() }}
+            </form>
+
+            {# ---- 7. First product -------------------------------------------------------------- #}
+            <form class="cf-setup-pane" id="product" data-cf-pane="product" data-cf-endpoint="clientfence/setup_product" hidden>
+                <h1>{{ 'First product'|trans }}</h1>
+                <p class="cf-setup-lead">
+                    {{ 'A service, subscription, license, plan or anything else you bill for. Hosting, domains and other special products can be added later in Products.'|trans }}
+                    {% if setup.products > 0 %}<span class="d-block mt-1">{{ 'You have :count products already.'|trans({ ':count': setup.products }) }}</span>{% endif %}
+                </p>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label required" for="cf-product-title">{{ 'Name'|trans }}</label>
+                        <input class="form-control" id="cf-product-title" name="title" maxlength="255" placeholder="{{ 'For example: Monthly support plan'|trans }}">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="cf-product-description">{{ 'Description'|trans }}</label>
+                        <textarea class="form-control" id="cf-product-description" name="description" rows="3" maxlength="5000"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label required" for="cf-product-price">{{ 'Price'|trans }}</label>
+                        <div class="input-group">
+                            <input class="form-control" type="number" min="0" step="0.01" id="cf-product-price" name="price" value="0">
+                            <span class="input-group-text" data-cf-currency-code>{{ setup.currency }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="cf-product-billing">{{ 'Billing'|trans }}</label>
+                        <select class="form-select" id="cf-product-billing" name="billing" data-cf-select-toggle="recurrent">
+                            <option value="once">{{ 'One-time payment'|trans }}</option>
+                            <option value="recurrent" selected>{{ 'Recurring'|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4" data-cf-when="recurrent">
+                        <label class="form-label" for="cf-product-period">{{ 'Every'|trans }}</label>
+                        <select class="form-select" id="cf-product-period" name="period">
+                            <option value="1M" selected>{{ 'Month'|trans }}</option>
+                            <option value="3M">{{ '3 months'|trans }}</option>
+                            <option value="6M">{{ '6 months'|trans }}</option>
+                            <option value="1Y">{{ 'Year'|trans }}</option>
+                            <option value="2Y">{{ '2 years'|trans }}</option>
+                        </select>
+                    </div>
+                </div>
+                {{ _self.step_actions(true, 'Add and continue'|trans) }}
+            </form>
+
+            {# ---- Done ------------------------------------------------------------------------- #}
+            <section class="cf-setup-pane cf-setup-done" id="done" data-cf-pane="done" hidden>
+                <span class="cf-setup-done-mark" aria-hidden="true"><svg class="icon"><use href="#check" /></svg></span>
+                <h1>{{ 'You are set up'|trans }}</h1>
+                {% set speed = setup.speed %}
+                {% set cache_names = { filesystem: 'Filesystem'|trans, redis: 'Redis'|trans, memcached: 'Memcached'|trans } %}
+                <h2 class="cf-setup-h2">{{ 'Speed'|trans }}</h2>
+                <div class="cf-next-grid mb-4">
+                    <div class="cf-next">
+                        <strong>{{ 'PHP OPcache'|trans }} <span class="badge {{ speed.opcache ? 'bg-green-lt' : 'bg-yellow-lt' }}">{{ speed.opcache ? 'On'|trans : 'Off'|trans }}</span></strong>
+                        <span>{{ speed.opcache ? 'PHP keeps the compiled code in memory.'|trans : 'Pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often “Opcode caching”) in the PHP settings of your hosting panel.'|trans }}</span>
+                    </div>
+                    <a class="cf-next" href="{{ 'extension/settings/system'|url }}#tab-cache">
+                        <strong>{{ 'Cache'|trans }} <span class="badge {{ speed.cache == 'filesystem' ? 'bg-yellow-lt' : 'bg-green-lt' }}">{{ cache_names[speed.cache] ?? speed.cache }}</span></strong>
+                        <span>{% if speed.cache != speed.cache_configured %}{{ ':driver could not be reached, so files are used. Check the server and the cache settings.'|trans({ ':driver': cache_names[speed.cache_configured] ?? speed.cache_configured }) }}{% elseif speed.cache == 'filesystem' %}{{ 'Fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in the cache settings.'|trans }}{% else %}{{ 'In use.'|trans }}{% endif %}</span>
+                    </a>
+                </div>
+                <p class="cf-setup-lead">{{ 'A few more things you may want to look at:'|trans }}</p>
+                <div class="cf-next-grid">
+                    <a class="cf-next" href="{{ 'extension/settings/invoice'|url }}">
+                        <strong>{{ 'Taxes and invoices'|trans }}</strong><span>{{ 'Invoice numbers, due days and tax rules.'|trans }}</span>
+                    </a>
+                    <a class="cf-next" href="{{ 'email/templates'|url }}">
+                        <strong>{{ 'Email templates'|trans }}</strong><span>{{ 'The wording of the emails clients get.'|trans }}</span>
+                    </a>
+                    <a class="cf-next" href="{{ 'product'|url }}">
+                        <strong>{{ 'Products'|trans }}</strong><span>{{ 'Prices, add-ons and order forms.'|trans }}</span>
+                    </a>
+                    <a class="cf-next" href="{{ 'extension/settings/staff'|url }}">
+                        <strong>{{ 'Staff'|trans }}</strong><span>{{ 'Invite your team with their own roles.'|trans }}</span>
+                    </a>
+                    <a class="cf-next" href="{{ 'security'|url }}">
+                        <strong>{{ 'Security checks'|trans }}</strong><span>{{ 'What this server and its PHP settings still leave open.'|trans }}</span>
+                    </a>
+                </div>
+                <div class="cf-setup-actions">
+                    <button type="button" class="btn btn-link link-secondary px-0 me-auto" data-cf-back>{{ 'Back'|trans }}</button>
+                    <button type="button" class="btn btn-primary btn-lg" data-cf-finish>{{ 'Go to the dashboard'|trans }}</button>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+{% endblock %}

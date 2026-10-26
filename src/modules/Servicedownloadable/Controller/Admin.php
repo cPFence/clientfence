@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Servicedownloadable\Controller;
+
+use Symfony\Component\HttpFoundation\Response;
+
+class Admin implements \ClientFence\InjectionAwareInterface
+{
+    protected ?\Pimple\Container $di = null;
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function register(\ClientFence\App &$app): void
+    {
+        $app->get('/servicedownloadable/get-file/:id', 'get_download', ['id' => '[0-9]+'], static::class);
+    }
+
+    public function get_download(\ClientFence\App $app, $id): Response
+    {
+        $this->di['is_admin_logged'];
+
+        $api = $this->di['api_admin'];
+        $data = [
+            'id' => $id,
+        ];
+
+        return $api->servicedownloadable_send_file($data);
+    }
+}

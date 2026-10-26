@@ -1,0 +1,51 @@
+{# ClientFence: the client's quotes (Invoice/Quotes.php), newest first; each opens its page. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'invoices' %}
+
+{% block meta_title %}{{ 'Quotes'|trans }}{% endblock %}
+{% block body_class %}invoice-quotes{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ 'invoice'|url }}">{{ 'Invoices'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'Quotes'|trans }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Quotes'|trans }}</h1>
+        <span class="bf-hint">{{ 'The quotes we sent you. Open one to accept or decline it.'|trans }}</span>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0 table-stack">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ 'Subject'|trans }}</th>
+                    <th class="text-end">{{ 'Total'|trans }}</th>
+                    <th>{{ 'Status'|trans }}</th>
+                    <th>{{ 'Valid until'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quote in quotes %}
+                    {% set chip = quote.stage == 'accepted' ? ['bf-chip-ok', 'Accepted'|trans]
+                        : (quote.stage == 'lost' ? ['bf-chip-muted', 'Declined'|trans]
+                        : (quote.stage == 'dead' ? ['bf-chip-muted', 'Withdrawn'|trans]
+                        : (quote.expired ? ['bf-chip-muted', 'Expired'|trans] : ['bf-chip-warn', 'Awaiting your answer'|trans]))) %}
+                    <tr>
+                        <td><a href="{{ ('quote/' ~ quote.hash)|url }}">{{ quote.id }}</a></td>
+                        <td dir="auto"><a href="{{ ('quote/' ~ quote.hash)|url }}">{{ quote.subject }}</a></td>
+                        <td class="text-end"><span dir="ltr">{{ quote.total|format_currency(quote.currency, {}, 'en_US') }}</span></td>
+                        <td><span class="bf-chip {{ chip[0] }}">{{ chip[1] }}</span></td>
+                        <td class="text-muted">{{ quote.valid_until ? quote.valid_until|format_date : '-' }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="empty-state">{{ 'No quotes yet.'|trans }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

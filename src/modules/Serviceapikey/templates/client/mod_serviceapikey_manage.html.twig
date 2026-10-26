@@ -1,0 +1,103 @@
+{# ClientFence core patch (ext serviceapikey): the key hidden until shown, copy, regenerate with a confirm, usage, allowed IPs and a check example. #}
+{% if order.status == 'active' %}
+<section class="card bf-card mb-4 bf-licence" aria-labelledby="cf-apikey-title">
+    <div class="card-body bf-licence-body">
+        <div class="bf-licence-head">
+            <span class="bf-licence-icon" aria-hidden="true"><svg class="icon"><use href="#key"/></svg></span>
+            <div>
+                <h2 class="h5 mb-0" id="cf-apikey-title">{{ 'API Key Details'|trans }}</h2>
+                <span class="small text-body-secondary">{{ order.title }}</span>
+            </div>
+        </div>
+
+        <div>
+            <label class="bf-licence-label" for="cf-apikey-value">{{ 'API Key'|trans }}</label>
+            <div class="input-group">
+                <input type="password" class="form-control font-monospace" id="cf-apikey-value" value="{{ service.api_key }}" readonly dir="ltr" autocomplete="off">
+                <button class="btn btn-outline-secondary" type="button" id="cf-apikey-toggle" aria-pressed="false" data-show="{{ 'Show'|trans }}" data-hide="{{ 'Hide'|trans }}">{{ 'Show'|trans }}</button>
+                <button class="btn btn-outline-secondary" type="button" id="cf-apikey-copy">{{ 'Copy'|trans }}</button>
+            </div>
+        </div>
+
+        <dl class="bf-licence-limits">
+            <div>
+                <dt class="bf-licence-label">{{ 'Last used'|trans }}</dt>
+                <dd>{{ service.last_used_at ? service.last_used_at|format_datetime : 'Never'|trans }}</dd>
+            </div>
+            <div>
+                <dt class="bf-licence-label">{{ 'Times used'|trans }}</dt>
+                <dd>{{ service.use_count }}</dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="card-body border-top">
+        <form method="post" action="{{ 'serviceapikey/update_ips'|api_url }}" {{ fb_api_form({message: 'Saved'|trans}) }}>
+            <label class="h6 d-block mb-1" for="cf-apikey-ips">{{ 'Allowed IPs'|trans }}</label>
+            <p class="small text-body-secondary">{{ 'One IP address or CIDR range per line, at most 20. A check from any other IP answers as invalid. Leave empty to allow all IPs.'|trans }}</p>
+            <textarea class="form-control font-monospace" id="cf-apikey-ips" name="allowed_ips" rows="3" dir="ltr" placeholder="203.0.113.10&#10;2001:db8::/32">{{ service.allowed_ips|join("\n") }}</textarea>
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body border-top">
+        <h3 class="h6 mb-1">{{ 'How to check a key'|trans }}</h3>
+        <p class="small text-body-secondary">{{ 'Your application sends the key to this address. The answer has "result": true when the key is valid.'|trans }}</p>
+        <code class="bf-licence-code small" dir="ltr">curl -d "key=YOUR_API_KEY" {{ 'serviceapikey/check'|api_url(role: 'guest') }}</code>
+    </div>
+
+    <div class="card-body bf-licence-reset">
+        <div>
+            <h3 class="h6 mb-1">{{ 'Regenerate'|trans }}</h3>
+            <p class="small text-body-secondary mb-0">{{ 'The old key stops working at once. Programs that use it need the new key.'|trans }}</p>
+        </div>
+        <button class="btn btn-outline-danger bf-licence-reset-btn" type="button" data-bs-toggle="modal" data-bs-target="#cf-apikey-regenerate-modal">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg>{{ 'Regenerate'|trans }}
+        </button>
+    </div>
+</section>
+
+<div class="modal fade" id="cf-apikey-regenerate-modal" tabindex="-1" aria-labelledby="cf-apikey-regenerate-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="cf-apikey-regenerate-title">{{ 'Regenerate API key?'|trans }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+            </div>
+            <div class="modal-body">{{ 'The old key stops working at once. Programs that use it need the new key.'|trans }}</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                <button type="button" class="btn btn-danger" id="cf-apikey-regenerate">{{ 'Regenerate'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener('DOMContentLoaded', () => {
+        const field = document.getElementById('cf-apikey-value');
+        const toggle = document.getElementById('cf-apikey-toggle');
+        toggle.addEventListener('click', () => {
+            const show = field.type === 'password';
+            field.type = show ? 'text' : 'password';
+            toggle.textContent = show ? toggle.dataset.hide : toggle.dataset.show;
+            toggle.setAttribute('aria-pressed', String(show));
+        });
+        document.getElementById('cf-apikey-copy').addEventListener('click', () => {
+            navigator.clipboard?.writeText(field.value).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'));
+        });
+        document.getElementById('cf-apikey-regenerate').addEventListener('click', () => {
+            ClientFence.api.client.post('serviceapikey/reset', { order_id: {{ order.id }} }, () => {
+                ClientFence.api.client.get('order/service', { id: {{ order.id }} }, (service) => {
+                    field.value = service.api_key;
+                    bootstrap.Modal.getInstance(document.getElementById('cf-apikey-regenerate-modal')).hide();
+                    ClientFence.message({{ 'API key regenerated'|trans|json_encode|raw }}, 'success');
+                });
+            }, (error) => ClientFence.message(error.message, 'error'));
+        });
+    });
+</script>
+{% endif %}

@@ -1,0 +1,33 @@
+{# Helpers of the store, checkout and payment pages.
+   money(): an amount as the store shows it, in the page's language like the page scripts
+   (store-utils.js moneyFormatter: "$5", "$13.50", German "1.200 EGP"), so a figure never changes
+   look when a script updates it; a whole amount has no decimals.
+   cycle_label() / cycle_per(): a FOSSBilling period code in words ("3 months", "/ 3 months");
+   cycle_texts(): all of them as JSON for the page scripts. #}
+{% macro money(amount, currency) -%}
+    {%- set value = (amount|default(0))|round(2) -%}
+    {{- value|format_currency(currency, value == value|round ? { fraction_digit: 0 } : { fraction_digit: 2 }) -}}
+{%- endmacro %}
+
+{% macro cycle_label(code) -%}
+    {{- {
+        '1W': 'Weekly'|trans, '1M': 'Monthly'|trans, '3M': '3 months'|trans, '6M': '6 months'|trans,
+        '1Y': '12 months'|trans, '2Y': '24 months'|trans, '3Y': '36 months'|trans,
+    }[code]|default(code) -}}
+{%- endmacro %}
+
+{% macro cycle_per(code) -%}
+    {{- {
+        '1W': '/ week'|trans, '1M': '/ month'|trans, '3M': '/ 3 months'|trans, '6M': '/ 6 months'|trans,
+        '1Y': '/ year'|trans, '2Y': '/ 2 years'|trans, '3Y': '/ 3 years'|trans,
+    }[code]|default('') -}}
+{%- endmacro %}
+
+{% macro cycle_texts() -%}
+    {%- import _self as sm -%}
+    {%- set texts = {} -%}
+    {%- for code in ['1W', '1M', '3M', '6M', '1Y', '2Y', '3Y'] -%}
+        {%- set texts = texts|merge({ (code): { label: sm.cycle_label(code)|trim, per: sm.cycle_per(code)|trim } }) -%}
+    {%- endfor -%}
+    {{- texts|json_encode|raw -}}
+{%- endmacro %}

@@ -1,0 +1,52 @@
+{
+  "name": "clientfence",
+  "author": "cPFence Team",
+  "homepage": "https://github.com/cPFence/clientfence",
+  "license": "Apache License 2.0",
+  "scripts": {
+    "build": "npm run check && npm run build-core && npm run build-themes",
+    "build:production": "NODE_ENV=production npm run build",
+    "build-core": "node ./frontend/esbuild.mts",
+    "build-themes": "npm run build-admin_default",
+    "build-admin_default": "npm run build -w admin_default",
+    "build-palisade": "cd src/themes/palisade && npm ci --no-audit --no-fund && npm run build",
+    "check": "npm run check-types && npm run check-icons",
+    "check-types": "tsc --noEmit",
+    "check-icons": "node ./frontend/tools/check-icons.mts",
+    "test:js": "node --test 'frontend/core/tests/**/*.test.mts' 'frontend/tools/tests/**/*.test.mts'",
+    "cy:open": "npm exec --yes cypress@15.15.0 -- open",
+    "cy:run": "npm exec --yes cypress@15.15.0 -- run",
+    "cy:run:record": "npm exec --yes cypress@15.15.0 -- run --record"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cPFence/clientfence.git"
+  },
+  "issues": {
+    "url": "https://github.com/cPFence/clientfence/issues"
+  },
+  "workspaces": [
+    "src/themes/admin_default"
+  ],
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "autoprefixer": "10.5.4",
+    "ckeditor5": "48.3.1",
+    "esbuild": "0.28.1",
+    "github-markdown-css": "5.9.0",
+    "postcss": "8.5.19",
+    "purgecss": "8.0.0",
+    "sass": "1.101.0",
+    "svg-sprite": "2.0.4",
+    "typescript": "7.0.2"
+  },
+  "config": {
+    "platform": {
+      "php": "8.3"
+    }
+  },
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  }
+}

@@ -1,0 +1,1761 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Servicehosting;
+
+use ClientFence\Mod\Product\Entity\Product;
+use ClientFence\Exception;
+use ClientFence\InformationException;
+use ClientFence\InjectionAwareInterface;
+use ClientFence\Tools;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Finder\Finder;
+
+class Service implements InjectionAwareInterface
+{
+    private const string PASSWORD_PLACEHOLDER = '********';
+
+    public const string CREDENTIAL_KEEP_SENTINEL = '__KEEP__';
+
+    protected ?\Pimple\Container $di = null;
+    private Filesystem $filesystem;
+
+    public function __construct()
+    {
+        $this->filesystem = new Filesystem();
+    }
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+        if (isset($di['filesystem'])) {
+            $this->filesystem = $di['filesystem'];
+        }
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function getModulePermissions(): array
+    {
+        return [
+            // ClientFence: the hosting panel settings (Clientfence\Service::SETTINGS).
+            'manage_settings' => [],
+            'manage_accounts' => [
+                'type' => 'bool',
+                'display_name' => __trans('Manage hosting accounts'),
+                'description' => __trans('Allows the staff member to manage hosting accounts (change plan, password, domain, etc.).'),
+            ],
+            'view_servers' => [
+                'type' => 'bool',
+                'display_name' => __trans('View hosting servers'),
+                'description' => __trans('Allows the staff member to view hosting server details.'),
+            ],
+            'manage_servers' => [
+                'type' => 'bool',
+                'display_name' => __trans('Manage hosting servers'),
+                'description' => __trans('Allows the staff member to create, update, and delete hosting servers.'),
+            ],
+            'manage_plans' => [
+                'type' => 'bool',
+                'display_name' => __trans('Manage hosting plans'),
+                'description' => __trans('Allows the staff member to create, update, and delete hosting plans.'),
+            ],
+        ];
+    }
+
+    private function logInfo(string $message): void
+    {
+        if ($this->di !== null && isset($this->di['logger'])) {
+            $this->di['logger']->info($message);
+        }
+    }
+
+    public function getCartProductTitle(Product $product, array $data): ?string
+    {
+        try {
+            $data = array_merge(json_decode($product->getConfig() ?? '', true) ?? [], $data);
+            [$sld, $tld] = $this->_getDomainTuple($data);
+
+            return __trans(':hosting for :domain', [':hosting' => $product->getTitle(), ':domain' => $sld . $tld]);
+        } catch (\Exception $e) {
+            // should never occur, but in case
+            $this->logInfo($e->getMessage());
+        }
+
+        return $product->getTitle();
+    }
+
+    /**
+     * Validates order data for hosting products. When the product context is
+     * provided (client-facing ordering paths), admin-controlled values are
+     * additionally cross-checked against the product configuration.
+     * Admin-created orders omit the context so staff can override them.
+     */
+    public function validateOrderData(array &$data, ?Product $product = null): void
+    {
+        if (!isset($data['server_id'])) {
+            throw new InformationException('Hosting product is not configured completely. Configure server for hosting product.', null, 701);
+        }
+        if (!isset($data['hosting_plan_id'])) {
+            throw new InformationException('Hosting product is not configured completely. Configure hosting plan for hosting product.', null, 702);
+        }
+        if (!isset($data['sld']) || empty($data['sld'])) {
+            throw new InformationException('Domain name is invalid.', null, 703);
+        }
+        if (!isset($data['tld']) || empty($data['tld'])) {
+            throw new InformationException('Domain extension is invalid.', null, 704);
+        }
+
+        // ClientFence core patch: every domain, not only free subdomains. A second order for a hosted domain was
+        // activated on the same website, and cancelling either order deleted the website of the other.
+        $this->assertSubdomainAvailable($data['sld'], $data['tld'], ($data['domain']['action'] ?? null) === 'subdomain');
+
+        if ($product instanceof Product) {
+            $this->assertAdminControlledValuesMatch($data, $product);
+        }
+    }
+
+    /**
+     * Defense-in-depth check for client-facing ordering paths: the merged
+     * order config must not carry admin-controlled values (server_id,
+     * hosting_plan_id, reseller) that differ from the product configuration.
+     * This catches regressions in the client-settable-keys filter or future
+     * code paths that merge untrusted input into order config.
+     */
+    private function assertAdminControlledValuesMatch(array $data, Product $product): void
+    {
+        $productConfig = json_decode((string) $product->getConfig(), true) ?? [];
+
+        foreach (['server_id', 'hosting_plan_id'] as $key) {
+            if ((int) ($data[$key] ?? 0) !== (int) ($productConfig[$key] ?? 0)) {
+                throw new InformationException('The requested configuration does not match the selected product.', null, 705);
+            }
+        }
+
+        if (Tools::normalizeBoolean($data['reseller'] ?? false) !== Tools::normalizeBoolean($productConfig['reseller'] ?? false)) {
+            throw new InformationException('The requested configuration does not match the selected product.', null, 705);
+        }
+    }
+
+    private function assertSubdomainAvailable(string $sld, string $tld, bool $subdomain = true): void
+    {
+        [$sld, $tld] = [self::asciiDomain($sld), '.' . self::asciiDomain($tld)];
+        $query = 'SELECT COUNT(*)
+            FROM service_hosting sh
+            INNER JOIN client_order co ON co.service_id = sh.id AND co.service_type = :service_type
+            WHERE LOWER(sh.sld) = LOWER(:sld)
+                AND LOWER(sh.tld) = LOWER(:tld)
+                AND co.status != :canceled_status';
+
+        $count = (int) $this->di['db']->getCell($query, [
+            ':service_type' => \ClientFence\Mod\Product\Service::HOSTING,
+            ':sld' => $sld,
+            ':tld' => $tld,
+            ':canceled_status' => \Model_ClientOrder::STATUS_CANCELED,
+        ]);
+
+        if ($count > 0 && $subdomain) {
+            throw new InformationException('This free subdomain is already in use.');
+        }
+        if ($count > 0) {
+            throw new InformationException('This domain is already hosted with us. Manage it from its service, or contact us.');
+        }
+    }
+
+    /**
+     * @throws InformationException
+     *
+     * @todo
+     */
+    public function action_create(\Model_ClientOrder $order): \Model_ServiceHosting
+    {
+        $orderService = $this->di['mod_service']('order');
+        $c = $orderService->getConfig($order);
+        $this->validateOrderData($c);
+
+        $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $c['server_id'], 'Server from order configuration was not found');
+
+        $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $c['hosting_plan_id'], 'Hosting plan from order configuration was not found');
+
+        $model = $this->di['db']->dispense('ServiceHosting');
+        $model->client_id = $order->client_id;
+        $model->service_hosting_server_id = $server->id;
+        $model->service_hosting_hp_id = $hp->id;
+        $model->sld = $c['sld'];
+        $model->tld = $c['tld'];
+        $model->ip = $server->ip;
+        $model->reseller = Tools::normalizeBoolean($c['reseller'] ?? false);
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        return $model;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function action_activate(\Model_ClientOrder $order): array
+    {
+        // Retrieve the service associated with the order
+        $orderService = $this->di['mod_service']('order');
+        $model = $orderService->getOrderService($order);
+
+        // If the service is not found, throw an exception
+        if (!$model instanceof \RedBeanPHP\SimpleModel) {
+            throw new Exception('Order :id has no active service', [':id' => $order->id]);
+        }
+
+        // Retrieve the order's configuration
+        $config = $orderService->getConfig($order);
+
+        // Retrieve the server manager for the order
+        $serverManager = $this->_getServerManagerForOrder($model);
+
+        // A username is only ever persisted below once the account has
+        // actually been created on the server. If one is already present,
+        // a previous activation attempt already provisioned this account -
+        // most likely the order's status update afterwards failed to save,
+        // and this call is a retry. Re-running createAccount() in that case
+        // would only fail with a "domain/account already exists" server
+        // error, so treat the account as already provisioned instead.
+        $alreadyProvisioned = !empty($model->username);
+
+        // Generate a password for the service
+        $pass = $this->di['tools']->generatePassword($serverManager->getPasswordLength(), true);
+
+        // If a password is already specified in the order's configuration, use that instead
+        if (isset($config['password']) && !empty($config['password'])) {
+            $pass = $config['password'];
+        }
+
+        // Generate a username for the service
+        if ($alreadyProvisioned) {
+            $username = $model->username;
+        } elseif (isset($config['username']) && !empty($config['username'])) {
+            $username = $config['username'];
+        } else {
+            $username = $serverManager->generateUsername($model->sld . $model->tld);
+        }
+
+        // Update the service's username and password
+        $model->username = $username;
+        $model->pass = $pass;
+
+        // If the order's configuration does not specify that the service should be imported, create an account for the service on the server
+        if (!$alreadyProvisioned && (!isset($config['import']) || !$config['import'])) {
+            [$adapter, $account] = $this->_getAM($model);
+            $adapter->createAccount($account);
+
+            // ClientFence core patch: Enhance logins are email addresses, so the generated username
+            // (e.g. "clientfence1") was shown to the client but signs in nowhere. Store the login the
+            // account was created with, as a sync would.
+            // ClientFence core patch: the Enhance server manager is ClientFence's (Server_Manager_Enhance).
+            if ($adapter instanceof \Server_Manager_Enhance) {
+                try {
+                    $username = (string) $adapter->synchronizeAccount($account)->getUsername() ?: $username;
+                    $model->username = $username;
+                } catch (\Throwable $e) {
+                    $this->di['logger']->warning('Hosting account #%s was created, but its login could not be read: %s', $model->id, $e->getMessage());
+                }
+            }
+        }
+
+        // Update the service's password to a placeholder value for security reasons
+        $model->pass = self::PASSWORD_PLACEHOLDER;
+
+        // Save the service
+        $this->di['db']->store($model);
+
+        // Return the username for post-activation flows without exposing the password.
+        return [
+            'username' => $username,
+        ];
+    }
+
+    /**
+     * @throws Exception
+     *
+     * @todo
+     */
+    public function action_renew(\Model_ClientOrder $order): bool
+    {
+        // move expiration period to future
+        $orderService = $this->di['mod_service']('order');
+        $model = $orderService->getOrderService($order);
+        if (!$model instanceof \RedBeanPHP\SimpleModel) {
+            throw new Exception('Order :id has no active service', [':id' => $order->id]);
+        }
+        // ClientFence core patch: no username means the account was never created on the server (see
+        // action_activate). Renewing it marked the order active with nothing provisioned: the cron
+        // retried the paid renewal line of a new order whose activation had failed.
+        if (empty($model->username)) {
+            throw new Exception('Order :id has no hosting account on the server yet. Activate the order first.', [':id' => $order->id]);
+        }
+        // ClientFence core patch: termination removed the account from the server, but the renewal
+        // invoice stays payable; paying it (or the cron paying it from credit) marked the canceled
+        // order active with nothing on the server. The paid line fails instead, for staff to handle.
+        // canceled_at, not only the status: the failure sets the status to failed_renew, and the
+        // retry would pass. Uncancel (which recreates the account) clears canceled_at.
+        if ($order->status === \Model_ClientOrder::STATUS_CANCELED || !empty($order->canceled_at)) {
+            throw new Exception('Order :id was canceled and its hosting account removed from the server. Restore the account, or refund the payment.', [':id' => $order->id]);
+        }
+
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function action_suspend(\Model_ClientOrder $order): bool
+    {
+        $orderService = $this->di['mod_service']('order');
+        $model = $orderService->getOrderService($order);
+        if (!$model instanceof \RedBeanPHP\SimpleModel) {
+            throw new Exception('Order :id has no active service', [':id' => $order->id]);
+        }
+        [$adapter, $account] = $this->_getAM($model);
+        $adapter->suspendAccount($account);
+
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function action_unsuspend(\Model_ClientOrder $order): bool
+    {
+        $orderService = $this->di['mod_service']('order');
+        $model = $orderService->getOrderService($order);
+        if (!$model instanceof \RedBeanPHP\SimpleModel) {
+            throw new Exception('Order :id has no active service', [':id' => $order->id]);
+        }
+        [$adapter, $account] = $this->_getAM($model);
+        $adapter->unsuspendAccount($account);
+
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function action_cancel(\Model_ClientOrder $order): bool
+    {
+        $orderService = $this->di['mod_service']('order');
+        $model = $orderService->getOrderService($order);
+        if (!$model instanceof \RedBeanPHP\SimpleModel) {
+            throw new Exception('Order :id has no active service', [':id' => $order->id]);
+        }
+        // ClientFence core patch: an order whose activation never created the account (still pending or
+        // failed setup, no username: see action_activate) has nothing on the server to cancel. Asking
+        // the server failed ("No website ... was found"), so such an order could not be deleted.
+        $neverCreated = empty($model->username)
+            && in_array($order->status, [\Model_ClientOrder::STATUS_PENDING_SETUP, \Model_ClientOrder::STATUS_FAILED_SETUP], true);
+        if (!$neverCreated) {
+            [$adapter, $account] = $this->_getAM($model);
+            $adapter->cancelAccount($account);
+        }
+
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function action_uncancel(\Model_ClientOrder $order): bool
+    {
+        $this->action_create($order);
+        $orderService = $this->di['mod_service']('order');
+        $model = $orderService->getOrderService($order);
+
+        // Retrieve the server manager for the order
+        $serverManager = $this->_getServerManagerForOrder($model);
+
+        // As we replace the password internally with asterisks, generate a new password
+        $pass = $this->di['tools']->generatePassword($serverManager->getPasswordLength(), true);
+        $model->pass = $pass;
+
+        // Retrieve the adapter and account, then create the account on the server
+        [$adapter, $account] = $this->_getAM($model);
+        $adapter->createAccount($account);
+
+        // Update the service's password to a placeholder value for security reasons
+        $model->pass = self::PASSWORD_PLACEHOLDER;
+
+        // Save the service
+        $this->di['db']->store($model);
+
+        return true;
+    }
+
+    public function action_delete(\Model_ClientOrder $order): void
+    {
+        $orderService = $this->di['mod_service']('order');
+        $service = $orderService->getOrderService($order);
+        if ($service instanceof \Model_ServiceHosting) {
+            // cancel if not canceled
+            if ($order->status != \Model_ClientOrder::STATUS_CANCELED) {
+                $this->action_cancel($order);
+            }
+            $this->di['db']->trash($service);
+        }
+    }
+
+    public function changeAccountPlan(\Model_ClientOrder $order, \Model_ServiceHosting $model, \Model_ServiceHostingHp $hp): bool
+    {
+        $model->service_hosting_hp_id = $hp->id;
+        if ($this->_performOnService($order)) {
+            $package = $this->getServerPackage($hp);
+            [$adapter, $account] = $this->_getAM($model);
+            $adapter->changeAccountPackage($account, $package);
+        }
+
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+        $this->di['logger']->info('Changed hosting plan of account #%s', $model->id);
+
+        return true;
+    }
+
+    public function changeAccountUsername(\Model_ClientOrder $order, \Model_ServiceHosting $model, $data): bool
+    {
+        if (!isset($data['username']) || empty($data['username'])) {
+            throw new InformationException('Account username is missing or is invalid');
+        }
+
+        $u = strtolower((string) $data['username']);
+
+        if ($this->_performOnService($order)) {
+            [$adapter, $account] = $this->_getAM($model);
+            $adapter->changeAccountUsername($account, $u);
+        }
+
+        $model->username = $u;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        $this->di['logger']->info('Changed hosting account %s username', $model->id);
+
+        return true;
+    }
+
+    public function changeAccountIp(\Model_ClientOrder $order, \Model_ServiceHosting $model, $data): bool
+    {
+        if (!isset($data['ip']) || empty($data['ip'])) {
+            throw new InformationException('Account IP address is missing or is invalid');
+        }
+
+        $ip = $data['ip'];
+
+        if ($this->_performOnService($order)) {
+            [$adapter, $account] = $this->_getAM($model);
+            $adapter->changeAccountIp($account, $ip);
+        }
+
+        $model->ip = $ip;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+        $this->di['logger']->info('Changed hosting account %s ip', $model->id);
+
+        return true;
+    }
+
+    public function changeAccountDomain(\Model_ClientOrder $order, \Model_ServiceHosting $model, $data): bool
+    {
+        if (
+            !isset($data['tld']) || empty($data['tld'])
+            || !isset($data['sld']) || empty($data['sld'])
+        ) {
+            throw new InformationException('Domain SLD or TLD is missing');
+        }
+
+        $sld = $data['sld'];
+        $tld = $data['tld'];
+
+        if ($this->_performOnService($order)) {
+            [$adapter, $account] = $this->_getAM($model);
+            $adapter->changeAccountDomain($account, $sld . $tld);
+        }
+
+        $model->sld = $sld;
+        $model->tld = $tld;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+        $this->di['logger']->info('Changed hosting account %s domain', $model->id);
+
+        return true;
+    }
+
+    public function changeAccountPassword(\Model_ClientOrder $order, \Model_ServiceHosting $model, $data): bool
+    {
+        if (
+            !isset($data['password']) || !isset($data['password_confirm'])
+            || $data['password'] != $data['password_confirm']
+        ) {
+            throw new InformationException('Account password is missing or is invalid');
+        }
+
+        $newPassword = $data['password'];
+
+        if ($this->_performOnService($order)) {
+            [$adapter, $account] = $this->_getAM($model);
+            $adapter->changeAccountPassword($account, $newPassword);
+        }
+
+        $model->pass = self::PASSWORD_PLACEHOLDER;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+        $this->di['logger']->info('Changed hosting account %s password', $model->id);
+
+        return true;
+    }
+
+    public function sync(\Model_ClientOrder $order, \Model_ServiceHosting $model): bool
+    {
+        [$adapter, $account] = $this->_getAM($model);
+        $updated = $adapter->synchronizeAccount($account);
+
+        if ($account->getUsername() != $updated->getUsername()) {
+            $model->username = $updated->getUsername();
+        }
+
+        if ($account->getIp() != $updated->getIp()) {
+            $model->ip = $updated->getIp();
+        }
+
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+        $this->di['logger']->info('Synchronizing hosting account %s with server', $model->id);
+
+        return true;
+    }
+
+    private function _getDomainOrderId(\Model_ServiceHosting $model)
+    {
+        $orderService = $this->di['mod_service']('order');
+        $o = $orderService->getServiceOrder($model);
+        if ($o instanceof \Model_ClientOrder) {
+            $c = $orderService->getConfig($o);
+            if (isset($c['domain']) && isset($c['domain']['action'])) {
+                $action = $c['domain']['action'];
+                if ($action == 'register' || $action == 'transfer') {
+                    return $orderService->getRelatedOrderIdByType($o, 'domain');
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function _performOnService(\Model_ClientOrder $order): bool
+    {
+        // If the order matches any of the following status, we should prevent actions such as PW resets or username changes from being performed
+        $badStatus = [
+            \Model_ClientOrder::STATUS_FAILED_SETUP,
+            \Model_ClientOrder::STATUS_PENDING_SETUP,
+            \Model_ClientOrder::STATUS_SUSPENDED,
+            \Model_ClientOrder::STATUS_CANCELED,
+        ];
+
+        if (in_array($order->status, $badStatus)) {
+            return false;
+        }
+
+        if ($order->expires_at !== null && strtotime((string) $order->expires_at) <= time()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function _getServerManagerForOrder($model)
+    {
+        $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $model->service_hosting_server_id, 'Server not found');
+
+        return $this->getServerManager($server);
+    }
+
+    public function _getAM(\RedBeanPHP\SimpleModel $model, ?\Model_ServiceHostingHp $hp = null): array
+    {
+        if (!$hp instanceof \Model_ServiceHostingHp) {
+            $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $model->service_hosting_hp_id, 'Hosting plan not found');
+        }
+
+        $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $model->service_hosting_server_id, 'Server not found');
+        $client = $this->di['db']->getExistingModelById('Client', $model->client_id, 'Client not found');
+
+        $hp_config = $hp->config;
+
+        $server_client = new \Server_Client();
+        $server_client
+            ->setEmail($client->email)
+            ->setFirstName($client->first_name)
+            ->setLastName($client->last_name)
+            ->setFullName($client->getFullName())
+            ->setCompany($client->company)
+            ->setStreet($client->address_1)
+            ->setZip($client->postcode)
+            ->setCity($client->city)
+            ->setState($client->state)
+            ->setCountry($client->country)
+            ->setTelephone($client->phone)
+            // ClientFence core patch: an unconfirmed email changed to another customer's old address took over
+            // that customer's panel login. A username is stored only after a create succeeded (this service's own
+            // counts: an uncancel creates it again).
+            ->setEmailTrusted((int) $client->email_approved === 1 || (int) $this->di['db']->getCell(
+                'SELECT COUNT(*) FROM service_hosting WHERE client_id = :client AND LOWER(username) = LOWER(:email)',
+                [':client' => $model->client_id, ':email' => (string) $client->email],
+            ) > 0);
+
+        $package = $this->getServerPackage($hp);
+        $server_account = new \Server_Account();
+        $server_account
+            ->setClient($server_client)
+            ->setPackage($package)
+            ->setUsername($model->username)
+            ->setReseller(Tools::normalizeBoolean($model->reseller))
+            ->setDomain($model->sld . $model->tld)
+            ->setPassword($model->pass)
+            ->setNs1($server->ns1)
+            ->setNs2($server->ns2)
+            ->setNs3($server->ns3)
+            ->setNs4($server->ns4)
+            ->setIp($model->ip);
+
+        $orderService = $this->di['mod_service']('order');
+        $order = $orderService->getServiceOrder($model);
+        if ($order instanceof \Model_ClientOrder) {
+            $adapter = $this->getServerManagerWithLog($server, $order);
+        } else {
+            $adapter = $this->getServerManager($server);
+        }
+
+        return [$adapter, $server_account];
+    }
+
+    public function toApiArray(\Model_ServiceHosting $model, $deep = false, $identity = null): array
+    {
+        $serviceHostingServerModel = $this->di['db']->load('ServiceHostingServer', $model->service_hosting_server_id);
+        $serviceHostingHpModel = $this->di['db']->load('ServiceHostingHp', $model->service_hosting_hp_id);
+        $server = $this->toHostingServerApiArray($serviceHostingServerModel, $deep, $identity);
+        $hp = $this->toHostingHpApiArray($serviceHostingHpModel, $deep, $identity);
+
+        return [
+            'ip' => $model->ip,
+            'sld' => $model->sld,
+            'tld' => $model->tld,
+            'domain' => $model->sld . $model->tld,
+            'username' => $model->username,
+            'reseller' => $model->reseller,
+            'server' => $server,
+            'hosting_plan' => $hp,
+            'domain_order_id' => $this->_getDomainOrderId($model),
+        ];
+    }
+
+    public function toHostingServerApiArray(\Model_ServiceHostingServer $model, $deep = false, $identity = null): array
+    {
+        [$cpanel_url, $whm_url] = $this->getManagerUrls($model);
+        $result = [
+            'name' => $model->name,
+            'hostname' => $model->hostname,
+            'ip' => $model->ip,
+            'ns1' => $model->ns1,
+            'ns2' => $model->ns2,
+            'ns3' => $model->ns3,
+            'ns4' => $model->ns4,
+            'cpanel_url' => $cpanel_url,
+            'reseller_cpanel_url' => $whm_url,
+        ];
+
+        if ($identity instanceof \Model_Admin) {
+            $result['id'] = $model->id;
+            $result['active'] = $model->active;
+            $result['secure'] = $model->secure;
+            $result['assigned_ips'] = json_decode($model->assigned_ips ?? '[]', true) ?? [];
+            $result['status_url'] = $model->status_url;
+            $result['max_accounts'] = $model->max_accounts;
+            $result['manager'] = $model->manager;
+            $result['config'] = json_decode($model->config ?? '', true) ?? [];
+            $result['port'] = Tools::normalizePort($model->port);
+            $result['passwordLength'] = $model->passwordLength;
+            $result['created_at'] = $model->created_at;
+            $result['updated_at'] = $model->updated_at;
+
+            $secretFields = $this->getServerManagerSecretFields((string) $model->manager);
+            foreach ($secretFields as $field) {
+                $raw = $model->{$field} ?? null;
+                $result[$field] = null;
+                $result[$field . '_set'] = $raw !== null && $raw !== '';
+            }
+            $result['secret_fields'] = $secretFields;
+        }
+
+        return $result;
+    }
+
+    public function toHostingAccountApiArray(\Model_ServiceHosting $model, $deep = false, $identity = null): array
+    {
+        $result = [
+            'id' => $model->id,
+            'sld' => $model->sld,
+            'tld' => $model->tld,
+            'client_id' => $model->client_id,
+            'server_id' => $model->service_hosting_server_id,
+            'plan_id' => $model->service_hosting_hp_id,
+            'reseller' => $model->reseller,
+        ];
+
+        if ($identity instanceof \Model_Admin) {
+            $result['ip'] = $model->ip;
+            $result['username'] = $model->username;
+            $result['created_at'] = $model->created_at;
+            $result['updated_at'] = $model->updated_at;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Enrich a page of hosting-account search results with orders and clients in batches.
+     */
+    public function getAccountsBatchForApi(array $accounts, $identity = null): array
+    {
+        if (empty($accounts)) {
+            return [];
+        }
+
+        $serviceIds = array_values(array_unique(array_map(
+            intval(...),
+            array_filter(array_column($accounts, 'id'), is_numeric(...)),
+        )));
+
+        $orderIdsByServiceId = [];
+        if (!empty($serviceIds)) {
+            $placeholders = implode(',', array_fill(0, count($serviceIds), '?'));
+            $orderRows = $this->di['db']->getAll(
+                "SELECT id, service_id FROM client_order WHERE service_type = ? AND service_id IN ($placeholders) ORDER BY id ASC",
+                array_merge(['hosting'], $serviceIds),
+            );
+            foreach ($orderRows as $orderRow) {
+                $serviceId = (int) $orderRow['service_id'];
+                $orderIdsByServiceId[$serviceId] ??= (int) $orderRow['id'];
+            }
+        }
+
+        $ordersById = [];
+        if (!empty($orderIdsByServiceId)) {
+            $orderService = $this->di['mod_service']('order');
+            $orders = $orderService->getBatchForApi(array_values($orderIdsByServiceId), $identity);
+            foreach ($orders as $order) {
+                $ordersById[(int) $order['id']] = $order;
+            }
+        }
+
+        $result = [];
+        foreach ($accounts as $account) {
+            $accountData = $this->hostingAccountSearchResultToApiArray($account, $identity);
+            $orderId = $orderIdsByServiceId[(int) $account['id']] ?? null;
+            if ($orderId === null || !isset($ordersById[$orderId])) {
+                $accountData['order'] = null;
+                $result[] = $accountData;
+
+                continue;
+            }
+
+            $order = $ordersById[$orderId];
+            $accountData['client'] = $order['client'];
+            unset($order['client']);
+            $accountData['order'] = $order;
+            $result[] = $accountData;
+        }
+
+        return $result;
+    }
+
+    private function hostingAccountSearchResultToApiArray(array $account, $identity = null): array
+    {
+        $result = [
+            'id' => $account['id'],
+            'sld' => $account['sld'],
+            'tld' => $account['tld'],
+            'client_id' => $account['client_id'],
+            'server_id' => $account['service_hosting_server_id'],
+            'plan_id' => $account['service_hosting_hp_id'],
+            'reseller' => $account['reseller'],
+        ];
+
+        if ($identity instanceof \Model_Admin) {
+            $result['ip'] = $account['ip'];
+            $result['username'] = $account['username'];
+            $result['created_at'] = $account['created_at'];
+            $result['updated_at'] = $account['updated_at'];
+        }
+
+        return $result;
+    }
+
+    private function _getDomainTuple($data): array
+    {
+        $required = [
+            'domain' => 'Hosting product must have domain configuration',
+        ];
+        $this->di['validator']->checkRequiredParamsForArray($required, $data);
+
+        $required = [
+            'action' => 'Domain action is missing',
+        ];
+        $this->di['validator']->checkRequiredParamsForArray($required, $data['domain']);
+
+        [$sld, $tld] = [null, null];
+
+        if ($data['domain']['action'] == 'owndomain') {
+            $required = [
+                'owndomain_sld' => 'Hosting product must have defined owndomain_sld parameter',
+                'owndomain_tld' => 'Hosting product must have defined owndomain_tld parameter',
+            ];
+            $this->di['validator']->checkRequiredParamsForArray($required, $data['domain']);
+
+            $sld = $data['domain']['owndomain_sld'];
+            $tld = str_contains((string) $data['domain']['owndomain_tld'], '.') ? $data['domain']['owndomain_tld'] : '.' . $data['domain']['owndomain_tld'];
+        }
+
+        if ($data['domain']['action'] == 'subdomain') {
+            $required = [
+                'subdomain_sld' => 'Subdomain name is required.',
+                'subdomain_base_domain' => 'Hosting product must have a subdomain base domain configured',
+            ];
+            $this->di['validator']->checkRequiredParamsForArray($required, $data['domain'] + $data);
+
+            $subdomain = strtolower(trim((string) $data['domain']['subdomain_sld']));
+            $baseDomain = strtolower(trim(trim((string) $data['subdomain_base_domain']), '.'));
+
+            if (!$this->di['validator']->isSldValid($subdomain)) {
+                throw new InformationException('Subdomain name is invalid.');
+            }
+
+            if (!preg_match('/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])$/i', $baseDomain)) {
+                throw new InformationException('Subdomain base domain is invalid.');
+            }
+
+            $sld = $subdomain;
+            $tld = '.' . $baseDomain;
+        }
+
+        if ($data['domain']['action'] == 'register') {
+            $required = [
+                'register_sld' => 'Hosting product must have defined register_sld parameter',
+                'register_tld' => 'Hosting product must have defined register_tld parameter',
+            ];
+            $this->di['validator']->checkRequiredParamsForArray($required, $data['domain']);
+
+            $sld = $data['domain']['register_sld'];
+            $tld = $data['domain']['register_tld'];
+        }
+
+        if ($data['domain']['action'] == 'transfer') {
+            $required = [
+                'transfer_sld' => 'Hosting product must have defined transfer_sld parameter',
+                'transfer_tld' => 'Hosting product must have defined transfer_tld parameter',
+            ];
+            $this->di['validator']->checkRequiredParamsForArray($required, $data['domain']);
+
+            $sld = $data['domain']['transfer_sld'];
+            $tld = $data['domain']['transfer_tld'];
+        }
+
+        // ClientFence core patch: one spelling per domain (lower-case ASCII, no outer dots), so "bücher.com",
+        // "xn--bcher-kva.com" and ".bücher.com" are the same domain for the one-hosting-order-per-domain check.
+        return $sld === null ? [$sld, $tld] : [self::asciiDomain((string) $sld), '.' . self::asciiDomain((string) $tld)];
+    }
+
+    /** ClientFence: lower-case ASCII (punycode) form of a domain or label, without outer dots or spaces. */
+    public static function asciiDomain(string $name): string
+    {
+        $name = mb_strtolower(trim(trim($name), '.'));
+        $ascii = $name === '' ? false : idn_to_ascii($name, IDNA_NONTRANSITIONAL_TO_ASCII); // straße stays straße, not strasse
+
+        return $ascii === false ? $name : strtolower($ascii);
+    }
+
+    public function update(\Model_ServiceHosting $model, array $data): bool
+    {
+        if (isset($data['username']) && !empty($data['username'])) {
+            $model->username = $data['username'];
+        }
+
+        if (isset($data['ip']) && !empty($data['ip'])) {
+            $model->ip = $data['ip'];
+        }
+
+        $model->updated_at = date('Y-m-d H:i:s');
+
+        $this->di['db']->store($model);
+
+        $this->di['logger']->info('Updated hosting account %s without sending actions to server', $model->id);
+
+        return true;
+    }
+
+    public function getServerManagers(): array
+    {
+        $serverManagers = [];
+
+        foreach ($this->_getServerManagers() as $serverManager) {
+            $config = $this->getServerManagerConfig($serverManager);
+
+            // Skip managers whose config cannot be loaded (missing class,
+            // broken file, no form definition): the admin templates read
+            // `manager.label`, so an empty config would crash the page.
+            if ($config !== []) {
+                $serverManagers[$serverManager] = $config;
+            }
+        }
+
+        return $serverManagers;
+    }
+
+    private function _getServerManagers(): array
+    {
+        $files = [];
+
+        $finder = new Finder();
+        $finder->files()->in(Path::join(PATH_LIBRARY, 'Server', 'Manager'))->name('*.php');
+        $finder->sortByName();
+
+        foreach ($finder as $file) {
+            $files[] = $file->getFilenameWithoutExtension();
+        }
+
+        return $files;
+    }
+
+    public function getServerManagerConfig($manager)
+    {
+        // Only ever load files belonging to a known server manager. $manager
+        // ultimately comes from admin-supplied input (server_create/server_update),
+        // so without this whitelist check a path-traversal value could reach
+        // require_once below.
+        if (!in_array($manager, $this->_getServerManagers(), true)) {
+            return [];
+        }
+
+        $filename = Path::join(PATH_LIBRARY, 'Server', 'Manager', "{$manager}.php");
+        if (!$this->filesystem->exists($filename)) {
+            return [];
+        }
+
+        $classname = 'Server_Manager_' . $manager;
+        if (!class_exists($classname)) {
+            try {
+                require_once $filename;
+            } catch (\Throwable) {
+                return [];
+            }
+        }
+
+        $method = 'getForm';
+        if (!is_callable($classname . '::' . $method)) {
+            return [];
+        }
+
+        return call_user_func([$classname, $method]);
+    }
+
+    /**
+     * Returns the credential field names for a given server manager.
+     * Combines the manager's own declarations with a defensive name-based
+     * fallback so a future manager that forgets to mark a field is still
+     * masked correctly.
+     *
+     * @return string[]
+     */
+    public function getServerManagerSecretFields(string $manager): array
+    {
+        $secrets = ['password', 'accesshash'];
+
+        // Same whitelist requirement as getServerManagerConfig() — $manager is
+        // admin-supplied and must not be usable to require_once an arbitrary file.
+        if (!in_array($manager, $this->_getServerManagers(), true)) {
+            return array_values(array_unique($secrets));
+        }
+
+        $filename = Path::join(PATH_LIBRARY, 'Server', 'Manager', "{$manager}.php");
+        if (!$this->filesystem->exists($filename)) {
+            return array_values(array_unique($secrets));
+        }
+
+        $classname = 'Server_Manager_' . $manager;
+        if (!class_exists($classname)) {
+            try {
+                require_once $filename;
+            } catch (\Throwable) {
+                return array_values(array_unique($secrets));
+            }
+        }
+
+        if (is_callable($classname . '::getSecretFields')) {
+            $declared = call_user_func([$classname, 'getSecretFields']);
+            if (is_array($declared)) {
+                $secrets = array_merge($secrets, $declared);
+            }
+        }
+
+        $form = $this->getServerManagerConfig($manager);
+        $formFields = $form['form']['credentials']['fields'] ?? [];
+        foreach ($formFields as $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+            if (!empty($field['secret']) && !empty($field['name'])) {
+                $secrets[] = (string) $field['name'];
+            }
+        }
+
+        return array_values(array_unique($secrets));
+    }
+
+    public function getServerPairs(): array
+    {
+        $sql = 'SELECT id, name
+                FROM service_hosting_server
+                ORDER BY id ASC';
+        $rows = $this->di['db']->getAll($sql);
+
+        $result = [];
+        foreach ($rows as $record) {
+            $result[$record['id']] = $record['name'];
+        }
+
+        return $result;
+    }
+
+    public function getServersSearchQuery($data): array
+    {
+        $sql = 'SELECT *
+                FROM service_hosting_server
+                ORDER BY id ASC';
+
+        return [$sql, []];
+    }
+
+    public function getAccountsSearchQuery($data): array
+    {
+        $sql = 'SELECT * FROM service_hosting';
+        $params = [];
+
+        $serverID = $data['server_id'] ?? null;
+
+        if (!empty($serverID)) {
+            $sql = $sql . ' WHERE service_hosting_server_id = :server_id';
+            $params['server_id'] = $serverID;
+        }
+
+        $sql = $sql . ' ORDER BY id ASC';
+
+        return [$sql, $params];
+    }
+
+    public function createServer($name, $ip, $manager, $data)
+    {
+        if (!in_array($manager, $this->_getServerManagers(), true)) {
+            throw new Exception('Server manager :manager is not a valid server manager', [':manager' => $manager]);
+        }
+
+        $model = $this->di['db']->dispense('ServiceHostingServer');
+        $model->name = $name;
+        $model->ip = $ip;
+
+        $model->hostname = $data['hostname'] ?? null;
+        $assigned_ips = $data['assigned_ips'] ?? '';
+        if (!empty($assigned_ips)) {
+            $model->assigned_ips = self::processAssignedIPs($assigned_ips);
+        }
+
+        $model->active = $data['active'] ?? 1;
+        $model->status_url = $data['status_url'] ?? null;
+        $model->max_accounts = $data['max_accounts'] ?? null;
+
+        $model->ns1 = $data['ns1'] ?? null;
+        $model->ns2 = $data['ns2'] ?? null;
+        $model->ns3 = $data['ns3'] ?? null;
+        $model->ns4 = $data['ns4'] ?? null;
+
+        $model->manager = $manager;
+        // ClientFence core patch: credentials encrypted at rest (ServerSecrets.php).
+        $secret = $this->getServerManagerSecretFields($manager);
+        $model->username = in_array('username', $secret, true) ? ServerSecrets::seal($this->di, $data['username'] ?? null) : ($data['username'] ?? null);
+        $model->password = ServerSecrets::seal($this->di, $data['password'] ?? null);
+        $model->accesshash = ServerSecrets::seal($this->di, $data['accesshash'] ?? null);
+        $model->port = Tools::normalizePort($data['port'] ?? null);
+        $model->config = isset($data['config']) ? json_encode($data['config']) : null;
+        $model->passwordLength = is_numeric($data['passwordLength'] ?? '') ? intval($data['passwordLength']) : null;
+        $model->secure = $data['secure'] ?? 1;
+
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->updated_at = date('Y-m-d H:i:s');
+        $newId = $this->di['db']->store($model);
+
+        $this->di['logger']->info('Added new hosting server %s', $newId);
+
+        return $newId;
+    }
+
+    public function deleteServer(\Model_ServiceHostingServer $model): bool
+    {
+        $id = $model->id;
+        $this->di['db']->trash($model);
+        $this->di['logger']->info('Deleted hosting server %s', $id);
+
+        return true;
+    }
+
+    /**
+     * Counts how many service hostings use a server, split into ones linked
+     * to an order (active) and ones with no linked order (orphaned).
+     *
+     * @return array{total: int, active: int, orphaned: int, orphanedIds: int[]}
+     */
+    public function getServerUsageStats(\Model_ServiceHostingServer $server): array
+    {
+        $rows = $this->di['db']->getAll('SELECT id FROM service_hosting WHERE service_hosting_server_id = ?', [(int) $server->id]);
+
+        return $this->splitActiveOrphanedIds(array_map(intval(...), array_column($rows, 'id')));
+    }
+
+    /**
+     * Counts how many service hostings use a hosting plan, split into ones
+     * linked to an order (active) and ones with no linked order (orphaned).
+     *
+     * @return array{total: int, active: int, orphaned: int, orphanedIds: int[]}
+     */
+    public function getHpUsageStats(\Model_ServiceHostingHp $plan): array
+    {
+        $rows = $this->di['db']->getAll('SELECT id FROM service_hosting WHERE service_hosting_hp_id = ?', [(int) $plan->id]);
+
+        return $this->splitActiveOrphanedIds(array_map(intval(...), array_column($rows, 'id')));
+    }
+
+    /**
+     * @param int[] $serviceIds
+     *
+     * @return array{total: int, active: int, orphaned: int, orphanedIds: int[]}
+     */
+    private function splitActiveOrphanedIds(array $serviceIds): array
+    {
+        if ($serviceIds === []) {
+            return ['total' => 0, 'active' => 0, 'orphaned' => 0, 'orphanedIds' => []];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($serviceIds), '?'));
+        $rows = $this->di['db']->getAll(
+            "SELECT DISTINCT service_id FROM client_order WHERE service_type = ? AND service_id IN ($placeholders)",
+            [\ClientFence\Mod\Product\Service::HOSTING, ...$serviceIds]
+        );
+        $activeIds = array_map(intval(...), array_column($rows, 'service_id'));
+        $orphanedIds = array_values(array_diff($serviceIds, $activeIds));
+
+        return [
+            'total' => count($serviceIds),
+            'active' => count($activeIds),
+            'orphaned' => count($orphanedIds),
+            'orphanedIds' => $orphanedIds,
+        ];
+    }
+
+    public function detachOrphanedServerUsages(\Model_ServiceHostingServer $server): int
+    {
+        $stats = $this->getServerUsageStats($server);
+        if ($stats['orphanedIds'] === []) {
+            return 0;
+        }
+
+        $count = 0;
+        foreach ($stats['orphanedIds'] as $id) {
+            $orphan = $this->di['db']->load('ServiceHosting', $id);
+            if ($orphan instanceof \Model_ServiceHosting) {
+                $orphan->service_hosting_server_id = null;
+                $this->di['db']->store($orphan);
+                ++$count;
+            }
+        }
+        $this->di['logger']->info('Detached %s orphaned service hostings from hosting server %s', $count, $server->id);
+
+        return $count;
+    }
+
+    public function detachOrphanedHpUsages(\Model_ServiceHostingHp $plan): int
+    {
+        $stats = $this->getHpUsageStats($plan);
+        if ($stats['orphanedIds'] === []) {
+            return 0;
+        }
+
+        $count = 0;
+        foreach ($stats['orphanedIds'] as $id) {
+            $orphan = $this->di['db']->load('ServiceHosting', $id);
+            if ($orphan instanceof \Model_ServiceHosting) {
+                $orphan->service_hosting_hp_id = null;
+                $this->di['db']->store($orphan);
+                ++$count;
+            }
+        }
+        $this->di['logger']->info('Detached %s orphaned service hostings from hosting plan %s', $count, $plan->id);
+
+        return $count;
+    }
+
+    public function updateServer(\Model_ServiceHostingServer $model, array $data): bool
+    {
+        $model->name = $data['name'] ?? $model->name;
+        $model->ip = $data['ip'] ?? $model->ip;
+        $model->hostname = $data['hostname'] ?? $model->hostname;
+
+        $assigned_ips = $data['assigned_ips'] ?? '';
+        if (!empty($assigned_ips)) {
+            $model->assigned_ips = self::processAssignedIPs($assigned_ips);
+        }
+
+        $model->active = $data['active'] ?? $model->active;
+        $model->status_url = $data['status_url'] ?? $model->status_url;
+        $model->max_accounts = $data['max_accounts'] ?? $model->max_accounts;
+        $model->ns1 = $data['ns1'] ?? $model->ns1;
+        $model->ns2 = $data['ns2'] ?? $model->ns2;
+        $model->ns3 = $data['ns3'] ?? $model->ns3;
+        $model->ns4 = $data['ns4'] ?? $model->ns4;
+        if (isset($data['manager'])) {
+            if (!in_array($data['manager'], $this->_getServerManagers(), true)) {
+                throw new Exception('Server manager :manager is not a valid server manager', [':manager' => $data['manager']]);
+            }
+            $model->manager = $data['manager'];
+        }
+        $port = Tools::normalizePort($data['port'] ?? null);
+        $model->port = $port ?? $model->port;
+        $model->config = isset($data['config']) ? json_encode($data['config']) : $model->config;
+        $model->secure = $data['secure'] ?? $model->secure;
+        // ClientFence core patch: credentials encrypted at rest (ServerSecrets.php); a change is
+        // compared with the plain value, and an older plain value is encrypted on this save. A
+        // value being replaced need not be readable.
+        $secret = $this->getServerManagerSecretFields((string) $model->manager);
+        foreach (['username' => false, 'password' => true, 'accesshash' => true] as $field => $audit) {
+            $incoming = $data[$field] ?? null;
+            $replaced = is_scalar($incoming) && trim((string) $incoming) !== '' && (string) $incoming !== self::CREDENTIAL_KEEP_SENTINEL;
+            $current = $replaced ? ServerSecrets::tryOpen($this->di, $model->{$field}) : ServerSecrets::open($this->di, $model->{$field});
+            $value = $this->normalizeCredential($field, $incoming, $current, $model->id, $audit);
+            $model->{$field} = in_array($field, $secret, true) ? ServerSecrets::seal($this->di, $value) : $value;
+        }
+        $model->passwordLength = is_numeric($data['passwordLength'] ?? '') ? intval($data['passwordLength']) : $model->passwordLength;
+        $model->updated_at = date('Y-m-d H:i:s');
+
+        $this->di['db']->store($model);
+
+        $this->di['logger']->info('Update hosting server %s', $model->id);
+
+        return true;
+    }
+
+    /**
+     * Returns the value to store for a credential field. Blank, whitespace-only
+     * or {@see CREDENTIAL_KEEP_SENTINEL} inputs preserve the existing value;
+     * everything else replaces it. When `$audit` is true a successful rotation
+     * of `password` or `accesshash` is logged (the value itself is never logged).
+     */
+    private function normalizeCredential(string $field, mixed $incoming, mixed $existing, mixed $serverId, bool $audit): mixed
+    {
+        if ($incoming === null || !is_scalar($incoming)) {
+            return $existing;
+        }
+
+        $incoming = (string) $incoming;
+
+        if (trim($incoming) === '' || $incoming === self::CREDENTIAL_KEEP_SENTINEL) {
+            return $existing;
+        }
+
+        if ($audit && $incoming !== $existing) {
+            $adminId = $this->di['loggedin_admin']->id ?? 'unknown';
+            $this->di['logger']->info('Rotated %s for hosting server %s by admin %s', $field, (string) $serverId, (string) $adminId);
+        }
+
+        return $incoming;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getServerManager(\Model_ServiceHostingServer $model)
+    {
+        if (empty($model->manager)) {
+            throw new Exception('Invalid server manager. Server was not configured properly.', null, 654);
+        }
+
+        $config = [];
+        $config['ip'] = $model->ip;
+        $config['host'] = $model->hostname;
+        $config['port'] = Tools::normalizePort($model->port);
+        $config['config'] = [];
+        $config['config'] = json_decode($model->config ?? '', true) ?? [];
+        $config['secure'] = $model->secure;
+        // ClientFence core patch: credentials encrypted at rest (ServerSecrets.php).
+        $config['username'] = ServerSecrets::open($this->di, $model->username);
+        $config['password'] = ServerSecrets::open($this->di, $model->password);
+        $config['accesshash'] = ServerSecrets::open($this->di, $model->accesshash);
+        $config['passwordLength'] = $model->passwordLength;
+
+        $manager = $this->di['server_manager']($model->manager, $config);
+
+        if (!$manager instanceof \Server_Manager) {
+            throw new Exception('Server manager :adapter is invalid.', [':adapter' => $model->manager]);
+        }
+
+        return $manager;
+    }
+
+    /**
+     * @throws \Server_Exception
+     * @throws Exception
+     */
+    public function testConnection(\Model_ServiceHostingServer $model)
+    {
+        $manager = $this->getServerManager($model);
+
+        return $manager->testConnection();
+    }
+
+    public function getHpPairs(): array
+    {
+        $sql = 'SELECT id, name
+                FROM service_hosting_hp';
+        $rows = $this->di['db']->getAll($sql);
+        $result = [];
+        foreach ($rows as $record) {
+            $result[$record['id']] = $record['name'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Hosting plan id => name pairs scoped to plans referenced by the
+     * configuration of at least one enabled hosting product, for exposure
+     * through client-facing APIs. Use getHpPairs() for the full list.
+     *
+     * @return array<int, string>
+     */
+    public function getOrderableHpPairs(): array
+    {
+        $products = $this->di['em']->getRepository(Product::class)->findBy([
+            'type' => \ClientFence\Mod\Product\Service::HOSTING,
+            'active' => true,
+            'status' => 'enabled',
+            'isAddon' => false,
+        ]);
+
+        $planIds = [];
+        foreach ($products as $product) {
+            $config = json_decode((string) $product->getConfig(), true);
+            if (is_array($config) && isset($config['hosting_plan_id'])) {
+                $planIds[(int) $config['hosting_plan_id']] = true;
+            }
+        }
+
+        if ($planIds === []) {
+            return [];
+        }
+
+        $placeholders = [];
+        $params = [];
+        foreach (array_keys($planIds) as $idx => $id) {
+            $placeholder = ':hp_id_' . $idx;
+            $placeholders[] = $placeholder;
+            $params['hp_id_' . $idx] = $id;
+        }
+        $plans = $this->di['db']->find('ServiceHostingHp', 'id IN (' . implode(',', $placeholders) . ')', $params);
+
+        $pairs = [];
+        foreach ($plans as $plan) {
+            $pairs[(int) $plan->id] = (string) $plan->name;
+        }
+
+        return $pairs;
+    }
+
+    public function getHpSearchQuery($data): array
+    {
+        $sql = 'SELECT *
+                FROM service_hosting_hp
+                ORDER BY id asc';
+
+        return [$sql, []];
+    }
+
+    /**
+     * @throws InformationException
+     */
+    public function deleteHp(\Model_ServiceHostingHp $model): bool
+    {
+        $id = $model->id;
+        $stats = $this->getHpUsageStats($model);
+        if ($stats['active'] > 0) {
+            throw new InformationException('Cannot remove hosting plan which has active accounts');
+        }
+        if ($stats['orphaned'] > 0) {
+            throw new InformationException('Cannot remove hosting plan which has orphaned accounts; detach them first');
+        }
+        $this->di['db']->trash($model);
+        $this->di['logger']->info('Deleted hosting plan %s', $id);
+
+        return true;
+    }
+
+    public function toHostingHpApiArray(\Model_ServiceHostingHp $model, $deep = false, $identity = null): array
+    {
+        $model->config ??= '';
+
+        return [
+            'id' => $model->id,
+
+            'name' => $model->name,
+            'bandwidth' => $model->bandwidth,
+            'quota' => $model->quota,
+
+            'max_ftp' => $model->max_ftp,
+            'max_sql' => $model->max_sql,
+            'max_pop' => $model->max_pop,
+            'max_sub' => $model->max_sub,
+            'max_park' => $model->max_park,
+            'max_addon' => $model->max_addon,
+            'config' => json_decode($model->config ?? '', true),
+
+            'created_at' => $model->created_at,
+            'updated_at' => $model->updated_at,
+        ];
+    }
+
+    public function updateHp(\Model_ServiceHostingHp $model, array $data): bool
+    {
+        $model->name = $data['name'] ?? $model->name;
+        $model->bandwidth = $data['bandwidth'] ?? $model->bandwidth;
+        $model->quota = $data['quota'] ?? $model->quota;
+        $model->max_addon = $data['max_addon'] ?? $model->max_addon;
+        $model->max_ftp = $data['max_ftp'] ?? $model->max_ftp;
+        $model->max_sql = $data['max_sql'] ?? $model->max_sql;
+        $model->max_pop = $data['max_pop'] ?? $model->max_pop;
+        $model->max_sub = $data['max_sub'] ?? $model->max_sub;
+        $model->max_park = $data['max_park'] ?? $model->max_park;
+
+        /* add new config value to hosting plan */
+        $config = json_decode($model->config ?? '', true) ?? [];
+
+        $inConfig = $data['config'] ?? null;
+
+        if (is_array($inConfig)) {
+            foreach ($inConfig as $key => $val) {
+                if (empty($val)) {
+                    unset($config[$key]);
+                } else {
+                    $config[$key] = $val;
+                }
+            }
+        }
+
+        $newConfigName = $data['new_config_name'] ?? null;
+        $newConfigValue = $data['new_config_value'] ?? null;
+        if (!empty($newConfigName) && !empty($newConfigValue)) {
+            $config[$newConfigName] = $newConfigValue;
+        }
+
+        $model->config = json_encode($config);
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        $this->di['logger']->info('Updated hosting plan %s', $model->id);
+
+        return true;
+    }
+
+    public function createHp($name, $data)
+    {
+        $model = $this->di['db']->dispense('ServiceHostingHp');
+        $model->name = $name;
+
+        $model->bandwidth = $data['bandwidth'] ?? 1024 * 1024;
+        $model->quota = $data['quota'] ?? 1024 * 1024;
+
+        $model->max_addon = $data['max_addon'] ?? 1;
+        $model->max_park = $data['max_park'] ?? 1;
+        $model->max_sub = $data['max_sub'] ?? 1;
+        $model->max_pop = $data['max_pop'] ?? 1;
+        $model->max_sql = $data['max_sql'] ?? 1;
+        $model->max_ftp = $data['max_ftp'] ?? 1;
+
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->updated_at = date('Y-m-d H:i:s');
+        $newId = $this->di['db']->store($model);
+
+        $this->di['logger']->info('Added new hosting plan %s', $newId);
+
+        return $newId;
+    }
+
+    public function getServerPackage(\Model_ServiceHostingHp $model): \Server_Package
+    {
+        $config = json_decode($model->config ?? '', true);
+        if (!is_array($config)) {
+            $config = [];
+        }
+
+        $p = new \Server_Package();
+        $p->setCustomValues($config)
+            ->setMaxFtp($model->max_ftp)
+            ->setMaxSql($model->max_sql)
+            ->setMaxPop($model->max_pop)
+            ->setMaxSubdomains($model->max_sub)
+            ->setMaxParkedDomains($model->max_park)
+            ->setMaxDomains($model->max_addon)
+            ->setBandwidth($model->bandwidth)
+            ->setQuota($model->quota)
+            ->setName($model->name);
+
+        return $p;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getServerManagerWithLog(\Model_ServiceHostingServer $model, \Model_ClientOrder $order)
+    {
+        $manager = $this->getServerManager($model);
+
+        $order_service = $this->di['mod_service']('order');
+        $log = $order_service->getLogger($order);
+        $manager->setLog($log);
+
+        return $manager;
+    }
+
+    /**
+     * Returns both the standard and reseller login URLs.
+     * Will not generate SSO links.
+     *
+     * @return string[]|false[]
+     */
+    public function getManagerUrls(\Model_ServiceHostingServer $model): array
+    {
+        try {
+            $m = $this->getServerManager($model);
+
+            return [$m->getLoginUrl(null), $m->getResellerLoginUrl(null)];
+        } catch (\Exception $e) {
+            $this->logInfo("Error while retrieving control panel url: {$e->getMessage()}.");
+        }
+
+        return [false, false];
+    }
+
+    /**
+     * Generates either a reseller or standard login link for a given order.
+     * If the server manager supports SSO, an SSO link will be returned.
+     */
+    public function generateLoginUrl(\Model_ServiceHosting $model): string
+    {
+        [$adapter, $account] = $this->_getAM($model);
+        if ($model->reseller) {
+            return $adapter->getResellerLoginUrl($account);
+        }
+
+        return $adapter->getLoginUrl($account);
+    }
+
+    /**
+     * Top-level cart-config keys a client is authorized to set when ordering
+     * a hosting product. Admin-controlled fields (hosting_plan_id, server_id,
+     * reseller, subdomain_base_domain, etc.) are stripped from client input
+     * before the merge.
+     *
+     * @return list<string>
+     */
+    public function clientSettableConfigKeys(): array
+    {
+        return ['period', 'domain', 'quantity', 'multiple'];
+    }
+
+    public function attachOrderConfig(Product $product, array $data): array
+    {
+        $c = json_decode($product->getConfig() ?? '', true) ?? [];
+
+        $data = array_merge($c, $data);
+        if (($data['domain']['action'] ?? null) === 'subdomain' && array_key_exists('subdomain_base_domain', $c)) {
+            $data['subdomain_base_domain'] = $c['subdomain_base_domain'];
+        }
+
+        if (isset($data['domain']['action'])) {
+            $this->validateDomainAction($data, $c);
+
+            [$sld, $tld] = $this->_getDomainTuple($data);
+            $data['sld'] = $sld;
+            $data['tld'] = $tld;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validates that the requested domain action is allowed for this product.
+     *
+     * @param array $data          The order data containing domain configuration
+     * @param array $productConfig The product configuration
+     *
+     * @throws InformationException if the domain action is not allowed
+     */
+    private function validateDomainAction(array $data, array $productConfig): void
+    {
+        $action = $data['domain']['action'];
+
+        // When unset, hosting products allow all domain actions.
+        $allowRegister = $productConfig['allow_domain_register'] ?? true;
+        $allowTransfer = $productConfig['allow_domain_transfer'] ?? true;
+        $allowOwn = $productConfig['allow_domain_own'] ?? true;
+        $allowSubdomain = $productConfig['allow_subdomain'] ?? false;
+
+        match ($action) {
+            'register' => $allowRegister || throw new InformationException('Domain registration is not available for this product.'),
+            'transfer' => $allowTransfer || throw new InformationException('Domain transfer is not available for this product.'),
+            'owndomain' => $allowOwn || throw new InformationException('Using your own domain is not allowed for this product.'),
+            'subdomain' => ($allowSubdomain && !empty($productConfig['subdomain_base_domain']))
+                || throw new InformationException('Subdomain ordering is not available for this product.'),
+            default => throw new InformationException('Invalid domain action specified.'),
+        };
+    }
+
+    public function getDomainProductFromConfig(Product $product, array &$data): bool|array
+    {
+        $data = $this->attachOrderConfig($product, $data);
+        $this->validateOrderData($data, $product);
+
+        $c = json_decode($product->getConfig() ?? '', true) ?? [];
+
+        $dc = $data['domain'] ?? null;
+
+        // Hosting can be ordered without domain fields (e.g. API orders
+        // carrying only sld/tld): there is no domain action to attach
+        // a product for.
+        if (!is_array($dc) || ($dc['action'] ?? null) === null) {
+            return false;
+        }
+
+        $action = $dc['action'];
+
+        if ($action == 'subdomain') {
+            return false;
+        }
+
+        $drepo = $this->di['mod_service']('servicedomain');
+        $drepo->validateOrderData($dc);
+        if ($action == 'owndomain') {
+            return false;
+        }
+
+        // ClientFence core patch: the free domain settings come from the product, never from the client.
+        unset($dc['free_domain'], $dc['free_transfer'], $dc['free_tlds'], $dc['free_domain_periods']);
+        if (isset($c['free_domain']) && $c['free_domain']) {
+            $dc['free_domain'] = true;
+        }
+
+        if (isset($c['free_transfer']) && $c['free_transfer']) {
+            $dc['free_transfer'] = true;
+        }
+
+        if (isset($c['free_tlds'])) {
+            $dc['free_tlds'] = $c['free_tlds'];
+        }
+
+        if (isset($c['free_domain_periods'])) {
+            $dc['free_domain_periods'] = $c['free_domain_periods'];
+        }
+
+        $table = $this->di['mod_service']('product');
+        $d = $table->getMainDomainProduct();
+        if (!$d instanceof Product) {
+            throw new Exception('Could not find main domain product');
+        }
+
+        return ['product' => $d, 'config' => $dc];
+    }
+
+    public function getFreeTlds(Product $product, $identity = null): array
+    {
+        $config = json_decode($product->getConfig() ?? '', true) ?? [];
+        $freeTlds = $config['free_tlds'] ?? [];
+        $result = [];
+        foreach ($freeTlds as $tld) {
+            $result[] = ['tld' => $tld];
+        }
+
+        if (empty($result)) {
+            $query = 'active = 1 and allow_register = 1';
+            $tlds = $this->di['db']->find('Tld', $query, []);
+            $serviceDomainService = $this->di['mod_service']('Servicedomain');
+            foreach ($tlds as $model) {
+                $result[] = $serviceDomainService->tldToApiArray($model, $identity);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Post-processing for the assigned IPs.
+     * The data from the server management form (/admin/servicehosting/server/{id}) sends the data like this:
+     * assigned_ips: "10.0.0.1\n10.0.0.2\n"
+     * As you see, it isn't really an array, it also doesn't filter out empty lines and whitespaces at all.
+     *
+     * We can't rely on it as-is. So we need to make sure only the valid IP addresses are going inside the array.
+     * We'll split on any type of line break (\n, \r\n, or \r) and make sure each IP address is valid.
+     *
+     * @param string $assigned_ips Raw string from the form data (example form: /admin/servicehosting/server/{ip})
+     *
+     * @return string JSON encoded array of filtered valid IPs
+     */
+    public static function processAssignedIPs(string $assigned_ips): string
+    {
+        // Split the input by any type of line break (\n, \r\n, or \r)
+        $array = preg_split('/\r\n|\r|\n/', $assigned_ips);
+
+        // Trim each entry and remove any empty strings
+        $array = array_map(trim(...), $array);
+        $array = array_filter($array, fn ($ip): bool => $ip !== '');
+
+        // Validate that each entry is a valid IP address (works both with IPv4 and IPv6)
+        $array = array_filter($array, fn ($ip): bool => (bool) filter_var($ip, FILTER_VALIDATE_IP));
+
+        return json_encode(array_values($array));
+    }
+}

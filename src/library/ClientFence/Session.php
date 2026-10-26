@@ -1,0 +1,338 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence;
+
+use ClientFence\Http\CookieNames;
+
+class Session implements InjectionAwareInterface
+{
+    private const string OBSOLETE_FLAG = 'fb_session_obsolete';
+    private const string OBSOLETE_EXPIRES_AT = 'fb_session_obsolete_expires_at';
+    private const int DEFAULT_REGENERATION_GRACE_PERIOD = 300;
+
+    private ?\Pimple\Container $di = null;
+    private ?string $legacySessionCookie = null;
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function __construct(private readonly \PdoSessionHandler $handler)
+    {
+    }
+
+    public function setupSession(): void
+    {
+        if (Environment::isCLI()) {
+            return;
+        }
+
+        $this->configureCookieName();
+        $this->canUseSession();
+
+        if (!headers_sent()) {
+            session_set_save_handler($this->handler);
+        }
+
+        $currentCookieParams = session_get_cookie_params();
+        $currentCookieParams['httponly'] = true;
+        $currentCookieParams['lifetime'] = 0;
+        $currentCookieParams['secure'] = $this->shouldBeSecure();
+
+        $cookieParams = [
+            'lifetime' => $currentCookieParams['lifetime'],
+            'path' => $currentCookieParams['path'],
+            'domain' => $currentCookieParams['domain'],
+            'secure' => $currentCookieParams['secure'],
+            'httponly' => $currentCookieParams['httponly'],
+        ];
+
+        if (Config::getProperty('security.mode', 'strict') === 'strict') {
+            $cookieParams['samesite'] = 'Strict';
+        }
+
+        session_set_cookie_params($cookieParams);
+        session_start();
+        $this->expireLegacySessionCookies();
+
+        $this->handleObsoleteSession();
+        $this->updateFingerprint();
+    }
+
+    public function getId(): string
+    {
+        return session_id();
+    }
+
+    public function delete(string $key): void
+    {
+        unset($_SESSION[$key]);
+    }
+
+    public function get(string $key): mixed
+    {
+        return $_SESSION[$key] ?? null;
+    }
+
+    public function set(string $key, mixed $value): void
+    {
+        $_SESSION[$key] = $value;
+    }
+
+    public function regenerateId(?int $gracePeriod = null): void
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            return;
+        }
+
+        $gracePeriod ??= (int) Config::getProperty('security.session_regeneration_grace_period', self::DEFAULT_REGENERATION_GRACE_PERIOD);
+        $gracePeriod = max(0, $gracePeriod);
+        $_SESSION[self::OBSOLETE_FLAG] = true;
+        $_SESSION[self::OBSOLETE_EXPIRES_AT] = time() + $gracePeriod;
+
+        $this->rotateSessionId();
+
+        unset($_SESSION[self::OBSOLETE_FLAG], $_SESSION[self::OBSOLETE_EXPIRES_AT]);
+    }
+
+    public function destroy(string $type = ''): bool
+    {
+        switch ($type) {
+            case 'admin':
+                $this->delete('admin');
+                $this->regenerateId();
+
+                return true;
+            case 'client':
+                $this->delete('client');
+                $this->delete('client_id');
+                // ClientFence core patch: authorized users (modules/Client/Users.php SESSION).
+                $this->delete('clientfence_user');
+                $this->regenerateId();
+
+                return true;
+        }
+
+        return session_destroy();
+    }
+
+    /**
+     * Checks both the fingerprint and age of the current session to see if it can be used.
+     * If the session can't be used, it's destroyed from the database, forcing a new one to be created.
+     */
+    private function canUseSession(): void
+    {
+        $invalid = false;
+        $sessionName = session_name();
+        $sessionID = session_id();
+        if ($sessionID === '') {
+            $cookieID = $sessionName !== false ? ($_COOKIE[$sessionName] ?? '') : '';
+            $sessionID = is_string($cookieID) ? $cookieID : '';
+        }
+
+        if ($sessionID === '') {
+            return;
+        }
+        $maxAge = time() - Config::getProperty('security.session_lifespan', 7200);
+
+        $fingerprint = new Fingerprint($this->di['request']);
+        /** @var \RedBeanPHP\OODBBean $session */
+        $session = $this->di['db']->findOne('session', 'id = :id', [':id' => $sessionID]);
+
+        if (empty($session->fingerprint)) {
+            return;
+        }
+
+        if (empty($session->created_at)) {
+            $session->created_at = time();
+            $this->di['db']->store($session);
+        }
+
+        $storedFingerprint = json_decode($session->fingerprint ?? '', true);
+        if (!$fingerprint->checkFingerprint($storedFingerprint) && Config::getProperty('security.perform_session_fingerprinting', true)) {
+            $invalid = true;
+            error_log("Session ID $sessionID has potentially been hijacked as it failed the fingerprint check. The session has automatically been destroyed.");
+        }
+
+        if ($session->created_at <= $maxAge) {
+            $invalid = true;
+        }
+
+        if ($invalid) {
+            $this->di['db']->trash($session);
+            if ($sessionName !== false) {
+                setcookie($sessionName, '', $this->getSessionCookieOptions(time() - 3600));
+                unset($_COOKIE[$sessionName]);
+            }
+        }
+    }
+
+    /**
+     * Depending on the specifics, this will either set or update the fingerprint associated with the current session.
+     */
+    private function updateFingerprint(): void
+    {
+        $sessionID = session_id();
+        if ($sessionID === '') {
+            $sessionName = session_name();
+            $cookieID = $sessionName !== false ? ($_COOKIE[$sessionName] ?? '') : '';
+            $sessionID = is_string($cookieID) ? $cookieID : '';
+        }
+
+        if ($sessionID === '') {
+            return;
+        }
+
+        $session = $this->di['db']->findOne('session', 'id = :id', [':id' => $sessionID]);
+        $fingerprint = new Fingerprint($this->di['request']);
+
+        if (Config::getProperty('security.perform_session_fingerprinting', true)) {
+            $updatedFingerprint = $fingerprint->fingerprint();
+        } else {
+            $updatedFingerprint = [];
+        }
+
+        // Fix for the installer which temporarily uses FS sessions before FOSSBilling is completely setup.
+        if (!is_null($session)) {
+            $session->fingerprint = json_encode($updatedFingerprint);
+            $this->di['db']->store($session);
+        }
+    }
+
+    private function configureCookieName(): void
+    {
+        // The cookie name cannot be changed once output started; renaming
+        // attempts would only emit warnings while the session continues
+        // under the previous name regardless.
+        if (headers_sent()) {
+            return;
+        }
+
+        $previousName = session_name();
+
+        session_name(CookieNames::SESSION);
+
+        if (
+            $previousName === false
+            || $previousName === CookieNames::SESSION
+            || !isset($_COOKIE[$previousName])
+        ) {
+            return;
+        }
+
+        $this->legacySessionCookie = $previousName;
+        if (isset($_COOKIE[CookieNames::SESSION])) {
+            return;
+        }
+
+        $sessionId = $_COOKIE[$previousName];
+        if (
+            is_string($sessionId)
+            && $sessionId !== ''
+            && preg_match('/^[A-Za-z0-9,-]+$/D', $sessionId) === 1
+        ) {
+            session_id($sessionId);
+        }
+    }
+
+    private function expireLegacySessionCookies(): void
+    {
+        if ($this->legacySessionCookie === null || headers_sent()) {
+            return;
+        }
+
+        setcookie($this->legacySessionCookie, '', $this->getSessionCookieOptions(time() - 3600));
+        unset($_COOKIE[$this->legacySessionCookie]);
+    }
+
+    private function handleObsoleteSession(): void
+    {
+        // $_SESSION is unset when no session is active; default to [] so the
+        // array-typed checks below never receive null.
+        $sessionData = $_SESSION ?? [];
+
+        if (!$this->isObsoleteSession($sessionData)) {
+            return;
+        }
+
+        if ($this->isObsoleteSessionExpired($sessionData)) {
+            $this->clearAuthenticationData();
+            unset($_SESSION[self::OBSOLETE_FLAG], $_SESSION[self::OBSOLETE_EXPIRES_AT]);
+            $this->rotateSessionId();
+
+            return;
+        }
+    }
+
+    private function rotateSessionId(): void
+    {
+        session_regenerate_id(false);
+
+        $sessionName = session_name();
+        $sessionId = session_id();
+        if ($sessionId !== '') {
+            setcookie($sessionName, $sessionId, $this->getSessionCookieOptions(0));
+
+            $_COOKIE[$sessionName] = $sessionId;
+        }
+    }
+
+    /**
+     * @return array{expires: int, path: string, domain: string, secure: bool, httponly: bool, samesite: string}
+     */
+    private function getSessionCookieOptions(int $expires): array
+    {
+        $params = session_get_cookie_params();
+
+        return [
+            'expires' => $expires,
+            'path' => $params['path'],
+            'domain' => $params['domain'],
+            'secure' => $params['secure'],
+            'httponly' => $params['httponly'],
+            'samesite' => $params['samesite'],
+        ];
+    }
+
+    private function clearAuthenticationData(): void
+    {
+        unset($_SESSION['admin'], $_SESSION['client'], $_SESSION['client_id']);
+    }
+
+    private function isObsoleteSession(array $sessionData): bool
+    {
+        return !empty($sessionData[self::OBSOLETE_FLAG]);
+    }
+
+    private function isObsoleteSessionExpired(array $sessionData, ?int $now = null): bool
+    {
+        $expiresAt = $sessionData[self::OBSOLETE_EXPIRES_AT] ?? null;
+        if (!is_int($expiresAt)) {
+            return true;
+        }
+
+        $now ??= time();
+
+        return $expiresAt < $now;
+    }
+
+    private function shouldBeSecure(): bool
+    {
+        return Config::getProperty('security.force_https', true) || $this->di['request']->isSecure();
+    }
+}

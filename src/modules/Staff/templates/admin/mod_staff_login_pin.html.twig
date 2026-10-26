@@ -1,0 +1,42 @@
+{# ClientFence: the email PIN step of a staff sign-in (Clientfence/SignInSecurity.php; Staff guest API
+   login_pin). `pin`: {email (masked), minutes, trust_days}. #}
+{% extends 'layout_login.html.twig' %}
+{% set pin = pin|default({ email: '', minutes: 10, trust_days: 30 }) %}
+
+{% block meta_title %}{{ 'Check your email'|trans }}{% endblock %}
+
+{% block content %}
+{% embed 'partial_admin_auth_card.html.twig' with {
+    title: 'Check your email'|trans
+} %}
+    {% block auth_form %}
+                <p class="text-secondary">{{ 'We sent a 6-digit sign-in PIN to %email%. It works for %minutes% minutes.'|trans({'%email%': pin.email, '%minutes%': pin.minutes}) }}</p>
+                <form method="post" action="{{ 'staff/login_pin'|api_url(role: 'guest') }}" {{ fb_api_form({redirect: redirect_uri|default('/')|url}) }} autocomplete="off">
+                    <div class="mb-3">
+                        <label class="form-label" for="inputPin">{{ 'PIN'|trans }}</label>
+                        <input class="form-control form-control-lg text-center"
+                            id="inputPin"
+                            type="text"
+                            name="pin"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            maxlength="7"
+                            dir="ltr"
+                            required
+                            autofocus>
+                    </div>
+                    <label class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="trust" value="1">
+                        <span class="form-check-label">{{ 'Trust this browser for %days% days'|trans({'%days%': pin.trust_days}) }}</span>
+                    </label>
+                    <div class="form-footer d-flex justify-content-center">
+                        <button class="btn btn-primary px-5" type="submit">{{ 'Sign in'|trans }}</button>
+                    </div>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between gap-2 mt-3 small">
+                    <a href="{{ 'staff/login_pin_resend'|api_url(role: 'guest') }}" {{ fb_api_link({ message: 'A new PIN is on its way.'|trans }) }}>{{ 'Send a new PIN'|trans }}</a>
+                    <a href="{{ 'staff/login'|url }}">{{ 'Back to Login'|trans }}</a>
+                </div>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

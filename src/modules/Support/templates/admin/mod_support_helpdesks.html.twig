@@ -1,0 +1,17 @@
+{# ClientFence: help desks for staff who manage them without the Support settings (the route had no template). #}
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{% block meta_title %}{{ 'Helpdesks'|trans }}{% endblock %}
+
+{% set active_menu = 'support' %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">{{ 'Helpdesks'|trans }}</h3>
+        </div>
+        {{ include('partial_support_helpdesks.html.twig', { back: 'support/helpdesks'|url }) }}
+    </div>
+
+{{ include('modal/mod_support_new_helpdesk.html.twig') }}
+{% endblock %}

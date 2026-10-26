@@ -1,0 +1,295 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Extension\Api;
+
+use ClientFence\Mod\Extension\Entity\Extension;
+use ClientFence\Tools;
+use ClientFence\Validation\Api\RequiredParams;
+
+class Admin extends \ClientFence\Api\AbstractApi
+{
+    /**
+     * Get list of active and inactive extensions on system.
+     *
+     * @optional bool $installed - return installed only extensions
+     * @optional bool $active - return installed and core extensions
+     * @optional bool $has_settings - return extensions with configuration pages only
+     * @optional string $search - filter extensions by search keyword
+     * @optional string $type - filter extensions by type
+     *
+     * @return array
+     */
+    public function get_list($data)
+    {
+        $this->checkPermissions('extension', 'view');
+
+        $service = $this->getService();
+
+        return $service->getExtensionsList($data);
+    }
+
+    /**
+     * Get list of extensions from extensions.fossbilling.org
+     * which can be installed on current version of FOSSBilling.
+     *
+     * @return array - list of extensions
+     */
+    public function get_latest($data)
+    {
+        $this->checkPermissions('extension', 'view');
+
+        $type = $data['type'] ?? null;
+
+        try {
+            $list = $this->getDi()['extension_manager']->getExtensionList($type);
+        } catch (\Exception $e) {
+            $this->getDi()['logger']->warning(sprintf('Failed to fetch extension list for type "%s": %s', $type ?? 'all', $e->getMessage()));
+
+            $list = [];
+        }
+
+        return $list;
+    }
+
+    /**
+     * Gets the readme as HTML for a given extension.
+     */
+    #[RequiredParams(['extension_id' => 'Extension ID was not passed'])]
+    public function get_extension_readme($data): string
+    {
+        $this->checkPermissions('extension', 'view');
+
+        $extensionInfo = $this->getDi()['extension_manager']->getExtension($data['extension_id']);
+        $markdown = new \ClientFence\Twig\Markdown\ClientFenceMarkdown($this->di);
+
+        return $markdown->convert($extensionInfo['readme']);
+    }
+
+    /**
+     * Get admin area navigation.
+     *
+     * @return array
+     */
+    public function get_navigation($data)
+    {
+        $url = null;
+        if (isset($data['url'])) {
+            $url = $data['url'];
+        }
+        $service = $this->getService();
+
+        return $service->getAdminNavigation($this->identity, $url);
+    }
+
+    /**
+     * Get list of available languages on the system.
+     */
+    public function languages(array $data): array
+    {
+        $this->checkPermissions('extension', 'view');
+
+        $data['disabled'] = Tools::normalizeBoolean($data['disabled'] ?? false);
+        $data['details'] = Tools::normalizeBoolean($data['details'] ?? true, true);
+
+        return \ClientFence\i18n::getLocales($data['details'], $data['disabled']);
+    }
+
+    /**
+     * Toggles a given locale to either enable or disable it depending on it's current status.
+     *
+     * @param array $data The post data sent to the API. Should contain a key named `locale_id` which is set to the locale ID to change. (`en_US` for example)
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['locale_id' => 'Locale ID was not passed'])]
+    public function toggle_language(array $data): bool
+    {
+        $this->checkPermissions('extension', 'manage_extensions');
+
+        return \ClientFence\i18n::toggleLocale($data['locale_id']);
+    }
+
+    /**
+     * Returns how complete a given locale is.
+     *
+     * @param array $data $data The post data sent to the API. Should contain a key named `locale_id` which is set to the locale ID to get the completion percentage for. (`en_US` for example)
+     */
+    #[RequiredParams(['locale_id' => 'Locale ID was not passed'])]
+    public function locale_completion(array $data): int
+    {
+        $this->checkPermissions('extension', 'view');
+
+        return \ClientFence\i18n::getLocaleCompletionPercent($data['locale_id']);
+    }
+
+    /**
+     * Update existing extension.
+     *
+     * @return array
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['id' => 'Extension ID was not passed', 'type' => 'Extension type was not passed'])]
+    public function update($data)
+    {
+        $this->checkPermissions('extension', 'manage_extensions');
+
+        $ext = $this->_getExtension($data);
+        $service = $this->getService();
+
+        $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminUpdateExtension', 'params' => $ext]);
+        $ext2 = $service->update($ext);
+        $this->getDi()['events_manager']->fire(['event' => 'onAfterAdminUpdateExtension', 'params' => $ext2]);
+
+        return $ext2;
+    }
+
+    /**
+     * Activate existing extension.
+     *
+     * @return array
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['id' => 'Extension ID was not passed', 'type' => 'Extension type was not passed'])]
+    public function activate($data)
+    {
+        $this->checkPermissions('extension', 'manage_extensions');
+
+        $service = $this->getService();
+
+        return $service->activateExistingExtension($data);
+    }
+
+    /**
+     * Deactivate existing extension.
+     *
+     * @return bool - true
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['id' => 'Extension ID was not passed', 'type' => 'Extension type was not passed'])]
+    public function deactivate($data): bool
+    {
+        $this->checkPermissions('extension', 'manage_extensions');
+
+        $ext = $this->_getExtension($data);
+
+        $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminDeactivateExtension', 'params' => ['id' => $ext->getId()]]);
+
+        $service = $this->getService();
+        $service->deactivate($ext);
+
+        $this->getDi()['events_manager']->fire(['event' => 'onAfterAdminDeactivateExtension', 'params' => ['id' => $data['id'], 'type' => $data['type']]]);
+
+        $this->getDi()['logger']->info('Deactivated extension "%s"', $data['type'] . ' ' . $data['id']);
+
+        return true;
+    }
+
+    /**
+     * Completely remove extension from FOSSBilling.
+     */
+    #[RequiredParams(['id' => 'Extension ID was not passed', 'type' => 'Extension type was not passed'])]
+    public function uninstall($data): bool
+    {
+        $this->checkPermissions('extension', 'uninstall_extensions');
+
+        $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminUninstallExtension', 'params' => ['type' => $data['type'], 'id' => $data['id']]]);
+
+        $this->getService()->uninstall($data['type'], $data['id']);
+
+        $this->getDi()['events_manager']->fire(['event' => 'onAfterAdminUninstallExtension', 'params' => ['type' => $data['type'], 'id' => $data['id']]]);
+
+        return true;
+    }
+
+    /**
+     * Install new extension from extensions site.
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['id' => 'Extension ID was not passed', 'type' => 'Extension type was not passed'])]
+    public function install($data): array
+    {
+        $this->checkPermissions('extension', 'manage_extensions');
+
+        $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminInstallExtension', 'params' => $data]);
+
+        $service = $this->getService();
+        $service->downloadAndExtract($data['type'], $data['id']);
+
+        $this->getDi()['events_manager']->fire(['event' => 'onAfterAdminInstallExtension', 'params' => $data]);
+
+        return [
+            'success' => true,
+            'id' => $data['id'],
+            'type' => $data['type'],
+        ];
+    }
+
+    /**
+     * Universal method for FOSSBilling extensions
+     * to retrieve configuration from database
+     * It is recommended to store your extension configuration
+     * using this method. Automatic decryption is available
+     * All parameters in "public" array will be accessible by guest API.
+     *
+     * @return array - configuration parameters
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['ext' => 'Parameter "ext" was not passed'])]
+    public function config_get($data)
+    {
+        $service = $this->getService();
+        $ext = $data['ext'];
+
+        $service->hasManagePermission($ext);
+
+        return $service->getConfig($ext);
+    }
+
+    /**
+     * Universal method for FOSSBilling extensions
+     * to update or save extension configuration to database
+     * Always pass all configuration parameters to this method.
+     *
+     * Config is automatically encrypted and stored in database
+     *
+     * @optional string $any - Any variable passed to this method is config parameter
+     *
+     * @return bool
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['ext' => 'Parameter "ext" was not passed'])]
+    public function config_save($data)
+    {
+        $service = $this->getService();
+        $service->hasManagePermission($data['ext']);
+
+        return $service->setConfig($data);
+    }
+
+    #[RequiredParams(['id' => 'Extension ID was not passed', 'type' => 'Extension type was not passed'])]
+    private function _getExtension($data)
+    {
+        $service = $this->getService();
+        $ext = $service->getExtensionRepository()->findOneByTypeAndName($data['type'], $data['id']);
+        if (!$ext instanceof Extension) {
+            throw new \ClientFence\InformationException('Extension not found');
+        }
+
+        return $ext;
+    }
+}

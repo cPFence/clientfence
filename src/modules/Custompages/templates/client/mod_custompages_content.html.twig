@@ -1,0 +1,30 @@
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+
+{# ClientFence core patch (ext custompages): an Everyone page (or a staff preview) opens to visitors while the theme asks them to sign in. #}
+{% set allow_guest = page.visibility == 'everyone' or preview %}
+{% set active_menu = 'page-' ~ page.slug %}
+
+{% block meta_title %}{{ page.title }}{% endblock %}
+{% block meta_description %}{{ page.description }}{% endblock %}
+{% block meta_keywords %}{{ page.keywords }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>{% endblock %}
+
+{% block body_class %}custom-page{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if page.status == 'draft' %}
+                <div class="alert alert-warning mb-4" role="status">{{ 'This page is a draft. Only staff can see it.'|trans }}</div>
+            {% endif %}
+            <div class="bf-page-head mb-4">
+                <h1 class="bf-page-title">{{ page.title }}</h1>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    {{ (page.content ?? '')|markdown_to_html }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{# ClientFence: payment receipts, on the Invoices settings page (Invoice/Receipts.php). Kept in
+   mod_invoice; saved with invoice/receipts_update. #}
+{% set receipts = admin.extension_config_get({ 'ext': 'mod_invoice' }) %}
+{% set helpdesks = admin.support_helpdesk_get_pairs %}
+{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{{ include('mod_clientfence_settings_style.html.twig') }}
+<div class="card mt-3 clientfence-settings" id="receipts" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<form method="post" action="{{ 'invoice/receipts_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
+		<div class="clientfence-settings-intro">
+			<h3>{{ 'Payment receipts'|trans }}</h3>
+			<p>{{ 'Clients can upload a payment receipt on an invoice. Each receipt opens a support ticket, so your team can confirm the payment.'|trans }}</p>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="receipt_helpdesk">{{ 'Payment receipts go to'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'The help desk the receipt tickets open in.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<select class="form-select" id="receipt_helpdesk" name="receipt_helpdesk">
+					<option value="">{{ 'The first help desk'|trans }}</option>
+					{% for id, title in helpdesks %}
+						<option value="{{ id }}"{% if receipts.receipt_helpdesk|default('') == id %} selected{% endif %}>{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="clientfence-settings-actions">
+			<button type="submit" class="btn btn-primary">{{ 'Save payment receipt settings'|trans }}</button>
+		</div>
+	</form>
+</div>

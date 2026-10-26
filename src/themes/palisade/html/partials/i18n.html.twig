@@ -1,0 +1,41 @@
+{# Texts the theme script shows, in the page language (read by assets/src/js/palisade.js and utils.js):
+   - validation: form check messages, used instead of the browser's own, which follow the
+     browser language rather than the page ("Please fill out this field." on Arabic pages);
+   - messages: English toast texts of FOSSBilling's api.js and of module templates the theme
+     does not override (domain and email pages), translated when shown;
+   - prefixes: the same for toasts that end with a value ("Domain transfer code is: ..."). #}
+<script nonce="{{ csp_nonce }}" type="application/json" id="clientfence-i18n">{{ {
+    'validation': {
+        'required': 'Please fill out this field.'|trans,
+        'checkbox': 'Please check this box if you want to proceed.'|trans,
+        'radio': 'Please select one of these options.'|trans,
+        'select': 'Please select an item in the list.'|trans,
+        'file': 'Please select a file.'|trans,
+        'email': 'Please enter a valid email address.'|trans,
+        'url': 'Please enter a valid URL.'|trans,
+        'number': 'Please enter a number.'|trans,
+        'tooShort': 'Please use at least :min characters.'|trans,
+        'tooLong': 'Please use no more than :max characters.'|trans,
+        'pattern': 'Please match the requested format.'|trans,
+        'min': 'The value must be :min or more.'|trans,
+        'max': 'The value must be :max or less.'|trans,
+        'step': 'Please enter a valid value.'|trans,
+    },
+    'messages': {
+        'Form Updated': 'Form Updated'|trans,
+        'At least one of the required fields are empty.': 'At least one of the required fields are empty.'|trans,
+        'Network connection error': 'Network connection error'|trans,
+        'Unknown API error': 'Unknown API error'|trans,
+        'Unknown error occurred': 'Unknown error occurred'|trans,
+        'Invalid or non-JSON response from server': 'Invalid or non-JSON response from server'|trans,
+        'An unexpected error occurred': 'An unexpected error occurred'|trans,
+        'Domain locked': 'Domain locked'|trans,
+        'Domain unlocked': 'Domain unlocked'|trans,
+        'Privacy Protection enabled': 'Privacy Protection enabled'|trans,
+        'Privacy Protection disabled': 'Privacy Protection disabled'|trans,
+        'Email resent': 'Email resent'|trans,
+    },
+    'prefixes': {
+        'Domain transfer code is: ': 'Domain transfer code is: '|trans,
+    },
+}|json_encode|raw }}</script>

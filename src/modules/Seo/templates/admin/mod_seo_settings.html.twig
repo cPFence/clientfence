@@ -1,0 +1,106 @@
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+
+{% block meta_title %}{{ 'SEO Tools'|trans }}{% endblock %}
+
+{% set active_menu = 'system' %}
+
+{% block content %}
+{% set info = admin.seo_info %}
+{% set last = info.last_submit %}
+<div class="card" id="seo"
+     data-text-ok="{{ 'Accepted'|trans }}"
+     data-text-failed="{{ 'Failed'|trans }}"
+     data-text-count="{{ ':count addresses submitted'|trans }}"
+     data-text-status="{{ 'IndexNow answered :code.'|trans }}">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'SEO Tools'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Search engine verification and IndexNow submission.'|trans }}</p>
+        </div>
+    </div>
+
+    <div class="card-body border-bottom">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+            <div>
+                <h4 class="mb-1">
+                    {{ 'IndexNow'|trans }}
+                    <span class="badge {{ info.key ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ info.key ? 'Enabled'|trans : 'Disabled'|trans }}</span>
+                </h4>
+                <p class="text-secondary mb-0">{{ 'Bing, Yandex and other IndexNow search engines get the sitemap addresses when the sitemap changes (checked on every cron run).'|trans }}</p>
+            </div>
+            {% if info.key and has_permission('seo', 'manage') %}
+                <button type="button" class="btn btn-primary" id="seo-submit">{{ 'Submit now'|trans }}</button>
+            {% endif %}
+        </div>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">{{ 'Key'|trans }}</dt>
+            <dd class="col-sm-9 text-break">
+                {% if info.key %}
+                    <a href="{{ info.key_url }}" target="_blank" rel="noopener" class="font-monospace">{{ info.key }}</a>
+                {% else %}
+                    <span class="text-secondary">{{ 'Save the settings to create the key.'|trans }}</span>
+                {% endif %}
+            </dd>
+            <dt class="col-sm-3">{{ 'Sitemap'|trans }}</dt>
+            <dd class="col-sm-9 text-break"><a href="{{ info.sitemap_url }}" target="_blank" rel="noopener">{{ info.sitemap_url }}</a></dd>
+            <dt class="col-sm-3">{{ 'Last submit'|trans }}</dt>
+            <dd class="col-sm-9 mb-0">
+                <span id="seo-last-at">{{ last ? last.at|format_datetime : 'Not submitted yet'|trans }}</span>
+                <span id="seo-last-badge" class="badge {{ last and last.ok ? 'bg-success-lt' : 'bg-danger-lt' }} ms-2"{% if not last %} hidden{% endif %}>{{ last and last.ok ? 'Accepted'|trans : 'Failed'|trans }}</span>
+                <div id="seo-last-detail" class="text-secondary small">
+                    {% if last %}
+                        {% if last.ok %}{{ ':count addresses submitted'|trans({ ':count': last.count }) }}{% elseif last.error %}{{ last.error }}{% else %}{{ 'IndexNow answered :code.'|trans({ ':code': last.status }) }}{% endif %}
+                    {% endif %}
+                </div>
+            </dd>
+        </dl>
+    </div>
+
+    <form class="card-body" action="{{ 'seo/save_settings'|api_url }}" {{ fb_api_form(info.key ? { message: 'Saved.'|trans } : { message: 'Saved.'|trans, reload: true }) }}>
+        <h4 class="mb-1">{{ 'Verification codes'|trans }}</h4>
+        <p class="text-secondary">{{ 'Paste only the content value of the meta tag. The client area pages then carry the tag.'|trans }}</p>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="seo-google">{{ 'Google Search Console'|trans }}</label>
+                <input class="form-control font-monospace" type="text" name="google_verification" id="seo-google" value="{{ info.google_verification }}" maxlength="100" pattern="[A-Za-z0-9_\-]*" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="seo-bing">{{ 'Bing Webmaster Tools'|trans }}</label>
+                <input class="form-control font-monospace" type="text" name="bing_verification" id="seo-bing" value="{{ info.bing_verification }}" maxlength="100" pattern="[A-Za-z0-9_\-]*" spellcheck="false" autocomplete="off">
+            </div>
+        </div>
+        <div class="text-end mt-3">
+            <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const button = document.getElementById('seo-submit');
+        if (!button) {
+            return;
+        }
+        const text = document.getElementById('seo').dataset;
+        const badge = document.getElementById('seo-last-badge');
+        button.addEventListener('click', () => {
+            button.disabled = true;
+            ClientFence.api.admin.post('seo/submit', {}, (result) => {
+                button.disabled = false;
+                const detail = result.ok ? text.textCount.replace(':count', result.count) : (result.error || text.textStatus.replace(':code', result.status));
+                document.getElementById('seo-last-at').textContent = new Date().toLocaleString();
+                document.getElementById('seo-last-detail').textContent = detail;
+                badge.textContent = result.ok ? text.textOk : text.textFailed;
+                badge.className = 'badge ms-2 ' + (result.ok ? 'bg-success-lt' : 'bg-danger-lt');
+                badge.hidden = false;
+                ClientFence.message(detail, result.ok ? 'success' : 'error');
+            }, (error) => {
+                button.disabled = false;
+                ClientFence.message(error.message, 'error');
+            });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,586 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{% import 'macro_functions.html.twig' as mf %}
+
+{% block meta_title %}{{ ticket.subject }} - {{ ticket.messages|length }} {{ 'message(s)'|trans }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ '/'|url }}">
+                <svg class="icon">
+                    <use href="#home" />
+                </svg>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'support'|url }}">{{ 'Support'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'support'|url }}">{{ 'Tickets'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">#{{ ticket.id }} - {{ ticket.subject }}</li>
+    </ul>
+{% endblock %}
+
+{% set active_menu = 'support' %}
+
+{% block content %}
+{% embed 'partial_admin_detail_tabs.html.twig' with {
+    title: ticket.subject,
+    subtitle: 'Review the ticket, manage its status, track internal notes, and inspect related client conversations.'|trans,
+    outer_card_class: 'mb-3'
+} %}
+    {% block detail_tabs %}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" href="#tab-index" data-bs-toggle="tab" role="tab">{{ 'Ticket'|trans }}</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="#tab-manage" data-bs-toggle="tab" role="tab">{{ 'Manage'|trans }}</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="#tab-notes" data-bs-toggle="tab" role="tab">{{ 'Notes'|trans }} {% if ticket.notes is defined and ticket.notes|length > 0 %}({{ ticket.notes|length }}){% endif %}</a>
+                    </li>
+                    {% if ticket.author.role|default('') == 'client' %}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="#tab-support" data-bs-toggle="tab" role="tab">{{ 'Client Tickets'|trans }}</a>
+                    </li>
+                    {% endif %}
+    {% endblock %}
+
+    {% block detail_tab_content %}
+        {% import 'macro_functions.html.twig' as mf %}
+        <div class="tab-pane fade show active" id="tab-index" role="tabpanel">
+            <div class="p-3 d-flex flex-column gap-3">
+                {# ClientFence core patch: a merged ticket's old page led here (Support/TicketMerge.php). #}
+                {% if request.merged|default('') matches '/^[0-9]{1,18}$/' %}
+                    <div class="alert alert-info mb-0">{{ 'Ticket #%old% was merged into this ticket.'|trans({ '%old%': request.merged }) }}</div>
+                {% endif %}
+                {% set task = ticket.rel %}
+                {% embed 'partial_admin_summary_card.html.twig' with {
+                    title: 'Ticket Summary'|trans,
+                    subtitle: 'Review the client, helpdesk, status, and any linked task or order context for this ticket.'|trans,
+                    centered_actions: true,
+                    card_class: 'mb-0'
+                } %}
+                    {% import 'macro_functions.html.twig' as mf %}
+                    {% block summary_content %}
+                        <div class="table-responsive">
+                            <table class="table card-table table-vcenter cf-summary">
+                                <tbody>
+                                    <tr><td class="w-25">{{ 'Ticket ID'|trans }}</td><td>#{{ ticket.id }}</td></tr>
+                                    {% if ticket.author.role|default('') == 'client' %}
+                                        <tr><td>{{ 'Client'|trans }}</td><td><a href='{{ "client/manage/#{ticket.author.id }"|url }}'>{{ ticket.author.name }}</a> (#{{ ticket.author.id }})</td></tr>
+                                    {% else %}
+                                        <tr>
+                                            <td>{{ 'Author'|trans }}</td>
+                                            <td>
+                                                {{ ticket.author.name }} ({{ ticket.author.email }})
+                                                <span class="badge bg-orange-lt ms-1">{{ 'Guest' |trans }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    <tr><td>{{ 'Helpdesk'|trans }}</td><td>{{ admin.support_helpdesk_get_pairs[ticket.support_helpdesk_id]|trans }}</td></tr>
+                                    <tr><td>{{ 'Status'|trans }}</td><td>{{ mf.status_badge(ticket.status, 'ticket') }}</td></tr>
+                                    {# ClientFence core patch: priority as WHMCS and the assignee (Support/TicketPriority.php, TicketAssign.php). #}
+                                    <tr><td>{{ 'Priority'|trans }}</td><td>{{ include('mod_support_ticket_priority.html.twig', { level: ticket.priority_level|default('medium') }) }}</td></tr>
+                                    <tr><td>{{ 'Assigned To'|trans }}</td><td>{{ ticket.assigned_to.name|default('Nobody'|trans) }}</td></tr>
+                                    <tr><td>{{ 'Time Opened'|trans }}</td><td>{{ ticket.created_at|format_date }}</td></tr>
+                                    {# ClientFence core patch: the tickets merged into this one (Support/TicketMerge.php). #}
+                                    {% if ticket.merged_tickets|default([]) is not empty %}
+                                        <tr><td>{{ 'Merged Tickets'|trans }}</td><td class="text-wrap">{% for merged in ticket.merged_tickets %}#{{ merged.id }} {{ merged.subject|truncate(40) }} ({{ merged.merged_at|format_date }}){% if not loop.last %}<br>{% endif %}{% endfor %}</td></tr>
+                                    {% endif %}
+                                    {% if task.task %}<tr><td>{{ 'Task'|trans }}</td><td>{{ mf.status_name(task.task) }}</td></tr>{% endif %}
+                                    {% if task.type == 'order' %}<tr><td>{{ 'Related To'|trans }}</td><td><a href='{{ "order/manage/#{task.id}"|url }}'>Order #{{ task.id }}</a></td></tr>{% endif %}
+                                    {% if task.task == 'upgrade' %}<tr><td>{{ 'Upgrade To'|trans }}</td><td><a href='{{ "product/manage/#{task.new_value}"|url }}'>{{ admin.product_get_pairs[task.new_value] }}</a></td></tr>{% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endblock %}
+
+                    {% block summary_actions %}
+                        {% if ticket.status != 'closed' %}
+                        <a class="btn btn-primary" href="{{ 'support/ticket_close'|api_url(query: { 'id': ticket.id }) }}"
+                            {{ fb_api_link({ message: 'Are you sure?'|trans, modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'support'|url(query: { status: 'open' }) }) }}>
+                            <svg class="icon"><use href="#x" /></svg>
+                            {{ 'Close'|trans }}
+                        </a>
+                        {% endif %}
+                        <a class="btn btn-danger" href="{{ 'support/ticket_delete'|api_url(query: { 'id': ticket.id }) }}"
+                            {{ fb_api_link({ message: 'Are you sure?'|trans, modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'support'|url }) }}>
+                            <svg class="icon"><use href="#trash" /></svg>
+                            {{ 'Delete'|trans }}
+                        </a>
+                        {% if task.status == 'pending' %}
+                        <a class="btn btn-primary" href="{{ 'support/task_complete'|api_url(query: { 'id': ticket.id }) }}" {{ fb_api_link({ reload: true }) }}>
+                            <svg class="icon"><use href="#check" /></svg>
+                            {{ 'Set Task Complete'|trans }}
+                        </a>
+                        {% endif %}
+                        {% if ticket.author.role|default('') == 'guest' and ticket.hash is defined %}
+                        <a class="btn btn-secondary" href='{{ "support/ticket/#{ticket.hash}"|url(area: 'client') }}' target="_blank">
+                            <svg class="icon"><use href="#eye" /></svg>
+                            {{ 'View as Author'|trans }}
+                        </a>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+
+                {# ClientFence core patch: the client's feedback after the ticket closed (Support/TicketFeedback.php). #}
+                {% if ticket.feedback|default(null) %}
+                <div class="card mb-3" id="ticket-feedback">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">{{ 'Client Feedback'|trans }}</h5>
+                        <p class="text-secondary mb-3">{{ 'Given on :date from the feedback email.'|trans({ ':date': ticket.feedback.created_at|format_datetime }) }}</p>
+                        {% for item in ticket.feedback.staff %}
+                            <div class="mb-3">
+                                <strong>{{ item.name }}</strong>: <span class="badge {{ item.rating >= 8 ? 'bg-green-lt' : (item.rating >= 5 ? 'bg-yellow-lt' : 'bg-red-lt') }}">{{ item.rating }}/10</span>
+                                {% if item.comments %}<div class="text-wrap mt-1" dir="auto">{{ item.comments|nl2br }}</div>{% endif %}
+                            </div>
+                        {% endfor %}
+                        {% if ticket.feedback.comments %}
+                            <div><strong>{{ 'How we can improve'|trans }}</strong><div class="text-wrap mt-1" dir="auto">{{ ticket.feedback.comments|nl2br }}</div></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {# ClientFence core patch: the conversation as in the client area (full-width messages, oldest first, all open), with a red warning on emails from an unverified sender (MailImport). #}
+                <div class="card mb-3">
+                    <div class="card-body pb-3">
+                        <h5 class="card-title mb-1">{{ 'Conversation'|trans }}</h5>
+                        <p class="text-secondary mb-0">{{ 'The full message history, oldest first.'|trans }}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="conversation d-flex flex-column gap-3">
+                            {% for message in ticket.messages %}
+                            {% set role = message.author.role|default('') %}
+                            {% set unverified = ticket.unverified_messages[message.id]|default(null) %}
+                            <div class="card ticket-message {{ unverified ? 'border-danger' : (role == 'admin' ? 'ticket-message-staff' : '') }}" id="message-{{ message.id }}"{% if message.id == request_message %} data-direct-message{% endif %}>
+                                {% if unverified %}
+                                <div class="bg-danger text-white px-3 py-2 d-flex align-items-start gap-2 rounded-top" role="alert" data-unverified-sender>
+                                    <svg class="icon flex-shrink-0 mt-1">
+                                        <use href="#alert-triangle" />
+                                    </svg>
+                                    <div>
+                                        <strong>{{ 'Unverified sender'|trans }}</strong>
+                                        <div>{{ 'This email may not come from :sender: :reason. Anyone can write any address in an email, so confirm with the client another way before you change anything for them.'|trans({ ':sender': unverified.sender, ':reason': unverified.reason }) }}</div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        {{ avatar(message.author.email|default(''), 40, 'avatar d-none d-md-block') }}
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                                <span class="fw-semibold">{{ message.author.name|default('') }}</span>
+                                                {% if role == 'admin' %}
+                                                <span class="badge text-bg-primary">{{ 'Staff'|trans }}</span>
+                                                {% elseif message.author.clientfence_user|default(false) %}
+                                                <span class="badge text-bg-info">{{ 'Authorized user'|trans }}</span>
+                                                {% elseif role == 'guest' %}
+                                                <span class="badge text-bg-secondary">{{ 'Guest'|trans }}</span>
+                                                {% else %}
+                                                <span class="badge text-bg-secondary">{{ 'Client'|trans }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <span class="text-muted small">{{ message.created_at|format_datetime }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-wrap align-items-center gap-3">
+                                        {# ClientFence core patch: the client's stars for this reply (Support/TicketFeedback.php). #}
+                                        {% set stars = ticket.message_ratings[message.id]|default(0) %}
+                                        {% if stars %}
+                                        <span class="text-nowrap" title="{{ 'Rated :stars of 5 by the client'|trans({ ':stars': stars }) }}"><span class="text-warning">{% for n in 1..stars %}★{% endfor %}</span><span class="text-muted">{% if stars < 5 %}{% for n in (stars + 1)..5 %}★{% endfor %}{% endif %}</span></span>
+                                        {% endif %}
+                                        {% if message.updated_at != message.created_at %}
+                                        <a class="text-muted" href="#" title="{{ 'View edit history'|trans }}" data-bs-toggle="modal" data-bs-target="#messageHistory{{ message.id }}">
+                                            <svg class="icon">
+                                                <use href="#info-circle" />
+                                            </svg>
+                                            {{ 'Edited'|trans }}
+                                        </a>
+                                        {% endif %}
+                                        {% if role == 'admin' %}
+                                        <a href="#" title="{{ 'Edit'|trans }}" data-bs-toggle="modal" data-bs-target="#editMessage{{ message.id }}">
+                                            <svg class="icon">
+                                                <use href="#edit" />
+                                            </svg>
+                                        </a>
+                                        {% endif %}
+                                        <a class="text-muted small" href='{{ "support/ticket/#{ticket.id}/message/#{message.id}"|url }}' title="{{ 'Link to this message'|trans }}">#{{ message.id }}</a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <article class="markdown-body bg-transparent text-reset">
+                                        {{ (message.content ?? '')|markdown_to_html }}
+                                    </article>
+                                    {# ClientFence core patch: ticket attachments (the message's files, Support/TicketFiles.php). #}
+                                    {{ include('mod_support_ticket_message_files.html.twig', { ticket: ticket, message: message }) }}
+                                </div>
+                            </div>
+
+                            {% if message.author.role|default('') == 'admin' %}
+                            <div class="modal modal-blur fade" id="editMessage{{ message.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen-md-down">
+                                    <form class="modal-content" method="post" action="{{ 'support/ticket_message_update'|api_url }}" {{ fb_api_form({reload: true}) }}>
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ 'Edit Reply'|trans }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id" value="{{ message.id }}">
+                                            <textarea class="form-control" name="content" rows="8" required>{{ message.content }}</textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                                            <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if message.updated_at != message.created_at %}
+                            <div class="modal modal-blur fade message-history-modal" id="messageHistory{{ message.id }}" tabindex="-1" aria-hidden="true" data-message-id="{{ message.id }}">
+                                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen-md-down">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ 'Edit History'|trans }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                                        </div>
+                                        <div class="modal-body message-history-body">
+                                            <p class="text-secondary mb-0">{{ 'Loading...'|trans }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-0" id="reply-box">
+                    <form method="post" action="{{ 'support/ticket_reply'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                                <div class="d-flex flex-column gap-1">
+                                    <h5 class="card-title mb-0">{{ 'Respond as'|trans }} {{ profile.name }}</h5>
+                                    <p class="text-secondary mb-0">{{ 'Compose a reply, insert a canned response, and close the ticket when appropriate.'|trans }}</p>
+                                </div>
+                                <div>{{ include('mod_support_canned_selector.html.twig') }}</div>
+                            </div>
+
+                            <textarea class="editor-textarea" id="rt" name="content" rows="10" required>{# ClientFence core patch: help desk greeting in the reply box (ClientFence; empty means none). #}{% if ticket.helpdesk.greeting is defined %}{% if ticket.helpdesk.greeting %}{{ ticket.helpdesk.greeting|replace({ '{name}': ticket.author.first_name|default(ticket.author.name) }) }}
+{% endif %}{% else %}{{ 'Hello'|trans }} {{ ticket.author.first_name|default(ticket.author.name) }},
+{% endif %}{{ canned_delay_message }}
+
+{{ profile.signature }}
+{{ ticket.helpdesk.signature|default('') }}</textarea>
+                            {# ClientFence core patch: ticket attachments (files for the reply, Support/TicketFiles.php). #}
+                            {{ include('mod_support_ticket_reply_files.html.twig', { ticket: ticket }) }}
+                        </div>
+                        <div class="card-footer d-flex flex-wrap align-items-center gap-2">
+                            <input type="hidden" name="id" value="{{ ticket.id }}">
+                            <input type="submit" value="{{ 'Post'|trans }}" class="btn btn-primary ms-auto">
+
+                            {% if ticket.messages|length > 2 and ticket.status != 'closed' %}
+                            <a class="btn btn-warning" href="{{ 'support/ticket_close'|api_url(query: { 'id': ticket.id }) }}"
+                                {{ fb_api_link({ message: 'Are you sure?'|trans, modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'support'|url(query: { status: 'open' }) }) }}>
+                                <svg class="icon">
+                                    <use href="#check" />
+                                </svg>
+                                {{ 'Close Ticket'|trans }}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-manage" role="tabpanel">
+            <div class="card-body">
+                <form method="post" action="{{ 'support/ticket_update'|api_url }}" {{ fb_api_form({ reload: true}) }}>
+                    {% embed 'partial_admin_form_card.html.twig' with {
+                        title: 'Ticket Settings'|trans,
+                        subtitle: 'Update the subject, helpdesk, status, priority and assigned staff member of this ticket.'|trans
+                    } %}
+                        {% import 'macro_functions.html.twig' as mf %}
+                        {% block form_content %}
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label">{{ 'Subject'|trans }}</label>
+                                    <input class="form-control" type="text" name="subject" value="{{ ticket.subject }}" required>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">{{ 'Helpdesk'|trans }}</label>
+                                    {{ mf.selectbox('support_helpdesk_id', admin.support_helpdesk_get_pairs, ticket.support_helpdesk_id, 1) }}
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">{{ 'Status'|trans }}</label>
+                                    {{ mf.selectbox('status', admin.support_ticket_get_statuses({ 'titles': true }), ticket.status, 1) }}
+                                </div>
+                                {# ClientFence core patch: Low, Medium or High, and the assignee (Support/TicketPriority.php, TicketAssign.php). #}
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="ticket-priority">{{ 'Priority'|trans }}</label>
+                                    <select class="form-select" id="ticket-priority" name="priority">
+                                        {% for level, title in guest.support_ticket_priorities %}
+                                            <option value="{{ level }}"{% if level == ticket.priority_level|default('medium') %} selected{% endif %}>{{ title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="ticket-assigned-to">{{ 'Assigned To'|trans }}</label>
+                                    <select class="form-select" id="ticket-assigned-to" name="assigned_to">
+                                        <option value="0">{{ 'Nobody'|trans }}</option>
+                                        {% for staff_id, staff_name in admin.support_ticket_assignable_staff %}
+                                            <option value="{{ staff_id }}"{% if staff_id == ticket.assigned_to.id|default(0) %} selected{% endif %}>{{ staff_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="form-hint">{{ 'The staff member is emailed, unless they assign it to themselves.'|trans }}</small>
+                                </div>
+                            </div>
+                            <input type="hidden" name="id" value="{{ ticket.id }}">
+                        {% endblock %}
+
+                        {% block form_actions %}
+                            <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
+                        {% endblock %}
+                    {% endembed %}
+                </form>
+
+                {# ClientFence core patch: merge other tickets into this one, as WHMCS (Support/TicketMerge.php, clientfence-admin.js). #}
+                <form class="mt-3" method="post" data-bf-merge-form data-bf-merge-id="{{ ticket.id }}"
+                    data-bf-merge-url="{{ 'support/ticket'|url }}"
+                    data-bf-merge-title="{{ 'Merge tickets?'|trans }}"
+                    data-bf-merge-text="{{ 'Tickets %list% will be merged into ticket %id%, the oldest. It gets all their messages, notes and attachments, and the others are deleted. This cannot be undone.'|trans }}"
+                    data-bf-merge-confirm="{{ 'Merge'|trans }}"
+                    data-bf-merge-cancel="{{ 'Cancel'|trans }}">
+                    {% embed 'partial_admin_form_card.html.twig' with {
+                        title: 'Merge Tickets'|trans,
+                        subtitle: 'Merge other tickets of the same client (or guest) with this one. The oldest ticket stays, with every message in date order, and its subject gets [MERGED]; its status becomes that of the ticket with the latest message.'|trans
+                    } %}
+                        {% block form_content %}
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="bf-merge-ids">{{ 'Ticket numbers to merge with this one'|trans }}</label>
+                                    <input class="form-control" type="text" id="bf-merge-ids" name="ids" placeholder="12, 15" inputmode="numeric" autocomplete="off" required>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="bf-merge-subject">{{ 'New subject (optional)'|trans }}</label>
+                                    <input class="form-control" type="text" id="bf-merge-subject" name="subject" maxlength="255" autocomplete="off">
+                                </div>
+                            </div>
+                        {% endblock %}
+
+                        {% block form_actions %}
+                            <button class="btn btn-outline-danger" type="submit">{{ 'Merge'|trans }}</button>
+                        {% endblock %}
+                    {% endembed %}
+                </form>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-notes" role="tabpanel">
+            <div class="p-3 d-flex flex-column gap-3">
+                {% embed 'partial_admin_related_section.html.twig' with {
+                    title: 'Internal Notes'|trans,
+                    subtitle: 'Keep internal staff notes attached to this ticket and remove them when no longer needed.'|trans,
+                    card_class: 'mb-0'
+                } %}
+                    {% block section_content %}
+                        <div class="table-responsive">
+                            <table class="table card-table table-vcenter table-striped text-nowrap">
+                            {% for note in ticket.notes|default([]) %}
+                                <tr>
+                                    <td class="w-1"><a href='{{ "staff/manage/#{note.admin_id}"|url }}'>{{ note.author.name }}</a></td>
+                                    <td>{{ note.note }}</td>
+                                    <td class="w-1">
+                                        <a class="btn btn-icon" href="{{ 'support/note_delete'|api_url(query: { 'id': note.id }) }}"
+                                            {{ fb_api_link({ message: 'Are you sure?'|trans, modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true }) }}>
+                                            <svg class="icon"><use href="#trash" /></svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td class="text-muted" colspan="3">{{ 'The list is empty'|trans }}</td></tr>
+                            {% endfor %}
+                            </table>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
+
+                <form method="post" action="{{ 'support/note_create'|api_url }}" {{ fb_api_form({ reload: true}) }}>
+                    {% embed 'partial_admin_form_card.html.twig' with {
+                        title: 'Add Internal Note'|trans,
+                        subtitle: 'Record a staff-only note against this ticket.'|trans,
+                        card_class: 'mb-0'
+                    } %}
+                        {% block form_content %}
+                            <label class="form-label" for="textareaNote">{{ 'Note'|trans }}</label>
+                            <textarea class="form-control" id="textareaNote" name="note" rows="3" required></textarea>
+                            <input type="hidden" name="ticket_id" value="{{ ticket.id }}">
+                        {% endblock %}
+
+                        {% block form_actions %}
+                            <button class="btn btn-primary" type="submit">
+                                <svg class="icon">
+                                    <use href="#plus" />
+                                </svg>
+                                {{ 'Add Note'|trans }}
+                            </button>
+                        {% endblock %}
+                    {% endembed %}
+                </form>
+            </div>
+        </div>
+
+        {% if ticket.author.role|default('') == 'client' %}
+        <div class="tab-pane fade" id="tab-support" role="tabpanel">
+            {% embed 'partial_admin_related_section.html.twig' with {
+                title: 'Client Tickets'|trans,
+                subtitle: 'Review other tickets for this client and open a new ticket without leaving the current conversation.'|trans,
+                card_class: 'm-3'
+            } %}
+                {% block section_action %}
+                    <a href="{{ 'support'|url(query: { 'client_id': ticket.author.id}) }}#tab-new" class="btn btn-primary">
+                        <svg class="icon"><use href="#plus" /></svg>
+                        {{ 'New Support Ticket'|trans }}
+                    </a>
+                {% endblock %}
+
+                {% block section_content %}
+                    {% import 'macro_functions.html.twig' as mf %}
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter table-striped text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'ID'|trans }}</th>
+                                    <th>{{ 'Helpdesk'|trans }}</th>
+                                    <th>{{ 'Subject'|trans }}</th>
+                                    <th>{{ 'Status'|trans }}</th>
+                                    <th class="w-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set tickets = admin.support_ticket_get_list({ 'per_page': 20, 'client_id': ticket.author.id, 'deep': 0, 'include_first': 0 }) %}
+                                {% for related_ticket in tickets.list %}
+                                <tr>
+                                    <td>{{ related_ticket.id }}</td>
+                                    <td>{{ related_ticket.helpdesk.name }}</td>
+                                    <td><a href='{{ "support/ticket/#{related_ticket.id}"|url }}'>{{ related_ticket.subject|truncate(30) }}</a></td>
+                                    <td>{{ mf.status_badge(related_ticket.status, 'ticket') }}</td>
+                                    <td>
+                                        <a class="btn btn-icon" href='{{ "support/ticket/#{related_ticket.id}"|url }}'>
+                                            <svg class="icon"><use href="#edit" /></svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td class="text-muted" colspan="5">{{ 'The list is empty'|trans }}</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
+{% endblock %}
+
+{% block js%}
+<script nonce="{{ csp_nonce }}">
+    function setSelRange(inputEl, selStart, selEnd) {
+        if (inputEl.setSelectionRange) {
+            inputEl.focus();
+            inputEl.setSelectionRange(selStart, selEnd);
+        } else if (inputEl.createTextRange) {
+            var range = inputEl.createTextRange();
+
+            range.collapse(true);
+            range.moveEnd('character', selEnd);
+            range.moveStart('character', selStart);
+            range.select();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelector('#reply-box textarea').focus();
+
+        var ta = document.getElementById('rt');
+        var pos = ta.innerHTML.indexOf('\n') + 2;
+
+        setSelRange(ta, pos, pos);
+
+        document.querySelectorAll('.shd select').forEach(function(select) {
+            select.addEventListener('change', function() {
+                ClientFence.api.admin.get('support/ticket_update', { id: {{ ticket.id }}, support_helpdesk_id: this.value });
+            });
+        });
+
+        document.querySelectorAll('input.tst').forEach(function(element) {
+            element.addEventListener('click', function() {
+                ClientFence.api.admin.get('support/ticket_update', {id: {{ ticket.id }}, status: this.value });
+            });
+        });
+
+        const directMsg = document.querySelector('[data-direct-message]');
+        if (directMsg) {
+            directMsg.classList.add('border-warning', 'shadow');
+            window.scrollTo({ top: directMsg.getBoundingClientRect().top + window.scrollY - 50, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.message-history-modal').forEach(function(modalEl) {
+            modalEl.addEventListener('shown.bs.modal', function() {
+                if (modalEl.dataset.loaded) return;
+
+                var body = modalEl.querySelector('.message-history-body');
+                ClientFence.api.admin.get('support/ticket_message_history_get_list', { id: modalEl.dataset.messageId }, function(history) {
+                    modalEl.dataset.loaded = '1';
+                    body.innerHTML = '';
+
+                    if (!history || history.length === 0) {
+                        var empty = document.createElement('p');
+                        empty.className = 'text-secondary mb-0';
+                        empty.textContent = '{{ 'No edit history for this message yet.'|trans|e('js') }}';
+                        body.appendChild(empty);
+                        return;
+                    }
+
+                    history.forEach(function(revision) {
+                        var entry = document.createElement('div');
+                        entry.className = 'mb-3 pb-3 border-bottom';
+
+                        var meta = document.createElement('div');
+                        meta.className = 'text-muted small mb-1';
+                        meta.textContent = revision.created_at;
+
+                        var content = document.createElement('article');
+                        content.className = 'markdown-body bg-transparent text-reset mb-0';
+                        content.innerHTML = revision.content_html;
+
+                        entry.appendChild(meta);
+                        entry.appendChild(content);
+                        body.appendChild(entry);
+                    });
+                }, function() {
+                    body.innerHTML = '';
+
+                    var error = document.createElement('p');
+                    error.className = 'text-danger mb-0';
+                    error.textContent = '{{ 'Could not load edit history. Please try again.'|trans|e('js') }}';
+                    body.appendChild(error);
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block head %}
+    {{ 'css/markdown.css' | public_asset_url | stylesheet_tag }}
+    {{ wysiwyg('.editor-textarea') }}
+{% endblock %}

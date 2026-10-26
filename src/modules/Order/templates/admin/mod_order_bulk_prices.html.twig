@@ -1,0 +1,208 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: Orders > Bulk price update, as WHMCS's Bulk Pricing Updater (Order/BulkPrices.php). The form
+   is sent by GET with `preview` (the controller lists the matching orders, or `error`); applying posts
+   the same filters with the preview's fingerprint, and clientfence-admin.js reopens the page with the
+   result. `filters` is the query. #}
+
+{% set active_menu = 'order' %}
+{% set options = admin.order_bulk_price_options %}
+{% set can_manage = admin.system_is_allowed({ 'mod': 'order', 'f': 'manage' }) %}
+{% set sent = filters.preview|default('') ? true : false %}
+{% set chosen_products = sent ? filters.product_ids|default([]) : [] %}
+{% set chosen_periods = sent ? filters.periods|default([]) : [] %}
+{% set chosen_statuses = sent ? filters.statuses|default([]) : options.default_statuses %}
+{% set chosen_currency = filters.currency|default(options.default_currency) %}
+{% set mode = filters.mode|default('price') %}
+{% set status_names = {
+    'active': 'Active'|trans,
+    'suspended': 'Suspended'|trans,
+    'pending_setup': 'Pending setup'|trans,
+    'failed_setup': 'Failed setup'|trans,
+    'failed_renew': 'Failed renew'|trans,
+} %}
+
+{% block meta_title %}{{ 'Bulk price update'|trans }}{% endblock %}
+
+{% block content %}
+{% if request.done|default('') %}
+    <div class="alert alert-success" role="status">
+        {{ 'Updated the price of %count% services.'|trans({ '%count%': request.done|number_format(0) }) }}
+        {% if request.emailed|default(0) > 0 %}{{ 'Emailed %count% clients.'|trans({ '%count%': request.emailed|number_format(0) }) }}{% endif %}
+        {% if request.kept|default(0) > 0 %}{{ '%count% unpaid invoices already issued keep the old price.'|trans({ '%count%': request.kept|number_format(0) }) }}{% endif %}
+    </div>
+{% endif %}
+
+<form method="get" action="{{ 'order/bulk-prices'|url }}" class="card mb-3">
+    <input type="hidden" name="preview" value="1">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Bulk price update'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Change the recurring price of existing services. The new price starts with the next invoice; unpaid invoices already issued keep the old price. Domains are not listed: they renew at the TLD price.'|trans }}</p>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="form-label">{{ 'Products'|trans }}</div>
+                <div class="border rounded p-2 overflow-auto bf-bulk-products">
+                    {% for product in options.products %}
+                        <label class="form-check mb-1">
+                            <input class="form-check-input" type="checkbox" name="product_ids[]" value="{{ product.id }}"{% if product.id ~ '' in chosen_products %} checked{% endif %}>
+                            <span class="form-check-label" dir="auto">{{ product.title }}{% if product.is_addon %} <span class="badge bg-secondary-lt">{{ 'Add-on'|trans }}</span>{% endif %}
+                                <span class="badge bg-secondary-lt" title="{{ 'Services that can be updated'|trans }}">{{ product.orders }}</span></span>
+                        </label>
+                    {% else %}
+                        <p class="text-secondary mb-0">{{ 'No products.'|trans }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="form-label">{{ 'Billing periods'|trans }}</div>
+                        {% for period in options.periods %}
+                            <label class="form-check mb-1">
+                                <input class="form-check-input" type="checkbox" name="periods[]" value="{{ period }}"{% if period in chosen_periods %} checked{% endif %}>
+                                <span class="form-check-label">{{ period|period_title }}</span>
+                            </label>
+                        {% endfor %}
+                        <div class="form-hint">{{ 'None ticked: every period.'|trans }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-label">{{ 'Order status'|trans }}</div>
+                        {% for status in options.statuses %}
+                            <label class="form-check mb-1">
+                                <input class="form-check-input" type="checkbox" name="statuses[]" value="{{ status }}"{% if status in chosen_statuses %} checked{% endif %}>
+                                <span class="form-check-label">{{ status_names[status]|default(status) }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    <div class="col-sm-6"{% if options.currencies|length < 2 %} hidden{% endif %}>
+                        <label class="form-label" for="bulk-currency">{{ 'Currency'|trans }}</label>
+                        <select class="form-select" id="bulk-currency" name="currency">
+                            {% for code in options.currencies %}
+                                <option value="{{ code }}"{% if code == chosen_currency %} selected{% endif %}>{{ code }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="bulk-current">{{ 'Only services at this price'|trans }} <span class="text-secondary">{{ '(optional)'|trans }}</span></label>
+                        <input class="form-control" id="bulk-current" type="text" inputmode="decimal" name="current_price" value="{{ filters.current_price|default('') }}" placeholder="{{ 'Any price'|trans }}">
+                        <div class="form-hint">{{ 'Leaves services with a special price alone.'|trans }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-label">{{ 'New price'|trans }}</div>
+                <div class="row g-2 align-items-start">
+                    <div class="col-md-8">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="mode" value="price"{% if mode == 'price' %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Set this price'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="mode" value="increase"{% if mode == 'increase' %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Add this amount to the current price (a negative amount lowers it)'|trans }}</span>
+                        </label>
+                        <label class="form-check mb-0">
+                            <input class="form-check-input" type="radio" name="mode" value="product"{% if mode == 'product' %} checked{% endif %}>
+                            <span class="form-check-label">{{ "The product's current price for the service's billing period (plus its configurable options as sold)"|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="bulk-amount">{{ 'Amount'|trans }}</label>
+                        <input class="form-control" id="bulk-amount" type="text" inputmode="decimal" name="amount" value="{{ filters.amount|default('') }}">
+                        <div class="form-hint">{{ "Per unit, in the services' currency. Not used with the product price."|trans }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-end">
+        <button class="btn btn-primary" type="submit">{{ 'Preview'|trans }}</button>
+    </div>
+</form>
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">{{ error|trans }}</div>
+{% endif %}
+
+{% if preview %}
+    {% set skip_names = { 'no_product_price': "The product has no price for this period"|trans, 'below_zero': 'The price would go below 0'|trans } %}
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Preview'|trans }}</h3>
+                <p class="card-subtitle">
+                    {{ '%matched% services match: %change% get a new price, %unchanged% already have it, %skipped% are skipped.'|trans({ '%matched%': preview.matched, '%change%': preview.change, '%unchanged%': preview.unchanged, '%skipped%': preview.skipped }) }}
+                </p>
+            </div>
+        </div>
+        {% if preview.unpaid_invoices > 0 or preview.subscriptions > 0 %}
+            <div class="card-body pb-0">
+                {% if preview.unpaid_invoices > 0 %}
+                    <div class="alert alert-warning mb-2">{{ '%count% of them have an unpaid invoice already issued: it keeps the old price, and the new one starts with the invoice after it.'|trans({ '%count%': preview.unpaid_invoices }) }}</div>
+                {% endif %}
+                {% if preview.subscriptions > 0 %}
+                    <div class="alert alert-warning mb-2">{{ '%count% of them pay by a gateway subscription with a fixed amount: it keeps charging the old price until the client subscribes again.'|trans({ '%count%': preview.subscriptions }) }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
+                <thead>
+                    <tr>
+                        <th>{{ 'Order'|trans }}</th>
+                        <th>{{ 'Client'|trans }}</th>
+                        <th>{{ 'Period'|trans }}</th>
+                        <th>{{ 'Status'|trans }}</th>
+                        <th class="text-end">{{ 'Current price'|trans }}</th>
+                        <th class="text-end">{{ 'New price'|trans }}</th>
+                        <th>{{ 'Note'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in preview.rows %}
+                    <tr{% if row.state != 'change' %} class="text-secondary"{% endif %}>
+                        <td><a href="{{ 'order/manage'|url }}/{{ row.id }}" dir="auto">#{{ row.id }} {{ row.title }}</a>{% if row.quantity > 1 %} <span class="text-secondary">× {{ row.quantity }}</span>{% endif %}</td>
+                        <td><a href="{{ 'client/manage'|url }}/{{ row.client_id }}" dir="auto">{{ row.client }}</a></td>
+                        <td class="text-nowrap">{{ row.period|period_title }}</td>
+                        <td class="text-nowrap">{{ status_names[row.status]|default(row.status) }}</td>
+                        <td class="text-end text-nowrap">{{ row.old_price|format_currency(row.currency) }}</td>
+                        <td class="text-end text-nowrap">{% if row.new_price is not null %}<strong>{{ row.new_price|format_currency(row.currency) }}</strong>{% else %}-{% endif %}</td>
+                        <td class="small">
+                            {% if row.state == 'unchanged' %}{{ 'Already at this price'|trans }}
+                            {% elseif row.state == 'skipped' %}{{ skip_names[row.skip]|default(row.skip) }}
+                            {% else %}
+                                {% if row.unpaid_invoice_id %}<a href="{{ 'invoice/manage'|url }}/{{ row.unpaid_invoice_id }}">{{ 'Invoice #%id% keeps the old price'|trans({ '%id%': row.unpaid_invoice_id }) }}</a><br>{% endif %}
+                                {% if row.subscription %}{{ 'Gateway subscription at the old price'|trans }}<br>{% endif %}
+                                {% if row.recurring_discount > 0 %}{{ 'Recurring discount of %amount% still applies'|trans({ '%amount%': row.recurring_discount|format_currency(row.currency) }) }}{% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="7" class="text-secondary">{{ 'No service matches.'|trans }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if can_manage and preview.change > 0 %}
+            <form method="post" action="{{ 'order/bulk_price_apply'|api_url }}" {{ fb_api_form({ callback: 'clientfenceBulkPricesApplied' }) }} data-bf-bulk-prices data-done-url="{{ 'order/bulk-prices'|url }}" class="card-footer d-flex flex-wrap gap-3 align-items-center justify-content-between">
+                {% for id in chosen_products %}<input type="hidden" name="product_ids[]" value="{{ id }}">{% endfor %}
+                {% for period in chosen_periods %}<input type="hidden" name="periods[]" value="{{ period }}">{% endfor %}
+                {% for status in chosen_statuses %}<input type="hidden" name="statuses[]" value="{{ status }}">{% endfor %}
+                <input type="hidden" name="currency" value="{{ chosen_currency }}">
+                <input type="hidden" name="current_price" value="{{ filters.current_price|default('') }}">
+                <input type="hidden" name="mode" value="{{ mode }}">
+                <input type="hidden" name="amount" value="{{ filters.amount|default('') }}">
+                <input type="hidden" name="fingerprint" value="{{ preview.fingerprint }}">
+                <label class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" name="email" value="1">
+                    <span class="form-check-label">{{ 'Email the %count% clients their new price'|trans({ '%count%': preview.clients }) }}</span>
+                </label>
+                <button class="btn btn-primary" type="submit">{{ 'Apply to %count% services'|trans({ '%count%': preview.change }) }}</button>
+            </form>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

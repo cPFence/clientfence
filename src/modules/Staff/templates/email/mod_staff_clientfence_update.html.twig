@@ -1,0 +1,59 @@
+{% block subject %}[{{ guest.system_company.name }}] ClientFence {{ release.version|default('') }} is available{% endblock %}
+{% block content %}
+{# ClientFence: sent once per new release the daily check finds (ClientFence\Mod\Clientfence\Updates). #}
+{% set release = release|default({}) %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			color: #333333;
+		}
+
+		h1 {
+			font-size: 24px;
+			font-weight: bold;
+			margin: 0 0 20px;
+		}
+
+		p {
+			margin: 0 0 10px;
+		}
+
+		strong {
+			font-weight: bold;
+		}
+
+		pre {
+			white-space: pre-wrap;
+			background: #f5f5f5;
+			padding: 10px;
+		}
+
+		.signature {
+			font-style: italic;
+			color: #999999;
+			margin-top: 20px;
+			border-top: 1px solid #cccccc;
+			padding-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>ClientFence {{ release.version|default('') }} is available</h1>
+	<p>Hello {{ c.name|default('') }},</p>
+	<p>A new ClientFence release is out{% if release.release_date|default('') %} ({{ release.release_date|format_date }}){% endif %}. This site runs ClientFence {{ current_version|default('') }}.</p>
+	{% if release.notes|default('') %}
+		<div>{{ release.notes|markdown_to_html }}</div>
+	{% endif %}
+	<p>Staff allowed to update the system can install it from System &gt; Update: it backs up the database and the files it replaces, installs the release and updates the database.</p>
+
+	<p><a href='{{ update_url|default('') }}' target="_blank">See the update</a></p>
+
+	<div class="signature">{{ guest.system_email.signature }}</div>
+</body>
+</html>
+{% endblock %}

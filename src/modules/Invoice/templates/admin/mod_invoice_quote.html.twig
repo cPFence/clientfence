@@ -1,0 +1,229 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: a quote, as WHMCS's (Invoice/Quotes.php): for a client or a prospect, its lines
+   (clientfence-admin.js adds and removes them and shows the totals), notes and stage; download
+   the PDF, send it, accept it for the client, delete it. `quote` is null for a new one. #}
+
+{% import 'macro_functions.html.twig' as mf %}
+{% set active_menu = 'invoice' %}
+{% set editable = quote is null or quote.stage != 'accepted' %}
+{% set stages = { 'draft': 'Draft'|trans, 'delivered': 'Delivered'|trans, 'on_hold': 'On Hold'|trans, 'lost': 'Lost'|trans, 'dead': 'Dead'|trans } %}
+{% set badges = { 'draft': 'bg-secondary-lt', 'delivered': 'bg-blue-lt', 'on_hold': 'bg-yellow-lt', 'accepted': 'bg-green-lt', 'lost': 'bg-red-lt', 'dead': 'bg-dark-lt' } %}
+{% set for_client = quote ? quote.client_id is not null : request.client_id|default('') != '' %}
+{% set client_id = quote ? quote.client_id : request.client_id|default('') %}
+{% set items = quote ? quote.items : [{ 'description': '', 'quantity': 1, 'price': '', 'discount': 0, 'taxed': false }] %}
+{% set title = quote ? 'Quote #%id%'|trans({ '%id%': quote.id }) : 'New Quote'|trans %}
+
+{% block meta_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">
+                {{ title }}
+                {% if quote %}<span class="badge {{ badges[quote.stage]|default('bg-secondary-lt') }} ms-2">{{ quote.stage_title }}</span>{% endif %}
+            </h3>
+            {% if quote %}
+                <p class="card-subtitle">
+                    {{ 'Created %date%'|trans({ '%date%': quote.created_at|date('Y-m-d') }) }}
+                    {% if quote.sent_at %} · {{ 'Sent %date%'|trans({ '%date%': quote.sent_at|date('Y-m-d') }) }}{% endif %}
+                    {% if quote.accepted_at %} · {{ 'Accepted %date%'|trans({ '%date%': quote.accepted_at|date('Y-m-d') }) }}{% endif %}
+                    {% if quote.declined_at %} · {{ 'Declined %date%'|trans({ '%date%': quote.declined_at|date('Y-m-d') }) }}{% endif %}
+                    {% if quote.invoice_id %} · <a href="{{ ('invoice/manage/' ~ quote.invoice_id)|url }}">{{ 'Invoice #%id%'|trans({ '%id%': quote.invoice_id }) }}</a>{% endif %}
+                </p>
+            {% else %}
+                <p class="card-subtitle">{{ 'Save the quote, then send it: the client gets the PDF and a link to accept it.'|trans }}</p>
+            {% endif %}
+        </div>
+        <div class="card-actions btn-list">
+            <a class="btn" href="{{ 'invoice/quotes'|url }}">{{ 'All quotes'|trans }}</a>
+            {% if quote %}
+                <a class="btn" href="{{ ('invoice/quote/' ~ quote.id ~ '/pdf')|url }}">{{ 'Download PDF'|trans }}</a>
+                {% if quote.open %}
+                    <a class="btn btn-primary" href="{{ 'invoice/quote_send'|api_url(query: { 'id': quote.id }) }}"
+                       {{ fb_api_link({ message: 'Quote sent'|trans, modal: { type: 'confirm', title: 'Send the quote by email?'|trans }, reload: true }) }}>{{ 'Send by email'|trans }}</a>
+                    <a class="btn btn-success" href="{{ 'invoice/quote_accept'|api_url(query: { 'id': quote.id }) }}"
+                       {{ fb_api_link({ message: 'Quote accepted: the invoice is made and emailed.'|trans, modal: { type: 'confirm', title: 'Accept the quote for the client? The invoice is made and emailed.'|trans }, reload: true }) }}>{{ 'Accept for the client'|trans }}</a>
+                {% endif %}
+                <a class="btn btn-icon" href="{{ 'invoice/quote_delete'|api_url(query: { 'id': quote.id }) }}" aria-label="{{ 'Delete'|trans }}" data-bs-toggle="tooltip" data-bs-title="{{ 'Delete'|trans }}"
+                   {{ fb_api_link({ message: 'Quote deleted'|trans, modal: { type: 'confirm', title: 'Delete this quote?'|trans }, redirect: 'invoice/quotes'|url }) }}><svg class="icon"><use href="#trash" /></svg></a>
+            {% endif %}
+        </div>
+    </div>
+    {% if quote and quote.open %}
+        <div class="card-body py-2 border-bottom">
+            <span class="text-secondary">{{ 'Link for the client (opens without signing in):'|trans }}</span>
+            <code class="user-select-all">{{ ('quote/' ~ quote.hash)|url(area: 'client') }}</code>
+        </div>
+    {% endif %}
+</div>
+
+<form action="{{ 'invoice/quote_save'|api_url }}" {{ fb_api_form({ message: 'Quote saved'|trans, callback: 'clientfenceQuoteSaved' }) }}
+      data-bf-quote-form data-quote-url="{{ 'invoice/quote'|url }}" data-currency="{{ quote.currency|default('') }}">
+    <input type="hidden" name="id" value="{{ quote.id|default(0) }}">
+    <div class="row row-cards">
+        <div class="col-lg-8">
+            <div class="card mb-3">
+                <div class="card-header"><h3 class="card-title">{{ 'Quote'|trans }}</h3></div>
+                <div class="card-body">
+                    <fieldset {{ editable ? '' : 'disabled' }}>
+                        <div class="mb-3">
+                            <label class="form-label" for="quote-subject">{{ 'Subject'|trans }}</label>
+                            <input class="form-control" id="quote-subject" type="text" name="subject" maxlength="255" value="{{ quote.subject|default('') }}" required dir="auto">
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="quote-stage">{{ 'Stage'|trans }}</label>
+                                {% if editable %}
+                                    <select class="form-select" id="quote-stage" name="stage">
+                                        {% for key, label in stages %}
+                                            <option value="{{ key }}" {% if quote.stage|default('draft') == key %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="form-hint">{{ 'A quote becomes Accepted when the client accepts it, or with Accept for the client.'|trans }}</small>
+                                {% else %}
+                                    <input class="form-control" id="quote-stage" type="text" value="{{ quote.stage_title }}" readonly>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="quote-valid">{{ 'Valid until'|trans }} <span class="text-secondary">{{ '(optional)'|trans }}</span></label>
+                                <input class="form-control" id="quote-valid" type="date" name="valid_until" value="{{ quote.valid_until|default('') }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="quote-proposal">{{ 'Proposal'|trans }} <span class="text-secondary">{{ '(optional, above the lines)'|trans }}</span></label>
+                            <textarea class="form-control" id="quote-proposal" name="proposal" rows="5" dir="auto">{{ quote.proposal|default('') }}</textarea>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header"><h3 class="card-title">{{ 'For'|trans }}</h3></div>
+                <div class="card-body">
+                    <fieldset {{ editable ? '' : 'disabled' }}>
+                        <div class="btn-group w-100 mb-3" role="group">
+                            <input type="radio" class="btn-check" name="quote_for" id="quote-for-client" value="client" {{ for_client ? 'checked' : '' }} data-bf-quote-for>
+                            <label class="btn" for="quote-for-client">{{ 'Client'|trans }}</label>
+                            <input type="radio" class="btn-check" name="quote_for" id="quote-for-prospect" value="prospect" {{ for_client ? '' : 'checked' }} data-bf-quote-for>
+                            <label class="btn" for="quote-for-prospect">{{ 'Prospect'|trans }}</label>
+                        </div>
+                        <div data-bf-quote-section="client" {{ for_client ? '' : 'hidden' }}>
+                            <label class="form-label" for="client_id">{{ 'Client'|trans }}</label>
+                            <select class="form-control autocomplete-selector" placeholder="{{ 'Start Typing the Client Name or ID'|trans }}"
+                                    id="client_id" name="client_id" data-resturl="/api/admin/client/get_pairs">
+                                {% if client_id %}
+                                    {% set client = admin.client_get({ 'id': client_id }) %}
+                                    <option value="{{ client_id }}" selected>{{ client.first_name }} {{ client.last_name }}{% if client.company %} ({{ client.company }}){% endif %}</option>
+                                {% endif %}
+                            </select>
+                            <small class="form-hint">{{ 'The quote is in the client\'s currency.'|trans }}</small>
+                        </div>
+                        <div data-bf-quote-section="prospect" {{ for_client ? 'hidden' : '' }}>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label" for="quote-first">{{ 'First name'|trans }}</label>
+                                    <input class="form-control" id="quote-first" type="text" name="first_name" maxlength="100" value="{{ quote and not for_client ? quote.recipient.first_name : '' }}">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label" for="quote-last">{{ 'Last name'|trans }}</label>
+                                    <input class="form-control" id="quote-last" type="text" name="last_name" maxlength="100" value="{{ quote and not for_client ? quote.recipient.last_name : '' }}">
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="quote-company">{{ 'Company'|trans }} <span class="text-secondary">{{ '(optional)'|trans }}</span></label>
+                                <input class="form-control" id="quote-company" type="text" name="company" maxlength="100" value="{{ quote and not for_client ? quote.recipient.company : '' }}">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="quote-email">{{ 'Email'|trans }}</label>
+                                <input class="form-control" id="quote-email" type="email" name="email" maxlength="255" value="{{ quote and not for_client ? quote.recipient.email : '' }}">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="country">{{ 'Country'|trans }} <span class="text-secondary">{{ '(optional, for tax)'|trans }}</span></label>
+                                {{ mf.selectbox('country', guest.system_countries, quote and not for_client ? quote.recipient.country : '', 0, '-') }}
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="currency">{{ 'Currency'|trans }}</label>
+                                {{ mf.selectbox('currency', guest.currency_get_pairs, quote and not for_client ? quote.currency : '', 0, '') }}
+                            </div>
+                            <small class="form-hint">{{ 'When the prospect accepts, a client account is made with these details and the client gets an email to set a password.'|trans }}</small>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cards">
+        <div class="col-12">
+            <div class="card mb-3">
+                <div class="card-header"><h3 class="card-title">{{ 'Lines'|trans }}</h3></div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter" data-bf-quote-items data-tax-rate="{{ quote.taxrate|default(0) }}">
+                        <thead>
+                            <tr>
+                                <th>{{ 'Description'|trans }}</th>
+                                <th class="w-1">{{ 'Qty'|trans }}</th>
+                                <th class="w-1">{{ 'Unit price'|trans }}</th>
+                                <th class="w-1">{{ 'Discount %'|trans }}</th>
+                                <th class="w-1">{{ 'Taxed'|trans }}</th>
+                                <th class="w-1 text-end">{{ 'Amount'|trans }}</th>
+                                <th class="w-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                                {{ _self.row(loop.index0, item, editable) }}
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr><td colspan="5" class="text-end">{{ 'Subtotal'|trans }}</td><td class="text-end text-nowrap" data-bf-quote-subtotal>{{ quote ? quote.subtotal|format_currency(quote.currency) : '' }}</td><td></td></tr>
+                            {% if quote and quote.tax > 0 %}
+                                <tr><td colspan="5" class="text-end">{{ quote.taxname ?: 'Tax'|trans }} ({{ quote.taxrate }}%)</td><td class="text-end text-nowrap" data-bf-quote-tax>{{ quote.tax|format_currency(quote.currency) }}</td><td></td></tr>
+                            {% endif %}
+                            <tr class="fw-bold"><td colspan="5" class="text-end">{{ 'Total'|trans }}</td><td class="text-end text-nowrap" data-bf-quote-total>{{ quote ? quote.total|format_currency(quote.currency) : '' }}</td><td></td></tr>
+                        </tfoot>
+                    </table>
+                </div>
+                {% if editable %}
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn" data-bf-quote-add>{{ 'Add line'|trans }}</button>
+                        <small class="text-secondary">{{ 'Quantities are whole numbers. Tax follows the client\'s tax rule; totals with tax are shown after saving.'|trans }}</small>
+                    </div>
+                    <template data-bf-quote-row>{{ _self.row('__INDEX__', { 'description': '', 'quantity': 1, 'price': '', 'discount': 0, 'taxed': false }, true) }}</template>
+                {% endif %}
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="quote-notes">{{ 'Notes for the client'|trans }} <span class="text-secondary">{{ '(optional, below the lines)'|trans }}</span></label>
+                        <textarea class="form-control" id="quote-notes" name="customer_notes" rows="3" dir="auto" {{ editable ? '' : 'disabled' }}>{{ quote.customer_notes|default('') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="form-label" for="quote-admin-notes">{{ 'Admin notes'|trans }} <span class="text-secondary">{{ '(staff only)'|trans }}</span></label>
+                        <textarea class="form-control" id="quote-admin-notes" name="admin_notes" rows="3" dir="auto">{{ quote.admin_notes|default('') }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end mb-3">
+        <button type="submit" class="btn btn-primary">{{ quote ? 'Save quote'|trans : 'Create quote'|trans }}</button>
+    </div>
+</form>
+{% endblock %}
+
+{% macro row(index, item, editable) %}
+    <tr data-bf-quote-line>
+        <td><input class="form-control bf-quote-desc" type="text" name="items[{{ index }}][description]" maxlength="255" value="{{ item.description }}" aria-label="{{ 'Description'|trans }}" dir="auto" {{ editable ? '' : 'disabled' }}></td>
+        <td><input class="form-control text-end bf-quote-qty" type="number" name="items[{{ index }}][quantity]" min="1" step="1" value="{{ item.quantity }}" aria-label="{{ 'Qty'|trans }}" data-bf-quote-qty {{ editable ? '' : 'disabled' }}></td>
+        <td><input class="form-control text-end bf-quote-price" type="number" name="items[{{ index }}][price]" step="0.01" value="{{ item.price }}" aria-label="{{ 'Unit price'|trans }}" data-bf-quote-price {{ editable ? '' : 'disabled' }}></td>
+        <td><input class="form-control text-end bf-quote-discount" type="number" name="items[{{ index }}][discount]" min="0" max="100" step="0.01" value="{{ item.discount ?: '' }}" aria-label="{{ 'Discount %'|trans }}" data-bf-quote-discount {{ editable ? '' : 'disabled' }}></td>
+        <td class="text-center"><input class="form-check-input" type="checkbox" name="items[{{ index }}][taxed]" value="1" aria-label="{{ 'Taxed'|trans }}" {{ item.taxed ? 'checked' : '' }} {{ editable ? '' : 'disabled' }}></td>
+        <td class="text-end text-nowrap" data-bf-quote-amount></td>
+        <td>{% if editable %}<button type="button" class="btn btn-icon btn-ghost-danger" aria-label="{{ 'Remove line'|trans }}" data-bf-quote-remove><svg class="icon"><use href="#trash" /></svg></button>{% endif %}</td>
+    </tr>
+{% endmacro %}

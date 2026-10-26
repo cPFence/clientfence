@@ -1,0 +1,57 @@
+{# ClientFence: fixed currency prices (Product/CurrencyPrices.php), with the pricing of a product or an
+   add-on (partial_pricing.html.twig) and of a TLD (mod_servicedomain_tld.html.twig); saved by the same
+   form. Gets `kind`, `id` and `rows` ([{period, label, price, setup, type}], default-currency prices;
+   `type` once or recurrent shows the row for that billing model, `pricing_type` the current one) and
+   `setup` (false: no setup fee column). #}
+{% set fixed = admin.product_currency_prices_get({ kind: kind, id: id }) %}
+{% set with_setup = setup ?? true %}
+{% if fixed.currencies|length > 0 %}
+<details class="mt-4 border rounded p-3" data-cf-fixed-prices{% if fixed.currencies|filter(c => c.prices|length > 0)|length > 0 %} open{% endif %}>
+    <summary class="fw-medium">{{ 'Prices in other currencies'|trans }}</summary>
+    <p class="text-secondary mt-2 mb-3">{{ 'Set a fixed price in a currency, or leave it blank to convert the default currency price at the rate (shown in grey). A fixed price stays the same when the rate changes. New orders get it; existing services keep their own price.'|trans }}</p>
+    <p class="text-secondary mb-0" data-cf-fixed-free{% if (pricing_type ?? '') != 'free' %} hidden{% endif %}>{{ 'This product is free in every currency.'|trans }}</p>
+    {% for c in fixed.currencies %}
+    <div class="table-responsive border rounded mb-3">
+        <table class="table card-table table-vcenter mb-0">
+            <thead>
+                <tr>
+                    <th>{{ c.code }} <span class="text-secondary fw-normal">{{ 'Rate :rate'|trans({ ':rate': c.rate }) }}</span></th>
+                    {% if with_setup %}<th>{{ 'Setup Price'|trans }} ({{ c.code }})</th>{% endif %}
+                    <th>{{ 'Price'|trans }} ({{ c.code }})</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in rows %}
+                {% set own = c.prices[row.period] ?? {} %}
+                <tr{% if row.type is defined %} data-cf-fixed-type="{{ row.type }}"{% if row.type != (pricing_type ?? '') %} hidden{% endif %}{% endif %}>
+                    <td class="fw-medium">{{ row.label }}</td>
+                    {% if with_setup %}
+                    <td><input class="form-control" type="text" inputmode="decimal" name="currency_prices[{{ c.code }}][{{ row.period }}][setup_price]" value="{{ own.setup_price ?? '' }}" placeholder="{{ ((row.setup ?: 0) * c.rate)|number_format(2, '.', '') }}" aria-label="{{ row.label }}: {{ 'Setup Price'|trans }} ({{ c.code }})"></td>
+                    {% endif %}
+                    <td><input class="form-control" type="text" inputmode="decimal" name="currency_prices[{{ c.code }}][{{ row.period }}][price]" value="{{ own.price ?? '' }}" placeholder="{{ ((row.price ?: 0) * c.rate)|number_format(2, '.', '') }}" aria-label="{{ row.label }}: {{ 'Price'|trans }} ({{ c.code }})"></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</details>
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener('DOMContentLoaded', function () {
+        const box = document.querySelector('[data-cf-fixed-prices]');
+        if (!box) {
+            return;
+        }
+        // The rows follow the billing model chosen above (partial_pricing.html.twig).
+        document.querySelectorAll('.pp_type input').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const type = this.value;
+                box.querySelectorAll('tr[data-cf-fixed-type]').forEach(function (row) {
+                    row.hidden = row.dataset.cfFixedType !== type;
+                });
+                box.querySelector('[data-cf-fixed-free]').hidden = type !== 'free';
+            });
+        });
+    });
+</script>
+{% endif %}

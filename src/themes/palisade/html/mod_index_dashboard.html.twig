@@ -1,0 +1,202 @@
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'dashboard' %}
+
+{% block meta_title %}{{ 'Dashboard'|trans }}{% endblock %}
+{% block body_class %}dashboard{% endblock %}
+
+{# Theme setting "Hide Dashboard Breadcrumb". #}
+{% block topbar_nav %}
+    {% if not settings.hide_dashboard_breadcrumb|default('0') %}{{ parent() }}{% endif %}
+{% endblock %}
+
+{% import "macro_functions.html.twig" as mf %}
+
+{% block content %}
+    {{ render_widgets('client.index.dashboard.content.before') }}
+
+    {# Theme settings "Showcase": a note above the dashboard (Markdown) with an optional button. #}
+    {% if settings.showcase_enabled|default('0') and settings.showcase_text|default('')|trim %}
+        <div class="card showcase-card mb-4">
+            <div class="card-body">
+                <div class="showcase-text">{{ settings.showcase_text|trim|markdown_to_html }}</div>
+                {% if settings.showcase_button_url|default('')|trim and settings.showcase_button_title|default('')|trim %}
+                    <a class="btn btn-primary" href="{{ settings.showcase_button_url|trim }}">{{ settings.showcase_button_title|trim }}</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if not client %}
+        {{ include('partials/guest_dashboard.html.twig') }}
+    {% else %}
+    {% set dashboard = client.index_get_dashboard %}
+    {% set profile = dashboard.profile %}
+
+    <div class="page-heading">
+        <h1>{{ 'Welcome back, :name'|trans({ ':name': clientfence_user|default(null) ? clientfence_user.user.first_name : profile.first_name }) }}</h1>
+        <p>{{ 'Here is an overview of your account.'|trans }}</p>
+    </div>
+
+    {{ render_widgets('client.index.dashboard.client.before', { 'dashboard': dashboard, 'profile': profile }) }}
+
+    {# ClientFence: open network issues and scheduled work that affect the client's services
+       (Support/NetworkIssues.php); none while network status is off. #}
+    {% set network_alerts = client.support_network_issue_alerts %}
+    {% if network_alerts %}
+        <div class="alert alert-warning mb-4" role="status">
+            <strong>{{ 'Network status'|trans }}:</strong>
+            <ul class="mb-1 mt-1 ps-3">
+                {% for alert in network_alerts %}
+                    <li><span dir="auto">{{ alert.title }}</span> · {{ alert.status_title }} · {{ alert.status == 'scheduled' ? 'Starts %date%'|trans({ '%date%': alert.start_at|format_datetime }) : alert.about }}</li>
+                {% endfor %}
+            </ul>
+            <a class="alert-link" href="{{ 'network-status'|url }}">{{ 'See the network status'|trans }}</a>
+        </div>
+    {% endif %}
+
+    {% if dashboard.invoices is not null and dashboard.invoices.unpaid > 0 %}
+        <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
+            <span class="d-inline-flex align-items-center gap-2">
+                <svg class="icon" aria-hidden="true"><use href="#alert-triangle"/></svg>
+                {{ 'You have :count unpaid invoice(s).'|trans({ ':count': dashboard.invoices.unpaid }) }}
+            </span>
+            <a class="btn btn-sm btn-warning" href="{{ 'invoice'|url }}">{{ 'View invoices'|trans }}</a>
+        </div>
+    {% endif %}
+
+    {% for ticket in dashboard.recent_tickets %}
+        {% if ticket.status == 'on_hold' %}
+            <div class="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
+                <span>{{ 'Ticket #:id has a new reply.'|trans({ ':id': ticket.id }) }}</span>
+                <a class="btn btn-sm btn-primary" href="{{ "support/ticket/#{ticket.id}"|url }}">{{ 'Reply'|trans }}</a>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {# Sections are null when an authorized user's permissions do not show them (ClientFence). #}
+    <div class="row g-3 mb-4">
+        {% if dashboard.orders is not null %}
+        <div class="col-6 col-xl-3">
+            <a class="stat-card d-block" href="{{ 'order/service'|url }}">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#server"/></svg></span>
+                <div class="stat-label">{{ 'Active services'|trans }}</div>
+                <div class="stat-value">{{ dashboard.orders.active }}</div>
+                <div class="stat-meta">{{ ':count in total'|trans({ ':count': dashboard.orders.total }) }}</div>
+            </a>
+        </div>
+        {% endif %}
+        {% if dashboard.invoices is not null %}
+        <div class="col-6 col-xl-3">
+            <a class="stat-card d-block{% if dashboard.invoices.unpaid > 0 %} is-alert{% endif %}" href="{{ 'invoice'|url }}">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#file-invoice"/></svg></span>
+                <div class="stat-label">{{ 'Unpaid invoices'|trans }}</div>
+                <div class="stat-value">{{ dashboard.invoices.unpaid }}</div>
+                <div class="stat-meta">{{ ':count paid'|trans({ ':count': dashboard.invoices.paid }) }}</div>
+            </a>
+        </div>
+        {% endif %}
+        {% if dashboard.tickets is not null %}
+        <div class="col-6 col-xl-3">
+            <a class="stat-card d-block" href="{{ 'support'|url }}">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#headset"/></svg></span>
+                <div class="stat-label">{{ 'Open tickets'|trans }}</div>
+                <div class="stat-value">{{ dashboard.tickets.open + dashboard.tickets.on_hold }}</div>
+                <div class="stat-meta">{{ ':count in total'|trans({ ':count': dashboard.tickets.total }) }}</div>
+            </a>
+        </div>
+        {% endif %}
+        {% if dashboard.orders is not null %}
+        <div class="col-6 col-xl-3">
+            <a class="stat-card d-block{% if dashboard.orders.expiring > 0 %} is-alert{% endif %}" href="{{ 'order/service'|url }}">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#alert-triangle"/></svg></span>
+                <div class="stat-label">{{ 'Expiring soon'|trans }}</div>
+                <div class="stat-value">{{ dashboard.orders.expiring }}</div>
+                <div class="stat-meta">{{ 'Services to renew'|trans }}</div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        {% if dashboard.orders is not null %}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header justify-content-between">
+                    <h2>{{ 'Recent services'|trans }}</h2>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ 'order/service'|url }}">{{ 'View all'|trans }}</a>
+                </div>
+                {% if dashboard.recent_orders %}
+                    <div>
+                        {% for order in dashboard.recent_orders %}
+                            <a class="list-row" href="{{ "order/service/manage/#{order.id}"|url }}">
+                                <div class="min-w-0">
+                                    <div class="list-row-title text-truncate">{{ order.title|truncate(48) }}</div>
+                                    <div class="list-row-meta">#{{ order.id }}{% if order.expires_at is defined and order.expires_at %} · {{ 'Expires'|trans }} {{ order.expires_at|format_date }}{% endif %}</div>
+                                </div>
+                                {{ mf.status_badge(order.status, 'order') }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">{{ 'You have no services yet.'|trans }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if dashboard.tickets is not null %}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header justify-content-between">
+                    <h2>{{ 'Support Tickets'|trans }}</h2>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-sm btn-primary" href="{{ 'support'|url(query: { 'ticket': 1 }) }}">{{ 'New Ticket'|trans }}</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ 'support'|url }}">{{ 'View all'|trans }}</a>
+                    </div>
+                </div>
+                {% if dashboard.recent_tickets %}
+                    <div>
+                        {% for ticket in dashboard.recent_tickets %}
+                            <a class="list-row" href="{{ "support/ticket/#{ticket.id}"|url }}">
+                                <div class="min-w-0">
+                                    <div class="list-row-title text-truncate">{{ ticket.subject|truncate(48) }}</div>
+                                    <div class="list-row-meta" title="{{ ticket.updated_at|format_date }}">#{{ ticket.id }} · {{ ':time ago'|trans({ ':time': ticket.updated_at|timeago }) }}</div>
+                                </div>
+                                {{ mf.status_badge(ticket.status, 'ticket') }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">{{ 'No recent support tickets'|trans }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {# ClientFence core patch (ext news): the latest visible posts, pinned first, as WHMCS's Recent News. #}
+    {% set news = guest.extension_is_on({ mod: 'news' }) ? guest.news_get_list({ per_page: 3 }).list : [] %}
+    {% if news %}
+        <div class="card mt-4">
+            <div class="card-header justify-content-between">
+                <h2>{{ 'Recent News'|trans }}</h2>
+                <a class="btn btn-sm btn-outline-secondary" href="{{ 'news'|url }}">{{ 'View all'|trans }}</a>
+            </div>
+            <div>
+                {% for post in news %}
+                    <a class="list-row" href="{{ ('news/' ~ post.slug)|url }}">
+                        <div class="min-w-0">
+                            <div class="list-row-title text-truncate" dir="auto">{{ post.title }}</div>
+                            <div class="list-row-meta text-truncate" dir="auto">{{ (post.publish_at ?? post.created_at)|format_date }} · {{ (post.description ?: post.excerpt ?: post.content)|striptags|truncate(160) }}</div>
+                        </div>
+                        {% if post.pinned %}<span class="badge text-bg-primary">{{ 'Pinned'|trans }}</span>{% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {{ render_widgets('client.index.dashboard.client.after', { 'dashboard': dashboard, 'profile': profile }) }}
+    {% endif %}
+    {{ render_widgets('client.index.dashboard.content.after') }}
+{% endblock %}

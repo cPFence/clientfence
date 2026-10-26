@@ -1,0 +1,73 @@
+{# Sidebar links. Theme settings "Side Menu Items" turn each of Dashboard, Store, Support, Services,
+   Invoices, Emails, Wallet, News and Knowledge Base on or off; Hosting accounts, Users and Profile
+   always show. The Store link shows only while the ClientFence module opens the store to the viewer
+   (store gate: closed, testers or public, or a store preview), News and Knowledge Base only while
+   those are on. A visitor who is not signed in gets the Store and News links, Support (the contact
+   form) while guest tickets are on, Network Status while it is public and, while "Enable Dashboard
+   for Guests" is on, Dashboard and Knowledge Base; an authorized user only the links the user's
+   permissions open (layout_default sets clientfence_user). Last, the published custom pages set to
+   show in the menu that the viewer may open (Custom Pages extension), in their order. #}
+{% set guest_tickets = not client and guest.support_guest_tickets_enabled %}
+{% set menu = [
+    { key: 'dashboard', url: '/'|url, icon: 'layout-grid', label: 'Dashboard'|trans, setting: 'side_menu_dashboard' },
+    { key: 'services', url: 'order/service'|url, icon: 'server', label: 'Services'|trans, setting: 'side_menu_services' },
+    { key: 'invoices', url: 'invoice'|url, icon: 'file-invoice', label: 'Invoices'|trans, setting: 'side_menu_invoices' },
+    { key: 'support', url: (guest_tickets ? 'support/contact-us' : 'support')|url, icon: 'headset', label: 'Support'|trans, setting: 'side_menu_support' },
+] %}
+{% if guest.servicehosting_panel_on %}
+    {% set menu = menu|merge([{ key: 'hosting', url: 'hosting'|url, icon: 'world', label: 'Hosting accounts'|trans }]) %}
+{% endif %}
+{% if guest.clientfence_store_open %}
+    {% set menu = menu|merge([{ key: 'order', url: 'order'|url, icon: 'shopping-cart', label: 'Store'|trans, setting: 'side_menu_order' }]) %}
+{% endif %}
+{% if client %}
+    {% set menu = menu|merge([{ key: 'emails', url: 'email'|url, icon: 'mail', label: 'Emails'|trans, setting: 'side_menu_emails' }]) %}
+{% endif %}
+{% if guest.invoice_funds_enabled and client %}
+    {% set menu = menu|merge([{ key: 'payments', url: 'client/balance'|url, icon: 'wallet', label: 'Wallet'|trans, setting: 'side_menu_payments' }]) %}
+{% endif %}
+{% if guest.extension_is_on({ mod: 'news' }) %}
+    {% set menu = menu|merge([{ key: 'news', url: 'news'|url, icon: 'news', label: 'News'|trans, setting: 'side_menu_news' }]) %}
+{% endif %}
+{% if guest.support_kb_enabled %}
+    {% set menu = menu|merge([{ key: 'kb', url: 'support/kb'|url, icon: 'book', label: 'Knowledge Base'|trans, setting: 'side_menu_kb' }]) %}
+{% endif %}
+{# ClientFence: the Network Status page (Support/NetworkIssues.php) while it is on, for signed-in
+   clients (and visitors while it is public). #}
+{% set network_status = guest.support_network_status_settings ?: {} %}
+{% if network_status.enabled|default(false) and (client or network_status.public|default(false)) %}
+    {% set menu = menu|merge([{ key: 'network-status', url: 'network-status'|url, icon: 'activity', label: 'Network Status'|trans }]) %}
+{% endif %}
+{# The account's users (ClientFence): the owner and owner links only. #}
+{% if client and (not clientfence_user|default(null) or clientfence_user.owner) %}
+    {% set menu = menu|merge([{ key: 'users', url: 'users'|url, icon: 'users', label: 'Users'|trans }]) %}
+{% endif %}
+{# The account's contacts (ClientFence): the owner, owner links and users with the contacts permission. #}
+{% if client and (not clientfence_user|default(null) or clientfence_user.owner or 'contacts' in clientfence_user.permissions) %}
+    {% set menu = menu|merge([{ key: 'contacts', url: 'contacts'|url, icon: 'address-book', label: 'Contacts'|trans }]) %}
+{% endif %}
+{% if client %}
+    {% set menu = menu|merge([{ key: 'profile', url: 'client/profile'|url, icon: 'user-circle', label: 'Profile'|trans }]) %}
+{% endif %}
+{% set menu = menu|filter(item => item.setting is not defined or attribute(settings, item.setting)|default('1')) %}
+{% if not client %}
+    {% set guest_keys = ['order', 'news', 'network-status']|merge(guest_tickets ? ['support'] : [])|merge(settings.require_login|default('1') ? [] : ['dashboard', 'kb']) %}
+    {% set menu = menu|filter(item => item.key in guest_keys) %}
+{% elseif clientfence_user|default(null) %}
+    {# An authorized user (ClientFence) sees only what the user's permissions open. #}
+    {# Profile is the user's own (/profile); the account's details are in the top bar menu. #}
+    {% set needs = { services: 'products', invoices: 'invoices', support: 'tickets', hosting: 'products', order: 'orders', payments: 'invoices', emails: 'emails' } %}
+    {% set menu = menu|filter(item => needs[item.key] is not defined or needs[item.key] in clientfence_user.permissions)|map(item => item.key == 'profile' ? item|merge({ url: 'profile'|url, label: 'My profile'|trans }) : item) %}
+{% endif %}
+{% if guest.extension_is_on({ mod: 'custompages' }) %}
+    {% set menu = menu|merge(guest.custompages_links|filter(custom => custom.menu)|map(custom => { key: 'page-' ~ custom.slug, url: ('page/' ~ custom.slug)|url, icon: 'link', label: custom.title })) %}
+{% endif %}
+{% for item in menu %}
+    {% set is_active = current_active_menu == item.key %}
+    <li>
+        <a href="{{ item.url }}" title="{{ item.label }}"{% if is_active %} class="active" aria-current="page"{% endif %}>
+            <svg class="icon" aria-hidden="true"><use href="#{{ item.icon }}"/></svg>
+            <span class="sidebar-text">{{ item.label }}</span>
+        </a>
+    </li>
+{% endfor %}

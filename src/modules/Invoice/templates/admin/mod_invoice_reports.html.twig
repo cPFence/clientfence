@@ -1,0 +1,35 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: Invoices > Reports, as WHMCS's Reports page (Invoice/Reports.php). #}
+
+{% set active_menu = 'invoice' %}
+
+{% block meta_title %}{{ 'Reports'|trans }}{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Reports'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Each report can be filtered, printed and downloaded as a CSV file.'|trans }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cards">
+    {% for group in catalog %}
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header"><h3 class="card-title">{{ group.title }}</h3></div>
+                <div class="list-group list-group-flush">
+                    {% for key, item in group.reports %}
+                        <a class="list-group-item list-group-item-action" href="{{ ('invoice/reports/' ~ key)|url }}">
+                            <div class="fw-medium">{{ item.title }}</div>
+                            <div class="text-secondary small">{{ item.description }}</div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

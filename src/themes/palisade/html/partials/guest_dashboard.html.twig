@@ -1,0 +1,36 @@
+{# The dashboard for signed-out visitors (theme setting "Enable Dashboard for Guests"): sign in or
+   register, the store while it is open to them, news and the knowledge base while they are on. #}
+{{ render_widgets('client.index.dashboard.guest.before') }}
+<div class="page-heading">
+    <h1>{{ 'Welcome'|trans }}</h1>
+    <p>{{ 'Sign in to manage your services, invoices and support tickets.'|trans }}</p>
+</div>
+{% set cards = [{ icon: 'user', title: 'Your account'|trans, text: 'You are not signed in.'|trans, links: [{ url: 'login'|url, label: 'Sign in'|trans, primary: true }]|merge(guest.clientfence_signup_info.open ? [{ url: 'signup'|url, label: 'Register'|trans }] : []) }] %}
+{% if guest.clientfence_store_open %}
+    {% set cards = cards|merge([{ icon: 'shopping-cart', title: 'Store'|trans, text: 'Order new products and services'|trans, links: [{ url: 'order'|url, label: 'Store'|trans }] }]) %}
+{% endif %}
+{% if guest.extension_is_on({ mod: 'news' }) %}
+    {% set cards = cards|merge([{ icon: 'news', title: 'News'|trans, text: 'Latest news and announcements'|trans, links: [{ url: 'news'|url, label: 'Announcements'|trans }] }]) %}
+{% endif %}
+{% if guest.support_kb_enabled %}
+    {% set cards = cards|merge([{ icon: 'book', title: 'Knowledge Base'|trans, text: 'Find answers to frequent questions'|trans, links: [{ url: 'support/kb'|url, label: 'Knowledge Base'|trans }] }]) %}
+{% endif %}
+<div class="row g-3">
+    {% for card in cards %}
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <span class="guest-card-icon"><svg class="icon" aria-hidden="true"><use href="#{{ card.icon }}"/></svg></span>
+                    <h2 class="h5">{{ card.title }}</h2>
+                    <p class="text-body-secondary">{{ card.text }}</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for link in card.links %}
+                            <a class="btn btn-sm {{ link.primary|default(false) ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ link.url }}">{{ link.label }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{{ render_widgets('client.index.dashboard.guest.after') }}

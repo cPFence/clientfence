@@ -1,0 +1,99 @@
+# ClientFence local test site: the release image, MariaDB, a Mailpit inbox that catches every
+# email, a test mailbox server (ticket email import) and SFTP/FTP servers (database backups).
+# Every port listens on this machine's loopback only. Run it with dev/site.sh, which reads
+# dev/.env (passwords, made by the first run); config.php is kept in dev/state/.
+name: clientfence-dev
+
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: clientfence
+      MARIADB_USER: clientfence
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is required}
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping --host=127.0.0.1 --user=root --password=\"$${MARIADB_ROOT_PASSWORD}\" --silent"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  mail:
+    image: axllent/mailpit:v1.21.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MAIL_PORT:-8091}:8025"
+      - "[::1]:${MAIL_PORT:-8091}:8025"
+
+  # A test mailbox server for ticket email import: SMTP takes mail for any address and keeps it
+  # in that address's IMAP mailbox (made on first use, kept in memory until a restart). Logins
+  # are not checked, so no mailbox password is needed (any value works). The site reaches it at
+  # imap:3143 (plain) and imap:3993 (TLS, self-signed); test scripts send mail to it on this
+  # machine's port SMTP_PORT.
+  imap:
+    image: greenmail/standalone:2.1.14
+    restart: unless-stopped
+    environment:
+      GREENMAIL_OPTS: >-
+        -Dgreenmail.setup.test.smtp -Dgreenmail.setup.test.imap -Dgreenmail.setup.test.imaps
+        -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.auth.disabled -Dgreenmail.verbose=false
+      JAVA_OPTS: -Xmx192m -Djava.net.preferIPv4Stack=true
+    ports:
+      - "127.0.0.1:${SMTP_PORT:-8092}:3025"
+
+  # Test servers for database backups (System → Settings → System → Database Backups): SFTP at backup:22 and FTP at
+  # backup-ftp:21, user "backup" with the password BACKUP_PASSWORD from dev/.env; the SFTP login
+  # folder has a "backups" folder. Files stay in the container until it is removed; no port is
+  # published on this machine.
+  backup:
+    image: atmoz/sftp:alpine
+    restart: unless-stopped
+    command: backup:${BACKUP_PASSWORD:?BACKUP_PASSWORD is required}:::backups
+
+  backup-ftp:
+    image: delfer/alpine-ftp-server:latest
+    restart: unless-stopped
+    environment:
+      USERS: backup|${BACKUP_PASSWORD:?BACKUP_PASSWORD is required}
+      ADDRESS: backup-ftp
+
+  app:
+    image: clientfence-dev:latest
+    build:
+      context: ..
+      target: runtime
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    # Uploaded files, receipts, ticket attachments and kept backups survive a rebuild of the image.
+    # config.php lives in dev/state/ (a folder, so the site can rewrite it, as a settings save
+    # does) and is linked into the web root. The link belongs to www-data: the web root is sticky
+    # and world-writable (mode 1777), where Linux does not follow another user's links.
+    command: >-
+      sh -c "mkdir -p /var/www/.clientfence-receipts /var/www/.clientfence-ticket-files /var/www/.clientfence-backups
+      && chown www-data:www-data /var/www/.clientfence-receipts /var/www/.clientfence-ticket-files /var/www/.clientfence-backups /var/www/clientfence-state
+      && chmod 700 /var/www/clientfence-state
+      && chown -R www-data:www-data data
+      && if [ -f /var/www/clientfence-state/config.php ]; then ln -sfn /var/www/clientfence-state/config.php config.php && chown -h www-data:www-data config.php; fi
+      && (cron &) && exec apache2-foreground"
+    volumes:
+      - ./state:/var/www/clientfence-state
+      - data:/var/www/html/data
+      - receipts:/var/www/.clientfence-receipts
+      - ticket-files:/var/www/.clientfence-ticket-files
+      - backups:/var/www/.clientfence-backups
+    ports:
+      - "127.0.0.1:${SITE_PORT:-8090}:80"
+      - "[::1]:${SITE_PORT:-8090}:80"
+
+volumes:
+  db:
+  data:
+  receipts:
+  ticket-files:
+  backups:

@@ -1,0 +1,22 @@
+{# ClientFence ticket attachments (TicketFiles.php): the files of one ticket message (message from
+   support_ticket_get, which carries ticket_files). Images are marked; a removed file stays
+   listed as removed. #}
+{% if message.ticket_files|default([]) is not empty %}
+    <div class="ticket-files mt-3 pt-2 border-top" data-clientfence-message-files>
+        <div class="text-muted small mb-2">{{ 'Attachments'|trans }}</div>
+        <ul class="list-unstyled mb-0 d-flex flex-wrap gap-2">
+            {% for file in message.ticket_files %}
+                <li class="ticket-file border rounded px-2 py-1 d-inline-flex align-items-center gap-2">
+                    {% if file.removed %}
+                        <span class="text-muted text-decoration-line-through" dir="auto">{{ file.name }}</span>
+                        <span class="text-muted small">{{ file.removed_reason == 'expired' ? 'Removed after the keep period'|trans : 'Removed by staff'|trans }}</span>
+                    {% else %}
+                        <svg class="icon icon-sm text-muted" aria-hidden="true"><use href="#{{ file.image ? 'photo' : 'paperclip' }}"/></svg>
+                        <a href="{{ ('ticket-file/' ~ file.id)|url }}" target="_blank" rel="noopener" dir="auto">{{ file.name }}</a>
+                        <span class="text-muted small" dir="ltr">{{ file.size_label }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

@@ -1,0 +1,831 @@
+<?php
+
+/**
+ * Copyright 2022-2026 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+declare(strict_types=1);
+
+use ClientFence\Mod\Servicehosting\Api\Admin;
+
+use function Tests\Helpers\container;
+use function Tests\Helpers\moduleService;
+
+test('testGetDi', function (): void {
+    $api = apiEndpoint(new Admin());
+    $di = container();
+    $api->setDi($di);
+    $getDi = $api->getDi();
+    expect($getDi)->toBe($di);
+});
+
+test('testChangePlan', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'plan_id' => 1,
+    ];
+
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('changeAccountPlan')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingHp());
+
+    $di = container();
+    $di['db'] = $dbMock;
+
+    $apiMock->setDi($di);
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->change_plan($data);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testChangePlanMissingPlanId', function (): void {
+    $adminApi = apiEndpoint(new Admin());
+
+    $dispatcher = new ClientFence\Api\Dispatcher();
+
+    expect(fn () => $dispatcher->validateRequiredParams($adminApi, 'change_plan', []))
+        ->toThrow(ClientFence\InformationException::class, 'plan_id is missing');
+});
+
+test('testChangeUsername', function (): void {
+    $api = apiEndpoint(new Admin());
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('changeAccountUsername')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->change_username([]);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testChangeIp', function (): void {
+    $api = apiEndpoint(new Admin());
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('changeAccountIp')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->change_ip([]);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testChangeDomain', function (): void {
+    $api = apiEndpoint(new Admin());
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('changeAccountDomain')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->change_domain([]);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testChangePassword', function (): void {
+    $api = apiEndpoint(new Admin());
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('changeAccountPassword')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->change_password([]);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testSync', function (): void {
+    $api = apiEndpoint(new Admin());
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('sync')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->sync([]);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testUpdate', function (): void {
+    $api = apiEndpoint(new Admin());
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('update')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->update([]);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testManagerGetPairs', function (): void {
+    $api = apiEndpoint(new Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getServerManagers')
+    ->atLeast()->once()
+    ->andReturn([]);
+
+    $api->setService($serviceMock);
+
+    $result = $api->manager_get_pairs([]);
+    expect($result)->toBeArray();
+});
+
+test('testServerGetPairs', function (): void {
+    $api = apiEndpoint(new Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getServerPairs')
+    ->atLeast()->once()
+    ->andReturn([]);
+
+    $api->setService($serviceMock);
+
+    $result = $api->server_get_pairs([]);
+    expect($result)->toBeArray();
+});
+
+test('testAccountGetList', function (): void {
+    $api = apiEndpoint(new Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getAccountsSearchQuery')
+    ->atLeast()->once()
+    ->andReturn(['SQLstring', []]);
+    $serviceMock
+    ->shouldReceive('getAccountsBatchForApi')
+    ->once()
+    ->with([['id' => 1]], null)
+    ->andReturn([['id' => 1, 'order' => null]]);
+
+    $pagerMock = Mockery::mock(ClientFence\Pagination::class)->makePartial();
+    $pagerMock
+    ->shouldReceive('getPaginatedResultSet')
+    ->atLeast()->once()
+    ->andReturn(['list' => [['id' => 1]]]);
+
+    $di = container();
+    $dbStub = Mockery::mock('ClientFence\Database');
+    $dbStub->shouldNotReceive('dispense');
+    $dbStub->shouldNotReceive('findOne');
+    $di['mod_service'] = $di->protect(moduleService());
+    $di['pager'] = $pagerMock;
+    $di['db'] = $dbStub;
+
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->account_get_list([]);
+    expect($result['list'])->toBe([['id' => 1, 'order' => null]]);
+});
+
+test('testServerGetList', function (): void {
+    $api = apiEndpoint(new Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getServersSearchQuery')
+    ->atLeast()->once()
+    ->andReturn(['SQLstring', []]);
+
+    $pagerMock = Mockery::mock(ClientFence\Pagination::class)->makePartial();
+    $pagerMock
+    ->shouldReceive('getPaginatedResultSet')
+    ->atLeast()->once()
+    ->andReturn(['list' => []]);
+
+    $di = container();
+    $di['pager'] = $pagerMock;
+    $dbStub = Mockery::mock('ClientFence\Database');
+    $di['db'] = $dbStub;
+
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->server_get_list([]);
+    expect($result)->toBeArray();
+});
+
+test('testServerCreate', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'name' => 'test',
+        'ip' => '1.1.1.1',
+        'manager' => 'ServerManagerCode',
+    ];
+
+    $newServerId = 1;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('createServer')
+    ->atLeast()->once()
+    ->andReturn($newServerId);
+
+    $di = container();
+    $api->setDi($di);
+
+    $api->setService($serviceMock);
+
+    $result = $api->server_create($data);
+    expect($result)->toBeInt();
+    expect($result)->toBe($newServerId);
+});
+
+test('testServerGet', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data['id'] = 1;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('toHostingServerApiArray')
+    ->atLeast()->once()
+    ->andReturn([]);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->server_get($data);
+    expect($result)->toBeArray();
+});
+
+test('testServerDelete', function (): void {
+    $api = apiEndpoint(new Admin());
+    // Test case 1: Server can be deleted
+    $data['id'] = 1;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getServerUsageStats')
+    ->atLeast()->once()
+    ->andReturn(['total' => 0, 'active' => 0, 'orphaned' => 0, 'orphanedIds' => []]);
+    $serviceMock
+    ->shouldReceive('deleteServer')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->server_delete($data);
+    expect($result)->toBeTrue();
+
+    // Test case 2: Server is used by active service_hostings and cannot be deleted
+    $data['id'] = 2;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getServerUsageStats')
+    ->atLeast()->once()
+    ->andReturn(['total' => 1, 'active' => 1, 'orphaned' => 0, 'orphanedIds' => []]);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    // Now, we expect an exception to be thrown because the server is used by service hostings
+    $this->expectException(ClientFence\Exception::class);
+    $this->expectExceptionCode(704);
+
+    $api->server_delete($data);
+});
+
+test('testServerDeleteWithOrphanedUsages', function (): void {
+    $api = apiEndpoint(new Admin());
+
+    // Orphaned usages without force: informative exception, nothing detached
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getServerUsageStats')
+    ->atLeast()->once()
+    ->andReturn(['total' => 2, 'active' => 0, 'orphaned' => 2, 'orphanedIds' => [11, 12]]);
+    $serviceMock
+    ->shouldNotReceive('detachOrphanedServerUsages', 'deleteServer');
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    try {
+        $api->server_delete(['id' => 2]);
+        $this->fail('Expected exception was not thrown');
+    } catch (ClientFence\InformationException $e) {
+        expect($e->getCode())->toBe(704);
+        expect($e->getMessage())->toContain('orphaned');
+    }
+
+    // Orphaned usages with force: detach then delete
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getServerUsageStats')
+    ->atLeast()->once()
+    ->andReturn(['total' => 2, 'active' => 0, 'orphaned' => 2, 'orphanedIds' => [11, 12]]);
+    $serviceMock
+    ->shouldReceive('detachOrphanedServerUsages')
+    ->once()
+    ->andReturn(2);
+    $serviceMock
+    ->shouldReceive('deleteServer')
+    ->once()
+    ->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect($api->server_delete(['id' => 2, 'force' => true]))->toBeTrue();
+});
+
+test('testServerUpdate', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data['id'] = 1;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('updateServer')
+    ->atLeast()->once()
+    ->andReturn(true);
+    $serviceMock
+    ->shouldReceive('getServerManager')
+    ->atLeast()->once()
+    ->andReturn(new Server_Manager_Custom([]));
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->server_update($data);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testServerUpdateSurfacesServerManagerErrorsAsInformationException', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data['id'] = 1;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('updateServer')
+    ->atLeast()->once()
+    ->andReturn(true);
+    $serviceMock
+    ->shouldReceive('getServerManager')
+    ->atLeast()->once()
+    ->andThrow(new Server_Exception('Server manager is not fully configured.'));
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect(fn (): bool => $api->server_update($data))->toThrow(ClientFence\InformationException::class);
+});
+
+test('testServerTestConnection', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data['id'] = 1;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('testConnection')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingServer());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->server_test_connection($data);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testHpGetPairs', function (): void {
+    $api = apiEndpoint(new Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getHpPairs')
+    ->atLeast()->once()
+    ->andReturn([]);
+
+    $api->setService($serviceMock);
+    $result = $api->hp_get_pairs([]);
+    expect($result)->toBeArray();
+});
+
+test('testHpGetList', function (): void {
+    $api = apiEndpoint(new Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getHpSearchQuery')
+    ->atLeast()->once()
+    ->andReturn(['SQLstring', []]);
+
+    $pagerMock = Mockery::mock(ClientFence\Pagination::class)->makePartial();
+    $pagerMock
+    ->shouldReceive('getPaginatedResultSet')
+    ->atLeast()->once()
+    ->andReturn(['list' => []]);
+
+    $di = container();
+    $di['pager'] = $pagerMock;
+
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->hp_get_list([]);
+    expect($result)->toBeArray();
+});
+
+test('testHpDelete', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'id' => 1,
+    ];
+
+    $model = new Model_ServiceHostingHp();
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getHpUsageStats')
+    ->atLeast()->once()
+    ->andReturn(['total' => 0, 'active' => 0, 'orphaned' => 0, 'orphanedIds' => []]);
+    $serviceMock
+    ->shouldReceive('deleteHp')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn($model);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    // Add a try-catch block to handle the exception thrown in the hp_delete function
+    try {
+        $result = $api->hp_delete($data);
+
+        // If the function doesn't throw an exception, then the test should assert the result
+        expect($result)->toBeBool();
+        expect($result)->toBeTrue();
+    } catch (ClientFence\Exception $e) {
+        // If the function throws an exception, the test should fail
+        $this->fail('Exception thrown: ' . $e->getMessage());
+    }
+});
+
+test('testHpDeleteWithOrphanedUsages', function (): void {
+    $api = apiEndpoint(new Admin());
+
+    // Orphaned usages without force: informative exception, nothing detached
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getHpUsageStats')
+    ->atLeast()->once()
+    ->andReturn(['total' => 1, 'active' => 0, 'orphaned' => 1, 'orphanedIds' => [11]]);
+    $serviceMock
+    ->shouldNotReceive('detachOrphanedHpUsages', 'deleteHp');
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingHp());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    try {
+        $api->hp_delete(['id' => 1]);
+        $this->fail('Expected exception was not thrown');
+    } catch (ClientFence\InformationException $e) {
+        expect($e->getCode())->toBe(704);
+        expect($e->getMessage())->toContain('orphaned');
+    }
+
+    // Orphaned usages with force: detach then delete
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getHpUsageStats')
+    ->atLeast()->once()
+    ->andReturn(['total' => 1, 'active' => 0, 'orphaned' => 1, 'orphanedIds' => [11]]);
+    $serviceMock
+    ->shouldReceive('detachOrphanedHpUsages')
+    ->once()
+    ->andReturn(1);
+    $serviceMock
+    ->shouldReceive('deleteHp')
+    ->once()
+    ->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn(new Model_ServiceHostingHp());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect($api->hp_delete(['id' => 1, 'force' => true]))->toBeTrue();
+});
+
+test('testHpGet', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'id' => 1,
+    ];
+
+    $model = new Model_ServiceHostingHp();
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('toHostingHpApiArray')
+    ->atLeast()->once()
+    ->andReturn([]);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn($model);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->hp_get($data);
+    expect($result)->toBeArray();
+});
+
+test('testHpUpdate', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'id' => 1,
+    ];
+
+    $model = new Model_ServiceHostingHp();
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('updateHp')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn($model);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $result = $api->hp_update($data);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testHpCreate', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'name' => 'test',
+    ];
+
+    $newHpId = 2;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('createHp')
+    ->atLeast()->once()
+    ->andReturn($newHpId);
+
+    $di = container();
+    $api->setDi($di);
+
+    $api->setService($serviceMock);
+
+    $result = $api->hp_create($data);
+    expect($result)->toBeInt();
+    expect($result)->toBe($newHpId);
+});
+
+test('testGetService', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $clientOrderModel = new Model_ClientOrder();
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn($clientOrderModel);
+
+    $model = new Model_ServiceHosting();
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock
+    ->shouldReceive('getOrderService')
+    ->atLeast()->once()
+    ->andReturn($model);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+    $di['db'] = $dbMock;
+
+    $api->setDi($di);
+
+    $result = $api->_getService($data);
+    expect($result)->toBeArray();
+    expect($result[0])->toBeInstanceOf('\Model_ClientOrder');
+    expect($result[1])->toBeInstanceOf('\Model_ServiceHosting');
+});
+
+test('testGetServiceOrderNotActivated', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $clientOrderModel = new Model_ClientOrder();
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('getExistingModelById')
+    ->atLeast()->once()
+    ->andReturn($clientOrderModel);
+
+    $model = null;
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock
+    ->shouldReceive('getOrderService')
+    ->atLeast()->once()
+    ->andReturn($model);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+
+    $this->expectException(ClientFence\Exception::class);
+    $this->expectExceptionMessage('Order is not activated');
+    $api->_getService($data);
+});

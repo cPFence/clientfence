@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.5/phpunit.xsd"
+    bootstrap="tests/Pest.php"
+    cacheDirectory="cache/phpunit"
+    executionOrder="depends,defects"
+    failOnWarning="false"
+    failOnRisky="false"
+    failOnEmptyTestSuite="false"
+    beStrictAboutOutputDuringTests="false"
+    colors="true"
+    testdox="true"
+    testdoxSummary="true"
+    displayDetailsOnTestsThatTriggerDeprecations="false"
+    displayDetailsOnTestsThatTriggerWarnings="false"
+    defaultTestSuite="Unit,Modules">
+  <testsuites>
+    <testsuite name="Unit">
+      <directory>tests/Unit</directory>
+    </testsuite>
+    <testsuite name="Modules">
+      <directory>src/modules/*/tests/Unit</directory>
+    </testsuite>
+    <testsuite name="E2E">
+      <directory>tests/E2E</directory>
+      <directory>src/modules/*/tests/E2E</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">src/vendor</directory>
+      <directory suffix=".php">src/data</directory>
+    </exclude>
+  </source>
+</phpunit>

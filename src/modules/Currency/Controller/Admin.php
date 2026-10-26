@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Currency\Controller;
+
+class Admin implements \ClientFence\InjectionAwareInterface
+{
+    protected ?\Pimple\Container $di = null;
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function register(\ClientFence\App &$app): void
+    {
+        $app->get('/currency/manage/:code', 'get_manage', ['code' => '[a-zA-Z]+'], static::class);
+    }
+
+    public function get_manage(\ClientFence\App $app, $code): string
+    {
+        $this->di['is_admin_logged'];
+        $guest_api = $this->di['api_guest'];
+        $currency = $guest_api->currency_get(['code' => $code]);
+
+        return $app->render('mod_currency_manage', ['currency' => $currency]);
+    }
+}

@@ -1,0 +1,17 @@
+{# ClientFence ticket attachments (TicketFiles.php): the file field of a ticket form (new ticket,
+   reply). Each chosen file is uploaded at once and sent with the message as ticket_files[]
+   (assets/src/js/ticketfiles.js). ticket_id: the ticket of a reply, none for a new ticket. #}
+{% set rules = guest.support_ticket_file_rules %}
+{% if rules %}
+    <div class="ticket-upload mt-3" data-clientfence-ticket-upload data-ticket="{{ ticket_id|default('') }}" data-max-files="{{ rules.max_files }}" data-max-bytes="{{ rules.max_bytes }}" data-extensions="{{ rules.extensions|join(',') }}"
+         data-text-too-many="{{ 'At most :count files per message.'|trans({ ':count': rules.max_files }) }}"
+         data-text-too-big="{{ 'Each file must be smaller than :size MB.'|trans({ ':size': rules.max_mb }) }}"
+         data-text-wrong-type="{{ 'This type of file cannot be attached. Allowed: :types.'|trans({ ':types': rules.extensions|join(', ') }) }}"
+         data-text-uploading="{{ 'Wait until the files are uploaded.'|trans }}"
+         data-text-remove="{{ 'Remove'|trans }}">
+        <label class="form-label" for="ticket-files-{{ ticket_id|default('new') }}">{{ 'Attach files'|trans }}</label>
+        <input class="form-control" type="file" id="ticket-files-{{ ticket_id|default('new') }}" multiple accept="{{ rules.accept }}">
+        <div class="form-text">{{ 'Up to :count files, :size MB each: :types.'|trans({ ':count': rules.max_files, ':size': rules.max_mb, ':types': rules.extensions|join(', ') }) }}</div>
+        <ul class="list-unstyled d-flex flex-wrap gap-2 mt-2 mb-0" data-clientfence-ticket-upload-list></ul>
+    </div>
+{% endif %}

@@ -1,0 +1,35 @@
+{# The fields of a contact form on the admin client page's Contacts tab (mod_client_contacts_pane):
+   contact (its values, or { emails: [...] } for a new one), kinds, prefix (for the ids), countries. #}
+<div class="row g-3">
+    {% for field, label in {
+        first_name: 'First Name'|trans, last_name: 'Last Name'|trans, email: 'Email'|trans, company: 'Company'|trans,
+        phone_cc: 'Phone country code'|trans, phone: 'Phone Number'|trans, tax_id: 'Tax ID'|trans, address_1: 'Address'|trans,
+        address_2: 'Address line 2'|trans, city: 'City'|trans, state: 'State'|trans, postcode: 'Zip/Postal Code'|trans
+    } %}
+        <div class="col-md-6">
+            <label class="form-label{% if field in ['first_name', 'email'] %} required{% endif %}" for="{{ prefix }}-{{ field }}">{{ label }}</label>
+            <input class="form-control" type="{{ field == 'email' ? 'email' : 'text' }}" id="{{ prefix }}-{{ field }}" name="{{ field }}" value="{{ attribute(contact, field)|default('') }}"{% if field in ['first_name', 'email'] %} required{% endif %}{% if field in ['email', 'phone_cc', 'phone'] %} dir="ltr"{% endif %}>
+        </div>
+    {% endfor %}
+    <div class="col-md-6">
+        <label class="form-label" for="{{ prefix }}-country">{{ 'Country'|trans }}</label>
+        <select class="form-select" id="{{ prefix }}-country" name="country">
+            <option value="">-</option>
+            {% for val, label in countries %}
+                <option value="{{ val }}"{% if val == contact.country|default('') %} selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<div class="form-label mt-3">{{ 'Send this contact a copy of'|trans }}</div>
+<input type="hidden" name="emails[]" value="">
+<div class="row g-2">
+    {% for kind in kinds %}
+        <div class="col-md-6">
+            <label class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" name="emails[]" value="{{ kind.name }}"{% if kind.name in contact.emails|default([]) %} checked{% endif %}>
+                <span class="form-check-label">{{ kind.label }}</span>
+            </label>
+        </div>
+    {% endfor %}
+</div>

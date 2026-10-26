@@ -1,0 +1,19 @@
+{# Company logo (Settings → Company: logo and dark logo), or the company name when no logo is set
+   or `show_logo` is off (theme setting "Show Company Logo").
+   `variant`: 'auto' (follows the colour mode) or 'inverse' (dark panels: the dark logo). #}
+{% set variant = variant|default('auto') %}
+{% set link_url = link_url|default('/'|url) %}
+{% set company = guest.system_company %}
+{% set company_name = company.name|default('ClientFence') %}
+<a class="{{ link_class|default('') }}" href="{{ link_url }}"{% if link_target is defined %} target="{{ link_target }}" rel="noopener"{% endif %}>
+    {% if (show_logo is not defined or show_logo) and (company.logo_url or company.logo_url_dark) %}
+        {% if variant == 'inverse' %}
+            <img src="{{ company.logo_url_dark|default(company.logo_url) }}" alt="{{ company_name }}">
+        {% else %}
+            <img class="hide-theme-dark" src="{{ company.logo_url|default(company.logo_url_dark) }}" alt="{{ company_name }}">
+            <img class="hide-theme-light" src="{{ company.logo_url_dark|default(company.logo_url) }}" alt="{{ company_name }}">
+        {% endif %}
+    {% else %}
+        <span class="bf-logo-text{% if variant == 'inverse' %} bf-logo-text-inverse{% endif %}">{{ company_name }}</span>
+    {% endif %}
+</a>

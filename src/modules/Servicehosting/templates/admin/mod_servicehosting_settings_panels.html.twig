@@ -1,0 +1,105 @@
+{# ClientFence: hosting panels, on the Hosting Servers tab of the Hosting Plans and Servers page.
+   Kept in mod_servicehosting; saved with servicehosting/panels_update.
+   `panels`: admin.servicehosting_panels_get_list, read once by the page. #}
+{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{{ include('mod_clientfence_settings_style.html.twig') }}
+<div class="clientfence-settings border-top" id="hosting-panels" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<form class="clientfence-settings-group" method="post" action="{{ 'servicehosting/panels_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
+		<div class="clientfence-settings-intro">
+			<h3>{{ 'Hosting panels'|trans }}</h3>
+			<p>{{ 'The control panels your hosting servers run. A panel that is on gives its servers the ClientFence server manager and the Hosting accounts pages of the client area; switched off, its servers refuse every action.'|trans }}</p>
+		</div>
+		{% for panel in panels %}
+			<div class="clientfence-setting clientfence-setting-row" data-panel>
+				<div class="clientfence-setting-label">
+					<span class="form-label d-block">{{ panel.label }}</span>
+					<div class="clientfence-setting-hint">
+						{% if panel.servers is empty %}
+							{{ 'No hosting server uses it yet. Add one under Hosting plans and servers with the manager “:label (ClientFence)”.'|trans({ ':label': panel.label }) }}
+						{% else %}
+							{{ 'Servers:'|trans }} {% for server in panel.servers %}{{ server.name }} ({{ server.hostname }}){% if not loop.last %}, {% endif %}{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+				<div class="clientfence-setting-control">
+					<label class="form-check form-switch mb-0">
+						<input class="form-check-input" type="checkbox" name="{{ panel.setting }}" value="1" data-panel-switch{% if panel.on %} checked{% endif %}>
+						<span class="form-check-label">{{ 'Use :label'|trans({ ':label': panel.label }) }}</span>
+					</label>
+
+					{% if panel.options.enhance_global_webmail is defined %}
+						<div class="clientfence-panel-option{% if not panel.on %} is-off{% endif %}" data-panel-option>
+							<label class="form-check form-switch mb-1">
+								<input class="form-check-input" type="checkbox" name="enhance_global_webmail" value="1"{% if panel.options.enhance_global_webmail %} checked{% endif %}>
+								<span class="form-check-label fw-bold">
+									<svg class="icon" aria-hidden="true"><use href="#mail"/></svg>
+									{{ 'Webmail on the global webmail domain'|trans }}
+								</span>
+							</label>
+							<div class="clientfence-setting-hint">
+								{{ 'What the Webmail button of an email account opens in the client area:'|trans }}
+								<ul>
+									<li><strong>{{ 'Off (default):'|trans }}</strong> {{ 'the mailbox opens at once, signed in, on mail.<the client’s domain>.'|trans }}</li>
+									<li><strong>{{ 'On:'|trans }}</strong> {{ 'the global webmail domain set in Enhance (Settings, Platform, Webmail) opens with the address filled in, and the client types the mailbox password. Enhance’s global webmail cannot sign in with one click. Without a global webmail domain in Enhance, the button works as when off.'|trans }}</li>
+								</ul>
+							</div>
+							<div class="small mt-2">
+								{% if panel.webmail_check %}
+									<span class="text-secondary" data-webmail-domain="{{ panel.id }}">{{ 'Reading the global webmail domain from Enhance…'|trans }}</span>
+								{% else %}
+									<span class="text-secondary">{{ 'The global webmail domain is read from Enhance while the panel is on.'|trans }}</span>
+								{% endif %}
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		{% endfor %}
+		<div class="clientfence-settings-actions">
+			<button type="submit" class="btn btn-primary">{{ 'Save hosting panels'|trans }}</button>
+		</div>
+	</form>
+</div>
+<script nonce="{{ csp_nonce }}">
+	(() => {
+		// Hosting panels: a panel's options count only while it is on (dimmed while off; still sent,
+		// so saving with the panel off keeps them).
+		document.querySelectorAll('[data-panel]').forEach((row) => {
+			const toggle = row.querySelector('[data-panel-switch]');
+			const option = row.querySelector('[data-panel-option]');
+			if (!toggle || !option) {
+				return;
+			}
+			toggle.addEventListener('change', () => {
+				option.classList.toggle('is-off', !toggle.checked);
+			});
+		});
+
+		// The panel's global webmail domain, read after the page loaded (the panel may be slow).
+		document.addEventListener('DOMContentLoaded', () => {
+			document.querySelectorAll('[data-webmail-domain]').forEach((out) => {
+				const show = (text, warn, domain) => {
+					out.replaceChildren(document.createTextNode(text));
+					out.className = warn ? 'text-warning' : '';
+					if (domain) {
+						const code = document.createElement('code');
+						code.dir = 'ltr';
+						code.textContent = domain;
+						out.append(' ', code);
+					}
+				};
+				ClientFence.api.admin.get('servicehosting/panel_webmail_domain', { panel: out.dataset.webmailDomain }, (result) => {
+					if (!result) {
+						show({{ 'The global webmail domain is read from Enhance while the panel is on.'|trans|json_encode|raw }}, false);
+					} else if (result.error) {
+						show({{ 'Enhance could not be reached to read the global webmail domain.'|trans|json_encode|raw }}, true);
+					} else if (result.domain) {
+						show({{ 'Global webmail domain in Enhance:'|trans|json_encode|raw }}, false, result.domain);
+					} else {
+						show({{ 'Enhance has no global webmail domain: the one-click sign-in is used.'|trans|json_encode|raw }}, true);
+					}
+				}, () => show({{ 'Enhance could not be reached to read the global webmail domain.'|trans|json_encode|raw }}, true));
+			});
+		});
+	})();
+</script>

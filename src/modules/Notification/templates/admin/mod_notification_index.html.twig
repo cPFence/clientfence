@@ -1,0 +1,258 @@
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+
+{% block meta_title %}{{ 'Announcements'|trans }}{% endblock %}
+
+{% set active_menu = 'activity' %}
+{% set can_view = has_permission('notification', 'view') %}
+{% set can_manage = has_permission('notification', 'manage') %}
+
+{% block content %}
+<div class="card" id="announcements" data-text-posted="{{ 'Announcement posted.'|trans }}" data-text-unpinned="{{ 'Announcement unpinned.'|trans }}" data-text-deleted="{{ 'Announcement deleted.'|trans }}">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Announcements'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Messages for staff, sent to their bell and pinned on the dashboard.'|trans }}</p>
+        </div>
+        {% if can_view %}
+            <div class="card-actions d-flex flex-wrap gap-2">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <svg class="icon"><use href="#search" /></svg>
+                    </span>
+                    <input type="search" class="form-control" id="announcement-search" placeholder="{{ 'Search'|trans }}" aria-label="{{ 'Search'|trans }}">
+                </div>
+                {% if can_manage %}
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#announcement-modal">
+                        <svg class="icon"><use href="#plus" /></svg>
+                        {{ 'New announcement'|trans }}
+                    </button>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if can_view %}
+        {% set announcements = admin.notification_get_list %}
+        <div class="table-responsive" id="announcement-table"{% if not announcements %} hidden{% endif %}>
+            <table class="table card-table table-vcenter">
+                <thead>
+                <tr>
+                    <th>{{ 'Announcement'|trans }}</th>
+                    <th>{{ 'Audience'|trans }}</th>
+                    <th>{{ 'Author'|trans }}</th>
+                    <th class="w-1">{{ 'Date'|trans }}</th>
+                    <th class="w-1"></th>
+                </tr>
+                </thead>
+                <tbody id="announcement-rows">
+                {% for item in announcements %}
+                    {% set audience = item.staff is null ? 'All staff'|trans : item.staff_names|join(', ') %}
+                    <tr id="announcement-{{ item.id }}" data-id="{{ item.id }}" data-title="{{ item.title }}" data-search="{{ (item.title ~ ' ' ~ item.message ~ ' ' ~ audience ~ ' ' ~ item.author)|lower }}">
+                        <td class="text-break">
+                            <div class="fw-bold">
+                                {{ item.title }}
+                                {% if item.pinned %}
+                                    <span class="badge bg-blue-lt ms-1" data-pin-badge>{{ 'Pinned until :date'|trans({ ':date': item.pinned_until|format_date }) }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-secondary small mt-1">{{ item.message|nl2br }}</div>
+                        </td>
+                        <td>{{ audience }}</td>
+                        <td class="text-nowrap">{{ item.author|default('Unknown'|trans) }}</td>
+                        <td class="text-nowrap text-secondary">{{ item.created_at|format_datetime }}</td>
+                        <td class="text-end text-nowrap">
+                            {% if can_manage %}
+                                {% if item.pinned %}
+                                    <button type="button" class="btn btn-icon btn-ghost-secondary" data-action="unpin" title="{{ 'Unpin'|trans }}" aria-label="{{ 'Unpin'|trans }}">
+                                        <svg class="icon"><use href="#pinned" /></svg>
+                                    </button>
+                                {% endif %}
+                                <button type="button" class="btn btn-icon btn-ghost-danger" data-action="delete" title="{{ 'Delete'|trans }}" aria-label="{{ 'Delete'|trans }}">
+                                    <svg class="icon"><use href="#trash" /></svg>
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-body text-center text-secondary" id="announcement-no-match" hidden>{{ 'No results'|trans }}</div>
+        <div class="empty" id="announcement-empty"{% if announcements %} hidden{% endif %}>
+            <div class="empty-icon">
+                <svg class="icon"><use href="#notes" /></svg>
+            </div>
+            <p class="empty-title">{{ 'No announcements yet.'|trans }}</p>
+            {% if can_manage %}
+                <div class="empty-action">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#announcement-modal">
+                        <svg class="icon"><use href="#plus" /></svg>
+                        {{ 'New announcement'|trans }}
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="card-body">
+            <p class="text-secondary mb-0">{{ 'You do not have permission to read announcements.'|trans }}</p>
+        </div>
+    {% endif %}
+</div>
+
+{% if can_manage %}
+    <div class="modal modal-blur fade" id="announcement-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down" role="document">
+            <form class="modal-content" id="announcement-form">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'New announcement'|trans }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label required" for="announcement-title">{{ 'Title'|trans }}</label>
+                        <input class="form-control" type="text" id="announcement-title" name="title" maxlength="120" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required" for="announcement-message">{{ 'Message'|trans }}</label>
+                        <textarea class="form-control" id="announcement-message" name="message" rows="6" maxlength="2000" required></textarea>
+                        <div class="form-hint">{{ 'Plain text; line breaks are kept.'|trans }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">{{ 'Audience'|trans }}</div>
+                        <label class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="audience" value="all" checked>
+                            <span class="form-check-label">{{ 'All staff'|trans }}</span>
+                        </label>
+                        <label class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="audience" value="staff">
+                            <span class="form-check-label">{{ 'Chosen staff members'|trans }}</span>
+                        </label>
+                        <div class="mt-2" id="announcement-staff-field" hidden>
+                            <select class="form-select js-multi-select" id="announcement-staff" name="staff" multiple placeholder="{{ 'Choose staff members'|trans }}" aria-label="{{ 'Staff members'|trans }}">
+                                {% for member in admin.notification_get_staff %}
+                                    <option value="{{ member.id }}">{{ member.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label" for="announcement-pin">{{ 'Pin on the dashboard until'|trans }}</label>
+                        <input class="form-control" type="date" id="announcement-pin" name="pinned_until" min="{{ 'now'|date('Y-m-d') }}">
+                        <div class="form-hint">{{ 'Leave empty to not pin it.'|trans }}</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                    <button type="submit" class="btn btn-primary">{{ 'Post'|trans }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="announcement-delete-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <h3>{{ 'Are you sure?'|trans }}</h3>
+                    <div class="text-secondary text-break">{{ 'This announcement will be deleted:'|trans }} <strong id="announcement-delete-title"></strong></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                    <button type="button" class="btn btn-danger" id="announcement-delete-confirm">{{ 'Delete'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+{% if can_view %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const card = document.getElementById('announcements');
+        const rows = document.getElementById('announcement-rows');
+        const search = document.getElementById('announcement-search');
+
+        const filter = () => {
+            const query = search.value.trim().toLowerCase();
+            let shown = 0;
+            for (const row of rows.children) {
+                row.hidden = !row.dataset.search.includes(query);
+                shown += row.hidden ? 0 : 1;
+            }
+            document.getElementById('announcement-table').hidden = shown === 0;
+            document.getElementById('announcement-empty').hidden = rows.children.length > 0;
+            document.getElementById('announcement-no-match').hidden = rows.children.length === 0 || shown > 0;
+        };
+        search.addEventListener('input', filter);
+
+        // ClientFence core patch (ext notification): the bell links to #announcement-<id>.
+        if (location.hash.startsWith('#announcement-')) {
+            document.getElementById(location.hash.slice(1))?.classList.add('table-active');
+        }
+
+        const form = document.getElementById('announcement-form');
+        if (!form) {
+            return;
+        }
+        const modal = document.getElementById('announcement-modal');
+        const staffField = document.getElementById('announcement-staff-field');
+        form.addEventListener('change', () => {
+            staffField.hidden = form.elements.audience.value !== 'staff';
+        });
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const data = {
+                title: form.elements.title.value,
+                message: form.elements.message.value,
+                audience: form.elements.audience.value,
+                staff: [...form.elements.staff.selectedOptions].map((option) => option.value),
+                pinned_until: form.elements.pinned_until.value,
+            };
+            ClientFence.api.admin.post('notification/add', data, async () => {
+                const response = await fetch(location.pathname, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const page = new DOMParser().parseFromString(await response.text(), 'text/html');
+                rows.replaceChildren(...page.getElementById('announcement-rows').children);
+                bootstrap.Modal.getInstance(modal).hide();
+                form.reset();
+                form.elements.staff.tomselect?.clear();
+                staffField.hidden = true;
+                filter();
+                ClientFence.message(card.dataset.textPosted, 'success');
+            }, (error) => ClientFence.message(error.message, 'error'));
+        });
+
+        const deleteModal = document.getElementById('announcement-delete-modal');
+        let deleting = null;
+        rows.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-action]');
+            if (!button) {
+                return;
+            }
+            const row = button.closest('tr');
+            if (button.dataset.action === 'unpin') {
+                ClientFence.api.admin.post('notification/unpin', { id: row.dataset.id }, () => {
+                    row.querySelector('[data-pin-badge]')?.remove();
+                    button.remove();
+                    ClientFence.message(card.dataset.textUnpinned, 'success');
+                }, (error) => ClientFence.message(error.message, 'error'));
+                return;
+            }
+            deleting = row;
+            document.getElementById('announcement-delete-title').textContent = row.dataset.title;
+            bootstrap.Modal.getOrCreateInstance(deleteModal).show();
+        });
+        document.getElementById('announcement-delete-confirm').addEventListener('click', () => {
+            ClientFence.api.admin.post('notification/delete', { id: deleting.dataset.id }, () => {
+                bootstrap.Modal.getInstance(deleteModal).hide();
+                deleting.remove();
+                filter();
+                ClientFence.message(card.dataset.textDeleted, 'success');
+            }, (error) => ClientFence.message(error.message, 'error'));
+        });
+    })();
+</script>
+{% endif %}
+{% endblock %}

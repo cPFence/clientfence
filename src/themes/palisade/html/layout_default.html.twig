@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+{# Client area shell: sidebar navigation, top bar and content. Signed-out visitors get the sign-in
+   gate (partials/guest_gate.html.twig) on the pages partials/guest_access.html.twig does not open
+   to them. Theme settings decide the logo, the sidebar (menu items, balance, note; "Hide Nav Menu
+   for Guests" drops it for visitors), the top bar links, the breadcrumbs, the footer, the "Top"
+   button and the extra JavaScript (partials/page_end.html.twig). #}
+{% set locale = guest.system_locale|default('en_US') %}
+{% set is_rtl = locale starts with 'ar' %}
+{% set guest_gated = include('partials/guest_access.html.twig')|trim == 'gated' %}
+{% set current_active_menu = active_menu|default('') %}
+{% set page_title = guest_gated ? 'Sign in required'|trans : (block('meta_title') is defined ? block('meta_title')|trim : '') %}
+{% set page_title = (page_title ? page_title ~ ' · ' : '') ~ guest.system_company.name|default('ClientFence')|e %}
+<html lang="{{ locale|replace({'_': '-'}) }}" dir="{{ is_rtl ? 'rtl' : 'ltr' }}" data-bs-theme="{{ settings.theme|default('light') == 'dark' ? 'dark' : 'light' }}">
+<head>
+    {{ include('partials/head.html.twig') }}
+    {% block head %}{% endblock %}
+    {# A gated page shows only the sign-in gate, so its own scripts (which expect its content) stay out. #}
+    {% if not guest_gated %}{% block js %}{% endblock %}{% endif %}
+</head>
+{# ClientFence core patch: a signed-in page names what to say when its session ends (frontend/core/api.ts). #}
+<body class="{% block body_class %}{% endblock %}" id="top"{% if client %} data-cf-signed-out="{{ 'Your session has ended. Copy anything you typed, then sign in again.'|trans }}"{% endif %}>
+<div class="d-none">{{ svg_sprite() }}</div>
+{{ render_widgets('client.theme.body.start') }}
+{% if guest_gated %}
+    {{ include('partials/guest_gate.html.twig') }}
+{% else %}
+{% block body %}
+{% if profile is not defined %}
+    {% set profile = client ? client.profile_get : null %}
+{% endif %}
+{# An authorized user (ClientFence): the top bar shows the user, not the account owner, and the
+   menu only what the user's permissions open. Null for the owner. #}
+{% if clientfence_user is not defined %}
+    {% set clientfence_user = client ? client.client_user_session : null %}
+{% endif %}
+{% set show_logo = settings.show_company_logo|default('1') %}
+{% set show_sidebar = client or not settings.hide_menu|default('1') %}
+<div class="app-shell">
+    {% if show_sidebar %}
+    <div class="app-sidebar">
+        <aside class="sidebar-panel offcanvas-lg offcanvas-start" id="appSidebar" tabindex="-1" aria-label="{{ 'Main menu'|trans }}">
+            <div class="offcanvas-body">
+                <div class="sidebar-brand">
+                    {{ include('partial_company_logo.html.twig', { variant: 'inverse', show_logo: show_logo }) }}
+                    {# Collapses the menu to its icons, as in the admin area (large screens; the bottom button expands it again). #}
+                    <button type="button" class="sidebar-collapse-btn" data-cf-collapse aria-pressed="false" aria-label="{{ 'Collapse menu'|trans }}" title="{{ 'Collapse menu'|trans }}" data-label-collapse="{{ 'Collapse menu'|trans }}" data-label-expand="{{ 'Expand menu'|trans }}">
+                        <svg class="icon sidebar-flip" aria-hidden="true"><use href="#layout-sidebar"/></svg>
+                    </button>
+                    <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="{{ 'Close'|trans }}"></button>
+                </div>
+                <nav>
+                    <p class="sidebar-label">{{ 'Menu'|trans }}</p>
+                    <ul class="sidebar-nav">
+                        {{ include('partial_menu.html.twig') }}
+                    </ul>
+                </nav>
+                {% if client and settings.sidebar_balance_enabled|default('1') and profile and profile.currency is not null %}
+                    <div class="sidebar-balance">
+                        <span>{{ 'Account Balance'|trans }}</span>
+                        <strong>{{ (profile.balance|default(0))|format_currency(profile.currency) }}</strong>
+                    </div>
+                {% endif %}
+                {% if settings.sidebar_note_enabled|default('0') and (settings.sidebar_note_title|default('')|trim or settings.sidebar_note_content|default('')|trim) %}
+                    <div class="sidebar-note">
+                        {% if settings.sidebar_note_title|default('')|trim %}<strong>{{ settings.sidebar_note_title|trim }}</strong>{% endif %}
+                        {% if settings.sidebar_note_content|default('')|trim %}<p>{{ settings.sidebar_note_content|trim|nl2br }}</p>{% endif %}
+                    </div>
+                {% endif %}
+                <div class="sidebar-foot">
+                    <button type="button" class="sidebar-collapse-item" data-cf-collapse aria-pressed="false" title="{{ 'Collapse menu'|trans }}" data-label-collapse="{{ 'Collapse menu'|trans }}" data-label-expand="{{ 'Expand menu'|trans }}">
+                        <svg class="icon sidebar-flip" aria-hidden="true"><use href="#layout-sidebar"/></svg>
+                        <span class="sidebar-text" data-cf-collapse-label>{{ 'Collapse menu'|trans }}</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+    {% endif %}
+
+    <div class="app-main">
+        <header class="app-topbar">
+            {% if show_sidebar %}
+            <button class="topbar-menu-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="{{ 'Open menu'|trans }}">
+                <svg class="icon" aria-hidden="true"><use href="#menu-2"/></svg>
+            </button>
+            {% endif %}
+            {{ include('partial_company_logo.html.twig', { link_class: 'topbar-logo' ~ (show_sidebar ? ' d-lg-none' : ''), show_logo: show_logo }) }}
+            {% block topbar_nav %}
+            {% if settings.show_breadcrumb|default('1') %}
+            <nav class="d-none d-lg-block" aria-label="{{ 'breadcrumb'|trans }}">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ '/'|url }}">{{ 'Home'|trans }}</a></li>
+                    {% block breadcrumb %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ 'Dashboard'|trans }}</li>
+                    {% endblock %}
+                </ol>
+            </nav>
+            {% endif %}
+            {% endblock %}
+            <div class="topbar-end">
+                {# Theme settings "Menu Items Visible in the Top Right Menu". #}
+                {% set top_dashboard = settings.top_menu_dashboard|default('0') and (client or not settings.require_login|default('1')) %}
+                {% set top_order = settings.top_menu_order|default('0') and guest.clientfence_store_open %}
+                {% if top_dashboard or top_order %}
+                    <nav class="topbar-links d-none d-md-flex" aria-label="{{ 'Quick links'|trans }}">
+                        {% if top_dashboard %}
+                            <a href="{{ '/'|url }}"{% if current_active_menu == 'dashboard' %} class="active" aria-current="page"{% endif %}>{{ 'Dashboard'|trans }}</a>
+                        {% endif %}
+                        {% if top_order %}
+                            <a href="{{ 'order'|url }}"{% if current_active_menu == 'order' %} class="active" aria-current="page"{% endif %}>{{ 'Store'|trans }}</a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+                {# Language and colour mode, as in the admin area's top bar (Sign Out is in the account menu). #}
+                <div class="topbar-tools">{{ include('partials/tools.html.twig', { tool_class: 'topbar-tool', compact: true }) }}</div>
+                {% if client %}
+                    {# The bell: the account's notifications (palisade.js fills the list). #}
+                    <div class="topbar-bell dropdown" data-cf-bell data-text="{{ {empty: 'No notifications yet'|trans, error: 'Notifications could not be loaded'|trans, now: 'just now'|trans, read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans}|json_encode }}">
+                        <button class="topbar-bell-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="{{ 'Notifications'|trans }}" aria-label="{{ 'Notifications'|trans }}">
+                            <svg class="icon" aria-hidden="true"><use href="#bell"/></svg>
+                            <span class="topbar-bell-count" data-cf-bell-count hidden></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end topbar-bell-menu">
+                            <div class="topbar-bell-head">
+                                <span class="fw-semibold">{{ 'Notifications'|trans }}</span>
+                                <button type="button" class="btn btn-link btn-sm p-0" data-cf-bell-all hidden>{{ 'Mark all read'|trans }}</button>
+                            </div>
+                            <div class="topbar-bell-list" data-cf-bell-list aria-live="polite"></div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if not client %}
+                    {% set top_register = settings.top_menu_signout|default('1') and guest.clientfence_signup_info.open %}
+                    {% if top_register or settings.top_menu_profile|default('1') %}
+                    <div class="user-menu">
+                        {% if top_register %}
+                            <a class="btn btn-sm btn-outline-primary bf-topbar-register" href="{{ 'signup'|url }}">{{ 'Register'|trans }}</a>
+                        {% endif %}
+                        {% if settings.top_menu_profile|default('1') %}
+                            <a class="btn btn-sm btn-primary" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% else %}
+                {# Always for signed-in clients: the account menu holds the only Sign Out. #}
+                {% set person = clientfence_user ? clientfence_user.user : profile %}
+                <div class="user-menu dropdown">
+                    {# The avatar alone, as in the admin area; the name heads the menu. #}
+                    <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ 'Open user menu'|trans }}" title="{{ person.first_name }} {{ person.last_name }}">
+                        <span class="user-avatar" aria-hidden="true">{{ (person.first_name|default('')|first ~ person.last_name|default('')|first)|default('?') }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="px-3 pt-2 fw-semibold text-truncate">{{ person.first_name }} {{ person.last_name }}</li>
+                        <li class="px-3 pb-2 small text-body-secondary text-truncate">{{ person.email }}</li>
+                        {% if clientfence_user %}
+                            <li class="px-3 pb-2 small text-truncate" data-clientfence-account="{{ clientfence_user.account.id }}">{{ 'Account: :name'|trans({ ':name': clientfence_user.account.name }) }}</li>
+                            {% if clientfence_user.accounts|length > 1 %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">{{ 'Switch account'|trans }}</h6></li>
+                                {% for account in clientfence_user.accounts %}
+                                    <li>
+                                        {% if account.current %}
+                                            <span class="dropdown-item active" aria-current="true"><svg class="icon icon-sm" aria-hidden="true"><use href="#check"/></svg>{{ account.name }}</span>
+                                        {% else %}
+                                            <button type="button" class="dropdown-item js-clientfence-switch" data-client-id="{{ account.id }}" data-home="{{ '/'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#arrows-exchange"/></svg>{{ account.name }}</button>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        {% if clientfence_user %}
+                            <li><a class="dropdown-item" href="{{ 'profile'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#user"/></svg>{{ 'My profile'|trans }}</a></li>
+                            {% if 'profile' in clientfence_user.permissions %}
+                                <li><a class="dropdown-item" href="{{ 'client/profile'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#user-circle"/></svg>{{ 'Account details'|trans }}</a></li>
+                            {% endif %}
+                        {% else %}
+                            <li><a class="dropdown-item" href="{{ 'client/profile'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#user"/></svg>{{ 'Profile'|trans }}</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="{{ 'two-factor'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#shield-check"/></svg>{{ 'Two-factor sign-in'|trans }}</a></li>
+                        {% if guest.client_google_on %}
+                            <li><a class="dropdown-item" href="{{ 'google-sign-in'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#brand-google"/></svg>{{ 'Google sign-in'|trans }}</a></li>
+                        {% endif %}
+                        {% if not clientfence_user or clientfence_user.owner %}
+                            <li><a class="dropdown-item" href="{{ 'users'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#users"/></svg>{{ 'Users'|trans }}</a></li>
+                        {% endif %}
+                        {% if not clientfence_user or clientfence_user.owner or 'contacts' in clientfence_user.permissions %}
+                            <li><a class="dropdown-item" href="{{ 'contacts'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#address-book"/></svg>{{ 'Contacts'|trans }}</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="{{ 'client/logout'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#logout"/></svg>{{ 'Sign Out'|trans }}</a></li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </header>
+
+        <main class="app-content" id="content">
+            {% block content_before %}{% endblock %}
+            {{ render_widgets('client.theme.content.before') }}
+            {% block content %}{% endblock %}
+            {{ render_widgets('client.theme.content.after') }}
+            {{ include('partial_message.html.twig') }}
+            {% block content_after %}{% endblock %}
+        </main>
+
+        {{ include('partials/footer.html.twig') }}
+    </div>
+</div>
+{% if settings.footer_to_top_enabled|default('0') %}
+    <button type="button" class="bf-to-top" aria-label="{{ 'Back to Top'|trans }}" title="{{ 'Back to Top'|trans }}">
+        <svg class="bf-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+            <circle class="bf-top-track" cx="24" cy="24" r="22" pathLength="100"/>
+            <circle class="bf-top-progress" cx="24" cy="24" r="22" pathLength="100"/>
+        </svg>
+        <svg class="icon" aria-hidden="true"><use href="#arrow-up"/></svg>
+    </button>
+{% endif %}
+<div class="wait" style="display: none">
+    <div class="spinner-border text-light" role="status"><span class="visually-hidden">{{ 'Loading...'|trans }}</span></div>
+</div>
+{% endblock %}
+{% endif %}
+{{ include('partials/toasts.html.twig') }}
+{{ render_widgets('client.theme.body.end') }}
+{{ include('partials/page_end.html.twig') }}
+</body>
+</html>

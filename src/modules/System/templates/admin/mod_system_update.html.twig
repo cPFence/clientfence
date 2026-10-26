@@ -1,0 +1,364 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{% block meta_title %}{{ 'Update ClientFence'|trans }}{% endblock %}
+{% set active_menu = 'system' %}
+
+{% block content %}
+    {% set update_info = admin.system_update_info %}
+    {% set isPreviewBranch = update_info['branch'] == 'preview' %}
+    {% set updateAvailable = admin.system_update_available %}
+    {% set updateCandidateAvailable = updateAvailable or isPreviewBranch %}
+    {% set phpVersionSupported = update_info['php_version_supported'] is defined ? update_info['php_version_supported'] : true %}
+    {% set minimumPhpVersion = update_info['minimum_php_version']|default('unknown') %}
+    {% set currentPhpVersion = update_info['current_php_version']|default(constant('PHP_VERSION')) %}
+    {% set readiness = update_info['readiness']|default({}) %}
+    {% set updateReady = readiness['can_update'] is defined ? readiness['can_update'] : true %}
+    {% set readinessIssues = readiness['issues'] is defined ? readiness['issues'] : [] %}
+    {% set previewCompareUrl = 'https://github.com/cPFence/clientfence/commits/main' %}
+    {% set canInstallUpdate = updateCandidateAvailable and phpVersionSupported and updateReady %}
+    {% set behindOnPatches = admin.system_is_behind_on_patches %}
+    {% set updateType = update_info['update_type']|default(0) + 0 %}
+    {% if isPreviewBranch %}
+        {% set updateButtonLabel = 'Install Latest Preview Build'|trans %}
+        {% set updateButtonClass = 'btn-primary' %}
+        {% set updateConfirmTitle = 'Install latest preview build?'|trans %}
+        {% set updateModalType = 'confirm' %}
+        {% set updateModalContent = 'Preview builds may contain unreleased changes, regressions, or incomplete migrations. Back up your files and database, and avoid using this on production installations unless you are prepared to troubleshoot issues.'|trans %}
+        {% set updateModalButton = 'Install Preview Build'|trans %}
+    {% else %}
+        {% set updateButtonLabel = 'Update ClientFence'|trans %}
+        {% set updateButtonClass = 'btn-primary' %}
+        {% set updateConfirmTitle = 'Update ClientFence?'|trans %}
+        {% set updateModalType = 'confirm' %}
+        {% set updateModalContent = 'ClientFence downloads the release and checks it, then saves a backup of the database and of every file the release replaces in the server backups folder. It installs the release with maintenance mode on, updates the database and logs you out of the admin area. The site reopens as soon as the update is complete. If the database update needs attention, you will be asked to finalize it after logging back in.'|trans %}
+        {% set updateModalButton = 'Update ClientFence'|trans %}
+    {% endif %}
+    <div class="row row-cards">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 w-100">
+                        <div>
+                            <h3 class="card-title">{{ 'ClientFence Updates'|trans }}</h3>
+                            <p class="card-subtitle">{{ isPreviewBranch ? 'Install preview builds and review update status.'|trans : 'Review release notes, check for updates, and install available platform updates.'|trans }}</p>
+                        </div>
+                        {% if isPreviewBranch %}
+                            <span class="badge badge-outline text-warning">{{ 'Preview Branch'|trans }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if not isPreviewBranch %}
+                        {# ClientFence: the installed version and the newest release, as cards. #}
+                        <div class="row row-cards mb-3">
+                            <div class="col-sm-6">
+                                <div class="card card-sm h-100">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="avatar {{ updateAvailable ? 'bg-secondary-lt' : 'bg-green-lt' }}">
+                                                    <svg class="icon"><use href="#{{ updateAvailable ? 'package' : 'check' }}" /></svg>
+                                                </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="text-secondary small">{{ 'Installed version'|trans }}</div>
+                                                <div class="h2 mb-0">ClientFence {{ ClientFenceVersion }}</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                {% if updateAvailable %}
+                                                    <span class="badge bg-secondary-lt">{{ 'Update available'|trans }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-green-lt">{{ 'Up to date'|trans }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card card-sm h-100{{ updateAvailable ? ' border-primary' : '' }}">
+                                    {% if updateAvailable %}
+                                        <div class="card-status-start bg-primary"></div>
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="avatar {{ updateAvailable ? 'bg-primary text-white' : 'bg-secondary-lt' }}">
+                                                    <svg class="icon"><use href="#download" /></svg>
+                                                </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="text-secondary small">{{ updateAvailable ? 'New version available'|trans : 'Latest release'|trans }}</div>
+                                                {% if update_info['last_check']|default(null) %}
+                                                    <div class="h2 mb-0">ClientFence {{ update_info['version'] }}{% if update_info['release_channel']|default(null) == 'beta' %} <span class="badge bg-warning-lt align-middle">{{ 'Beta'|trans }}</span>{% endif %}</div>
+                                                    {% if updateAvailable and update_info['release_date']|default(null) %}
+                                                        <div class="text-secondary small">{{ 'Released'|trans }} {{ update_info['release_date']|format_date }}</div>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="h2 mb-0 text-secondary">{{ 'Not checked yet'|trans }}</div>
+                                                {% endif %}
+                                            </div>
+                                            {% if updateAvailable %}
+                                                <div class="col-auto">
+                                                    <span class="badge bg-primary text-white">{{ 'New'|trans }}</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if updateCandidateAvailable %}
+                        {% if not phpVersionSupported %}
+                            <div class="alert alert-danger" role="alert">
+                                <strong class="me-1">{{ 'PHP version not supported:'|trans }}</strong>{{ 'This update requires PHP %required%, but this server is running PHP %current%.'|trans({'%required%': minimumPhpVersion, '%current%': currentPhpVersion}) }}
+                            </div>
+                        {% endif %}
+                        {% if not updateReady %}
+                            <div class="alert alert-danger" role="alert">
+                                <strong class="me-1">{{ 'Update cannot start:'|trans }}</strong>{{ 'ClientFence does not have sufficient filesystem permissions to perform the update on this server. Please review the issues below and resolve them before attempting the update again.'|trans }}
+                                <ul class="mt-2 mb-0">
+                                    {% for issue in readinessIssues %}
+                                        <li><code>{{ issue.path }}</code>: {{ issue.message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {% if isPreviewBranch %}
+                            <h4 class="mb-2">{{ 'Preview Build Updates'|trans }}</h4>
+                            {% if updateAvailable %}
+                                <p>{{ 'ClientFence'|trans }} <strong>{{ update_info['version'] }}</strong> {{ 'is available for download.'|trans }}</p>
+                            {% else %}
+                                <div class="alert alert-success" role="alert">
+                                    {{ 'You are already running the latest available preview build. You can still reinstall it below if needed.'|trans }}
+                                </div>
+                            {% endif %}
+                            <div class="alert alert-warning" role="alert">
+                                {{ 'Preview builds track unreleased development changes and may be unstable. It is not recommended to use them in production environments.'|trans }}
+                            </div>
+                            <p class="text-secondary mb-0">
+                                {{ 'Release notes are not available for preview builds.'|trans }}
+                                <a class="ms-1" href="{{ previewCompareUrl }}" target="_blank" rel="noopener noreferrer">{{ 'View GitHub Comparison'|trans }}</a>
+                            </p>
+                        {% else %}
+                            <h4 class="mb-2">{{ 'What is new in ClientFence %version%'|trans({'%version%': update_info['version']}) }}</h4>
+                            {% if updateType == 2 %}
+                                <div class="alert alert-warning" role="alert">
+                                    <strong class="me-1">{{ 'Important:'|trans }}</strong>{{ 'This update is considered to be a major update, you should check the release notes for any breaking changes.'|trans }}
+                                </div>
+                            {% endif %}
+                            {% if updateType == 1 %}
+                                <div class="alert alert-info" role="alert">
+                                    <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This update is considered to be a minor update, there are low chances of incompatibilities.'|trans }}
+                                </div>
+                            {% endif %}
+                            {{ (update_info['release_notes'] ?? '')|markdown_to_html }}
+                        {% endif %}
+                    {% else %}
+                        <h2 class="card-title">{{ 'There Is No Update Available'|trans }}</h2>
+                        <p>{{ 'You appear to be running the latest version of ClientFence, so no action is needed at the moment. If you think this is a mistake, you may use the button below to check again.'|trans }}</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {% if canInstallUpdate and admin.system_is_allowed({ 'mod': 'system', 'f': 'system_update' }) %}
+                        {# ClientFence: release files changed on this site (Clientfence/Customized.php), which the update overwrites. #}
+                        {% set changes = admin.clientfence_update_changes %}
+                        {% if changes.files is not empty %}
+                            <div class="alert alert-warning" role="alert">
+                                <strong class="d-block mb-1">{{ '%count% files of ClientFence %version% were changed on this site.'|trans({'%count%': changes.files|length, '%version%': ClientFenceVersion}) }}</strong>
+                                {{ 'The update overwrites them with the files of the new release. Download them first to keep your changes, then apply them again after the update where they are still needed.'|trans }}
+                                <details class="mt-2">
+                                    <summary>{{ 'Show the changed files'|trans }}</summary>
+                                    <ul class="mt-2 mb-0 small">
+                                        {% for file in changes.files|slice(0, 200) %}
+                                            <li><code>{{ file }}</code></li>
+                                        {% endfor %}
+                                        {% if changes.files|length > 200 %}
+                                            <li>{{ 'and %count% more (all of them are in the download)'|trans({'%count%': changes.files|length - 200}) }}</li>
+                                        {% endif %}
+                                    </ul>
+                                </details>
+                                <a class="btn btn-sm btn-outline-warning mt-3" href="{{ 'clientfence/update/changed-files'|url(query: { CSRFToken: CSRFToken }) }}">
+                                    <svg class="icon"><use href="#download" /></svg>
+                                    {{ 'Download the changed files'|trans }}
+                                </a>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="update-changes-acknowledgement" data-update-backup-acknowledgement>
+                                <label class="form-check-label" for="update-changes-acknowledgement">
+                                    {{ 'I have saved my changed files.'|trans }}
+                                </label>
+                            </div>
+                        {% elseif not changes.checked %}
+                            <p class="text-secondary small mb-3">{{ 'This version has no list of its files, so files changed on this site cannot be found before this update.'|trans }}</p>
+                        {% endif %}
+                    {% endif %}
+                    {% if canInstallUpdate %}
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="update-backup-acknowledgement" data-update-backup-acknowledgement>
+                            <label class="form-check-label" for="update-backup-acknowledgement">
+                                {{ 'I have backed up the ClientFence files and database.'|trans }}
+                            </label>
+                            <div class="form-text">{{ 'The update button is enabled only after confirming that backups are available.'|trans }}</div>
+                        </div>
+                    {% endif %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% if canInstallUpdate %}
+                            <a class="btn {{ updateButtonClass }} disabled" href="#" aria-disabled="true" data-update-requires-backup data-update-href="{{ 'system/update_core'|api_url }}"
+                                {{ fb_api_link({
+                                    modal: {type: updateModalType, title: updateConfirmTitle, content: updateModalContent, button: updateModalButton},
+                                    callback: 'clientfenceUpdateDone',
+                                    timeoutMs: 300000,
+                                    timeoutMessage: 'The update request took longer than expected. The server may still be finishing the update. Wait a minute before refreshing or trying again.'|trans,
+                                    preventNavigation: true,
+                                    loading: {
+                                        target: '#update-progress',
+                                        button: 'Updating ClientFence...'|trans,
+                                        message: 'The update is running and can take several minutes. Keep this tab open and do not retry unless an error is shown.'|trans
+                                    }
+                                }) }}>
+                                <svg class="icon">
+                                    <use href="#download" />
+                                </svg>
+                                {{ updateButtonLabel }}
+                            </a>
+                        {% else %}
+                            <a class="btn btn-secondary disabled" aria-disabled="true">
+                                <svg class="icon">
+                                    <use href="#download" />
+                                </svg>
+                                {{ updateButtonLabel }}
+                            </a>
+                        {% endif %}
+                        {% if not isPreviewBranch %}
+                            <a class="btn btn-outline-secondary" href="{{ 'system/recheck_update'|api_url }}" {{ fb_api_link({ reload: true }) }}>
+                                <svg class="icon">
+                                    <use href="#refresh" />
+                                </svg>
+                                {{ 'Check for Updates'|trans }}
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div id="update-progress"></div>
+                    {# ClientFence core patch: a finished update says so and waits for Continue instead of reloading at
+                       once (the update signs staff out, and the web server may restart in that second). #}
+                    <div class="alert alert-success mt-3" role="status" tabindex="-1" data-update-done hidden>
+                        <h4 class="alert-title">{{ 'ClientFence %version% was installed successfully.'|trans({'%version%': update_info['version']|default('')}) }}</h4>
+                        <div class="text-secondary">{{ 'The update signed you out. Continue to sign in again.'|trans }}</div>
+                        <a class="btn btn-success mt-3" href="{{ 'system/update'|url }}">{{ 'Continue'|trans }}</a>
+                    </div>
+                    {% if not isPreviewBranch %}
+                        {# ClientFence: the release feed check (Clientfence/Updates.php): its last result and the daily switch. #}
+                        {% if update_info['check_error']|default(null) %}
+                            <div class="alert alert-warning mt-3 mb-0" role="alert">{{ 'The last update check failed:'|trans }} {{ update_info['check_error'] }}</div>
+                        {% endif %}
+                        <div class="d-flex flex-wrap gap-4 mt-3 text-secondary small">
+                            <div>{{ 'Last update check:'|trans }} {{ update_info['last_check'] ? update_info['last_check']|format_datetime() : 'never'|trans }}.</div>
+                            {% if (update_info['check_enabled'] ?? true) and update_info['next_check'] %}
+                                <div>{{ 'Next update check:'|trans }} {{ update_info['next_check']|format_datetime() }}.</div>
+                            {% endif %}
+                        </div>
+                        {% if admin.system_is_allowed({ 'mod': 'system', 'f': 'system_update' }) %}
+                            <form method="post" action="{{ 'clientfence/update_check_save'|api_url }}" {{ fb_api_form({ message: 'Settings saved'|trans, reload: true }) }} class="mt-3">
+                                <input type="hidden" name="enabled" value="0">
+                                <label class="form-check form-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" name="enabled" value="1"{% if (update_info['check_enabled'] ?? true) %} checked{% endif %} data-cf-submit-on-change>
+                                    <span class="form-check-label">{{ 'Check for new ClientFence releases every day'|trans }}</span>
+                                </label>
+                                <div class="form-hint">{{ 'The only call ClientFence makes to clientfence.com: it reads the release list and sends nothing about this site. When it finds a release, staff see a dashboard notice and the staff who may update get one email.'|trans }}</div>
+                            </form>
+                            {# ClientFence: the beta channel (Updates::setChannel), opt in. #}
+                            <form method="post" action="{{ 'clientfence/update_channel_save'|api_url }}" {{ fb_api_form({ message: 'Settings saved'|trans, reload: true }) }} class="mt-3">
+                                <input type="hidden" name="channel" value="stable">
+                                <label class="form-check form-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" name="channel" value="beta"{% if update_info['channel']|default('stable') == 'beta' %} checked{% endif %} data-cf-submit-on-change>
+                                    <span class="form-check-label">{{ 'Get beta releases'|trans }}</span>
+                                </label>
+                                <div class="form-hint">{{ 'Beta releases come out before stable ones, for testing. Not recommended for production sites. When you turn this off, a beta you installed stays until a newer stable release is out.'|trans }}</div>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 w-100">
+                        <div>
+                            <h3 class="card-title">{{ 'Database & Configuration Patches'|trans }}</h3>
+                            <p class="card-subtitle">{{ 'Keep database structure and settings aligned with the installed ClientFence version.'|trans }}</p>
+                        </div>
+                        <span class="badge {{ behindOnPatches ? 'badge-outline text-warning' : 'badge-outline text-success' }}">{{ behindOnPatches ? 'Pending'|trans : 'Up to Date'|trans }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if behindOnPatches %}
+                        <div class="alert alert-warning" role="alert">
+                            <strong class="me-1">{{ 'Database Patches Pending:'|trans }}</strong>{{ 'Apply the pending database patches to keep this installation aligned with the installed ClientFence files.'|trans }}
+                        </div>
+                    {% endif %}
+                    <p>{{ 'Database patches are small migrations that update ClientFence database tables and settings after the application files change.'|trans }}</p>
+                    <p class="text-secondary mb-0">{{ 'Update patches are automatically run after ClientFence updates. Use the manual action here only when ClientFence reports pending patches or when troubleshooting update issues.'|trans }}</p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn {{ behindOnPatches ? 'btn-success' : 'btn-secondary' }}" href="{{ 'system/manual_update'|api_url }}"
+                            {{ fb_api_link({
+                                message: 'Patches Applied and Configuration Updated'|trans,
+                                modal: {type: 'confirm', title: 'Are you sure?'|trans},
+                                timeoutMs: 180000,
+                                timeoutMessage: 'Applying patches took longer than expected. The server may still be finishing the patching process. Wait a minute before refreshing or trying again.'|trans,
+                                preventNavigation: true,
+                                loading: {
+                                    target: '#patch-progress',
+                                    button: 'Applying patches...'|trans,
+                                    message: 'Database and configuration patches are being applied. Keep this tab open until the request completes.'|trans
+                                }
+                            }) }}>
+                            <svg class="icon">
+                                <use href="#settings-bolt" />
+                            </svg>
+                            {{ 'Apply Patches & Update Configuration'|trans }}
+                        </a>
+                    </div>
+                    <div id="patch-progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script nonce="{{ csp_nonce }}">
+    // The update button's callback: hide the button and show the success message.
+    window.clientfenceUpdateDone = () => {
+        document.querySelector('[data-update-requires-backup]')?.closest('.d-flex')?.classList.add('d-none');
+        const done = document.querySelector('[data-update-done]');
+        done.hidden = false;
+        done.focus();
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // ClientFence: every box must be ticked (the backup, and the changed files when there are any).
+        const acknowledgements = [...document.querySelectorAll('[data-update-backup-acknowledgement]')];
+        const updateButton = document.querySelector('[data-update-requires-backup]');
+
+        if (!acknowledgements.length || !updateButton) {
+            return;
+        }
+
+        const updateButtonState = () => {
+            const disabled = acknowledgements.some((box) => !box.checked);
+            updateButton.classList.toggle('disabled', disabled);
+            updateButton.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+            updateButton.setAttribute('href', disabled ? '#' : (updateButton.dataset.updateHref ?? '#'));
+        };
+
+        acknowledgements.forEach((box) => box.addEventListener('change', updateButtonState));
+        updateButtonState();
+    });
+</script>
+{% endblock %}

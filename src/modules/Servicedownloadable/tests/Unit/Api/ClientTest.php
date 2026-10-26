@@ -1,0 +1,169 @@
+<?php
+
+/**
+ * Copyright 2022-2026 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+declare(strict_types=1);
+
+use Symfony\Component\HttpFoundation\Response;
+
+use function Tests\Helpers\container;
+use function Tests\Helpers\moduleService;
+
+test('gets dependency injection container', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Servicedownloadable\Api\Client());
+    $di = container();
+    $api->setDi($di);
+    $getDi = $api->getDi();
+    expect($getDi)->toBe($di);
+});
+
+test('throws exception when sending file with missing order id', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Servicedownloadable\Api\Client());
+    $data = [];
+
+    expect(fn (): bool => $api->send_file($data))
+        ->toThrow(ClientFence\Exception::class, 'Order ID is required');
+});
+
+test('throws exception when sending file with order not found', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Servicedownloadable\Api\Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $modelClient = new Model_Client();
+    $modelClient->loadBean(new Tests\Helpers\DummyBean());
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')->atLeast()->once();
+
+    $di = container();
+    $di['db'] = $dbMock;
+
+    $api->setIdentity($modelClient);
+    $api->setDi($di);
+
+    expect(fn (): bool => $api->send_file($data))
+        ->toThrow(ClientFence\InformationException::class, 'Order not found');
+});
+
+test('throws exception when sending file with order not activated', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Servicedownloadable\Api\Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $modelClient = new Model_Client();
+    $modelClient->loadBean(new Tests\Helpers\DummyBean());
+
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock->shouldReceive('assertOrderUsable')->atLeast()->once();
+    $orderServiceMock->shouldReceive('getOrderService')->atLeast()->once();
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')
+        ->atLeast()
+        ->once()
+        ->andReturn(new Model_ClientOrder());
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(moduleService(['order' => $orderServiceMock]));
+
+    $api->setDi($di);
+    $api->setIdentity($modelClient);
+
+    expect(fn (): bool => $api->send_file($data))
+        ->toThrow(ClientFence\Exception::class, 'Order is not activated');
+});
+
+test('sends file', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Servicedownloadable\Api\Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $modelClient = new Model_Client();
+    $modelClient->loadBean(new Tests\Helpers\DummyBean());
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicedownloadable\Service::class);
+    $response = new Response('download');
+    $serviceMock->shouldReceive('sendFile')
+        ->atLeast()
+        ->once()
+        ->andReturn($response);
+
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock->shouldReceive('assertOrderUsable')
+        ->atLeast()
+        ->once();
+    $orderServiceMock->shouldReceive('getOrderService')
+        ->atLeast()
+        ->once()
+        ->andReturn(new Model_ServiceDownloadable());
+
+    $mockOrder = new Model_ClientOrder();
+    $mockOrder->loadBean(new Tests\Helpers\DummyBean());
+    $mockOrder->status = 'active';
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')
+        ->atLeast()
+        ->once()
+        ->andReturn($mockOrder);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(moduleService(['order' => $orderServiceMock]));
+
+    $api->setDi($di);
+    $api->setIdentity($modelClient);
+    $api->setService($serviceMock);
+
+    $result = $api->send_file($data);
+    expect($result)->toBe($response);
+});
+
+test('throws exception when sending file for expired order', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Servicedownloadable\Api\Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $modelClient = new Model_Client();
+    $modelClient->loadBean(new Tests\Helpers\DummyBean());
+
+    $expiredOrder = new Model_ClientOrder();
+    $expiredOrder->loadBean(new Tests\Helpers\DummyBean());
+    $expiredOrder->status = 'active';
+    $expiredOrder->expires_at = date('Y-m-d H:i:s', time() - 3600);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')
+        ->atLeast()
+        ->once()
+        ->andReturn($expiredOrder);
+
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock->shouldReceive('assertOrderUsable')
+        ->once()
+        ->with($expiredOrder)
+        ->andThrow(new ClientFence\InformationException('Subscription expired'));
+    $orderServiceMock->shouldReceive('getOrderService')->never();
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(moduleService(['order' => $orderServiceMock]));
+
+    $api->setDi($di);
+    $api->setIdentity($modelClient);
+
+    expect(fn (): Response => $api->send_file($data))
+        ->toThrow(ClientFence\InformationException::class, 'Subscription expired');
+});

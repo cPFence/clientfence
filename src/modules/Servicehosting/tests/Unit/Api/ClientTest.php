@@ -1,0 +1,236 @@
+<?php
+
+/**
+ * Copyright 2022-2026 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+declare(strict_types=1);
+
+use ClientFence\Mod\Servicehosting\Api\Client;
+
+use function Tests\Helpers\container;
+
+test('testGetDi', function (): void {
+    $api = apiEndpoint(new Client());
+    $di = container();
+    $api->setDi($di);
+    $getDi = $api->getDi();
+    expect($getDi)->toBe($di);
+});
+
+// ClientFence: clients cannot change this themselves; staff do it on a support ticket.
+test('testChangeUsername', function (): void {
+    $apiMock = apiEndpoint(Mockery::mock(Client::class)->makePartial());
+    $apiMock->shouldNotReceive('_getService');
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock->shouldNotReceive('changeAccountUsername');
+    $apiMock->setService($serviceMock);
+
+    $apiMock->change_username([]);
+})->throws(ClientFence\InformationException::class, 'Hosting usernames are changed by our staff. Please open a support ticket.');
+
+// ClientFence: clients cannot change this themselves; staff do it on a support ticket.
+test('testChangeDomain', function (): void {
+    $apiMock = apiEndpoint(Mockery::mock(Client::class)->makePartial());
+    $apiMock->shouldNotReceive('_getService');
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock->shouldNotReceive('changeAccountDomain');
+    $apiMock->setService($serviceMock);
+
+    $apiMock->change_domain([]);
+})->throws(ClientFence\InformationException::class, 'Domain changes are handled by our staff. Please open a support ticket.');
+
+test('testChangePassword', function (): void {
+    $api = apiEndpoint(new Client());
+    $getServiceReturnValue = [new Model_ClientOrder(), new Model_ServiceHosting()];
+    $apiMock = apiEndpoint(Mockery::mock(Client::class)->makePartial());
+
+    $apiMock
+    ->shouldReceive('_getService')
+    ->atLeast()->once()
+    ->andReturn($getServiceReturnValue);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('changeAccountPassword')
+    ->atLeast()->once()
+    ->andReturn(true);
+
+    $apiMock->setService($serviceMock);
+
+    $result = $apiMock->change_password([]);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('testHpGetPairs', function (): void {
+    $api = apiEndpoint(new Client());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock
+    ->shouldReceive('getOrderableHpPairs')
+    ->atLeast()->once()
+    ->andReturn([]);
+
+    $api->setService($serviceMock);
+    $result = $api->hp_get_pairs([]);
+    expect($result)->toBeArray();
+});
+
+test('testGetService', function (): void {
+    $api = apiEndpoint(new Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $clientOrderModel = new Model_ClientOrder();
+    $clientOrderModel->loadBean(new Tests\Helpers\DummyBean());
+    $clientOrderModel->status = Model_ClientOrder::STATUS_ACTIVE;
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('findOne')
+    ->atLeast()->once()
+    ->andReturn($clientOrderModel);
+
+    $model = new Model_ServiceHosting();
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock
+    ->shouldReceive('assertOrderUsable')
+    ->atLeast()->once();
+    $orderServiceMock
+    ->shouldReceive('getOrderService')
+    ->atLeast()->once()
+    ->andReturn($model);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+    $di['db'] = $dbMock;
+
+    $api->setDi($di);
+
+    $clientModel = new Model_Client();
+    $clientModel->loadBean(new Tests\Helpers\DummyBean());
+    $clientModel->id = 1;
+    $api->setIdentity($clientModel);
+    $result = $api->_getService($data);
+    expect($result)->toBeArray();
+    expect($result[0])->toBeInstanceOf('\Model_ClientOrder');
+    expect($result[1])->toBeInstanceOf('\Model_ServiceHosting');
+});
+
+test('testGetServiceOrderNotActivated', function (): void {
+    $api = apiEndpoint(new Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $clientOrderModel = new Model_ClientOrder();
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('findOne')
+    ->atLeast()->once()
+    ->andReturn($clientOrderModel);
+
+    $model = null;
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock
+    ->shouldReceive('assertOrderUsable')
+    ->atLeast()->once();
+    $orderServiceMock
+    ->shouldReceive('getOrderService')
+    ->atLeast()->once()
+    ->andReturn($model);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+    $di['db'] = $dbMock;
+
+    $api->setDi($di);
+
+    $clientModel = new Model_Client();
+    $clientModel->loadBean(new Tests\Helpers\DummyBean());
+    $clientModel->id = 1;
+    $api->setIdentity($clientModel);
+
+    $this->expectException(ClientFence\InformationException::class);
+    $this->expectExceptionMessage('Order is not activated');
+    $api->_getService($data);
+});
+
+test('testGetServiceOrderNotFound', function (): void {
+    $api = apiEndpoint(new Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $clientOrderModel = null;
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock
+    ->shouldReceive('findOne')
+    ->atLeast()->once()
+    ->andReturn($clientOrderModel);
+
+    $di = container();
+    $di['db'] = $dbMock;
+
+    $api->setDi($di);
+
+    $clientModel = new Model_Client();
+    $clientModel->loadBean(new Tests\Helpers\DummyBean());
+    $clientModel->id = 1;
+    $api->setIdentity($clientModel);
+
+    $this->expectException(ClientFence\InformationException::class);
+    $this->expectExceptionMessage('Order not found');
+    $api->_getService($data);
+});
+
+test('testGetServiceMissingOrderId', function (): void {
+    $api = apiEndpoint(new Client());
+    $data = [];
+
+    $this->expectException(ClientFence\Exception::class);
+    $this->expectExceptionMessage('Order ID is required');
+    $api->_getService($data);
+});
+
+test('testGetServiceThrowsForExpiredOrder', function (): void {
+    $api = apiEndpoint(new Client());
+    $data = [
+        'order_id' => 1,
+    ];
+
+    $clientOrderModel = new Model_ClientOrder();
+    $clientOrderModel->loadBean(new Tests\Helpers\DummyBean());
+    $clientOrderModel->status = Model_ClientOrder::STATUS_ACTIVE;
+    $clientOrderModel->expires_at = date('Y-m-d H:i:s', time() - 3600);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')->atLeast()->once()->andReturn($clientOrderModel);
+
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock->shouldReceive('assertOrderUsable')
+        ->once()
+        ->with($clientOrderModel)
+        ->andThrow(new ClientFence\InformationException('Subscription expired'));
+    $orderServiceMock->shouldReceive('getOrderService')->never();
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+    $di['db'] = $dbMock;
+
+    $api->setDi($di);
+
+    $clientModel = new Model_Client();
+    $clientModel->loadBean(new Tests\Helpers\DummyBean());
+    $clientModel->id = 1;
+    $api->setIdentity($clientModel);
+
+    expect(fn () => $api->_getService($data))
+        ->toThrow(ClientFence\InformationException::class, 'Subscription expired');
+});

@@ -1,0 +1,243 @@
+{# ClientFence admin frame (installed in themes/admin_default/html_custom/, which FOSSBilling reads
+   before html/): FOSSBilling's admin layout with a sidebar menu, a slim header with the Ctrl+K
+   search, and a small footer. Every block, widget slot and script of the stock layout stays, so
+   the inner pages render as before. Arabic: the frame and the dashboard read right to left; the
+   inner pages keep FOSSBilling's left-to-right layout. #}
+{% set profile = admin.profile_get %}
+{% set company = guest.system_company %}
+{% set active_locale = guest.system_locale|default('en')|replace({'_': '-'}) %}
+{% set current_active_menu = active_menu|default('') %}
+{% set frame_dir = guest.system_locale|default('en') starts with 'ar' ? 'rtl' : 'ltr' %}
+{% set content_dir = current_active_menu == 'dashboard' ? frame_dir : 'ltr' %}
+
+<!DOCTYPE html>
+<html lang="{{ active_locale }}" data-bs-theme="dark">
+
+<head>
+    <title>{% block meta_title %}{% endblock %} - {{ company.name }}</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="{{ company.favicon_url }}">
+
+    {{ include('partial_bb_meta.html.twig') }}
+
+    <link rel="stylesheet" href="{{ 'build/css/vendor.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    <link rel="stylesheet" href="{{ 'build/css/clientfence.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    <link rel="stylesheet" href="{{ 'clientfence/clientfence-admin.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    {# The brand color (Clientfence Branding.php): admin accents; none with the default color. #}
+    {% set brand_css = guest.clientfence_brand.css_url|default(null) %}
+    {% if brand_css %}<link rel="stylesheet" href="{{ brand_css }}">{% endif %}
+    {{ 'js/clientfence.js' | public_asset_url | script_tag }}
+    {{ 'js/api.js' | public_asset_url | script_tag }}
+    <script nonce="{{ csp_nonce }}" type="module" src="{{ 'build/js/clientfence.js' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}"></script>
+    <script nonce="{{ csp_nonce }}" type="module" src="{{ 'clientfence/clientfence-admin.js' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}"></script>
+    {{ debug_bar_render_head() }}
+
+    {% block head %}{% endblock %}
+</head>
+
+<body data-bf-saved="{{ 'Changes saved'|trans }}" data-bf-done="{{ 'Done'|trans }}" data-cf-signed-out="{{ 'Your session has ended. Copy anything you typed, then sign in again.'|trans }}">
+    <script nonce="{{ csp_nonce }}">
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute("data-bs-theme", localStorage.getItem('theme'));
+        } else {
+            document.documentElement.removeAttribute("data-bs-theme");
+        }
+        try {
+            if (localStorage.getItem('clientfence_admin_menu') === 'collapsed') {
+                document.documentElement.classList.add('bf-collapsed');
+            }
+        } catch (e) {}
+    </script>
+
+    {% if not admin %}
+    <script nonce="{{ csp_nonce }}">
+        document.addEventListener("DOMContentLoaded", function() {
+            window.location = "{{ 'staff/login'|url }}";
+        });
+    </script>
+    {% endif %}
+
+    {% if admin %}
+    {% if hide_menu is defined and hide_menu %}
+    {% block content_wide %}{% endblock %}
+    {% else %}
+    {% set navigation = admin.extension_get_navigation({ 'url': guest.system_current_url }) %}
+    {# FOSSBilling's calls need the module's "view" permission, not only its "Module access". #}
+    {% set badges = {
+        'invoice': admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }) ? admin.invoice_get_statuses.unpaid|default(0) : 0,
+        'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) ? admin.support_ticket_get_statuses.open|default(0) : 0
+    } %}
+    <div class="page bf-shell" dir="{{ frame_dir }}">
+        {% block nav %}{% endblock %}
+        {{ include('partial_clientfence_sidebar.html.twig') }}
+        <div class="bf-backdrop" data-bf-menu-close hidden></div>
+        <div class="page-wrapper bf-main">
+            {% block before_content %}{% endblock %}
+            <header class="bf-header d-print-none">
+                <button type="button" class="bf-icon-btn bf-menu-open" data-bf-menu-open aria-controls="bf-sidebar" aria-expanded="false" aria-label="{{ 'Open menu'|trans }}">
+                    <svg class="icon" aria-hidden="true"><use href="#bf-menu" /></svg>
+                </button>
+                <button type="button" class="bf-search" data-bf-palette-open aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+                    <svg class="icon" aria-hidden="true"><use href="#search" /></svg>
+                    <span class="bf-search-text">{{ 'Search clients, invoices, settings…'|trans }}</span>
+                    <kbd class="bf-kbd" dir="ltr">Ctrl K</kbd>
+                </button>
+                <div class="bf-header-gap"></div>
+                {% set can_new = {
+                    'client': has_permission('client', 'create'),
+                    'order': admin.system_is_allowed({ 'mod': 'order', 'f': 'view' }),
+                    'invoice': admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }),
+                    'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' })
+                } %}
+                {% if can_new.client or can_new.order or can_new.invoice or can_new.support %}
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary bf-new" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg class="icon" aria-hidden="true"><use href="#plus" /></svg>
+                        <span>{{ 'New'|trans }}</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        {% if can_new.client %}<a class="dropdown-item" href="{{ 'client'|url }}#bf-new=newClientModal">{{ 'New Client'|trans }}</a>{% endif %}
+                        {% if can_new.order %}<a class="dropdown-item" href="{{ 'order'|url }}#bf-new=newOrderModal">{{ 'New Order'|trans }}</a>{% endif %}
+                        {% if can_new.invoice %}<a class="dropdown-item" href="{{ 'invoice'|url }}#bf-new=newInvoiceModal">{{ 'New Invoice'|trans }}</a>{% endif %}
+                        {% if can_new.support %}<a class="dropdown-item" href="{{ 'support'|url }}#bf-new=newClientTicketModal">{{ 'New Client Ticket'|trans }}</a>{% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% set languages = guest.extension_languages(true) %}
+                {% if languages|length == 2 %}
+                    {% set other_language = languages|filter(l => l.locale != guest.system_locale)|first %}
+                    {% if other_language %}
+                    <button type="button" class="bf-icon-btn bf-lang" data-bf-locale="{{ other_language.locale }}" lang="{{ other_language.locale|replace({'_': '-'}) }}" title="{{ other_language.title }}" aria-label="{{ other_language.title }}">
+                        <svg class="icon" aria-hidden="true"><use href="#bf-world" /></svg>
+                        <span class="bf-lang-code" aria-hidden="true">{{ other_language.locale|split('_')|first|upper }}</span>
+                    </button>
+                    {% endif %}
+                {% elseif languages|length > 2 %}
+                    {# More languages: one button (a globe and the language's short code) opens a scrolling
+                       menu with the full names. FOSSBilling's select box was too wide for a phone's header. #}
+                    {% set current_language = languages|filter(l => l.locale == guest.system_locale)|first %}
+                    <div class="dropdown bf-lang-menu">
+                        <button type="button" class="bf-icon-btn bf-lang" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'Language'|trans }}" aria-label="{{ 'Language'|trans }}">
+                            <svg class="icon" aria-hidden="true"><use href="#bf-world" /></svg>
+                            <span class="bf-lang-code" aria-hidden="true">{{ (current_language ? current_language.locale : guest.system_locale)|split('_')|first|upper }}</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end bf-lang-list">
+                            {% for lang in languages %}
+                                {% if lang.locale == guest.system_locale %}
+                                    <button type="button" class="dropdown-item active" aria-current="true" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ lang.title }}</button>
+                                {% else %}
+                                    <button type="button" class="dropdown-item" data-bf-locale="{{ lang.locale }}" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ lang.title }}</button>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <a class="bf-icon-btn hide-theme-dark js-theme-toggler" href="?theme=dark" title="{{ 'Enable dark mode'|trans }}" aria-label="{{ 'Enable dark mode'|trans }}">
+                    <svg class="icon" aria-hidden="true"><use href="#moon" /></svg>
+                </a>
+                <a class="bf-icon-btn hide-theme-light js-theme-toggler" href="?theme=light" title="{{ 'Enable light mode'|trans }}" aria-label="{{ 'Enable light mode'|trans }}">
+                    <svg class="icon" aria-hidden="true"><use href="#sun" /></svg>
+                </a>
+                {# The bell: notifications for this staff member (clientfence-admin.js fills the list). #}
+                <div class="dropdown bf-bell" data-bf-bell data-text="{{ {empty: 'No notifications yet'|trans, error: 'Notifications could not be loaded'|trans, now: 'just now'|trans, read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans}|json_encode }}">
+                    <button type="button" class="bf-icon-btn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="{{ 'Notifications'|trans }}" aria-label="{{ 'Notifications'|trans }}">
+                        <svg class="icon" aria-hidden="true"><use href="#bf-bell" /></svg>
+                        <span class="bf-bell-count" data-bf-bell-count hidden></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end bf-bell-menu">
+                        <div class="bf-bell-head">
+                            <span class="bf-bell-title">{{ 'Notifications'|trans }}</span>
+                            <button type="button" class="bf-bell-all" data-bf-bell-all hidden>{{ 'Mark all read'|trans }}</button>
+                        </div>
+                        <div class="bf-bell-list" data-bf-bell-list aria-live="polite"></div>
+                    </div>
+                </div>
+                {# The signed-in staff member: initials in the brand color; name and email in the menu. #}
+                {% set initials = profile.name|split(' ')|filter(w => w != '')|slice(0, 2)|map(w => w|first|upper)|join %}
+                <div class="dropdown">
+                    <a class="bf-profile" href="{{ 'staff/profile'|url }}" data-bs-toggle="dropdown" aria-label="{{ 'Open user menu'|trans }}" title="{{ profile.name }}" aria-expanded="false">
+                        <span class="bf-initials" aria-hidden="true">{{ initials ?: '?' }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end bf-profile-menu">
+                        <div class="bf-profile-head">
+                            <span class="bf-profile-name">{{ profile.name }}</span>
+                            <span class="bf-profile-mail">{{ profile.email }}</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ 'staff/profile'|url }}">{{ 'Profile'|trans }}</a>
+                        <a class="dropdown-item" href="{{ 'system'|url }}">{{ 'Settings'|trans }}</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ 'profile/logout'|api_url }}" {{ fb_api_link({ redirect: 'staff/login'|url, message: '' }) }}>{{ 'Logout'|trans }}</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-body bf-body" dir="{{ content_dir }}">
+                <div class="container-xl">
+                    <nav class="mb-3{% if current_active_menu == 'dashboard' %} d-none{% endif %}" aria-label="breadcrumb">
+                        {% block breadcrumbs %}
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ '/'|url }}">
+                                    <svg class="icon">
+                                        <use href="#home" />
+                                    </svg>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ block('meta_title') }}</li>
+                        </ol>
+                        {% endblock %}
+                    </nav>
+                    {{ render_widgets('admin.theme.content.before') }}
+                    {% block top_content %}{% endblock %}
+                    {% block content %}{% endblock %}
+                    {{ render_widgets('admin.theme.content.after') }}
+                </div>
+            </main>
+
+            <footer class="bf-footer d-print-none">
+                {{ render_widgets('admin.theme.footer.start') }}
+                <span>&copy; {{ 'now'|date('Y') }} {{ company.name }}</span>
+                <span class="bf-footer-links">
+                    <a href="https://clientfence.com/" target="_blank" rel="noopener" dir="ltr">ClientFence {{ ClientFenceVersion }}</a>
+                </span>
+                {{ render_widgets('admin.theme.footer.end') }}
+            </footer>
+        </div>
+    </div>
+    {{ include('partial_clientfence_palette.html.twig') }}
+    {% endif %}
+
+    <div class="loading dim"></div>
+
+    <div class="d-none">
+        {{ svg_sprite() }}
+        {{ include('partial_clientfence_icons.html.twig') }}
+    </div>
+
+    {# ClientFence: a round button with a ring for how far down the page is (ui/backToTop.ts). #}
+    <button type="button" aria-label="{{ 'Back to Top'|trans }}" title="{{ 'Back to Top'|trans }}" class="bf-top" id="back-to-top">
+        <svg class="bf-top-ring" viewBox="0 0 48 48" aria-hidden="true">
+            <circle class="bf-top-track" cx="24" cy="24" r="22" pathLength="100" />
+            <circle class="bf-top-progress" cx="24" cy="24" r="22" pathLength="100" />
+        </svg>
+        <svg class="icon" aria-hidden="true">
+            <use href="#arrow-up" />
+        </svg>
+    </button>
+
+    {% block js %}{% endblock %}
+
+    <noscript id="noscript">
+        <div class="msg error">NOTE: Many features on ClientFence require JavaScript and cookies. You can enable both via your browser's preference settings.</div>
+    </noscript>
+    {% endif %}
+
+    {{ debug_bar_render() }}
+
+    {{ include('partial_clientfence_toasts.html.twig') }}
+</body>
+</html>

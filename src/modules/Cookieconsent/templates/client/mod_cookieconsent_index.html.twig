@@ -1,0 +1,26 @@
+{% set cookie_notice = guest.cookieconsent_settings %}
+{# ClientFence core patch (ext cookieconsent): hidden until the script finds it not yet accepted, so it never flashes once accepted. #}
+<div id="cookie-consent-block" class="cf-cookie cf-cookie-{{ cookie_notice.position }}" role="region" aria-label="{{ 'Cookie notice'|trans }}" hidden>
+    <p class="cf-cookie-text">
+        {{ cookie_notice.message }}
+        {% if cookie_notice.privacy_url %}<a href="{{ cookie_notice.privacy_url }}">{{ 'Privacy Policy'|trans }}</a>{% endif %}
+    </p>
+    <button id="cookie-consent-accept" type="button" class="btn btn-primary btn-sm">{{ cookie_notice.button }}</button>
+</div>
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        if (localStorage.getItem('cookie-consent') === '1') {
+            return;
+        }
+        const banner = document.getElementById('cookie-consent-block');
+        // ClientFence core patch (ext cookieconsent): room below the page, so the banner never hides its last controls.
+        new ResizeObserver(() => {
+            document.body.style.paddingBottom = banner.offsetHeight ? banner.offsetHeight + 'px' : '';
+        }).observe(banner);
+        banner.hidden = false;
+        document.getElementById('cookie-consent-accept').addEventListener('click', () => {
+            banner.hidden = true;
+            localStorage.setItem('cookie-consent', '1');
+        });
+    })();
+</script>

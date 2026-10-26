@@ -1,0 +1,603 @@
+{# ClientFence, Hosting accounts: the Email tab of an account's page (included by
+   mod_servicehosting_account.html.twig with `account`). The list and every change go through the
+   client API (servicehosting/email*), which checks that the order is the client's and, for
+   changes, that it is active. Search and paging run in the browser: the panel answers the whole
+   list at once. The forms are <template>s, shown in one modal. #}
+{% set read_only = account.status != 'active' %}
+<div class="clientfence-email" data-clientfence-email="{{ account.order_id }}"{% if read_only %} data-read-only{% endif %}>
+    {% if read_only %}
+        <div class="alert alert-warning">{{ 'This hosting account is suspended, so its email accounts cannot be changed.'|trans }}</div>
+    {% endif %}
+    <div class="card">
+        <div class="card-header clientfence-email-head">
+            <div class="me-auto">
+                <h2 class="mb-0">{{ 'Email accounts'|trans }}</h2>
+                <div class="small text-secondary" data-email-allowance></div>
+            </div>
+            <input type="search" class="form-control form-control-sm clientfence-email-search" placeholder="{{ 'Search email accounts'|trans }}" aria-label="{{ 'Search email accounts'|trans }}" data-email-search>
+            {% if not read_only %}
+                <button type="button" class="btn btn-sm btn-primary" data-email-action="create" disabled>
+                    <svg class="icon icon-sm" aria-hidden="true"><use href="#plus"/></svg>
+                    {{ 'Create email account'|trans }}
+                </button>
+            {% endif %}
+        </div>
+        <div data-email-list>
+            <div class="card-body d-flex align-items-center gap-2 small text-secondary">
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span>{{ 'Loading email accounts…'|trans }}</span>
+            </div>
+        </div>
+        <div class="card-footer clientfence-email-foot" data-email-foot hidden>
+            <span class="small text-secondary" data-email-count></span>
+            <div class="d-flex align-items-center gap-2">
+                <label class="small text-secondary" for="clientfence-email-per-page">{{ 'Per page'|trans }}</label>
+                <select class="form-select form-select-sm w-auto" id="clientfence-email-per-page" data-email-per-page>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="0">{{ 'All'|trans }}</option>
+                </select>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-secondary" data-email-page="-1" aria-label="{{ 'Previous page'|trans }}"><svg class="icon icon-sm flip-rtl" aria-hidden="true"><use href="#chevron-left"/></svg></button>
+                    <button type="button" class="btn btn-outline-secondary" data-email-page="1" aria-label="{{ 'Next page'|trans }}"><svg class="icon icon-sm flip-rtl" aria-hidden="true"><use href="#chevron-right"/></svg></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# One row of the list. #}
+    <template data-email-template="row">
+        <div class="clientfence-email-row">
+            <span class="clientfence-hosting-tile-icon" data-row-icon><svg class="icon icon-sm" aria-hidden="true"><use href="#mail"/></svg></span>
+            <div class="min-w-0 flex-grow-1">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="clientfence-email-address text-truncate"><bdi dir="ltr" data-row-address></bdi></span>
+                    <span class="badge text-bg-secondary" data-row-badge="forwarder" hidden>{{ 'Forwarder'|trans }}</span>
+                    <span class="badge text-bg-info" data-row-badge="catch_all" hidden>{{ 'Catch-all'|trans }}</span>
+                    <span class="badge text-bg-danger" data-row-badge="status" hidden>{{ 'Suspended'|trans }}</span>
+                </div>
+                <div class="clientfence-email-meta" data-row-meta></div>
+                <div class="progress clientfence-hosting-bar clientfence-email-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-row-bar hidden><div class="progress-bar"></div></div>
+            </div>
+            <div class="clientfence-email-actions">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-email-action="webmail" hidden>
+                    <svg class="icon icon-sm" aria-hidden="true"><use href="#inbox"/></svg>
+                    <span class="d-none d-sm-inline">{{ 'Webmail'|trans }}</span>
+                </button>
+                <div class="dropdown">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ 'More actions'|trans }}">
+                        <svg class="icon icon-sm" aria-hidden="true"><use href="#dots-vertical"/></svg>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><button type="button" class="dropdown-item" data-email-action="settings" data-mailbox-only><svg class="icon icon-sm me-2" aria-hidden="true"><use href="#device-mobile"/></svg>{{ 'Mail app settings'|trans }}</button></li>
+                        <li data-change><button type="button" class="dropdown-item" data-email-action="password" data-mailbox-only><svg class="icon icon-sm me-2" aria-hidden="true"><use href="#key"/></svg>{{ 'Change password'|trans }}</button></li>
+                        <li data-change><button type="button" class="dropdown-item" data-email-action="edit"><svg class="icon icon-sm me-2" aria-hidden="true"><use href="#pencil"/></svg>{{ 'Size and forwarding'|trans }}</button></li>
+                        <li data-change><button type="button" class="dropdown-item" data-email-action="autoresponder" data-mailbox-only><svg class="icon icon-sm me-2" aria-hidden="true"><use href="#message-reply"/></svg>{{ 'Automatic reply'|trans }}</button></li>
+                        <li data-change><hr class="dropdown-divider"></li>
+                        <li data-change><button type="button" class="dropdown-item text-danger" data-email-action="delete"><svg class="icon icon-sm me-2" aria-hidden="true"><use href="#trash"/></svg>{{ 'Delete'|trans }}</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template data-email-template="create" data-title="{{ 'Create email account'|trans }}" data-submit="{{ 'Create'|trans }}">
+        <div class="mb-3">
+            <label class="form-label" for="clientfence-email-username">{{ 'Email address'|trans }}</label>
+            <div class="input-group" dir="ltr">
+                <input type="text" class="form-control" id="clientfence-email-username" name="username" required maxlength="64" autocomplete="off" spellcheck="false" placeholder="{{ 'name'|trans }}">
+                <span class="input-group-text">@</span>
+                <select class="form-select" name="domain_id" aria-label="{{ 'Domain'|trans }}" data-domains></select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="kind" id="clientfence-email-kind-mailbox" value="mailbox" checked>
+                <label class="form-check-label" for="clientfence-email-kind-mailbox">{{ 'Mailbox'|trans }}</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="kind" id="clientfence-email-kind-forwarder" value="forwarder">
+                <label class="form-check-label" for="clientfence-email-kind-forwarder">{{ 'Forwarder only'|trans }}</label>
+            </div>
+            <div class="form-text" data-limit-note hidden>{{ 'All the mailboxes your plan allows are in use; you can still make forwarders.'|trans }}</div>
+        </div>
+        <div data-kind="mailbox">
+            <div class="mb-3">
+                <label class="form-label" for="clientfence-email-password">{{ 'Password'|trans }}</label>
+                <div class="input-group" dir="ltr">
+                    <input type="password" class="form-control" id="clientfence-email-password" name="password" minlength="10" maxlength="128" autocomplete="new-password" data-password>
+                    <button type="button" class="btn btn-outline-secondary" data-password-show aria-label="{{ 'Show password'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#eye"/></svg></button>
+                    <button type="button" class="btn btn-outline-secondary" data-password-generate>{{ 'Generate'|trans }}</button>
+                </div>
+                <div class="form-text">{{ 'At least 10 characters, with lowercase and uppercase letters, numbers and special characters.'|trans }}</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="clientfence-email-quota">{{ 'Mailbox size (MB)'|trans }}</label>
+                <input type="number" class="form-control" id="clientfence-email-quota" name="quota_mb" min="1" max="1000000" step="1" placeholder="{{ 'No limit'|trans }}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="clientfence-email-forwarders">{{ 'Forward to'|trans }} <span class="text-secondary small" data-kind="mailbox">{{ '(optional)'|trans }}</span></label>
+            <textarea class="form-control" id="clientfence-email-forwarders" name="forwarders" rows="2" dir="ltr" spellcheck="false" placeholder="someone@example.com"></textarea>
+            <div class="form-text">{{ 'One address per line. Mail to this account is also sent there.'|trans }}</div>
+        </div>
+    </template>
+
+    <template data-email-template="password" data-title="{{ 'Change password'|trans }}" data-submit="{{ 'Change password'|trans }}">
+        <p class="mb-3"><bdi dir="ltr" data-address></bdi></p>
+        <label class="form-label" for="clientfence-email-new-password">{{ 'New password'|trans }}</label>
+        <div class="input-group" dir="ltr">
+            <input type="password" class="form-control" id="clientfence-email-new-password" name="password" required minlength="10" maxlength="128" autocomplete="new-password" data-password>
+            <button type="button" class="btn btn-outline-secondary" data-password-show aria-label="{{ 'Show password'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#eye"/></svg></button>
+            <button type="button" class="btn btn-outline-secondary" data-password-generate>{{ 'Generate'|trans }}</button>
+        </div>
+        <div class="form-text">{{ 'At least 10 characters, with lowercase and uppercase letters, numbers and special characters.'|trans }} {{ 'Mail apps signed in with the old password need the new one.'|trans }}</div>
+    </template>
+
+    <template data-email-template="edit" data-title="{{ 'Size and forwarding'|trans }}" data-submit="{{ 'Save'|trans }}">
+        <p class="mb-3"><bdi dir="ltr" data-address></bdi></p>
+        <div class="mb-3" data-mailbox-only>
+            <label class="form-label" for="clientfence-email-edit-quota">{{ 'Mailbox size (MB)'|trans }}</label>
+            <input type="number" class="form-control" id="clientfence-email-edit-quota" name="quota_mb" min="1" max="1000000" step="1" placeholder="{{ 'No limit'|trans }}">
+            <div class="form-text" data-used></div>
+        </div>
+        <label class="form-label" for="clientfence-email-edit-forwarders">{{ 'Forward to'|trans }}</label>
+        <textarea class="form-control" id="clientfence-email-edit-forwarders" name="forwarders" rows="3" dir="ltr" spellcheck="false" placeholder="someone@example.com"></textarea>
+        <div class="form-text">{{ 'One address per line. Mail to this account is also sent there.'|trans }}</div>
+    </template>
+
+    <template data-email-template="autoresponder" data-title="{{ 'Automatic reply'|trans }}" data-submit="{{ 'Save'|trans }}">
+        <p class="mb-3"><bdi dir="ltr" data-address></bdi></p>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="clientfence-email-reply-on" name="enabled" value="1" checked>
+            <label class="form-check-label" for="clientfence-email-reply-on">{{ 'Send automatic replies'|trans }}</label>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+                <label class="form-label" for="clientfence-email-reply-start">{{ 'From'|trans }}</label>
+                <input type="date" class="form-control" id="clientfence-email-reply-start" name="start_date" required>
+            </div>
+            <div class="col-sm-6">
+                <label class="form-label" for="clientfence-email-reply-end">{{ 'Until'|trans }} <span class="text-secondary small">{{ '(optional)'|trans }}</span></label>
+                <input type="date" class="form-control" id="clientfence-email-reply-end" name="end_date">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="clientfence-email-reply-subject">{{ 'Subject'|trans }}</label>
+            <input type="text" class="form-control" id="clientfence-email-reply-subject" name="subject" required maxlength="200">
+        </div>
+        <label class="form-label" for="clientfence-email-reply-body">{{ 'Message'|trans }}</label>
+        <textarea class="form-control" id="clientfence-email-reply-body" name="body" rows="5" required maxlength="5000"></textarea>
+        <button type="button" class="btn btn-link text-danger px-0 mt-2" data-reply-remove hidden>{{ 'Remove the automatic reply'|trans }}</button>
+    </template>
+
+    <template data-email-template="settings" data-title="{{ 'Mail app settings'|trans }}">
+        <p class="mb-2">{{ 'Use these settings in Outlook, Apple Mail, Thunderbird or a phone mail app. The password is the mailbox password.'|trans }}</p>
+        <dl class="clientfence-email-settings mb-0">
+            <dt>{{ 'Username'|trans }}</dt><dd dir="ltr" data-settings-username></dd>
+        </dl>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead><tr><th>{{ 'Server'|trans }}</th><th>{{ 'Host'|trans }}</th><th>{{ 'Port'|trans }}</th><th>{{ 'Security'|trans }}</th></tr></thead>
+                <tbody data-settings-rows></tbody>
+            </table>
+        </div>
+    </template>
+
+    <template data-email-template="delete" data-title="{{ 'Delete email account'|trans }}" data-submit="{{ 'Delete'|trans }}" data-danger>
+        <p class="mb-2"><bdi dir="ltr" data-address></bdi></p>
+        <p class="mb-0">{{ 'The account is removed with its mailbox and every message in it. This cannot be undone.'|trans }}</p>
+    </template>
+
+    <div class="modal fade" tabindex="-1" aria-hidden="true" data-email-modal>
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" novalidate>
+                <div class="modal-header">
+                    <h3 class="modal-title fs-5" data-modal-title></h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                </div>
+                <div class="modal-body" data-modal-body></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
+                    <button type="submit" class="btn btn-primary" data-modal-submit></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script nonce="{{ csp_nonce }}" type="application/json" data-email-texts>{{ {
+        'allowance': ':used of :limit mailboxes'|trans,
+        'allowance_unlimited': ':used mailboxes, no limit'|trans,
+        'count': ':from–:to of :total'|trans,
+        'none': 'No email accounts yet.'|trans,
+        'no_match': 'No email account matches your search.'|trans,
+        'unavailable': 'Email accounts are unavailable right now.'|trans,
+        'retry': 'Try again'|trans,
+        'used_of': ':used of :quota'|trans,
+        'used_unlimited': ':used used, no limit'|trans,
+        'in_use': ':used in use'|trans,
+        'forwards': 'Forwards to :count address(es)'|trans,
+        'created': 'The email account :address was created.'|trans,
+        'saved': 'Saved.'|trans,
+        'password_changed': 'The password was changed.'|trans,
+        'deleted': 'The email account was deleted.'|trans,
+        'reply_removed': 'The automatic reply was removed.'|trans,
+        'loading': 'Loading…'|trans,
+        'hide_password': 'Hide password'|trans,
+        'show_password': 'Show password'|trans,
+    }|json_encode|raw }}</script>
+</div>
+
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener('DOMContentLoaded', () => {
+        const root = document.querySelector('[data-clientfence-email]');
+        if (!root) {
+            return;
+        }
+        const orderId = root.dataset.clientfenceEmail;
+        const readOnly = root.hasAttribute('data-read-only');
+        const texts = JSON.parse(root.querySelector('[data-email-texts]').textContent);
+        const fill = (text, values) => text.replace(/:([a-z_]+)/g, (match, key) => (Object.hasOwn(values, key) ? String(values[key]) : match));
+        const list = root.querySelector('[data-email-list]');
+        const foot = root.querySelector('[data-email-foot]');
+        const search = root.querySelector('[data-email-search]');
+        const perPage = root.querySelector('[data-email-per-page]');
+        const createButton = root.querySelector('[data-email-action="create"]');
+        const modalElement = root.querySelector('[data-email-modal]');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        const form = modalElement.querySelector('form');
+        const submit = modalElement.querySelector('[data-modal-submit]');
+        let data = null;
+        let page = 0;
+        let current = null;
+
+        // The client API, as a promise; errors carry the server's message.
+        const call = (method, params = {}, loader = true) => new Promise((resolve, reject) => {
+            ClientFence.api.client.post(`servicehosting/${method}`, Object.assign({ order_id: orderId }, params), resolve, reject, loader);
+        });
+        const failed = (error) => ClientFence.message(error?.message || String(error), 'error');
+
+        // Isolated left to right, so a size reads whole inside an Arabic sentence.
+        const size = (mb) => `\u2066${mb >= 1000 ? `${Math.round(mb / 100) / 10} GB` : `${mb} MB`}\u2069`;
+
+        const load = async () => {
+            try {
+                data = await call('emails', {}, false);
+            } catch (error) {
+                const body = document.createElement('div');
+                body.className = 'card-body d-flex flex-wrap align-items-center justify-content-between gap-2';
+                const message = document.createElement('span');
+                message.className = 'text-secondary';
+                message.textContent = error?.message || texts.unavailable;
+                const retry = document.createElement('button');
+                retry.type = 'button';
+                retry.className = 'btn btn-sm btn-outline-secondary';
+                retry.textContent = texts.retry;
+                retry.addEventListener('click', () => {
+                    list.replaceChildren(spinner.cloneNode(true));
+                    load();
+                });
+                body.append(message, retry);
+                list.replaceChildren(body);
+                foot.hidden = true;
+                return;
+            }
+            const { used, limit } = data.allowance;
+            root.querySelector('[data-email-allowance]').textContent = limit === null
+                ? fill(texts.allowance_unlimited, { used })
+                : fill(texts.allowance, { used, limit });
+            if (createButton) {
+                createButton.disabled = data.domains.length === 0;
+            }
+            render();
+        };
+        const spinner = list.firstElementChild.cloneNode(true);
+
+        const render = () => {
+            const query = search.value.trim().toLowerCase();
+            const matches = data.accounts.filter((account) => account.address.includes(query));
+            const limit = Number(perPage.value);
+            const pages = limit > 0 ? Math.max(1, Math.ceil(matches.length / limit)) : 1;
+            page = Math.min(page, pages - 1);
+            const shown = limit > 0 ? matches.slice(page * limit, (page + 1) * limit) : matches;
+
+            if (matches.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'empty-state';
+                empty.textContent = data.accounts.length === 0 ? texts.none : texts.no_match;
+                list.replaceChildren(empty);
+            } else {
+                list.replaceChildren(...shown.map(row));
+            }
+            foot.hidden = matches.length === 0;
+            const from = matches.length === 0 ? 0 : (limit > 0 ? page * limit : 0) + 1;
+            root.querySelector('[data-email-count]').textContent = fill(texts.count, { from, to: from + shown.length - 1, total: matches.length });
+            root.querySelector('[data-email-page="-1"]').disabled = page === 0;
+            root.querySelector('[data-email-page="1"]').disabled = page >= pages - 1;
+        };
+
+        const row = (account) => {
+            const element = root.querySelector('[data-email-template="row"]').content.firstElementChild.cloneNode(true);
+            element.dataset.address = account.address;
+            element.querySelector('[data-row-address]').textContent = account.address;
+            element.querySelector('[data-row-badge="forwarder"]').hidden = account.mailbox;
+            element.querySelector('[data-row-badge="catch_all"]').hidden = !account.catch_all;
+            element.querySelector('[data-row-badge="status"]').hidden = account.status === 'active';
+            if (!account.mailbox) {
+                element.querySelector('[data-row-icon] use').setAttribute('href', '#mail-forward');
+            }
+            const meta = element.querySelector('[data-row-meta]');
+            if (account.mailbox) {
+                meta.textContent = account.quota_mb === null
+                    ? fill(texts.used_unlimited, { used: size(account.used_mb) })
+                    : fill(texts.used_of, { used: size(account.used_mb), quota: size(account.quota_mb) });
+                if (account.quota_mb) {
+                    const percent = Math.min(100, Math.round(account.used_mb / account.quota_mb * 100));
+                    const bar = element.querySelector('[data-row-bar]');
+                    bar.hidden = false;
+                    bar.setAttribute('aria-valuenow', String(percent));
+                    bar.firstElementChild.style.width = `${percent}%`;
+                    bar.firstElementChild.classList.toggle('bg-danger', percent >= 90);
+                    bar.firstElementChild.classList.toggle('bg-warning', percent >= 75 && percent < 90);
+                }
+            }
+            if (account.forwarders > 0) {
+                meta.textContent += `${meta.textContent ? ' · ' : ''}${fill(texts.forwards, { count: account.forwarders })}`;
+            }
+            element.querySelector('[data-email-action="webmail"]').hidden = readOnly || !account.webmail;
+            element.querySelectorAll('[data-mailbox-only]').forEach((item) => {
+                item.closest('li').hidden = !account.mailbox;
+            });
+            if (readOnly) {
+                element.querySelectorAll('[data-change]').forEach((item) => item.remove());
+            }
+            return element;
+        };
+
+        // A form in the modal, from its <template>.
+        const open = (name, account, prepare) => {
+            const template = root.querySelector(`[data-email-template="${name}"]`);
+            current = { name, account };
+            modalElement.querySelector('[data-modal-title]').textContent = template.dataset.title;
+            const body = modalElement.querySelector('[data-modal-body]');
+            body.replaceChildren(template.content.cloneNode(true));
+            body.querySelectorAll('[data-address]').forEach((item) => {
+                item.textContent = account?.address || '';
+            });
+            submit.hidden = !template.dataset.submit;
+            submit.textContent = template.dataset.submit || '';
+            submit.className = `btn ${template.hasAttribute('data-danger') ? 'btn-danger' : 'btn-primary'}`;
+            submit.disabled = false;
+            body.querySelectorAll('[data-password-show]').forEach((button) => button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('[data-password]');
+                input.type = input.type === 'password' ? 'text' : 'password';
+                button.setAttribute('aria-label', input.type === 'password' ? texts.show_password : texts.hide_password);
+            }));
+            body.querySelectorAll('[data-password-generate]').forEach((button) => button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('[data-password]');
+                input.value = password();
+                input.type = 'text';
+            }));
+            prepare?.(body);
+            modal.show();
+        };
+
+        // A random password that meets the rule (lowercase, uppercase, digit, symbol; 16 characters).
+        const password = () => {
+            const sets = ['abcdefghijkmnpqrstuvwxyz', 'ABCDEFGHJKLMNPQRSTUVWXYZ', '23456789', '!@#$%*-_=+?'];
+            const all = sets.join('');
+            const pick = (chars) => chars[crypto.getRandomValues(new Uint32Array(1))[0] % chars.length];
+            const chars = sets.map(pick);
+            while (chars.length < 16) {
+                chars.push(pick(all));
+            }
+            for (let i = chars.length - 1; i > 0; i -= 1) {
+                const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+                [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+            return chars.join('');
+        };
+
+        const actions = {
+            create: () => open('create', null, (body) => {
+                const select = body.querySelector('[data-domains]');
+                data.domains.forEach((domain) => select.append(new Option(domain.domain, domain.id)));
+                const full = data.allowance.limit !== null && data.allowance.used >= data.allowance.limit;
+                const mailbox = body.querySelector('#clientfence-email-kind-mailbox');
+                const toggle = () => {
+                    const isMailbox = body.querySelector('[name="kind"]:checked').value === 'mailbox';
+                    body.querySelectorAll('[data-kind="mailbox"]').forEach((item) => {
+                        item.hidden = !isMailbox;
+                    });
+                    body.querySelector('[name="password"]').required = isMailbox;
+                };
+                if (full) {
+                    mailbox.disabled = true;
+                    body.querySelector('#clientfence-email-kind-forwarder').checked = true;
+                    body.querySelector('[data-limit-note]').hidden = false;
+                }
+                body.querySelectorAll('[name="kind"]').forEach((radio) => radio.addEventListener('change', toggle));
+                toggle();
+            }),
+            password: (account) => open('password', account),
+            edit: (account) => open('edit', account, async (body) => {
+                body.querySelectorAll('[data-mailbox-only]').forEach((item) => {
+                    item.hidden = !account.mailbox;
+                });
+                body.querySelector('[name="quota_mb"]').value = account.quota_mb ?? '';
+                body.querySelector('[data-used]').textContent = fill(texts.in_use, { used: size(account.used_mb) });
+                const forwarders = body.querySelector('[name="forwarders"]');
+                forwarders.disabled = true;
+                submit.disabled = true;
+                try {
+                    const detail = await call('email_get', { address: account.address }, false);
+                    forwarders.value = detail.forwarders.join('\n');
+                    forwarders.disabled = false;
+                    submit.disabled = false;
+                } catch (error) {
+                    modal.hide();
+                    failed(error);
+                }
+            }),
+            autoresponder: (account) => open('autoresponder', account, async (body) => {
+                body.querySelector('[name="start_date"]').value = new Date().toISOString().slice(0, 10);
+                submit.disabled = true;
+                try {
+                    const detail = await call('email_get', { address: account.address }, false);
+                    const reply = detail.autoresponder;
+                    if (reply) {
+                        body.querySelector('[name="enabled"]').checked = reply.enabled;
+                        body.querySelector('[name="start_date"]').value = reply.start_date;
+                        body.querySelector('[name="end_date"]').value = reply.end_date || '';
+                        body.querySelector('[name="subject"]').value = reply.subject;
+                        body.querySelector('[name="body"]').value = reply.body;
+                        const remove = body.querySelector('[data-reply-remove]');
+                        remove.hidden = false;
+                        remove.addEventListener('click', () => send(() => call('email_autoresponder', { address: account.address, remove: 1 }), texts.reply_removed));
+                    }
+                    submit.disabled = false;
+                } catch (error) {
+                    modal.hide();
+                    failed(error);
+                }
+            }),
+            settings: (account) => open('settings', account, async (body) => {
+                const rows = body.querySelector('[data-settings-rows]');
+                rows.replaceChildren(Object.assign(document.createElement('tr'), { innerHTML: '<td colspan="4" class="text-secondary"></td>' }));
+                rows.querySelector('td').textContent = texts.loading;
+                try {
+                    const settings = await call('email_settings', { address: account.address }, false);
+                    body.querySelector('[data-settings-username]').textContent = settings.username;
+                    rows.replaceChildren(...[...settings.incoming, ...settings.outgoing].map((server) => {
+                        const tr = document.createElement('tr');
+                        [server.protocol, server.host, server.port, server.security].forEach((value, i) => {
+                            const td = document.createElement('td');
+                            td.textContent = String(value);
+                            if (i === 1) {
+                                td.dir = 'ltr';
+                            }
+                            tr.append(td);
+                        });
+                        return tr;
+                    }));
+                } catch (error) {
+                    modal.hide();
+                    failed(error);
+                }
+            }),
+            delete: (account) => open('delete', account),
+            webmail: async (account, button) => {
+                // The tab opens on the click, so pop-up blockers let it through.
+                const tab = window.open('', '_blank');
+                if (tab) {
+                    tab.opener = null;
+                }
+                button.disabled = true;
+                try {
+                    const url = await call('email_webmail', { address: account.address });
+                    if (tab) {
+                        tab.location.replace(url);
+                    } else {
+                        window.location.assign(url);
+                    }
+                } catch (error) {
+                    tab?.close();
+                    failed(error);
+                } finally {
+                    button.disabled = false;
+                }
+            },
+        };
+
+        // Sends a change, then closes the form and reloads the list.
+        const send = async (request, message) => {
+            submit.disabled = true;
+            try {
+                const result = await request();
+                modal.hide();
+                ClientFence.message(typeof message === 'function' ? message(result) : message, 'success');
+                await load();
+            } catch (error) {
+                failed(error);
+            } finally {
+                submit.disabled = false;
+            }
+        };
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!form.reportValidity() || !current) {
+                return;
+            }
+            const values = Object.fromEntries(new FormData(form).entries());
+            const address = current.account?.address;
+            switch (current.name) {
+                case 'create':
+                    if (values.kind !== 'mailbox') {
+                        delete values.password;
+                        delete values.quota_mb;
+                    }
+                    delete values.kind;
+                    send(() => call('email_create', values), (result) => fill(texts.created, { address: result.address }));
+                    break;
+                case 'password':
+                    send(() => call('email_password', { address, password: values.password }), texts.password_changed);
+                    break;
+                case 'edit':
+                    send(() => call('email_update', { address, quota_mb: values.quota_mb ?? '', forwarders: values.forwarders ?? '' }), texts.saved);
+                    break;
+                case 'autoresponder':
+                    send(() => call('email_autoresponder', { address, ...values, enabled: values.enabled ? 1 : 0 }), texts.saved);
+                    break;
+                case 'delete':
+                    send(() => call('email_delete', { address }), texts.deleted);
+                    break;
+                default:
+                    break;
+            }
+        });
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            current = null;
+            modalElement.querySelector('[data-modal-body]').replaceChildren();
+        });
+
+        list.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-email-action]');
+            const element = button?.closest('[data-address]');
+            const account = element && data?.accounts.find((item) => item.address === element.dataset.address);
+            if (account && actions[button.dataset.emailAction]) {
+                actions[button.dataset.emailAction](account, button);
+            }
+        });
+        createButton?.addEventListener('click', () => actions.create());
+        search.addEventListener('input', () => {
+            page = 0;
+            if (data) {
+                render();
+            }
+        });
+        perPage.addEventListener('change', () => {
+            page = 0;
+            if (data) {
+                render();
+            }
+        });
+        root.querySelectorAll('[data-email-page]').forEach((button) => button.addEventListener('click', () => {
+            page += Number(button.dataset.emailPage);
+            render();
+        }));
+
+        // The list loads the first time the Email tab opens.
+        const tab = document.querySelector('[data-bs-target="#clientfence-hosting-email"]');
+        const start = () => {
+            if (!data && !root.dataset.started) {
+                root.dataset.started = '1';
+                load();
+            }
+        };
+        tab?.addEventListener('shown.bs.tab', start);
+        if (!tab || tab.classList.contains('active')) {
+            start();
+        }
+    });
+</script>

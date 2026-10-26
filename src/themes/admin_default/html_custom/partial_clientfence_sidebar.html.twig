@@ -1,0 +1,88 @@
+{# ClientFence admin frame: the sidebar menu, from FOSSBilling's own navigation (navigation and
+   badges come from layout_default). Groups: daily work, catalogue, administration; a menu entry
+   another module adds goes under administration. An entry with one page is a link, the others
+   open their pages (the current one starts open). Badges: unpaid invoices, tickets waiting for a
+   staff reply. Collapsed to icons on large screens, from the button next to the logo or at the
+   bottom (clientfence-admin.js keeps the choice); a drawer on small screens. #}
+{% set known = ['client', 'order', 'invoice', 'support', 'products', 'system', 'security', 'activity', 'extensions'] %}
+{% set others = navigation|keys|filter(l => l not in known) %}
+{% set sections = [
+    { 'title': 'Daily work'|trans, 'items': ['client', 'order', 'invoice', 'support'] },
+    { 'title': 'Catalogue'|trans, 'items': ['products'] },
+    { 'title': 'Administration'|trans, 'items': ['system', 'security', 'activity', 'extensions']|merge(others) }
+] %}
+{% set current_url = guest.system_current_url|default('') %}
+<aside class="bf-sidebar d-print-none" id="bf-sidebar" aria-label="{{ 'Main menu'|trans }}">
+    <div class="bf-brand">
+        <a class="bf-brand-link" href="{{ '/'|url }}" aria-label="{{ company.name }}">
+            {% if company.logo_url_dark or company.logo_url %}
+                <img class="bf-brand-logo" src="{{ company.logo_url_dark|default(company.logo_url) }}" alt="{{ company.name }}">
+            {% else %}
+                <span class="bf-brand-name">{{ company.name }}</span>
+            {% endif %}
+        </a>
+        <span class="bf-brand-tag">{{ 'Admin'|trans }}</span>
+        {# Collapses the menu from its top as well (large screens; the bottom button expands it again). #}
+        <button type="button" class="bf-brand-collapse" data-bf-collapse aria-pressed="false" aria-label="{{ 'Collapse menu'|trans }}" title="{{ 'Collapse menu'|trans }}" data-label-collapse="{{ 'Collapse menu'|trans }}" data-label-expand="{{ 'Expand menu'|trans }}">
+            <svg class="icon bf-flip" aria-hidden="true"><use href="#bf-sidebar-icon" /></svg>
+        </button>
+        <button type="button" class="bf-icon-btn bf-menu-close" data-bf-menu-close aria-label="{{ 'Close menu'|trans }}">
+            <svg class="icon" aria-hidden="true"><use href="#x" /></svg>
+        </button>
+    </div>
+    <nav class="bf-nav">
+        <a class="bf-item{% if current_active_menu == 'dashboard' %} is-active{% endif %}" href="{{ '/'|url }}" title="{{ 'Dashboard'|trans }}"{% if current_active_menu == 'dashboard' %} aria-current="page"{% endif %}>
+            <svg class="icon" aria-hidden="true"><use href="#home" /></svg>
+            <span class="bf-label">{{ 'Dashboard'|trans }}</span>
+        </a>
+        {% for section in sections %}
+            {% set present = section.items|filter(l => navigation[l] is defined and navigation[l].subpages|default([])|length > 0) %}
+            {% if present|length > 0 %}
+                <div class="bf-nav-title"><span class="bf-label">{{ section.title }}</span></div>
+                {% for location in present %}
+                    {% set group = navigation[location] %}
+                    {% set active = current_active_menu == location %}
+                    {% set badge = badges[location]|default(0) %}
+                    {% if group.subpages|length == 1 %}
+                        <a class="bf-item{% if active %} is-active{% endif %}" href="{{ group.subpages[0].uri }}" title="{{ group.label|trans }}"{% if active %} aria-current="page"{% endif %}>
+                            <svg class="icon" aria-hidden="true"><use href="#{{ group.class }}" /></svg>
+                            <span class="bf-label">{{ group.label|trans }}</span>
+                            {% if badge > 0 %}<span class="bf-badge" aria-label="{{ badge }}">{{ badge }}</span>{% endif %}
+                        </a>
+                    {% else %}
+                        <details class="bf-group" data-bf-group{% if active %} open{% endif %}>
+                            <summary class="bf-item{% if active %} is-active{% endif %}" title="{{ group.label|trans }}">
+                                <svg class="icon" aria-hidden="true"><use href="#{{ group.class }}" /></svg>
+                                <span class="bf-label">{{ group.label|trans }}</span>
+                                {% if badge > 0 %}<span class="bf-badge" aria-label="{{ badge }}">{{ badge }}</span>{% endif %}
+                                <svg class="icon bf-chevron bf-label" aria-hidden="true"><use href="#chevron-right" /></svg>
+                            </summary>
+                            <div class="bf-subnav">
+                                {% for subpage in group.subpages %}
+                                    {% set sub_active = current_url != '' and subpage.uri == current_url %}
+                                    <a class="bf-sub{% if sub_active %} is-active{% endif %}" href="{{ subpage.uri }}"{% if sub_active %} aria-current="page"{% endif %}>{{ subpage.label|trans }}</a>
+                                {% endfor %}
+                            </div>
+                        </details>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </nav>
+    <div class="bf-nav-foot">
+        <div class="dropdown dropup">
+            <button type="button" class="bf-item" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'Help'|trans }}">
+                <svg class="icon" aria-hidden="true"><use href="#help" /></svg>
+                <span class="bf-label">{{ 'Help'|trans }}</span>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="https://github.com/cPFence/clientfence#readme" target="_blank" rel="noopener">{{ 'Documentation'|trans }}</a>
+                <a class="dropdown-item" href="https://github.com/cPFence/clientfence/issues" target="_blank" rel="noopener">{{ 'Report a Bug'|trans }}</a>
+            </div>
+        </div>
+        <button type="button" class="bf-item bf-collapse" data-bf-collapse aria-pressed="false" title="{{ 'Collapse menu'|trans }}" data-label-collapse="{{ 'Collapse menu'|trans }}" data-label-expand="{{ 'Expand menu'|trans }}">
+            <svg class="icon bf-flip" aria-hidden="true"><use href="#bf-sidebar-icon" /></svg>
+            <span class="bf-label" data-bf-collapse-label>{{ 'Collapse menu'|trans }}</span>
+        </button>
+    </div>
+</aside>

@@ -1,0 +1,29 @@
+{# ClientFence, the code step of a sign-in with two-factor sign-in on (/two-factor/code,
+   TwoFactor.php): a code from the authenticator app, or the backup code. Reached from the
+   sign-in and invitation pages (palisade.js clientfenceSignIn) and checkout (back: the order page);
+   without a waiting sign-in the controller sends the visitor back to the sign-in page. #}
+{% extends "layout_public.html.twig" %}
+{% set allow_guest = true %}
+
+{% block meta_title %}{{ 'Two-factor sign-in'|trans }}{% endblock %}
+{% block body_class %}page-two-factor{% endblock %}
+
+{% block body %}
+{% embed 'partials/auth_shell.html.twig' %}
+    {% block auth_content %}
+        <h1>{{ 'Two-factor sign-in'|trans }}</h1>
+        <p class="auth-lead">{{ 'Enter the 6-digit code from your authenticator app.'|trans }}</p>
+        <form method="post" action="{{ 'client/twofactor_verify'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({redirect: back ?: redirect_uri|default('/')|url}) }} autocomplete="off" data-clientfence-twofactor-code>
+            <div class="mb-3">
+                <label class="form-label" for="code">{{ 'Code'|trans }}</label>
+                <input class="form-control form-control-lg text-center" id="code" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="19" dir="ltr" required autofocus>
+                <div class="form-text">{{ 'Lost your phone? Enter your backup code instead. It works once.'|trans }}</div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">{{ 'Sign in'|trans }}</button>
+        </form>
+        <a class="btn btn-link w-100 mt-3 d-inline-flex align-items-center justify-content-center gap-2" href="{{ 'login'|url }}">
+            <svg class="icon icon-sm flip-rtl" aria-hidden="true"><use href="#arrow-left"/></svg>{{ 'Back to Login'|trans }}
+        </a>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

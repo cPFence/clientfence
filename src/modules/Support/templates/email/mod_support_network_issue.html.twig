@@ -1,0 +1,68 @@
+{% block subject %}[{{ guest.system_company.name }}] {{ issue.status_title|default('') }}: {{ issue.title|default('') }}{% endblock %}
+{% block content %}
+{# ClientFence: a network issue staff chose to email to the clients it affects (Support/NetworkIssues.php): an
+   outage, planned work or its end. `status_url` opens the Network Status page. #}
+{% set issue = issue|default({}) %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			color: #333333;
+		}
+
+		h1 {
+			font-size: 24px;
+			font-weight: bold;
+			margin: 0 0 20px;
+		}
+
+		p {
+			margin: 0 0 10px;
+		}
+
+		strong {
+			font-weight: bold;
+		}
+
+		.issue-text {
+			white-space: pre-line;
+		}
+
+		.signature {
+			font-style: italic;
+			color: #999999;
+			margin-top: 20px;
+			border-top: 1px solid #cccccc;
+			padding-top: 10px;
+		}
+
+		.reply-line {
+			color: #999999;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+	<h1>{{ issue.title|default('') }}</h1>
+	<p>Hello {{ c.first_name|default('') }},</p>
+	<p>An update about our network: <strong>{{ issue.status_title|default('') }}</strong> ({{ issue.priority_title|default('') }} priority).</p>
+	<ul>
+		<li><strong>Affects:</strong> {{ issue.about|default('') }}</li>
+		<li><strong>Starts:</strong> {{ issue.start_at|default('') ? issue.start_at|format_datetime : '' }}</li>
+		{% if issue.end_at|default('') %}
+			<li><strong>Ends:</strong> {{ issue.end_at|format_datetime }}</li>
+		{% endif %}
+	</ul>
+	{% if issue.description|default('') %}
+		<p class="issue-text">{{ issue.description }}</p>
+	{% endif %}
+	<p><a href="{{ status_url|default('') }}" target="_blank">See the network status</a></p>
+
+	<div class="signature">{{ guest.system_email.signature }}</div>
+</body>
+</html>
+{% endblock %}

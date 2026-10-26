@@ -1,0 +1,95 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: the ticket email import log (Support/MailImport.php), like WHMCS's Ticket Mail Import Log. #}
+
+{% set active_menu = 'support' %}
+{% set filter = request.filter|default('all') in ['all', 'imported', 'not_imported'] ? request.filter|default('all') : 'all' %}
+{% set can_import = admin.system_is_allowed({ 'mod': 'support', 'f': 'manage_tickets' }) %}
+{% set status_names = {
+    'imported': 'New ticket'|trans,
+    'replied': 'Ticket reply'|trans,
+    'blocked_auto': 'Blocked: auto-reply'|trans,
+    'blocked_own': 'Blocked: our own address'|trans,
+    'blocked_spam': 'Blocked: spam list'|trans,
+    'blocked_loop': 'Blocked: possible email loop'|trans,
+    'blocked_sender': 'Blocked: sender not on the ticket'|trans,
+    'rejected_closed': 'Refused: ticket closed'|trans,
+    'rejected_replies_only': 'Refused: replies only'|trans,
+    'rejected_clients_only': 'Refused: clients only'|trans,
+    'rejected_too_large': 'Refused: too large'|trans,
+    'rejected_refused': 'Refused: ticket rules'|trans,
+    'importing': 'Being imported'|trans,
+    'duplicate': 'Duplicate'|trans,
+    'failed': 'Failed'|trans,
+} %}
+
+{% block meta_title %}{{ 'Email import log'|trans }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Email import log'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Every email read from the help desk mailboxes and what became of it. An email that was not imported keeps a copy until the log is cleaned, so you can import it anyway. Mailboxes are set on each help desk; the rules are in Support settings.'|trans }}</p>
+        </div>
+    </div>
+    <div class="card-header">
+        <ul class="nav nav-pills card-header-pills">
+            {% for key, label in { 'all': 'All'|trans, 'imported': 'Imported'|trans, 'not_imported': 'Not imported'|trans } %}
+                <li class="nav-item">
+                    <a class="nav-link{% if filter == key %} active{% endif %}" href="{{ 'support/email-import'|url(query: { 'filter': key }) }}">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% set log = admin.support_mail_log_get_list({ 'filter': filter, 'page': request.page|default(1), 'per_page': request.per_page|default(25) }) %}
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter">
+            <thead>
+                <tr>
+                    <th>{{ 'Date'|trans }}</th>
+                    <th>{{ 'From'|trans }}</th>
+                    <th>{{ 'Help desk'|trans }}</th>
+                    <th>{{ 'Subject'|trans }}</th>
+                    <th>{{ 'Result'|trans }}</th>
+                    <th class="w-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entry in log.list %}
+                <tr>
+                    <td class="text-nowrap">{{ entry.created_at|format_datetime }}</td>
+                    <td class="cf-mail-from">
+                        {% if entry.from_name %}{{ entry.from_name }}<br>{% endif %}
+                        <span class="text-muted">{{ entry.from_email }}</span>
+                    </td>
+                    <td class="text-nowrap">{{ entry.helpdesk_name|default('-') }}</td>
+                    <td class="text-break">{{ entry.subject }}</td>
+                    <td>
+                        <span class="badge {{ entry.imported ? 'bg-success-lt' : (entry.status starts with 'rejected' or entry.status == 'failed' ? 'bg-danger-lt' : 'bg-warning-lt') }}">{{ status_names[entry.status]|default(entry.status) }}</span>
+                        {% if entry.ticket_id %}
+                            <a href="{{ 'support/ticket'|url }}/{{ entry.ticket_id }}">#{{ entry.ticket_id }}</a>
+                        {% endif %}
+                        {% if entry.note %}<div class="text-muted small">{{ entry.note }}</div>{% endif %}
+                    </td>
+                    <td class="text-nowrap">
+                        {% if not entry.imported and entry.has_copy and can_import %}
+                            <a class="btn btn-sm btn-outline-primary" href="{{ 'support/mail_log_import'|api_url(query: { 'id': entry.id }) }}"
+                               {{ fb_api_link({ modal: { type: 'confirm', title: 'Import this email anyway?'|trans, content: 'It becomes a new ticket or a reply as if no rule refused it.'|trans }, message: 'Email imported'|trans, reload: true }) }}>{{ 'Import anyway'|trans }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-muted text-center py-3" colspan="6">{{ 'No emails were read yet.'|trans }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer d-flex align-items-center">
+        {{ include('partial_pagination.html.twig', { 'list': log, 'url': 'support/email-import', 'split_footer_controls': true }) }}
+    </div>
+</div>
+{% endblock %}

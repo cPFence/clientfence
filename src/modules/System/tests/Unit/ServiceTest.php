@@ -1,0 +1,550 @@
+<?php
+
+/**
+ * Copyright 2022-2026 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+declare(strict_types=1);
+
+use ClientFence\Mod\System\Service;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+
+use function Tests\Helpers\container;
+
+test('getParamValue throws exception when key parameter is missing', function (): void {
+    $service = new Service();
+    $param = '';
+    $this->expectException(ClientFence\Exception::class);
+    $this->expectExceptionMessage('Parameter key is missing');
+
+    $service->getParamValue($param);
+});
+
+test('getCompany returns company information', function (): void {
+    $service = new Service();
+    $expected = [
+        'www' => SYSTEM_URL,
+        'name' => 'Inc. Test',
+        'email' => 'work@example.eu',
+        'tel' => null,
+        'signature' => null,
+        'logo_url' => null,
+        'logo_url_dark' => null,
+        'favicon_url' => null,
+        'address_1' => null,
+        'address_2' => null,
+        'address_3' => null,
+        'account_number' => null,
+        'bank_name' => null,
+        'bic' => null,
+        'display_bank_info' => null,
+        'bank_info_pagebottom' => null,
+        'number' => null,
+        'note' => null,
+        'privacy_policy' => null,
+        'tos' => null,
+        'vat_number' => null,
+    ];
+
+    $multParamsResults = [
+        [
+            'param' => 'company_name',
+            'value' => 'Inc. Test',
+        ],
+        [
+            'param' => 'company_email',
+            'value' => 'work@example.eu',
+        ],
+    ];
+    $resultMock = Mockery::mock(Doctrine\DBAL\Result::class);
+    $resultMock->shouldReceive('fetchAllAssociative')
+        ->once()
+        ->andReturn($multParamsResults);
+
+    $queryBuilderMock = Mockery::mock(Doctrine\DBAL\Query\QueryBuilder::class);
+    $queryBuilderMock->shouldReceive('select')->once()->with('param', 'value')->andReturnSelf();
+    $queryBuilderMock->shouldReceive('from')->once()->with('setting')->andReturnSelf();
+    $queryBuilderMock->shouldReceive('where')->once()->with('param IN (:params)')->andReturnSelf();
+    $queryBuilderMock->shouldReceive('setParameter')->once()->andReturnSelf();
+    $queryBuilderMock->shouldReceive('executeQuery')->once()->andReturn($resultMock);
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('createQueryBuilder')->once()->andReturn($queryBuilderMock);
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+
+    $service->setDi($di);
+
+    $result = $service->getCompany();
+    expect($result)->toBeArray();
+    expect($result)->toBe($expected);
+});
+
+test('getCompany returns raw values without HTML-encoding them', function (): void {
+    // Escaping here double-escapes in templates and bakes entities into
+    // stored snapshots.
+    $service = new Service();
+
+    $multParamsResults = [
+        [
+            'param' => 'company_name',
+            'value' => 'A & B <Ltd>',
+        ],
+        [
+            'param' => 'company_email',
+            'value' => 'a&b@example.com',
+        ],
+        [
+            'param' => 'company_address_1',
+            'value' => '5 "Main" St',
+        ],
+        [
+            'param' => 'company_vat_number',
+            'value' => "O'Brien",
+        ],
+    ];
+    $resultMock = Mockery::mock(Doctrine\DBAL\Result::class);
+    $resultMock->shouldReceive('fetchAllAssociative')
+        ->once()
+        ->andReturn($multParamsResults);
+
+    $queryBuilderMock = Mockery::mock(Doctrine\DBAL\Query\QueryBuilder::class);
+    $queryBuilderMock->shouldReceive('select')->once()->with('param', 'value')->andReturnSelf();
+    $queryBuilderMock->shouldReceive('from')->once()->with('setting')->andReturnSelf();
+    $queryBuilderMock->shouldReceive('where')->once()->with('param IN (:params)')->andReturnSelf();
+    $queryBuilderMock->shouldReceive('setParameter')->once()->andReturnSelf();
+    $queryBuilderMock->shouldReceive('executeQuery')->once()->andReturn($resultMock);
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('createQueryBuilder')->once()->andReturn($queryBuilderMock);
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+
+    $service->setDi($di);
+
+    $result = $service->getCompany();
+    expect($result['name'])->toBe('A & B <Ltd>')
+        ->and($result['email'])->toBe('a&b@example.com')
+        ->and($result['address_1'])->toBe('5 "Main" St')
+        ->and($result['vat_number'])->toBe("O'Brien");
+});
+
+test('renderEmailSubjectString decodes the HTML autoescape pass', function (): void {
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('renderEmailTplString')
+        ->once()
+        ->with('[A & B Ltd] Invoice', [], null)
+        ->andReturn('[A &amp; B Ltd] Invoice');
+
+    expect($service->renderEmailSubjectString('[A & B Ltd] Invoice', []))->toBe('[A & B Ltd] Invoice');
+});
+
+test('getParams returns system parameters', function (): void {
+    $service = new Service();
+    $expected = [
+        'company_name' => 'Inc. Test',
+        'company_email' => 'work@example.eu',
+    ];
+    $multParamsResults = [
+        [
+            'param' => 'company_name',
+            'value' => 'Inc. Test',
+        ],
+        [
+            'param' => 'company_email',
+            'value' => 'work@example.eu',
+        ],
+    ];
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getAll')->atLeast()->once()
+        ->andReturn($multParamsResults);
+
+    $di = container();
+    $di['db'] = $dbMock;
+
+    $service->setDi($di);
+
+    $result = $service->getParams([]);
+    expect($result)->toBeArray();
+    expect($result)->toBe($expected);
+});
+
+test('updateParams updates system parameters', function (): void {
+    $service = new Service();
+    $data = [
+        'company_name' => 'newValue',
+    ];
+
+    $eventMock = Mockery::mock('ClientFence\EventManager');
+    $eventMock->shouldReceive('fire')->atLeast()->once();
+
+    $logStub = $this->createStub('ClientFence\Log');
+
+    $systemServiceMock = Mockery::mock(Service::class)->makePartial();
+    $systemServiceMock->shouldReceive('setParamValue')->atLeast()->once()
+        ->andReturn(true);
+
+    $di = container();
+    $di['events_manager'] = $eventMock;
+    $di['logger'] = $logStub;
+
+    $systemServiceMock->setDi($di);
+    $result = $systemServiceMock->updateParams($data);
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+});
+
+test('getMessages returns system messages', function (): void {
+    $service = new Service();
+    $latestVersion = '1.0.0';
+    $type = 'info';
+
+    $filesystemMock = Mockery::mock(Filesystem::class);
+    $filesystemMock->allows()->exists(Mockery::any())->andReturn(false);
+    $systemServiceMock = Mockery::mock(new Service($filesystemMock))->makePartial();
+    $systemServiceMock->allows()->getParamValue(Mockery::any())->andReturn(false);
+
+    $updaterMock = Mockery::mock(ClientFence\Update::class);
+    $updaterMock->allows()->isUpdateAvailable()->andReturn(true);
+    $updaterMock->allows()->getLatestVersion()->andReturn($latestVersion);
+    $updaterMock->allows()->isBehindOnDBPatches()->andReturn(false);
+
+    $urlMock = Mockery::mock(ClientFence\Url::class);
+    $urlMock->allows()->adminLink(Mockery::any())->andReturn('http://example.com');
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $queryBuilderMock = Mockery::mock(Doctrine\DBAL\Query\QueryBuilder::class);
+    $resultMock = Mockery::mock(Doctrine\DBAL\Result::class);
+    $dbalMock->allows()->createQueryBuilder()->andReturn($queryBuilderMock);
+    $queryBuilderMock->allows()->select(Mockery::any())->andReturnSelf();
+    $queryBuilderMock->allows()->from(Mockery::any())->andReturnSelf();
+    $queryBuilderMock->allows()->where(Mockery::any())->andReturnSelf();
+    $queryBuilderMock->allows()->setParameter(Mockery::any(), Mockery::any())->andReturnSelf();
+    $queryBuilderMock->allows()->executeQuery()->andReturn($resultMock);
+    $resultMock->allows()->fetchOne()->andReturn(false);
+
+    $di = container();
+    $di['updater'] = $updaterMock;
+    $di['url'] = $urlMock;
+    $di['dbal'] = $dbalMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $systemServiceMock);
+
+    $systemServiceMock->setDi($di);
+
+    $result = $systemServiceMock->getMessages($type);
+    expect($result)->toBeArray();
+});
+
+test('templateExists returns false when paths are empty', function (): void {
+    $service = new Service();
+    $getThemeResults = ['paths' => []];
+    $themeServiceMock = Mockery::mock(ClientFence\Mod\Theme\Service::class)->makePartial();
+    $themeServiceMock->shouldReceive('getThemeConfig')->atLeast()->once()
+        ->andReturn($getThemeResults);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $themeServiceMock);
+    $service->setDi($di);
+
+    $result = $service->templateExists('layout.html.twig');
+    expect($result)->toBeBool();
+    expect($result)->toBeFalse();
+});
+
+test('templateExists rejects unsafe file paths', function (): void {
+    $service = new Service();
+    $filesystem = new Filesystem();
+
+    // Unique fixture root so parallel test runs, and this test's own
+    // cleanup, can't collide with anything else in the shared system temp
+    // directory. The base and outside directories both live under it.
+    $fixtureRoot = sys_get_temp_dir() . '/fb_template_exists_' . uniqid();
+    $baseDir = Path::join($fixtureRoot, 'theme');
+    $outsideFile = Path::join($fixtureRoot, 'outside.html.twig');
+
+    $filesystem->dumpFile(Path::join($baseDir, 'layout.html.twig'), 'test');
+    $filesystem->dumpFile($outsideFile, 'outside');
+
+    $themeServiceMock = Mockery::mock(ClientFence\Mod\Theme\Service::class)->makePartial();
+    $themeServiceMock->shouldReceive('getThemeConfig')->andReturn(['paths' => [$baseDir]]);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $themeServiceMock);
+    $service->setDi($di);
+
+    try {
+        // Sanity check: a legitimate in-base template still resolves, so the
+        // assertions below aren't just exercising an always-false code path.
+        expect($service->templateExists('layout.html.twig'))->toBeTrue();
+
+        // Inputs that must never resolve, even though the target file genuinely
+        // exists just outside the theme's base directory.
+        expect($service->templateExists('../outside.html.twig'))->toBeFalse();
+        expect($service->templateExists('../../../../../../outside.html.twig'))->toBeFalse();
+        expect($service->templateExists('..\\..\\outside.html.twig'))->toBeFalse();
+        expect($service->templateExists("layout.html.twig\0.png"))->toBeFalse();
+        expect($service->templateExists('/outside.html.twig'))->toBeFalse();
+        expect($service->templateExists(''))->toBeFalse();
+    } finally {
+        $filesystem->remove($fixtureRoot);
+    }
+});
+
+test('clearCache clears cache directory', function (): void {
+    $service = new Service();
+    // Use a temporary directory for testing instead of PATH_CACHE
+    $cacheDir = sys_get_temp_dir() . '/clientfence_test_cache_' . uniqid();
+
+    // Create cache directory with .gitkeep
+    if (!is_dir($cacheDir)) {
+        mkdir($cacheDir, 0o755, true);
+    }
+
+    $gitkeepFile = $cacheDir . '/.gitkeep';
+    file_put_contents($gitkeepFile, '');
+
+    // Call clearCache with the temp directory
+    $result = $service->clearCache($cacheDir);
+
+    // Restore .gitkeep file after clearCache removes it
+    file_put_contents($gitkeepFile, '');
+
+    expect($result)->toBeBool();
+    expect($result)->toBeTrue();
+
+    // Cleanup temp directory
+    if (is_dir($cacheDir)) {
+        // Remove .gitkeep file first, then the directory
+        if (file_exists($gitkeepFile)) {
+            unlink($gitkeepFile);
+        }
+        rmdir($cacheDir);
+    }
+});
+
+test('getPeriod returns period description', function (): void {
+    $service = new Service();
+    $code = '1W';
+    $expected = 'Every Week';
+    $result = $service->getPeriod($code);
+
+    expect($result)->toBeString();
+    expect($result)->toBe($expected);
+});
+
+test('getPendingMessages returns pending messages from session', function (): void {
+    $service = new Service();
+    $di = container();
+
+    $sessionMock = Mockery::mock(ClientFence\Session::class);
+    $sessionMock->shouldReceive('get')->atLeast()->once()
+        ->with('pending_messages')
+        ->andReturn([]);
+
+    $di['session'] = $sessionMock;
+
+    $service->setDi($di);
+    $result = $service->getPendingMessages();
+    expect($result)->toBeArray();
+});
+
+test('getPendingMessages returns empty array when session returns non-array', function (): void {
+    $service = new Service();
+    $di = container();
+
+    $sessionMock = Mockery::mock(ClientFence\Session::class);
+    $sessionMock->shouldReceive('get')->atLeast()->once()
+        ->with('pending_messages')
+        ->andReturn(null);
+
+    $di['session'] = $sessionMock;
+
+    $service->setDi($di);
+    $result = $service->getPendingMessages();
+    expect($result)->toBeArray();
+});
+
+test('setPendingMessage adds message to pending messages', function (): void {
+    $service = new Service();
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('getPendingMessages')->atLeast()->once()
+        ->andReturn([]);
+
+    $di = container();
+
+    $sessionMock = Mockery::mock(ClientFence\Session::class);
+    $sessionMock->shouldReceive('set')->atLeast()->once()
+        ->with('pending_messages', Mockery::any());
+
+    $di['session'] = $sessionMock;
+
+    $serviceMock->setDi($di);
+
+    $message = 'Important Message';
+    $result = $serviceMock->setPendingMessage($message);
+    expect($result)->toBeTrue();
+});
+
+test('clearPendingMessages clears pending messages', function (): void {
+    $service = new Service();
+    $di = container();
+
+    $sessionMock = Mockery::mock(ClientFence\Session::class);
+    $sessionMock->shouldReceive('delete')->atLeast()->once()
+        ->with('pending_messages');
+    $di['session'] = $sessionMock;
+    $service->setDi($di);
+    $result = $service->clearPendingMessages();
+    expect($result)->toBeTrue();
+});
+
+test('reserveNextNumericParamValue claims the current value and advances the counter under lock', function (): void {
+    $service = new Service();
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('transactional')
+        ->once()
+        ->andReturnUsing(fn (callable $callback): mixed => $callback($dbalMock));
+    // The read must take the row lock, otherwise two callers can be handed the same number.
+    $dbalMock->shouldReceive('fetchOne')
+        ->once()
+        ->with('SELECT value FROM setting WHERE param = :param FOR UPDATE', ['param' => 'invoice_starting_number'])
+        ->andReturn('7');
+    $dbalMock->shouldReceive('executeStatement')
+        ->once()
+        ->with(
+            'UPDATE setting SET value = :value, updated_at = :updated_at WHERE param = :param',
+            Mockery::on(fn (array $params): bool => $params['value'] === '8' && $params['param'] === 'invoice_starting_number')
+        )
+        ->andReturn(1);
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service->setDi($di);
+
+    expect($service->reserveNextNumericParamValue('invoice_starting_number'))->toBe(7);
+});
+
+test('reserveNextNumericParamValue returns null when the counter is missing or not numeric', function (): void {
+    $service = new Service();
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('transactional')
+        ->once()
+        ->andReturnUsing(fn (callable $callback): mixed => $callback($dbalMock));
+    $dbalMock->shouldReceive('fetchOne')->once()->andReturn(false);
+    $dbalMock->shouldNotReceive('executeStatement');
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service->setDi($di);
+
+    expect($service->reserveNextNumericParamValue('invoice_starting_number'))->toBeNull();
+});
+
+test('reserveNextNumericParamValue rejects non-integer counter values', function (): void {
+    $service = new Service();
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('transactional')
+        ->once()
+        ->andReturnUsing(fn (callable $callback): mixed => $callback($dbalMock));
+    // Truncating this to 5 and writing 6 would silently skip a number.
+    $dbalMock->shouldReceive('fetchOne')->once()->andReturn('5.5');
+    $dbalMock->shouldNotReceive('executeStatement');
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service->setDi($di);
+
+    expect($service->reserveNextNumericParamValue('invoice_starting_number'))->toBeNull();
+});
+
+test('reserveNextNumericParamValue seeds a missing counter and reserves from it', function (): void {
+    $service = new Service();
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('transactional')
+        ->once()
+        ->andReturnUsing(fn (callable $callback): mixed => $callback($dbalMock));
+    $dbalMock->shouldReceive('fetchOne')->once()->andReturn(false);
+    $dbalMock->shouldReceive('executeStatement')
+        ->once()
+        ->with(
+            Mockery::pattern('/^INSERT INTO setting/'),
+            Mockery::on(fn (array $params): bool => $params['value'] === '102' && $params['param'] === 'invoice_starting_number')
+        )
+        ->andReturn(1);
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service->setDi($di);
+
+    expect($service->reserveNextNumericParamValue('invoice_starting_number', 101))->toBe(101);
+});
+
+test('reserveNextNumericParamValue ignores the seed when the counter became valid under the lock', function (): void {
+    $service = new Service();
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('transactional')
+        ->once()
+        ->andReturnUsing(fn (callable $callback): mixed => $callback($dbalMock));
+    // A concurrent caller seeded the counter while we waited for the lock.
+    $dbalMock->shouldReceive('fetchOne')->once()->andReturn('102');
+    $dbalMock->shouldReceive('executeStatement')
+        ->once()
+        ->with(
+            Mockery::pattern('/^UPDATE setting/'),
+            Mockery::on(fn (array $params): bool => $params['value'] === '103')
+        )
+        ->andReturn(1);
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service->setDi($di);
+
+    expect($service->reserveNextNumericParamValue('invoice_starting_number', 101))->toBe(102);
+});
+
+test('reserveNextNumericParamValue reserves from the winning row when seeding collides', function (): void {
+    $service = new Service();
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('transactional')
+        ->twice()
+        ->andReturnUsing(fn (callable $callback): mixed => $callback($dbalMock));
+
+    // First attempt: the row is missing, so we seed it, but another caller inserts it first.
+    // Second attempt: that caller's row is now visible, so reserve from it rather than failing.
+    $dbalMock->shouldReceive('fetchOne')->once()->ordered()->andReturn(false);
+    $dbalMock->shouldReceive('executeStatement')
+        ->once()
+        ->ordered()
+        ->with(Mockery::pattern('/^INSERT INTO setting/'), Mockery::any())
+        ->andThrow(Mockery::mock(Doctrine\DBAL\Exception\UniqueConstraintViolationException::class));
+    // The winner seeded the row with 102, having itself reserved 101.
+    $dbalMock->shouldReceive('fetchOne')->once()->ordered()->andReturn('102');
+    $dbalMock->shouldReceive('executeStatement')
+        ->once()
+        ->ordered()
+        ->with(
+            Mockery::pattern('/^UPDATE setting/'),
+            Mockery::on(fn (array $params): bool => $params['value'] === '103')
+        )
+        ->andReturn(1);
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service->setDi($di);
+
+    // Must not be 101: that is the number the winner reserved.
+    expect($service->reserveNextNumericParamValue('invoice_starting_number', 101))->toBe(102);
+});

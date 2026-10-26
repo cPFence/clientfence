@@ -1,0 +1,56 @@
+{% extends "./assets/layout.html.twig" %}
+
+{% block page %}
+    {% if success != true %}
+        <h1 class="red">Installation Failure</h1>
+
+        <p>ClientFence could not complete the installation.</p>
+        <p>{{ message }}</p>
+
+        <hr/>
+
+        <a role="button" href='javascript:history.back()'>Back to installer</a>
+    {% else %}
+        <h1 class="green">Installation Completed</h1>
+
+        <p class="installer-intro">ClientFence is ready. Review these final checks before you start accepting orders.</p>
+
+        <ol class="success-list">
+            <li>
+                <h3>Remove Installer</h3>
+                <p>The <b>./install/</b> folder is normally deleted automatically. If it still exists, remove it before using ClientFence.</p>
+                <pre>rm -rfv {{ install_module_path }}</pre>
+            </li>
+            <li>
+                <h3>Configuration Permission</h3>
+                <p>Restrict write access to <b>config.php</b> after setup.</p>
+                <pre>chmod 644 {{ config_file_path }}</pre>
+            </li>
+            <li>
+                <h3>Set up Cron Job</h3>
+                <p>Run the ClientFence cron task every five minutes: add this line to the crontab of the user that runs PHP for this site.</p>
+                <pre>*/5 * * * * php {{ cron_path }}</pre>
+            </li>
+            {# ClientFence core patch: offer a captcha after setup (R8; Antispam module, off by default). #}
+            <li>
+                <h3>Turn on a Captcha</h3>
+                <p>New installs have no captcha on the sign-up, sign-in and contact forms. Bots find a new billing site quickly: in the admin area, open <b>Extensions → Anti-Spam → Settings</b>, choose reCAPTCHA, hCaptcha or Cloudflare Turnstile and enter its keys. System → Health warns while it is off.</p>
+                <a href='{{ url_admin }}/extension/settings/antispam' target='_blank' data-tooltip="Opens in a new tab.">Anti-spam settings</a>
+            </li>
+            <li>
+                <h3>Open the Store</h3>
+                <p>The store is closed on a new install, so you can add products and payment methods first. Open it to everyone, or to a custom group of clients, in <b>System → Settings → Orders</b>. Staff can create orders in the admin area while it is closed.</p>
+            </li>
+        </ol>
+
+        <hr/>
+
+        <div>
+            <p>Next, open the customer area or sign in to the admin dashboard.</p>
+            <div class="result-actions">
+                <a href='{{ url_customer }}' role="button" target='_blank' data-tooltip="Opens in a new tab.">Customer Area</a>
+                <a href='{{ url_admin }}' role="button" target='_blank' data-tooltip="Opens in a new tab.">Admin Dashboard</a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,99 @@
+{# ClientFence ticket attachments (Support/TicketFiles.php): files for a staff reply on the admin
+   ticket page (included inside the reply form by mod_support_ticket.html.twig). Each chosen file
+   is uploaded at once (support/ticket_file_upload) and sent with the reply as ticket_files[];
+   × throws an unsent file away. #}
+{% set rules = guest.support_ticket_file_rules %}
+{% if ticket.id|default(0) and has_permission('support', 'manage_tickets') %}
+    <div class="mt-3" data-clientfence-staff-files data-ticket="{{ ticket.id }}" data-max-files="{{ rules.max_files }}" data-max-bytes="{{ rules.max_bytes }}" data-extensions="{{ rules.extensions|join(',') }}"
+         data-text-too-many="{{ 'At most :count files per message.'|trans({ ':count': rules.max_files }) }}"
+         data-text-too-big="{{ 'Each file must be smaller than :size MB.'|trans({ ':size': rules.max_mb }) }}"
+         data-text-wrong-type="{{ 'This type of file cannot be attached. Allowed: :types.'|trans({ ':types': rules.extensions|join(', ') }) }}"
+         data-text-uploading="{{ 'Wait until the files are uploaded.'|trans }}"
+         data-text-remove="{{ 'Remove'|trans }}">
+        <label class="form-label" for="clientfence-staff-files">{{ 'Attach files'|trans }}</label>
+        <input class="form-control" type="file" id="clientfence-staff-files" multiple accept="{{ rules.accept }}">
+        <div class="form-text">{{ 'Up to :count files, :size MB each: :types.'|trans({ ':count': rules.max_files, ':size': rules.max_mb, ':types': rules.extensions|join(', ') }) }}</div>
+        <ul class="bf-files mt-2" data-clientfence-staff-files-list></ul>
+    </div>
+    <script nonce="{{ csp_nonce }}">
+    (() => {
+        const box = document.querySelector('[data-clientfence-staff-files]');
+        const form = box && box.closest('form');
+        if (!form) {
+            return;
+        }
+        const input = box.querySelector('input[type="file"]');
+        const list = box.querySelector('[data-clientfence-staff-files-list]');
+        const maxFiles = Number(box.dataset.maxFiles);
+        const maxBytes = Number(box.dataset.maxBytes);
+        const extensions = box.dataset.extensions.split(',');
+        let uploading = 0;
+        const notify = (text) => (window.ClientFence && ClientFence.ui && ClientFence.ui.notify ? ClientFence.ui.notify(text, 'error') : window.alert(text));
+        const count = () => list.children.length;
+        const add = (file) => {
+            const item = document.createElement('li');
+            item.className = 'bf-file';
+            const name = document.createElement('span');
+            name.className = 'bf-file-name';
+            const label = document.createElement('span');
+            label.dir = 'auto';
+            label.textContent = file.name;
+            name.append(label);
+            const size = document.createElement('span');
+            size.className = 'bf-file-size';
+            size.textContent = file.size_label;
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'ticket_files[]';
+            hidden.value = file.id;
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'bf-file-remove';
+            remove.title = box.dataset.textRemove;
+            remove.setAttribute('aria-label', box.dataset.textRemove);
+            remove.textContent = '\u00d7';
+            remove.addEventListener('click', () => {
+                ClientFence.api.admin.post('support/ticket_file_discard', { id: file.id }, () => item.remove(), (e) => notify(e.message), false);
+            });
+            item.append(name, size, hidden, remove);
+            list.append(item);
+        };
+        input.addEventListener('change', () => {
+            for (const file of Array.from(input.files)) {
+                const extension = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+                if (count() + uploading >= maxFiles) {
+                    notify(box.dataset.textTooMany);
+                    break;
+                }
+                if (!extensions.includes(extension)) {
+                    notify(box.dataset.textWrongType);
+                    continue;
+                }
+                if (file.size > maxBytes) {
+                    notify(box.dataset.textTooBig);
+                    continue;
+                }
+                const data = new FormData();
+                data.append('file', file);
+                data.append('ticket_id', box.dataset.ticket);
+                uploading += 1;
+                ClientFence.api.admin.post('support/ticket_file_upload', data, (result) => {
+                    uploading -= 1;
+                    add(result);
+                }, (e) => {
+                    uploading -= 1;
+                    notify(e.message);
+                });
+            }
+            input.value = '';
+        });
+        form.addEventListener('submit', (event) => {
+            if (uploading > 0) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                notify(box.dataset.textUploading);
+            }
+        }, true);
+    })();
+    </script>
+{% endif %}

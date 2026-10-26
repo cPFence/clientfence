@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+/**
+ * Static Pages management.
+ */
+
+namespace ClientFence\Mod\Page\Api;
+
+class Admin extends \ClientFence\Api\AbstractApi
+{
+    /**
+     * Return page pairs. Includes module and currently selected client area
+     * pages.
+     *
+     * @return array
+     */
+    public function get_pairs()
+    {
+        $service = $this->getService();
+
+        return $service->getPairs();
+    }
+}

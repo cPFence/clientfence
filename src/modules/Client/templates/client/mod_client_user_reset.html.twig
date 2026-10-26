@@ -1,0 +1,36 @@
+{# ClientFence, authorized user password reset (/password-reset/<token>, Users.php):
+   the new password form, or "expired" when the link is no longer valid (token is null). #}
+{% extends "layout_public.html.twig" %}
+{% set allow_guest = true %}
+
+{% block meta_title %}{{ 'Set New Password'|trans }}{% endblock %}
+{% block body_class %}page-set-password{% endblock %}
+
+{% block body %}
+{% embed 'partials/auth_shell.html.twig' %}
+    {% block auth_content %}
+        <h1>{{ 'Set New Password'|trans }}</h1>
+        {% if token %}
+            <p class="auth-lead">{{ 'Choose a new password for your account.'|trans }}</p>
+            <form method="post" action="{{ 'client/user_password_reset'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({redirect: 'login'|url, message: 'The password was changed.'|trans}) }} autocomplete="off">
+                <input type="hidden" name="token" value="{{ token }}">
+                <div class="mb-3">
+                    <label class="form-label" for="password">{{ 'New Password'|trans }}</label>
+                    <input class="form-control" id="password" type="password" name="password" autocomplete="new-password" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password2">{{ 'Repeat New Password'|trans }}</label>
+                    <input class="form-control" id="password2" type="password" name="password_confirm" autocomplete="new-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">{{ 'Set New Password'|trans }}</button>
+            </form>
+        {% else %}
+            <p class="auth-lead" data-clientfence-reset="expired">{{ 'The link has expired or you have already reset your password.'|trans }}</p>
+            <a class="btn btn-primary btn-lg w-100 mt-2" href="{{ 'password-reset'|url }}">{{ 'Reset Password'|trans }}</a>
+        {% endif %}
+        <a class="btn btn-link w-100 mt-3 d-inline-flex align-items-center justify-content-center gap-2" href="{{ 'login'|url }}">
+            <svg class="icon icon-sm flip-rtl" aria-hidden="true"><use href="#arrow-left"/></svg>{{ 'Back to Login'|trans }}
+        </a>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

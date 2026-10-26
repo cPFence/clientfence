@@ -1,0 +1,76 @@
+{# ClientFence: System Settings > Licences: the licence check log (Servicelicense/CheckLog.php) and bans (Servicelicense/Bans.php). #}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Licence check log'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Every check of a known licence key is logged with the host, IP address, path and version it came from and the answer; each licence page shows its recent checks.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'servicelicense/settings_update'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, reload: true }) }}>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="lic-log-days">{{ 'Keep the licence check log for'|trans }}</label>
+                    <div class="input-group">
+                        <input class="form-control" type="number" min="0" max="3650" id="lic-log-days" name="log_days" value="{{ licences.log_days }}" required>
+                        <span class="input-group-text">{{ 'days'|trans }}</span>
+                    </div>
+                    <small class="form-hint">{{ '0 keeps every check.'|trans }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+        </div>
+    </form>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Banned domains and IP addresses'|trans }}</h3>
+            <p class="card-subtitle">{{ 'A check from a banned domain (with or without www.) or IP address fails whatever licence key it sends, and nothing is bound to the licence.'|trans }}</p>
+        </div>
+    </div>
+    {% if licences.bans %}
+        <div class="table-responsive">
+            <table class="table table-vcenter card-table">
+                <thead><tr><th>{{ 'Domain or IP address'|trans }}</th><th>{{ 'Notes'|trans }}</th><th>{{ 'Added'|trans }}</th><th></th></tr></thead>
+                <tbody>
+                    {% for ban in licences.bans %}
+                        <tr>
+                            <td class="text-break">{{ ban.value }} <span class="badge bg-secondary-lt ms-1">{{ ban.kind == 'ip' ? 'IP address'|trans : 'Domain'|trans }}</span></td>
+                            <td class="text-break">{{ ban.notes|default('-') }}</td>
+                            <td class="text-nowrap">{{ ban.created_at|format_datetime }}</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-danger" href="{{ 'servicelicense/ban_delete'|api_url(query: { 'id': ban.id }) }}"
+                                   {{ fb_api_link({ message: 'Ban lifted.'|trans, modal: { type: 'confirm', title: 'Lift this ban?'|trans }, reload: true }) }}>{{ 'Lift'|trans }}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="card-body">
+            <p class="text-secondary mb-0">{{ 'Nothing is banned.'|trans }}</p>
+        </div>
+    {% endif %}
+    <form method="post" action="{{ 'servicelicense/ban_add'|api_url }}" {{ fb_api_form({ message: 'Banned.'|trans, reload: true }) }}>
+        <div class="card-body border-top">
+            <div class="row g-3">
+                <div class="col-lg-4">
+                    <label class="form-label" for="lic-ban-value">{{ 'Domain or IP address'|trans }}</label>
+                    <input class="form-control" type="text" id="lic-ban-value" name="value" maxlength="255" placeholder="example.com" required>
+                </div>
+                <div class="col-lg-8">
+                    <label class="form-label" for="lic-ban-notes">{{ 'Notes'|trans }}</label>
+                    <input class="form-control" type="text" id="lic-ban-notes" name="notes" maxlength="1000">
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">{{ 'Ban'|trans }}</button>
+        </div>
+    </form>
+</div>

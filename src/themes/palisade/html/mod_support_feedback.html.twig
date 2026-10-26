@@ -1,0 +1,107 @@
+{# ClientFence: the feedback form of a feedback email's link, as WHMCS's ticket feedback page (Support/
+   TicketFeedback.php). Open without sign-in: the link is the key. The ticket's summary (opened, last
+   reply, staff involved, duration), a 1 to 10 score and a comment for each staff member, and a
+   general comment; once given, or while the ticket is open again, a message instead. #}
+{% extends "layout_default.html.twig" %}
+{% set allow_guest = true %}
+{% set active_menu = 'support' %}
+
+{% block meta_title %}{{ 'Ticket Feedback'|trans }}{% endblock %}
+{% block body_class %}support-feedback{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'Ticket Feedback'|trans }}</li>
+{% endblock %}
+
+{% block content %}
+    {% set ticket = feedback.ticket %}
+    <div class="card">
+        <div class="card-header py-3">
+            <h1 class="h5 mb-0">{{ 'Ticket Feedback'|trans }}{% if ticket.id|default(0) %} · #{{ ticket.id }} {{ ticket.subject }}{% endif %}</h1>
+        </div>
+        <div class="card-body">
+            {% if feedback.state == 'invalid' %}
+                <div class="alert alert-warning mb-0">{{ 'This feedback link is not valid.'|trans }}</div>
+            {% elseif feedback.state == 'open' %}
+                <div class="alert alert-warning mb-0">{{ 'This ticket is open again. You can give feedback once it is closed.'|trans }}</div>
+            {% elseif feedback.state == 'done' %}
+                <div class="alert alert-success mb-2">{{ 'Thank you, your feedback was received.'|trans }}</div>
+                <p class="mb-0">{{ 'It helps us improve our support.'|trans }}</p>
+            {% else %}
+                <p>{{ 'Please take a moment to tell us how we handled your ticket. Your answers go to our support team.'|trans }}</p>
+                <div class="table-responsive mb-4">
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            <tr><td class="text-muted">{{ 'Opened'|trans }}</td><td>{{ ticket.opened_at|format_datetime }}</td></tr>
+                            <tr><td class="text-muted">{{ 'Last Reply'|trans }}</td><td>{{ ticket.last_reply_at|format_datetime }}</td></tr>
+                            <tr><td class="text-muted">{{ 'Staff Involved'|trans }}</td><td>{{ feedback.staff ? feedback.staff|join(', ') : 'No staff member replied'|trans }}</td></tr>
+                            <tr>
+                                <td class="text-muted">{{ 'Total Duration'|trans }}</td>
+                                <td>{{ ':days days, :hours hours, :minutes minutes'|trans({ ':days': ticket.duration.days, ':hours': ticket.duration.hours, ':minutes': ticket.duration.minutes }) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <form id="ticket-feedback-form" data-token="{{ feedback_token }}">
+                    {% for staff_id, staff_name in feedback.staff %}
+                        <fieldset class="mb-4" data-staff="{{ staff_id }}">
+                            <legend class="h6">{{ 'How would you rate how :name handled your ticket?'|trans({ ':name': staff_name }) }}</legend>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2" role="radiogroup">
+                                <span class="text-muted small">{{ 'Poor'|trans }}</span>
+                                {% for score in 1..10 %}
+                                    <label class="btn btn-outline-primary btn-sm feedback-score">
+                                        <input class="visually-hidden" type="radio" name="rate-{{ staff_id }}" value="{{ score }}" required>{{ score }}
+                                    </label>
+                                {% endfor %}
+                                <span class="text-muted small">{{ 'Excellent'|trans }}</span>
+                            </div>
+                            <label class="form-label small text-muted" for="comment-{{ staff_id }}">{{ 'Comments on how :name handled it (optional)'|trans({ ':name': staff_name }) }}</label>
+                            <textarea class="form-control" id="comment-{{ staff_id }}" name="comment-{{ staff_id }}" rows="3" maxlength="5000" dir="auto"></textarea>
+                        </fieldset>
+                    {% endfor %}
+                    <div class="mb-3">
+                        <label class="form-label" for="comment-generic">{{ 'How can we improve our support?'|trans }}{% if feedback.staff %} <span class="text-muted small">({{ 'optional'|trans }})</span>{% endif %}</label>
+                        <textarea class="form-control" id="comment-generic" name="comment-generic" rows="4" maxlength="5000" dir="auto"{% if not feedback.staff %} required{% endif %}></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">{{ 'Send Feedback'|trans }}</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {% if feedback.state == 'form' %}
+    <script nonce="{{ csp_nonce }}">
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('ticket-feedback-form');
+            form.querySelectorAll('.feedback-score input').forEach((input) => {
+                input.addEventListener('change', () => {
+                    input.closest('[role=radiogroup]').querySelectorAll('.feedback-score').forEach((label) => {
+                        label.classList.toggle('active', label.querySelector('input').checked);
+                    });
+                });
+            });
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const data = { token: form.dataset.token, rate: {}, comments: { generic: form.querySelector('[name=comment-generic]').value } };
+                form.querySelectorAll('[data-staff]').forEach((set) => {
+                    const id = set.dataset.staff;
+                    const checked = set.querySelector('input[type=radio]:checked');
+                    if (checked) {
+                        data.rate[id] = checked.value;
+                    }
+                    data.comments[id] = set.querySelector('textarea').value;
+                });
+                const button = form.querySelector('button[type=submit]');
+                button.disabled = true;
+                ClientFence.api.guest.post('support/ticket_feedback_submit', data,
+                    () => window.location.reload(),
+                    (res) => {
+                        button.disabled = false;
+                        ClientFence.message(res.message, 'error');
+                    });
+            });
+        });
+    </script>
+    {% endif %}
+{% endblock %}

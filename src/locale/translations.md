@@ -1,0 +1,45 @@
+## FOSSBilling Translations
+Dated: Mon Sep 21 10:11:11 UTC 2026
+Translation Tag: [pot-f9eff39798954857eea2fc994b40d0b474185c593173b001b0fe59ae2f38658f](https://github.com/FOSSBilling/locale/releases/tag/pot-f9eff39798954857eea2fc994b40d0b474185c593173b001b0fe59ae2f38658f)
+ - `el_GR`: ▰▰▰▱▱▱▱▱▱▱ 32% translated
+ - `es_ES`: ▰▰▰▱▱▱▱▱▱▱ 39% translated
+ - `uz_UZ`: ▰▰▰▰▱▱▱▱▱▱ 47% translated
+ - `pt_PT`: ▰▰▱▱▱▱▱▱▱▱ 28% translated
+ - `id_ID`: ▰▰▰▱▱▱▱▱▱▱ 32% translated
+ - `uk_UA`: ▰▰▰▱▱▱▱▱▱▱ 32% translated
+ - `cs_CZ`: ▰▰▰▱▱▱▱▱▱▱ 35% translated
+ - `zh_CN`: ▰▰▰▱▱▱▱▱▱▱ 36% translated
+ - `sr_RS`: ▰▰▰▱▱▱▱▱▱▱ 33% translated
+ - `no_NO`: ▱▱▱▱▱▱▱▱▱▱ 0% translated (excluded, too incomplete)
+ - `lt_LT`: ▰▰▱▱▱▱▱▱▱▱ 22% translated (excluded, too incomplete)
+ - `sl_SI`: ▱▱▱▱▱▱▱▱▱▱ 0% translated (excluded, too incomplete)
+ - `pl_PL`: ▰▰▰▱▱▱▱▱▱▱ 32% translated
+ - `en_GB`: ▰▰▰▱▱▱▱▱▱▱ 34% translated
+ - `ko_KR`: ▱▱▱▱▱▱▱▱▱▱ 1% translated (excluded, too incomplete)
+ - `ta_IN`: ▱▱▱▱▱▱▱▱▱▱ 0% translated (excluded, too incomplete)
+ - `pt_BR`: ▰▰▰▰▰▰▰▰▱▱ 84% translated
+ - `he_IL`: ▱▱▱▱▱▱▱▱▱▱ 2% translated (excluded, too incomplete)
+ - `tr_TR`: ▰▰▰▰▱▱▱▱▱▱ 49% translated
+ - `nl_NL`: ▰▰▰▱▱▱▱▱▱▱ 37% translated
+ - `fa_IR`: ▰▰▰▱▱▱▱▱▱▱ 37% translated
+ - `sv_SE`: ▱▱▱▱▱▱▱▱▱▱ 0% translated (excluded, too incomplete)
+ - `it_IT`: ▰▰▰▰▱▱▱▱▱▱ 40% translated
+ - `de_DE`: ▰▰▰▱▱▱▱▱▱▱ 37% translated
+ - `ca_ES`: ▰▰▱▱▱▱▱▱▱▱ 24% translated (excluded, too incomplete)
+ - `fi_FI`: ▰▰▱▱▱▱▱▱▱▱ 29% translated
+ - `hu_HU`: ▰▰▰▱▱▱▱▱▱▱ 33% translated
+ - `en_AU`: ▰▰▰▱▱▱▱▱▱▱ 37% translated
+ - `zh_TW`: ▰▰▱▱▱▱▱▱▱▱ 29% translated
+ - `vi_VN`: ▰▰▰▱▱▱▱▱▱▱ 33% translated
+ - `hr_HR`: ▰▱▱▱▱▱▱▱▱▱ 15% translated (excluded, too incomplete)
+ - `bn_BD`: ▱▱▱▱▱▱▱▱▱▱ 1% translated (excluded, too incomplete)
+ - `da_DK`: ▰▱▱▱▱▱▱▱▱▱ 12% translated (excluded, too incomplete)
+ - `bg_BG`: ▰▰▱▱▱▱▱▱▱▱ 29% translated
+ - `ja_JP`: ▱▱▱▱▱▱▱▱▱▱ 1% translated (excluded, too incomplete)
+ - `ro_RO`: ▰▰▰▱▱▱▱▱▱▱ 36% translated
+ - `ar_EG`: ▱▱▱▱▱▱▱▱▱▱ 4% translated (excluded, too incomplete)
+ - `ru_RU`: ▰▰▰▰▱▱▱▱▱▱ 49% translated
+ - `fr_FR`: ▰▰▰▱▱▱▱▱▱▱ 37% translated
+ - `si_LK`: ▱▱▱▱▱▱▱▱▱▱ 1% translated (excluded, too incomplete)
+ - `ar_SA`: ▰▰▰▱▱▱▱▱▱▱ 32% translated
+ - `th_TH`: ▰▰▰▰▱▱▱▱▱▱ 49% translated

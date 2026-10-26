@@ -1,0 +1,98 @@
+{# ClientFence: this help desk's mailbox for ticket email import (Support/MailImport.php), on the help
+   desk page; saved with support/mail_mailbox_update. #}
+{% set mailbox = admin.support_mail_mailbox_get({ 'helpdesk_id': helpdesk.id }) %}
+<div class="card mt-3" id="email-import">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Email importing'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Emails to this mailbox become tickets in this help desk, and replies to ticket emails ([Ticket #123] in the subject) are added to their ticket. The cron reads the mailbox every run and deletes each email once it is handled, so use a mailbox only ClientFence reads. Every email is listed in the email import log.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'support/mail_mailbox_update'|api_url }}" {{ fb_api_form({ message: 'Mailbox saved'|trans, reload: true }) }}>
+        <div class="card-body">
+            {% if mailbox.last_run_at %}
+                <div class="alert {{ mailbox.last_ok ? 'alert-success' : 'alert-danger' }}">
+                    {{ 'Last read'|trans }}: {{ mailbox.last_run_at|format_datetime }}. {{ mailbox.last_result }}
+                </div>
+            {% endif %}
+            <div class="row g-3">
+                <div class="col-12">
+                    <input type="hidden" name="enabled" value="0">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="enabled" value="1"{% if mailbox.enabled %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Import email from this mailbox'|trans }}</span>
+                    </label>
+                    {% if mailbox.reply_to %}
+                        <div class="form-text">{{ 'While on, ticket emails of this help desk ask clients to reply to %address%, the address this mailbox receives.'|trans({ '%address%': mailbox.reply_to }) }}</div>
+                        {% if mailbox.enabled and mailbox.desk_email|lower|trim == mailbox.reply_to|lower %}
+                            <div class="alert alert-info mt-2 mb-0">{{ 'This help desk\'s email is the mailbox being read, so its new-ticket alerts go to staff (the "New ticket" staff email) instead of to that address, where they would be deleted unread.'|trans }}</div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="mail-host">{{ 'IMAP server'|trans }}</label>
+                    <input class="form-control" type="text" id="mail-host" name="host" value="{{ mailbox.host }}" placeholder="mail.example.com" autocomplete="off">
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label" for="mail-encryption">{{ 'Encryption'|trans }}</label>
+                    <select class="form-select" id="mail-encryption" name="encryption">
+                        {% for key, label in { 'ssl': 'SSL/TLS (port 993)', 'tls': 'STARTTLS (port 143)', 'none': 'None (same server only)'|trans } %}
+                            <option value="{{ key }}"{% if mailbox.encryption == key %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label" for="mail-port">{{ 'Port'|trans }}</label>
+                    <input class="form-control" type="number" min="1" max="65535" id="mail-port" name="port" value="{{ mailbox.port }}" required>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="mail-username">{{ 'Username'|trans }}</label>
+                    <input class="form-control" type="text" id="mail-username" name="username" value="{{ mailbox.username }}" autocomplete="off">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="mail-password">{{ 'Password'|trans }}</label>
+                    <input class="form-control" type="password" id="mail-password" name="password" value="" autocomplete="new-password" placeholder="{{ mailbox.has_password ? 'Saved; leave empty to keep it'|trans : '' }}">
+                    <div class="form-text">{{ 'Kept encrypted and never shown again.'|trans }}</div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="mail-folder">{{ 'Folder'|trans }}</label>
+                    <input class="form-control" type="text" id="mail-folder" name="folder" value="{{ mailbox.folder }}" required>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="mail-max">{{ 'Emails per cron run'|trans }}</label>
+                    <input class="form-control" type="number" min="1" max="200" id="mail-max" name="max_per_run" value="{{ mailbox.max_per_run }}" required>
+                </div>
+                <div class="col-12">
+                    <input type="hidden" name="verify_tls" value="0">
+                    <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="verify_tls" value="1"{% if mailbox.verify_tls %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Check the server certificate'|trans }}</span>
+                        <span class="form-text d-block">{{ 'Turn off only for a mail server on this machine with a self-signed certificate.'|trans }}</span>
+                    </label>
+                    <input type="hidden" name="clients_only" value="0">
+                    <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="clients_only" value="1"{% if mailbox.clients_only %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Clients only'|trans }}</span>
+                        <span class="form-text d-block">{{ 'Only clients and their authorized users can open tickets by email; anyone else is told so by email. Off: others get a guest ticket (while guest tickets are on in Support settings).'|trans }}</span>
+                    </label>
+                    <input type="hidden" name="replies_only" value="0">
+                    <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="replies_only" value="1"{% if mailbox.replies_only %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Replies only'|trans }}</span>
+                        <span class="form-text d-block">{{ 'Emails can only answer existing tickets; new tickets are opened in the client area. Senders of other emails are told so.'|trans }}</span>
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="helpdesk_id" value="{{ helpdesk.id }}">
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if mailbox.host %}
+                <a class="btn btn-outline-secondary" href="{{ 'support/mail_mailbox_test'|api_url(query: { 'helpdesk_id': helpdesk.id }) }}"
+                   {{ fb_api_link({ message: 'The mailbox opened: ClientFence can read it.'|trans }) }}>{{ 'Test connection'|trans }}</a>
+                <a class="btn btn-outline-secondary" href="{{ 'support/mail_import_run'|api_url }}"
+                   {{ fb_api_link({ message: 'Mailboxes read; see the email import log.'|trans, reload: true }) }}>{{ 'Read now'|trans }}</a>
+            {% endif %}
+            <button class="btn btn-primary" type="submit">{{ 'Save mailbox'|trans }}</button>
+        </div>
+    </form>
+</div>

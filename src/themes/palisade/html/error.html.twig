@@ -1,0 +1,19 @@
+{% extends "layout_default.html.twig" %}
+
+{% block meta_title %}{{ 'Error'|trans }} {{ exception.getCode }}{% endblock %}
+{% block body_class %}error-page{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'Error'|trans }}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="text-center py-5">
+        <div class="error-code mb-3">{{ exception.getCode ?: 404 }}</div>
+        <h1 class="h4">{{ 'Whoops! Unable to find the page you are looking for'|trans }}</h1>
+        {% if exception.getMessage %}
+            <p class="text-body-secondary">{{ exception.getMessage }}</p>
+        {% endif %}
+        <a class="btn btn-primary mt-3" href="{{ '/'|url }}">{{ 'Go Back to Home'|trans }}</a>
+    </div>
+{% endblock %}

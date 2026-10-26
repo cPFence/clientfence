@@ -1,0 +1,52 @@
+{# ClientFence admin frame: the Ctrl+K search (clientfence-admin.js). Pages come from the menu the
+   staff member sees; settings (pages, tabs and options) from clientfence/settings_index; clients,
+   orders, invoices and tickets are searched through the admin API, only in the modules they may
+   view. #}
+{% set palette_pages = [{ 'label': 'Dashboard'|trans, 'group': '', 'uri': '/'|url }] %}
+{% for group in navigation %}
+    {% for subpage in group.subpages|default([]) %}
+        {% set palette_pages = palette_pages|merge([{ 'label': subpage.label|trans, 'group': group.label|trans, 'uri': subpage.uri }]) %}
+    {% endfor %}
+{% endfor %}
+{% set palette_pages = palette_pages|merge([{ 'label': 'Profile'|trans, 'group': '', 'uri': 'staff/profile'|url }]) %}
+{% set palette_records = [] %}
+{% if admin.system_is_allowed({ 'mod': 'client', 'f': 'view' }) %}{% set palette_records = palette_records|merge(['client']) %}{% endif %}
+{% if admin.system_is_allowed({ 'mod': 'order', 'f': 'view' }) %}{% set palette_records = palette_records|merge(['order']) %}{% endif %}
+{% if admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }) %}{% set palette_records = palette_records|merge(['invoice']) %}{% endif %}
+{% if admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) %}{% set palette_records = palette_records|merge(['support']) %}{% endif %}
+{% set palette_text = {
+    'pages': 'Pages'|trans,
+    'settings': 'Settings'|trans,
+    'client': 'Clients'|trans,
+    'order': 'Orders'|trans,
+    'invoice': 'Invoices'|trans,
+    'support': 'Tickets'|trans,
+    'empty': 'No results'|trans,
+    'searching': 'Searching…'|trans,
+    'failed': 'Search failed'|trans,
+    'notes': 'Notes'|trans
+} %}
+<div class="bf-palette" data-bf-palette hidden
+     data-pages="{{ palette_pages|json_encode|e('html_attr') }}"
+     data-records="{{ palette_records|json_encode|e('html_attr') }}"
+     data-text="{{ palette_text|json_encode|e('html_attr') }}"
+     data-base="{{ '/'|url }}"
+     dir="{{ frame_dir }}">
+    <div class="bf-palette-backdrop" data-bf-palette-close></div>
+    <div class="bf-palette-box" role="dialog" aria-modal="true" aria-label="{{ 'Search'|trans }}">
+        <div class="bf-palette-head">
+            <svg class="icon" aria-hidden="true"><use href="#search" /></svg>
+            <label class="visually-hidden" for="bf-palette-q">{{ 'Search'|trans }}</label>
+            <input id="bf-palette-q" class="bf-palette-input" type="search" autocomplete="off" spellcheck="false"
+                   placeholder="{{ 'Search clients, invoices, pages…'|trans }}"
+                   role="combobox" aria-expanded="true" aria-controls="bf-palette-list" aria-autocomplete="list">
+            <kbd class="bf-kbd" dir="ltr">Esc</kbd>
+        </div>
+        <div class="bf-palette-list" id="bf-palette-list" role="listbox" aria-label="{{ 'Results'|trans }}"></div>
+        <div class="bf-palette-foot">
+            <span><kbd class="bf-kbd">↑</kbd><kbd class="bf-kbd">↓</kbd> {{ 'to move'|trans }}</span>
+            <span><kbd class="bf-kbd" dir="ltr">Enter</kbd> {{ 'to open'|trans }}</span>
+            <span><kbd class="bf-kbd" dir="ltr">Esc</kbd> {{ 'to close'|trans }}</span>
+        </div>
+    </div>
+</div>

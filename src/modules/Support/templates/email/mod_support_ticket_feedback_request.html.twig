@@ -1,0 +1,59 @@
+{% block subject %}[{{ guest.system_company.name }}] How did we do? Your feedback on ticket #{{ ticket.id|default('') }}{% endblock %}
+{% block content %}
+{# ClientFence: sent when a ticket closes in a help desk that asks for feedback, as WHMCS (Support/TicketFeedback.php). The link opens the feedback form without sign-in. #}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			color: #333333;
+		}
+
+		h1 {
+			font-size: 24px;
+			font-weight: bold;
+			margin: 0 0 20px;
+		}
+
+		p {
+			margin: 0 0 10px;
+		}
+
+		strong {
+			font-weight: bold;
+		}
+
+		.signature {
+			font-style: italic;
+			color: #999999;
+			margin-top: 20px;
+			border-top: 1px solid #cccccc;
+			padding-top: 10px;
+		}
+
+		.reply-line {
+			color: #999999;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+	<h1>How Did We Do?</h1>
+
+	<p>Hello{% if c.first_name|default(name|default('')) %} {{ c.first_name|default(name|default('')) }}{% endif %},</p>
+
+	<p>Your ticket <strong>#{{ ticket.id|default('') }} {{ ticket.subject|default('') }}</strong> is now closed. We would like to know how we handled it.</p>
+
+	<p>Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in.</p>
+
+	<p><a href='{{ feedback_url|default('') }}' target="_blank">Give feedback</a></p>
+
+	<p>Please do not reply to this email directly. Use the link above.</p>
+
+	<div class="signature">{{ guest.system_email.signature }}</div>
+</body>
+</html>
+{% endblock %}

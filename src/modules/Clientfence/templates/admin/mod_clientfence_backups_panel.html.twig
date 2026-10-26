@@ -1,0 +1,175 @@
+{# ClientFence: the "Database Backups" tab of System > Settings > System (core patch in
+   mod_system_settings; Controller/Admin.php, Backups.php), as WHMCS's System Settings > Database
+   Backups: a daily dump kept on this server and/or sent by SFTP/FTP and email, each turned on with
+   "Save & Activate" after its test. Super Administrators only; `backups` is clientfence/backup_get. #}
+{% set ftp = backups.ftp %}
+{% set email = backups.email %}
+{% set local = backups.local %}
+{% set status = backups.status %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Database backups'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Once a day the cron makes a backup of the whole database (a gzip SQL file) and keeps it or sends it by each method that is on. Turn a method on with Save & Activate; its connection is tested first. The file is not encrypted and holds all client data: send it only to places you trust. Old backups are not removed from the remote server.'|trans }}</p>
+            <p class="card-subtitle">{{ 'Module settings, server keys and passwords in the database are encrypted with info.salt from config.php, which is not in the backup. Keep a copy of config.php off this server: a restore on a new install without its info.salt loses them.'|trans }}</p>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if status %}
+            <div class="alert {{ status.ok ? 'alert-success' : 'alert-danger' }} mb-0">
+                <strong>{{ 'Last backup'|trans }}:</strong> {{ status.ran_at|format_datetime }}{% if status.file %}, {{ status.file }} ({{ (status.bytes / 1048576)|number_format(2) }} MB, {{ status.tables }} {{ 'tables'|trans }}){% endif %}.
+                <ul class="mb-0 mt-1">
+                    {% for method, result in status.results %}
+                        <li>{{ { 'ftp': 'SFTP/FTP'|trans, 'email': 'Email'|trans, 'local': 'This server'|trans, 'dump': 'Backup file'|trans, 'none': 'Methods'|trans }[method] ?? method }}: {{ result == 'ok' ? (method == 'local' ? 'kept'|trans : 'sent'|trans) : result }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <div class="alert alert-info mb-0">{{ 'No backup has been made yet.'|trans }}</div>
+        {% endif %}
+    </div>
+    <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+        <a class="btn btn-outline-secondary" href="{{ 'clientfence/backups/download'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Download a backup'|trans }}</a>
+        {% if ftp.enabled or email.enabled or local.enabled %}
+            <a class="btn btn-primary" href="{{ 'clientfence/backup_run'|api_url }}"
+               {{ fb_api_link({ message: 'Backup made; see the result above.'|trans, reload: true }) }}>{{ 'Run backup now'|trans }}</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Backups on this server'|trans }}
+                <span class="badge {{ local.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ local.enabled ? 'Active'|trans : 'Off'|trans }}</span>
+            </h3>
+            <p class="card-subtitle">{{ 'Keeps each backup in %dir% (outside the website, readable only by its owner) and removes those older than the days below; the newest always stays. They are lost with this server: also send them off it by SFTP/FTP or email.'|trans({ '%dir%': local.dir }) }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/backup_local_save'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, reload: true }) }}>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="bk-days">{{ 'Keep backups for'|trans }}</label>
+                    <div class="input-group">
+                        <input class="form-control" type="number" min="1" max="365" id="bk-days" name="days" value="{{ local.days }}" required>
+                        <span class="input-group-text">{{ 'days'|trans }}</span>
+                    </div>
+                </div>
+            </div>
+            {% if local.files %}
+                <div class="table-responsive mt-3">
+                    <table class="table table-vcenter card-table">
+                        <thead><tr><th>{{ 'Backup'|trans }}</th><th>{{ 'Made'|trans }}</th><th>{{ 'Size'|trans }}</th><th></th></tr></thead>
+                        <tbody>
+                            {% for kept in local.files %}
+                                <tr>
+                                    <td>{{ kept.name }}</td>
+                                    <td>{{ kept.made_at|format_datetime }}</td>
+                                    <td>{{ (kept.bytes / 1048576)|number_format(2) }} MB</td>
+                                    <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="{{ 'clientfence/backups/download'|url(query: { CSRFToken: CSRFToken, file: kept.name }) }}">{{ 'Download'|trans }}</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if local.enabled %}
+                <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'local' }) }}"
+                   {{ fb_api_link({ message: 'Backups on this server are off; kept files stay.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+                <button class="btn btn-outline-secondary" type="submit" name="do" value="save">{{ 'Save'|trans }}</button>
+            {% endif %}
+            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+        </div>
+    </form>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'SFTP/FTP backups'|trans }}
+                <span class="badge {{ ftp.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ ftp.enabled ? 'Active'|trans : 'Off'|trans }}</span>
+            </h3>
+            <p class="card-subtitle">{{ 'Uploads each backup to a folder on another server.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/backup_ftp_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceBackupFtpSaved' }) }}
+          data-cf-backup-ftp data-tested-text="{{ 'The connection works.'|trans }}" data-saved-text="{{ 'Saved; the connection works.'|trans }}">
+        <div class="card-body">
+            {% if not ftp.ready %}
+                <div class="alert alert-warning">{{ 'This server\'s curl cannot use SFTP (libssh is missing); plain FTP still works.'|trans }}</div>
+            {% endif %}
+            <div class="row g-3">
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-host">{{ 'Hostname'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-host" name="host" value="{{ ftp.host }}" placeholder="backup.example.com" autocomplete="off" required>
+                </div>
+                <div class="col-lg-2">
+                    <label class="form-label" for="bk-port">{{ 'Port'|trans }}</label>
+                    <input class="form-control" type="number" min="1" max="65535" id="bk-port" name="port" value="{{ ftp.port }}" required>
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label" for="bk-path">{{ 'Destination folder'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-path" name="path" value="{{ ftp.path }}" placeholder="backups/" autocomplete="off">
+                    <div class="form-text">{{ 'Relative to the login folder; it must exist. Empty: the login folder.'|trans }}</div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-user">{{ 'Username'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-user" name="username" value="{{ ftp.username }}" autocomplete="off" required>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-pass">{{ 'Password'|trans }}</label>
+                    <input class="form-control" type="password" id="bk-pass" name="password" value="" autocomplete="new-password" placeholder="{{ ftp.has_password ? 'Saved; leave empty to keep it'|trans : '' }}">
+                    <div class="form-text">{{ 'Kept encrypted and never shown again.'|trans }}</div>
+                </div>
+                <div class="col-12">
+                    <input type="hidden" name="secure" value="0">
+                    <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="secure" value="1"{% if ftp.secure %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Use SFTP (recommended)'|trans }}</span>
+                        <span class="form-text d-block">{{ 'Off: plain FTP, which sends the password and the backup unencrypted. The SFTP server\'s key is not checked (as in WHMCS): use a server you reach over a network you trust.'|trans }}</span>
+                    </label>
+                    <input type="hidden" name="passive" value="0">
+                    <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="passive" value="1"{% if ftp.passive %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'FTP passive mode'|trans }}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if ftp.enabled %}
+                <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'ftp' }) }}"
+                   {{ fb_api_link({ message: 'SFTP/FTP backups are off.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+            {% endif %}
+            <button class="btn btn-outline-secondary" type="submit" name="do" value="test">{{ 'Test connection'|trans }}</button>
+            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+        </div>
+    </form>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Email backups'|trans }}
+                <span class="badge {{ email.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ email.enabled ? 'Active'|trans : 'Off'|trans }}</span>
+            </h3>
+            <p class="card-subtitle">{{ 'Emails each backup as an attachment, through the Email settings\' mailer (not kept in the email log). Backups larger than %mb% MB are not emailed.'|trans({ '%mb%': backups.max_email_mb }) }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/backup_email_save'|api_url }}" {{ fb_api_form({ message: 'Email backups are on.'|trans, reload: true }) }}>
+        <div class="card-body">
+            <label class="form-label" for="bk-email">{{ 'Email address'|trans }}</label>
+            <input class="form-control" type="email" id="bk-email" name="address" value="{{ email.address }}" autocomplete="off" required>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if email.enabled %}
+                <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'email' }) }}"
+                   {{ fb_api_link({ message: 'Email backups are off.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+            {% endif %}
+            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+        </div>
+    </form>
+</div>

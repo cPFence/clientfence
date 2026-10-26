@@ -1,0 +1,397 @@
+{# ClientFence: the "WHMCS import" tab of System > Settings (core patch in mod_system_settings;
+   Whmcs/Import.php). The WHMCS database details (read only; the password and encryption key are
+   encrypted and never shown again), then the plan: what WHMCS holds and what the import does with
+   it, then the import itself (Whmcs/Run.php): the tab runs it a few seconds at a time and shows the
+   progress, the warnings and the check against WHMCS. Super Administrators only; `whmcs` is
+   clientfence/whmcs_import_get. #}
+{% set settings = whmcs.settings %}
+{% set plan = whmcs.plan %}
+{% set target = whmcs.target %}
+{% set run = whmcs.run %}
+{% set labels = {
+    'currencies': 'Currencies'|trans,
+    'client_groups': 'Client groups'|trans,
+    'clients': 'Clients'|trans,
+    'users': 'Logins (users)'|trans,
+    'user_links': 'Logins linked to clients'|trans,
+    'contacts': 'Contacts'|trans,
+    'custom_fields': 'Custom fields'|trans,
+    'custom_values': 'Custom field answers'|trans,
+    'social_logins': 'Social sign-in links'|trans,
+    'admins': 'Staff'|trans,
+    'product_groups': 'Product groups'|trans,
+    'products': 'Products'|trans,
+    'config_groups': 'Configurable option groups'|trans,
+    'config_options': 'Configurable options'|trans,
+    'product_addons': 'Product add-ons'|trans,
+    'upgrade_paths': 'Upgrade paths'|trans,
+    'promotions': 'Promotions'|trans,
+    'tld_pricing': 'Domain extensions'|trans,
+    'servers': 'Servers'|trans,
+    'services': 'Services'|trans,
+    'service_addons': 'Service add-ons'|trans,
+    'domains': 'Domains'|trans,
+    'orders': 'Orders'|trans,
+    'cancel_requests': 'Cancellation requests'|trans,
+    'invoices': 'Invoices'|trans,
+    'invoice_items': 'Invoice lines'|trans,
+    'transactions': 'Transactions'|trans,
+    'credit_log': 'Credit log'|trans,
+    'billing_notes': 'Credit and debit notes'|trans,
+    'quotes': 'Quotes'|trans,
+    'departments': 'Support departments'|trans,
+    'tickets': 'Tickets'|trans,
+    'ticket_replies': 'Ticket replies'|trans,
+    'ticket_notes': 'Ticket notes'|trans,
+    'predefined_replies': 'Predefined replies'|trans,
+    'kb_categories': 'Knowledge base categories'|trans,
+    'kb_articles': 'Knowledge base articles'|trans,
+    'announcements': 'Announcements'|trans,
+    'emails': 'Sent emails'|trans
+} %}
+{% set handling = { 'import': 'Imported'|trans, 'archive': 'Archived, not imported'|trans, 'settings': 'Settings only'|trans } %}
+
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'WHMCS database'|trans }}</h3>
+            <p class="card-subtitle">{{ 'The import reads WHMCS\'s database directly and only reads it: nothing changes in WHMCS, and WHMCS does not need to run. Use a database user that can read it from this server. The password and encryption key are kept encrypted and are not shown again; leave them empty to keep the saved ones.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/whmcs_import_save'|api_url }}" {{ fb_api_form({ message: 'Connected to WHMCS.'|trans, reload: true }) }} autocomplete="off">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label class="form-label required" for="wi-host">{{ 'Host'|trans }}</label>
+                    <input class="form-control" id="wi-host" name="host" value="{{ settings.host }}" maxlength="255" required dir="ltr">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label" for="wi-port">{{ 'Port'|trans }}</label>
+                    <input class="form-control" id="wi-port" name="port" type="number" min="1" max="65535" value="{{ settings.port }}" dir="ltr">
+                </div>
+                <div class="col-6 col-md-4">
+                    <label class="form-label required" for="wi-database">{{ 'Database name'|trans }}</label>
+                    <input class="form-control" id="wi-database" name="database" value="{{ settings.database }}" maxlength="64" required dir="ltr">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label required" for="wi-username">{{ 'Username'|trans }}</label>
+                    <input class="form-control" id="wi-username" name="username" value="{{ settings.username }}" maxlength="80" required dir="ltr" autocomplete="off">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label{{ settings.has_password ? '' : ' required' }}" for="wi-password">{{ 'Password'|trans }}</label>
+                    <input class="form-control" id="wi-password" name="password" type="password" {{ settings.has_password ? '' : 'required' }} placeholder="{{ settings.has_password ? 'Saved: leave empty to keep it'|trans : '' }}" dir="ltr" autocomplete="new-password">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label" for="wi-key">{{ 'Encryption key'|trans }}</label>
+                    <input class="form-control" id="wi-key" name="encryption_key" type="password" placeholder="{{ settings.has_encryption_key ? 'Saved: leave empty to keep it'|trans : '' }}" dir="ltr" autocomplete="off">
+                    <div class="form-hint">{{ '$cc_encryption_hash in WHMCS\'s configuration.php. It lets the import read what WHMCS keeps encrypted, such as two-factor secrets.'|trans }}</div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label" for="wi-attachments">{{ 'Attachments folder'|trans }}</label>
+                    <input class="form-control" id="wi-attachments" name="attachments_dir" value="{{ settings.attachments_dir }}" maxlength="500" dir="ltr" placeholder="/home/whmcs/attachments">
+                    <div class="form-hint">{{ 'Where WHMCS keeps ticket attachments (WHMCS > Storage Settings). If WHMCS runs on another server, copy the folder to this one first. Files not found there are named in the warnings and show as removed.'|trans }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">{{ 'Save and test'|trans }}</button>
+        </div>
+    </form>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Import plan'|trans }}</h3>
+            <p class="card-subtitle">{{ 'What WHMCS holds and what the import does with it. Making the plan only reads WHMCS. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan'|trans }}</p>
+        </div>
+        {% if settings.has_password %}
+        <div class="card-actions">
+            <a class="btn btn-primary" href="{{ 'clientfence/whmcs_import_plan'|api_url }}" {{ fb_api_link({ message: 'Plan made.'|trans, reload: true }) }}>{{ plan ? 'Make the plan again'|trans : 'Make the plan'|trans }}</a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if not target.fresh %}
+            <div class="alert alert-warning">{{ 'This install already has data (%counts%). The import keeps WHMCS\'s ids and invoice numbers, so it needs a fresh install.'|trans({ '%counts%': target.counts|map((n, what) => n ~ ' ' ~ what|trans)|join(', ') }) }}</div>
+        {% endif %}
+        {% if not plan %}
+            <p class="text-secondary mb-0">{{ settings.has_password ? 'No plan yet. Make one to see what WHMCS holds.'|trans : 'Save the WHMCS database details first.'|trans }}</p>
+        {% else %}
+            <p class="mb-3">
+                <strong>WHMCS {{ plan.version ?: '?' }}</strong>
+                <span class="text-secondary">· {{ 'Plan made %date%'|trans({ '%date%': plan.made_at|format_datetime }) }}</span>
+            </p>
+            {% for warning in plan.warnings %}
+                <div class="alert alert-warning">{{ warning }}</div>
+            {% endfor %}
+
+            {% if plan.preflight is defined %}
+                <h4 class="mb-2">{{ 'This server'|trans }}</h4>
+                <p class="text-secondary small">{{ 'What the import needs, checked when the plan was made by the PHP that made it (the memory row names it: the website and the console each have their own). The import checks again when it starts, and does not start while a check fails.'|trans }}</p>
+                {% for check in plan.preflight|filter(c => not c.ok) %}
+                    <div class="alert alert-danger"><strong>{{ check.check|trans }}:</strong> {{ check.detail }} {{ check.fix }}</div>
+                {% endfor %}
+                <div class="table-responsive mb-4">
+                    <table class="table table-sm table-vcenter mb-0">
+                        <tbody>
+                            {% for check in plan.preflight %}
+                                <tr>
+                                    <td class="w-1"><span class="badge {{ check.ok ? 'bg-success-lt' : 'bg-danger-lt' }}">{{ check.ok ? 'OK'|trans : 'Fix'|trans }}</span></td>
+                                    <td class="text-nowrap">{{ check.check|trans }}</td>
+                                    <td class="text-secondary small text-break">{{ check.detail }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            <div class="row g-3">
+                {% for group, label in { 'clients': 'Clients and logins', 'catalogue': 'Catalogue', 'services': 'Services', 'billing': 'Billing', 'support': 'Support', 'content': 'Content and history' } %}
+                <div class="col-12 col-xl-6">
+                    <h4 class="mb-2">{{ label|trans }}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-vcenter mb-0">
+                            <tbody>
+                                {% for key, area in plan.areas|filter(a => a.group == group) %}
+                                <tr>
+                                    <td>{{ labels[key]|default(area.label) }}</td>
+                                    <td class="text-end text-nowrap fw-semibold">{{ area.rows }}</td>
+                                    <td class="text-secondary small">{% for status, count in area.by_status %}{{ status }} {{ count }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if plan.money %}
+            <h4 class="mt-4 mb-2">{{ 'Money'|trans }}</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-vcenter mb-0">
+                    <thead><tr><th>{{ 'Currency'|trans }}</th><th class="text-end">{{ 'Unpaid invoices'|trans }}</th><th class="text-end">{{ 'Client credit'|trans }}</th><th class="text-end">{{ 'Paid invoices'|trans }}</th></tr></thead>
+                    <tbody>
+                        {% for money in plan.money %}
+                        <tr><td>{{ money.currency }}</td><td class="text-end">{{ money.unpaid_invoices|number_format(2) }}</td><td class="text-end">{{ money.client_credit|number_format(2) }}</td><td class="text-end">{{ money.paid_invoices|number_format(2) }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            <h4 class="mt-4 mb-2">{{ 'Add-on modules'|trans }}</h4>
+            <p class="text-secondary small">{{ 'Modules with a ClientFence counterpart are imported. The rows of every other module are kept in an archive file next to the database backups, so nothing is lost and they can be imported later.'|trans }}</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-vcenter mb-0">
+                    <thead><tr><th>{{ 'Module'|trans }}</th><th>{{ 'Import'|trans }}</th><th class="text-end">{{ 'Rows'|trans }}</th><th>{{ 'Tables'|trans }}</th></tr></thead>
+                    <tbody>
+                        {% for module in plan.modules %}
+                        <tr>
+                            <td>{{ module.label }}{% if not module.active %} <span class="badge bg-secondary-lt ms-1">{{ 'Not switched on'|trans }}</span>{% endif %}</td>
+                            <td><span class="badge {{ module.handling == 'import' ? 'bg-success-lt' : 'bg-secondary-lt' }}">{{ handling[module.handling]|default(module.handling) }}</span></td>
+                            <td class="text-end">{{ module.rows }}</td>
+                            <td class="text-secondary small">{% for table in module.tables %}{{ table.table }} ({{ table.rows }}){% if not loop.last %}, {% endif %}{% endfor %}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-secondary">{{ 'No add-on modules found.'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row g-3 mt-2">
+                <div class="col-12 col-xl-6">
+                    <h4 class="mb-2">{{ 'Payment gateways'|trans }}</h4>
+                    <table class="table table-sm table-vcenter mb-0">
+                        <thead><tr><th>{{ 'Gateway'|trans }}</th><th class="text-end">{{ 'Services'|trans }}</th><th class="text-end">{{ 'Invoices'|trans }}</th></tr></thead>
+                        <tbody>
+                            {% for gateway in plan.gateways %}
+                            <tr><td>{{ gateway.label }} <code class="ms-1">{{ gateway.gateway }}</code></td><td class="text-end">{{ gateway.services }}</td><td class="text-end">{{ gateway.invoices }}</td></tr>
+                            {% else %}
+                            <tr><td colspan="3" class="text-secondary">{{ 'None'|trans }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-12 col-xl-6">
+                    <h4 class="mb-2">{{ 'Server modules'|trans }}</h4>
+                    <table class="table table-sm table-vcenter mb-0">
+                        <thead><tr><th>{{ 'Module'|trans }}</th><th class="text-end">{{ 'Products'|trans }}</th><th class="text-end">{{ 'Services'|trans }}</th></tr></thead>
+                        <tbody>
+                            {% for module in plan.server_modules %}
+                            <tr><td><code>{{ module.module }}</code></td><td class="text-end">{{ module.products }}</td><td class="text-end">{{ module.services }}</td></tr>
+                            {% else %}
+                            <tr><td colspan="3" class="text-secondary">{{ 'None'|trans }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-3" id="clientfence-whmcs-import">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Import'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Imports everything in the plan: clients and logins, the catalogue, services, billing, support, content and history, licences, and the add-on module archive. Nothing is emailed. It first checks what it needs from this server, and a stopped import goes on from where it stopped. The console runs the same import: php console.php clientfence:whmcs-import apply'|trans }}</p>
+        </div>
+        {% if plan and (run or target.fresh) and not run.finished_at|default(false) %}
+        <div class="card-actions">
+            <button type="button" class="btn btn-primary" data-whmcs-import-run data-confirm="{{ run ? '' : 'Import from WHMCS into this install now? Keep this page open until it finishes.'|trans }}">{{ run ? 'Go on with the import'|trans : 'Start the import'|trans }}</button>
+        </div>
+        {% elseif run.finished_at|default(false) %}
+        <div class="card-actions">
+            <button type="button" class="btn btn-outline-primary" data-whmcs-import-verify>{{ 'Check against WHMCS'|trans }}</button>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% set step_labels = {
+            currencies: 'Currencies'|trans, groups: 'Client groups'|trans, fields: 'Client custom fields'|trans,
+            clients: 'Clients and their owner logins'|trans, users: 'Authorized users'|trans, contacts: 'Contacts'|trans,
+            twofactor: 'Two-factor sign-in carried over'|trans, google: 'Google sign-in links'|trans
+        } %}
+        {% if not plan %}
+            <p class="text-secondary mb-0">{{ 'Make the plan first.'|trans }}</p>
+        {% elseif not run %}
+            <p class="text-secondary mb-0" data-whmcs-import-status>{{ target.fresh ? 'Not started.'|trans : 'This install already has data, so the import cannot start.'|trans }}</p>
+        {% endif %}
+        <div class="alert alert-danger{% if not run.error|default(null) %} d-none{% endif %}" data-whmcs-import-error>{{ run.error|default('') }}</div>
+        <div class="{% if not run %}d-none{% endif %}" data-whmcs-import-progress>
+            <p class="mb-2" data-whmcs-import-status>
+                {% if run.finished_at|default(false) %}{{ 'Finished :date.'|trans({ ':date': run.finished_at|format_datetime }) }}{% elseif run %}{{ 'Started :date; not finished.'|trans({ ':date': run.started_at|format_datetime }) }}{% endif %}
+            </p>
+            <table class="table table-sm table-vcenter mb-0">
+                <thead><tr><th>{{ 'Step'|trans }}</th><th class="text-end">{{ 'In WHMCS'|trans }}</th><th class="text-end">{{ 'Imported'|trans }}</th><th></th></tr></thead>
+                <tbody>
+                    {% for step, s in run.steps|default({}) %}
+                        <tr data-whmcs-import-step="{{ step }}">
+                            <td>{{ step_labels[step]|default(s.label|trans) }}</td>
+                            <td class="text-end" data-total>{{ s.total|default('') }}</td>
+                            <td class="text-end" data-done>{{ s.done|default('') }}</td>
+                            <td class="text-end" data-state>{% if s.finished|default(false) %}<span class="badge bg-green-lt">{{ 'Done'|trans }}</span>{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if whmcs.archive %}
+                <p class="small text-secondary mt-2 mb-0">{{ 'Add-on module archive: :file (:size MB) in :dir. It can hold the secrets those modules keep: treat it as a backup.'|trans({ ':file': whmcs.archive.name, ':size': (whmcs.archive.bytes / 1048576)|number_format(2), ':dir': whmcs.archive.dir }) }}</p>
+            {% endif %}
+        </div>
+        <div class="mt-3 d-none" data-whmcs-import-verify-out>
+            <h4 class="mb-2">{{ 'Check against WHMCS'|trans }}</h4>
+            <table class="table table-sm table-vcenter mb-0">
+                <thead><tr><th>{{ 'What'|trans }}</th><th class="text-end">{{ 'In WHMCS'|trans }}</th><th class="text-end">{{ 'Imported'|trans }}</th></tr></thead>
+                <tbody></tbody>
+            </table>
+            <p class="small text-secondary mt-2 mb-0" data-whmcs-import-verify-note></p>
+        </div>
+        {% if run.warnings|default(0) > 0 %}
+            <details class="mt-3" data-whmcs-import-warnings>
+                <summary>{{ 'Warnings (:count): what was not imported as it was, and what to do'|trans({ ':count': run.warnings }) }}</summary>
+                <ul class="mt-2 mb-0 small">
+                    {% for warning in whmcs.warnings %}<li>{{ warning }}</li>{% endfor %}
+                </ul>
+                {% if run.warnings > whmcs.warnings|length %}
+                    <p class="small text-secondary mb-0">{{ 'The first :shown are shown; the console lists them all: php console.php clientfence:whmcs-import apply'|trans({ ':shown': whmcs.warnings|length }) }}</p>
+                {% endif %}
+            </details>
+        {% endif %}
+    </div>
+</div>
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const card = document.getElementById('clientfence-whmcs-import');
+        if (!card) return;
+        const labels = {{ step_labels|json_encode|raw }};
+        const text = {
+            running: {{ 'Importing… keep this page open.'|trans|json_encode|raw }},
+            stopped: {{ 'The import stopped. Fix the cause, then go on with the import.'|trans|json_encode|raw }},
+            same: {{ 'The counts match.'|trans|json_encode|raw }},
+            differ: {{ 'Where the counts differ, the warnings say why.'|trans|json_encode|raw }},
+            missing: {{ 'Imported clients missing from this install: :count.'|trans|json_encode|raw }},
+        };
+        const status = card.querySelector('[data-whmcs-import-progress] [data-whmcs-import-status]');
+        const error = card.querySelector('[data-whmcs-import-error]');
+        const show = (run) => {
+            card.querySelector('[data-whmcs-import-progress]').classList.remove('d-none');
+            Object.entries(run.steps || {}).forEach(([step, s]) => {
+                let row = card.querySelector(`[data-whmcs-import-step="${step}"]`);
+                if (!row) {
+                    // A run that started on this page: its rows are made as it goes.
+                    row = document.createElement('tr');
+                    row.dataset.whmcsImportStep = step;
+                    const name = document.createElement('td');
+                    name.textContent = labels[step] || s.label;
+                    row.append(name);
+                    ['total', 'done', 'state'].forEach((key) => {
+                        const td = document.createElement('td');
+                        td.className = 'text-end';
+                        td.dataset[key] = '';
+                        row.append(td);
+                    });
+                    card.querySelector('[data-whmcs-import-progress] tbody').append(row);
+                }
+                row.querySelector('[data-total]').textContent = s.total;
+                row.querySelector('[data-done]').textContent = s.done;
+                row.querySelector('[data-state]').textContent = s.finished ? '✓' : (run.step === step ? '…' : '');
+            });
+        };
+        const step = (button) => {
+            ClientFence.api.admin.post('clientfence/whmcs_import_apply', {}, (run) => {
+                show(run);
+                if (run.finished_at) {
+                    window.location.reload();
+                } else {
+                    step(button);
+                }
+            }, (e) => {
+                error.textContent = (e && e.message) || text.stopped;
+                error.classList.remove('d-none');
+                status.textContent = text.stopped;
+                button.disabled = false;
+            }, false);
+        };
+        card.querySelector('[data-whmcs-import-run]')?.addEventListener('click', (event) => {
+            const button = event.currentTarget;
+            if (button.dataset.confirm && !window.confirm(button.dataset.confirm)) return;
+            button.disabled = true;
+            error.classList.add('d-none');
+            status.textContent = text.running;
+            card.querySelector('[data-whmcs-import-progress]').classList.remove('d-none');
+            step(button);
+        });
+        card.querySelector('[data-whmcs-import-verify]')?.addEventListener('click', (event) => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            ClientFence.api.admin.post('clientfence/whmcs_import_verify', {}, (result) => {
+                const out = card.querySelector('[data-whmcs-import-verify-out]');
+                const body = out.querySelector('tbody');
+                body.replaceChildren();
+                let differ = false;
+                result.rows.forEach((row) => {
+                    const tr = document.createElement('tr');
+                    [labels[row.step] || row.label, row.whmcs, row.imported].forEach((value, i) => {
+                        const td = document.createElement('td');
+                        if (i > 0) td.className = 'text-end';
+                        td.textContent = value;
+                        tr.append(td);
+                    });
+                    if (row.whmcs !== row.imported) { differ = true; tr.classList.add('table-warning'); }
+                    body.append(tr);
+                });
+                out.querySelector('[data-whmcs-import-verify-note]').textContent = [differ ? text.differ : text.same, result.missing_clients ? text.missing.replace(':count', result.missing_clients) : ''].join(' ').trim();
+                out.classList.remove('d-none');
+                button.disabled = false;
+            }, (e) => {
+                ClientFence.message((e && e.message) || text.stopped, 'error');
+                button.disabled = false;
+            }, false);
+        });
+    })();
+</script>

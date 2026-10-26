@@ -1,0 +1,19 @@
+{# Prints "gated" when a signed-out visitor may not see this page (both layouts then show the sign-in
+   gate), "open" otherwise. Open: pages that set allow_guest (sign-in, sign-up, password reset, the
+   store while it is open to the visitor), and every page while the theme setting "Enable Dashboard
+   for Guests" (require_login) is off; pages that need an account still send visitors to sign in.
+   While it is on, as in FOSSBilling's Huraga theme: the terms, the privacy policy, news (while the
+   News extension is on), invoice links (FOSSBilling decides who may open them: Settings → Invoices,
+   "Invoice accessible from hash"), quote links (Invoice/Quotes.php), the Network Status page while
+   the Support settings make it public (Support/NetworkIssues.php) and, while guest tickets are on,
+   the contact form and guest ticket links. #}
+{%- if client or allow_guest|default(false) or not settings.require_login|default('1') -%}
+    open
+{%- else -%}
+    {%- set path = request_path|default('')|trim('/') -%}
+    {%- set public_page = path in ['tos', 'privacy-policy'] or path starts with 'invoice/' or path starts with 'quote/'
+        or (path == 'network-status' and (guest.support_network_status_settings ?: {}).public|default(false))
+        or ((path == 'news' or path starts with 'news/') and guest.extension_is_on({ mod: 'news' }))
+        or ((path == 'support/contact-us' or path starts with 'support/contact-us/' or path starts with 'support/ticket/') and guest.support_guest_tickets_enabled) -%}
+    {{- public_page ? 'open' : 'gated' -}}
+{%- endif -%}

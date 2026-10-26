@@ -1,0 +1,67 @@
+{% block subject %}[{{ guest.system_company.name }}] Your renewal price is changing{% endblock %}
+{% block content %}
+{# ClientFence: a bulk price update staff chose to email (Order/BulkPrices.php): the client's services with
+   their old and new recurring price and the invoice the new price starts with. #}
+{% set services = services|default([]) %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			color: #333333;
+		}
+
+		h1 {
+			font-size: 24px;
+			font-weight: bold;
+			margin: 0 0 20px;
+		}
+
+		p {
+			margin: 0 0 10px;
+		}
+
+		strong {
+			font-weight: bold;
+		}
+
+		.signature {
+			font-style: italic;
+			color: #999999;
+			margin-top: 20px;
+			border-top: 1px solid #cccccc;
+			padding-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Your renewal price is changing</h1>
+	<p>Hello {{ c.first_name|default('') }},</p>
+	<p>The recurring price of {{ services|length > 1 ? 'these services' : 'this service' }} is changing:</p>
+	<ul>
+		{% for service in services %}
+			<li>
+				<strong><a href="{{ ('order/service/manage/' ~ service.id|default(''))|url(area: 'client') }}" target="_blank">{{ service.title|default('') }}</a></strong>:
+				{{ service.old_total|default(0)|format_currency(service.currency|default(default_currency)) }}
+				to <strong>{{ service.new_total|default(0)|format_currency(service.currency|default(default_currency)) }}</strong>
+				({{ service.period|default('')|period_title }}{% if service.discount|default(0) > 0 %}, after your recurring discount of {{ service.discount|format_currency(service.currency|default(default_currency)) }}{% endif %}).
+				{% if service.unpaid_invoice_id|default(false) %}
+					The invoice already issued for it keeps the old price; the new price starts with the renewal after it.
+				{% elseif service.next_invoice|default(false) %}
+					The new price starts with the renewal due {{ service.next_invoice|format_date }}.
+				{% else %}
+					The new price starts with your next invoice.
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+	<p>If you have any questions, please reply to this email or open a support ticket.</p>
+	<p><a href="{{ 'order/service'|url(area: 'client') }}" target="_blank">See your services</a></p>
+
+	<div class="signature">{{ guest.system_email.signature }}</div>
+</body>
+</html>
+{% endblock %}

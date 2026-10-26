@@ -1,0 +1,114 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: a network issue, as WHMCS (Support/NetworkIssues.php): what it is about (a server, the
+   system or something else; clientfence-admin.js shows the matching field), priority, status, start
+   and end, the description, and emailing the affected clients on saving. `issue` is null for a new one. #}
+
+{% set active_menu = 'support' %}
+{% set options = admin.support_network_issue_options %}
+{% set issue = issue ?: { 'id': 0, 'title': '', 'description': '', 'type': 'server', 'affecting': '', 'server_id': options.servers|keys|first|default(''), 'priority': 'medium', 'status': 'reported', 'start_at': null, 'end_at': null, 'emailed_at': null, 'emailed_count': 0 } %}
+{% set title = issue.id ? 'Network issue #%id%'|trans({ '%id%': issue.id }) : 'New Issue'|trans %}
+
+{% block meta_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ 'support/network_issue_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceIssueSaved' }) }} data-bf-issue-form data-issue-url="{{ 'support/network-issue'|url }}">
+    <input type="hidden" name="id" value="{{ issue.id }}">
+    {# The times below are shown in this time zone (the staff member's); saving converts them back. #}
+    <input type="hidden" name="timezone" value="{{ 'now'|date('e') }}">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ title }}</h3>
+                <p class="card-subtitle">
+                    {% if issue.emailed_at %}
+                        {{ 'Last emailed %date% to %count% clients.'|trans({ '%date%': issue.emailed_at|format_datetime, '%count%': issue.emailed_count }) }}
+                    {% else %}
+                        {{ 'Clients see it on the Network Status page; those it affects also see a banner while it is open or scheduled.'|trans }}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card-actions btn-list">
+                <a class="btn" href="{{ 'support/network-issues'|url }}">{{ 'All issues'|trans }}</a>
+                {% if issue.id %}
+                    <a class="btn btn-icon" href="{{ 'support/network_issue_delete'|api_url(query: { 'id': issue.id }) }}" aria-label="{{ 'Delete'|trans }}" data-bs-toggle="tooltip" data-bs-title="{{ 'Delete'|trans }}"
+                       {{ fb_api_link({ message: 'Issue deleted'|trans, modal: { type: 'confirm', title: 'Delete this issue?'|trans }, redirect: 'support/network-issues'|url }) }}><svg class="icon"><use href="#trash" /></svg></a>
+                {% endif %}
+            </div>
+        </div>
+        {% if request.saved|default('') %}
+            <div class="alert alert-success m-3 mb-0" role="status">
+                {{ request.emailed|default(0) > 0 ? 'Issue saved and emailed to %count% clients.'|trans({ '%count%': request.emailed|number_format(0) }) : 'Issue saved'|trans }}
+            </div>
+        {% endif %}
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <label class="form-label required" for="issue-title">{{ 'Title'|trans }}</label>
+                    <input class="form-control" id="issue-title" type="text" name="title" maxlength="255" value="{{ issue.title }}" dir="auto" required>
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label" for="issue-type">{{ 'About'|trans }}</label>
+                    <select class="form-select" id="issue-type" name="type" data-bf-issue-type>
+                        {% for key, label in options.types %}
+                            <option value="{{ key }}"{% if issue.type == key %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-lg-6" data-bf-issue-for="server">
+                    <label class="form-label" for="issue-server">{{ 'Server'|trans }}</label>
+                    <select class="form-select" id="issue-server" name="server_id">
+                        {% for id, name in options.servers %}
+                            <option value="{{ id }}"{% if issue.server_id ~ '' == id ~ '' %} selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-hint">{{ 'Clients with a hosting service on this server are affected.'|trans }}</div>
+                </div>
+                <div class="col-lg-6" data-bf-issue-for="system">
+                    <div class="form-hint mt-lg-4">{{ 'A system issue affects every client with an active or suspended service.'|trans }}</div>
+                </div>
+                <div class="col-lg-6" data-bf-issue-for="other">
+                    <label class="form-label" for="issue-affecting">{{ 'Affects'|trans }}</label>
+                    <input class="form-control" id="issue-affecting" type="text" name="affecting" maxlength="100" value="{{ issue.affecting }}" dir="auto" placeholder="{{ 'For example: Email, Billing portal'|trans }}">
+                    <div class="form-hint">{{ 'Every client with an active or suspended service sees it.'|trans }}</div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="issue-priority">{{ 'Priority'|trans }}</label>
+                    <select class="form-select" id="issue-priority" name="priority">
+                        {% for key, label in options.priorities %}
+                            <option value="{{ key }}"{% if issue.priority == key %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="issue-status">{{ 'Status'|trans }}</label>
+                    <select class="form-select" id="issue-status" name="status">
+                        {% for key, label in options.statuses %}
+                            <option value="{{ key }}"{% if issue.status == key %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label required" for="issue-start">{{ 'Start'|trans }}</label>
+                    <input class="form-control" id="issue-start" type="datetime-local" name="start_at" value="{{ (issue.start_at ?: 'now')|date('Y-m-d\\TH:i') }}" required>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="issue-end">{{ 'End'|trans }} <span class="text-secondary">{{ '(optional)'|trans }}</span></label>
+                    <input class="form-control" id="issue-end" type="datetime-local" name="end_at" value="{{ issue.end_at ? issue.end_at|date('Y-m-d\\TH:i') : '' }}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="issue-description">{{ 'Description'|trans }}</label>
+                    <textarea class="form-control" id="issue-description" name="description" rows="8" maxlength="20000" dir="auto">{{ issue.description }}</textarea>
+                    <div class="form-hint">{{ 'Add updates here as the work goes on; clients see the latest text. Times are in your time zone (%zone%).'|trans({ '%zone%': 'now'|date('e') }) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            <label class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" name="email" value="1">
+                <span class="form-check-label">{{ 'Email the affected clients when saving'|trans }}</span>
+            </label>
+            <button class="btn btn-primary" type="submit">{{ issue.id ? 'Save issue'|trans : 'Create issue'|trans }}</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

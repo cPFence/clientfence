@@ -1,0 +1,28 @@
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Your sign-in PIN: %pin%'|trans({'%pin%': pin|default('')}) }}{% endblock %}
+{% block content %}
+{# ClientFence: the email PIN of a sign-in (Clientfence/SignInSecurity.php). Sent at once, never queued or
+   kept in the email log. Variables: pin, minutes, ip, country, name. #}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body { font-family: Arial, sans-serif; font-size: 14px; color: #333333; }
+		h1 { font-size: 22px; font-weight: bold; margin: 0 0 20px; }
+		p { margin: 0 0 10px; }
+		.pin { font-family: "Courier New", monospace; font-size: 30px; font-weight: bold; letter-spacing: 6px; margin: 18px 0; }
+		.muted { color: #777777; font-size: 13px; }
+		.signature { font-style: italic; color: #999999; margin-top: 20px; border-top: 1px solid #cccccc; padding-top: 10px; }
+	</style>
+</head>
+<body>
+	<h1>{{ 'Your sign-in PIN'|trans }}</h1>
+	<p>{{ 'Hello %name%,'|trans({'%name%': name|default('')}) }}</p>
+	<p>{{ 'Enter this PIN to finish signing in to the staff panel. It works for %minutes% minutes.'|trans({'%minutes%': minutes|default(10)}) }}</p>
+	<p class="pin">{{ pin|default('') }}</p>
+	<p class="muted">{{ 'Sign-in from %ip%'|trans({'%ip%': ip|default('')}) }}{% if country|default('') %} ({{ country }}){% endif %}.</p>
+	<p>{{ 'If this was not you, do not share the PIN with anyone and change your password: someone knows it.'|trans }}</p>
+	<div class="signature">{{ guest.system_email.signature }}</div>
+</body>
+</html>
+{% endblock %}

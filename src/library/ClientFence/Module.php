@@ -1,0 +1,300 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence;
+
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+
+class Module implements InjectionAwareInterface
+{
+    private ?\Pimple\Container $di = null;
+    private readonly string $module;
+    private Filesystem $filesystem;
+
+    public const MANIFEST_FILENAME = 'manifest.json';
+    public const SERVICE_CLASS_PREFIX = 'ClientFence\\Mod\\';
+    public const CONTROLLER_CLIENT_SUFFIX = '\\Controller\\Client';
+    public const CONTROLLER_ADMIN_SUFFIX = '\\Controller\\Admin';
+
+    public const CORE_MODULES = ['api', 'activity', 'antispam', 'cart', 'client',
+        'cron', 'currency', 'email', 'extension',
+        'hook', 'index', 'invoice', 'order',
+        'page', 'product', 'profile', 'security',
+        'servicecustom', 'servicedomain', 'servicedownloadable',
+        'servicehosting', 'servicelicense', 'staff', 'stats',
+        'support', 'system', 'theme', 'orderbutton', 'formbuilder',
+        'widgets',
+        // ClientFence: built in, always on, never an extension.
+        'clientfence'];
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+        if (isset($di['filesystem'])) {
+            $this->filesystem = $di['filesystem'];
+        }
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function __construct(string $mod)
+    {
+        if (!preg_match('#[a-zA-Z]#', $mod)) {
+            throw new Exception('Invalid module name (:mod).', ['mod' => $mod]);
+        }
+
+        $this->module = strtolower($mod);
+    }
+
+    public function hasManifest(): bool
+    {
+        $path = Path::join($this->getModulePath(), self::MANIFEST_FILENAME);
+
+        return $this->filesystem->exists($path);
+    }
+
+    public function getManifest(): array
+    {
+        if (!$this->hasManifest()) {
+            throw new Exception('Missing manifest file for the :mod module.', [':mod' => $this->module], 5897);
+        }
+
+        $contents = $this->filesystem->readFile(Path::join($this->getModulePath(), self::MANIFEST_FILENAME));
+
+        try {
+            $json = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            throw new Exception('Invalid manifest file for the :mod module. Please check file syntax and permissions.', [':mod' => $this->module]);
+        }
+
+        $info = [
+            'id' => $this->module,
+            'type' => 'mod',
+            'name' => $this->module,
+            'description' => null,
+            // ClientFence: modules without their own author are ClientFence's.
+            'homepage_url' => 'https://clientfence.com/',
+            'author' => 'ClientFence',
+            'author_url' => 'https://clientfence.com/',
+            'license' => 'N/A',
+            'version' => '1.0',
+            'icon_url' => null,
+            'download_url' => null,
+            'project_url' => 'https://clientfence.com/',
+            'minimum_fossbilling_version' => null,
+            'maximum_fossbilling_version' => null,
+        ];
+
+        $info = array_merge($info, $json);
+        $info['id'] = $this->module;
+        $info['type'] = 'mod';
+
+        if (!empty($info['icon_url'])) {
+            $info['icon_url'] = '/modules/' . ucfirst($this->module) . '/' . $info['icon_url'];
+        }
+
+        return $info;
+    }
+
+    public function hasService(string $sub = ''): bool
+    {
+        $path = Path::join($this->getModulePath(), 'Service' . ucfirst($sub) . '.php');
+
+        return $this->filesystem->exists($path);
+    }
+
+    public function getService(string $sub = ''): object
+    {
+        if (!$this->hasService($sub)) {
+            throw new Exception('Module :mod does not have a service class. Make sure Service.php exists and is valid.', [':mod' => $this->module], 5898);
+        }
+
+        $class = self::SERVICE_CLASS_PREFIX . ucfirst($this->module) . '\\Service' . ucfirst($sub);
+        $service = new $class();
+
+        if (method_exists($service, 'setDi')) {
+            $service->setDi($this->di);
+        }
+
+        return $service;
+    }
+
+    public function hasClientController(): bool
+    {
+        $path = Path::join($this->getModulePath(), 'Controller/Client.php');
+
+        return $this->filesystem->exists($path);
+    }
+
+    public function getClientController(): object
+    {
+        if (!$this->hasClientController()) {
+            throw new Exception('Client controller class for the module :mod was not found.', [':mod' => $this->module]);
+        }
+
+        return $this->createControllerInstance(self::CONTROLLER_CLIENT_SUFFIX);
+    }
+
+    public function hasAdminController(): bool
+    {
+        $path = Path::join($this->getModulePath(), 'Controller/Admin.php');
+
+        return $this->filesystem->exists($path);
+    }
+
+    public function getAdminController(): ?object
+    {
+        if (!$this->hasAdminController()) {
+            return null;
+        }
+
+        return $this->createControllerInstance(self::CONTROLLER_ADMIN_SUFFIX);
+    }
+
+    public function hasSettingsPage(): bool
+    {
+        $path = Path::join($this->getModulePath(), "templates/admin/mod_{$this->module}_settings.html.twig");
+
+        return $this->filesystem->exists($path);
+    }
+
+    public function install(): bool
+    {
+        if ($this->isCore()) {
+            return true;
+        }
+
+        if ($this->hasService()) {
+            $s = $this->getService();
+
+            if (method_exists($s, 'install')) {
+                $s->install();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function uninstall(): bool
+    {
+        if ($this->isCore()) {
+            return true;
+        }
+
+        if ($this->hasService()) {
+            $s = $this->getService();
+
+            if (method_exists($s, 'uninstall')) {
+                $s->uninstall();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function update(): bool
+    {
+        if ($this->isCore()) {
+            throw new InformationException('Core modules cannot be updated separately. Please update to the latest ClientFence version to have the module updated.');
+        }
+
+        if ($this->hasService()) {
+            $s = $this->getService();
+
+            if (method_exists($s, 'update')) {
+                $manifest = $this->getManifest();
+                $s->update($manifest);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getCoreModules(): array
+    {
+        return self::CORE_MODULES;
+    }
+
+    public function isCore(): bool
+    {
+        return in_array($this->module, self::CORE_MODULES);
+    }
+
+    public function getConfig(): array
+    {
+        // ClientFence core patch: read and decrypted once per request (ClientFence\RequestCache); Extension\Service::setConfig() forgets it.
+        return RequestCache::remember($this->di, 'mod.config.' . $this->module, fn (): array => $this->readConfig());
+    }
+
+    private function readConfig(): array
+    {
+        $modName = "mod_{$this->module}";
+
+        $bean = $this->di['db']->findOne('extension_meta', 'extension = :ext AND meta_key = :key', [':ext' => $modName, ':key' => 'config']);
+        if (!$bean || empty($bean->meta_value)) {
+            return [];
+        }
+
+        $decrypted = $this->di['crypt']->decrypt($bean->meta_value, Config::getProperty('info.salt'));
+        if (!is_string($decrypted) || !json_validate($decrypted)) {
+            return [];
+        }
+
+        return json_decode($decrypted, true);
+    }
+
+    public function getName(): string
+    {
+        return $this->module;
+    }
+
+    public function registerClientRoutes(\ClientFence\App &$app): bool
+    {
+        if ($this->hasClientController()) {
+            $cc = $this->getClientController();
+
+            if (method_exists($cc, 'register')) {
+                $cc->register($app);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getModulePath(): string
+    {
+        return Path::join(PATH_MODS, ucfirst($this->module)) . DIRECTORY_SEPARATOR;
+    }
+
+    private function createControllerInstance(string $suffix): object
+    {
+        $class = self::SERVICE_CLASS_PREFIX . ucfirst($this->module) . $suffix;
+        $instance = new $class();
+
+        if (method_exists($instance, 'setDi')) {
+            $instance->setDi($this->di);
+        }
+
+        return $instance;
+    }
+}

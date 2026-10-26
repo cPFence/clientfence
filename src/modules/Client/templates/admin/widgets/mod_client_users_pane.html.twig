@@ -1,0 +1,201 @@
+{# The Users tab content of the admin client page (slot admin.client.manage.panes, ClientFence core patch
+   "client page widget slots"; the tab itself is mod_client_users_tab). Staff who can open
+   the client see the account's authorized users and pending invitations; staff with the client
+   "edit profile" permission invite, change access (permissions or full access, like the owner),
+   switch a user's sign-in off or on (every account), send a password reset link, remove
+   access, and switch off two-factor sign-in of the owner or a user (TwoFactor.php). Every change is in the activity log (filtered by this client). Users.php. #}
+{% set users_page = admin.client_user_page({ client_id: client.id }) %}
+{% set can_twofactor = has_permission('client', 'edit_profile') %}
+{% set can_manage = can_twofactor %}
+{% set reload = { reload: true } %}
+<div class="tab-pane fade" id="tab-clientfence-users" role="tabpanel">
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Authorized users'|trans,
+        subtitle: 'People who sign in to this account with their own email, and what each of them can do.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_action %}
+            <a class="btn btn-outline-secondary" href="{{ 'activity'|url(query: { client_id: client.id }) }}">
+                <svg class="icon"><use href="#notes" /></svg>{{ 'Activity log'|trans }}
+            </a>
+            {% if can_manage %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-staff-invite" aria-expanded="false" aria-controls="clientfence-staff-invite">
+                    <svg class="icon"><use href="#plus" /></svg>{{ 'Invite user'|trans }}
+                </button>
+            {% endif %}
+        {% endblock %}
+        {% block section_content %}
+            {% if can_manage %}
+                <div class="collapse border-top" id="clientfence-staff-invite">
+                    <form class="card-body" method="post" action="{{ 'client/user_invite'|api_url }}" {{ fb_api_form(reload) }}>
+                        <input type="hidden" name="client_id" value="{{ client.id }}">
+                        <div class="mb-3">
+                            <label class="form-label" for="clientfence-staff-invite-email">{{ 'Email'|trans }}</label>
+                            <input class="form-control" type="email" id="clientfence-staff-invite-email" name="email" autocomplete="off" required>
+                            <div class="form-hint">{{ 'We email an invitation link, valid for :days days. The person chooses their own name and password.'|trans({ ':days': 7 }) }}</div>
+                        </div>
+                        <div class="form-label">{{ 'What this user can do'|trans }}</div>
+                        <div class="row g-2">
+                            {% for permission in users_page.permissions %}
+                                <div class="col-md-6">
+                                    <label class="form-check mb-0">
+                                        <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ permission.name }}"{% if permission.name in ['products', 'tickets'] %} checked{% endif %}>
+                                        <span class="form-check-label">{{ permission.label|trans }}</span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button class="btn btn-primary mt-3" type="submit">{{ 'Send invitation'|trans }}</button>
+                    </form>
+                </div>
+            {% endif %}
+            <div class="card-body border-top py-3 d-flex flex-wrap align-items-center gap-2" data-clientfence-owner-twofactor="{{ users_page.owner_twofactor ? 'on' : 'off' }}">
+                <span>{{ 'Account owner\'s two-factor sign-in'|trans }}:</span>
+                {% if users_page.owner_twofactor %}
+                    <span class="badge bg-green-lt">{{ 'On'|trans }}</span>
+                    {% if can_twofactor %}
+                        <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/twofactor_disable'|api_url(query: { client_id: client.id }), modal: { type: 'confirm', title: 'Switch off two-factor sign-in for this login? Its password alone will sign in. Do this only when you are sure who is asking.'|trans }, reload: true }) }}>{{ 'Switch off two-factor'|trans }}</a>
+                    {% endif %}
+                {% else %}
+                    <span class="badge bg-secondary-lt">{{ 'Off'|trans }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body border-top py-3 d-flex flex-wrap align-items-center gap-2" data-clientfence-owner-google="{{ users_page.owner_google ? 'linked' : 'none' }}">
+                <span>{{ 'Account owner\'s Google sign-in'|trans }}:</span>
+                {% if users_page.owner_google %}
+                    <span class="badge bg-green-lt">{{ 'Linked'|trans }}</span>
+                    <span class="text-secondary" dir="ltr">{{ users_page.owner_google.email }}</span>
+                    {% if not users_page.owner_own_password %}
+                        <span class="badge bg-yellow-lt" data-clientfence-owner-no-password>{{ 'No password of their own (account made with Google)'|trans }}</span>
+                    {% endif %}
+                    {% if can_twofactor %}
+                        <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/google_unlink'|api_url(query: { client_id: client.id }), modal: { type: 'confirm', title: users_page.owner_own_password ? 'Unlink the Google account of this login? It then signs in with its password.'|trans : 'Unlink the Google account of this login? Google is its only way to sign in: the client then sets a password with "Forgot password".'|trans }, reload: true }) }}>{{ 'Unlink Google'|trans }}</a>
+                    {% endif %}
+                {% else %}
+                    <span class="badge bg-secondary-lt">{{ 'Not linked'|trans }}</span>
+                {% endif %}
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
+                    <thead>
+                        <tr>
+                            <th>{{ 'User'|trans }}</th>
+                            <th>{{ 'Access'|trans }}</th>
+                            <th>{{ 'Status'|trans }}</th>
+                            <th>{{ 'Last sign-in'|trans }}</th>
+                            {% if can_manage %}<th class="w-1"></th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users_page.users %}
+                            <tr data-clientfence-user="{{ user.id }}">
+                                <td>
+                                    <div class="fw-medium">{{ user.first_name }} {{ user.last_name }}</div>
+                                    <div class="text-secondary small" dir="ltr">{{ user.email }}</div>
+                                </td>
+                                <td>
+                                    {% if user.owner %}
+                                        <span class="badge bg-blue-lt">{{ 'Full access, like the owner'|trans }}</span>
+                                    {% elseif user.permissions is empty %}
+                                        <span class="text-secondary">{{ 'No permissions'|trans }}</span>
+                                    {% else %}
+                                        {% for permission in user.permissions %}<span class="badge bg-secondary-lt me-1 mb-1">{{ users_page.labels[permission]|trans }}</span>{% endfor %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.status == 'active' %}
+                                        <span class="badge bg-green-lt">{{ 'Active'|trans }}</span>
+                                    {% else %}
+                                        <span class="badge bg-red-lt">{{ 'Switched off'|trans }}</span>
+                                    {% endif %}
+                                    {% if user.twofactor %}<span class="badge bg-blue-lt">{{ 'Two-factor on'|trans }}</span>{% endif %}
+                                    {% if user.google %}<span class="badge bg-azure-lt">{{ 'Google linked'|trans }}</span>{% endif %}
+                                </td>
+                                <td class="text-nowrap">{{ user.last_login_at ? user.last_login_at|format_datetime : 'Never'|trans }}</td>
+                                {% if can_manage %}
+                                    <td class="text-nowrap">
+                                        <div class="btn-list flex-nowrap">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#clientfence-staff-user-{{ user.id }}" aria-expanded="false" aria-controls="clientfence-staff-user-{{ user.id }}">{{ 'Change access'|trans }}</button>
+                                            {% if user.status == 'active' %}
+                                                <a class="btn btn-sm btn-outline-secondary" {{ fb_api_link({ href: 'client/user_password_reset'|api_url(query: { user_id: user.id, client_id: client.id }), modal: { type: 'confirm', title: 'Email this user a password reset link?'|trans }, message: 'The password reset link was sent.'|trans }) }}>{{ 'Send password reset'|trans }}</a>
+                                                <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/user_update'|api_url(query: { user_id: user.id, client_id: client.id, status: 'disabled' }), modal: { type: 'confirm', title: 'Switch off this user\'s sign-in? It stops on every account the user has, until it is switched on again.'|trans }, reload: true }) }}>{{ 'Switch off'|trans }}</a>
+                                            {% else %}
+                                                <a class="btn btn-sm btn-outline-success" {{ fb_api_link({ href: 'client/user_update'|api_url(query: { user_id: user.id, client_id: client.id, status: 'active' }), reload: true }) }}>{{ 'Switch on'|trans }}</a>
+                                            {% endif %}
+                                            {% if user.twofactor %}
+                                                <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/twofactor_disable'|api_url(query: { client_id: client.id, user_id: user.id }), modal: { type: 'confirm', title: 'Switch off two-factor sign-in for this login? Its password alone will sign in. Do this only when you are sure who is asking.'|trans }, reload: true }) }}>{{ 'Switch off two-factor'|trans }}</a>
+                                            {% endif %}
+                                            {% if user.google %}
+                                                <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/google_unlink'|api_url(query: { client_id: client.id, user_id: user.id }), modal: { type: 'confirm', title: 'Unlink the Google account of this login? It then signs in with its password.'|trans }, reload: true }) }}>{{ 'Unlink Google'|trans }}</a>
+                                            {% endif %}
+                                            <a class="btn btn-sm btn-outline-danger" {{ fb_api_link({ href: 'client/user_remove'|api_url(query: { user_id: user.id, client_id: client.id }), modal: { type: 'confirm', title: 'Remove this user\'s access to the account?'|trans }, reload: true }) }}>{{ 'Remove'|trans }}</a>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            {% if can_manage %}
+                                <tr class="collapse" id="clientfence-staff-user-{{ user.id }}">
+                                    <td colspan="5">
+                                        <form method="post" action="{{ 'client/user_update'|api_url }}" {{ fb_api_form(reload) }}>
+                                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                                            <input type="hidden" name="client_id" value="{{ client.id }}">
+                                            <input type="hidden" name="permissions[]" value="">
+                                            <input type="hidden" name="owner" value="0">
+                                            <label class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="owner" value="1"{% if user.owner %} checked{% endif %}>
+                                                <span class="form-check-label">{{ 'Full access, like the owner (also manages the account\'s users)'|trans }}</span>
+                                            </label>
+                                            <div class="row g-2">
+                            {% for permission in users_page.permissions %}
+                                <div class="col-md-6">
+                                    <label class="form-check mb-0">
+                                        <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ permission.name }}"{% if permission.name in user.permissions %} checked{% endif %}>
+                                        <span class="form-check-label">{{ permission.label|trans }}</span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                                            <button class="btn btn-sm btn-primary mt-3" type="submit">{{ 'Save access'|trans }}</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td class="text-secondary" colspan="5">{{ 'No one else has access to this account yet.'|trans }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if users_page.invites is not empty %}
+                <div class="card-body border-top pb-2">
+                    <h5 class="card-title mb-0">{{ 'Pending invitations'|trans }}</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter">
+                        <tbody>
+                            {% for invite in users_page.invites %}
+                                <tr data-clientfence-invite="{{ invite.id }}">
+                                    <td dir="ltr">{{ invite.email }}</td>
+                                    <td>
+                                        {% for permission in invite.permissions %}<span class="badge bg-secondary-lt me-1 mb-1">{{ users_page.labels[permission]|trans }}</span>{% else %}<span class="text-secondary">{{ 'No permissions'|trans }}</span>{% endfor %}
+                                    </td>
+                                    <td class="text-nowrap text-secondary">{{ 'Expires'|trans }} {{ invite.expires_at|format_datetime }}</td>
+                                    {% if can_manage %}
+                                        <td class="w-1 text-nowrap">
+                                            <div class="btn-list flex-nowrap">
+                                                <a class="btn btn-sm btn-outline-secondary" {{ fb_api_link({ href: 'client/user_invite_resend'|api_url(query: { id: invite.id, client_id: client.id }), reload: true }) }}>{{ 'Send again'|trans }}</a>
+                                                <a class="btn btn-sm btn-outline-danger" {{ fb_api_link({ href: 'client/user_invite_cancel'|api_url(query: { id: invite.id, client_id: client.id }), modal: { type: 'confirm', title: 'Cancel this invitation?'|trans }, reload: true }) }}>{{ 'Cancel'|trans }}</a>
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>

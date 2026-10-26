@@ -1,0 +1,62 @@
+{# ClientFence: the "Sign-in security" tab of System > Settings > System (core patch in
+   mod_system_settings; SignInSecurity.php): an email PIN at sign-in for staff, clients or both, and
+   staff sign-in from chosen countries only. All off by default; Super Administrators only.
+   `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
+   clientfenceSigninSaved (clientfence-admin.js) shows the PIN field and the form is saved again. #}
+{% set countries_names = signin.all_countries %}
+<form method="post" action="{{ 'clientfence/signin_security_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceSigninSaved' }) }}
+      data-cf-signin-form data-saved-text="{{ 'Sign-in security saved.'|trans }}" data-sent-text="{{ 'We emailed you a PIN: enter it and save again.'|trans }}">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Email PIN at sign-in'|trans }}</h3>
+                <p class="card-subtitle">{{ 'After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. "Trust this browser for 30 days" skips the PIN on a known browser until the password changes.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <label class="form-label" for="cf-signin-pin">{{ 'Ask for an email PIN'|trans }}</label>
+            <select class="form-select" id="cf-signin-pin" name="pin">
+                {% for mode, label in { 'off': 'Off'|trans, 'staff': 'Staff only'|trans, 'clients': 'Clients only'|trans, 'both': 'Staff and clients'|trans } %}
+                    <option value="{{ mode }}"{% if signin.pin == mode %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <div class="form-hint">{{ 'Turning it on for staff first emails you a PIN, to make sure email works before anyone needs it.'|trans }}</div>
+            <div class="mt-3" data-cf-signin-confirm hidden>
+                <label class="form-label" for="cf-signin-confirm">{{ 'PIN sent to'|trans }} <span data-cf-signin-email></span></label>
+                <input class="form-control" id="cf-signin-confirm" type="text" name="confirm_pin" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr">
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Staff sign-in from chosen countries only'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the Allowed IPs list in Staff settings always pass: list a fixed office or server address there as a way back in.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if not signin.geoip_ready %}
+                <div class="alert alert-warning">{{ 'The GeoIP country database is missing, so no country can be told. See System Health.'|trans }}</div>
+            {% endif %}
+            <input type="hidden" name="countries_on" value="0">
+            <label class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" name="countries_on" value="1"{% if signin.countries_on %} checked{% endif %}>
+                <span class="form-check-label">{{ 'Allow staff sign-in only from these countries'|trans }}</span>
+            </label>
+            <label class="form-label" for="cf-signin-countries">{{ 'Countries'|trans }}</label>
+            <select class="form-select js-multi-select" id="cf-signin-countries" name="countries[]" multiple placeholder="{{ 'Choose countries'|trans }}">
+                {% for code, name in countries_names %}
+                    <option value="{{ code }}"{% if code in signin.countries %} selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+            </select>
+            <div class="form-hint">
+                {{ 'You are signing in from %ip%'|trans({'%ip%': signin.ip}) }}{% if signin.ip_country %} ({{ countries_names[signin.ip_country] ?? signin.ip_country }}){% else %} ({{ 'country not known'|trans }}){% endif %}{% if signin.ip_listed %}, {{ 'on the Allowed IPs list'|trans }}{% endif %}.
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <span class="text-secondary small">{{ 'Locked out? On the server run: php console.php clientfence:signin-security-off'|trans }}</span>
+            <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+        </div>
+    </div>
+</form>

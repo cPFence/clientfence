@@ -1,0 +1,195 @@
+{# ClientFence invoice page. An unpaid invoice shows the payment method cards (as on the checkout and
+   wallet pages): an online method opens its payment page (invoice/banklink), a manual method
+   (Custom and adapters built on it) shows the steps, its instructions from the method's
+   settings and a receipt upload that opens a support ticket (Invoice module receipt_send).
+   EGP methods show the total converted at today's rate. The summary beside it lists the lines;
+   the details card under it has the seller, the client and the invoice notes.
+   Theme setting "Allow Clients to Choose Between One-Time and Subscription Payments": an online
+   method that takes both for a subscribable invoice shows both buttons; otherwise one button, and
+   FOSSBilling subscribes when it can. A signed-out visitor (an invoice link that opens without
+   signing in, see partials/guest_access.html.twig) pays online; manual methods ask to sign in.
+   The invoice number is FOSSBilling's serie_nr (follows the padding setting). #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'invoices' %}
+{% import 'partials/store_macros.html.twig' as sm %}
+
+{% set nr = invoice.serie_nr %}
+
+{% block meta_title %}{{ 'Invoice'|trans }} #{{ nr }}{% endblock %}
+{% block body_class %}invoice-invoice bf-invoice-page{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ 'invoice'|url }}">{{ 'Invoices'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">#{{ nr }}</li>
+{% endblock %}
+
+{% block content %}
+{% set seller = invoice.seller %}
+{% set buyer = invoice.buyer %}
+{% set currency = invoice.currency ?? default_currency %}
+{% set unpaid = invoice.status == 'unpaid' %}
+{% set methods = unpaid ? guest.invoice_payment_methods({ amount: invoice.total, currency: currency, subscribable: invoice.subscribable ? 1 : 0 }) : [] %}
+{% set profile = client ? client.profile_get : null %}
+{# The method the client chose before (the wallet link's ?gateway=, or the one saved on the invoice
+   at checkout) is selected first; otherwise the first card. #}
+{% set method_ids = methods|map(m => m.id ~ '') %}
+{% set asked = request.gateway|default('') %}
+{% set saved = (invoice.gateway_id ?? '') ~ '' %}
+{% set picked = asked is not iterable and (asked ~ '') in method_ids ? asked ~ '' : (saved in method_ids ? saved : (method_ids|first ?: '')) %}
+{% set status_chip = { unpaid: ['bf-chip-warn', 'Unpaid'|trans], paid: ['bf-chip-ok', 'Paid'|trans], refunded: ['bf-chip-muted', 'Refunded'|trans], canceled: ['bf-chip-muted', 'Canceled'|trans] }[invoice.status]|default(['bf-chip-muted', invoice.status|capitalize]) %}
+
+<div class="bf-pay-page" data-bf-invoice
+     data-hash="{{ invoice.hash }}" data-total="{{ invoice.total }}" data-currency="{{ currency }}"
+     data-banklink="{{ ('invoice/banklink/' ~ invoice.hash)|url }}">
+    <script nonce="{{ csp_nonce }}" type="application/json" data-bf-invoice-texts>{{ {
+        egpLine: 'Pay :amount by :method.'|trans,
+        sending: 'Sending…'|trans,
+        chooseFile: 'Choose the receipt file (an image or a PDF).'|trans,
+        tooBig: 'The receipt must be smaller than 5 MB.'|trans,
+    }|json_encode|raw }}</script>
+
+    {% if client %}<a class="bf-linkbtn" href="{{ 'invoice'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'All invoices'|trans }}</a>{% endif %}
+    <div class="bf-page-head">
+        <div>
+            <h1 class="bf-page-title">{{ 'Invoice'|trans }} #{{ nr }}</h1>
+            <span class="bf-hint">
+                {{ 'Issued :date'|trans({ ':date': invoice.created_at|format_date }) }}{% if invoice.due_at|trim %} · {{ 'Due :date'|trans({ ':date': invoice.due_at|format_date }) }}{% endif %}{% if invoice.paid_at|trim %} · {{ 'Paid :date'|trans({ ':date': invoice.paid_at|format_date }) }}{% endif %}
+            </span>
+        </div>
+        <span class="bf-chip {{ status_chip[0] }}" data-bf-status>{{ status_chip[1] }}</span>
+    </div>
+
+    <div class="bf-checkout-grid">
+        <div class="bf-checkout-main">
+            {% if unpaid %}
+                <div data-bf-pay-choose>
+                    <section class="card bf-card bf-section" aria-labelledby="bf-h-how">
+                        <h2 id="bf-h-how">{{ 'How would you like to pay?'|trans }}</h2>
+                        {{ include('partials/pay_methods.html.twig', { methods: methods, context: 'invoice', amount: invoice.total, currency: currency, selected: picked }) }}
+                    </section>
+
+                    {% for m in methods %}
+                        {% set amount_text = m.quote ? m.quote.currency ~ ' ' ~ m.quote.total : sm.money(invoice.total, currency) %}
+                        {% if not m.manual %}
+                            {% set banklink = ('invoice/banklink/' ~ invoice.hash ~ '/' ~ m.id)|url %}
+                            <section class="card bf-card bf-section" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
+                                <p class="mb-0">{{ 'You go to :method to pay :amount, then come back here. The invoice is marked paid as soon as :method confirms.'|trans({ ':method': m.title|trans, ':amount': amount_text }) }}</p>
+                                {% if settings.prompt_subscription|default('0') and m.recurrent|default(false) %}
+                                    <p class="mb-0 bf-hint">{{ 'This invoice and :method both support subscription payments. Subscribe to pay the next invoices of this service automatically, or pay this invoice once.'|trans({ ':method': m.title|trans }) }}</p>
+                                    <div class="d-flex flex-wrap gap-2" data-bf-pay-choice>
+                                        <a class="btn btn-primary bf-btn-lg" href="{{ banklink }}" data-bf-subscribe>{{ 'Subscribe with :method'|trans({ ':method': m.title|trans }) }}</a>
+                                        {% if m.single|default(true) %}
+                                            <a class="btn bf-btn-ghost bf-btn-lg" href="{{ ('invoice/banklink/' ~ invoice.hash ~ '/' ~ m.id)|url({ allow_subscription: 0 }) }}" data-bf-pay-once>{{ 'Pay :amount once'|trans({ ':amount': amount_text }) }}</a>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <a class="btn btn-primary bf-btn-lg bf-self-start" href="{{ banklink }}">{{ 'Pay :amount with :method'|trans({ ':amount': amount_text, ':method': m.title|trans }) }}</a>
+                                {% endif %}
+                            </section>
+                        {% elseif not client %}
+                            <section class="card bf-card bf-section" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
+                                <p class="mb-0">{{ 'Sign in to see the :method details and send us the receipt.'|trans({ ':method': m.title|trans }) }}</p>
+                                <a class="btn btn-primary bf-btn-lg bf-self-start" href="{{ 'login'|url({ back: '/invoice/' ~ invoice.hash }) }}">{{ 'Sign in'|trans }}</a>
+                            </section>
+                        {% else %}
+                            <section class="card bf-card bf-section" aria-labelledby="bf-h-steps-{{ m.id }}" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
+                                <h2 id="bf-h-steps-{{ m.id }}">{{ 'Pay by :method'|trans({ ':method': m.title|trans }) }}</h2>
+                                <ol class="bf-steps-list">
+                                    <li>{{ 'Send exactly :amount'|trans({ ':amount': '<strong>' ~ (amount_text|e) ~ '</strong>' })|raw }}{% if m.quote %} ({{ 'that is :amount at today’s rate, rounded up'|trans({ ':amount': sm.money(invoice.total, currency) }) }}){% endif %}.</li>
+                                    <li>{{ 'Use the details below and write :ref as the reference.'|trans({ ':ref': '<strong class="bf-mono" dir="ltr">' ~ (nr|e) ~ '</strong>' })|raw }}</li>
+                                    <li>{{ 'Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid.'|trans }}</li>
+                                </ol>
+                                {# ClientFence: plain-text instructions keep their line breaks (bank name, IBAN, reference). #}
+                                {% set details = client.invoice_payment_details({ hash: invoice.hash, gateway_id: m.id }) %}
+                                <div class="bf-details{{ '<' in details ? '' : ' bf-details-text' }}">{{ details|raw }}</div>
+                                <form class="bf-receipt" data-bf-receipt="{{ m.id }}" novalidate>
+                                    <label class="bf-label bf-stack" for="bf-receipt-{{ m.id }}">{{ 'Receipt (image or PDF)'|trans }}
+                                        <input class="form-control" id="bf-receipt-{{ m.id }}" type="file" name="receipt" accept="image/jpeg,image/png,image/webp,application/pdf" required>
+                                    </label>
+                                    <button type="submit" class="btn btn-primary bf-btn-lg bf-self-start">{{ 'I have paid, send the receipt'|trans }}</button>
+                                </form>
+                            </section>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <section class="card bf-card bf-section" data-bf-pay-sent hidden tabindex="-1">
+                    <h2>{{ 'Receipt received.'|trans }}</h2>
+                    <p class="mb-0" data-bf-sent-line data-template="{{ 'We check the :method payment and mark the invoice paid. You can follow it in Support.'|trans }}"></p>
+                    <div class="bf-done-actions">
+                        <a class="btn bf-btn-ghost" href="{{ 'support'|url }}">{{ 'Open Support'|trans }}</a>
+                        <button type="button" class="btn bf-btn-ghost" data-bf-pay-again>{{ 'Back to payment methods'|trans }}</button>
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="card bf-card bf-section" aria-labelledby="bf-h-parties">
+                <h2 id="bf-h-parties">{{ 'Details'|trans }}</h2>
+                <div class="bf-grid-2">
+                    <dl class="bf-kv">
+                        <dt>{{ 'From'|trans }}</dt>
+                        <dd>
+                            {% if seller.company|trim %}<strong>{{ seller.company }}</strong><br>{% endif %}
+                            {% if seller.address|trim %}{{ seller.address }}<br>{% endif %}
+                            {% if seller.company_vat|trim %}{{ 'VAT'|trans }} {{ seller.company_vat }}<br>{% endif %}
+                            {% if seller.phone|trim %}<bdi dir="ltr">{{ seller.phone }}</bdi><br>{% endif %}
+                            {% if seller.email|trim %}{{ seller.email }}<br>{% endif %}
+                            {% if seller.account_number|trim %}{{ 'Account'|trans }} {{ seller.account_number }}<br>{% endif %}
+                            {% if seller.note|default('')|trim %}{{ seller.note }}{% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="bf-kv">
+                        <dt>{{ 'Billed to'|trans }}</dt>
+                        <dd>
+                            {% if buyer.first_name|trim or buyer.last_name|trim %}<strong>{{ buyer.first_name }} {{ buyer.last_name }}</strong><br>{% endif %}
+                            {% if buyer.company|trim %}{{ buyer.company }}<br>{% endif %}
+                            {% if buyer.company_number|trim %}{{ 'Company Number'|trans }} {{ buyer.company_number }}<br>{% endif %}
+                            {% if buyer.company_vat|trim %}{{ 'Company VAT'|trans }} {{ buyer.company_vat }}<br>{% endif %}
+                            {% if buyer.address|trim %}{{ buyer.address }}<br>{{ buyer.city }}{% if buyer.state|trim %}, {{ buyer.state }}{% endif %}<br>{{ buyer.zip }}{% if buyer.country|trim %}, {{ buyer.country|country_name }}{% endif %}<br>{% endif %}
+                            {% if buyer.phone|trim %}<bdi dir="ltr">{{ buyer.phone }}</bdi>{% endif %}
+                        </dd>
+                    </dl>
+                </div>
+                {% if invoice.text_1 %}<div class="bf-note">{{ (invoice.text_1 ?? '')|markdown_to_html }}</div>{% endif %}
+                {% if invoice.text_2 %}<div class="bf-note">{{ (invoice.text_2 ?? '')|markdown_to_html }}</div>{% endif %}
+            </section>
+        </div>
+
+        <aside class="bf-checkout-side" aria-label="{{ 'Invoice summary'|trans }}">
+            <div class="card bf-card bf-section bf-summary">
+                <h2>{{ 'Invoice'|trans }}</h2>
+                <div class="bf-lines">
+                    {% for item in invoice.lines %}
+                        <div class="bf-line">
+                            <span>
+                                {% if item.order_id %}<a href="{{ ('order/service/manage/' ~ item.order_id)|url }}">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}
+                                {% if item.quantity > 1 %} × {{ item.quantity }}{% endif %}
+                            </span>
+                            <span class="bf-line-amount">{{ sm.money(item.total, currency) }}</span>
+                        </div>
+                    {% endfor %}
+                    {% if invoice.discount|default(0) > 0 %}
+                        <div class="bf-line bf-line-promo"><span>{{ 'Discount'|trans }}</span><span>−{{ sm.money(invoice.discount, currency) }}</span></div>
+                    {% endif %}
+                    {% if invoice.tax != 0 %}
+                        <div class="bf-line"><span>{{ invoice.taxname }} {{ invoice.taxrate }}%</span><span class="bf-line-amount">{{ sm.money(invoice.tax, currency) }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="bf-total">
+                    <span>{{ 'Total'|trans }}</span>
+                    <strong>{{ sm.money(invoice.total, currency) }}</strong>
+                </div>
+                <span class="bf-hint" data-bf-egp-line hidden></span>
+                <dl class="bf-kv bf-kv-row">
+                    <dt>{{ 'Billed to'|trans }}</dt><dd>{{ buyer.first_name }} {{ buyer.last_name }}</dd>
+                    {% if profile %}<dt>{{ 'Wallet balance'|trans }}</dt><dd>{{ sm.money(profile.balance|default(0), profile.currency ?: currency) }}</dd>{% endif %}
+                </dl>
+                <div class="bf-done-actions">
+                    <a class="btn bf-btn-ghost" href="{{ ('invoice/pdf/' ~ invoice.hash)|url }}" target="_blank" rel="noopener">{{ 'Download PDF'|trans }}</a>
+                    <a class="btn bf-btn-ghost" href="{{ ('invoice/print/' ~ invoice.hash)|url }}" target="_blank" rel="noopener">{{ 'Print'|trans }}</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{# ClientFence: the configurable options of a product on an order form (Product/Options.php), for
+   the one-page checkout and FOSSBilling's order steps. The fields are named options[<option id>]
+   (cart/add_item checks them); the Palisade theme shows each choice's price for the chosen billing
+   cycle (assets/src/js/product-options.js), from the JSON below (prices in the default currency).
+   `product_id`; `currency` (cart currency: code, conversion_rate) is optional. On a service's
+   "Change options" form, `selected` is its choice and `lines` its option_lines: a value it has that
+   is no longer offered is listed too, so it stays unless the client changes it; `per` ("every
+   month") follows each price and `no_setup` leaves setup fees out (a change has none); there
+   `options_list` gives the options (Order\Upgrades::options(): its product may be off sale). #}
+{% set product_options = options_list is defined ? options_list : guest.product_options({ 'product_id': product_id }) %}
+{% set selected = selected|default({}) %}
+{% if product_options %}
+<div class="cf-product-options" data-cf-options data-currency="{{ currency.code|default('') }}" data-rate="{{ currency.conversion_rate|default(1) }}" data-setup-text="{{ 'setup fee'|trans }}" data-each-text="{{ 'each'|trans }}" data-per-text="{{ per|default('') }}"{% if no_setup|default(false) %} data-no-setup{% endif %}>
+    <script nonce="{{ csp_nonce }}" type="application/json" data-cf-options-data>{{ product_options|json_encode|raw }}</script>
+    {% for option in product_options %}
+        {% set fid = 'cf-option-' ~ option.id %}
+        {% set current = selected[option.id] ?? null %}
+        {% set kept = current is not null and current not in option.values|map(v => v.id) ? (lines|default([])|filter(l => l.option_id == option.id)|first) : null %}
+        <div class="mb-3" data-cf-option="{{ option.id }}">
+            {% if option.type == 'select' %}
+                <label class="form-label" for="{{ fid }}">{{ option.title }}</label>
+                <select class="form-select" id="{{ fid }}" name="options[{{ option.id }}]">
+                    {% if kept %}<option value="{{ current }}" selected>{{ kept.value }}</option>{% endif %}
+                    {% for value in option.values %}<option value="{{ value.id }}" data-cf-label="{{ value.title }}"{% if value.id == current %} selected{% endif %}>{{ value.title }}</option>{% endfor %}
+                </select>
+            {% elseif option.type == 'radio' %}
+                <fieldset>
+                    <legend class="form-label fs-6">{{ option.title }}</legend>
+                    {% if kept %}
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="options[{{ option.id }}]" value="{{ current }}" checked>
+                            <span class="form-check-label">{{ kept.value }}</span>
+                        </label>
+                    {% endif %}
+                    {% for value in option.values %}
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="options[{{ option.id }}]" value="{{ value.id }}"{% if value.id == current or (current is null and loop.first) %} checked{% endif %}>
+                            <span class="form-check-label">{{ value.title }} <span class="text-body-secondary small" data-cf-option-price="{{ value.id }}"></span></span>
+                        </label>
+                    {% endfor %}
+                </fieldset>
+            {% elseif option.type == 'yesno' %}
+                <label class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="{{ fid }}" name="options[{{ option.id }}]" value="1"{% if current %} checked{% endif %}>
+                    <span class="form-check-label">{{ option.title }}</span>
+                </label>
+            {% else %}
+                <label class="form-label" for="{{ fid }}">{{ option.title }}{% if option.unit %} ({{ option.unit }}){% endif %}</label>
+                <input class="form-control cf-option-qty" id="{{ fid }}" type="number" inputmode="numeric" name="options[{{ option.id }}]" value="{{ current ?? option.qty_min }}" min="{{ option.qty_min }}"{% if option.qty_max %} max="{{ option.qty_max }}"{% endif %} step="1">
+            {% endif %}
+            <div class="form-text" data-cf-option-hint></div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}

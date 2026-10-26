@@ -1,0 +1,66 @@
+{# ClientFence, invitation (/invite/<token>, Users.php): a new user chooses a name and
+   password; an existing user accepts with the user's password. Either way the user is signed in
+   to the account. token is null when the link is not valid (any more). #}
+{% extends "layout_public.html.twig" %}
+{% set allow_guest = true %}
+
+{% block meta_title %}{{ 'Invitation'|trans }}{% endblock %}
+{% block body_class %}page-set-password{% endblock %}
+
+{% block body %}
+{% embed 'partials/auth_shell.html.twig' %}
+    {% block auth_content %}
+        {% if not token %}
+            <h1>{{ 'Invitation'|trans }}</h1>
+            <p class="auth-lead" data-clientfence-invite="expired">{{ 'This invitation has expired or was already used. Ask the account owner to send it again.'|trans }}</p>
+        {% else %}
+            <h1>{{ 'Join :account'|trans({ ':account': invite.account }) }}</h1>
+            {% if invite.existing %}
+                <p class="auth-lead">{{ 'You were invited to this account. Enter the password you sign in with to accept.'|trans }}</p>
+                <form method="post" action="{{ 'client/user_invite_accept'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignIn'}) }} data-clientfence-sign-in data-redirect="{{ '/'|url }}" data-twofactor="{{ 'two-factor/code'|url }}" data-clientfence-invite="existing">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <div class="mb-3">
+                        <label class="form-label" for="email">{{ 'Email'|trans }}</label>
+                        <input class="form-control" id="email" type="email" value="{{ invite.email }}" autocomplete="username" dir="ltr" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">{{ 'Password'|trans }}</label>
+                        <input class="form-control" id="password" type="password" name="password" autocomplete="current-password" required autofocus>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">{{ 'Accept invitation'|trans }}</button>
+                </form>
+                <a class="btn btn-link w-100 mt-2" href="{{ 'password-reset'|url }}">{{ 'Forgot Password?'|trans }}</a>
+            {% elseif invite.taken %}
+                <p class="auth-lead" data-clientfence-invite="taken">{{ 'This email already signs in to a client account. Ask the account owner to invite another address.'|trans }}</p>
+            {% else %}
+                <p class="auth-lead">{{ 'You were invited to this account. Choose your name and a password to sign in with :email.'|trans({ ':email': invite.email }) }}</p>
+                <form method="post" action="{{ 'client/user_invite_accept'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignIn'}) }} data-clientfence-sign-in data-redirect="{{ '/'|url }}" data-twofactor="{{ 'two-factor/code'|url }}" autocomplete="off" data-clientfence-invite="new">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="first_name">{{ 'First name'|trans }}</label>
+                            <input class="form-control" id="first_name" type="text" name="first_name" maxlength="100" autocomplete="given-name" required autofocus>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="last_name">{{ 'Last name'|trans }}</label>
+                            <input class="form-control" id="last_name" type="text" name="last_name" maxlength="100" autocomplete="family-name">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">{{ 'Password'|trans }}</label>
+                        <input class="form-control" id="password" type="password" name="password" autocomplete="new-password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password2">{{ 'Repeat password'|trans }}</label>
+                        <input class="form-control" id="password2" type="password" name="password_confirm" autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">{{ 'Accept invitation'|trans }}</button>
+                </form>
+            {% endif %}
+        {% endif %}
+        <a class="btn btn-link w-100 mt-3 d-inline-flex align-items-center justify-content-center gap-2" href="{{ 'login'|url }}">
+            <svg class="icon icon-sm flip-rtl" aria-hidden="true"><use href="#arrow-left"/></svg>{{ 'Back to Login'|trans }}
+        </a>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

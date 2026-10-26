@@ -1,0 +1,652 @@
+<?php
+
+/**
+ * Copyright 2022-2026 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+declare(strict_types=1);
+
+use function Tests\Helpers\container;
+use function Tests\Helpers\createEntity;
+use function Tests\Helpers\moduleService;
+
+function guestClientDuplicateKeyViolation(): Doctrine\DBAL\Exception\UniqueConstraintViolationException
+{
+    $driverException = new class extends Exception implements Doctrine\DBAL\Driver\Exception {
+        public function getSQLState(): ?string
+        {
+            return '23000';
+        }
+    };
+
+    return new Doctrine\DBAL\Exception\UniqueConstraintViolationException($driverException, null);
+}
+
+test('getDi returns dependency injection container', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $di = container();
+    $guestClient->setDi($di);
+    $getDi = $guestClient->getDi();
+    expect($getDi)->toEqual($di);
+});
+
+test('create returns true and creates the account for a new email', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [
+        'disable_signup' => false,
+        'auto_login_after_signup' => false,
+        'required' => [],
+    ];
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'testpassword',
+    ];
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock
+    ->shouldReceive('clientAlreadyExists')
+    ->atLeast()->once()
+    ->andReturn(false);
+
+    $model = new ClientFence\Mod\Client\Entity\Client();
+    $prop = new ReflectionProperty($model, 'id');
+    $prop->setValue($model, 1);
+    $prop = new ReflectionProperty($model, 'email');
+    $prop->setValue($model, 'test@email.com');
+
+    $serviceMock
+    ->shouldReceive('guestCreateClient')
+    ->once()
+    ->andReturn($model);
+    $serviceMock->shouldReceive('checkExtraRequiredFields')->atLeast()->once();
+    $serviceMock->shouldReceive('checkCustomFields')->atLeast()->once();
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isPasswordStrong')->atLeast()->once();
+    $validatorMock->shouldReceive('passwordsMatch')->atLeast()->once();
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->andReturn($data['email']);
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+    $di['validator'] = $validatorMock;
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+    $guestClient->setService($serviceMock);
+
+    $result = $guestClient->create($data);
+
+    expect($result)->toBeTrue();
+});
+
+test('create returns true without creating a duplicate account or disclosing that the email exists', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [
+        'disable_signup' => false,
+    ];
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'testpassword',
+    ];
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock
+    ->shouldReceive('clientAlreadyExists')
+    ->atLeast()->once()
+    ->andReturn(true);
+    $serviceMock->shouldReceive('checkExtraRequiredFields')->atLeast()->once();
+    $serviceMock->shouldReceive('checkCustomFields')->atLeast()->once();
+    // The submitted (attacker-controlled) password won't match the real
+    // account's password, so the fallback login attempt fails just like an
+    // ordinary bad-password login would.
+    $serviceMock->shouldReceive('authorizeClient')->atLeast()->once()->andReturn(null);
+    $serviceMock->shouldNotReceive('guestCreateClient');
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isPasswordStrong')->atLeast()->once();
+    $validatorMock->shouldReceive('passwordsMatch')->atLeast()->once();
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+    $di['validator'] = $validatorMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->andReturn($data['email']);
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+    $guestClient->setService($serviceMock);
+
+    $result = $guestClient->create($data);
+
+    expect($result)->toBeTrue();
+});
+
+test('create returns true without creating an account when the per-email signup rate limit is hit', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [
+        'disable_signup' => false,
+    ];
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'testpassword',
+    ];
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    // Never reached: the email limiter short-circuits before the existence
+    // check, so a fresh (not-yet-registered) email can't burn through this
+    // path repeatedly to have its true existence state observed.
+    $serviceMock->shouldNotReceive('clientAlreadyExists');
+    $serviceMock->shouldReceive('checkExtraRequiredFields')->atLeast()->once();
+    $serviceMock->shouldReceive('checkCustomFields')->atLeast()->once();
+    $serviceMock->shouldReceive('authorizeClient')->atLeast()->once()->andReturn(null);
+    $serviceMock->shouldNotReceive('guestCreateClient');
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isPasswordStrong')->atLeast()->once();
+    $validatorMock->shouldReceive('passwordsMatch')->atLeast()->once();
+
+    $rateLimiterMock = new class {
+        public function consume(string $policyName, string $subject, int $tokens = 1): ClientFence\Security\RateLimitResult
+        {
+            $limited = $policyName === 'client_signup_email';
+
+            return new ClientFence\Security\RateLimitResult($policyName, $limited, null, null);
+        }
+
+        public function consumeOrThrow(string $policyName, string $subject, int $tokens = 1): ClientFence\Security\RateLimitResult
+        {
+            return $this->consume($policyName, $subject, $tokens);
+        }
+    };
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+    $di['validator'] = $validatorMock;
+    $di['rate_limiter'] = $rateLimiterMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->andReturn($data['email']);
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+    $guestClient->setService($serviceMock);
+
+    $result = $guestClient->create($data);
+
+    expect($result)->toBeTrue();
+});
+
+test('create does not consume the per-email signup quota when client validation fails', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'testpassword',
+        'country' => 'ZZ',
+    ];
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('clientAlreadyExists')->once()->andReturn(false);
+    $serviceMock->shouldReceive('checkExtraRequiredFields')->once();
+    $serviceMock->shouldReceive('checkCustomFields')->once();
+    $serviceMock->shouldReceive('guestCreateClient')->once()->andThrow(new ClientFence\InformationException('Invalid country code: ZZ'));
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isPasswordStrong')->once();
+    $validatorMock->shouldReceive('passwordsMatch')->once();
+
+    $rateLimiterMock = Mockery::mock(ClientFence\Security\RateLimiter::class);
+    $rateLimiterMock->shouldReceive('consumeOrThrow')
+        ->once()
+        ->with('client_signup', Mockery::type('string'))
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup', false, 5, 4));
+    $rateLimiterMock->shouldReceive('consume')
+        ->once()
+        ->with('client_signup_email', $data['email'], 0)
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup_email', false, 5, 5));
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->once()->andReturn($data['email']);
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => ['disable_signup' => false]);
+    $di['validator'] = $validatorMock;
+    $di['rate_limiter'] = $rateLimiterMock;
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+    $guestClient->setService($serviceMock);
+
+    expect(fn (): bool => $guestClient->create($data))
+        ->toThrow(ClientFence\InformationException::class, 'Invalid country code: ZZ');
+});
+
+test('create returns generic success when a concurrent signup wins the email race', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'testpassword',
+    ];
+
+    $duplicateKeyException = guestClientDuplicateKeyViolation();
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('checkExtraRequiredFields')->once();
+    $serviceMock->shouldReceive('checkCustomFields')->once();
+    // Both requests pass the pre-check; the re-check after the constraint
+    // violation sees the winner's row.
+    $serviceMock->shouldReceive('clientAlreadyExists')->twice()->andReturn(false, true);
+    $serviceMock->shouldReceive('guestCreateClient')->once()->andThrow($duplicateKeyException);
+    // Fallback login attempt fails like an ordinary bad-password login.
+    $serviceMock->shouldReceive('authorizeClient')->once()->andReturn(null);
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isPasswordStrong')->once();
+    $validatorMock->shouldReceive('passwordsMatch')->once();
+
+    $rateLimiterMock = Mockery::mock(ClientFence\Security\RateLimiter::class);
+    $rateLimiterMock->shouldReceive('consumeOrThrow')
+        ->once()
+        ->with('client_signup', Mockery::type('string'))
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup', false, 5, 4));
+    $rateLimiterMock->shouldReceive('consume')
+        ->once()
+        ->with('client_signup_email', $data['email'], 0)
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup_email', false, 5, 5));
+    $rateLimiterMock->shouldReceive('consume')
+        ->once()
+        ->with('client_signup_email', $data['email'])
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup_email', false, 5, 4));
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->andReturn($data['email']);
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => ['disable_signup' => false]);
+    $di['validator'] = $validatorMock;
+    $di['rate_limiter'] = $rateLimiterMock;
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+    $guestClient->setService($serviceMock);
+
+    expect($guestClient->create($data))->toBeTrue();
+});
+
+test('create rethrows the constraint violation when the email is still free after the race re-check', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'testpassword',
+    ];
+
+    $duplicateKeyException = guestClientDuplicateKeyViolation();
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('checkExtraRequiredFields')->once();
+    $serviceMock->shouldReceive('checkCustomFields')->once();
+    $serviceMock->shouldReceive('clientAlreadyExists')->twice()->andReturn(false, false);
+    $serviceMock->shouldReceive('guestCreateClient')->once()->andThrow($duplicateKeyException);
+    $serviceMock->shouldNotReceive('authorizeClient');
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isPasswordStrong')->once();
+    $validatorMock->shouldReceive('passwordsMatch')->once();
+
+    $rateLimiterMock = Mockery::mock(ClientFence\Security\RateLimiter::class);
+    $rateLimiterMock->shouldReceive('consumeOrThrow')
+        ->once()
+        ->with('client_signup', Mockery::type('string'))
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup', false, 5, 4));
+    $rateLimiterMock->shouldReceive('consume')
+        ->once()
+        ->with('client_signup_email', $data['email'], 0)
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup_email', false, 5, 5));
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->once()->andReturn($data['email']);
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => ['disable_signup' => false]);
+    $di['validator'] = $validatorMock;
+    $di['rate_limiter'] = $rateLimiterMock;
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+    $guestClient->setService($serviceMock);
+
+    expect(fn (): bool => $guestClient->create($data))
+        ->toThrow(Doctrine\DBAL\Exception\UniqueConstraintViolationException::class);
+});
+
+test('create throws exception when signup is disabled', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [
+        'disable_signup' => true,
+    ];
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'testpassword',
+    ];
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+    $guestClient->setDi($di);
+
+    $guestClient->create($data);
+})->throws(ClientFence\Exception::class, 'New registrations are temporarily disabled');
+
+test('create throws exception when passwords do not match', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [
+        'disable_signup' => false,
+    ];
+    $data = [
+        'email' => 'test@email.com',
+        'first_name' => 'John',
+        'password' => 'testpassword',
+        'password_confirm' => 'wrongpassword',
+    ];
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+    $guestClient->setDi($di);
+
+    $guestClient->create($data);
+})->throws(ClientFence\Exception::class, 'Passwords do not match.');
+
+test('login returns array', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data = [
+        'email' => 'test@example.com',
+        'password' => 'sezam',
+    ];
+
+    $model = createEntity(ClientFence\Mod\Client\Entity\Client::class);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock
+    ->shouldReceive('authorizeClient')
+    ->atLeast()->once()
+        ->with($data['email'], $data['password'])
+    ->andReturn($model);
+    $serviceMock
+    ->shouldReceive('toSessionArray')
+    ->atLeast()->once()
+    ->andReturn([]);
+
+    $eventMock = Mockery::mock('ClientFence\EventManager');
+    $eventMock->shouldReceive('fire')->atLeast()->once();
+
+    $sessionMock = Mockery::mock(ClientFence\Session::class);
+    $sessionMock->shouldReceive('set')->atLeast()->once();
+    $sessionMock->shouldReceive('getId')->atLeast()->once();
+    $sessionMock->shouldReceive('regenerateId')->atLeast()->once();
+    $sessionMock->shouldReceive('delete')->atLeast()->once();
+
+    $cartServiceMock = Mockery::mock(ClientFence\Mod\Cart\Service::class);
+    $cartServiceMock->shouldReceive('transferFromOtherSession')->atLeast()->once()
+        ->andReturn(true);
+
+    $toolsStub = Mockery::mock(ClientFence\Tools::class);
+    $toolsStub->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->with($data['email'], true, false)->andReturn($data['email']);
+
+    $di = container();
+    $di['events_manager'] = $eventMock;
+    $di['session'] = $sessionMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['tools'] = $toolsStub;
+    $di['mod_service'] = $di->protect(moduleService(['cart' => $cartServiceMock]));
+
+    $guestClient->setDi($di);
+    $guestClient->setService($serviceMock);
+
+    $results = $guestClient->login($data);
+
+    expect($results)->toBeArray();
+});
+
+test('resetPassword returns true with new flow', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data['email'] = 'John@exmaple.com';
+
+    $eventMock = Mockery::mock('ClientFence\EventManager');
+    $eventMock->shouldReceive('fire')->atLeast()->once();
+
+    $modelClient = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 1, 'status' => ClientFence\Mod\Client\Entity\Client::ACTIVE]);
+
+    $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
+    $clientRepository->shouldReceive('findOneByEmailAndActive')->atLeast()->once()->andReturn($modelClient);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $em->shouldReceive('getRepository')->andReturnUsing(static fn (string $class): object => match ($class) {
+        ClientFence\Mod\Client\Entity\Client::class => $clientRepository,
+        default => Mockery::mock()->shouldIgnoreMissing(),
+    });
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('createPasswordResetRequestForClient')->atLeast()->once()->andReturn('hashedString');
+    $serviceMock->shouldReceive('sendPasswordResetRequestEmailForClient')->atLeast()->once();
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->andReturn($data['email']);
+
+    $di = container();
+    $di['em'] = $em;
+    $di['events_manager'] = $eventMock;
+    $di['mod_service'] = $di->protect(moduleService(['client' => $serviceMock]));
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+
+    $result = $guestClient->reset_password($data);
+    expect($result)->toBeTrue();
+});
+
+test('resetPassword returns true when email not found', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data['email'] = 'joghn@example.eu';
+
+    $eventMock = Mockery::mock('ClientFence\EventManager');
+    $eventMock->shouldReceive('fire')->atLeast()->once();
+
+    $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
+    $clientRepository->shouldReceive('findOneByEmailAndActive')->atLeast()->once()->andReturn(null);
+
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $em->shouldReceive('getRepository')->andReturnUsing(static fn (string $class): object => match ($class) {
+        ClientFence\Mod\Client\Entity\Client::class => $clientRepository,
+        default => Mockery::mock()->shouldIgnoreMissing(),
+    });
+
+    $di = container();
+    $di['em'] = $em;
+    $di['events_manager'] = $eventMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->andReturn($data['email']);
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+
+    $result = $guestClient->reset_password($data);
+    expect($result)->toBeTrue();
+});
+
+test('updatePassword returns true', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data = [
+        'hash' => 'hashedString',
+        'password' => 'NewPassword1',
+        'password_confirm' => 'NewPassword1',
+    ];
+
+    $passwordReset = new ClientFence\Mod\Client\Entity\ClientPasswordReset();
+    $rp = new ReflectionProperty($passwordReset, 'id');
+    $rp->setValue($passwordReset, 1);
+    $rp = new ReflectionProperty($passwordReset, 'clientId');
+    $rp->setValue($passwordReset, 1);
+    $rp = new ReflectionProperty($passwordReset, 'createdAt');
+    $rp->setValue($passwordReset, new DateTime('-300 seconds'));
+
+    $passwordResetRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientPasswordResetRepository::class);
+    $passwordResetRepository->shouldReceive('findOneByHash')->atLeast()->once()->andReturn($passwordReset);
+
+    $client = new ClientFence\Mod\Client\Entity\Client();
+    $rp = new ReflectionProperty($client, 'id');
+    $rp->setValue($client, 1);
+    $rp = new ReflectionProperty($client, 'status');
+    $rp->setValue($client, 'active');
+
+    $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
+    $clientRepository->shouldReceive('find')->atLeast()->once()->with(1)->andReturn($client);
+
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $em->shouldReceive('getRepository')->andReturnUsing(static fn (string $class): object => match ($class) {
+        ClientFence\Mod\Client\Entity\Client::class => $clientRepository,
+        ClientFence\Mod\Client\Entity\ClientPasswordReset::class => $passwordResetRepository,
+        default => Mockery::mock()->shouldIgnoreMissing(),
+    });
+
+    $eventMock = Mockery::mock('ClientFence\EventManager');
+    $eventMock->shouldReceive('fire')->times(2);
+
+    $passwordMock = Mockery::mock(ClientFence\PasswordManager::class);
+    $passwordMock->shouldReceive('hashIt')->atLeast()->once();
+
+    $emailServiceMock = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $emailServiceMock->shouldReceive('sendTemplate')->atLeast()->once();
+
+    $profileServiceMock = Mockery::mock(ClientFence\Mod\Profile\Service::class);
+    $profileServiceMock->shouldReceive('invalidateSessions')->atLeast()->once();
+
+    $di = container();
+    $di['em'] = $em;
+    $di['events_manager'] = $eventMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['password'] = $passwordMock;
+    $di['mod_service'] = $di->protect(moduleService(['email' => $emailServiceMock, 'profile' => $profileServiceMock]));
+
+    $guestClient->setDi($di);
+
+    $result = $guestClient->update_password($data);
+    expect($result)->toBeTrue();
+});
+
+test('updatePassword throws exception when reset not found', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data = [
+        'hash' => 'hashedString',
+        'password' => 'NewPassword1',
+        'password_confirm' => 'NewPassword1',
+    ];
+
+    $eventMock = Mockery::mock('ClientFence\EventManager');
+    $eventMock->shouldReceive('fire')->atLeast()->once();
+
+    $di = container();
+    $di['events_manager'] = $eventMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+
+    $guestClient->setDi($di);
+
+    $guestClient->update_password($data);
+})->throws(ClientFence\Exception::class, 'The link has expired or you have already reset your password.');
+
+test('required returns array', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [];
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+
+    $guestClient->setDi($di);
+
+    $result = $guestClient->required();
+    expect($result)->toBeArray();
+});
+
+test('custom_fields returns fields sorted alphabetically by title', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [
+        'custom_fields' => [
+            'custom_2' => ['active' => true, 'title' => 'VAT Number'],
+            'custom_1' => ['active' => true, 'title' => 'Company Name'],
+            'custom_3' => ['active' => true, 'title' => 'Address'],
+        ],
+    ];
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+
+    $guestClient->setDi($di);
+
+    $result = $guestClient->custom_fields();
+    expect(array_keys($result))->toBe(['custom_3', 'custom_1', 'custom_2']);
+});
+
+test('custom_fields normalizes incomplete and malformed field configuration', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $configArr = [
+        'custom_fields' => [
+            'custom_1' => ['title' => 'Optional field'],
+            'custom_2' => ['active' => '1', 'required' => '0', 'title' => 'Required flags'],
+            'custom_3' => null,
+        ],
+    ];
+
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => $configArr);
+
+    $guestClient->setDi($di);
+
+    $result = $guestClient->custom_fields();
+    expect($result['custom_1'])->toBe([
+        'title' => 'Optional field',
+        'active' => false,
+        'required' => false,
+    ]);
+    expect($result['custom_2'])->toBe([
+        'active' => true,
+        'required' => false,
+        'title' => 'Required flags',
+    ]);
+    expect($result['custom_3'])->toBe([
+        'title' => '',
+        'active' => false,
+        'required' => false,
+    ]);
+});
+
+test('custom_fields returns an empty array when custom field configuration is malformed', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $di = container();
+    $di['mod_config'] = $di->protect(fn ($name): array => ['custom_fields' => 'invalid']);
+
+    $guestClient->setDi($di);
+
+    expect($guestClient->custom_fields())->toBe([]);
+});

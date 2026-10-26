@@ -1,0 +1,8 @@
+{# End of every client area page: the cookie notice (Cookie Consent extension) and the theme setting
+   "Add JavaScript to Client Area Footer", output as entered (only staff with theme access set it). #}
+{% if guest.extension_is_on({ mod: 'cookieconsent' }) %}
+    {{ include('mod_cookieconsent_index.html.twig', ignore_missing: true) }}
+{% endif %}
+{% if settings.inject_javascript|default('')|trim %}
+    {{ settings.inject_javascript|with_csp_nonce }}
+{% endif %}

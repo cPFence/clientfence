@@ -1,0 +1,152 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: a configurable option of a group (Product/Options.php) with its values and their
+   prices: a setup fee and a recurring price per billing period, in the default currency.
+   clientfence-admin.js adds and removes value rows and shows the fields of the chosen kind
+   (data-cf-option-form). `option` is null for a new one; `group` is its group. #}
+
+{% set active_menu = 'products' %}
+{% set kinds = { 'select': 'Dropdown'|trans, 'radio': 'Radio buttons'|trans, 'yesno': 'Yes/no'|trans, 'quantity': 'Quantity'|trans } %}
+{% set periods = { 'once': 'One time'|trans, 'w': 'Weekly'|trans, 'm': 'Monthly'|trans, 'q': 'Quarterly'|trans, 'b': 'Every 6 months'|trans, 'a': 'Yearly'|trans, 'bia': 'Every 2 years'|trans, 'tria': 'Every 3 years'|trans } %}
+{% set kind = option ? option.type : 'select' %}
+{% set values = option ? option.values : [{ 'id': 0, 'title': '', 'code': '', 'hidden': false, 'prices': {} }] %}
+{% set title = option ? option.title : 'New option'|trans %}
+
+{% macro value_row(index, value, periods) %}
+    <div class="card mb-3" data-cf-option-value>
+        <div class="card-body">
+            <input type="hidden" name="values[{{ index }}][id]" value="{{ value.id|default(0) }}">
+            <div class="row g-2 align-items-end mb-3" data-cf-option-value-head>
+                <div class="col-12 col-md-5">
+                    <label class="form-label" for="cf-value-{{ index }}-title">{{ 'Value'|trans }}</label>
+                    <input class="form-control" id="cf-value-{{ index }}-title" name="values[{{ index }}][title]" maxlength="255" value="{{ value.title }}" placeholder="{{ '4 GB'|trans }}">
+                </div>
+                <div class="col-8 col-md-4">
+                    <label class="form-label" for="cf-value-{{ index }}-code">{{ 'Key for modules'|trans }}</label>
+                    <input class="form-control" id="cf-value-{{ index }}-code" name="values[{{ index }}][code]" maxlength="100" pattern="[A-Za-z0-9._\-]*" value="{{ value.code }}" dir="ltr" placeholder="4096">
+                </div>
+                <div class="col-4 col-md-3 d-flex align-items-center gap-2 justify-content-end">
+                    <label class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" name="values[{{ index }}][hidden]" value="1"{% if value.hidden %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Hidden'|trans }}</span>
+                    </label>
+                    <button type="button" class="btn btn-icon btn-ghost-danger" data-cf-option-value-remove aria-label="{{ 'Remove this value'|trans }}"><svg class="icon"><use href="#trash" /></svg></button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-borderless mb-0 cf-option-prices">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for key, label in periods %}<th class="text-nowrap fw-normal text-secondary">{{ label }}</th>{% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for part, label in { 'price': 'Price'|trans, 'setup_price': 'Setup'|trans } %}
+                        <tr>
+                            <th class="text-nowrap fw-normal align-middle">{{ label }}</th>
+                            {% for key, period in periods %}
+                            <td><input class="form-control form-control-sm text-end" type="number" min="0" step="0.01" inputmode="decimal" name="values[{{ index }}][{{ key }}_{{ part }}]" value="{{ value.prices[key][part]|default(0) ?: '' }}" placeholder="0" aria-label="{{ label }}: {{ period }}"></td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% block meta_title %}{{ title }}{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ '/'|url }}"><svg class="icon"><use href="#home" /></svg></a></li>
+    <li class="breadcrumb-item"><a href="{{ 'product'|url }}#tab-options">{{ 'Configurable options'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ ('product/option-group/' ~ group.id)|url }}">{{ group.title }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ 'product/option_save'|api_url }}" {{ fb_api_form({ message: 'Option saved'|trans, redirect: ('product/option-group/' ~ group.id)|url }) }} data-cf-option-form>
+    {% if option %}<input type="hidden" name="id" value="{{ option.id }}">{% else %}<input type="hidden" name="group_id" value="{{ group.id }}">{% endif %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ title }}</h3>
+                <p class="card-subtitle">{{ 'Prices are in the default currency and added to the product price for the billing period the client picks. A one-time or free product uses the "One time" prices.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label class="form-label required" for="cf-option-title">{{ 'Option name'|trans }}</label>
+                    <input class="form-control" id="cf-option-title" name="title" maxlength="255" value="{{ option.title|default('') }}" placeholder="{{ 'Memory'|trans }}" required>
+                    <div class="form-hint">{{ 'Clients see it on the order form, the service page and invoices.'|trans }}</div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label" for="cf-option-type">{{ 'Kind'|trans }}</label>
+                    {% if option %}
+                        <input type="hidden" name="type" value="{{ kind }}">
+                        <input class="form-control" id="cf-option-type" value="{{ kinds[kind] }}" disabled data-cf-option-kind="{{ kind }}">
+                    {% else %}
+                        <select class="form-select" id="cf-option-type" name="type" data-cf-option-kind="{{ kind }}">
+                            {% for code, label in kinds %}<option value="{{ code }}"{% if code == kind %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="form-label" for="cf-option-code">{{ 'Key for modules'|trans }}</label>
+                    <input class="form-control" id="cf-option-code" name="code" maxlength="100" pattern="[A-Za-z0-9._\-]*" value="{{ option.code|default('') }}" dir="ltr" placeholder="ram">
+                </div>
+                <div class="col-4 col-md-2" data-cf-option-quantity>
+                    <label class="form-label" for="cf-option-min">{{ 'Minimum'|trans }}</label>
+                    <input class="form-control" id="cf-option-min" type="number" min="0" step="1" name="qty_min" value="{{ option.qty_min|default(0) }}">
+                </div>
+                <div class="col-4 col-md-2" data-cf-option-quantity>
+                    <label class="form-label" for="cf-option-max">{{ 'Maximum'|trans }}</label>
+                    <input class="form-control" id="cf-option-max" type="number" min="0" step="1" name="qty_max" value="{{ option.qty_max|default(0) }}">
+                    <div class="form-hint">{{ '0: no maximum'|trans }}</div>
+                </div>
+                <div class="col-4 col-md-2" data-cf-option-quantity>
+                    <label class="form-label" for="cf-option-unit">{{ 'Unit'|trans }}</label>
+                    <input class="form-control" id="cf-option-unit" name="unit" maxlength="50" value="{{ option.unit|default('') }}" placeholder="{{ 'IP'|trans }}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label" for="cf-option-position">{{ 'Position'|trans }}</label>
+                    <input class="form-control" id="cf-option-position" type="number" min="0" step="1" name="position" value="{{ option.position|default(group.options|length) }}">
+                </div>
+                <div class="col-6 col-md-4 d-flex align-items-end">
+                    <label class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" name="hidden" value="1"{% if option.hidden|default(false) %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Hidden: not offered on new orders'|trans }}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Values and prices'|trans }}</h3>
+                <p class="card-subtitle" data-cf-option-hint="select">{{ 'The client picks one value. The first one offered is chosen until they change it.'|trans }}</p>
+                <p class="card-subtitle" data-cf-option-hint="yesno" hidden>{{ 'The price is added when the client turns the option on.'|trans }}</p>
+                <p class="card-subtitle" data-cf-option-hint="quantity" hidden>{{ 'The price is per unit: it is multiplied by the number the client picks.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body" data-cf-option-values>
+            {% for value in values %}{{ _self.value_row(loop.index0, value, periods) }}{% endfor %}
+            <template data-cf-option-value-template>{{ _self.value_row('__INDEX__', { 'id': 0, 'title': '', 'code': '', 'hidden': false, 'prices': {} }, periods) }}</template>
+            <button type="button" class="btn" data-cf-option-value-add>
+                <svg class="icon"><use href="#plus" /></svg>
+                {{ 'Add value'|trans }}
+            </button>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a class="btn" href="{{ ('product/option-group/' ~ group.id)|url }}">{{ 'Back to the group'|trans }}</a>
+            <button class="btn btn-primary" type="submit">{{ 'Save option'|trans }}</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,63 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Servicelicense\Api;
+
+use ClientFence\Mod\Servicelicense\Entity\ServiceLicense;
+
+/**
+ *License Service management.
+ */
+class Client extends \ClientFence\Api\AbstractApi
+{
+    /**
+     * Reset license validation rules.
+     *
+     * @return bool
+     */
+    public function reset($data)
+    {
+        $s = $this->_getService($data);
+
+        return $this->getService()->reset($s);
+    }
+
+    public function _getService(array $data): ServiceLicense
+    {
+        $required = ['order_id' => 'Order ID is required'];
+        $this->getDi()['validator']->checkRequiredParamsForArray($required, $data);
+
+        $client = $this->getIdentity();
+
+        $order = $this->getDi()['em']->getRepository(\ClientFence\Mod\Order\Entity\Order::class)->findOneBy([
+            'id' => $data['order_id'],
+            'clientId' => $client->id,
+        ]);
+
+        if (!$order instanceof \ClientFence\Mod\Order\Entity\Order) {
+            throw new \ClientFence\InformationException('Order not found');
+        }
+
+        $orderService = $this->getDi()['mod_service']('order');
+        $orderService->assertOrderUsable($order);
+
+        if ($order->getStatus() !== \ClientFence\Mod\Order\Entity\Order::STATUS_ACTIVE) {
+            throw new \ClientFence\InformationException('Order is not activated');
+        }
+
+        $s = $orderService->getOrderService($order);
+        if (!$s instanceof ServiceLicense) {
+            throw new \ClientFence\Exception('Order is not activated');
+        }
+
+        return $s;
+    }
+}

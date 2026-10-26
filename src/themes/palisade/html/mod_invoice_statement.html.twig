@@ -1,0 +1,111 @@
+{# ClientFence: the client's account statement (Invoice/Statement.php): invoices billed, payments and
+   account credit with the running balance, for all dates or a period, as a page and a PDF. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'invoices' %}
+
+{% block meta_title %}{{ 'Account statement'|trans }}{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ 'invoice'|url }}">{{ 'Invoices'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'Account statement'|trans }}</li>
+{% endblock %}
+
+{% block body_class %}invoice-statement{% endblock %}
+{% block content %}
+{% set currency = statement.currency %}
+{% macro amount(value, currency) %}<span dir="ltr">{{ value|format_currency(currency, {}, 'en_US') }}</span>{% endmacro %}
+{% import _self as m %}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Account statement'|trans }}</h1>
+        <span class="bf-hint">{{ 'Your invoices, payments and account credit with the running balance.'|trans }}</span>
+    </div>
+    <div class="d-flex gap-2 d-print-none">
+        <a class="btn btn-primary" href="{{ 'invoice/statement/pdf'|url(query: dates) }}">{{ 'Download PDF'|trans }}</a>
+        <button type="button" class="btn btn-outline-secondary" data-bf-print>{{ 'Print'|trans }}</button>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{{ 'invoice/statement'|url }}" class="row g-2 align-items-end mb-3 d-print-none">
+            <div class="col-sm-auto">
+                <label class="form-label" for="statement-from">{{ 'From'|trans }}</label>
+                <input class="form-control" type="date" id="statement-from" name="from" value="{{ dates.from ?? '' }}">
+            </div>
+            <div class="col-sm-auto">
+                <label class="form-label" for="statement-to">{{ 'To'|trans }}</label>
+                <input class="form-control" type="date" id="statement-to" name="to" value="{{ dates.to ?? '' }}">
+            </div>
+            <div class="col-sm-auto d-flex gap-2">
+                <button type="submit" class="btn btn-outline-primary">{{ 'Show'|trans }}</button>
+                {% if dates.from ?? dates.to ?? false %}<a class="btn btn-link" href="{{ 'invoice/statement'|url }}">{{ 'All dates'|trans }}</a>{% endif %}
+            </div>
+        </form>
+        {% if error %}
+            <div class="alert alert-warning" role="alert">{{ error|trans }}</div>
+        {% endif %}
+        <p class="text-muted small mb-3">
+            {{ 'Statement period'|trans }}: {% if statement.from or statement.to %}<span dir="ltr">{{ statement.from ?: 'Account opening'|trans }} – {{ statement.to ?: 'now'|date('Y-m-d') }}</span>{% else %}{{ 'All dates'|trans }}{% endif %}
+            · {{ 'Currency'|trans }}: {{ currency }}
+        </p>
+        <div class="row g-2 mb-3">
+            {% for label, value in {
+                ('Opening balance'|trans): statement.opening,
+                ('Billed'|trans): statement.debit,
+                ('Paid'|trans): statement.credit,
+                ('Closing balance'|trans): statement.closing,
+            } %}
+                <div class="col-6 col-md-3">
+                    <div class="border rounded p-2 h-100">
+                        <div class="small text-muted">{{ label }}</div>
+                        <strong>{{ m.amount(value, currency) }}</strong>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle table-stack">
+                <thead>
+                    <tr>
+                        <th>{{ 'Date'|trans }}</th>
+                        <th>{{ 'Description'|trans }}</th>
+                        <th class="text-end">{{ 'Debit'|trans }}</th>
+                        <th class="text-end">{{ 'Credit'|trans }}</th>
+                        <th class="text-end">{{ 'Balance'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if statement.from %}
+                        <tr>
+                            <td class="text-nowrap"><span dir="ltr">{{ statement.from }}</span></td>
+                            <td>{{ 'Opening balance'|trans }}</td>
+                            <td></td><td></td>
+                            <td class="text-end text-nowrap">{{ m.amount(statement.opening, currency) }}</td>
+                        </tr>
+                    {% endif %}
+                    {% for line in statement.lines %}
+                        <tr>
+                            <td class="text-nowrap"><span dir="ltr">{{ line.date }}</span></td>
+                            <td dir="auto">{{ line.description }}</td>
+                            <td class="text-end text-nowrap">{% if line.debit > 0 %}{{ m.amount(line.debit, currency) }}{% endif %}</td>
+                            <td class="text-end text-nowrap">{% if line.credit > 0 %}{{ m.amount(line.credit, currency) }}{% endif %}</td>
+                            <td class="text-end text-nowrap">{{ m.amount(line.balance, currency) }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="5" class="empty-state">{{ 'No invoices, payments or credit in this period.'|trans }}</td></tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="fw-bold">
+                        <td></td>
+                        <td>{{ 'Closing balance'|trans }}</td>
+                        <td class="text-end text-nowrap">{{ m.amount(statement.debit, currency) }}</td>
+                        <td class="text-end text-nowrap">{{ m.amount(statement.credit, currency) }}</td>
+                        <td class="text-end text-nowrap">{{ m.amount(statement.closing, currency) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <p class="small text-muted mb-0">{{ 'A balance below zero is the amount due; above zero is account credit.'|trans }}</p>
+    </div>
+</div>
+{% endblock %}

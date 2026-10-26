@@ -1,0 +1,54 @@
+{# Language switch and light/dark toggle. `tool_class` styles the buttons. With one other language
+   the switch is a single click; with more, one button with the current language opens a menu of
+   all of them. `compact` (the top bar) shows a globe and the current language's code, as in the
+   admin area, and always opens the menu. #}
+{% set tool_class = tool_class|default('tool-btn') %}
+{% set languages = guest.extension_languages(true) %}
+{% set current_locale = guest.system_locale %}
+{% set other_languages = languages|filter(lang => lang.locale != current_locale) %}
+{# Each language by its own name (src/locale/locales.php); one Arabic name for all Arabic locales. #}
+{% macro language_name(lang) %}{{ lang.locale starts with 'ar' ? 'العربية' : lang.title }}{% endmacro %}
+{% set compact = compact|default(false) %}
+{% if other_languages|length == 1 and not compact %}
+    {% for lang in other_languages %}
+        <a class="{{ tool_class }} js-locale-switch" href="#" data-locale="{{ lang.locale }}" lang="{{ lang.locale|replace({'_': '-'}) }}" title="{{ 'Language'|trans }}">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#language"/></svg>
+            <span>{{ _self.language_name(lang) }}</span>
+        </a>
+    {% endfor %}
+{% elseif other_languages|length >= 1 %}
+    {% set current = languages|filter(lang => lang.locale == current_locale)|first %}
+    <div class="lang-menu dropdown">
+        <button type="button" class="{{ tool_class }} lang-menu-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'Language'|trans }}">
+            {% if compact %}
+                <svg class="icon" aria-hidden="true"><use href="#world"/></svg>
+                <span class="topbar-lang-code">{{ current_locale|split('_')|first|upper }}</span>
+                <span class="visually-hidden">{{ current ? _self.language_name(current) : 'Language'|trans }}</span>
+            {% else %}
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#language"/></svg>
+                <span>{{ current ? _self.language_name(current) : 'Language'|trans }}</span>
+                <svg class="icon icon-sm lang-menu-caret" aria-hidden="true"><use href="#chevron-down"/></svg>
+            {% endif %}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end lang-menu-list">
+            {% for lang in languages %}
+                <li>
+                    {% if lang.locale == current_locale %}
+                        {# A button, not a span: the menu's arrow keys move through focusable items only. #}
+                        <button type="button" class="dropdown-item active" aria-current="true" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ _self.language_name(lang) }}</button>
+                    {% else %}
+                        <a class="dropdown-item js-locale-switch" href="#" data-locale="{{ lang.locale }}" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ _self.language_name(lang) }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<a class="{{ tool_class }} js-theme-toggler hide-theme-dark" href="#" data-theme="dark" title="{{ 'Enable dark mode'|trans }}">
+    <svg class="icon{{ compact ? '' : ' icon-sm' }}" aria-hidden="true"><use href="#moon"/></svg>
+    <span class="visually-hidden">{{ 'Enable dark mode'|trans }}</span>
+</a>
+<a class="{{ tool_class }} js-theme-toggler hide-theme-light" href="#" data-theme="light" title="{{ 'Enable light mode'|trans }}">
+    <svg class="icon{{ compact ? '' : ' icon-sm' }}" aria-hidden="true"><use href="#sun"/></svg>
+    <span class="visually-hidden">{{ 'Enable light mode'|trans }}</span>
+</a>

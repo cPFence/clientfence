@@ -1,0 +1,134 @@
+{# ClientFence: Google sign-in, on the Client settings page (below the page's own form). Kept in
+   mod_client (Clientfence\Service::SETTINGS); saved with client/signin_update, never with the
+   page's main form. #}
+{% set signin = admin.client_signin_get %}
+{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{{ include('mod_clientfence_settings_style.html.twig') }}
+<div class="card mt-3 clientfence-settings" id="google-sign-in" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<form method="post" action="{{ 'client/signin_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }} autocomplete="off">
+		<div class="clientfence-settings-intro">
+			<h3>{{ 'Google sign-in'|trans }}</h3>
+			<p>{{ 'Clients and their authorized users can sign in with their Google account, and new visitors can create an account with it. Two-factor sign-in still asks for its code.'|trans }}</p>
+		</div>
+
+		{# 1. Set up Google (the order an admin does it in). #}
+		<div class="clientfence-setting">
+			<h4 class="mb-1">{{ '1. Connect Google'|trans }}</h4>
+			<div class="clientfence-setting-hint">{{ 'In Google Cloud Console (APIs & Services → Credentials), create an OAuth client ID of type “Web application”, add the address below under “Authorized redirect URIs”, then paste the client ID and secret Google gives you here.'|trans }}</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label">{{ 'Authorized redirect URI'|trans }}</span>
+				<div class="clientfence-setting-hint">{{ 'Copy it exactly; Google refuses any other address.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control font-monospace" type="text" value="{{ signin.redirect_uri }}" dir="ltr" readonly aria-label="{{ 'Authorized redirect URI'|trans }}">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="google_client_id">{{ 'Client ID'|trans }}</label>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control font-monospace" type="text" id="google_client_id" name="google_client_id" value="{{ signin.client_id }}" dir="ltr" maxlength="250" placeholder="…apps.googleusercontent.com">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="google_client_secret">{{ 'Client secret'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ signin.secret_saved ? 'A secret is saved; it is never shown again. Leave this empty to keep it.'|trans : 'No secret saved yet.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control font-monospace" type="password" id="google_client_secret" name="google_client_secret" value="" dir="ltr" maxlength="200" autocomplete="new-password">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label">{{ 'Google sign-in'|trans }}</span>
+				<div class="clientfence-setting-hint">{{ 'Needs the client ID and secret. Off, no Google button is shown anywhere.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<label class="form-check form-switch mb-0">
+					<input class="form-check-input" type="checkbox" name="google_signin" value="1"{% if signin.on %} checked{% endif %}>
+					<span class="form-check-label">{{ 'On'|trans }}</span>
+				</label>
+			</div>
+		</div>
+
+		{# 2. Where Google appears (google_mode). #}
+		<div class="clientfence-setting">
+			<h4 class="mb-1">{{ '2. Where clients see Google'|trans }}</h4>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label d-block">{{ 'Mode'|trans }}</span>
+				<div class="clientfence-setting-hint">{{ 'New visitors sign up on the sign-up page (linked from the sign-in page) or on the checkout page, when they order.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+					{% for value, item in {
+						'both': { label: 'Login & sign-up', hint: 'On the sign-in page, the sign-up page and the checkout. Clients sign in with Google; new visitors can create an account with it.' },
+						'signin': { label: 'Login only', hint: 'On the sign-in page only. Clients sign in with Google; Google never creates an account.' },
+						'signup': { label: 'Sign-up only', hint: 'On the sign-up page and the checkout only. New visitors create an account with Google and choose a password for their next sign-ins; the sign-in page has no Google button.' }
+					} %}
+						<label class="form-selectgroup-item flex-fill">
+							<input type="radio" name="google_mode" value="{{ value }}" class="form-selectgroup-input"{% if signin.mode == value %} checked{% endif %}>
+							<div class="form-selectgroup-label d-flex align-items-center gap-3 p-3">
+								<div><span class="form-selectgroup-check"></span></div>
+								<div>
+									<div class="fw-bold">{{ item.label|trans }}{% if value == 'both' %} <span class="badge bg-secondary-lt ms-1">{{ 'Default'|trans }}</span>{% endif %}</div>
+									<div class="text-secondary small">{{ item.hint|trans }}</div>
+								</div>
+							</div>
+						</label>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		{# 3. New accounts with Google: what they accept, and whether it works now. #}
+		<div class="clientfence-setting">
+			<h4 class="mb-1">{{ '3. New accounts with Google'|trans }}</h4>
+			<div class="clientfence-setting-hint">{{ 'A new visitor who continues with Google gets an account at once, with the email Google confirmed. Continuing means they accept the two pages below; we record the date and IP address. If your client settings require more details (phone, address…), they fill them in right after.'|trans }}</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label">{{ 'Status'|trans }}</span>
+			</div>
+			<div class="clientfence-setting-control" data-clientfence-signup-status>
+				{% if signin.signup_blocked is empty %}
+					<div class="alert alert-success mb-0" role="status">{{ 'New visitors can create an account with Google now.'|trans }}</div>
+				{% else %}
+					<div class="alert alert-secondary mb-0" role="status">
+						<div class="fw-bold mb-1">{{ 'Google does not create accounts now, because:'|trans }}</div>
+						<ul class="mb-0 ps-3">
+							{% if 'off' in signin.signup_blocked %}<li>{{ 'Google sign-in is off (step 1).'|trans }}</li>{% endif %}
+							{% if 'mode' in signin.signup_blocked %}<li>{{ 'The mode is “Login only” (step 2).'|trans }}</li>{% endif %}
+							{% if 'signup' in signin.signup_blocked %}<li>{{ 'Client sign-up is off: “Disable New Signups” is on in'|trans }} <a href="{{ 'extension/settings/client'|url }}">{{ 'Settings → Clients'|trans }}</a>.{% if signin.signup_preview %} {{ 'Only a browser that opened the store preview link (Settings → Orders) can sign up.'|trans }}{% endif %}</li>{% endif %}
+							{% if 'pages' in signin.signup_blocked %}<li>{{ 'The Terms and Conditions or the Privacy Policy address is missing (below).'|trans }}</li>{% endif %}
+						</ul>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="google_terms_url">{{ 'Terms and Conditions address'|trans }}</label>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="url" id="google_terms_url" name="google_terms_url" value="{{ signin.terms_url }}" dir="ltr" maxlength="300" placeholder="https://">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="google_privacy_url">{{ 'Privacy Policy address'|trans }}</label>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="url" id="google_privacy_url" name="google_privacy_url" value="{{ signin.privacy_url }}" dir="ltr" maxlength="300" placeholder="https://">
+			</div>
+		</div>
+		<div class="clientfence-settings-actions">
+			<button type="submit" class="btn btn-primary">{{ 'Save sign-in settings'|trans }}</button>
+		</div>
+	</form>
+</div>

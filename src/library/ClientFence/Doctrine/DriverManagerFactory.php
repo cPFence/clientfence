@@ -1,0 +1,129 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Doctrine;
+
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use ClientFence\Config;
+use ClientFence\Exception;
+use ClientFence\Tools;
+
+class DriverManagerFactory
+{
+    private static ?Connection $sharedConnection = null;
+
+    /**
+     * Share transaction scope between Doctrine, DBAL, and RedBean's PDO.
+     * Use getConnection() only when a separate connection is required.
+     */
+    public static function getSharedConnection(): Connection
+    {
+        return self::$sharedConnection ??= self::getConnection();
+    }
+
+    /**
+     * List of supported database drivers for Doctrine DBAL connections.
+     *
+     * @var string[]
+     */
+    public const SUPPORTED_DRIVERS = [
+        'pdo_mysql',
+    ];
+
+    /**
+     * List of supported charset values for database connections.
+     *
+     * @var string[]
+     */
+    public const SUPPORTED_CHARSETS = [
+        'utf8',
+        'utf8mb4',
+        'latin1',
+    ];
+
+    /**
+     * Returns the database configuration in the shape expected by Doctrine.
+     *
+     * Older FOSSBilling versions used db.type=mysql and some installs may not
+     * have been rewritten by the config patcher before a database connection is
+     * requested during an upgrade.
+     */
+    public static function getDatabaseConfig(): array
+    {
+        $dbConfig = Config::getProperty('db', []);
+        if (!is_array($dbConfig)) {
+            throw new Exception('Database configuration is invalid.');
+        }
+
+        $dbConfig['driver'] ??= self::normalizeDriver($dbConfig['type'] ?? 'pdo_mysql');
+        $dbConfig['port'] = Tools::normalizePort($dbConfig['port'] ?? null, 3306);
+
+        return $dbConfig;
+    }
+
+    /**
+     * Creates and returns a Doctrine DBAL Connection instance.
+     *
+     * @param array $driverOptions optional driver-specific options
+     *
+     * @throws Exception if required database configuration keys are missing or the driver is unsupported
+     */
+    public static function getConnection(array $driverOptions = []): Connection
+    {
+        $dbConfig = self::getDatabaseConfig();
+
+        $requiredKeys = ['driver', 'host', 'port', 'name', 'user', 'password'];
+        foreach ($requiredKeys as $key) {
+            if (!isset($dbConfig[$key])) {
+                throw new Exception('Database configuration missing required key: :key.', [':key' => $key]);
+            }
+        }
+
+        if (!in_array($dbConfig['driver'], self::SUPPORTED_DRIVERS, true)) {
+            throw new Exception('Unsupported database driver :driver. Supported drivers are: :supported.', [':driver' => $dbConfig['driver'], ':supported' => implode(', ', self::SUPPORTED_DRIVERS)]);
+        }
+
+        // ClientFence core patch: utf8mb4 by default, so emoji and other 4-byte characters are stored (utf8 is 3-byte on MariaDB).
+        $charset = $dbConfig['charset'] ?? 'utf8mb4';
+        if (!in_array($charset, self::SUPPORTED_CHARSETS, true)) {
+            $charset = 'utf8mb4';
+        }
+
+        // ClientFence core patch: the session follows PHP's time zone from the first query. It was set only
+        // when RedBean's PDO was first used, so earlier Doctrine queries with NOW() ran in the server's zone
+        // (UTC+3 on a live server while PHP wrote UTC dates).
+        // Pdo\Mysql::ATTR_INIT_COMMAND from PHP 8.4 (PDO::MYSQL_ATTR_INIT_COMMAND is deprecated in 8.5).
+        $initCommand = \defined('Pdo\\Mysql::ATTR_INIT_COMMAND') ? \constant('Pdo\\Mysql::ATTR_INIT_COMMAND') : \PDO::MYSQL_ATTR_INIT_COMMAND;
+        $driverOptions += [$initCommand => "SET time_zone = '" . (new \DateTime('now'))->format('P') . "'"];
+
+        $connectionParams = [
+            'driver' => $dbConfig['driver'],
+            'host' => $dbConfig['host'],
+            'port' => $dbConfig['port'],
+            'dbname' => $dbConfig['name'],
+            'user' => $dbConfig['user'],
+            'password' => $dbConfig['password'],
+            'driverOptions' => $driverOptions,
+            'charset' => $charset,
+        ];
+
+        return DriverManager::getConnection($connectionParams);
+    }
+
+    private static function normalizeDriver(string $driver): string
+    {
+        return match ($driver) {
+            'mysql' => 'pdo_mysql',
+            default => $driver,
+        };
+    }
+}

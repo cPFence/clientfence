@@ -1,0 +1,147 @@
+{# Sign-up page (/signup, FOSSBilling's own page and its guest API client/create), in the sign-in
+   page's style. While a visitor may sign up (ClientFence: client sign-up on, or the store preview
+   link) it shows the form, the fields the client settings require, and "Continue with Google"
+   (slot client.page.signup.form.after); otherwise it says accounts are made by the team. Once the
+   account is made, clientfenceSignUp (palisade.js) goes to the client area when the sign-up signed in
+   ("auto login after sign-up"), or shows the note to sign in. Theme setting "Terms of Service /
+   Privacy Policy Requirement for the Signup Screen": explicit asks for a ticked box, implicit shows
+   the notice (also shown while the Google sign-in settings set both pages); the links go to those
+   pages, or to the client area's /tos and /privacy-policy. #}
+{% extends "layout_public.html.twig" %}
+{% set allow_guest = true %}
+
+{% block meta_title %}{{ 'Create an account'|trans }}{% endblock %}
+{% block body_class %}page-signup{% endblock %}
+
+{% block body %}
+{% set signup = guest.clientfence_signup_info %}
+{% set support_email = guest.system_company.email|default('') %}
+{% embed 'partials/auth_shell.html.twig' %}
+    {% block auth_content %}
+        <h1>{{ 'Create an account'|trans }}</h1>
+        {% if client %}
+            <p class="auth-lead">{{ 'You are signed in already.'|trans }}</p>
+            <a class="btn btn-primary btn-lg w-100" href="{{ '/'|url }}">{{ 'Go to your client area'|trans }}</a>
+        {% elseif not signup.open %}
+            <p class="auth-lead" data-clientfence-signup-closed>
+                {{ 'Accounts are created by our team. Need help? Email'|trans }}
+                <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+            </p>
+            <a class="btn btn-primary btn-lg w-100" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+        {% else %}
+            <p class="auth-lead">{{ 'One account for your services, invoices and support tickets.'|trans }}</p>
+            <form method="post" action="{{ 'client/create'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignUp'}) }} data-clientfence-sign-up data-redirect="{{ '/'|url }}">
+                {% set r = guest.client_required %}
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label" for="su-first-name">{{ 'First name'|trans }}</label>
+                        <input class="form-control" id="su-first-name" name="first_name" value="{{ request.first_name|default('') }}" autocomplete="given-name" maxlength="100" required autofocus>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="su-last-name">{{ 'Last name'|trans }}</label>
+                        <input class="form-control" id="su-last-name" name="last_name" value="{{ request.last_name|default('') }}" autocomplete="family-name" maxlength="100" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="su-email">{{ 'Email'|trans }}</label>
+                    <input class="form-control" id="su-email" type="email" name="email" value="{{ request.email|default('') }}" autocomplete="email" required>
+                </div>
+                {# The details the client settings require at sign-up, and the active custom fields. #}
+                {% for name, label in {
+                    'company': 'Company', 'phone': 'Phone Number', 'birthday': 'Birthdate', 'gender': 'Gender',
+                    'address_1': 'Address Line 1', 'address_2': 'Address Line 2', 'city': 'City', 'state': 'State',
+                    'postcode': 'Zip/Postal Code', 'country': 'Country'
+                } %}
+                    {% if name in r %}
+                        <div class="mb-3">
+                            <label class="form-label" for="su-{{ name }}">{{ label|trans }}</label>
+                            {% if name == 'country' %}
+                                <select class="form-select" id="su-country" name="country" required>
+                                    <option value="">{{ '-- Select Country --'|trans }}</option>
+                                    {% for val, title in guest.system_countries %}
+                                        <option value="{{ val }}"{% if request.country|default(guest.system_default_country) == val %} selected{% endif %}>{{ title|e }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% elseif name == 'gender' %}
+                                <select class="form-select" id="su-gender" name="gender" required>
+                                    <option value="">{{ '-- Select --'|trans }}</option>
+                                    <option value="male">{{ 'Male'|trans }}</option>
+                                    <option value="female">{{ 'Female'|trans }}</option>
+                                    <option value="nonbinary">{{ 'Non-binary'|trans }}</option>
+                                    <option value="other">{{ 'Other'|trans }}</option>
+                                </select>
+                            {% elseif name == 'birthday' %}
+                                <input class="form-control" id="su-birthday" type="date" name="birthday" required>
+                            {% elseif name == 'phone' %}
+                                <input type="hidden" id="phone_cc" name="phone_cc" value="">
+                                <input class="form-control js-phone-input" id="su-phone" type="tel" name="phone" autocomplete="tel" data-initial-country="{{ guest.system_default_country|lower }}" required>
+                            {% else %}
+                                <input class="form-control" id="su-{{ name }}" name="{{ name }}" value="{{ request[name]|default('') }}" maxlength="250" required>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% for name, field in guest.client_custom_fields %}
+                    {% if field.active|default(false) %}
+                        <div class="mb-3">
+                            <label class="form-label" for="su-{{ name }}">{{ field.title|default(name|capitalize) }}</label>
+                            <input class="form-control" id="su-{{ name }}" name="{{ name }}" value="{{ request[name]|default('') }}" maxlength="250"{% if field.required|default(false) %} required{% endif %}>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="row g-3 mb-1">
+                    <div class="col-sm-6">
+                        <label class="form-label" for="su-password">{{ 'Password'|trans }}</label>
+                        <input class="form-control" id="su-password" type="password" name="password" autocomplete="new-password" required>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="su-password-confirm">{{ 'Confirm password'|trans }}</label>
+                        <input class="form-control" id="su-password-confirm" type="password" name="password_confirm" autocomplete="new-password" required>
+                    </div>
+                </div>
+                {% set honeypot = antispam_honeypot() %}
+                {% if honeypot.enabled %}
+                    <div class="bf-honeypot" aria-hidden="true">
+                        <label for="{{ honeypot.field }}">{{ honeypot.field }}</label>
+                        <input id="{{ honeypot.field }}" type="text" name="{{ honeypot.field }}" value="" tabindex="-1" autocomplete="off">
+                    </div>
+                {% endif %}
+                {% import "macro_functions.html.twig" as mf %}
+                <div class="mt-3">{{ mf.recaptcha }}</div>
+                {% set tos_mode = settings.signup_tos|default('none') %}
+                {% set terms_href = signup.terms_url ?: 'tos'|url %}
+                {% set privacy_href = signup.privacy_url ?: 'privacy-policy'|url %}
+                {% if tos_mode == 'explicit' %}
+                    <div class="form-check mt-3" data-clientfence-signup-agree>
+                        <input class="form-check-input" type="checkbox" id="su-agree" required>
+                        <label class="form-check-label" for="su-agree">
+                            {{ 'I agree to the'|trans }}
+                            <a href="{{ terms_href }}" target="_blank" rel="noopener">{{ 'Terms and Conditions'|trans }}</a>
+                            {{ 'and'|trans }}
+                            <a href="{{ privacy_href }}" target="_blank" rel="noopener">{{ 'Privacy Policy'|trans }}</a>.
+                        </label>
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">{{ 'Create account'|trans }}</button>
+                {% if tos_mode == 'implicit' or (tos_mode != 'explicit' and signup.terms_url and signup.privacy_url) %}
+                    <p class="small text-body-secondary mt-2 mb-0" data-clientfence-signup-terms>
+                        {{ 'By creating an account, you agree to our'|trans }}
+                        <a href="{{ terms_href }}" target="_blank" rel="noopener">{{ 'Terms and Conditions'|trans }}</a>
+                        {{ 'and'|trans }}
+                        <a href="{{ privacy_href }}" target="_blank" rel="noopener">{{ 'Privacy Policy'|trans }}</a>.
+                    </p>
+                {% endif %}
+            </form>
+            {# Shown when the sign-up did not sign in (auto login off, or the email had an account: FOSSBilling never says which). #}
+            <div class="alert alert-info mb-0" role="status" data-clientfence-sign-up-done hidden>
+                {{ 'Thank you. Sign in with your email and password to continue. If this email already had an account, use that account’s password, or reset it.'|trans }}
+                <a class="btn btn-primary w-100 mt-3" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+            </div>
+            {{ render_widgets('client.page.signup.form.after') }}
+            <p class="small text-body-secondary mt-4 mb-0">
+                {{ 'Already have an account?'|trans }} <a href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+            </p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% set pending_messages = guest.system_get_pending_messages %}
+{% if pending_messages %}
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener('DOMContentLoaded', () => {
+        const pendingMessages = {{ pending_messages|json_encode|raw }};
+        pendingMessages.forEach((message) => {
+            ClientFence.message(message);
+        });
+    });
+</script>
+{% endif %}

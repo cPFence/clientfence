@@ -1,0 +1,150 @@
+{# ClientFence, Users (/users, Users.php): the account owner (and owner links) invite users
+   by email with permissions, change their permissions and remove them, and manage pending
+   invitations. users_page comes from client_users_get_list. Each form posts to the API and comes
+   back with ?done=<what happened>; forms with data-clientfence-confirm ask first (palisade.js). #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'users' %}
+
+{% block meta_title %}{{ 'Users'|trans }}{% endblock %}
+{% block page_header %}{{ 'Users'|trans }}{% endblock %}
+{% block body_class %}clientfence-users{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Users'|trans }}</li>{% endblock %}
+
+{% macro permission_boxes(permissions, checked, prefix) %}
+    <div class="row g-2">
+        {% for permission in permissions %}
+            <div class="col-md-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ permission.name }}" id="{{ prefix }}-{{ permission.name }}"{% if permission.name in checked %} checked{% endif %}>
+                    <label class="form-check-label" for="{{ prefix }}-{{ permission.name }}">{{ permission.label|trans }}</label>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+{% import _self as users_ui %}
+
+{% block content %}
+{% set labels = {} %}
+{% for permission in users_page.permissions %}{% set labels = labels|merge({ (permission.name): permission.label }) %}{% endfor %}
+{% set done = {
+    invited: 'The invitation was sent.'|trans,
+    resent: 'The invitation was sent again.'|trans,
+    cancelled: 'The invitation was cancelled.'|trans,
+    updated: 'The permissions were saved.'|trans,
+    removed: 'The user no longer has access to the account.'|trans,
+} %}
+
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Users'|trans }}</h1>
+        <p class="bf-hint mb-0">{{ 'Give other people their own sign-in to this account and choose what each of them can do.'|trans }}</p>
+    </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-invite" aria-controls="clientfence-invite" aria-expanded="{{ users_page.users is empty and users_page.invites is empty ? 'true' : 'false' }}">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#plus"/></svg>{{ 'Invite user'|trans }}
+    </button>
+</div>
+
+{% if done[request.done|default('')] is defined %}
+    <div class="alert alert-success" role="status" data-clientfence-done="{{ request.done }}">{{ done[request.done] }}</div>
+{% endif %}
+
+<div class="collapse{{ users_page.users is empty and users_page.invites is empty ? ' show' : '' }} mb-4" id="clientfence-invite">
+    <div class="card">
+        <div class="card-header"><h2>{{ 'Invite user'|trans }}</h2></div>
+        <div class="card-body">
+            <form action="{{ 'client/users_invite'|api_url }}" {{ fb_api_form({redirect: 'users'|url(query: { done: 'invited' })}) }}>
+                <div class="mb-3">
+                    <label class="form-label" for="clientfence-invite-email">{{ 'Email'|trans }}</label>
+                    <input class="form-control" type="email" id="clientfence-invite-email" name="email" autocomplete="off" required>
+                    <div class="form-text">{{ 'We email an invitation link, valid for :days days. The person chooses their own name and password.'|trans({ ':days': 7 }) }}</div>
+                </div>
+                <p class="form-label mb-2">{{ 'What this user can do'|trans }}</p>
+                {{ users_ui.permission_boxes(users_page.permissions, ['products', 'tickets'], 'invite') }}
+                <button type="submit" class="btn btn-primary mt-3">{{ 'Send invitation'|trans }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header"><h2>{{ 'Users of this account'|trans }}</h2></div>
+    {% if users_page.users is empty %}
+        <div class="empty-state">{{ 'No one else has access to this account yet.'|trans }}</div>
+    {% else %}
+        <div class="list-group list-group-flush">
+            {% for user in users_page.users %}
+                {% set is_self = users_page.self == user.id %}
+                <div class="list-group-item py-3" data-clientfence-user="{{ user.id }}">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                        <div class="min-w-0">
+                            <div class="fw-semibold">{{ user.first_name }} {{ user.last_name }}{% if is_self %} <span class="badge text-bg-secondary">{{ 'You'|trans }}</span>{% endif %}</div>
+                            <div class="small text-body-secondary text-truncate" dir="ltr">{{ user.email }}</div>
+                            <div class="small mt-1">
+                                {% if user.owner %}
+                                    <span class="badge text-bg-primary">{{ 'Full access, like the owner'|trans }}</span>
+                                {% elseif user.permissions is empty %}
+                                    <span class="text-body-secondary">{{ 'No permissions'|trans }}</span>
+                                {% else %}
+                                    {% for permission in user.permissions %}{% if labels[permission] is defined %}<span class="badge text-bg-secondary me-1 mb-1">{{ labels[permission]|trans }}</span>{% endif %}{% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="small text-body-secondary mt-1">
+                                {% if user.status != 'active' %}{{ 'Switched off by staff'|trans }} · {% endif %}
+                                {{ 'Last sign-in'|trans }}: {{ user.last_login_at ? user.last_login_at|format_date : 'Never'|trans }}
+                            </div>
+                        </div>
+                        {% if not is_self %}
+                            <div class="d-flex gap-2">
+                                {% if not user.owner %}
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#clientfence-user-{{ user.id }}" aria-expanded="false" aria-controls="clientfence-user-{{ user.id }}">{{ 'Change permissions'|trans }}</button>
+                                {% endif %}
+                                <form action="{{ 'client/users_remove'|api_url }}" {{ fb_api_form({redirect: 'users'|url(query: { done: 'removed' })}) }} data-clientfence-confirm="{{ 'Remove this user\'s access to the account?'|trans }}">
+                                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">{{ 'Remove'|trans }}</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if not is_self and not user.owner %}
+                        <div class="collapse" id="clientfence-user-{{ user.id }}">
+                            <form class="mt-3" action="{{ 'client/users_update'|api_url }}" {{ fb_api_form({redirect: 'users'|url(query: { done: 'updated' })}) }}>
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="permissions[]" value="">
+                                {{ users_ui.permission_boxes(users_page.permissions, user.permissions, 'user-' ~ user.id) }}
+                                <button type="submit" class="btn btn-sm btn-primary mt-3">{{ 'Save permissions'|trans }}</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+{% if users_page.invites is not empty %}
+    <div class="card">
+        <div class="card-header"><h2>{{ 'Pending invitations'|trans }}</h2></div>
+        <div class="list-group list-group-flush">
+            {% for invite in users_page.invites %}
+                <div class="list-group-item py-3 d-flex flex-wrap justify-content-between align-items-center gap-2" data-clientfence-invite="{{ invite.id }}">
+                    <div class="min-w-0">
+                        <div class="fw-semibold text-truncate" dir="ltr">{{ invite.email }}</div>
+                        <div class="small text-body-secondary">{{ 'Expires'|trans }} {{ invite.expires_at|format_date }}</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form action="{{ 'client/users_invite_resend'|api_url }}" {{ fb_api_form({redirect: 'users'|url(query: { done: 'resent' })}) }}>
+                            <input type="hidden" name="id" value="{{ invite.id }}">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">{{ 'Send again'|trans }}</button>
+                        </form>
+                        <form action="{{ 'client/users_invite_cancel'|api_url }}" {{ fb_api_form({redirect: 'users'|url(query: { done: 'cancelled' })}) }} data-clientfence-confirm="{{ 'Cancel this invitation?'|trans }}">
+                            <input type="hidden" name="id" value="{{ invite.id }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">{{ 'Cancel'|trans }}</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

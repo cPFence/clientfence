@@ -1,0 +1,82 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: Invoices > Quotes, as WHMCS's (Invoice/Quotes.php): the list by stage, with search. #}
+
+{% set active_menu = 'invoice' %}
+{% set stages = { '': 'All'|trans, 'draft': 'Draft'|trans, 'delivered': 'Delivered'|trans, 'on_hold': 'On Hold'|trans, 'accepted': 'Accepted'|trans, 'lost': 'Lost'|trans, 'dead': 'Dead'|trans } %}
+{% set stage = request.stage|default('') in stages|keys ? request.stage|default('') : '' %}
+{% set quotes = admin.invoice_quote_get_list({ 'stage': stage, 'search': request.search|default(''), 'page': request.page|default(1), 'per_page': request.per_page|default(25) }) %}
+{% set badges = { 'draft': 'bg-secondary-lt', 'delivered': 'bg-blue-lt', 'on_hold': 'bg-yellow-lt', 'accepted': 'bg-green-lt', 'lost': 'bg-red-lt', 'dead': 'bg-dark-lt' } %}
+
+{% block meta_title %}{{ 'Quotes'|trans }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Quotes'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Send a quote to a client or a prospect. When it is accepted, the prospect gets an account and the invoice is made and emailed.'|trans }}</p>
+        </div>
+        <div class="card-actions">
+            <a class="btn btn-primary" href="{{ 'invoice/quote/0'|url }}"><svg class="icon"><use href="#plus" /></svg> {{ 'New Quote'|trans }}</a>
+        </div>
+    </div>
+    <div class="card-header">
+        <ul class="nav nav-pills card-header-pills me-auto">
+            {% for key, label in stages %}
+                <li class="nav-item">
+                    <a class="nav-link{% if stage == key %} active{% endif %}" href="{{ 'invoice/quotes'|url(query: key ? { 'stage': key } : {}) }}">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <form method="get" action="{{ 'invoice/quotes'|url }}" class="d-flex gap-2 mt-2 mt-md-0">
+            {% if stage %}<input type="hidden" name="stage" value="{{ stage }}">{% endif %}
+            <input class="form-control" type="search" name="search" value="{{ request.search|default('') }}" placeholder="{{ 'Number, subject, name or email'|trans }}" aria-label="{{ 'Search'|trans }}">
+            <button class="btn" type="submit">{{ 'Search'|trans }}</button>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter text-nowrap">
+            <thead>
+                <tr>
+                    <th class="w-1">#</th>
+                    <th>{{ 'Subject'|trans }}</th>
+                    <th>{{ 'For'|trans }}</th>
+                    <th class="text-end">{{ 'Total'|trans }}</th>
+                    <th>{{ 'Stage'|trans }}</th>
+                    <th>{{ 'Valid until'|trans }}</th>
+                    <th>{{ 'Created'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quote in quotes.list %}
+                    <tr>
+                        <td><a href="{{ ('invoice/quote/' ~ quote.id)|url }}">{{ quote.id }}</a></td>
+                        <td class="text-wrap" dir="auto"><a href="{{ ('invoice/quote/' ~ quote.id)|url }}">{{ quote.subject }}</a></td>
+                        <td>
+                            {% if quote.client_id %}
+                                <a href="{{ ('client/manage/' ~ quote.client_id)|url }}">{{ quote.recipient.company ?: quote.recipient.name }}</a>
+                            {% else %}
+                                {{ quote.recipient.company ?: quote.recipient.name }} <span class="badge bg-purple-lt">{{ 'Prospect'|trans }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">{{ quote.total|format_currency(quote.currency) }}</td>
+                        <td>
+                            <span class="badge {{ badges[quote.stage]|default('bg-secondary-lt') }}">{{ quote.stage_title }}</span>
+                            {% if quote.invoice_id %}<a class="ms-1" href="{{ ('invoice/manage/' ~ quote.invoice_id)|url }}">{{ 'Invoice'|trans }}</a>{% endif %}
+                        </td>
+                        <td class="{{ quote.open and quote.expired ? 'text-danger' : 'text-secondary' }}">{{ quote.valid_until ?: '-' }}</td>
+                        <td class="text-secondary">{{ quote.created_at|date('Y-m-d') }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="7" class="text-secondary">{{ 'No quotes yet.'|trans }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if quotes.total > quotes.per_page %}
+        <div class="card-footer">
+            {% include 'partial_pagination.html.twig' with { 'list': quotes, 'url': 'invoice/quotes' } %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: Support > Ratings & Feedback (Support/TicketFeedback.php), like WHMCS's Ticket Ratings
+   Reviewer, Ticket Feedback Scores and Ticket Feedback Comments reports. #}
+
+{% set active_menu = 'support' %}
+{% set report = admin.support_ticket_feedback_report({ 'period': request.period|default('90') }) %}
+{% set periods = { '30': 'Last 30 days'|trans, '90': 'Last 90 days'|trans, '365': 'Last 12 months'|trans, 'all': 'All dates'|trans } %}
+
+{% block meta_title %}{{ 'Ratings & Feedback'|trans }}{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Ratings & Feedback'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Clients rate each staff reply from 1 to 5 stars, and score each staff member from 1 to 10 in the feedback form emailed when a ticket closes. Reply ratings are switched on in Support settings; the feedback email on each help desk.'|trans }}</p>
+        </div>
+    </div>
+    <div class="card-header">
+        <ul class="nav nav-pills card-header-pills">
+            {% for key, label in periods %}
+                <li class="nav-item">
+                    <a class="nav-link{% if report.period == key %} active{% endif %}" href="{{ 'support/ratings'|url(query: { 'period': key }) }}">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row row-cards mb-3">
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header"><h3 class="card-title">{{ 'Reply Ratings'|trans }}</h3></div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Staff Member'|trans }}</th>
+                            <th class="text-end">{{ 'Ratings'|trans }}</th>
+                            <th class="text-end">{{ 'Average'|trans }}</th>
+                            {% for n in 5..1 %}<th class="text-end">{{ n }}★</th>{% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in report.ratings %}
+                            <tr>
+                                <td>{{ row.name }}</td>
+                                <td class="text-end">{{ row.total }}</td>
+                                <td class="text-end"><strong>{{ row.average|format_number({ fraction_digit: 2 }) }}</strong> / 5</td>
+                                {% for n in 5..1 %}<td class="text-end text-secondary">{{ row.stars[n] }}</td>{% endfor %}
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="8" class="text-secondary">{{ 'No reply was rated in this period.'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header"><h3 class="card-title">{{ 'Feedback Scores'|trans }}</h3></div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Staff Member'|trans }}</th>
+                            <th class="text-end">{{ 'Answers'|trans }}</th>
+                            <th class="text-end">{{ 'Average'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in report.feedback %}
+                            <tr>
+                                <td>{{ row.name }}</td>
+                                <td class="text-end">{{ row.total }}</td>
+                                <td class="text-end"><strong>{{ row.average|format_number({ fraction_digit: 2 }) }}</strong> / 10</td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="3" class="text-secondary">{{ 'No feedback was given in this period.'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h3 class="card-title">{{ 'Feedback Comments'|trans }}</h3></div>
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter">
+            <thead>
+                <tr>
+                    <th>{{ 'Date'|trans }}</th>
+                    <th>{{ 'Ticket'|trans }}</th>
+                    <th>{{ 'About'|trans }}</th>
+                    <th class="text-end">{{ 'Score'|trans }}</th>
+                    <th>{{ 'Comment'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report.comments %}
+                    <tr>
+                        <td class="text-nowrap text-secondary">{{ row.created_at|date('Y-m-d') }}</td>
+                        <td class="text-nowrap"><a href="{{ 'support/ticket'|url }}/{{ row.ticket_id }}#ticket-feedback">#{{ row.ticket_id }}</a> {{ row.subject|truncate(40) }}</td>
+                        <td class="text-nowrap">{{ row.name ?: 'Support in general'|trans }}</td>
+                        <td class="text-end text-nowrap">{% if row.rating is not null %}{{ row.rating }}/10{% else %}-{% endif %}</td>
+                        <td class="text-wrap" dir="auto">{{ row.comments|nl2br }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="text-secondary">{{ 'No comments in this period.'|trans }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,198 @@
+{# ClientFence, one hosting account (/hosting/:id): what it is, the control panel and the website,
+   then three tabs: Overview, its usage, loaded from /hosting/:id/usage
+   (mod_servicehosting_account_usage.html.twig) so the page shows at once; Domains, their DNS status,
+   loaded from /hosting/:id/domains (mod_servicehosting_account_domains.html.twig) when the tab first
+   opens; and Email (mod_servicehosting_account_email.html.twig). #clientfence-hosting-domains and
+   #clientfence-hosting-email open a tab. `account` is one row of client.servicehosting_accounts (the controller checks
+   that it is the client's). #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'hosting' %}
+
+{% import "macro_functions.html.twig" as mf %}
+
+{% set name = account.domain ?: account.title %}
+{% block meta_title %}{{ name }}{% endblock %}
+{% block page_header %}{{ name }}{% endblock %}
+
+{% block body_class %}clientfence-hosting{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ 'hosting'|url }}">{{ 'Hosting accounts'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><bdi>{{ name }}</bdi></li>
+{% endblock %}
+
+{% block content %}
+<div class="clientfence-hosting-hero card mb-4">
+    <div class="card-body d-flex flex-wrap align-items-center gap-3">
+        <span class="clientfence-hosting-monogram is-large" aria-hidden="true">{{ name|first|upper }}</span>
+        <div class="min-w-0 flex-grow-1">
+            <h1 class="clientfence-hosting-hero-domain text-truncate mb-1"><bdi dir="ltr">{{ name }}</bdi></h1>
+            <div class="clientfence-hosting-hero-meta">
+                {{ mf.status_badge(account.status, 'order') }}
+                <span><bdi>{{ account.plan ?: account.title }}</bdi></span>
+                {% if account.expires_at %}<span>{{ 'Renews :date'|trans({ ':date': account.expires_at|format_date }) }}</span>{% endif %}
+            </div>
+        </div>
+        <div class="clientfence-hosting-actions">
+            {% if account.status == 'active' %}
+                <button type="button" class="btn btn-primary" data-clientfence-panel-login="{{ account.order_id }}">
+                    <svg class="icon icon-sm" aria-hidden="true"><use href="#layout-dashboard"/></svg>
+                    {{ 'Control panel'|trans }}
+                </button>
+                {% if account.domain %}
+                    <a class="btn btn-outline-secondary" href="https://{{ account.domain }}" target="_blank" rel="noopener">
+                        <svg class="icon icon-sm" aria-hidden="true"><use href="#external-link"/></svg>
+                        {{ 'Visit website'|trans }}
+                    </a>
+                {% endif %}
+            {% endif %}
+            <a class="btn btn-outline-secondary" href="{{ ('order/service/manage/' ~ account.order_id)|url }}">{{ 'Manage service'|trans }}</a>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-pills clientfence-hosting-tabs mb-3" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button type="button" class="nav-link active" data-bs-toggle="pill" data-bs-target="#clientfence-hosting-overview" role="tab" aria-controls="clientfence-hosting-overview" aria-selected="true">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#activity"/></svg>
+            {{ 'Overview'|trans }}
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button type="button" class="nav-link" data-bs-toggle="pill" data-bs-target="#clientfence-hosting-domains" role="tab" aria-controls="clientfence-hosting-domains" aria-selected="false">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#world"/></svg>
+            {{ 'Domains'|trans }}
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button type="button" class="nav-link" data-bs-toggle="pill" data-bs-target="#clientfence-hosting-email" role="tab" aria-controls="clientfence-hosting-email" aria-selected="false">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#mail"/></svg>
+            {{ 'Email'|trans }}
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="clientfence-hosting-overview" role="tabpanel" tabindex="0">
+        <div class="clientfence-hosting-usage-content" data-usage-url="{{ ('hosting/' ~ account.order_id ~ '/usage')|url }}" aria-live="polite">
+            <div class="card">
+                <div class="card-body d-flex align-items-center gap-2 small text-secondary">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span>{{ 'Loading usage…'|trans }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="clientfence-hosting-domains" role="tabpanel" tabindex="0">
+        <div class="clientfence-hosting-domains-content" data-fragment-url="{{ ('hosting/' ~ account.order_id ~ '/domains')|url }}" aria-live="polite">
+            <div class="card">
+                <div class="card-body d-flex align-items-center gap-2 small text-secondary">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span>{{ 'Checking the domains…'|trans }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="clientfence-hosting-email" role="tabpanel" tabindex="0">
+        {% include 'mod_servicehosting_account_email.html.twig' with { 'account': account } %}
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener('DOMContentLoaded', () => {
+        const texts = {{ {
+            'unavailable': 'Usage is unavailable right now.'|trans,
+            'domains_unavailable': 'The domain check is unavailable right now.'|trans,
+            'retry': 'Try again'|trans,
+        }|json_encode|raw }};
+
+        // A panel of the page loaded from its own address (an HTML fragment), with a spinner while it
+        // loads and a retry button when it fails.
+        const panel = (target, url, unavailable) => {
+            const spinner = [...target.childNodes];
+            const load = async (query = '') => {
+                target.replaceChildren(...spinner.map((node) => node.cloneNode(true)));
+                try {
+                    const response = await fetch(query ? `${url}${url.includes('?') ? '&' : '?'}${query}` : url, { credentials: 'same-origin' });
+                    // Signed out meanwhile: FOSSBilling redirects to the sign-in page.
+                    if (response.redirected || response.status === 401) {
+                        window.location.reload();
+                        return;
+                    }
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    target.innerHTML = await response.text();
+                } catch {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    const body = document.createElement('div');
+                    body.className = 'card-body d-flex flex-wrap align-items-center justify-content-between gap-2';
+                    const message = document.createElement('span');
+                    message.className = 'text-secondary';
+                    message.textContent = unavailable;
+                    const retry = document.createElement('button');
+                    retry.type = 'button';
+                    retry.className = 'btn btn-sm btn-outline-secondary';
+                    retry.textContent = texts.retry;
+                    retry.addEventListener('click', () => load());
+                    body.append(message, retry);
+                    card.append(body);
+                    target.replaceChildren(card);
+                }
+            };
+            return load;
+        };
+
+        // The usage is read live from the panel after the page shows.
+        const usage = document.querySelector('.clientfence-hosting-usage-content[data-usage-url]');
+        panel(usage, usage.dataset.usageUrl, texts.unavailable)();
+
+        // The domains are looked up the first time their tab opens; "Check again" looks again.
+        const domains = document.querySelector('.clientfence-hosting-domains-content[data-fragment-url]');
+        const loadDomains = panel(domains, domains.dataset.fragmentUrl, texts.domains_unavailable);
+        const domainsTab = document.querySelector('[data-bs-target="#clientfence-hosting-domains"]');
+        let domainsLoaded = false;
+        const showDomains = () => {
+            if (!domainsLoaded) {
+                domainsLoaded = true;
+                loadDomains();
+            }
+        };
+        domainsTab.addEventListener('shown.bs.tab', showDomains);
+        if (domainsTab.classList.contains('active')) {
+            showDomains();
+        }
+        domains.addEventListener('click', (event) => {
+            if (event.target.closest('[data-domains-refresh]')) {
+                loadDomains('refresh=1');
+            }
+        });
+
+        // A one-time sign-in link to the control panel, opened in a new tab. The tab opens on the
+        // click, before the link is ready, so pop-up blockers let it through.
+        document.querySelectorAll('[data-clientfence-panel-login]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const tab = window.open('', '_blank');
+                if (tab) {
+                    tab.opener = null;
+                }
+                button.disabled = true;
+                ClientFence.api.client.post('servicehosting/get_login_url', { order_id: button.dataset.clientfencePanelLogin }, (url) => {
+                    button.disabled = false;
+                    if (tab) {
+                        tab.location.replace(url);
+                    } else {
+                        window.location.assign(url);
+                    }
+                }, (error) => {
+                    button.disabled = false;
+                    tab?.close();
+                    ClientFence.message(error?.message || String(error), 'error');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

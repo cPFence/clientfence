@@ -1,0 +1,2806 @@
+[
+    {
+        "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig",
+        "done": "ClientFence core patch (QA launch L-01): new API key products have no saved capitalization setting."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch (security S-3): the initial payment was credited before its invoice was refunded."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch (security S-4): reprocessing must preserve the webhook's recorded payment."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch (security S-1): Stripe's subscription idempotency key can change or expire."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch (security S-1): the claim covers the setup intent and the Stripe invoice, including retries of this row."
+    },
+    {
+        "file": "modules/Theme/Controller/Admin.php",
+        "done": "ClientFence core patch (security S-2): viewing a theme does not grant permission to change its settings."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch (QA r11 R-01): the expiry day uses the server's time zone because saves parse it there."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (QA r11 R-01): the due day uses the server's time zone because saves parse it there."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (QA r11 PK-01): MySQL also matches marker names with different case, accents or trailing spaces."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch (QA r10 D-06): activating a service that has an expiry (Pending setup set by hand, or"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch (QA r10 C-1): uncancel gives a new period from today that no invoice paid for."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (QA r10 D-10): the markers of staff money edits (Upgrades::MONEY_MARKERS) are kept: del"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (QA r10 C-1): staff changed the price, cycle, expiry or status: what was paid for the d"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r10 D-04): with no payment date the period it paid is unknown, so a downgrade"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r10 D-03): a credit is funded only by payments made before it (a renewal"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r10 C-1, D-02, D-04): an edit of the lines, tax, status or dates of an invoice that"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r10 P-01): the Manage form sends the date alone; the same day keeps the stored time (midnight"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r10 C-6): the issue and paid dates of a paid invoice are booked too (moved, they changed"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r10 C-6): a payment recorded here is booked when it is recorded, as Mark as paid does (a"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (QA r10 P-01): the issue and paid days in the server's time zone, as saved (a staff time zone moved them a day). #}"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (QA r10 C-1): a line removed from an invoice that bills a service (before the line goes"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch (QA r9 P-01): staff option edits leave the paid options unknown until an invoice issued after the edit is paid."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r9 P-02): unrelated invoice lines cannot fund this service's downgrade credit."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch (QA r8 C-01): show the invoice or credit note total, keeping the stored proration net."
+    },
+    {
+        "file": "load.php",
+        "done": "require __DIR__ . '/clientfence-security-headers.php';"
+    },
+    {
+        "file": "modules/Servicecustom/Service.php",
+        "done": "ClientFence core patch: PHP method names are case-insensitive"
+    },
+    {
+        "file": "modules/Profile/Api/Client.php",
+        "done": "ClientFence core patch: `notes` are staff notes"
+    },
+    {
+        "file": "modules/Profile/Api/Client.php",
+        "done": "ClientFence core patch: client API keys are disabled.\n        throw new \\ClientFence\\InformationException('API keys are not available.', null, 403);\n\n        $client"
+    },
+    {
+        "file": "modules/Profile/Api/Client.php",
+        "done": "ClientFence core patch: client API keys are disabled.\n        throw new \\ClientFence\\InformationException('API keys are not available.', null, 403);\n\n        return"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: client API keys are disabled, so a key never signs a client in."
+    },
+    {
+        "file": "modules/Servicehosting/Api/Client.php",
+        "done": "ClientFence core patch: staff change hosting usernames"
+    },
+    {
+        "file": "modules/Servicehosting/Api/Client.php",
+        "done": "ClientFence core patch: staff change hosting domains"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: CAPTCHA on the client login"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: one CAPTCHA for sign-up."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "sign-in a sign-up makes in the same request"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "ClientFence core patch: CAPTCHA on the staff login"
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_login.html.twig",
+        "done": "ClientFence core patch: CAPTCHA on the staff login (Antispam settings). #}"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: an order that was never activated"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: an order whose activation never created the account"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: Enhance logins are email addresses, so the generated username"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "if ($adapter instanceof \\Server_Manager_Enhance) {"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: no username means the account was never created on the server"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: termination removed the account from the server, but the renewal"
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "ClientFence core patch: credit the amount staff entered, not the invoice total"
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "ClientFence core patch: the amount staff enter is credited as is (see below), so it must be in"
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "ClientFence core patch: processing a processed transaction again credited the client again"
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch: a transaction staff create has no notice data, so all of them on one"
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "ClientFence core patch: without an amount the invoice total is credited, which is only right"
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch: the amount and currency of a staff-created transaction were dropped,"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: Dompdf cannot join Arabic letters, so an Arabic invoice PDF showed every"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: English PDF (see above), so dates and amounts are formatted for en_US."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: back to the locale of the request (English PDF, see above)."
+    },
+    {
+        "file": "modules/Invoice/templates/pdf/default-invoice.twig",
+        "done": "ClientFence core patch: the PDF is English (Invoice\\Service), but the default date formatter follows the request locale."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: refunding a paid wallet top-up (Add funds) left its amount on the"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the Egyptian methods use CustomEgp, which extends Custom."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: CustomEgp extends Custom, so its payments need the receipt reference too."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: pay_gateway has no title column; name is the method's label.\n                $gatewayTitle"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: pay_gateway has no title column; name is the label clients see."
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: the admin layout builds its menu with extension_get_navigation"
+    },
+    {
+        "file": "themes/admin_default/html/mod_index_dashboard.html.twig",
+        "done": "ClientFence core patch: system notices need the system.manage_settings permission"
+    },
+    {
+        "file": "themes/admin_default/html/mod_index_dashboard.html.twig",
+        "done": "ClientFence core patch: dashboard widget slot"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: client page widget slots (the ClientFence Users tab)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: client page widget slots (the ClientFence Users tab content)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: help desk greeting (ClientFence, modules/Clientfence/Service.php)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: help desk greeting for the staff reply box (ClientFence)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: help desk greeting saved with the help desk (ClientFence)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: help desk greeting removed with the help desk (ClientFence)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_helpdesk.html.twig",
+        "done": "ClientFence core patch: help desk greeting field (ClientFence; only with the module active)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: help desk greeting in the reply box (ClientFence; empty means none)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: ticket attachments (the message's files, Support/TicketFiles.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: ticket attachments (files for the reply, Support/TicketFiles.php)."
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: store gate."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: store preview."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: order form answers."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: top-level client pages, each registered by the module that owns it"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "'google-sign-in' => 'client', 'receipt' => 'invoice',"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: authorized users. When no client signs in with these details"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: two-factor sign-in. With two-factor sign-in on"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: authorized users. The session is the user's, or the owner's."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: authorized users get their own reset link"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: authorized users. Staff sign in as the account owner."
+    },
+    {
+        "file": "library/ClientFence/Session.php",
+        "done": "ClientFence core patch: authorized users (modules/Client/Users.php SESSION)."
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: authorized users. A user who was removed, switched off"
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: authorized users. A signed-in authorized user makes only the client"
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: authorized users (see above): what the call returns, trimmed."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: authorized users. A signed-in authorized user opens only the client"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: Google sign-up. An account made by Google sign-up fills the"
+    },
+    {
+        "file": "modules/Client/templates/email/mod_client_signup.html.twig",
+        "done": "ClientFence core patch: Google sign-up, the welcome email of an account made with Google (ClientFence)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: Google sign-up, the welcome email knows an account made with Google (ClientFence)."
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: authorized users. Staff see which user wrote a ticket message."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_index.html.twig",
+        "done": "ClientFence core patch: a status filter alone keeps the counter cards"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_index.html.twig",
+        "done": "ClientFence core patch: a status filter alone keeps the counter cards"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_index.html.twig",
+        "done": "ClientFence core patch: a status filter alone keeps the counter cards"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_transactions.html.twig",
+        "done": "ClientFence core patch: a status filter alone keeps the counter cards"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: a status filter alone keeps the counter cards"
+    },
+    {
+        "file": "modules/Invoice/Api/Guest.php",
+        "done": "ClientFence: payment methods for an amount, as the theme's payment cards show them"
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence: uploads the receipt of a manual payment"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence: saves the help desk that payment receipts open a ticket in"
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence: a payment receipt (Receipts.php), linked from its support ticket."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence: a payment receipt for staff with support permission (Receipts.php)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_settings.html.twig",
+        "done": "{{ include('mod_invoice_settings_receipts.html.twig') }}"
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence: what ticket attachments allow (the upload fields)"
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence: attaches a file (multipart field \"file\") to the next ticket message"
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence: saves how many days sent ticket files are kept"
+    },
+    {
+        "file": "modules/Support/Controller/Client.php",
+        "done": "ClientFence: a ticket attachment (TicketFiles.php)."
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence: a ticket attachment for staff with the support permission (TicketFiles.php)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence: the files the ticket form sent go to the new message (TicketFiles.php)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence: after each cron run, ticket files older than the \"keep ticket files\" setting go"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "{{ include('mod_support_settings_ticket_files.html.twig') }}"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "'hosting' => 'servicehosting',"
+    },
+    {
+        "file": "modules/Servicehosting/Api/Client.php",
+        "done": "ClientFence: the client's hosting accounts (active and suspended), for the Hosting accounts page."
+    },
+    {
+        "file": "modules/Servicehosting/Api/Admin.php",
+        "done": "ClientFence: switches the hosting panels on or off"
+    },
+    {
+        "file": "modules/Servicehosting/Api/Admin.php",
+        "done": "ClientFence: makes hosting plans from a panel server's plans"
+    },
+    {
+        "file": "modules/Servicehosting/Api/Guest.php",
+        "done": "ClientFence: whether a hosting panel is on, so the client area shows the Hosting accounts page"
+    },
+    {
+        "file": "modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig",
+        "done": "{{ include('mod_servicehosting_settings_panels.html.twig', { panels: hosting_panels }) }}"
+    },
+    {
+        "file": "modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig",
+        "done": "{{ include('mod_servicehosting_settings_plans.html.twig', { panels: hosting_panels }) }}"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "$kept = [...$kept, ...\\ClientFence\\Mod\\Servicehosting\\Panel\\Panels::settingKeys()];"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "'hosting' => 'servicehosting', 'users' => 'client', 'contacts' => 'client', 'profile' => 'client', 'invite' => 'client',"
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "ClientFence: the signed-in authorized user (Users.php)"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence: the authorized users of a client account (`client_id`; Users.php)."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence: sets an authorized user's"
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "// ClientFence: authorized users, two-factor sign-in and Google sign-in (see below)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence: the client page's Users and Contacts tabs for staff (Users.php, Contacts.php)"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence: a deleted client takes its authorized users' access with it (Users.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "class Service implements InjectionAwareInterface, \\ClientFence\\Interfaces\\WidgetProviderInterface"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "an authorized user, records the user (Client/Users.php)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ticket written by an authorized user records the user (Client/Users.php)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "$kept = [...$kept, ...array_keys(\\ClientFence\\Mod\\Client\\Google::DEFAULTS)];"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_settings.html.twig",
+        "done": "{{ include('mod_client_settings_google.html.twig') }}"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: status is optional (inactive when not passed), not a PHP warning."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: failed order actions are recorded (Orders > Failed actions)."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "public function failed_action_get_list($data): array"
+    },
+    {
+        "file": "modules/Order/Controller/Admin.php",
+        "done": "ClientFence core patch: failed order actions (ActionFailures)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "{{ include('mod_order_failed_notice.html.twig') }}"
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch: failed order actions waiting for staff (ClientFence\\Mod\\Order\\ActionFailures)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the ticket's own client, not whoever is signed in (a ticket"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "MailImport::run($di);"
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "public function mail_mailbox_get($data): array"
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence core patch: the ticket email import log (MailImport)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_helpdesk.html.twig",
+        "done": "{{ include('mod_support_helpdesk_mail.html.twig') }}"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "{{ include('mod_support_settings_mail.html.twig') }}"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "...array_keys(\\ClientFence\\Mod\\Support\\MailImport::DEFAULTS)]"
+    },
+    {
+        "file": "modules/Support/templates/email/mod_support_ticket_open.html.twig",
+        "done": "[Ticket #{{ ticket.id|default('') }}]"
+    },
+    {
+        "file": "modules/Support/templates/email/mod_support_ticket_staff_open.html.twig",
+        "done": "[Ticket #{{ ticket.id|default('') }}]"
+    },
+    {
+        "file": "modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig",
+        "done": "[Ticket #{{ ticket.id|default('') }}]"
+    },
+    {
+        "file": "modules/Support/templates/email/mod_support_ticket_staff_close.html.twig",
+        "done": "[Ticket #{{ ticket.id|default('') }}]"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: a Reply-To for this email only (ReplyTo.php), e.g. a ticket's help desk."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ReplyTo::remember($this->di, (int) $email->getId(), $reply_to);"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: a Reply-To kept for this email (ReplyTo.php) wins over the setting."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ReplyTo::forget($this->di, $queueId);"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: replies go to the help desk's imported mailbox (MailImport::replyAddress())."
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "\\ClientFence\\Mod\\Support\\MailImport::isImportedAddress($di, (string) $helpdeskModel->getEmail())"
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence core patch: a merged ticket's page opens the ticket it went into (TicketMerge)."
+    },
+    {
+        "file": "modules/Support/Controller/Client.php",
+        "done": "ClientFence core patch: a merged ticket opens the ticket it went into (TicketMerge)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the tickets merged into this one (TicketMerge), for its page."
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketMessageRepository.php",
+        "done": "ClientFence core patch: oldest first by date, so merged tickets read in order (TicketMerge)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence: merges tickets into the oldest, as WHMCS (TicketMerge)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: the \"With Selected\" bar above and below the list, as WHMCS (TicketBulk)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: merge other tickets into this one, as WHMCS (Support/TicketMerge.php, clientfence-admin.js)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a merged ticket's old page led here (Support/TicketMerge.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: the tickets merged into this one (Support/TicketMerge.php)."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch: database backups as a tab here (Clientfence Backups.php; Super Administrators, ClientFence on)."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch: system health as a tab here (Clientfence Health.php; System settings permission, ClientFence on)."
+    },
+    {
+        "file": "modules/Order/Api/Client.php",
+        "done": "ClientFence core patch: upgrades or downgrades a service."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "public function upgrade_rule_save($data): bool"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_settings.html.twig",
+        "done": "ClientFence core patch: upgrades and downgrades by the client (Order\\Upgrades)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "{{ include('mod_order_upgrades.html.twig') }}"
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_manage.html.twig",
+        "done": "ClientFence core patch: may clients upgrade or downgrade this product's services (Order\\Upgrades)."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: prorated upgrades and downgrades by the client (Order\\Upgrades) replace the upgrade request ticket."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "public function batch_block_delete($data): array"
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketRepository.php",
+        "done": "ClientFence core patch: pinned tickets first (Support\\TicketBulk; the staff list passes them)."
+    },
+    {
+        "file": "modules/Redirect/Service.php",
+        "done": "ClientFence: the module's own settings share the redirects' rows"
+    },
+    {
+        "file": "modules/Redirect/Service.php",
+        "done": "ClientFence core patch (ext redirect): meta_value is {\"target\", \"type\", \"enabled\"}"
+    },
+    {
+        "file": "modules/Redirect/Service.php",
+        "done": "ClientFence core patch (ext redirect): only characters a request path carries as typed"
+    },
+    {
+        "file": "modules/Redirect/Controller/Client.php",
+        "done": "ClientFence core patch (ext redirect): a switched-off redirect is not routed"
+    },
+    {
+        "file": "modules/Redirect/Controller/Client.php",
+        "done": "ClientFence core patch (ext redirect): a target without a scheme is a client-area path"
+    },
+    {
+        "file": "rewrite-missing.html",
+        "done": "Enable mod_rewrite (or your web server's rewrite support)"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the priority as WHMCS's Low, Medium or High, for staff and clients (TicketPriority)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the staff member the ticket is assigned to, or null (TicketAssign)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the urgency the client chose, Medium if none (TicketPriority)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the urgency the guest chose, Medium if none (TicketPriority)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: Low, Medium or High only (TicketPriority)."
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketRepository.php",
+        "done": "ClientFence core patch: the assignee filter, as ticket ids kept or left out (TicketAssign::listFilter())."
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketRepository.php",
+        "done": "ClientFence core patch: a level (low, medium, high) matches the numbers it reads as (TicketPriority)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: assign the ticket, as WHMCS's Flag (TicketAssign)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: `assigned`: me, none, any or a staff id (TicketAssign)."
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence core patch: pins and assignees are for the staff list only (TicketBulk, TicketAssign)."
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence: ticket priorities for the new ticket form's Urgency, as WHMCS (TicketPriority),"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: Low, Medium or High, and the assignee (Support/TicketPriority.php, TicketAssign.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: priority as WHMCS and the assignee (Support/TicketPriority.php, TicketAssign.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: priority levels and the assignee filter (Support/TicketPriority.php, TicketAssign.php)."
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_contact_us.html.twig",
+        "done": "ClientFence core patch: the urgency, as WHMCS (Support/TicketPriority.php)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: ask the client for feedback, as WHMCS (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: ask the client for feedback after an inactivity close, as WHMCS (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the help desk's feedback request, as WHMCS (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: and its feedback request setting (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: reply stars and the feedback link, as WHMCS (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the client's feedback (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: the help desk's feedback request (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence: Support > Ratings & Feedback (TicketFeedback): reply stars and feedback scores"
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence: rates a staff reply of the client's ticket, 1 to 5 stars, once, as WHMCS"
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence: the feedback form of a feedback email's link (no sign-in, as WHMCS;"
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence: rates a staff reply of a guest ticket, 1 to 5 stars, once, as WHMCS"
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence core patch: reply stars and feedback by staff member (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/Controller/Client.php",
+        "done": "ClientFence: the feedback form of a feedback email's link, without sign-in, as WHMCS (TicketFeedback)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: the client's stars for this reply (Support/TicketFeedback.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: the client's feedback after the ticket closed (Support/TicketFeedback.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "ClientFence core patch: reply ratings, as WHMCS's Support Ticket Rating (Support/TicketFeedback.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_helpdesk.html.twig",
+        "done": "ClientFence core patch: the feedback email when a ticket closes, as WHMCS's Feedback Request (Support/TicketFeedback.php)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: staff closing it from the status field ask for feedback too"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "ClientFence core patch: escalation rules, as WHMCS (Support/TicketEscalation.php)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence: the escalation rules, as WHMCS (TicketEscalation), by name."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "escalation rules run (TicketEscalation::run()); a problem never breaks the cron run."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence core patch: the Reports page, as WHMCS's (Invoice/Reports.php)."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence: the Reports page, a report, and a report as CSV (Reports.php)."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence: the Reports page, as WHMCS's (Reports.php): group => title and reports."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence: the client's account statement (Statement.php): invoices, payments and account"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence: a client's account statement as a PDF in the staff member's language"
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence: the account statement and its PDF (Statement.php), before /invoice/:hash."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence: the Client Statement report as a PDF (StatementPdf.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_index.html.twig",
+        "done": "ClientFence: links to the account statement (mod_invoice_statement) and, when"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_statement.html.twig",
+        "done": "ClientFence: the client's account statement (Invoice/Statement.php)"
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "ClientFence core patch: dates stay whole in right-to-left languages (RtlDateExtension)."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence: quotes, as WHMCS's (Quotes.php). The list: `stage`, `client_id`, `search`,"
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence core patch: quotes, as WHMCS's (Invoice/Quotes.php)."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence: the quotes, a quote (0: a new one) and its PDF (Quotes.php)."
+    },
+    {
+        "file": "modules/Invoice/Api/Guest.php",
+        "done": "ClientFence: accepts a quote on its page (Quotes::answer()): a prospect gets an account and"
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence: the client's quotes (Quotes.php), not drafts, newest first."
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence: the client's quotes, and a quote by its link (Quotes.php)."
+    },
+    {
+        "file": "library/ClientFence/Security/RateLimiter.php",
+        "done": "ClientFence: answers and PDFs of quotes by their links (Invoice/Quotes.php)."
+    },
+    {
+        "file": "themes/palisade/html/partials/guest_access.html.twig",
+        "done": "or path starts with 'quote/'"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_quote.html.twig",
+        "done": "ClientFence: a quote by its link (Invoice/Quotes.php)"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_quotes.html.twig",
+        "done": "ClientFence: the client's quotes (Invoice/Quotes.php)"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "// ClientFence: quote links (Invoice/Quotes.php).\n            'quote' => 'invoice',"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "// ClientFence: the Network Status page (Support/NetworkIssues.php).\n            'network-status' => 'support',"
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence core patch: network issues, as WHMCS (NetworkIssues), while network status is on."
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence: network issues and one issue (0: a new one) (NetworkIssues.php)."
+    },
+    {
+        "file": "modules/Support/Controller/Client.php",
+        "done": "ClientFence: the Network Status page, as WHMCS (NetworkIssues.php), while it is on"
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence: network issues, as WHMCS (NetworkIssues.php). The list of a tab: `group` (open,"
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence: whether the Network Status page is on, and whether it needs signing in"
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence: the open issues and the scheduled work that affect the client's services, for the"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "ClientFence core patch: network status, as WHMCS's Network Issues (Support/NetworkIssues.php)."
+    },
+    {
+        "file": "themes/palisade/html/partials/guest_access.html.twig",
+        "done": "or (path == 'network-status' and (guest.support_network_status_settings ?: {}).public|default(false))"
+    },
+    {
+        "file": "themes/palisade/html/partial_menu.html.twig",
+        "done": "ClientFence: the Network Status page (Support/NetworkIssues.php) while it is on, for signed-in"
+    },
+    {
+        "file": "themes/palisade/html/mod_index_dashboard.html.twig",
+        "done": "ClientFence: open network issues and scheduled work that affect the client's services"
+    },
+    {
+        "file": "themes/palisade/html/mod_support_network_status.html.twig",
+        "done": "ClientFence: the Network Status page, as WHMCS (Support/NetworkIssues.php)"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "$kept = [...$kept, ...\\ClientFence\\Mod\\Support\\NetworkIssues::SETTINGS];"
+    },
+    {
+        "file": "modules/Order/Controller/Admin.php",
+        "done": "ClientFence core patch: bulk price update, as WHMCS (BulkPrices)."
+    },
+    {
+        "file": "modules/Order/Controller/Admin.php",
+        "done": "// ClientFence: bulk price update, with its preview (BulkPrices.php)."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "public function bulk_price_apply($data): array"
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: then ClientFence's own migrations (Mod\\Clientfence\\Migrations)."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: ClientFence's own migrations count as pending patches too."
+    },
+    {
+        "file": "library/ClientFence/UpdateFinalization.php",
+        "done": "'clientfence' => Version::CLIENTFENCE,"
+    },
+    {
+        "file": "library/ClientFence/UpdateFinalization.php",
+        "done": "Cache\\CacheFactory::clearAll();"
+    },
+    {
+        "file": "library/ClientFence/UpdateFinalization.php",
+        "done": "ClientFence core patch: the ClientFence version too, so uploading a new ClientFence release"
+    },
+    {
+        "file": "modules/System/Commands/RunPatcher.php",
+        "done": "ClientFence core patch: a new ClientFence release or migration runs the patcher again."
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: the ClientFence release feed (Mod\\Clientfence\\Updates), checked once a"
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: a backup of the database and of every file the release replaces"
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: put the old files back (UpdateBackup); the site then runs"
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: the files are new; Finalize update retries the database part."
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: the release and its archive as the feed names them now."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_update.html.twig",
+        "done": "ClientFence: the release feed check (Clientfence/Updates.php): its last result and the daily switch."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch: the cron and the CLI define no ADMIN_AREA"
+    },
+    {
+        "file": "library/ClientFence/UpdateFinalization.php",
+        "done": "ClientFence core patch: an update whose files were put back"
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: every file the release writes must be writable, or nothing changes."
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: the backup and unpacking of a full release can outlast the request's"
+    },
+    {
+        "file": "modules/System/Api/Admin.php",
+        "done": "ClientFence core patch: ClientFence versions in the update log."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_update.html.twig",
+        "done": "ClientFence: the installed version and the newest release, as cards."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: a free domain or transfer comes only from a hosting product in the cart,"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: the free domain settings come from the product, never from the client."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: emails with a sign-in link stay out of the account"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: call names are case-insensitive (the dispatcher lowercases the"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: an exact extension name only."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: an email confirmation link confirms the address it was sent to"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: staff see which emailed messages came from a sender DKIM could not verify (MailImport)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: the conversation as in the client area (full-width messages, oldest first, all open), with a red warning on emails from an unverified sender (MailImport)."
+    },
+    {
+        "file": "install/assets/result.html.twig",
+        "done": "ClientFence core patch: offer a captcha after setup (R8; Antispam module, off by default)."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: privacy (Client/Privacy.php): the data download and unsubscribe links."
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "ClientFence core patch: privacy (Privacy.php): the client's data as a file, and the one-click"
+    },
+    {
+        "file": "modules/Client/Controller/Admin.php",
+        "done": "ClientFence core patch: a client's data as a JSON file (Privacy.php)."
+    },
+    {
+        "file": "modules/Client/Controller/Admin.php",
+        "done": "ClientFence core patch: the privacy tools' buttons (Privacy.php)."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: anonymizes a client (Privacy::anonymize): the person is erased, the money"
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "ClientFence core patch: the Privacy tab of the profile (Privacy.php): which tools are on and whether"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_settings.html.twig",
+        "done": "ClientFence core patch: privacy tools and marketing email opt-out, off by default (Client/Privacy.php)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: privacy tools, while they are on (Client/Privacy.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_client_profile.html.twig",
+        "done": "ClientFence core patch: the Privacy tab (Client/Privacy.php), for the account owner while a privacy switch is on."
+    },
+    {
+        "file": "library/ClientFence/Mail.php",
+        "done": "ClientFence core patch: one-click unsubscribe headers for marketing email (RFC 2369 and"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: the one-click unsubscribe link of a marketing email (Client/Privacy.php)."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: List-Unsubscribe headers of a marketing email (Client/Privacy.php)."
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (ext massmailer): clients who opted out of marketing email are flagged"
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch: an opted-out client gets no marketing email (also one queued"
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (ext massmailer): the message is claimed once"
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (ext massmailer): each recipient is claimed before its email is queued"
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (ext massmailer): a filter that no longer works"
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (ext massmailer): the email queue drops an email once it is sent."
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (ext massmailer): the rich editor writes Markdown"
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (ext massmailer): the queued email's id for the delivery report"
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): a message being sent or sent stays as it went out."
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): created from the first step with all its fields"
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): an opted-out test client gets nothing"
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): claimed once, so a second click"
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): send the message at a set time"
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): a scheduled message back to a draft."
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): the delivery report of a sent message."
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): rendered for a client staff pick from the recipients"
+    },
+    {
+        "file": "modules/Massmailer/Api/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): a value over 255 characters does not fit its column."
+    },
+    {
+        "file": "modules/Massmailer/Controller/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): under Clients, where staff look for it."
+    },
+    {
+        "file": "modules/Massmailer/Controller/Admin.php",
+        "done": "ClientFence core patch (ext massmailer): a new message opens on its first step"
+    },
+    {
+        "file": "modules/Massmailer/templates/admin/mod_massmailer_index.html.twig",
+        "done": "ClientFence core patch (ext massmailer): one card with the messages and a settings tab"
+    },
+    {
+        "file": "modules/Massmailer/templates/admin/mod_massmailer_message.html.twig",
+        "done": "ClientFence core patch (ext massmailer): three steps (write, audience, review and send)"
+    },
+    {
+        "file": "modules/Index/Controller/Admin.php",
+        "done": "ClientFence core patch: setup wizard"
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_index.html.twig",
+        "done": "ClientFence core patch: setup wizard link"
+    },
+    {
+        "file": "locale/locales.php",
+        "done": "ClientFence core patch: native names of the languages"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: sign-in security. With the staff email PIN on"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: the rest of the staff login"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "ClientFence core patch: sign-in security, staff sign-in from chosen countries only"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "ClientFence core patch: a sign-in waiting for its email PIN keeps the page to return to."
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "public function login_pin($data): array"
+    },
+    {
+        "file": "modules/Staff/Controller/Admin.php",
+        "done": "ClientFence core patch: the email PIN step of a staff sign-in"
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch: the staff email PIN (Clientfence/SignInSecurity.php)."
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch: a staff sign-in waiting for its email PIN goes to the PIN page."
+    },
+    {
+        "file": "library/ClientFence/UpdateFinalization.php",
+        "done": "ClientFence core patch: the staff email PIN page"
+    },
+    {
+        "file": "library/ClientFence/UpdateFinalization.php",
+        "done": "ClientFence core patch: an update whose patches all applied completes on the next request"
+    },
+    {
+        "file": "modules/System/Controller/Admin.php",
+        "done": "ClientFence core patch: an update that completed on its own (UpdateFinalization) leaves nothing to finalize."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: the subject and body of a template for $vars"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: sign-in security, the client email PIN"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "public function signin_pin($data): bool"
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch: sign-in security as a tab here"
+    },
+    {
+        "file": "modules/Index/Controller/Admin.php",
+        "done": "ClientFence core patch: a staff sign-in waiting for its email PIN goes to the PIN page"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: the sign-in of the account just made is not asked for an email"
+    },
+    {
+        "file": "library/ClientFence/GeoIP/Reader.php",
+        "done": "ClientFence core patch: a downloaded GeoIP database is used only after checkDatabase() accepts it."
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php), as WHMCS's: option groups with"
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "ClientFence core patch: the promo's \"Also discount configurable options\" switch (Product/Options.php)."
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "ClientFence core patch: the deleted product's option groups are detached (Product/Options.php)."
+    },
+    {
+        "file": "modules/Product/Controller/Admin.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php): an option group and an"
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_index.html.twig",
+        "done": "ClientFence: option groups (Product/Options.php), attached to products on their Options tab."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_manage.html.twig",
+        "done": "ClientFence: the option groups of this product (Product/Options.php)."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_promos.html.twig",
+        "done": "ClientFence core patch: configurable options (Product/Options.php)."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_promo.html.twig",
+        "done": "ClientFence core patch: configurable options (Product/Options.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php). The choice is checked and"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php). The price a promotion"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php) are listed on the line."
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php) are listed on the line."
+    },
+    {
+        "file": "modules/Product/Api/Guest.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php). The options an active product"
+    },
+    {
+        "file": "modules/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig",
+        "done": "{# ClientFence core patch: configurable options (Product/Options.php). #}"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: configurable options (Product/Options.php) change on the order's"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "public function options_update($data): bool"
+    },
+    {
+        "file": "modules/Order/Api/Client.php",
+        "done": "ClientFence core patch: the price of changing a service's configurable options"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "{# ClientFence core patch: configurable options (Product/Options.php) on their own tab. #}"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "{# ClientFence: the client changes the configurable options (Order\\Upgrades::optionsQuote(); product-options.js). #}"
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "{% include 'mod_clientfence_whmcs_panel.html.twig' with { 'whmcs': bf_whmcs } %}"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: contact copies: the account's contacts who get this kind of email"
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "ClientFence: the Contacts page (Contacts.php; the owner, owner links and users with the"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence: the Contacts tab of the client page (`client_id`; Contacts.php)"
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "$app->get('/contacts', 'get_contacts', [], static::class);"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_contacts_pane'],"
+    },
+    {
+        "file": "themes/palisade/html/partial_menu.html.twig",
+        "done": "The account's contacts (ClientFence): the owner, owner links and users with the contacts permission."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php). This service with"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php) via inCurrency()."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "CurrencyPrices::forgetIn($this->di, 'product', (int) $id);"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "$discountAmount = $this->inCurrency($currency)->getRenewalProductDiscount($product, $promo, $config);"
+    },
+    {
+        "file": "modules/Product/Repository/DomainPricingRepository.php",
+        "done": "'id' => (int) $tld['id'],"
+    },
+    {
+        "file": "modules/Product/Api/Guest.php",
+        "done": "ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php). The product service"
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "public function currency_prices_save($data): bool"
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "CurrencyPrices::save($this->getDi()['em']->getConnection(), 'product', (int) $model->getId(), $data['currency_prices']);"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php): the item, its"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "$item = $this->cartProductToApiArray($p, $cart, null, $currencyCode);"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: a client whose profile has a currency orders only in it (checkout"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "public function sessionCurrencyCode(): ?string"
+    },
+    {
+        "file": "modules/Currency/Service.php",
+        "done": "CurrencyPrices::forgetCurrencyIn($this->di, $currencyCode);"
+    },
+    {
+        "file": "modules/Currency/Service.php",
+        "done": "ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php) re-read the rates."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "$productService = $productService->inCurrency($currency->getCode());"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "$renewalLine = $productService->inCurrency((string) $order->currency)->getProductRenewalLineConfig($product, $config);"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "$from = self::catalog($db, (int) $order->product_id, false, (string) $order->currency);"
+    },
+    {
+        "file": "modules/Order/BulkPrices.php",
+        "done": "Upgrades::catalog($db, $productId, false, (string) $filters['currency'])"
+    },
+    {
+        "file": "modules/Servicedomain/Api/Guest.php",
+        "done": "private function visitorPrices(array $tld): array"
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "CurrencyPrices::save($this->getDi()['em']->getConnection(), 'tld', (int) $model->id, $data['currency_prices']);"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "CurrencyPrices::forgetIn($this->di, 'tld', (int) $id);"
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig",
+        "done": "{{ include('mod_product_currency_prices.html.twig', { kind: 'tld'"
+    },
+    {
+        "file": "themes/admin_default/html/partial_pricing.html.twig",
+        "done": "{{ include('mod_product_currency_prices.html.twig', { kind: 'product', id: product.id, rows: fixed_rows, pricing_type: product.pricing.type }) }}"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "$model->password = ServerSecrets::seal($this->di, $data['password'] ?? null);"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: credentials encrypted at rest (ServerSecrets.php); a change is"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "$config['password'] = ServerSecrets::open($this->di, $model->password);"
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch: the plan's custom value \"package\" names the WHM package exactly"
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch: a plan naming an exact WHM package"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: money received before this invoice came to ClientFence"
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence core patch: without the help desks hidden from clients (HiddenHelpdesks)."
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence core patch: not in a help desk hidden from clients (HiddenHelpdesks)."
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence core patch: without the help desks hidden from clients (HiddenHelpdesks)."
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence core patch: not in a help desk hidden from clients; without a help desk, the"
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: which help desks are hidden from clients (HiddenHelpdesks)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: whether clients see the help desk (HiddenHelpdesks)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the help desk's \"Hidden from clients\", as WHMCS (HiddenHelpdesks)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: and whether it was hidden from clients (HiddenHelpdesks)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_helpdesk.html.twig",
+        "done": "ClientFence core patch: hidden from clients, as WHMCS's \"Hide from clients\" (Support/HiddenHelpdesks.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/partial_support_helpdesks.html.twig",
+        "done": "ClientFence core patch: help desks hidden from clients (Support/HiddenHelpdesks.php)."
+    },
+    {
+        "file": "modules/Support/Repository/KbArticleRepository.php",
+        "done": "ClientFence core patch: without the articles of categories hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Repository/KbArticleCategoryRepository.php",
+        "done": "ClientFence core patch: without the categories hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence core patch: not the articles of categories hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence core patch: nor one in a category hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence core patch: without the categories hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence core patch: nor a category hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: which categories are hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: whether clients see the category (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: the category's \"Hidden from clients\", as WHMCS (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: and whether it was hidden from clients (HiddenKbCategories)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_kb_category.html.twig",
+        "done": "ClientFence core patch: hidden from clients, as WHMCS's \"Hidden\" category (Support/HiddenKbCategories.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_kb_index.html.twig",
+        "done": "ClientFence core patch: categories hidden from clients (Support/HiddenKbCategories.php)."
+    },
+    {
+        "file": "modules/Servicelicense/Server.php",
+        "done": "ClientFence core patch: every check of a known key is logged (CheckLog) and banned"
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: the licence's check log goes with it (CheckLog)."
+    },
+    {
+        "file": "modules/Servicelicense/Api/Admin.php",
+        "done": "ClientFence: the licence settings of System Settings > Licences"
+    },
+    {
+        "file": "modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig",
+        "done": "ClientFence core patch: the licence's recent checks (Servicelicense/CheckLog.php)."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch: the licence check log and bans as a tab here"
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch: staff who see invoices get a bell notification of a failed payment."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch: a bell notification of this failed payment too."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: one bell notification a day while emails are given up on."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_update.html.twig",
+        "done": "ClientFence: release files changed on this site (Clientfence/Customized.php), which the update overwrites."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_update.html.twig",
+        "done": "ClientFence: every box must be ticked (the backup, and the changed files when there are any)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the client's bell says credit was added (staff, a deposit, an upgrade refund)."
+    },
+    {
+        "file": "library/ClientFence/Crypt.php",
+        "done": "ClientFence core patch: the key is derived once per passphrase and request"
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: only web requests in debug mode trace their queries"
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: values worked out once per request (ClientFence\\RequestCache)."
+    },
+    {
+        "file": "library/ClientFence/Module.php",
+        "done": "ClientFence core patch: read and decrypted once per request"
+    },
+    {
+        "file": "library/ClientFence/Pagination.php",
+        "done": "ClientFence core patch: the caller may give a cheaper query that counts the same rows."
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "ClientFence core patch: the same seed always draws the same avatar"
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigLoader.php",
+        "done": "ClientFence core patch: one glob instead of a Finder walk of every module folder"
+    },
+    {
+        "file": "library/ClientFence/i18n.php",
+        "done": "ClientFence core patch: the locale folder is read once per request"
+    },
+    {
+        "file": "modules/Currency/Repository/CurrencyRepository.php",
+        "done": "ClientFence core patch: every currency by code, read once per request"
+    },
+    {
+        "file": "modules/Currency/Service.php",
+        "done": "ClientFence core patch: the repository keeps the currencies for the request"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: Module::getConfig() reads it again."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: the cheaper count query getSearchQuery() gives."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: the cheaper count query getSearchQuery() gives."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a count that skips the totals and the columns"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: getTotalWithTax() of invoice `m` in SQL"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: once per request (ClientFence\\RequestCache); an admin page asked it"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: once per request (ClientFence\\RequestCache), since each mod_service()"
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: the page's tickets in a few queries"
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketMessageRepository.php",
+        "done": "ClientFence core patch: findFirstByTicketId() for many tickets"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: `$known` holds what listToApiArray() loaded for the whole page."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the staff ticket list, each ticket as toApiArray($ticket, false,"
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch: all settings are read once per request"
+    },
+    {
+        "file": "library/ClientFence/EventManager.php",
+        "done": "ClientFence core patch: every listener is read once per request"
+    },
+    {
+        "file": "modules/Hook/Service.php",
+        "done": "ClientFence core patch: the event manager reads the listeners once per request."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a client without a currency takes the order's"
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: never back to a sign-out page (the next"
+    },
+    {
+        "file": "library/ClientFence/AppAdmin.php",
+        "done": "ClientFence core patch: every staff member opens their own profile"
+    },
+    {
+        "file": "library/ClientFence/Tools.php",
+        "done": "ClientFence core patch: Arabic digits are read as digits (they were"
+    },
+    {
+        "file": "modules/Antispam/templates/admin/mod_antispam_settings.html.twig",
+        "done": "ClientFence core patch: switching it off saves 0 (an unticked box"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: clients too, not only guests."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: paying from the balance already ran the"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the setup discount stays in the capped total,"
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "ClientFence core patch: a used, replaced or expired link opens the"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: tabs only for the staff allowed to read them"
+    },
+    {
+        "file": "modules/Extension/Controller/Admin.php",
+        "done": "ClientFence core patch: a clean 403 for staff without the extension"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: a group hidden from this staff member"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: a paid invoice keeps its lines."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: only the gateways' names, for filters and"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: also the printed number, series and padded number"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the paid series only when one is set; an"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the default note is for the client: shown on"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the balance is in the client's currency; it"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: only a paid invoice, once; it is marked"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: only this invoice's own lines."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a paid or refunded invoice stays (its payment"
+    },
+    {
+        "file": "modules/Invoice/ServiceTax.php",
+        "done": "ClientFence core patch: only a rule for the whole country (no state);"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: the payment method, required to mark it paid"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: the payments only for staff who may see"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_tax.html.twig",
+        "done": "ClientFence core patch: the tax switch is a system setting; staff"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: for periods in days or weeks, at most half"
+    },
+    {
+        "file": "modules/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig",
+        "done": "ClientFence core patch: back to this product's page, where the cart"
+    },
+    {
+        "file": "modules/Product/Entity/ProductPayment.php",
+        "done": "ClientFence core patch: billing periods start switched off, so a"
+    },
+    {
+        "file": "modules/Profile/Api/Client.php",
+        "done": "ClientFence core patch: a new sign-in email needs the current"
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig",
+        "done": "ClientFence core patch: the choices above the fields on a phone (the"
+    },
+    {
+        "file": "modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig",
+        "done": "ClientFence core patch: the choices above the fields on a phone (the"
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_login_history.html.twig",
+        "done": "ClientFence core patch: a deleted staff member's logins stay listed"
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: tags stripped but no HTML entities stored"
+    },
+    {
+        "file": "modules/Support/Api/Guest.php",
+        "done": "ClientFence core patch: a 404 page, not a 500"
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence core patch: staff who manage help desks without the"
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketRepository.php",
+        "done": "ClientFence core patch: also the client's email and name (only guest"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: and its mailbox (MailImport), password"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the ticket and its first message are saved"
+    },
+    {
+        "file": "modules/Support/SupportTicketValidator.php",
+        "done": "ClientFence core patch: ticket message length, far below the column"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_helpdesk.html.twig",
+        "done": "ClientFence core patch: staff without the Support settings go back to"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "ClientFence core patch: the list is shared with the help desks page"
+    },
+    {
+        "file": "modules/Support/templates/admin/modal/mod_support_new_helpdesk.html.twig",
+        "done": "ClientFence core patch: staff without the Support settings go back to"
+    },
+    {
+        "file": "modules/System/Api/Admin.php",
+        "done": "ClientFence core patch: any staff member (Dispatcher open call);"
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "SET NAMES utf8mb4 */;"
+    },
+    {
+        "file": "modules/Invoice/templates/email/mod_invoice_created.html.twig",
+        "done": "invoice <strong>{{ invoice.serie_nr"
+    },
+    {
+        "file": "modules/Invoice/templates/pdf/default-invoice.twig",
+        "done": "{% if invoice.tax != 0 %}"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_settings.html.twig",
+        "done": "(params.batch_cancel_suspended ?? '0')"
+    },
+    {
+        "file": "modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig",
+        "done": "manage your hosting</a>"
+    },
+    {
+        "file": "modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig",
+        "done": "format_currency(order.currency|default(default_currency)) }} {{ order.period"
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_update.html.twig",
+        "done": "(update_info['check_enabled'] ?? true)"
+    },
+    {
+        "file": "library/ClientFence/Doctrine/DriverManagerFactory.php",
+        "done": "ClientFence core patch: utf8mb4 by default, so emoji"
+    },
+    {
+        "file": "install/install.php",
+        "done": "ClientFence core patch: the installer writes utf8mb4 too"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: the logger fills %s (vsprintf)"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: a text longer than its column names the field"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the client's own address in other capitals"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the status cannot undo a payment or fake a refund"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: no Delete for a paid or refunded invoice"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the order settings only for staff who may read them"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
+        "done": "ClientFence core patch: only the periods the product sells"
+    },
+    {
+        "file": "themes/palisade/html/mod_support_tickets.html.twig",
+        "done": "ClientFence.message(res.message, 'error')"
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig",
+        "done": "ClientFence core patch: in the page's language, as the store"
+    },
+    {
+        "file": "modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig",
+        "done": "ClientFence core patch: in the page's language, as the store"
+    },
+    {
+        "file": "modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig",
+        "done": "ClientFence core patch: the balance is in the client's currency: compare"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: a ticket without messages (left by a failed save) still opens."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence core patch: a clean 403 for staff without \"manage_transactions\""
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence core patch: a clean 403 for staff without \"manage_subscriptions\""
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_login_history.html.twig",
+        "done": "ClientFence core patch: a deleted staff member's filter keeps the page open"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: only for staff who may sign in as the client"
+    },
+    {
+        "file": "themes/admin_default/html/macro_functions.html.twig",
+        "done": "ClientFence core patch: the lookup link only for staff who may open it"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: a percentage discount is 0 to 100"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: each module's data only for staff with that module"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a period the product does not sell needs a price set by staff"
+    },
+    {
+        "file": "library/ClientFence/Tools.php",
+        "done": "public static function withLock(\\Pimple\\Container $di, string $name, callable $work"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the client's credit lock is held until the orders are committed"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: under the client's credit lock, and the status is read again there: two"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: under the client's credit lock, and the status is read again there: a"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "Tools::withLock($this->di, 'fb:invoice_cn_number'"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: one renewal invoice per order."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: the order's lock covers making and paying the invoice"
+    },
+    {
+        "file": "modules/Cron/Service.php",
+        "done": "ClientFence core patch: one cron run at a time."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch: one run per transaction at a time."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "div.textContent = entry.note;"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: only an unpaid invoice is paid from credit (a refunded one was paid again)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "refunded invoice was paid (and credited) again."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the addons go with their service."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the order's open renewal invoice (one per order) and its waiting upgrade invoice"
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: a cancelled order is never renewed (and brought back) by a paid"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "\\ClientFence\\Mod\\Order\\Upgrades::cancelWaiting($this->di, (int) $order->id);"
+    },
+    {
+        "file": "library/ClientFence/Doctrine/DriverManagerFactory.php",
+        "done": "ClientFence core patch: the session follows PHP's time zone from the first query."
+    },
+    {
+        "file": "modules/Order/ActionFailures.php",
+        "done": "ClientFence core patch: a waiting paid renewal line is what is retried (Order\\Service::applyPaidRenewal)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "public function applyPaidRenewal(int $orderId): bool"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "if ($this->getService()->applyPaidRenewal((int) $order->getId())) {"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "return $this->getService()->applyPaidRenewal((int) $order->getId()) || $this->getService()->unsuspendFromOrder($order);"
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: one run per order's task at a time, and a line another run finished is not run"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: given up on only after 3 days too."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the debit and the paid status are written together."
+    },
+    {
+        "file": "modules/Order/Api/Client.php",
+        "done": "ClientFence core patch: an order that was paid for stays"
+    },
+    {
+        "file": "modules/Product/Api/Guest.php",
+        "done": "ClientFence core patch: 404, so a missing product page"
+    },
+    {
+        "file": "modules/Invoice/Api/Guest.php",
+        "done": "ClientFence core patch: 404 (was 4001"
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: the check's own errors reach the caller"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a blank reason (the auto suspend setting left empty)"
+    },
+    {
+        "file": "modules/Cron/Service.php",
+        "done": "ClientFence core patch: the last runCrons() found another run going"
+    },
+    {
+        "file": "cron.php",
+        "done": "ClientFence core patch: a run that found another one going did nothing."
+    },
+    {
+        "file": "modules/Cron/Commands/Run.php",
+        "done": "ClientFence core patch: a run that found another one going did nothing."
+    },
+    {
+        "file": "modules/News/templates/client/mod_news_index.html.twig",
+        "done": "<div class=\"empty-state pt-3\">{{ 'No news or announcements'|trans }}</div>"
+    },
+    {
+        "file": "modules/Email/templates/client/mod_email_index.html.twig",
+        "done": "<div class=\"empty-state\" id=\"information-block\">"
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_category.html.twig",
+        "done": "<div class=\"empty-state\">{{ 'No articles in this category yet.'|trans }}</div>"
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_index.html.twig",
+        "done": "<div class=\"empty-state\">\n                        {% if request.q %}"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "public static function creditWithTax(float $credit, float $rate): float"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "Currency cannot be changed. Client already has account credit."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "The order must be in the client\\'s currency (:currency)."
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "The invoice is in %s but the client account is in %s. Record this payment by hand."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "private function updateInvoiceLocked(\\Model_Invoice $model, array $data): bool"
+    },
+    {
+        "file": "modules/Invoice/Quotes.php",
+        "done": "if ($db->fetchOne('SELECT stage FROM invoice_quote WHERE id = ?' . $lock, [$id]) === 'accepted') {"
+    },
+    {
+        "file": "modules/Email/templates/admin/mod_email_details.html.twig",
+        "done": "<iframe class=\"cf-email-frame\" sandbox=\"allow-popups\""
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "return json_encode($value, $options | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "$this->updateOrderMeta($addon, [self::META_SUSPENDED_WITH => (string) $orderId]);"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "$db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name = ?', [$orderId, self::META_SUSPENDED_WITH]);"
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "throw new \\ClientFence\\InformationException('Only an active or suspended service can be renewed.');"
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_manage.html.twig",
+        "done": "{% if order.period and order.status in ['active', 'suspended'] %}"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "{% if order.period and order.status in ['active', 'suspended'] %}"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "Upgrades::cancelWaiting($this->di, $orderId, $why);"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "$this->cancelOpenInvoices($orderId, 'The order was deleted.');"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "The summed credit is the only credit check: a per-row check skipped credit split over several rows."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "throw new \\ClientFence\\InformationException('A cancelled domain was deleted at the registrar and cannot be brought back here. Order it again (register or transfer).');"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "$this->assertSubdomainAvailable($data['sld'], $data['tld'], ($data['domain']['action'] ?? null) === 'subdomain');"
+    },
+    {
+        "file": "library/Server/Client.php",
+        "done": "public function setEmailTrusted(bool $trusted): static"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "->setEmailTrusted((int) $client->email_approved === 1"
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "// ClientFence core patch: a page's \"not found\" (a wrong KB article, someone else's ticket) is the"
+    },
+    {
+        "file": "modules/Cart/Controller/Client.php",
+        "done": "return $app->redirect('order');"
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "if (empty($model->period) || !in_array($model->status"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "$di['mod_service']('invoice')->creditNote((int) $source['id']"
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "throw new \\ClientFence\\InformationException('Ticket not found', [], 404);"
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_article.html.twig",
+        "done": "<div class=\"card bg-body-tertiary border-0 mb-4\">"
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_index.html.twig",
+        "done": "<h1 class=\"bf-page-title\">{{ 'Knowledge Base'|trans }}</h1>"
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_category.html.twig",
+        "done": "<h1 class=\"bf-page-title\">"
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_contact_us.html.twig",
+        "done": "<h1 class=\"bf-page-title\">"
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_list.html.twig",
+        "done": "table-stack"
+    },
+    {
+        "file": "modules/Email/templates/client/mod_email_index.html.twig",
+        "done": "<h1 class=\"bf-page-title\">"
+    },
+    {
+        "file": "modules/News/templates/client/mod_news_index.html.twig",
+        "done": "<h1 class=\"bf-page-title\">"
+    },
+    {
+        "file": "modules/Custompages/templates/client/mod_custompages_content.html.twig",
+        "done": "<h1 class=\"bf-page-title\">{{ page.title }}</h1>"
+    },
+    {
+        "file": "modules/Custompages/Entity/CustomPage.php",
+        "done": "ClientFence core patch (ext custompages): who may open a page"
+    },
+    {
+        "file": "modules/Custompages/Service.php",
+        "done": "ClientFence core patch (ext custompages): the visibilities a viewer may open"
+    },
+    {
+        "file": "modules/Custompages/Service.php",
+        "done": "ClientFence core patch (ext custompages): a concurrent save took the slug"
+    },
+    {
+        "file": "modules/Custompages/Service.php",
+        "done": "ClientFence core patch (ext custompages): a title without a-z letters or digits"
+    },
+    {
+        "file": "modules/Custompages/Controller/Client.php",
+        "done": "ClientFence core patch (ext custompages): staff open any page with ?preview=1"
+    },
+    {
+        "file": "modules/Custompages/templates/client/mod_custompages_content.html.twig",
+        "done": "ClientFence core patch (ext custompages): an Everyone page (or a staff preview) opens to visitors"
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig",
+        "done": "<h2 class=\"mb-1\">{{ 'Manage'|trans }} {{ service.domain }}</h2>"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "cf-summary"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "cf-summary"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "cf-summary"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "cf-summary"
+    },
+    {
+        "file": "themes/admin_default/html/partial_admin_summary_card.html.twig",
+        "done": "cf-summary-actions"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "<table class=\"table card-table table-vcenter table-striped sortable\">"
+    },
+    {
+        "file": "themes/palisade/html/mod_support_ticket.html.twig",
+        "done": "<div class=\"d-flex flex-column align-items-start\">"
+    },
+    {
+        "file": "themes/palisade/html/mod_servicehosting_manage.html.twig",
+        "done": "<table class=\"table bf-detail-list\">"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "<table class=\"table bf-detail-list mb-0\">"
+    },
+    {
+        "file": "modules/Currency/Service.php",
+        "done": "$locale = self::moneyLocale($locale);"
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketRepository.php",
+        "done": "throw new \\ClientFence\\InformationException('Ticket not found', [], 404);"
+    },
+    {
+        "file": "modules/Order/Api/Client.php",
+        "done": "throw new \\ClientFence\\InformationException('Order not found', [], 404);"
+    },
+    {
+        "file": "themes/palisade/html/layout_default.html.twig",
+        "done": "bf-topbar-register"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_quote.html.twig",
+        "done": "<table class=\"table align-middle table-stack\">"
+    },
+    {
+        "file": "themes/palisade/html/mod_support_tickets.html.twig",
+        "done": "table-hover table-stack"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_mail_log.html.twig",
+        "done": "<td class=\"cf-mail-from\">"
+    },
+    {
+        "file": "modules/Email/Repository/QueuedEmailRepository.php",
+        "done": "ClientFence core patch: an email left 'sending' by a process that died is retried"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: a retry of an email cut off while 'sending'"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: an \\Error too, or the email stays 'sending'"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "public function creditNote(int $sourceId, string $title, float $net, bool $taxed, string $note, ?int $orderId = null): int"
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "$twig->addGlobal('csp_nonce', \\ClientFence\\Csp::nonce());"
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "<script nonce=\"%s\" src=\"%s?%s\"></script>"
+    },
+    {
+        "file": "library/ClientFence/ErrorPage.php",
+        "done": "document.getElementById(\"toggle\")?.addEventListener(\"click\", toggle);"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "<script nonce=\"' . \\ClientFence\\Csp::nonce() . '\" src=\"https://js.stripe.com/v3/\"></script>"
+    },
+    {
+        "file": "library/Payment/Adapter/ClientBalance.php",
+        "done": "return \"<script nonce=\\\"\" . \\ClientFence\\Csp::nonce()"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "$form .= \"<script nonce=\\\"\" . \\ClientFence\\Csp::nonce()"
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "<script nonce=\\\"\" . \\ClientFence\\Csp::nonce() . \"\\\">location.replace"
+    },
+    {
+        "file": "themes/palisade/html/partials/page_end.html.twig",
+        "done": "{{ settings.inject_javascript|with_csp_nonce }}"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "'csp-report' => 'clientfence',"
+    },
+    {
+        "file": "load.php",
+        "done": "'<script nonce=\"' . (defined('CLIENTFENCE_CSP_NONCE') ? CLIENTFENCE_CSP_NONCE : '') . '\">setTimeout"
+    },
+    {
+        "file": "modules/Security/Checks/phpVersion.php",
+        "done": "ClientFence core patch: a php.watch outage is a warning"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "a delete racing a credit"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "a downgrade already gave part of what this invoice paid for back as account credit"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "a line deleted while a credit payment ran"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "a new address is unconfirmed, also when staff change it"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "one spelling per domain"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "a refunded invoice of this service makes the unused time unknown"
+    },
+    {
+        "file": "modules/Massmailer/templates/admin/mod_massmailer_message.html.twig",
+        "done": "the message in a sandboxed frame without scripts (its HTML ran"
+    },
+    {
+        "file": "modules/Formbuilder/templates/admin/mod_formbuilder_manage.html.twig",
+        "done": "only the keys the order's config has"
+    },
+    {
+        "file": "modules/News/Entity/Post.php",
+        "done": "the column allows no author"
+    },
+    {
+        "file": "modules/News/templates/client/mod_news_post.html.twig",
+        "done": "a post may have no author"
+    },
+    {
+        "file": "modules/News/Repository/PostRepository.php",
+        "done": "ClientFence core patch (ext news): pinned posts first, then by the publish date"
+    },
+    {
+        "file": "modules/News/Repository/PostRepository.php",
+        "done": "ClientFence core patch (ext news): clients see active posts past their publish date and not expired"
+    },
+    {
+        "file": "modules/News/Service.php",
+        "done": "ClientFence core patch (ext news): cut by characters"
+    },
+    {
+        "file": "modules/News/Service.php",
+        "done": "ClientFence core patch (ext news): create and update share the checks"
+    },
+    {
+        "file": "modules/News/Service.php",
+        "done": "ClientFence core patch (ext news): a title without a-z letters or digits"
+    },
+    {
+        "file": "modules/News/templates/client/mod_news_index.html.twig",
+        "done": "ClientFence core patch (ext news): pinned posts come first and say so"
+    },
+    {
+        "file": "modules/News/templates/client/mod_news_index.html.twig",
+        "done": "ClientFence core patch (ext news): without page links clients saw only the five newest posts"
+    },
+    {
+        "file": "modules/News/templates/admin/mod_news_post.html.twig",
+        "done": "ClientFence core patch (ext news): the editor writes into the textarea without input events"
+    },
+    {
+        "file": "themes/palisade/html/mod_index_dashboard.html.twig",
+        "done": "ClientFence core patch (ext news): the latest visible posts, pinned first"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "paid ahead (more than one period left, such as a renewal paid early)"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: only for a line the promo discounts"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the stock is taken before provisioning"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "ClientFence core patch: the country decides the tax of the order"
+    },
+    {
+        "file": "modules/Clientfence/UpdateBackup.php",
+        "done": "ClientFence core patch: only files whose content differs are written"
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_update.html.twig",
+        "done": "ClientFence core patch: a finished update says so and waits for Continue"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: what the client paid for the current period"
+    },
+    {
+        "file": "modules/Invoice/Quotes.php",
+        "done": "ClientFence core patch: a new recipient gets a new link"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: the subject fits its column (255)"
+    },
+    {
+        "file": "modules/Support/MailImport.php",
+        "done": "ClientFence core patch: the saved password is kept only for the same server and user"
+    },
+    {
+        "file": "modules/Clientfence/UpdateBackup.php",
+        "done": "ClientFence core patch: a short write (a full disk or quota) is only a notice to PhpZip"
+    },
+    {
+        "file": "modules/Clientfence/Backups.php",
+        "done": "ClientFence core patch: the SFTP server's key (MD5, the one fingerprint both libcurl SSH backends check)"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: a priced service no invoice paid for (staff activated it without one) has no paid"
+    },
+    {
+        "file": "themes/palisade/html/layout_default.html.twig",
+        "done": "ClientFence core patch: a signed-in page names what to say when its session ends"
+    },
+    {
+        "file": "themes/admin_default/html_custom/layout_default.html.twig",
+        "done": "data-cf-signed-out="
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch (QA r6 R-01): an imported WHMCS invoice that billed other items too"
+    },
+    {
+        "file": "library/PdoSessionHandler.php",
+        "done": "ClientFence core patch (QA r6 A-01): ids this request read"
+    },
+    {
+        "file": "modules/Profile/Service.php",
+        "done": "ClientFence core patch (QA r6 A-01): the session making the change stays signed in"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r6 M-02): account credit never pays an Add funds invoice"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r6 M-08): only these columns are written"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r6 M-08): made and paid under the order's lock"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (QA r6 M-08): only these columns; storing the whole order"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch (QA r6, owner: \"Strict rule\")"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "QA r6 U-01: the days left are worth what was paid"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch (QA r6 U-04): a renewal with no paid invoice"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (QA r6 U-04): an expiry moved to a later day by hand"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "A paid upgrade invoice also ends the period (QA r6 U-02)"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r8 P-02): taking back only part of a credit note cannot safely settle it."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "paid only the options' difference on top of what was paid before it"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (QA r6 U-04-R1): uncancelling starts a new period"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "QA r6 U-01-R2: a price (or payment) below what the removed options cost"
+    },
+    {
+        "file": "themes/palisade/html/layout_default.html.twig",
+        "done": "read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans"
+    },
+    {
+        "file": "themes/admin_default/html_custom/layout_default.html.twig",
+        "done": "read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "QA r7 P-01: the difference is in the change's cycle"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "QA r7 P-02: an invoice refunded after the change was priced"
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "QA r7 X-01: an Add funds invoice is paid once its own transfers add up to it"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r7 X-02): the whole row, not only the status"
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "ClientFence core patch (QA r7 X-01-R2): transfers on settled invoices only add to the client's credit."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (QA r7 M-02): report the refused deposit payment instead of a false success."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r8 P-02): later credit can include this payment when later invoices cannot fund it."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r8 P-02 R3): refund invoices copy order lines but are not payments."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (QA r8 A-01): authorized users need invoice permission to use the account's owner access."
+    },
+    {
+        "file": "modules/News/Api/Guest.php",
+        "done": "ClientFence core patch (ext news): a missing, scheduled or expired post is a 404, not a 500."
+    },
+    {
+        "file": "modules/Notification/Service.php",
+        "done": "ClientFence core patch (ext notification): an announcement is one extension_meta row"
+    },
+    {
+        "file": "modules/Notification/Api/Admin.php",
+        "done": "ClientFence core patch (ext notification): staff announcements"
+    },
+    {
+        "file": "modules/Notification/templates/admin/mod_notification_index.html.twig",
+        "done": "ClientFence core patch (ext notification): the bell links to #announcement-<id>"
+    },
+    {
+        "file": "modules/Cookieconsent/Service.php",
+        "done": "ClientFence core patch (ext cookieconsent): extension/config_save can store any value"
+    },
+    {
+        "file": "modules/Cookieconsent/templates/client/mod_cookieconsent_index.html.twig",
+        "done": "ClientFence core patch (ext cookieconsent): hidden until the script finds it not yet accepted"
+    },
+    {
+        "file": "modules/Cookieconsent/templates/client/mod_cookieconsent_index.html.twig",
+        "done": "ClientFence core patch (ext cookieconsent): room below the page"
+    },
+    {
+        "file": "modules/Embed/Controller/Client.php",
+        "done": "ClientFence core patch (ext embed): the allowed websites may frame these pages"
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_loginform.html.twig",
+        "done": "ClientFence core patch (ext embed): the password, CAPTCHA and two-factor code are entered on the sign-in page"
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch (ext serviceapikey): the product form saves numbers as strings."
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch (ext serviceapikey): 128 characters with a dash between each fit the 255-character column."
+    },
+    {
+        "file": "modules/Serviceapikey/Entity/ServiceApiKey.php",
+        "done": "ClientFence core patch (ext serviceapikey): last_used_at and use_count are written by the UPDATE"
+    },
+    {
+        "file": "modules/Serviceapikey/Api/Admin.php",
+        "done": "ClientFence core patch (ext serviceapikey): staff set the IPs or CIDR ranges"
+    },
+    {
+        "file": "modules/Serviceapikey/Api/Client.php",
+        "done": "ClientFence core patch (ext serviceapikey): the client sets the IPs or CIDR ranges"
+    },
+    {
+        "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig",
+        "done": "ClientFence core patch (ext serviceapikey): the key with copy and regenerate"
+    },
+    {
+        "file": "modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig",
+        "done": "ClientFence core patch (ext serviceapikey): the key hidden until shown"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch (ext seo): the IndexNow key file sits at the site root"
+    },
+    {
+        "file": "modules/Seo/Service.php",
+        "done": "ClientFence core patch (ext seo): a failed submit is retried after a day"
+    }
+]

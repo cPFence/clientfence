@@ -1,0 +1,14 @@
+{# The order steps in the top bar of the store and checkout pages (step: 1, 2 or 3). #}
+{% set steps = ['Choose'|trans, 'Checkout'|trans, 'Done'|trans] %}
+<nav class="bf-steps" aria-label="{{ 'Order steps'|trans }}" data-bf-steps>
+    <ol class="d-none d-md-flex">
+        {% for label in steps %}
+            {% set n = loop.index %}
+            <li class="bf-step{{ n == step ? ' is-on' : (n < step ? ' is-done' : '') }}" data-step="{{ n }}"{% if n == step %} aria-current="step"{% endif %}>
+                <span class="bf-step-dot" aria-hidden="true"><span class="bf-step-n">{{ n }}</span><svg class="icon bf-step-check"><use href="#check"/></svg></span>
+                <span>{{ label }}</span>
+            </li>
+        {% endfor %}
+    </ol>
+    <span class="bf-steps-compact d-md-none" data-bf-steps-compact>{{ 'Step :n of 3 · :label'|trans({ ':n': step, ':label': steps[step - 1] }) }}</span>
+</nav>

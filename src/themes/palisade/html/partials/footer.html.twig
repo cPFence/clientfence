@@ -1,0 +1,31 @@
+{# The client area footer (theme settings "Footer"): © year with the signature (empty uses the
+   company signature, then the company name), the payment details when Settings → Company shows
+   them at the page bottom, up to five links (a full http(s) address, or a client area path) and the
+   published custom pages set to show in the footer that the viewer may open. #}
+{% if settings.footer_enabled|default('1') %}
+{% set company = guest.system_company %}
+<footer class="app-footer">
+    {{ render_widgets('client.theme.footer.start') }}
+    <p class="mb-0"><span dir="auto">&copy; {{ 'now'|date('Y') }} {{ settings.footer_signature|default('')|trim ?: company.signature|default('')|trim ?: company.name }}</span></p>
+    {% if company.bank_info_pagebottom|default(0) == 1 %}
+        <p class="app-footer-bank mb-0"><strong>{{ 'Payment Information'|trans }}</strong> · {{ 'Bank Name'|trans }}: {{ company.bank_name|default('') }} · {{ 'BIC / SWIFT Code'|trans }}: {{ company.bic|default('') }} · {{ 'Account Number'|trans }}: {{ company.account_number|default('') }}</p>
+    {% endif %}
+    {% set links = [] %}
+    {% for i in 1..5 %}
+        {% set page = attribute(settings, 'footer_link_' ~ i ~ '_page')|default('')|trim %}
+        {% set title = attribute(settings, 'footer_link_' ~ i ~ '_title')|default('')|trim %}
+        {% if attribute(settings, 'footer_link_' ~ i ~ '_enabled')|default('0') and title %}
+            {% set links = links|merge([{ title: title, url: page starts with 'https://' or page starts with 'http://' ? page : page|url }]) %}
+        {% endif %}
+    {% endfor %}
+    {% if guest.extension_is_on({ mod: 'custompages' }) %}
+        {% set links = links|merge(guest.custompages_links|filter(custom => custom.footer)|map(custom => { title: custom.title, url: ('page/' ~ custom.slug)|url })) %}
+    {% endif %}
+    {% if links %}
+        <nav class="app-footer-links" aria-label="{{ 'Footer links'|trans }}">
+            {% for link in links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}
+        </nav>
+    {% endif %}
+    {{ render_widgets('client.theme.footer.end') }}
+</footer>
+{% endif %}

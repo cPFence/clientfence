@@ -1,0 +1,68 @@
+{# ClientFence admin frame: the staff sign-in screens (login, password reset and update) as a split
+   screen like the client area's: a brand panel on large screens, the form on the other side
+   with the theme switch. Same blocks and variables as FOSSBilling's partial: title, subtitle,
+   auth_form, auth_footer_note (and company). #}
+{% set _auth_form_fallback %}{% block auth_form %}{% endblock %}{% endset %}
+{% set auth_form = block('auth_form')|trim %}
+{% set _auth_footer_note_fallback %}{% block auth_footer_note %}{% endblock %}{% endset %}
+{% set auth_footer_note = block('auth_footer_note')|trim %}
+{% set company = company|default(guest.system_company) %}
+{% set frame_dir = guest.system_locale|default('en') starts with 'ar' ? 'rtl' : 'ltr' %}
+
+<div class="bf-auth" dir="{{ frame_dir }}">
+    <aside class="bf-auth-brand" aria-hidden="true">
+        <span class="bf-auth-brand-logo">
+            {% if company.logo_url_dark or company.logo_url %}
+                <img src="{{ company.logo_url_dark|default(company.logo_url) }}" alt="">
+            {% else %}
+                <span class="bf-auth-brand-name">{{ company.name }}</span>
+            {% endif %}
+        </span>
+        <div>
+            <span class="bf-auth-tag">{{ 'Admin area'|trans }}</span>
+            <h2 class="bf-auth-headline">{{ 'Staff sign-in'|trans }}</h2>
+            <p class="bf-auth-lead">{{ 'Clients, orders, invoices and support in one place.'|trans }}</p>
+            <ul class="bf-auth-list">
+                <li><svg class="icon"><use href="#address-book" /></svg>{{ 'Clients'|trans }}</li>
+                <li><svg class="icon"><use href="#package" /></svg>{{ 'Orders'|trans }}</li>
+                <li><svg class="icon"><use href="#receipt" /></svg>{{ 'Invoices'|trans }}</li>
+                <li><svg class="icon"><use href="#headset" /></svg>{{ 'Support'|trans }}</li>
+            </ul>
+        </div>
+        <small dir="ltr">&copy; {{ 'now'|date('Y') }} {{ company.name }}</small>
+    </aside>
+    <main class="bf-auth-panel">
+        <div class="bf-auth-top">
+            {{ include('partial_company_logo.html.twig', {
+                company: company,
+                link_url: '/'|url(area: 'client'),
+                link_class: 'bf-auth-logo',
+                fallback_class: 'h2 mb-0'
+            }) }}
+            <div class="bf-auth-tools">
+                <a class="bf-icon-btn hide-theme-dark js-theme-toggler" href="?theme=dark" title="{{ 'Enable dark mode'|trans }}" aria-label="{{ 'Enable dark mode'|trans }}">
+                    <svg class="icon" aria-hidden="true"><use href="#moon" /></svg>
+                </a>
+                <a class="bf-icon-btn hide-theme-light js-theme-toggler" href="?theme=light" title="{{ 'Enable light mode'|trans }}" aria-label="{{ 'Enable light mode'|trans }}">
+                    <svg class="icon" aria-hidden="true"><use href="#sun" /></svg>
+                </a>
+            </div>
+        </div>
+        <div class="bf-auth-body">
+            <div class="bf-auth-card">
+                <h1 class="bf-auth-title">{{ title }}</h1>
+                {% if subtitle is defined and subtitle %}
+                    <p class="bf-auth-subtitle">{{ subtitle }}</p>
+                {% endif %}
+                {{ auth_form|raw }}
+                {% if auth_footer_note %}
+                    <div class="bf-auth-note">{{ auth_footer_note|raw }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <footer class="bf-auth-footer">
+            <a href="{{ '/'|url(area: 'client') }}">{{ 'Client area'|trans }}</a>
+            <span class="bf-auth-footer-copy" dir="ltr">&copy; {{ 'now'|date('Y') }} {{ company.name }}</span>
+        </footer>
+    </main>
+</div>

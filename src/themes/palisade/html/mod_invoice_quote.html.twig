@@ -1,0 +1,153 @@
+{# ClientFence: a quote by its link (Invoice/Quotes.php), for the client or prospect it is for,
+   signed in or not: the proposal, the lines and totals, the notes and the PDF. While it is open and
+   not expired it can be accepted (the invoice is made and emailed; a prospect gets an account and
+   the email to set its password) or declined. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'invoices' %}
+
+{% block meta_title %}{{ 'Quote #:id'|trans({ ':id': quote.id }) }}{% endblock %}
+{% block body_class %}invoice-quote{% endblock %}
+{% block breadcrumb %}
+    {% if quote.mine %}
+        <li class="breadcrumb-item"><a href="{{ 'invoice'|url }}">{{ 'Invoices'|trans }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ 'invoice/quotes'|url }}">{{ 'Quotes'|trans }}</a></li>
+    {% endif %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'Quote #:id'|trans({ ':id': quote.id }) }}</li>
+{% endblock %}
+
+{% block content %}
+{% macro amount(value, currency) %}<span dir="ltr">{{ value|format_currency(currency, {}, 'en_US') }}</span>{% endmacro %}
+{% import _self as m %}
+{% set link = ('quote/' ~ quote.hash)|url %}
+{% set can_answer = quote.open and not quote.expired %}
+{% set chip = quote.stage == 'accepted' ? ['bf-chip-ok', 'Accepted'|trans]
+    : (quote.stage == 'lost' ? ['bf-chip-muted', 'Declined'|trans]
+    : (quote.stage == 'dead' ? ['bf-chip-muted', 'Withdrawn'|trans]
+    : (quote.expired ? ['bf-chip-muted', 'Expired'|trans] : ['bf-chip-warn', 'Awaiting your answer'|trans]))) %}
+{% set has_discount = quote.items|filter(item => item.discount > 0)|length > 0 %}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Quote #:id'|trans({ ':id': quote.id }) }} <span class="bf-chip {{ chip[0] }} align-middle">{{ chip[1] }}</span></h1>
+        <span class="bf-hint" dir="auto">{{ quote.subject }}</span>
+    </div>
+    <a class="btn btn-outline-primary" href="{{ (link ~ '/pdf') }}">{{ 'Download PDF'|trans }}</a>
+</div>
+<div class="card mb-4">
+    <div class="card-body">
+        {% if quote.stage == 'accepted' %}
+            <div class="alert alert-success" role="status">
+                {{ 'This quote was accepted on :date.'|trans({ ':date': quote.accepted_at|format_date }) }}
+                {% if quote.invoice_url %}
+                    <a class="alert-link" href="{{ quote.invoice_url }}">{{ 'View the invoice'|trans }}</a>
+                {% else %}
+                    {{ 'We emailed you the invoice.'|trans }}
+                {% endif %}
+            </div>
+        {% elseif quote.stage == 'lost' %}
+            <div class="alert alert-secondary" role="status">{{ 'This quote was declined. Questions? Please contact us.'|trans }}</div>
+        {% elseif quote.stage == 'dead' %}
+            <div class="alert alert-secondary" role="status">{{ 'This quote is no longer available. Please contact us for a new one.'|trans }}</div>
+        {% elseif quote.expired %}
+            <div class="alert alert-warning" role="status">{{ 'This quote expired on :date. Please contact us for a new one.'|trans({ ':date': quote.valid_until|format_date }) }}</div>
+        {% endif %}
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <div class="small text-muted">{{ 'For'|trans }}</div>
+                <div dir="auto">
+                    {% if quote.recipient.company %}<strong>{{ quote.recipient.company }}</strong><br>{% endif %}
+                    {{ quote.recipient.name }}<br>
+                    <span dir="ltr">{{ quote.recipient.email }}</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="small text-muted">{{ 'Date'|trans }}</div>
+                <div>{{ quote.created_at|format_date }}</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="small text-muted">{{ 'Valid until'|trans }}</div>
+                <div>{{ quote.valid_until ? quote.valid_until|format_date : '-' }}</div>
+            </div>
+        </div>
+
+        {% if quote.proposal %}
+            <div class="mb-3" dir="auto">{{ quote.proposal|nl2br }}</div>
+        {% endif %}
+
+        <div class="table-responsive">
+            <table class="table align-middle table-stack">
+                <thead>
+                    <tr>
+                        <th>{{ 'Description'|trans }}</th>
+                        <th class="text-end">{{ 'Qty'|trans }}</th>
+                        <th class="text-end">{{ 'Unit price'|trans }}</th>
+                        {% if has_discount %}<th class="text-end">{{ 'Discount'|trans }}</th>{% endif %}
+                        <th class="text-end">{{ 'Amount'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in quote.items %}
+                        <tr>
+                            <td dir="auto">{{ item.description }}{% if item.taxed and quote.tax > 0 %} *{% endif %}</td>
+                            <td class="text-end">{{ item.quantity }}</td>
+                            <td class="text-end">{{ m.amount(item.price, quote.currency) }}</td>
+                            {% if has_discount %}<td class="text-end">{% if item.discount > 0 %}<span dir="ltr">{{ item.discount|number_format(2, '.', '')|trim('0', 'right')|trim('.', 'right') }}%</span>{% endif %}</td>{% endif %}
+                            <td class="text-end">{{ m.amount(item.amount, quote.currency) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    {% set span = has_discount ? 4 : 3 %}
+                    {% if quote.tax > 0 %}
+                        <tr>
+                            <td colspan="{{ span }}" class="text-end">{{ 'Subtotal'|trans }}</td>
+                            <td class="text-end">{{ m.amount(quote.subtotal, quote.currency) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="{{ span }}" class="text-end">{{ quote.taxname ?: 'Tax'|trans }} (<span dir="ltr">{{ quote.taxrate|number_format(2, '.', '')|trim('0', 'right')|trim('.', 'right') }}%</span>)</td>
+                            <td class="text-end">{{ m.amount(quote.tax, quote.currency) }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr class="fw-bold">
+                        <td colspan="{{ span }}" class="text-end">{{ 'Total'|trans }}</td>
+                        <td class="text-end">{{ m.amount(quote.total, quote.currency) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% if quote.tax > 0 %}<p class="small text-muted">{{ '* Taxed line.'|trans }}</p>{% endif %}
+
+        {% if quote.customer_notes %}
+            <h2 class="h6 mt-3">{{ 'Notes'|trans }}</h2>
+            <div dir="auto">{{ quote.customer_notes|nl2br }}</div>
+        {% endif %}
+    </div>
+    {% if can_answer %}
+        <div class="card-footer py-3">
+            <form method="post" action="{{ 'invoice/quote_accept'|api_url(role: 'guest') }}" {{ fb_api_form({ redirect: link }) }}>
+                <input type="hidden" name="hash" value="{{ quote.hash }}">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="quote-agree" name="agree" value="1" required>
+                    <label class="form-check-label" for="quote-agree">{{ 'I accept this quote and the :link.'|trans({ ':link': '<a href="' ~ ('tos'|url|e('html_attr')) ~ '" target="_blank">' ~ ('terms of service'|trans|e) ~ '</a>' })|raw }}</label>
+                </div>
+                <p class="small text-muted mb-2">
+                    {% if quote.recipient.prospect %}
+                        {{ 'When you accept, we open your account and email you the invoice and a link to set your password.'|trans }}
+                    {% else %}
+                        {{ 'When you accept, we make the invoice and email it to you.'|trans }}
+                    {% endif %}
+                </p>
+                <button type="submit" class="btn btn-primary">{{ 'Accept the quote'|trans }}</button>
+            </form>
+            <details class="mt-3">
+                <summary class="small text-muted">{{ 'Decline this quote'|trans }}</summary>
+                <form class="mt-2" method="post" action="{{ 'invoice/quote_decline'|api_url(role: 'guest') }}" {{ fb_api_form({ redirect: link }) }}>
+                    <input type="hidden" name="hash" value="{{ quote.hash }}">
+                    <p class="small text-muted mb-2">{{ 'Declining closes the quote. To change it instead, please contact us.'|trans }}</p>
+                    <button type="submit" class="btn btn-outline-danger btn-sm">{{ 'Decline the quote'|trans }}</button>
+                </form>
+            </details>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

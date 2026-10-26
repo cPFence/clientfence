@@ -1,0 +1,29 @@
+{# ClientFence: ticket attachments (Support/TicketFiles.php), on the General tab of the Support
+   settings page. Kept in mod_support; saved with support/ticket_files_update, never with the
+   tab's main form. #}
+{% set files = admin.extension_config_get({ 'ext': 'mod_support' }) %}
+{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{{ include('mod_clientfence_settings_style.html.twig') }}
+<div class="clientfence-settings border-top" id="ticket-files" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<form method="post" action="{{ 'support/ticket_files_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
+		<div class="clientfence-settings-intro">
+			<h3>{{ 'Ticket attachments'|trans }}</h3>
+			<p>{{ 'Clients, their authorized users and staff can attach up to 5 files of 10 MB to a ticket message: images, PDF, text and log files, CSV and archives (zip, rar, tar). Staff can remove a file from the ticket page.'|trans }}</p>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="ticket_files_days">{{ 'Keep ticket files for'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'Days after a file was sent. Older files are removed by the cron; the message then shows that the file was removed. 0 keeps every file.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<div class="input-group">
+					<input class="form-control" type="number" min="0" max="3650" id="ticket_files_days" name="ticket_files_days" value="{{ files.ticket_files_days|default('180') }}" required>
+					<span class="input-group-text">{{ 'days'|trans }}</span>
+				</div>
+			</div>
+		</div>
+		<div class="clientfence-settings-actions">
+			<button type="submit" class="btn btn-primary">{{ 'Save ticket attachment settings'|trans }}</button>
+		</div>
+	</form>
+</div>

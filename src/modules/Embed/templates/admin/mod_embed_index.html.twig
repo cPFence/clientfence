@@ -1,0 +1,109 @@
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% block meta_title %}{{ 'Embed Parts of ClientFence'|trans }}{% endblock %}
+{% set active_menu = 'extensions' %}
+{% set parts = {
+    loginform: { title: 'Client Area Login Form'|trans, url: 'embed/loginform'|url(area: 'client'), width: 260, height: 150 },
+    domainchecker: { title: 'Domain Checker Form'|trans, url: 'embed/domainchecker'|url(area: 'client'), width: 360, height: 75 },
+    contact: { title: 'Contact Us Form'|trans, url: 'embed/contact'|url(area: 'client'), width: 400, height: 450 }
+} %}
+
+{% block content %}
+    {% set settings = admin.embed_get_settings %}
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Embed Parts'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Copy and paste ready-made embed code snippets into your website.'|trans }}</p>
+            </div>
+        </div>
+        <form class="card-body border-bottom" method="post" action="{{ 'embed/save_settings'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans }) }}>
+            <label class="form-label" for="embed-origins">{{ 'Websites allowed to embed'|trans }}</label>
+            <textarea class="form-control font-monospace" rows="4" name="allowed_origins" id="embed-origins" placeholder="https://example.com" spellcheck="false">{{ settings.allowed_origins|join("\n") }}</textarea>
+            <div class="form-hint">{{ 'One per line, up to 20, such as https://example.com. Empty: the parts show only on this site.'|trans }}</div>
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+            </div>
+        </form>
+        <div class="card-body" id="embed-builder">
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-4">
+                    <label class="form-label" for="embed-part">{{ 'Part'|trans }}</label>
+                    <select class="form-select" id="embed-part">
+                        {% for id, part in parts %}
+                            <option value="{{ id }}">{{ part.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-sm-3 col-lg-2">
+                    <label class="form-label" for="embed-width">{{ 'Width'|trans }}</label>
+                    <input class="form-control" type="number" min="100" max="2000" id="embed-width">
+                </div>
+                <div class="col-6 col-sm-3 col-lg-2">
+                    <label class="form-label" for="embed-height">{{ 'Height'|trans }}</label>
+                    <input class="form-control" type="number" min="50" max="2000" id="embed-height">
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <span class="form-label">{{ 'Theme'|trans }}</span>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="embed-theme" id="embed-theme-light" value="light" checked>
+                        <label class="btn" for="embed-theme-light">{{ 'Light'|trans }}</label>
+                        <input type="radio" class="btn-check" name="embed-theme" id="embed-theme-dark" value="dark">
+                        <label class="btn" for="embed-theme-dark">{{ 'Dark'|trans }}</label>
+                    </div>
+                </div>
+            </div>
+            <label class="form-label mt-3" for="embed-code">{{ 'Embed Code'|trans }}</label>
+            <div class="input-group">
+                <textarea id="embed-code" rows="2" class="form-control font-monospace" readonly spellcheck="false"></textarea>
+                <button type="button" class="btn" id="embed-copy">
+                    <svg class="icon"><use href="#copy" /></svg>
+                    {{ 'Copy'|trans }}
+                </button>
+            </div>
+            <span class="form-label mt-3">{{ 'Live Preview'|trans }}</span>
+            <div class="border rounded bg-body-tertiary p-3 overflow-auto">
+                <iframe id="embed-preview" class="border-0"></iframe>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const parts = {{ parts|json_encode|raw }};
+        const builder = document.getElementById('embed-builder');
+        const part = document.getElementById('embed-part');
+        const width = document.getElementById('embed-width');
+        const height = document.getElementById('embed-height');
+        const code = document.getElementById('embed-code');
+        const preview = document.getElementById('embed-preview');
+        const attr = (text) => String(text).replace(/[&"<>]/g, (c) => ({ '&': '&amp;', '"': '&quot;', '<': '&lt;', '>': '&gt;' })[c]);
+        const update = () => {
+            const chosen = parts[part.value];
+            const dark = builder.querySelector('input[name="embed-theme"]:checked').value === 'dark';
+            const src = chosen.url + (dark ? '?theme=dark' : '');
+            const w = parseInt(width.value, 10) || chosen.width;
+            const h = parseInt(height.value, 10) || chosen.height;
+            code.value = '<iframe src="' + attr(src) + '" width="' + w + '" height="' + h + '" title="' + attr(chosen.title) + '" style="border: 0"></iframe>';
+            if (preview.getAttribute('src') !== src) {
+                preview.src = src;
+            }
+            preview.width = w;
+            preview.height = h;
+            preview.title = chosen.title;
+        };
+        const reset = () => {
+            width.value = parts[part.value].width;
+            height.value = parts[part.value].height;
+            update();
+        };
+        part.addEventListener('change', reset);
+        builder.addEventListener('input', update);
+        document.getElementById('embed-copy').addEventListener('click', () => {
+            navigator.clipboard?.writeText(code.value).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'));
+        });
+        reset();
+    })();
+</script>
+{% endblock %}

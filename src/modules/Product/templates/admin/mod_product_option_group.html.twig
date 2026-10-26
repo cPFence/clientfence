@@ -1,0 +1,118 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: an option group (Product/Options.php): its name and description, its options and the
+   products it is attached to (set on each product's Options tab). `group` is null for a new one;
+   `products` is product_get_pairs. #}
+
+{% set active_menu = 'products' %}
+{% set kinds = { 'select': 'Dropdown'|trans, 'radio': 'Radio buttons'|trans, 'yesno': 'Yes/no'|trans, 'quantity': 'Quantity'|trans } %}
+{% set title = group ? group.title : 'New option group'|trans %}
+
+{% block meta_title %}{{ title }}{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ '/'|url }}"><svg class="icon"><use href="#home" /></svg></a></li>
+    <li class="breadcrumb-item"><a href="{{ 'product'|url }}">{{ 'Products'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ 'product'|url }}#tab-options">{{ 'Configurable options'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ 'product/option_group_save'|api_url }}" {{ fb_api_form(group ? { message: 'Option group saved'|trans, reload: true } : { callback: 'clientfenceOptionGroupCreated' }) }}>
+    {% if group %}<input type="hidden" name="id" value="{{ group.id }}">{% endif %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ title }}</h3>
+                <p class="card-subtitle">{{ 'Attach the group to products on their Options tab. Clients choose the options when they order.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label required" for="cf-group-title">{{ 'Group name'|trans }}</label>
+                <input class="form-control" id="cf-group-title" name="title" maxlength="255" value="{{ group.title|default('') }}" required>
+                <div class="form-hint">{{ 'For staff only, such as "VPS resources".'|trans }}</div>
+            </div>
+            <div>
+                <label class="form-label" for="cf-group-description">{{ 'Description'|trans }}</label>
+                <textarea class="form-control" id="cf-group-description" name="description" rows="2" maxlength="2000">{{ group.description|default('') }}</textarea>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">{{ group ? 'Save'|trans : 'Create group'|trans }}</button>
+        </div>
+    </div>
+</form>
+
+{% if group %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Options'|trans }}</h3>
+        </div>
+        <div class="card-actions btn-list">
+            <a class="btn btn-primary" href="{{ 'product/option/0'|url({ 'group_id': group.id }) }}">
+                <svg class="icon"><use href="#plus" /></svg>
+                {{ 'Add option'|trans }}
+            </a>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter">
+            <thead>
+                <tr>
+                    <th>{{ 'Option'|trans }}</th>
+                    <th>{{ 'Kind'|trans }}</th>
+                    <th>{{ 'Values'|trans }}</th>
+                    <th class="w-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for option in group.options %}
+                <tr>
+                    <td>
+                        <a href="{{ ('product/option/' ~ option.id)|url }}">{{ option.title }}</a>
+                        {% if option.code %}<code class="ms-1">{{ option.code }}</code>{% endif %}
+                        {% if option.hidden %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden'|trans }}</span>{% endif %}
+                    </td>
+                    <td class="text-nowrap">{{ kinds[option.type]|default(option.type) }}</td>
+                    <td>
+                        {% if option.type in ['select', 'radio'] %}
+                            {% for value in option.values %}{{ value.title }}{% if value.hidden %} ({{ 'hidden'|trans }}){% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
+                        {% elseif option.type == 'quantity' %}
+                            {{ option.qty_min }}–{{ option.qty_max ?: '∞' }} {{ option.unit }}
+                        {% else %}
+                            {{ 'On or off'|trans }}
+                        {% endif %}
+                    </td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-icon" href="{{ ('product/option/' ~ option.id)|url }}" aria-label="{{ 'Edit'|trans }}"><svg class="icon"><use href="#edit" /></svg></a>
+                        <a class="btn btn-icon" href="{{ 'product/option_delete'|api_url(query: { 'id': option.id }) }}" aria-label="{{ 'Delete'|trans }}"
+                            {{ fb_api_link({ modal: { type: 'confirm', title: 'Delete this option? Services keep it as they have it.'|trans }, reload: true }) }}><svg class="icon"><use href="#trash" /></svg></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td class="text-muted" colspan="4">{{ 'No options yet. Add the first one.'|trans }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ 'Products'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        {% for product_id in group.products %}
+            <a class="badge bg-blue-lt me-1 mb-1" href="{{ ('product/manage/' ~ product_id)|url }}#tab-options">{{ products[product_id]|default('#' ~ product_id) }}</a>
+        {% else %}
+            <span class="text-secondary">{{ 'Not attached to any product yet: open a product and use its Options tab.'|trans }}</span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

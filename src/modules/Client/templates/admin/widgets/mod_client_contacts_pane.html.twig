@@ -1,0 +1,88 @@
+{# The Contacts tab content of the admin client page (slot admin.client.manage.panes, ClientFence core
+   patch "client page widget slots"; the tab itself is mod_client_contacts_tab). Staff who can open
+   the client see the account's contacts (people who get copies of the account's emails and do not
+   sign in); staff with the client "edit profile" permission add, change and remove them. Every
+   change is in the activity log. Contacts.php. #}
+{% set contacts_page = admin.client_contact_page({ client_id: client.id }) %}
+{% set can_manage = has_permission('client', 'edit_profile') %}
+{% set countries = guest.system_countries %}
+{% set labels = {} %}
+{% for kind in contacts_page.kinds %}{% set labels = labels|merge({ (kind.name): kind.label }) %}{% endfor %}
+
+
+<div class="tab-pane fade" id="tab-clientfence-contacts" role="tabpanel">
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Contacts'|trans,
+        subtitle: 'People who get a copy of this account\'s emails of the kinds chosen for them. They do not sign in.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_action %}
+            {% if can_manage and contacts_page.contacts|length < contacts_page.max %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-staff-contact-add" aria-expanded="false" aria-controls="clientfence-staff-contact-add">
+                    <svg class="icon"><use href="#plus" /></svg>{{ 'Add contact'|trans }}
+                </button>
+            {% endif %}
+        {% endblock %}
+        {% block section_content %}
+            {% if can_manage %}
+                <div class="collapse border-top" id="clientfence-staff-contact-add">
+                    <form class="card-body" method="post" action="{{ 'client/contact_save'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                        <input type="hidden" name="client_id" value="{{ client.id }}">
+                        {% include 'mod_client_contact_fields.html.twig' with { contact: { emails: ['invoice'] }, kinds: contacts_page.kinds, prefix: 'clientfence-staff-contact-add', countries: countries } only %}
+                        <button class="btn btn-primary mt-3" type="submit">{{ 'Add contact'|trans }}</button>
+                    </form>
+                </div>
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Contact'|trans }}</th>
+                            <th>{{ 'Gets copies of'|trans }}</th>
+                            <th>{{ 'Phone Number'|trans }}</th>
+                            {% if can_manage %}<th class="w-1"></th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contact in contacts_page.contacts %}
+                            <tr data-clientfence-contact="{{ contact.id }}">
+                                <td>
+                                    <div class="fw-medium">{{ contact.first_name }} {{ contact.last_name }}{% if contact.company %} <span class="text-secondary fw-normal">· {{ contact.company }}</span>{% endif %}</div>
+                                    <div class="text-secondary small" dir="ltr">{{ contact.email }}</div>
+                                </td>
+                                <td>
+                                    {% for kind in contact.emails %}<span class="badge bg-secondary-lt me-1 mb-1">{{ labels[kind] }}</span>{% else %}<span class="text-secondary">{{ 'No emails'|trans }}</span>{% endfor %}
+                                </td>
+                                <td class="text-nowrap" dir="ltr">{% if contact.phone %}{% if contact.phone_cc %}+{{ contact.phone_cc }} {% endif %}{{ contact.phone }}{% endif %}</td>
+                                {% if can_manage %}
+                                    <td class="text-nowrap">
+                                        <div class="btn-list flex-nowrap">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#clientfence-staff-contact-{{ contact.id }}" aria-expanded="false" aria-controls="clientfence-staff-contact-{{ contact.id }}">{{ 'Edit'|trans }}</button>
+                                            <a class="btn btn-sm btn-outline-danger" {{ fb_api_link({ href: 'client/contact_delete'|api_url(query: { id: contact.id, client_id: client.id }), modal: { type: 'confirm', title: 'Remove this contact?'|trans }, reload: true }) }}>{{ 'Remove'|trans }}</a>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            {% if can_manage %}
+                                <tr class="collapse" id="clientfence-staff-contact-{{ contact.id }}">
+                                    <td colspan="4">
+                                        <form method="post" action="{{ 'client/contact_save'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                                            <input type="hidden" name="client_id" value="{{ client.id }}">
+                                            <input type="hidden" name="id" value="{{ contact.id }}">
+                                            {% include 'mod_client_contact_fields.html.twig' with { contact: contact, kinds: contacts_page.kinds, prefix: 'clientfence-staff-contact-' ~ contact.id, countries: countries } only %}
+                                            <button class="btn btn-sm btn-primary mt-3" type="submit">{{ 'Save contact'|trans }}</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td class="text-secondary" colspan="4">{{ 'This account has no contacts yet.'|trans }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
+</div>

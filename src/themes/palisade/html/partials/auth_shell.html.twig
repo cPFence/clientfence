@@ -1,0 +1,39 @@
+{# Split sign-in screen: brand panel (large screens) and the form panel. Fill `auth_content`.
+   Theme settings "Login Page": show the company logo (otherwise the company name), and where the
+   logo links (empty: the client area). #}
+{% set auth_logo = { show_logo: settings.login_page_show_logo|default('1') } %}
+{% if settings.login_page_logo_url|default('')|trim %}
+    {% set auth_logo = auth_logo|merge({ link_url: settings.login_page_logo_url|trim, link_target: '_blank' }) %}
+{% endif %}
+{# Sign-in page style (Clientfence Branding.php, chosen in the setup wizard): dark, brand or light;
+   the light panel shows the logo that suits the color mode. #}
+{% set auth_style = guest.clientfence_brand.login_style|default('dark') %}
+<div class="auth-page">
+    <aside class="auth-brand is-{{ auth_style }}">
+        {{ include('partial_company_logo.html.twig', { variant: auth_style == 'light' ? 'auto' : 'inverse', link_url: '/'|url }|merge(auth_logo)) }}
+        <div>
+            <h2>{{ 'Your client area'|trans }}</h2>
+            <p>{{ 'Manage your services, invoices and support tickets in one place.'|trans }}</p>
+            <ul>
+                <li><svg class="icon" aria-hidden="true"><use href="#server"/></svg>{{ 'Services'|trans }}</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#file-invoice"/></svg>{{ 'Invoices and payments'|trans }}</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#headset"/></svg>{{ 'Support tickets'|trans }}</li>
+            </ul>
+        </div>
+        <small><span dir="ltr">&copy; {{ 'now'|date('Y') }} {{ guest.system_company.name }}</span></small>
+    </aside>
+    <main class="auth-panel">
+        <div class="auth-top">
+            {{ include('partial_company_logo.html.twig', { link_class: 'auth-logo', link_url: 'login'|url }|merge(auth_logo)) }}
+            <div class="auth-tools">
+                {{ include('partials/tools.html.twig') }}
+            </div>
+        </div>
+        <div class="auth-body">
+            <div class="auth-card">
+                {% block auth_content %}{% endblock %}
+            </div>
+        </div>
+        <footer class="auth-footer d-lg-none"><span dir="ltr">&copy; {{ 'now'|date('Y') }} {{ guest.system_company.name }}</span></footer>
+    </main>
+</div>

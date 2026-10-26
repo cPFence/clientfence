@@ -1,0 +1,27 @@
+{# ClientFence ticket attachments (Support/TicketFiles.php): the files of one message on the admin
+   ticket page (included by mod_support_ticket.html.twig). Staff who manage tickets can remove a
+   file; a removed file stays listed as removed. #}
+{% if message.ticket_files|default([]) is not empty %}
+    {% set can_remove = has_permission('support', 'manage_tickets') %}
+    <div class="bf-files-box" data-clientfence-message-files>
+        <div class="bf-files-title">{{ 'Attachments'|trans }}</div>
+        <ul class="bf-files">
+            {% for file in message.ticket_files %}
+                {% if file.removed %}
+                    <li class="bf-file is-removed">
+                        <span class="bf-file-name"><svg class="icon" aria-hidden="true"><use href="#download" /></svg><span dir="auto">{{ file.name }}</span></span>
+                        <span class="bf-file-size">{{ file.removed_reason == 'expired' ? 'Removed after the keep period'|trans : 'Removed by staff'|trans }}</span>
+                    </li>
+                {% else %}
+                    <li class="bf-file">
+                        <a class="bf-file-name" href="{{ ('support/ticket-file/' ~ file.id)|url }}" target="_blank" rel="noopener" title="{{ file.name }}"><svg class="icon" aria-hidden="true"><use href="#download" /></svg><span dir="auto">{{ file.name }}</span></a>
+                        <span class="bf-file-size">{{ file.size_label }}</span>
+                        {% if can_remove %}
+                            <a class="bf-file-remove" role="button" title="{{ 'Remove'|trans }}" aria-label="{{ 'Remove'|trans }} {{ file.name }}" {{ fb_api_link({ href: 'support/ticket_file_remove'|api_url(query: { id: file.id }), modal: { type: 'confirm', title: 'Remove this file? It is deleted for good; the message shows that staff removed it.'|trans }, reload: true }) }}><svg class="icon" aria-hidden="true"><use href="#trash" /></svg></a>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

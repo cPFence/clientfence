@@ -1,0 +1,330 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{% block meta_title %}{{ 'Redirects'|trans }}{% endblock %}
+
+{% set active_menu = 'system' %}
+{% set can_view = has_permission('redirect', 'view') %}
+{% set can_edit = has_permission('redirect', 'create_and_edit') %}
+{% set can_delete = has_permission('redirect', 'delete') %}
+{% set client_url = ''|url(area: 'client') %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ '/'|url }}">
+                <svg class="icon">
+                    <use href="#home" />
+                </svg>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'system'|url }}">{{ 'Settings'|trans }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ 'Redirects'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block content %}
+    <div class="card" id="redirects" data-client-url="{{ client_url }}"
+         {% if can_view %}data-redirects="{{ admin.redirect_get_list|json_encode }}"{% endif %}
+         data-text-permanent="{{ 'Permanent'|trans }}" data-text-temporary="{{ 'Temporary'|trans }}"
+         data-text-add="{{ 'Add redirect'|trans }}" data-text-edit="{{ 'Edit redirect'|trans }}"
+         data-text-added="{{ 'Redirect added.'|trans }}" data-text-saved="{{ 'Saved.'|trans }}"
+         data-text-deleted="{{ 'Redirect deleted.'|trans }}" data-text-required="{{ 'Required'|trans }}">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Redirects'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Use a relative client-area path as the source, then point it to another client path or a full external URL.'|trans }}</p>
+            </div>
+            {% if can_view %}
+                <div class="card-actions d-flex flex-wrap gap-2">
+                    <div class="input-icon">
+                        <span class="input-icon-addon">
+                            <svg class="icon"><use href="#search" /></svg>
+                        </span>
+                        <input type="search" class="form-control" id="redirect-search" placeholder="{{ 'Search'|trans }}" aria-label="{{ 'Search'|trans }}">
+                    </div>
+                    {% if can_edit %}
+                        <button type="button" class="btn btn-primary" data-redirect-add>
+                            <svg class="icon"><use href="#plus" /></svg>
+                            {{ 'Add redirect'|trans }}
+                        </button>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if can_view %}
+            <div class="table-responsive" id="redirect-table">
+                <table class="table card-table table-vcenter">
+                    <thead>
+                    <tr>
+                        <th>{{ 'Path'|trans }}</th>
+                        <th>{{ 'Target'|trans }}</th>
+                        <th class="w-1">{{ 'Type'|trans }}</th>
+                        <th class="w-1">{{ 'Enabled'|trans }}</th>
+                        <th class="w-1"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="redirect-rows"></tbody>
+                </table>
+            </div>
+            <div class="card-body text-center text-secondary" id="redirect-no-match" hidden>{{ 'No redirects match your search.'|trans }}</div>
+            <div class="empty" id="redirect-empty" hidden>
+                <div class="empty-icon">
+                    <svg class="icon"><use href="#link" /></svg>
+                </div>
+                <p class="empty-title">{{ 'No redirects have been created yet.'|trans }}</p>
+                {% if can_edit %}
+                    <div class="empty-action">
+                        <button type="button" class="btn btn-primary" data-redirect-add>
+                            <svg class="icon"><use href="#plus" /></svg>
+                            {{ 'Add redirect'|trans }}
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="card-body">
+                <p class="text-secondary mb-0">{{ 'You do not have permission to view redirects.'|trans }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <template id="redirect-row-template">
+        <tr>
+            <td class="text-break"><a data-field="path" target="_blank" rel="noopener"></a></td>
+            <td class="text-break">
+                <svg class="icon text-secondary me-1"><use href="#arrow-right" /></svg>
+                <a data-field="target" target="_blank" rel="noopener noreferrer"></a>
+            </td>
+            <td class="text-nowrap"><span class="badge" data-field="type"></span></td>
+            <td>
+                <label class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" data-action="toggle" aria-label="{{ 'Enabled'|trans }}"{% if not can_edit %} disabled{% endif %}>
+                </label>
+            </td>
+            <td class="text-end text-nowrap">
+                {% if can_edit %}
+                    <button type="button" class="btn btn-icon btn-ghost-secondary" data-action="edit" title="{{ 'Edit'|trans }}" aria-label="{{ 'Edit'|trans }}">
+                        <svg class="icon"><use href="#edit" /></svg>
+                    </button>
+                {% endif %}
+                {% if can_delete %}
+                    <button type="button" class="btn btn-icon btn-ghost-danger" data-action="delete" title="{{ 'Delete'|trans }}" aria-label="{{ 'Delete'|trans }}">
+                        <svg class="icon"><use href="#trash" /></svg>
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+    </template>
+
+    {% if can_edit %}
+        <div class="modal modal-blur fade" id="redirect-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form class="modal-content" id="redirect-form" novalidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="redirect-modal-title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" id="redirect-form-error" role="alert" hidden></div>
+                        <input type="hidden" name="id">
+                        <div class="mb-3">
+                            <label class="form-label required" for="redirect-path">{{ 'Path'|trans }}</label>
+                            <div class="input-group input-group-flat has-validation">
+                                <span class="input-group-text">{{ client_url }}</span>
+                                <input type="text" class="form-control ps-0" name="path" id="redirect-path" placeholder="old-page" autocomplete="off" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required" for="redirect-target">{{ 'Target'|trans }}</label>
+                            <input type="text" class="form-control" name="target" id="redirect-target" placeholder="{{ 'e.g. new-page or https://example.com'|trans }}" autocomplete="off" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="redirect-type">{{ 'Type'|trans }}</label>
+                            <select class="form-select" name="type" id="redirect-type">
+                                <option value="301">301 – {{ 'Permanent'|trans }}</option>
+                                <option value="302">302 – {{ 'Temporary'|trans }}</option>
+                            </select>
+                        </div>
+                        <label class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" name="enabled" id="redirect-enabled">
+                            <span class="form-check-label">{{ 'Enabled'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                        <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if can_delete %}
+        <div class="modal modal-blur fade" id="redirect-delete-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-status bg-danger"></div>
+                    <div class="modal-body text-center py-4">
+                        <h3>{{ 'Are you sure?'|trans }}</h3>
+                        <div class="text-secondary text-break">{{ 'This redirect will be deleted:'|trans }} <strong id="redirect-delete-path"></strong></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                        <button type="button" class="btn btn-danger" id="redirect-delete-confirm">{{ 'Delete'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+{% if can_view %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const card = document.getElementById('redirects');
+        const text = card.dataset;
+        const rows = document.getElementById('redirect-rows');
+        const search = document.getElementById('redirect-search');
+        const rowTemplate = document.getElementById('redirect-row-template');
+        let redirects = JSON.parse(text.redirects);
+
+        const clientLink = (value) => /^[a-z][a-z0-9+.-]*:/i.test(value) ? value : text.clientUrl + value.replace(/^\/+/, '');
+
+        const render = () => {
+            rows.replaceChildren(...redirects.map((redirect) => {
+                const row = rowTemplate.content.firstElementChild.cloneNode(true);
+                row.dataset.id = redirect.id;
+                row.dataset.search = (redirect.path + ' ' + redirect.target).toLowerCase();
+                const path = row.querySelector('[data-field="path"]');
+                path.textContent = '/' + redirect.path;
+                path.href = clientLink(redirect.path);
+                const target = row.querySelector('[data-field="target"]');
+                target.textContent = redirect.target;
+                target.href = clientLink(redirect.target);
+                const type = row.querySelector('[data-field="type"]');
+                type.textContent = redirect.type + ' ' + (redirect.type === 302 ? text.textTemporary : text.textPermanent);
+                type.classList.add(redirect.type === 302 ? 'bg-yellow-lt' : 'bg-blue-lt');
+                row.querySelector('[data-action="toggle"]').checked = redirect.enabled;
+                return row;
+            }));
+            filter();
+        };
+
+        const filter = () => {
+            const query = search.value.trim().toLowerCase();
+            let shown = 0;
+            for (const row of rows.children) {
+                row.hidden = !row.dataset.search.includes(query);
+                shown += row.hidden ? 0 : 1;
+            }
+            document.getElementById('redirect-table').hidden = shown === 0;
+            document.getElementById('redirect-empty').hidden = redirects.length > 0;
+            document.getElementById('redirect-no-match').hidden = redirects.length === 0 || shown > 0;
+        };
+
+        const reload = () => ClientFence.api.admin.get('redirect/get_list', {}, (list) => {
+            redirects = list;
+            render();
+        }, (error) => ClientFence.message(error.message, 'error'), false);
+
+        const find = (element) => redirects.find((redirect) => String(redirect.id) === element.closest('tr').dataset.id);
+
+        search.addEventListener('input', filter);
+
+        const modalElement = document.getElementById('redirect-modal');
+        const form = document.getElementById('redirect-form');
+        const formError = document.getElementById('redirect-form-error');
+        const openForm = (redirect) => {
+            form.reset();
+            formError.hidden = true;
+            form.querySelectorAll('.is-invalid').forEach((field) => field.classList.remove('is-invalid'));
+            form.elements.id.value = redirect ? redirect.id : '';
+            form.elements.path.value = redirect ? redirect.path : '';
+            form.elements.target.value = redirect ? redirect.target : '';
+            form.elements.type.value = redirect ? redirect.type : 301;
+            form.elements.enabled.checked = redirect ? redirect.enabled : true;
+            document.getElementById('redirect-modal-title').textContent = redirect ? text.textEdit : text.textAdd;
+            bootstrap.Modal.getOrCreateInstance(modalElement).show();
+        };
+
+        form?.addEventListener('submit', (event) => {
+            event.preventDefault();
+            formError.hidden = true;
+            let valid = true;
+            for (const field of [form.elements.path, form.elements.target]) {
+                const empty = field.value.trim() === '';
+                field.classList.toggle('is-invalid', empty);
+                field.parentElement.querySelector('.invalid-feedback').textContent = text.textRequired;
+                valid &&= !empty;
+            }
+            if (!valid) {
+                return;
+            }
+            const id = form.elements.id.value;
+            const data = {
+                path: form.elements.path.value,
+                target: form.elements.target.value,
+                type: Number(form.elements.type.value),
+                enabled: form.elements.enabled.checked,
+            };
+            if (id) {
+                data.id = Number(id);
+            }
+            ClientFence.api.admin.post(id ? 'redirect/update' : 'redirect/create', data, () => {
+                bootstrap.Modal.getInstance(modalElement).hide();
+                ClientFence.message(id ? text.textSaved : text.textAdded, 'success');
+                reload();
+            }, (error) => {
+                formError.textContent = error.message;
+                formError.hidden = false;
+            });
+        });
+
+        document.querySelectorAll('[data-redirect-add]').forEach((button) => button.addEventListener('click', () => openForm(null)));
+
+        const deleteElement = document.getElementById('redirect-delete-modal');
+        let deleting = null;
+        document.getElementById('redirect-delete-confirm')?.addEventListener('click', () => {
+            ClientFence.api.admin.post('redirect/delete', { id: deleting.id }, () => {
+                bootstrap.Modal.getInstance(deleteElement).hide();
+                ClientFence.message(text.textDeleted, 'success');
+                reload();
+            }, (error) => ClientFence.message(error.message, 'error'));
+        });
+
+        rows.addEventListener('click', (event) => {
+            const button = event.target.closest('button[data-action]');
+            if (button?.dataset.action === 'edit') {
+                openForm(find(button));
+            } else if (button?.dataset.action === 'delete') {
+                deleting = find(button);
+                document.getElementById('redirect-delete-path').textContent = '/' + deleting.path;
+                bootstrap.Modal.getOrCreateInstance(deleteElement).show();
+            }
+        });
+
+        rows.addEventListener('change', (event) => {
+            const toggle = event.target.closest('[data-action="toggle"]');
+            if (!toggle) {
+                return;
+            }
+            const redirect = find(toggle);
+            ClientFence.api.admin.post('redirect/update', { id: redirect.id, enabled: toggle.checked }, () => {
+                redirect.enabled = toggle.checked;
+                ClientFence.message(text.textSaved, 'success');
+            }, (error) => {
+                toggle.checked = redirect.enabled;
+                ClientFence.message(error.message, 'error');
+            }, false);
+        });
+
+        render();
+    })();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,83 @@
+{# ClientFence: a service's configurable options (Product/Options.php) on the order's Configurable
+   options tab. Staff may set any value, hidden ones too (order/options_update); the change makes no
+   invoice, and the recurring price moves by the difference only when asked. `order_options` is
+   order/options_get. #}
+{% set kinds = { 'select': 'Dropdown'|trans, 'radio': 'Radio buttons'|trans, 'yesno': 'Yes/no'|trans, 'quantity': 'Quantity'|trans } %}
+<div class="card-body">
+    <form method="post" action="{{ 'order/options_update'|api_url }}" {{ fb_api_form({ message: 'Options saved'|trans, reload: true }) }}>
+        <input type="hidden" name="id" value="{{ order.id }}">
+        {% embed 'partial_admin_form_card.html.twig' with {
+            title: 'Configurable options'|trans,
+            subtitle: 'The options this service was sold with. The client changes them from their service page with a prorated invoice; a change here makes no invoice.'|trans
+        } %}
+            {% block form_content %}
+                {% if order_options.lines %}
+                <div class="table-responsive mb-3">
+                    <table class="table table-sm table-vcenter mb-0">
+                        <thead>
+                            <tr>
+                                <th>{{ 'Option'|trans }}</th>
+                                <th>{{ 'Now'|trans }}</th>
+                                <th class="text-end">{{ 'Price'|trans }}</th>
+                                <th class="text-end">{{ 'Setup'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for line in order_options.lines %}
+                            <tr>
+                                <td>{{ line.title }}{% if line.code %} <code class="ms-1">{{ line.code }}</code>{% endif %}</td>
+                                <td>{% if line.type == 'yesno' %}{{ 'Yes'|trans }}{% elseif line.type == 'quantity' %}{{ line.quantity }}{% if line.unit %} {{ line.unit }}{% endif %}{% else %}{{ line.value }}{% endif %}</td>
+                                <td class="text-end text-nowrap">{{ line.price|format_currency(default_currency) }}</td>
+                                <td class="text-end text-nowrap">{{ line.setup_price|format_currency(default_currency) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="form-hint">{{ 'Prices as sold, in the default currency, for each unit of the service.'|trans }}</div>
+                </div>
+                {% endif %}
+                <div class="row g-3">
+                    {% for option in order_options.options %}
+                        {% set fid = 'cf-order-option-' ~ option.id %}
+                        {% set current = order_options.choice[option.id] ?? null %}
+                        <div class="col-12 col-lg-6">
+                            <label class="form-label" for="{{ fid }}">
+                                {{ option.title }} <span class="text-secondary small">({{ kinds[option.type]|default(option.type) }})</span>
+                                {% if option.hidden %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden'|trans }}</span>{% endif %}
+                            </label>
+                            {% if option.type in ['select', 'radio'] %}
+                                <select class="form-select" id="{{ fid }}" name="options[{{ option.id }}]">
+                                    {% if option.hidden and current is null %}<option value="" selected>{{ '(not set)'|trans }}</option>{% endif %}
+                                    {% for value in option.values %}
+                                        <option value="{{ value.id }}"{% if value.id == current %} selected{% endif %}>{{ value.title }}{% if value.hidden %} ({{ 'hidden'|trans }}){% endif %}</option>
+                                    {% endfor %}
+                                </select>
+                            {% elseif option.type == 'yesno' %}
+                                <input type="hidden" name="options[{{ option.id }}]" value="0">
+                                <label class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="{{ fid }}" name="options[{{ option.id }}]" value="1"{% if current %} checked{% endif %}>
+                                    <span class="form-check-label">{{ 'On'|trans }}</span>
+                                </label>
+                            {% else %}
+                                <input class="form-control" id="{{ fid }}" type="number" inputmode="numeric" name="options[{{ option.id }}]" value="{{ current ?? option.qty_min }}" min="{{ option.qty_min }}"{% if option.qty_max %} max="{{ option.qty_max }}"{% endif %} step="1">
+                                {% if option.unit %}<div class="form-hint">{{ option.unit }}</div>{% endif %}
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="col-12 text-secondary">{{ 'The product of this service has no options now. Attach an option group on its Options tab to change them here.'|trans }}</div>
+                    {% endfor %}
+                </div>
+                {% if order_options.options %}
+                <label class="form-check mt-3 mb-0">
+                    <input class="form-check-input" type="checkbox" name="reprice" value="1" checked>
+                    <span class="form-check-label">{{ 'Change the recurring price by the difference (catalog prices at today\'s exchange rate)'|trans }}</span>
+                </label>
+                {% endif %}
+            {% endblock %}
+
+            {% block form_actions %}
+                {% if order_options.options %}<button class="btn btn-primary" type="submit">{{ 'Save options'|trans }}</button>{% endif %}
+            {% endblock %}
+        {% endembed %}
+    </form>
+</div>

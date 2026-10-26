@@ -1,0 +1,479 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Invoice;
+
+use ClientFence\InjectionAwareInterface;
+use ClientFence\Tools;
+use ClientFence\Validation\PriceValidator;
+
+class ServiceInvoiceItem implements InjectionAwareInterface
+{
+    public const int MAX_TASK_ATTEMPTS = 3;
+
+    protected ?\Pimple\Container $di = null;
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function markAsPaid(\Model_InvoiceItem $item, $charge = true): void
+    {
+        if ($charge && !$item->charged) {
+            $this->creditInvoiceItem($item);
+            $item->charged = true;
+            $item->updated_at = date('Y-m-d H:i:s');
+        }
+
+        $item->status = \Model_InvoiceItem::STATUS_PENDING_SETUP;
+        $item->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($item);
+
+        $oid = $this->getOrderId($item);
+        $orderService = $this->di['mod_service']('Order');
+        $order = $this->di['db']->load('ClientOrder', $oid);
+        if ($order instanceof \Model_ClientOrder) {
+            $orderService->unsetUnpaidInvoice($order);
+        }
+    }
+
+    public function executeTask(\Model_InvoiceItem $item)
+    {
+        if ($item->status == \Model_InvoiceItem::STATUS_EXECUTED) {
+            return true;
+        }
+
+        if ($item->type != \Model_InvoiceItem::TYPE_ORDER) {
+            return $this->executeTaskLocked($item);
+        }
+
+        // ClientFence core patch: one run per order's task at a time, and a line another run finished is not run
+        // again. Two staff clicks, or a click during the cron, renewed twice for one payment.
+        return Tools::withLock($this->di, 'fb:order_task:' . $this->getOrderId($item), function () use ($item) {
+            if ($item->id && $this->di['dbal']->fetchOne('SELECT status FROM invoice_item WHERE id = ?', [$item->id]) === \Model_InvoiceItem::STATUS_EXECUTED) {
+                $item->status = \Model_InvoiceItem::STATUS_EXECUTED;
+
+                return true;
+            }
+
+            return $this->executeTaskLocked($item);
+        });
+    }
+
+    private function executeTaskLocked(\Model_InvoiceItem $item)
+    {
+        if ($item->type == \Model_InvoiceItem::TYPE_ORDER) {
+            $taskFailed = false;
+
+            try {
+                $order_id = $this->getOrderId($item);
+                $order = $this->di['db']->load('ClientOrder', $order_id);
+                if (!$order instanceof \Model_ClientOrder) {
+                    throw new \ClientFence\Exception('Could not activate proforma item. Order :id not found', [':id' => $order_id]);
+                }
+                $orderService = $this->di['mod_service']('Order');
+                switch ($item->task) {
+                    case \Model_InvoiceItem::TASK_ACTIVATE:
+                        $product = $this->di['mod_service']('Product')->findProductById((int) $order->product_id);
+                        if ($product->getSetup() == \ClientFence\Mod\Product\Service::SETUP_AFTER_PAYMENT) {
+                            try {
+                                $orderService->activateOrder($order);
+                            } catch (\Exception $e) {
+                                error_log($e->getMessage());
+                                $orderService->saveStatusChange($order, "Order could not be activated due to error: {$e->getMessage()}.");
+                                $taskFailed = true;
+                            }
+                        }
+
+                        break;
+
+                    case \Model_InvoiceItem::TASK_RENEW:
+                        // ClientFence core patch: a cancelled order is never renewed (and brought back) by a paid
+                        // renewal invoice; staff refund it or uncancel the order.
+                        if ($order->status == \Model_ClientOrder::STATUS_CANCELED) {
+                            $orderService->saveStatusChange($order, 'A paid renewal invoice was not applied: the order is cancelled.');
+                            $taskFailed = true;
+
+                            break;
+                        }
+                        try {
+                            // Unsuspend order if suspended before renew
+                            if ($order->status == \Model_ClientOrder::STATUS_SUSPENDED) {
+                                $orderService->unsuspendFromOrder($order);
+                            }
+
+                            $order = $this->di['db']->load('ClientOrder', $order_id);
+                            $orderService->renewOrder($order);
+                        } catch (\Exception $e) {
+                            error_log($e->getMessage());
+                            $orderService->saveStatusChange($order, "Order could not renew due to error: {$e->getMessage()}.");
+                            $taskFailed = true;
+                        }
+
+                        break;
+
+                    default:
+                        // do nothing for unregistered tasks
+                        break;
+                }
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+                $taskFailed = true;
+            }
+
+            if (!$taskFailed) {
+                $this->markAsExecuted($item);
+            } else {
+                $this->recordTaskFailure($item);
+            }
+        }
+
+        if ($item->type == \Model_InvoiceItem::TYPE_HOOK_CALL) {
+            $taskFailed = false;
+
+            try {
+                $params = json_decode($item->rel_id ?? '');
+                $this->di['events_manager']->fire(['event' => $item->task, 'params' => $params]);
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+                $taskFailed = true;
+            }
+
+            if (!$taskFailed) {
+                $this->markAsExecuted($item);
+            } else {
+                $this->recordTaskFailure($item);
+            }
+        }
+
+        if ($item->type == \Model_InvoiceItem::TYPE_DEPOSIT) {
+            // do not request to add funds to client balance
+            // associated invoice will have already been marked with a valid transaction and funds added
+            $this->markAsExecuted($item);
+        }
+
+        if ($item->type == \Model_InvoiceItem::TYPE_CUSTOM) {
+            // @todo ?
+            $this->markAsExecuted($item);
+        }
+    }
+
+    public function addNew(\Model_Invoice $proforma, array $data): int
+    {
+        // Deposit lines credit the client balance when the invoice is paid,
+        // so they may only be created through the Add Funds flow
+        // (generateForAddFunds) — never from generic invoice input.
+        if (($data['type'] ?? \Model_InvoiceItem::TYPE_CUSTOM) == \Model_InvoiceItem::TYPE_DEPOSIT) {
+            throw new \ClientFence\InformationException('Deposit invoice items can only be created through the Add Funds flow.');
+        }
+
+        $title = $data['title'] ?? '';
+        if (empty($title)) {
+            throw new \ClientFence\InformationException('Invoice item title is missing');
+        }
+
+        $period = $this->normalizePeriod($data['period'] ?? null);
+        if ($period !== null) {
+            $period = $this->di['period']($period)->getCode();
+        }
+
+        $type = $data['type'] ?? \Model_InvoiceItem::TYPE_CUSTOM;
+        $rel_id = $data['rel_id'] ?? null;
+        $task = $data['task'] ?? \Model_InvoiceItem::TASK_VOID;
+        $status = $data['status'] ?? \Model_InvoiceItem::STATUS_PENDING_PAYMENT;
+
+        $pi = $this->di['db']->dispense('InvoiceItem');
+        $pi->invoice_id = $proforma->id;
+        $pi->type = $type;
+        $pi->rel_id = $rel_id;
+        $pi->task = $task;
+        $pi->status = $status;
+        $pi->title = $data['title'];
+        $pi->period = $period;
+        $pi->quantity = PriceValidator::validateQuantity($data['quantity'] ?? 1);
+        $pi->unit = $data['unit'] ?? null;
+        $pi->charged = $data['charged'] ?? 0;
+        $pi->price = PriceValidator::validateSignedAmount($data['price'] ?? 0);
+        $pi->taxed = $data['taxed'] ?? false;
+        $pi->created_at = date('Y-m-d H:i:s');
+        $pi->updated_at = date('Y-m-d H:i:s');
+        $itemId = $this->di['db']->store($pi);
+
+        return (int) $itemId;
+    }
+
+    private function normalizePeriod(mixed $period): ?string
+    {
+        if ($period === null || $period === '' || $period === 0 || $period === '0') {
+            return null;
+        }
+
+        return (string) $period;
+    }
+
+    public function getTotal(\Model_InvoiceItem $item): float
+    {
+        return floatval($item->price * $item->quantity);
+    }
+
+    public function getTax(\Model_InvoiceItem $item)
+    {
+        if (!$item->taxed) {
+            return 0;
+        }
+
+        $price = $item->price;
+        if (!is_numeric($price)) {
+            return 0;
+        }
+
+        $rate = $this->di['db']->getCell('SELECT taxrate FROM invoice WHERE id = :id', ['id' => $item->invoice_id]);
+        if (!is_numeric($rate) || $rate <= 0) {
+            return 0;
+        }
+
+        return round((float) $price * (float) $rate / 100, 2);
+    }
+
+    public function update(\Model_InvoiceItem $item, array $data): void
+    {
+        $item->title = $data['title'] ?? $item->title;
+        if (isset($data['price'])) {
+            $item->price = PriceValidator::validateSignedAmount($data['price']);
+        }
+
+        if (array_key_exists('quantity', $data)) {
+            $item->quantity = PriceValidator::validateQuantity($data['quantity']);
+        }
+
+        if (isset($data['taxed']) && !empty($data['taxed'])) {
+            $item->taxed = (bool) $data['taxed'];
+        } else {
+            $item->taxed = false;
+        }
+
+        $item->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($item);
+    }
+
+    public function remove(\Model_InvoiceItem $model): bool
+    {
+        $id = $model->id;
+        $this->di['db']->trash($model);
+        $this->di['logger']->info('Removed invoice item "%s"', $id);
+
+        return true;
+    }
+
+    public function generateForAddFunds(\Model_Invoice $proforma, $amount): void
+    {
+        $pi = $this->di['db']->dispense('InvoiceItem');
+        $pi->invoice_id = $proforma->id;
+        $pi->type = \Model_InvoiceItem::TYPE_DEPOSIT;
+        $pi->rel_id = null;
+        $pi->task = \Model_InvoiceItem::TASK_VOID;
+        $pi->status = \Model_InvoiceItem::STATUS_PENDING_PAYMENT;
+        $pi->title = __trans('Add funds to account');
+        $pi->period = null;
+        $pi->quantity = 1;
+        $pi->unit = null;
+        $pi->charged = 1;
+        $pi->price = $amount;
+        $pi->taxed = false;
+        $pi->created_at = date('Y-m-d H:i:s');
+        $pi->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($pi);
+    }
+
+    public function creditInvoiceItem(\Model_InvoiceItem $item): void
+    {
+        $total = $this->getTotalWithTax($item);
+
+        $invoice = $this->di['db']->getExistingModelById('Invoice', $item->invoice_id, 'Invoice not found');
+        $client = $this->di['db']->getExistingModelById('Client', $invoice->client_id, 'Client not found');
+
+        $credit = $this->di['db']->dispense('ClientBalance');
+        $credit->client_id = $client->id;
+        $credit->type = 'invoice';
+        $credit->rel_id = $invoice->id;
+        $credit->invoice_item_id = $item->id;
+        $credit->description = $item->title;
+        $credit->amount = -$total;
+        $credit->created_at = date('Y-m-d H:i:s');
+        $credit->updated_at = date('Y-m-d H:i:s');
+
+        // Idempotency: the unique constraint on invoice_item_id guarantees at most one
+        // credit per item. A violation means a retry already credited it — treat as a no-op.
+        try {
+            $this->di['db']->store($credit);
+        } catch (\RedBeanPHP\RedException) {
+            $this->di['logger']->setChannel('billing')->info(sprintf('Invoice item #%d was already credited; skipping duplicate credit.', $item->id));
+
+            return;
+        }
+
+        $invoiceService = $this->di['mod_service']('Invoice');
+        $invoiceService->addNote($invoice, sprintf('Charged clients balance with %s %s for %s', $total, $invoice->currency, $item->title));
+    }
+
+    public function getTotalWithTax(\Model_InvoiceItem $item): float
+    {
+        return $this->getTotal($item) + $this->getTax($item) * $item->quantity;
+    }
+
+    public function getOrderId(\Model_InvoiceItem $item): int
+    {
+        if ($item->type == \Model_InvoiceItem::TYPE_ORDER) {
+            return (int) $item->rel_id;
+        }
+
+        return 0;
+    }
+
+    protected function markAsExecuted(\Model_InvoiceItem $item)
+    {
+        $item->status = \Model_InvoiceItem::STATUS_EXECUTED;
+        $item->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($item);
+    }
+
+    protected function recordTaskFailure(\Model_InvoiceItem $item): void
+    {
+        $attempts = (int) $item->attempts + 1;
+        $item->attempts = $attempts;
+
+        if ($attempts >= self::MAX_TASK_ATTEMPTS) {
+            $item->status = \Model_InvoiceItem::STATUS_FAILED;
+            $this->di['logger']->setChannel('billing')->error(sprintf('Invoice item #%d marked as failed after %d task execution attempts.', (int) $item->id, $attempts));
+        }
+
+        $item->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($item);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getFailedItems(): array
+    {
+        return $this->di['db']->getAll(
+            'SELECT * FROM invoice_item WHERE status = :status ORDER BY id DESC',
+            [':status' => \Model_InvoiceItem::STATUS_FAILED]
+        );
+    }
+
+    public function requeueItem(int $id): \Model_InvoiceItem
+    {
+        $item = $this->di['db']->getExistingModelById('InvoiceItem', $id, 'Invoice item was not found');
+
+        if ($item->status !== \Model_InvoiceItem::STATUS_FAILED) {
+            throw new \ClientFence\InformationException('Invoice item is not in a failed state');
+        }
+
+        $item->status = \Model_InvoiceItem::STATUS_PENDING_SETUP;
+        $item->attempts = 0;
+        $item->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($item);
+        $this->di['logger']->setChannel('billing')->info(sprintf('Invoice item #%d re-queued for execution by an admin.', (int) $item->id));
+
+        return $item;
+    }
+
+    public function generateFromOrder(\Model_Invoice $proforma, \Model_ClientOrder $order, $task, $price, array $line = []): void
+    {
+        $corderService = $this->di['mod_service']('Order');
+
+        $clientService = $this->di['mod_service']('client');
+        $client = $this->di['db']->load('Client', $order->client_id);
+        $taxed = $clientService->isClientTaxable($client);
+        $quantity = $line['quantity'] ?? $order->quantity;
+        $unit = $line['unit'] ?? $order->unit;
+        $period = $this->normalizePeriod($line['period'] ?? $order->period);
+        if ($period !== null) {
+            $period = $this->di['period']($period)->getCode();
+        }
+
+        $pi = $this->di['db']->dispense('InvoiceItem');
+        $pi->invoice_id = $proforma->id;
+        $pi->type = \Model_InvoiceItem::TYPE_ORDER;
+        $pi->rel_id = $order->id;
+        $pi->task = $task;
+        $pi->status = \Model_InvoiceItem::STATUS_PENDING_PAYMENT;
+        // ClientFence core patch: configurable options (Product/Options.php) are listed on the line.
+        $orderConfig = json_decode((string) ($order->config ?? ''), true);
+        $pi->title = \ClientFence\Mod\Product\Options::titleWith((string) $order->title, is_array($orderConfig['option_lines'] ?? null) ? $orderConfig['option_lines'] : []);
+        $pi->period = $period;
+        $pi->quantity = $quantity;
+        $pi->unit = $unit;
+        $pi->price = $price;
+        $pi->taxed = $taxed;
+        $pi->created_at = date('Y-m-d H:i:s');
+        $pi->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($pi);
+
+        $corderService->setUnpaidInvoice($order, $proforma);
+
+        // apply discount for new invoice if promo code is recurrent
+        $productService = $this->di['mod_service']('Product');
+        $promoAdjustment = $productService->getRenewalPromoAdjustment($order, (float) $price, (float) $quantity);
+        if ($promoAdjustment !== null) {
+            $pd = [
+                'title' => $promoAdjustment['title'],
+                'price' => $promoAdjustment['discount_amount'] * -1,
+                'quantity' => 1,
+                'unit' => 'discount',
+                'rel_id' => $order->id,
+                'taxed' => $taxed,
+            ];
+
+            $this->addNew($proforma, $pd);
+            $productService->createPromoRedemption(
+                $promoAdjustment['promo'],
+                $client,
+                $order,
+                $proforma,
+                \ClientFence\Mod\Product\Entity\PromoRedemption::PHASE_RENEWAL,
+                $promoAdjustment['discount_amount'],
+                $promoAdjustment['currency'],
+                $proforma->created_at ?? date('Y-m-d H:i:s'),
+                \ClientFence\Mod\Product\Entity\PromoRedemption::STATUS_RESERVED,
+            );
+        }
+    }
+
+    /**
+     * Get list of paid invoice not executed invoice items.
+     *
+     * @return array - array of Model_InvoiceItem items
+     */
+    public function getAllNotExecutePaidItems()
+    {
+        $sql = 'SELECT invoice_item.*
+                FROM invoice_item
+                  left join invoice on invoice_item.invoice_id = invoice.id
+                WHERE invoice_item.status NOT IN (:status_executed, :status_failed) and invoice.status = :invoice_status
+                AND (invoice.paid_at IS NULL OR invoice.paid_at <= :cutoff_time)';
+        $bindings = [
+            ':status_executed' => \Model_InvoiceItem::STATUS_EXECUTED,
+            ':status_failed' => \Model_InvoiceItem::STATUS_FAILED,
+            ':invoice_status' => \Model_Invoice::STATUS_PAID,
+            ':cutoff_time' => date('Y-m-d H:i:s', strtotime('-10 minutes')),
+        ];
+
+        return $this->di['db']->getAll($sql, $bindings);
+    }
+}

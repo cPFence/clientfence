@@ -1,0 +1,233 @@
+{% extends "layout_default.html.twig" %}
+
+{% set active_menu = 'client' %}
+{% set can_edit = has_permission('massmailer', 'create_and_edit') %}
+{% set can_delete = has_permission('massmailer', 'delete') %}
+{% set status_badges = {
+    draft: ['bg-secondary-lt', 'Draft'|trans],
+    scheduled: ['bg-blue-lt', 'Scheduled'|trans],
+    sending: ['bg-warning-lt', 'Sending'|trans],
+    sent: ['bg-success-lt', 'Sent'|trans],
+} %}
+
+{% block meta_title %}{{ 'Mass Mail'|trans }}{% endblock %}
+
+{% block content %}
+    {# ClientFence core patch (ext massmailer): one card with the messages and a settings tab; small actions without a page reload. #}
+    <div class="card" id="massmailer" data-text-deleted="{{ 'Message deleted.'|trans }}">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Mass Mail'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Write an email, pick which clients get it, and send it now or at a set time.'|trans }}</p>
+            </div>
+            <div class="card-actions d-flex flex-wrap gap-2">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <svg class="icon"><use href="#search" /></svg>
+                    </span>
+                    <input type="search" class="form-control" id="massmailer-search" placeholder="{{ 'Search'|trans }}" aria-label="{{ 'Search'|trans }}">
+                </div>
+                {% if can_edit %}
+                    <a class="btn btn-primary" href="{{ 'massmailer/new'|url }}">
+                        <svg class="icon"><use href="#plus" /></svg>
+                        {{ 'New message'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a href="#tab-index" class="nav-link active" data-bs-toggle="tab" aria-selected="true" role="tab">{{ 'Messages'|trans }}</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a href="#tab-settings" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab">
+                        <svg class="icon me-2"><use href="#settings" /></svg>
+                        {{ 'Settings'|trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab-index" role="tabpanel">
+                {% set msgs = admin.massmailer_get_list({ per_page: 500 }).list %}
+                <div class="table-responsive" id="massmailer-table"{% if not msgs %} hidden{% endif %}>
+                    <table class="table card-table table-vcenter">
+                        <thead>
+                        <tr>
+                            <th>{{ 'Subject'|trans }}</th>
+                            <th class="w-1">{{ 'Status'|trans }}</th>
+                            <th class="w-1">{{ 'Recipients'|trans }}</th>
+                            <th class="w-1">{{ 'Date'|trans }}</th>
+                            <th class="w-1"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="massmailer-rows">
+                        {% for msg in msgs %}
+                            {% set badge = status_badges[msg.status] ?? status_badges.draft %}
+                            {% set url = ('massmailer/message/' ~ msg.id)|url %}
+                            <tr data-id="{{ msg.id }}" data-title="{{ msg.subject }}" data-search="{{ (msg.subject ~ ' ' ~ msg.from_name ~ ' ' ~ msg.from_email)|lower }}">
+                                <td class="text-break">
+                                    <a href="{{ url }}">{{ msg.subject ?: '–' }}</a>
+                                    <div class="text-secondary small">{{ msg.from_name }} &lt;{{ msg.from_email }}&gt;</div>
+                                </td>
+                                <td><span class="badge {{ badge[0] }}">{{ badge[1] }}</span></td>
+                                <td class="text-nowrap">{{ msg.status in ['sending', 'sent'] ? msg.recipients : '–' }}</td>
+                                <td class="text-nowrap text-secondary">
+                                    {% if msg.status == 'sent' and msg.sent_at %}
+                                        {{ msg.sent_at|format_datetime }}
+                                    {% elseif msg.status == 'scheduled' and msg.scheduled_at %}
+                                        <svg class="icon"><use href="#calendar" /></svg> {{ msg.scheduled_at|format_datetime }}
+                                    {% else %}
+                                        –
+                                    {% endif %}
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    {% if msg.status in ['sending', 'sent'] %}
+                                        <a class="btn btn-icon btn-ghost-secondary" href="{{ url }}" title="{{ 'Delivery report'|trans }}" aria-label="{{ 'Delivery report'|trans }}">
+                                            <svg class="icon"><use href="#chart-bar" /></svg>
+                                        </a>
+                                    {% else %}
+                                        <a class="btn btn-icon btn-ghost-secondary" href="{{ url }}" title="{{ 'Open'|trans }}" aria-label="{{ 'Open'|trans }}">
+                                            <svg class="icon"><use href="#edit" /></svg>
+                                        </a>
+                                    {% endif %}
+                                    {% if can_edit %}
+                                        <button type="button" class="btn btn-icon btn-ghost-secondary" data-action="copy" title="{{ 'Copy'|trans }}" aria-label="{{ 'Copy'|trans }}">
+                                            <svg class="icon"><use href="#copy" /></svg>
+                                        </button>
+                                    {% endif %}
+                                    {% if can_delete and msg.status != 'sending' %}
+                                        <button type="button" class="btn btn-icon btn-ghost-danger" data-action="delete" title="{{ 'Delete'|trans }}" aria-label="{{ 'Delete'|trans }}">
+                                            <svg class="icon"><use href="#trash" /></svg>
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-body text-center text-secondary" id="massmailer-no-match" hidden>{{ 'No results'|trans }}</div>
+                <div class="empty" id="massmailer-empty"{% if msgs %} hidden{% endif %}>
+                    <div class="empty-icon">
+                        <svg class="icon"><use href="#mail" /></svg>
+                    </div>
+                    <p class="empty-title">{{ 'No messages yet.'|trans }}</p>
+                    <p class="empty-subtitle text-secondary">{{ 'Write an email, pick which clients get it, and send it now or at a set time.'|trans }}</p>
+                    {% if can_edit %}
+                        <div class="empty-action">
+                            <a class="btn btn-primary" href="{{ 'massmailer/new'|url }}">
+                                <svg class="icon"><use href="#plus" /></svg>
+                                {{ 'New message'|trans }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tab-settings" role="tabpanel">
+                {% set params = admin.extension_config_get({ ext: 'mod_massmailer' }) %}
+                {% set test_client_email = admin.massmailer_get_test_client %}
+                {% set has_test_client = params.test_client_id and test_client_email != 'Unknown' %}
+                <form method="post" action="admin/extension/config_save" {{ fb_api_form({ message: 'Saved.'|trans }) }}>
+                    <input type="hidden" name="ext" value="mod_massmailer">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <label class="form-label" for="test_client_id">{{ 'Client to Send Test Email'|trans }}</label>
+                                <select class="form-control autocomplete-selector"
+                                        placeholder="{{ 'Start Typing the Client Name or ID'|trans }}"
+                                        id="test_client_id"
+                                        name="test_client_id"
+                                        data-resturl="/api/admin/client/get_pairs">
+                                    {% if has_test_client %}
+                                        <option value="{{ params.test_client_id }}" selected>{{ test_client_email }}</option>
+                                    {% endif %}
+                                </select>
+                                <div class="form-text">{{ 'Test emails go to this client, and the preview shows the message as this client sees it.'|trans }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if can_delete %}
+        <div class="modal modal-blur fade" id="massmailer-delete-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-status bg-danger"></div>
+                    <div class="modal-body text-center py-4">
+                        <h3>{{ 'Are you sure?'|trans }}</h3>
+                        <div class="text-secondary text-break">{{ 'This message and its delivery report will be deleted:'|trans }} <strong id="massmailer-delete-title"></strong></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                        <button type="button" class="btn btn-danger" id="massmailer-delete-confirm">{{ 'Delete'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const card = document.getElementById('massmailer');
+        const rows = document.getElementById('massmailer-rows');
+        const search = document.getElementById('massmailer-search');
+        const messageUrl = {{ 'massmailer/message'|url|json_encode|raw }} + '/';
+
+        const filter = () => {
+            const query = search.value.trim().toLowerCase();
+            let shown = 0;
+            for (const row of rows.children) {
+                row.hidden = !row.dataset.search.includes(query);
+                shown += row.hidden ? 0 : 1;
+            }
+            document.getElementById('massmailer-table').hidden = shown === 0;
+            document.getElementById('massmailer-empty').hidden = rows.children.length > 0;
+            document.getElementById('massmailer-no-match').hidden = rows.children.length === 0 || shown > 0;
+        };
+        search.addEventListener('input', filter);
+
+        if (window.location.hash === '#tab-settings') {
+            bootstrap.Tab.getOrCreateInstance(document.querySelector('[href="#tab-settings"]')).show();
+        }
+
+        const deleteElement = document.getElementById('massmailer-delete-modal');
+        let deleting = null;
+        rows.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-action]');
+            if (!button) {
+                return;
+            }
+            const row = button.closest('tr');
+            if (button.dataset.action === 'copy') {
+                ClientFence.api.admin.post('massmailer/copy', { id: row.dataset.id }, (id) => {
+                    window.location.href = messageUrl + id;
+                }, (error) => ClientFence.message(error.message, 'error'));
+                return;
+            }
+            deleting = row;
+            document.getElementById('massmailer-delete-title').textContent = row.dataset.title;
+            bootstrap.Modal.getOrCreateInstance(deleteElement).show();
+        });
+        document.getElementById('massmailer-delete-confirm')?.addEventListener('click', () => {
+            ClientFence.api.admin.post('massmailer/delete', { id: deleting.dataset.id }, () => {
+                bootstrap.Modal.getInstance(deleteElement).hide();
+                deleting.remove();
+                filter();
+                ClientFence.message(card.dataset.textDeleted, 'success');
+            }, (error) => ClientFence.message(error.message, 'error'));
+        });
+    })();
+</script>
+{% endblock %}

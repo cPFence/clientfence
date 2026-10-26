@@ -1,0 +1,45 @@
+name: Bug report
+description: Something in ClientFence does not work as expected.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search the existing issues first. Leave out passwords, keys and customer data.
+        Security issues go through the security policy, not an issue.
+  - type: input
+    id: version
+    attributes:
+      label: ClientFence version
+      description: Shown in the footer of the admin area.
+    validations:
+      required: true
+  - type: input
+    id: php
+    attributes:
+      label: PHP version and web server
+      placeholder: "PHP 8.4, LiteSpeed"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected and what happened
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Errors or logs
+      description: From data/log or the browser console, with secrets removed.
+      render: text

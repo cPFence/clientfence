@@ -1,0 +1,65 @@
+{# ClientFence, an authorized user's own profile (/profile, Users.php): name and
+   password. The account's details stay on FOSSBilling's profile page (permission "profile"). #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'profile' %}
+
+{% block meta_title %}{{ 'My profile'|trans }}{% endblock %}
+{% block page_header %}{{ 'My profile'|trans }}{% endblock %}
+{% block body_class %}clientfence-profile{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'My profile'|trans }}</li>{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>{{ 'My profile'|trans }}</h1>
+    <p>{{ 'Your own sign-in. You use it for every account you have access to.'|trans }}</p>
+</div>
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header"><h2>{{ 'Details'|trans }}</h2></div>
+            <div class="card-body">
+                <form action="{{ 'client/user_profile_update'|api_url }}" {{ fb_api_form({message: 'Profile Updated'|trans}) }} data-clientfence-profile>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">{{ 'Email'|trans }}</label>
+                        <input class="form-control" id="email" type="email" value="{{ clientfence_user.user.email }}" dir="ltr" readonly>
+                        <div class="form-text">{{ 'To change your sign-in email, contact us.'|trans }}</div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="first_name">{{ 'First name'|trans }}</label>
+                            <input class="form-control" id="first_name" type="text" name="first_name" maxlength="100" value="{{ clientfence_user.user.first_name }}" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="last_name">{{ 'Last name'|trans }}</label>
+                            <input class="form-control" id="last_name" type="text" name="last_name" maxlength="100" value="{{ clientfence_user.user.last_name }}">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header"><h2>{{ 'Change password'|trans }}</h2></div>
+            <div class="card-body">
+                <form action="{{ 'client/user_password_change'|api_url }}" {{ fb_api_form({message: 'Password Changed'|trans}) }} autocomplete="off">
+                    <div class="mb-3">
+                        <label class="form-label" for="current_password">{{ 'Current password'|trans }}</label>
+                        <input class="form-control" id="current_password" type="password" name="current_password" autocomplete="current-password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="new_password">{{ 'New Password'|trans }}</label>
+                        <input class="form-control" id="new_password" type="password" name="new_password" autocomplete="new-password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="confirm_password">{{ 'Repeat New Password'|trans }}</label>
+                        <input class="form-control" id="confirm_password" type="password" name="confirm_password" autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ 'Change password'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

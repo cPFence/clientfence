@@ -1,0 +1,98 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence;
+class EventManager implements \ClientFence\InjectionAwareInterface
+{
+    protected ?\Pimple\Container $di = null;
+
+    public const GLOBAL_LISTENER_NAME = 'onEveryEvent';
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function fire($data)
+    {
+        if (!isset($data['event']) || empty($data['event'])) {
+            if ($this->di !== null && isset($this->di['logger'])) {
+                $this->di['logger']->warning('Invoked event call without providing event name');
+            }
+
+            return false;
+        }
+
+        $event = $data['event'];
+        $subject = $data['subject'] ?? null;
+        $params = $data['params'] ?? null;
+
+        $this->di['logger']->setChannel('event')->debug('Fired event: ' . $event, $params);
+
+        $e = new \ClientFence\Event($subject, $event, $params);
+        $e->setDi($this->di);
+        $disp = new \ClientFence\EventDispatcher();
+
+        $eventName = $e->getName();
+
+        $this->_connectDatabaseHooks($disp, $eventName);
+        $this->_connectDatabaseHooks($disp, self::GLOBAL_LISTENER_NAME, $eventName); // Also connect global listeners (onEveryEvent) to the fired event
+
+        $disp->notify($e);
+
+        return $e->getReturnValue();
+    }
+
+    /**
+     * @param \ClientFence\EventDispatcher $disp
+     * @param string              $event
+     */
+    private function _connectDatabaseHooks(&$disp, $event, ?string $dispatchEventName = null): void
+    {
+        // ClientFence core patch: every listener is read once per request (a cron run fired about
+        // 380 events, two lookups each); Hook\Service forgets them when it connects or disconnects.
+        $all = \ClientFence\RequestCache::remember($this->di, 'hook.listeners', fn (): array => $this->di['db']->getAll("SELECT id, rel_id, meta_value
+            FROM extension_meta
+            WHERE extension = 'mod_hook'
+            AND rel_type = 'mod'
+            AND meta_key = 'listener'
+            ORDER BY id
+        "));
+        // Case-insensitive, as the column's collation compared it.
+        $list = array_filter($all, static fn (array $listener): bool => strcasecmp((string) $listener['meta_value'], (string) $event) === 0);
+
+        // no need to connect listeners
+        if (empty($list)) {
+            return;
+        }
+
+        foreach ($list as $listener) {
+            $mod = $listener['rel_id'];
+            $event = $listener['meta_value'];
+            $dispatchEvent = $dispatchEventName ?? $event;
+
+            try {
+                $s = $this->di['mod_service']($mod);
+
+                if (method_exists($s, $event)) {
+                    $disp->connect($dispatchEvent, [$s::class, $event]);
+                }
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+            }
+        }
+    }
+}

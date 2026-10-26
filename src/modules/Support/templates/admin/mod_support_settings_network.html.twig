@@ -1,0 +1,26 @@
+{# ClientFence: Support settings > Network Status (Support/NetworkIssues.php): the feature on or off
+   (off hides the client page, the banner and Support > Network Issues) and whether the client page
+   needs signing in. Saved with support/network_status_update. #}
+{% set params = admin.extension_config_get({ 'ext': 'mod_support' }) %}
+{% set on = params.network_status|default('0') in [1, '1', 'true', 'on', 'yes'] or params.network_status|default(false) is same as(true) %}
+{% set public = params.network_status_public|default('0') in [1, '1', 'true', 'on', 'yes'] or params.network_status_public|default(false) is same as(true) %}
+<form method="post" action="{{ 'support/network_status_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
+    <div class="card-body">
+        <h4 class="card-title mb-1">{{ 'Network Status'|trans }}</h4>
+        <p class="text-secondary mb-3">{{ 'Post outages and planned work in Support > Network Issues. Clients read them on the Network Status page, and clients with services on an affected server see a banner while an issue is open or the work is scheduled.'|trans }}</p>
+        <label class="form-check form-switch form-switch-2 mb-3">
+            <input name="network_status" type="hidden" value="0">
+            <input class="form-check-input" name="network_status" type="checkbox" value="1"{% if on %} checked="checked"{% endif %}>
+            <span class="form-check-label">{{ 'Use network status'|trans }}</span>
+        </label>
+        <label class="form-check form-switch form-switch-2">
+            <input name="network_status_public" type="hidden" value="0">
+            <input class="form-check-input" name="network_status_public" type="checkbox" value="1"{% if public %} checked="checked"{% endif %}>
+            <span class="form-check-label">{{ 'Show the Network Status page to visitors who are not signed in'|trans }}</span>
+        </label>
+        <div class="form-hint mt-1">{{ 'Off: only signed-in clients see it, as in WHMCS.'|trans }}</div>
+    </div>
+    <div class="card-footer text-end">
+        <button type="submit" class="btn btn-primary">{{ 'Save network status settings'|trans }}</button>
+    </div>
+</form>

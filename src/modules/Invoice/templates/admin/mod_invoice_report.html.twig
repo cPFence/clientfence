@@ -1,0 +1,145 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: one report of Invoices > Reports (Invoice/Reports.php): its filters, the table, Print
+   and Download CSV. Text, money, months and countries follow the staff member's language; dates are
+   year-month-day as on the invoice list, so they read the same in Arabic and English. #}
+
+{% set active_menu = 'invoice' %}
+{% set query = report.filters|filter(v => v is not same as('') and v is not null) %}
+
+{% block meta_title %}{{ report.title }}{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ report.title }}</h3>
+            <p class="card-subtitle">{{ report.description }}</p>
+        </div>
+        <div class="card-actions d-flex gap-2 d-print-none">
+            <a class="btn" href="{{ 'invoice/reports'|url }}">{{ 'All reports'|trans }}</a>
+            <button class="btn" type="button" id="report-print">{{ 'Print'|trans }}</button>
+            {% if report.pdf %}
+                <a class="btn" href="{{ 'invoice/reports/statement/pdf'|url(query: query) }}">{{ 'Download PDF'|trans }}</a>
+            {% endif %}
+            {% if has_permission('invoice', 'export') %}
+                <a class="btn btn-primary" href="{{ ('invoice/reports/' ~ report.key ~ '/csv')|url(query: query) }}">{{ 'Download CSV'|trans }}</a>
+            {% endif %}
+        </div>
+    </div>
+    {% if report.fields %}
+        <div class="card-body border-bottom d-print-none">
+            {% if error %}
+                <div class="alert alert-warning" role="alert">{{ error }}</div>
+            {% endif %}
+            <form method="get" action="{{ ('invoice/reports/' ~ report.key)|url }}" class="row g-2 align-items-end">
+                {% for field in report.fields %}
+                    {% set value = report.filters[field.name]|default('') %}
+                    <div class="col-sm-6 col-lg-2">
+                        <label class="form-label" for="report-{{ field.name }}">{{ field.label }}{% if field.optional|default(false) %} <span class="text-secondary">({{ 'optional'|trans }})</span>{% endif %}</label>
+                        {% if field.type == 'currency' %}
+                            <select class="form-select" id="report-{{ field.name }}" name="{{ field.name }}">
+                                {% for code in report.currencies %}<option value="{{ code }}"{% if code == value %} selected{% endif %}>{{ code }}</option>{% endfor %}
+                            </select>
+                        {% else %}
+                            <input class="form-control" id="report-{{ field.name }}" name="{{ field.name }}" value="{{ value }}" dir="ltr"
+                                   type="{{ {'month': 'month', 'date': 'date', 'number': 'number', 'amount': 'number'}[field.type]|default('text') }}"
+                                   {% if field.type == 'amount' %}step="0.01" min="0"{% elseif field.type == 'number' %}step="1" min="1"{% endif %}>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="submit">{{ 'Show report'|trans }}</button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+    {% if report.currency or report.filters.from|default('') or report.filters.to|default('') or report.filters.month|default('') %}
+        <div class="card-body py-2 text-secondary small">
+            {% set facts = [] %}
+            {% if report.filters.month|default('') %}{% set facts = facts|merge([(report.filters.month ~ '-01')|format_date(pattern: 'MMMM y')]) %}{% endif %}
+            {% if report.filters.from|default('') or report.filters.to|default('') %}
+                {% set facts = facts|merge([(report.filters.from ?: 'Start'|trans) ~ ' – ' ~ (report.filters.to ?: 'Today'|trans)]) %}
+            {% elseif report.filters.from is defined %}
+                {% set facts = facts|merge(['All dates'|trans]) %}
+            {% endif %}
+            {% if report.currency %}{% set facts = facts|merge([report.currency]) %}{% endif %}
+            {{ facts|join(' · ') }}
+        </div>
+    {% endif %}
+    {% if report.client %}
+        <div class="card-body py-2 border-bottom">
+            <a href="{{ ('client/manage/' ~ report.client.id)|url }}" class="fw-medium">{{ report.client.company ?: report.client.name }}</a>
+            {% if report.client.company and report.client.name %}<span class="text-secondary"> · {{ report.client.name }}</span>{% endif %}
+            <span class="text-secondary"> · {{ report.client.email }} · #{{ report.client.id }}</span>
+        </div>
+    {% endif %}
+    {% if report.notice %}
+        <div class="alert alert-info m-3" role="alert">{{ report.notice }}</div>
+    {% endif %}
+    {% if report.truncated %}
+        <div class="alert alert-info m-3" role="alert">{{ 'Only the first :count rows are shown. Narrow the filters to see the rest.'|trans({ ':count': 5000 }) }}</div>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter{% if report.columns|length > 10 %} table-sm small{% endif %}">
+            <thead>
+                <tr>
+                    {% for column in report.columns %}
+                        <th class="{{ column.type in ['int', 'money'] ? 'text-end' : '' }} text-nowrap">{{ column.label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report.rows %}
+                    <tr>
+                        {% for column in report.columns %}
+                            {{ _self.cell(row[loop.index0], column.type, report.currency) }}
+                        {% endfor %}
+                    </tr>
+                {% else %}
+                    {% if not report.notice %}<tr><td colspan="{{ report.columns|length }}" class="text-secondary">{{ 'Nothing to show for these filters.'|trans }}</td></tr>{% endif %}
+                {% endfor %}
+            </tbody>
+            {% if report.total and report.rows %}
+                <tfoot>
+                    <tr class="fw-bold">
+                        {% for column in report.columns %}
+                            {% set value = report.total[loop.index0] %}
+                            {% if value is not null and column.type not in ['int', 'money'] %}
+                                <td>{{ value }}</td>
+                            {% else %}
+                                {{ _self.cell(value, column.type, report.currency) }}
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </tfoot>
+            {% endif %}
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% macro cell(value, type, currency) %}
+    {% if value is null %}
+        <td></td>
+    {% elseif type == 'money' %}
+        <td class="text-end text-nowrap">{{ value|format_currency(currency) }}</td>
+    {% elseif type == 'int' %}
+        <td class="text-end">{{ value|format_number }}</td>
+    {% elseif type == 'date' %}
+        <td class="text-nowrap">{{ value|date('Y-m-d') }}</td>
+    {% elseif type == 'month' %}
+        <td class="text-nowrap">{{ (value ~ '-01')|format_date(pattern: 'MMMM y') }}</td>
+    {% elseif type == 'country' %}
+        <td>{{ value ? value|country_name : 'No country'|trans }}</td>
+    {% elseif type == 'link' %}
+        <td dir="auto">{% if value is iterable %}<a href="{{ value[1]|url }}">{{ value[0] }}</a>{% else %}{{ value }}{% endif %}</td>
+    {% else %}
+        <td dir="auto">{{ value }}</td>
+    {% endif %}
+{% endmacro %}
+
+{% block js %}
+<script nonce="{{ csp_nonce }}">
+    document.getElementById('report-print')?.addEventListener('click', () => window.print());
+</script>
+{% endblock %}

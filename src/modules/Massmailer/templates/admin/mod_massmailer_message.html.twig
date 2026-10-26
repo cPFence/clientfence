@@ -1,0 +1,613 @@
+{% extends 'layout_default.html.twig' %}
+
+{% set active_menu = 'client' %}
+{% set can_edit = has_permission('massmailer', 'create_and_edit') %}
+{% set can_send = has_permission('massmailer', 'send') %}
+{% set done = msg and msg.status in ['sending', 'sent'] %}
+{% set company = msg ? null : guest.system_company %}
+{% set status_badges = {
+    draft: ['bg-secondary-lt', 'Draft'|trans],
+    scheduled: ['bg-blue-lt', 'Scheduled'|trans],
+    sending: ['bg-warning-lt', 'Sending'|trans],
+    sent: ['bg-success-lt', 'Sent'|trans],
+} %}
+{% set badge = status_badges[msg.status|default('draft')] ?? status_badges.draft %}
+{% set title = msg ? (msg.subject ?: '–') : 'New message'|trans %}
+
+{% block meta_title %}{{ title }}{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li class="breadcrumb-item">
+        <svg class="icon"><use href="#home" /></svg>
+    </li>
+    <li class="breadcrumb-item"><a href="{{ 'massmailer'|url }}">{{ 'Mass Mail'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+{# ClientFence core patch (ext massmailer): three steps (write, audience, review and send); a sent message opens read-only with its delivery report. #}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <h2 class="page-title mb-0 text-break" id="mm-title">{{ title }}</h2>
+    <span class="badge {{ badge[0] }}" id="mm-status">{{ badge[1] }}</span>
+</div>
+
+{% if done %}
+    {% set report = admin.massmailer_report({ id: msg.id }) %}
+    <div class="row g-3" id="mm-report" data-id="{{ msg.id }}">
+        <div class="col-12">
+            <div class="row row-cards">
+                {% for key, label in { sent: 'Sent'|trans, queued: 'Waiting in the email queue'|trans, failed: 'Failed'|trans, skipped: 'Skipped (opted out)'|trans } %}
+                    <div class="col-6 col-lg-3">
+                        <div class="card card-sm">
+                            <div class="card-body">
+                                <div class="text-secondary">{{ label }}</div>
+                                <div class="h1 mb-0">{{ report.counts[key] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">{{ 'Delivery report'|trans }}</h3>
+                        <p class="card-subtitle">
+                            {% if msg.status == 'sent' %}{{ 'Sent'|trans }} {{ msg.sent_at|format_datetime }}.{% else %}{{ 'Sending'|trans }}…{% endif %}
+                            {{ 'Emails go out from the email queue with each cron run.'|trans }}
+                        </p>
+                    </div>
+                    <div class="card-actions">
+                        <div class="input-icon">
+                            <span class="input-icon-addon"><svg class="icon"><use href="#search" /></svg></span>
+                            <input type="search" class="form-control" id="mm-report-search" placeholder="{{ 'Search'|trans }}" aria-label="{{ 'Search'|trans }}">
+                        </div>
+                    </div>
+                </div>
+                {% if report.recipients %}
+                    {% set recipient_badges = {
+                        sent: ['bg-success-lt', 'Sent'|trans],
+                        queued: ['bg-blue-lt', 'Queued'|trans],
+                        failed: ['bg-danger-lt', 'Failed'|trans],
+                        skipped: ['bg-secondary-lt', 'Skipped'|trans],
+                    } %}
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter">
+                            <thead>
+                            <tr>
+                                <th>{{ 'Client'|trans }}</th>
+                                <th class="w-1">{{ 'Status'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody id="mm-report-rows">
+                            {% for r in report.recipients %}
+                                <tr data-search="{{ (r.name ~ ' ' ~ r.email)|lower }}">
+                                    <td class="text-break">
+                                        <a href="{{ ('client/manage/' ~ r.client_id)|url }}">{{ r.name ?: '#' ~ r.client_id }}</a>
+                                        <div class="text-secondary small">{{ r.email }}</div>
+                                    </td>
+                                    <td><span class="badge {{ recipient_badges[r.status][0] }}">{{ recipient_badges[r.status][1] }}</span></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty">
+                        <p class="empty-title">{{ 'No client matched the audience.'|trans }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">{{ 'Message'|trans }}</h3>
+                        <p class="card-subtitle">{{ msg.from_name }} &lt;{{ msg.from_email }}&gt;</p>
+                    </div>
+                    {% if can_edit %}
+                        <div class="card-actions">
+                            <button type="button" class="btn btn-outline-secondary" id="mm-copy">
+                                <svg class="icon"><use href="#copy" /></svg>
+                                {{ 'Copy'|trans }}
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="fw-bold mb-2 text-break" id="mm-preview-subject"></div>
+                    {# ClientFence core patch: the message in a sandboxed frame without scripts (its HTML ran in the viewing staff member's session). #}
+                    <iframe class="cf-email-frame" sandbox="allow-popups" title="{{ 'Preview'|trans }}" id="mm-preview"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <form id="mm-form" novalidate data-id="{{ msg.id|default('') }}" data-url="{{ 'massmailer/message'|url }}"
+          data-test-client="{{ admin.massmailer_get_test_client }}"
+          data-text-required="{{ 'Required'|trans }}"
+          data-text-count="{{ 'Recipients: %count%'|trans }}"
+          data-text-opted="{{ '%count% opted out of marketing email and will be skipped.'|trans }}"
+          data-text-more="{{ 'and %count% more'|trans }}"
+          data-text-confirm="{{ 'Send this message? Recipients: %count%'|trans }}"
+          data-text-test-sent="{{ 'Test email sent.'|trans }}"
+          data-text-scheduled="{{ 'Scheduled for %time%.'|trans }}"
+          data-text-unscheduled="{{ 'The message is a draft again.'|trans }}"
+          data-text-test-client="{{ 'Test client'|trans }}"
+          data-label-draft="{{ status_badges.draft[1] }}" data-label-scheduled="{{ status_badges.scheduled[1] }}">
+        <ul class="nav nav-pills mb-3" id="mm-steps">
+            {% for step, label in { 1: 'Write'|trans, 2: 'Audience'|trans, 3: 'Review and send'|trans } %}
+                <li class="nav-item">
+                    <button type="button" class="nav-link{% if step == 1 %} active{% endif %}" data-step="{{ step }}">
+                        <span class="badge bg-primary-lt me-2">{{ step }}</span>{{ label }}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <section class="card" data-panel="1">
+            <fieldset class="card-body"{% if not can_edit %} disabled{% endif %}>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required" for="mm-from-name">{{ 'From Name'|trans }}</label>
+                        <input class="form-control" type="text" id="mm-from-name" name="from_name" value="{{ msg ? msg.from_name : company.name }}" maxlength="255" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="mm-from-email">{{ 'From Email'|trans }}</label>
+                        <input class="form-control" type="email" id="mm-from-email" name="from_email" value="{{ msg ? msg.from_email : company.email }}" maxlength="255" dir="ltr" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label required" for="mm-subject">{{ 'Subject'|trans }}</label>
+                        <input class="form-control" type="text" id="mm-subject" name="subject" value="{{ msg.subject|default('') }}" maxlength="255" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex flex-wrap align-items-end justify-content-between gap-2 mb-2">
+                            <label class="form-label mb-0" for="mm-content">{{ 'Message'|trans }}</label>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{{ 'Insert a placeholder'|trans }}</button>
+                                <div class="dropdown-menu dropdown-menu-end" id="mm-placeholders">
+                                    {% for code, label in {
+                                        'c.first_name': 'First name'|trans,
+                                        'c.last_name': 'Last name'|trans,
+                                        'c.email': 'Email'|trans,
+                                        'c.company': 'Company'|trans,
+                                        'c.phone': 'Phone'|trans,
+                                        'c.city': 'City'|trans,
+                                        'c.country': 'Country'|trans,
+                                        'guest.system_company.name': 'Your company name'|trans,
+                                    } %}
+                                        <button type="button" class="dropdown-item d-flex justify-content-between gap-3" data-code="{{ '{{ ' ~ code ~ ' }}' }}">
+                                            <span>{{ label }}</span><code dir="ltr">{{ code }}</code>
+                                        </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <textarea class="editor-textarea" id="mm-content" name="content" rows="14">{{ msg.content|default('') }}</textarea>
+                        <div class="form-text">{{ 'A placeholder is filled in for each client. It goes into the subject or the message, wherever you clicked last.'|trans }}</div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="card-footer d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" data-go="2">{{ 'Next'|trans }} <svg class="icon ms-1"><use href="#arrow-right" /></svg></button>
+            </div>
+        </section>
+
+        <section class="row g-3" data-panel="2" hidden>
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">{{ 'Who gets this message'|trans }}</h3>
+                            <p class="card-subtitle">{{ 'Leave every filter empty to send this message to all clients.'|trans }}</p>
+                        </div>
+                    </div>
+                    <fieldset class="card-body"{% if not can_edit %} disabled{% endif %}>
+                        {% set filters = [
+                            { key: 'client_status', label: 'Client Status'|trans, options: { active: 'Active'|trans, suspended: 'Suspended'|trans, canceled: 'Canceled'|trans } },
+                            { key: 'client_groups', label: 'Client Groups'|trans, options: admin.client_group_get_pairs },
+                            { key: 'has_order_with_status', label: 'Has Order With Status'|trans, options: admin.order_get_status_pairs },
+                            { key: 'has_order', label: 'Has Order'|trans, options: admin.product_get_pairs },
+                        ] %}
+                        {% for f in filters %}
+                            <div class="{% if not loop.last %}mb-3{% endif %}">
+                                <div class="form-label">{{ f.label }}</div>
+                                {% if f.options %}
+                                    <div class="form-selectgroup">
+                                        {% for value, label in f.options %}
+                                            <label class="form-selectgroup-item">
+                                                <input type="checkbox" class="form-selectgroup-input" name="filter[{{ f.key }}]" value="{{ value }}"{% if value in (msg ? msg.filter[f.key] ?? [] : []) %} checked{% endif %}>
+                                                <span class="form-selectgroup-label">{{ label }}</span>
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="text-secondary">–</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </fieldset>
+                    <div class="card-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" data-go="1"><svg class="icon me-1"><use href="#arrow-left" /></svg> {{ 'Back'|trans }}</button>
+                        <button type="button" class="btn btn-primary" data-go="3">{{ 'Next'|trans }} <svg class="icon ms-1"><use href="#arrow-right" /></svg></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title" id="mm-count"></h3>
+                            <p class="card-subtitle" id="mm-opted" hidden></p>
+                        </div>
+                    </div>
+                    <div class="list-group list-group-flush overflow-auto" style="max-height: 28rem" id="mm-receivers"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row g-3" data-panel="3" hidden>
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="w-100">
+                            <label class="form-label" for="mm-preview-client">{{ 'Preview for'|trans }}</label>
+                            <select class="form-select" id="mm-preview-client"></select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="fw-bold mb-2 text-break" id="mm-preview-subject"></div>
+                        {# ClientFence core patch: the message in a sandboxed frame without scripts (its HTML ran in the viewing staff member's session). #}
+                        <iframe class="cf-email-frame" sandbox="allow-popups" title="{{ 'Preview'|trans }}" id="mm-preview"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title" id="mm-send-count"></h3>
+                        {% if can_send %}
+                            <div class="alert alert-info" id="mm-scheduled"{% if msg.status|default('') != 'scheduled' %} hidden{% endif %}>
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <span id="mm-scheduled-text">{{ 'Scheduled for %time%.'|trans({ '%time%': msg.scheduled_at|default('') ? msg.scheduled_at|format_datetime : '' }) }}</span>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="mm-unschedule">{{ 'Cancel schedule'|trans }}</button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-outline-secondary w-100" id="mm-test">
+                                    <svg class="icon me-1"><use href="#mail" /></svg>
+                                    {{ 'Send test'|trans }}
+                                </button>
+                                <div class="form-text">{{ 'Goes to the test client set in the Mass Mail settings:'|trans }} <span dir="ltr">{{ admin.massmailer_get_test_client }}</span></div>
+                            </div>
+                            <button type="button" class="btn btn-primary w-100 mb-3" id="mm-send">{{ 'Send now'|trans }}</button>
+                            <label class="form-label" for="mm-schedule-at">{{ 'Or send it later'|trans }}</label>
+                            <div class="input-group">
+                                <input class="form-control" type="datetime-local" id="mm-schedule-at" value="{{ msg.scheduled_at|default('')|slice(0, 16)|replace({ ' ': 'T' }) }}">
+                                <button type="button" class="btn btn-outline-primary" id="mm-schedule">
+                                    <svg class="icon me-1"><use href="#calendar" /></svg>
+                                    {{ 'Schedule'|trans }}
+                                </button>
+                            </div>
+                        {% else %}
+                            <p class="text-secondary mb-0">{{ 'You do not have permission to send mass mail.'|trans }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-go="2"><svg class="icon me-1"><use href="#arrow-left" /></svg> {{ 'Back'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+
+    {% if can_send %}
+        <div class="modal modal-blur fade" id="mm-confirm" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-status bg-primary"></div>
+                    <div class="modal-body text-center py-4">
+                        <h3 id="mm-confirm-text"></h3>
+                        <div class="text-secondary">{{ 'Emails go out from the email queue with each cron run.'|trans }}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                        <button type="button" class="btn btn-primary" id="mm-confirm-send">{{ 'Send now'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}
+
+{% block head %}{% if not done %}{{ wysiwyg('.editor-textarea') }}{% endif %}{% endblock %}
+
+{% block js %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const api = ClientFence.api.admin;
+        const fail = (error) => ClientFence.message(error.message, 'error');
+        const frame = document.getElementById('mm-preview');
+        const showPreview = (id, clientId) => {
+            api.post('massmailer/preview', { id, client_id: clientId || '' }, (result) => {
+                document.getElementById('mm-preview-subject').textContent = result.subject;
+                frame.srcdoc = result.content;
+            }, fail);
+        };
+
+        const report = document.getElementById('mm-report');
+        if (report) {
+            showPreview(report.dataset.id);
+            document.getElementById('mm-report-search').addEventListener('input', (event) => {
+                const query = event.target.value.trim().toLowerCase();
+                for (const row of document.getElementById('mm-report-rows')?.children ?? []) {
+                    row.hidden = !row.dataset.search.includes(query);
+                }
+            });
+            document.getElementById('mm-copy')?.addEventListener('click', () => {
+                api.post('massmailer/copy', { id: report.dataset.id }, (id) => {
+                    window.location.href = {{ 'massmailer/message'|url|json_encode|raw }} + '/' + id;
+                }, fail);
+            });
+            return;
+        }
+
+        const form = document.getElementById('mm-form');
+        const text = form.dataset;
+        const fields = form.elements;
+        const canEdit = {{ can_edit ? 'true' : 'false' }};
+        let id = text.id;
+        let dirty = false;
+        let receivers = [];
+        let lastField = fields.content;
+
+        const markDirty = () => { dirty = true; };
+        const markFieldDirty = (event) => {
+            if (event.target.closest('fieldset')) {
+                markDirty();
+            }
+        };
+        form.addEventListener('input', markFieldDirty);
+        form.addEventListener('change', markFieldDirty);
+        // The editor writes into the textarea without input events.
+        new MutationObserver((records, observer) => {
+            if (fields.content.editor) {
+                observer.disconnect();
+                fields.content.editor.onChange(markDirty);
+                fields.content.editor.raw.editing.view.document.on('focus', () => { lastField = fields.content; });
+            }
+        }).observe(fields.content, { attributes: true });
+        fields.subject.addEventListener('focus', () => { lastField = fields.subject; });
+        window.addEventListener('beforeunload', (event) => {
+            if (dirty && canEdit) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        });
+
+        document.getElementById('mm-placeholders').addEventListener('click', (event) => {
+            const code = event.target.closest('[data-code]')?.dataset.code;
+            if (!code) {
+                return;
+            }
+            const editor = fields.content.editor;
+            if (lastField === fields.subject || !editor) {
+                const field = lastField === fields.subject ? fields.subject : fields.content;
+                field.setRangeText(code, field.selectionStart, field.selectionEnd, 'end');
+                field.focus();
+            } else {
+                editor.raw.model.change((writer) => editor.raw.model.insertContent(writer.createText(code)));
+                editor.focus();
+            }
+            markDirty();
+        });
+
+        const filter = () => {
+            const result = { client_status: [], client_groups: [], has_order_with_status: [], has_order: [] };
+            for (const input of form.querySelectorAll('[name^="filter["]:checked')) {
+                result[input.name.slice(7, -1)].push(input.value);
+            }
+            return result;
+        };
+
+        const invalid = (field, message) => {
+            field.classList.toggle('is-invalid', message !== '');
+            field.parentElement.querySelector('.invalid-feedback').textContent = message;
+        };
+
+        const save = (done) => {
+            if ((!dirty && id) || !canEdit) {
+                done();
+                return;
+            }
+            let ok = true;
+            for (const field of [fields.from_name, fields.from_email, fields.subject]) {
+                const empty = field.value.trim() === '';
+                invalid(field, empty ? text.textRequired : '');
+                ok = ok && !empty;
+            }
+            if (!ok) {
+                show(1);
+                return;
+            }
+            const data = {
+                from_name: fields.from_name.value,
+                from_email: fields.from_email.value,
+                subject: fields.subject.value,
+                content: fields.content.editor ? fields.content.editor.getData() : fields.content.value,
+                filter: filter(),
+            };
+            dirty = false;
+            const saved = () => {
+                document.getElementById('mm-title').textContent = data.subject;
+                done();
+            };
+            if (id) {
+                api.post('massmailer/update', { id, ...data }, saved, (error) => { dirty = true; fail(error); });
+                return;
+            }
+            api.post('massmailer/create', data, (newId) => {
+                id = String(newId);
+                history.replaceState(null, '', text.url + '/' + id);
+                saved();
+            }, (error) => { dirty = true; fail(error); });
+        };
+
+        const count = () => receivers.filter((r) => !r.opted_out).length;
+
+        const loadReceivers = (then) => {
+            api.post('massmailer/receivers', { id }, (list) => {
+                receivers = list;
+                const opted = list.length - count();
+                document.getElementById('mm-count').textContent = text.textCount.replace('%count%', count());
+                document.getElementById('mm-send-count').textContent = text.textCount.replace('%count%', count());
+                const optedLine = document.getElementById('mm-opted');
+                optedLine.hidden = opted === 0;
+                optedLine.textContent = text.textOpted.replace('%count%', opted);
+
+                const box = document.getElementById('mm-receivers');
+                box.replaceChildren();
+                for (const r of list.slice(0, 200)) {
+                    const item = document.createElement('div');
+                    item.className = 'list-group-item d-flex justify-content-between align-items-center gap-2';
+                    const who = document.createElement('div');
+                    who.className = 'text-break';
+                    who.textContent = r.name || ('#' + r.id);
+                    const email = document.createElement('div');
+                    email.className = 'text-secondary small';
+                    email.textContent = r.email;
+                    who.append(email);
+                    item.append(who);
+                    if (r.opted_out) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-secondary-lt';
+                        badge.textContent = {{ 'Skipped'|trans|json_encode|raw }};
+                        item.append(badge);
+                    }
+                    box.append(item);
+                }
+                if (list.length > 200) {
+                    const more = document.createElement('div');
+                    more.className = 'list-group-item text-secondary';
+                    more.textContent = text.textMore.replace('%count%', list.length - 200);
+                    box.append(more);
+                }
+                for (const button of [document.getElementById('mm-send'), document.getElementById('mm-schedule')]) {
+                    if (button) {
+                        button.disabled = count() === 0;
+                    }
+                }
+                then?.();
+            }, fail);
+        };
+
+        const picker = document.getElementById('mm-preview-client');
+        const fillPicker = () => {
+            const chosen = picker.value;
+            picker.replaceChildren(new Option(text.textTestClient + ' (' + text.testClient + ')', ''));
+            for (const r of receivers.filter((r) => !r.opted_out).slice(0, 200)) {
+                picker.append(new Option((r.name || '#' + r.id) + ' (' + r.email + ')', r.id));
+            }
+            picker.value = [...picker.options].some((o) => o.value === chosen) ? chosen : '';
+        };
+        picker.addEventListener('change', () => showPreview(id, picker.value));
+
+        let refresh = null;
+        form.addEventListener('change', (event) => {
+            if (!event.target.name?.startsWith('filter[')) {
+                return;
+            }
+            clearTimeout(refresh);
+            refresh = setTimeout(() => save(() => loadReceivers()), 300);
+        });
+
+        const show = (step) => {
+            for (const panel of form.querySelectorAll('[data-panel]')) {
+                panel.hidden = panel.dataset.panel !== String(step);
+            }
+            for (const link of document.querySelectorAll('#mm-steps [data-step]')) {
+                link.classList.toggle('active', link.dataset.step === String(step));
+                link.toggleAttribute('aria-current', link.dataset.step === String(step));
+            }
+            if (step === 2) {
+                loadReceivers();
+            } else if (step === 3) {
+                loadReceivers(() => {
+                    fillPicker();
+                    showPreview(id, picker.value);
+                });
+            }
+        };
+        const go = (step) => save(() => {
+            if (step > 1 && !id) {
+                show(1);
+                return;
+            }
+            show(step);
+        });
+        document.getElementById('mm-steps').addEventListener('click', (event) => {
+            const step = event.target.closest('[data-step]')?.dataset.step;
+            if (step) {
+                go(Number(step));
+            }
+        });
+        form.addEventListener('click', (event) => {
+            const step = event.target.closest('[data-go]')?.dataset.go;
+            if (step) {
+                go(Number(step));
+            }
+        });
+
+        const setStatus = (status) => {
+            const badge = document.getElementById('mm-status');
+            badge.className = 'badge ' + (status === 'scheduled' ? 'bg-blue-lt' : 'bg-secondary-lt');
+            badge.textContent = status === 'scheduled' ? text.labelScheduled : text.labelDraft;
+        };
+
+        document.getElementById('mm-test')?.addEventListener('click', () => {
+            api.post('massmailer/send_test', { id }, () => ClientFence.message(text.textTestSent, 'success'), fail);
+        });
+
+        const confirmElement = document.getElementById('mm-confirm');
+        document.getElementById('mm-send')?.addEventListener('click', () => {
+            document.getElementById('mm-confirm-text').textContent = text.textConfirm.replace('%count%', count());
+            bootstrap.Modal.getOrCreateInstance(confirmElement).show();
+        });
+        document.getElementById('mm-confirm-send')?.addEventListener('click', (event) => {
+            event.target.disabled = true;
+            api.post('massmailer/send', { id }, () => {
+                window.location.href = text.url + '/' + id;
+            }, (error) => {
+                event.target.disabled = false;
+                bootstrap.Modal.getInstance(confirmElement).hide();
+                fail(error);
+            });
+        });
+
+        document.getElementById('mm-schedule')?.addEventListener('click', () => {
+            const at = document.getElementById('mm-schedule-at').value;
+            api.post('massmailer/schedule', { id, scheduled_at: at }, () => {
+                document.getElementById('mm-scheduled-text').textContent = text.textScheduled.replace('%time%', at.replace('T', ' '));
+                document.getElementById('mm-scheduled').hidden = false;
+                setStatus('scheduled');
+                ClientFence.message(text.textScheduled.replace('%time%', at.replace('T', ' ')), 'success');
+            }, fail);
+        });
+        document.getElementById('mm-unschedule')?.addEventListener('click', () => {
+            api.post('massmailer/cancel_schedule', { id }, () => {
+                document.getElementById('mm-scheduled').hidden = true;
+                setStatus('draft');
+                ClientFence.message(text.textUnscheduled, 'success');
+            }, fail);
+        });
+    })();
+</script>
+{% endblock %}

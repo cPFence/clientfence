@@ -1,0 +1,110 @@
+{# ClientFence wallet page: the balance, a top-up with amount presets inside FOSSBilling's limits
+   (funds_min_amount, funds_max_amount; FOSSBilling checks them again), the payment method cards
+   (as on the checkout and invoice pages) and the recent balance changes.
+   Add creates the funds invoice (invoice/funds_invoice), then opens the payment of an online
+   method, or says how to pay a manual one and links to the invoice. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'payments' %}
+{% import 'partials/store_macros.html.twig' as sm %}
+
+{% block meta_title %}{{ 'Wallet'|trans }}{% endblock %}
+{% block breadcrumb %} <li class="breadcrumb-item active" aria-current="page">{{ 'Wallet'|trans }}</li>{% endblock %}
+
+{% set profile = client.profile_get %}
+
+{% block body_class %}client-balance bf-wallet-page{% endblock %}
+{% block content %}
+{% set currency = profile.currency ?: default_currency %}
+{% set limits = guest.clientfence_wallet_limits({ currency: currency }) %}
+{% set min = limits.min ?: 1 %}
+{% set max = limits.max ?: 1000 %}
+{% set presets = [10, 25, 50, 100, 200, 500, 1000]|filter(v => v >= min and v <= max)|slice(0, 5) %}
+{% set start = 50 in presets ? 50 : (presets|first ?: min) %}
+{% set methods = guest.invoice_payment_methods({ amount: start, currency: currency }) %}
+{% set transactions = client.client_balance_get_list({ per_page: 10, page: request.page }) %}
+
+<div class="bf-pay-page" data-bf-wallet data-currency="{{ currency }}" data-min="{{ min }}" data-max="{{ max }}"
+     data-banklink="{{ 'invoice/banklink'|url }}" data-invoice="{{ 'invoice'|url }}">
+    <script nonce="{{ csp_nonce }}" type="application/json" data-bf-wallet-texts>{{ {
+        range: 'From :min to :max per top-up.'|trans,
+        invalid: 'Enter an amount from :min to :max.'|trans,
+        enter: 'Enter an amount'|trans,
+        online: 'Add :amount with :method'|trans,
+        manual: 'Add :amount, see transfer details'|trans,
+        sent: 'Invoice created: pay :amount by :method and send us the receipt.'|trans,
+        open: 'Open the invoice'|trans,
+        failed: 'The invoice could not be created: :error'|trans,
+    }|json_encode|raw }}</script>
+
+    <div class="bf-page-head">
+        <div>
+            <h1 class="bf-page-title">{{ 'Wallet'|trans }}</h1>
+            <span class="bf-hint">{{ 'Top up once, then pay invoices and renewals from your balance.'|trans }}</span>
+        </div>
+        <div class="card bf-card bf-balance">
+            <span>{{ 'Balance'|trans }}</span>
+            <strong>{{ sm.money(profile.balance|default(0), currency) }}</strong>
+        </div>
+    </div>
+
+    <div class="bf-checkout-grid">
+        <div class="bf-checkout-main">
+            {% if guest.invoice_funds_enabled %}
+                <form class="bf-stack-gap" data-bf-wallet-form novalidate>
+                    <section class="card bf-card bf-section" aria-labelledby="bf-h-amount">
+                        <h2 id="bf-h-amount">{{ 'How much?'|trans }}</h2>
+                        {% if presets is not empty %}
+                            <div class="bf-presets" role="group" aria-label="{{ 'Amount'|trans }}">
+                                {% for v in presets %}
+                                    <button type="button" class="bf-preset{{ v == start ? ' is-on' : '' }}" aria-pressed="{{ v == start ? 'true' : 'false' }}" data-amount="{{ v }}">{{ sm.money(v, currency) }}</button>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <label class="bf-label" for="bf-amount">{{ 'Or enter an amount'|trans }}</label>
+                        <div class="bf-amount">
+                            <input class="form-control" id="bf-amount" type="number" inputmode="decimal" min="{{ min }}" max="{{ max }}" step="0.01" value="{{ start }}" aria-describedby="bf-amount-hint" data-bf-amount>
+                            <span class="bf-amount-code" aria-hidden="true">{{ currency }}</span>
+                        </div>
+                        <span class="bf-hint" id="bf-amount-hint" data-bf-amount-hint></span>
+                    </section>
+
+                    <section class="card bf-card bf-section" aria-labelledby="bf-h-method">
+                        <h2 id="bf-h-method">{{ 'Payment method'|trans }}</h2>
+                        {{ include('partials/pay_methods.html.twig', { methods: methods, context: 'wallet', amount: start, currency: currency }) }}
+                        <button type="submit" class="btn btn-primary bf-btn-lg bf-self-start" data-bf-wallet-go></button>
+                        <div class="bf-sent" data-bf-wallet-sent hidden>
+                            <span data-bf-wallet-sent-line></span>
+                            <a class="btn bf-btn-ghost" href="#" data-bf-wallet-open></a>
+                        </div>
+                    </section>
+                </form>
+            {% else %}
+                <section class="card bf-card bf-section">
+                    <p class="mb-0">{{ 'Adding funds is not available.'|trans }}</p>
+                </section>
+            {% endif %}
+        </div>
+
+        <aside class="bf-checkout-side" aria-label="{{ 'Recent activity'|trans }}">
+            <div class="card bf-card bf-section">
+                <h2>{{ 'Recent activity'|trans }}</h2>
+                <div class="bf-activity">
+                    {% for tx in transactions.list %}
+                        {% set amount = tx.amount ?? 0 %}
+                        <div class="bf-activity-row">
+                            <span>
+                                <span class="d-block">{{ tx.description }}</span>
+                                <span class="bf-hint bf-small">{{ tx.created_at|format_date }}</span>
+                            </span>
+                            <strong class="{{ amount > 0 ? 'bf-plus' : '' }}"><bdi dir="ltr">{{ amount > 0 ? '+' : '' }}{{ sm.money(amount, tx.currency ?? currency) }}</bdi></strong>
+                        </div>
+                    {% else %}
+                        <p class="mb-0 bf-hint">{{ 'Nothing yet.'|trans }}</p>
+                    {% endfor %}
+                </div>
+                {{ include('partial_pagination.html.twig', { 'list': transactions, 'url': 'client/balance' }) }}
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

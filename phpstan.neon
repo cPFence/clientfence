@@ -1,0 +1,43 @@
+includes:
+	- phpstan-baseline.neon
+	- phpstan-baseline-clientfence.neon
+
+parameters:
+	level: 5
+	# ClientFence supports PHP 8.3 to 8.5: code must work on all three.
+	phpVersion:
+		min: 80300
+		max: 80599
+	reportUnmatchedIgnoredErrors: false
+	dynamicConstantNames:
+		- DEBUG
+		- INSTANCE_ID
+	paths:
+		- src
+	bootstrapFiles:
+		- src/load.php
+	excludePaths:
+		analyse:
+		- src/vendor
+		- src/library/Model/Admin.php
+		- src/library/Model/Client.php
+		- src/library/Model/ServiceLicense.php
+		- src/library/Server/Manager/Custom.php
+		- src/library/Server/Manager/Whm.php
+		- src/data/cache (?)
+		- '*/tests/*'
+	universalObjectCratesClasses:
+		- RedBeanPHP\SimpleModel
+		- RedBeanPHP\OODBBean
+	ignoreErrors:
+		- '#^Function __trans not found\.$#'
+		- '#^Function __pluralTrans not found\.$#'
+		# ClientFence: TCPDF 6 marks itself deprecated in favour of tc-lib-pdf (15 new packages); the
+		# statement and quote PDFs stay on TCPDF 6, which still gets fixes, until tc-lib-pdf is worth the move.
+		-
+			message: '#deprecated class TCPDF#'
+			paths:
+				- src/modules/Invoice/StatementPdf.php
+				- src/modules/Invoice/RtlPdf.php
+				- src/modules/Invoice/QuotePdf.php
+		- '#^Inner named functions are not supported by PHPStan\. Consider refactoring to an anonymous function, class method, or a top\-level\-defined function\. See issue \#165 \(https\://github\.com/phpstan/phpstan/issues/165\) for more details\.$#'

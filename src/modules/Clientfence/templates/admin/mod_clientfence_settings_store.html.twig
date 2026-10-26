@@ -1,0 +1,142 @@
+{# ClientFence: the store (who can order, its heading, the preview link), on the Orders settings
+   page. Kept in mod_order (Clientfence\Service::SETTINGS); saved with clientfence/store_update and
+   clientfence/store_preview_update, never with the page's main form. #}
+{% set store = admin.extension_config_get({ 'ext': 'mod_order' }) %}
+{% set mode = store.store_mode|default('closed') %}
+{% set groups = admin.client_group_get_pairs %}
+{% set preview_token = store.store_preview_token|default('') %}
+{# Store gate modes (store_mode: closed, testers, public). "testers" is shown as "Custom group":
+   the clients of one client group order themselves. The texts are translated here, where the
+   translation tools find them. #}
+{% set modes = {
+	'closed': { 'label': 'Closed'|trans, 'hint': 'Clients can’t see the store or order. Staff can still create orders for them in the admin area.'|trans },
+	'testers': { 'label': 'Custom group'|trans, 'hint': 'Only signed-in clients in the chosen client group see the store and order themselves. Everyone else sees that the store is closed. New accounts join that group only when made with the store preview link.'|trans },
+	'public': { 'label': 'Everyone'|trans, 'hint': 'Anyone can see the store and order. New visitors can sign up on the checkout while client sign-up is on (Settings → Clients).'|trans },
+} %}
+{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{{ include('mod_clientfence_settings_style.html.twig') }}
+<div class="card mt-3 clientfence-settings" id="store" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<form class="clientfence-settings-group" method="post" action="{{ 'clientfence/store_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
+		<div class="clientfence-settings-intro">
+			<h3>{{ 'Store'|trans }}</h3>
+			<p>{{ 'Who can see the products and order from the client area, and the heading of the store page.'|trans }}</p>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label d-block">{{ 'Who can order'|trans }}</span>
+				<div class="clientfence-setting-hint">{{ 'Staff can always create orders in the admin area.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+					{% for value, item in modes %}
+						<label class="form-selectgroup-item flex-fill">
+							<input type="radio" name="store_mode" value="{{ value }}" class="form-selectgroup-input"{% if mode == value %} checked{% endif %}>
+							<div class="form-selectgroup-label d-flex align-items-center gap-3 p-3">
+								<div><span class="form-selectgroup-check"></span></div>
+								<div>
+									<div class="fw-bold">{{ item.label }}</div>
+									<div class="text-secondary small">{{ item.hint }}</div>
+								</div>
+							</div>
+						</label>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row" data-store-testers>
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="store_testers_group">{{ 'Clients who can order'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'The client group allowed to order while the store is open to a custom group. Add clients to it under Clients, or make a new group under Clients → Groups.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<select class="form-select" id="store_testers_group" name="store_testers_group">
+					<option value="">{{ 'None'|trans }}</option>
+					{% for id, title in groups %}
+						<option value="{{ id }}"{% if store.store_testers_group|default('') == id %} selected{% endif %}>{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="store_title">{{ 'Store title and subtitle'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'The large heading on the store page (empty uses “Store”) and one short line of plain text under it.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control mb-2" id="store_title" name="store_title" maxlength="80" value="{{ store.store_title|default('') }}" placeholder="{{ 'Store'|trans }}" aria-label="{{ 'Store title'|trans }}">
+				<textarea class="form-control mb-3" id="store_subtitle" name="store_subtitle" rows="2" maxlength="200" aria-label="{{ 'Store subtitle'|trans }}">{{ store.store_subtitle|default('') }}</textarea>
+				<div class="clientfence-store-preview">
+					<div class="text-secondary small mb-1">{{ 'Preview'|trans }}</div>
+					<div class="h2 mb-1" id="store_title_preview">{{ store.store_title|default('')|trim ?: 'Store'|trans }}</div>
+					<div class="text-secondary" id="store_subtitle_preview">{{ store.store_subtitle|default('') }}</div>
+				</div>
+			</div>
+		</div>
+		<div class="clientfence-settings-actions">
+			<button type="submit" class="btn btn-primary">{{ 'Save store settings'|trans }}</button>
+		</div>
+	</form>
+
+	<div class="clientfence-settings-group">
+		<div class="clientfence-settings-intro">
+			<h3>{{ 'Store preview link'|trans }}</h3>
+			<p>{{ 'Opens the store and sign-up to whoever opens the link, for that browser session only (at most 12 hours), whoever the store is open to. Nothing on the site links to it. New accounts made with it join the clients who can order.'|trans }}</p>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label d-block">{{ 'Preview link'|trans }}</span>
+				<div class="clientfence-setting-hint">{{ 'Keep it private. A new link or turning it off ends every open preview at once.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				{% if preview_token %}
+					{% set preview_url = 'order'|url(query: { preview: preview_token }, area: 'client') %}
+					<div class="input-group">
+						<input class="form-control font-monospace" id="store_preview_url" value="{{ preview_url }}" readonly aria-label="{{ 'Preview link'|trans }}">
+						<button type="button" class="btn" id="store_preview_copy">
+							<svg class="icon" aria-hidden="true"><use href="#copy"/></svg>{{ 'Copy'|trans }}
+						</button>
+					</div>
+				{% else %}
+					<span class="badge bg-secondary-lt clientfence-off">{{ 'Off'|trans }}</span>
+					<span class="text-secondary">{{ 'The preview link is off.'|trans }}</span>
+				{% endif %}
+			</div>
+		</div>
+		<div class="clientfence-settings-actions">
+			{% if preview_token %}
+				<a class="btn clientfence-push" href="{{ 'clientfence/store_preview_update'|api_url(query: { action: 'off' }) }}" {{ fb_api_link({ modal: { type: 'confirm', title: 'Turn the preview link off?'|trans, content: 'Every open preview ends at once.'|trans }, reload: true }) }}>{{ 'Turn off'|trans }}</a>
+			{% endif %}
+			<a class="btn btn-primary" href="{{ 'clientfence/store_preview_update'|api_url(query: { action: 'new' }) }}" {{ fb_api_link(preview_token ? { modal: { type: 'confirm', title: 'Make a new preview link?'|trans, content: 'The current link stops working and every open preview ends.'|trans }, reload: true } : { reload: true }) }}>
+				<svg class="icon" aria-hidden="true"><use href="#link"/></svg>{{ preview_token ? 'New link'|trans : 'Make a preview link'|trans }}
+			</a>
+		</div>
+	</div>
+</div>
+<script nonce="{{ csp_nonce }}">
+	(() => {
+		// The custom group matters only while the store is open to it (mode "testers").
+		const testers = document.querySelector('[data-store-testers]');
+		const modeChanged = () => {
+			const mode = document.querySelector('input[name="store_mode"]:checked')?.value;
+			testers?.classList.toggle('is-muted', mode !== 'testers');
+		};
+		document.querySelectorAll('input[name="store_mode"]').forEach((input) => input.addEventListener('change', modeChanged));
+		modeChanged();
+
+		const title = document.getElementById('store_title');
+		const subtitle = document.getElementById('store_subtitle');
+		const titleOut = document.getElementById('store_title_preview');
+		const subtitleOut = document.getElementById('store_subtitle_preview');
+		const fallback = {{ 'Store'|trans|json_encode|raw }};
+		const update = () => {
+			titleOut.textContent = title.value.trim() || fallback;
+			subtitleOut.textContent = subtitle.value;
+		};
+		title?.addEventListener('input', update);
+		subtitle?.addEventListener('input', update);
+		document.getElementById('store_preview_copy')?.addEventListener('click', () => {
+			const field = document.getElementById('store_preview_url');
+			navigator.clipboard?.writeText(field.value).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'));
+		});
+	})();
+</script>

@@ -1,0 +1,191 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Cron;
+
+use ClientFence\Config;
+use ClientFence\Environment;
+use ClientFence\Tools;
+use Symfony\Component\Filesystem\Path;
+
+class Service
+{
+    protected ?\Pimple\Container $di = null;
+
+    // ClientFence core patch: the last runCrons() found another run going and did nothing (cron.php says so).
+    public bool $skipped = false;
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function getModulePermissions(): array
+    {
+        return [
+            'view' => [
+                'type' => 'bool',
+                'display_name' => __trans('View cron information'),
+                'description' => __trans('Allows the staff member to view cron job information.'),
+            ],
+            'manage' => [
+                'type' => 'bool',
+                'display_name' => __trans('Run cron jobs'),
+                'description' => __trans('Allows the staff member to manually execute cron jobs.'),
+            ],
+            'manage_settings' => [],
+        ];
+    }
+
+    public function getCronInfo(): array
+    {
+        $service = $this->di['mod_service']('system');
+
+        return [
+            'cron_path' => Path::join(PATH_ROOT, 'cron.php'),
+            'last_cron_exec' => $service->getParamValue('last_cron_exec'),
+        ];
+    }
+
+    public function runCrons(): bool
+    {
+        $hadCronFlag = isset($this->di['is_cron']);
+        $previousCronFlag = $hadCronFlag ? $this->di['is_cron'] : null;
+        $this->di['is_cron'] = true;
+        $this->skipped = false;
+
+        try {
+            // ClientFence core patch: one cron run at a time. Overlapping runs renewed the same order twice
+            // and charged the credit twice; a run that finds another one running stops.
+            return Tools::withLock($this->di, 'fb:cron', fn (): bool => $this->runCronTasks(), 0, function (): bool {
+                $this->di['logger']->setChannel('cron')->warning('Skipped cron execution because another run is still running.');
+                $this->skipped = true;
+
+                return true;
+            });
+        } finally {
+            if ($hadCronFlag) {
+                $this->di['is_cron'] = $previousCronFlag;
+            } else {
+                unset($this->di['is_cron']);
+            }
+        }
+    }
+
+    private function runCronTasks(): bool
+    {
+        if ($this->di['update_finalization']->isRequired()) {
+            $this->di['logger']->setChannel('cron')->warning('Skipped cron execution because update finalization is pending.');
+
+            throw new \ClientFence\InformationException('Update finalization is pending. Cron jobs are paused until finalization is completed.', [], 503);
+        }
+
+        $api = $this->di['api_system'];
+        $this->di['logger']->setChannel('cron')->info('Started executing cron jobs.');
+
+        // @core tasks
+        $this->_exec($api, 'hook_batch_connect');
+        $this->di['events_manager']->fire(['event' => 'onBeforeAdminCronRun']);
+
+        $this->_exec($api, 'invoice_batch_pay_with_credits');
+        $this->_exec($api, 'invoice_batch_activate_paid');
+        $isolatedTasks = [
+            'invoice_batch_generate',
+            'invoice_batch_send_reminders',
+            'invoice_batch_invoke_due_event',
+            'order_batch_suspend_expired',
+            'order_batch_cancel_suspended',
+            'order_batch_cancel_unpaid',
+            'support_batch_ticket_auto_close',
+            'client_batch_expire_password_reminders',
+            'cart_batch_expire',
+            'email_batch_sendmail',
+        ];
+        $failedTasks = [];
+        foreach ($isolatedTasks as $method) {
+            try {
+                $this->_exec($api, $method);
+            } catch (\Throwable $exception) {
+                $failedTasks[] = $method;
+                $this->di['logger']->setChannel('cron')->error(sprintf(
+                    'Failed to run cron task %s: %s: %s in %s:%d',
+                    $method,
+                    $exception::class,
+                    $exception->getMessage(),
+                    $exception->getFile(),
+                    $exception->getLine()
+                ));
+            }
+        }
+
+        // Update the last time cron was executed
+        $this->di['mod_service']('system')->setParamValue('last_cron_exec', date('Y-m-d H:i:s'), true);
+
+        // Purge old sessions from the DB
+        $count = $this->clearOldSessions() ?? 0;
+        $this->di['logger']->setChannel('cron')->info("Cleared {$count} outdated sessions from the database.");
+
+        $this->di['events_manager']->fire(['event' => 'onAfterAdminCronRun']);
+
+        if ($failedTasks !== []) {
+            $this->di['logger']->setChannel('cron')->warning('Finished executing cron jobs, but the following tasks failed: ' . implode(', ', $failedTasks) . '.');
+
+            return false;
+        }
+
+        $this->di['logger']->setChannel('cron')->info('Finished executing cron jobs.');
+
+        return true;
+    }
+
+    /**
+     * @param string $method
+     */
+    protected function _exec($api, $method, array $params = []): void
+    {
+        $api->{$method}($params);
+
+        if (Environment::isCLI()) {
+            echo "\e[32mSuccessfully ran {$method}(" . json_encode($params) . ").\e[0m\n";
+        }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastExecutionTime()
+    {
+        $service = $this->di['mod_service']('system');
+
+        return $service->getParamValue('last_cron_exec');
+    }
+
+    public function isLate(): bool
+    {
+        $t1 = new \DateTime($this->getLastExecutionTime());
+        $t2 = new \DateTime('-6min');
+
+        return $t1 < $t2;
+    }
+
+    private function clearOldSessions(): ?int
+    {
+        $maxAge = time() - Config::getProperty('security.session_lifespan', 7200);
+        $sql = 'DELETE FROM session WHERE created_at <= :age';
+
+        return $this->di['db']->exec($sql, [':age' => $maxAge]);
+    }
+}

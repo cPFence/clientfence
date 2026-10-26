@@ -1,0 +1,98 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: failed order actions (ClientFence\Mod\Order\ActionFailures). #}
+
+{% set active_menu = 'order' %}
+{% set status = request.status|default('open') in ['open', 'resolved', 'dismissed', 'all'] ? request.status|default('open') : 'open' %}
+{% set can_manage = admin.system_is_allowed({ 'mod': 'order', 'f': 'manage' }) %}
+{% set action_names = {
+    'create': 'Create'|trans,
+    'activate': 'Activate'|trans,
+    'renew': 'Renew'|trans,
+    'suspend': 'Suspend'|trans,
+    'unsuspend': 'Unsuspend'|trans,
+    'cancel': 'Cancel'|trans,
+    'uncancel': 'Uncancel'|trans,
+    'delete': 'Delete'|trans,
+    'upgrade': 'Upgrade'|trans,
+} %}
+
+{% block meta_title %}{{ 'Failed actions'|trans }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Failed actions'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Order actions a hosting panel, registrar or other service refused or could not finish. Retry runs the same action again; Dismiss closes it without a retry.'|trans }}</p>
+        </div>
+    </div>
+    <div class="card-header">
+        <ul class="nav nav-pills card-header-pills">
+            {% for key, label in { 'open': 'Open'|trans, 'resolved': 'Resolved'|trans, 'dismissed': 'Dismissed'|trans, 'all': 'All'|trans } %}
+                <li class="nav-item">
+                    <a class="nav-link{% if status == key %} active{% endif %}" href="{{ 'order/failed-actions'|url(query: { 'status': key }) }}">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% set failures = admin.order_failed_action_get_list({ 'status': status, 'page': request.page|default(1), 'per_page': request.per_page|default(25) }) %}
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter">
+            <thead>
+                <tr>
+                    <th>{{ 'Order'|trans }}</th>
+                    <th>{{ 'Client'|trans }}</th>
+                    <th>{{ 'Action'|trans }}</th>
+                    <th>{{ 'Error'|trans }}</th>
+                    <th>{{ 'Attempts'|trans }}</th>
+                    <th>{{ 'Last failed'|trans }}</th>
+                    <th class="w-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for failure in failures.list %}
+                <tr>
+                    <td class="text-nowrap">
+                        {% if failure.order_title is not null %}
+                            <a href="{{ 'order/manage'|url }}/{{ failure.order_id }}">#{{ failure.order_id }} {{ failure.order_title }}</a>
+                        {% else %}
+                            #{{ failure.order_id }} <span class="text-muted">({{ 'order deleted'|trans }})</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-nowrap">
+                        {% if failure.client_id %}
+                            <a href="{{ 'client/manage'|url }}/{{ failure.client_id }}">{{ failure.client_name|default('#' ~ failure.client_id) }}</a>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge bg-danger-lt">{{ action_names[failure.action]|default(failure.action) }}</span></td>
+                    <td class="text-break">{{ failure.message }}</td>
+                    <td>{{ failure.attempts }}</td>
+                    <td class="text-nowrap">{{ failure.last_failed_at|format_datetime }}</td>
+                    <td class="text-nowrap">
+                        {% if failure.status == 'open' and can_manage %}
+                            <a class="btn btn-sm btn-primary" href="{{ 'order/failed_action_retry'|api_url(query: { 'id': failure.id }) }}"
+                               {{ fb_api_link({ modal: { type: 'confirm', title: 'Retry this action?'|trans, content: 'The order action runs again against its service now.'|trans }, message: 'Action retried'|trans, reload: true }) }}>{{ 'Retry'|trans }}</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="{{ 'order/failed_action_dismiss'|api_url(query: { 'id': failure.id }) }}"
+                               {{ fb_api_link({ modal: { type: 'confirm', title: 'Dismiss this failed action?'|trans, content: 'It is closed without running again; fix the service by hand first if needed.'|trans }, message: 'Dismissed'|trans, reload: true }) }}>{{ 'Dismiss'|trans }}</a>
+                        {% elseif failure.status != 'open' %}
+                            <span class="text-muted">{% if failure.status == 'resolved' %}{{ 'Resolved'|trans }}{% elseif failure.resolved_by %}{{ 'Dismissed'|trans }}{% else %}{{ 'Closed by a later action'|trans }}{% endif %} {{ failure.resolved_at|format_datetime }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-muted text-center py-3" colspan="7">{{ status == 'open' ? 'No failed actions. Every order action went through.'|trans : 'The list is empty'|trans }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer d-flex align-items-center">
+        {{ include('partial_pagination.html.twig', { 'list': failures, 'url': 'order/failed-actions', 'split_footer_controls': true }) }}
+    </div>
+</div>
+{% endblock %}

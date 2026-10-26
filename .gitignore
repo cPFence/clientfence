@@ -1,0 +1,42 @@
+.vscode
+._*
+.DS_Store
+/cache
+/src/config.php
+/src/config.old.php
+/src/data/log/*
+/src/data/cache/*
+/src/data/uploads/*
+/src/public/uploads
+/src/data/update-finalization.json
+/src/.update-lock
+!/src/data/cache/.gitkeep
+/src/public/assets
+/src/vendor/*
+build
+
+# Needed for some workflows
+DOCKER_ENV
+docker_tag
+Dockerfile-php-build
+
+### node_modules ###
+node_modules
+
+### friendsofphp/php-cs-fixer ###
+.php-cs-fixer.cache
+src/install/php_error.log
+src/themes/palisade/config/settings_data.json
+output.log
+
+### Cypress ###
+tests/E2E/Cypress/artifacts
+
+### ClientFence: generated at release time (Dockerfile) ###
+/src/modules/Clientfence/pack-manifest.json
+/src/themes/admin_default/html_custom/partial_clientfence_asset_version.html.twig
+
+### ClientFence: local test site (dev/), its passwords and state ###
+/dev/.env
+/dev/state/
+/dev/.seeded

@@ -1,0 +1,334 @@
+{# ClientFence one-page checkout (/order/<slug> or /order/<id>, from the store's Select button):
+   the plan and its billing cycle with each cycle's total, add-ons billed with the plan's cycle,
+   the product's order form (Form Builder), the account (signed in, or sign-up for a new
+   customer where sign-up is open), the payment method cards and a summary with the promo code.
+   Pay puts the choice in the cart (cart/add_item, which empties it first), applies the promo
+   code, checks out and then opens the payment (online methods) or shows the confirmation with
+   the invoice (manual methods). The page script is assets/src/js/checkout.js.
+
+   Products with their own FOSSBilling order form (hosting, domains) keep FOSSBilling's order
+   steps. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% import 'partials/store_macros.html.twig' as sm %}
+
+{% set allow_guest = guest.clientfence_store_open %}
+{% set active_menu = 'order' %}
+{% set stock_form = guest.system_template_exists({ file: 'mod_service' ~ product.type ~ '_order_form.html.twig' }) %}
+
+{% block meta_title %}{{ 'Checkout'|trans }} - {{ product.title }}{% endblock %}
+{% block body_class %}order-product bf-checkout-page{% endblock %}
+
+{% block topbar_nav %}
+    {% if stock_form %}
+        <nav class="d-none d-lg-block" aria-label="{{ 'breadcrumb'|trans }}">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ 'order'|url }}">{{ 'Store'|trans }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
+            </ol>
+        </nav>
+    {% else %}
+        {{ include('partials/order_steps.html.twig', { step: 2 }) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if stock_form %}
+    <div class="card mb-4">
+        <div class="card-header py-3"><h1 class="mb-1">{{ product.title }}</h1></div>
+        <div class="card-body overflow-hidden">{{ include('mod_orderbutton_content.html.twig') }}</div>
+    </div>
+{% else %}
+{% set cart_currency = guest.cart_get_currency %}
+{% set store = guest.clientfence_store_info %}
+{% set profile = client ? client.profile_get : null %}
+{% set form = product.form_id and guest.extension_is_on({ mod: 'formbuilder' }) ? guest.formbuilder_get({ id: product.form_id }) : null %}
+{% set methods = guest.invoice_payment_methods({ amount: 0, currency: cart_currency.code }) %}
+{% set order = ['1W', '1M', '3M', '6M', '1Y', '2Y', '3Y'] %}
+{% set prices = {} %}
+{% if product.pricing.type == 'recurrent' %}
+    {% for code in order %}
+        {% set p = product.pricing.recurrent[code]|default(null) %}
+        {% if p and p.enabled %}{% set prices = prices|merge({ (code): { price: p.price, setup: p.setup } }) %}{% endif %}
+    {% endfor %}
+{% endif %}
+{% set period = request.period|default('') in prices|keys ? request.period : ('1M' in prices|keys ? '1M' : (prices|keys|first ?: '')) %}
+{# ClientFence core patch: the sign-up here asks name, email, password and country; a store requiring more signs up on its sign-up page. #}
+{% set signup_page = store.signup|default(false) and guest.client_required|filter(n => n not in ['first_name', 'last_name', 'email', 'password', 'country'])|length > 0 %}
+{% set addons = [] %}
+{% for addon in product.addons|default([]) %}
+    {% set aprices = {} %}
+    {% if addon.pricing.type == 'recurrent' %}
+        {% for code, p in addon.pricing.recurrent %}
+            {% if p.enabled %}{% set aprices = aprices|merge({ (code): { price: p.price, setup: p.setup } }) %}{% endif %}
+        {% endfor %}
+    {% endif %}
+    {% set addons = addons|merge([{
+        id: addon.id, title: addon.title, description: addon.description|default(''), type: addon.pricing.type,
+        prices: aprices, once: addon.pricing.type == 'once' ? { price: addon.pricing.once.price, setup: addon.pricing.once.setup } : null,
+        quantity: addon.allow_quantity_select,
+    }]) %}
+{% endfor %}
+{# ClientFence: data.tax is the tax the invoice adds, so "Due today" is what the invoice asks for. #}
+{% set data = {
+    product: {
+        id: product.id, title: product.title, type: product.pricing.type, prices: prices,
+        once: product.pricing.type == 'once' ? { price: product.pricing.once.price, setup: product.pricing.once.setup } : null,
+        quantity: product.allow_quantity_select,
+    },
+    addons: addons,
+    period: period,
+    currency: cart_currency.code,
+    rate: cart_currency.conversion_rate,
+    signedIn: client ? true : false,
+    signup: store.signup|default(false) and not signup_page,
+    balance: profile ? (profile.balance|default(0)) : 0,
+    tax: client ? client.clientfence_tax : { name: '', rate: 0 },
+    urls: {
+        store: 'order'|url,
+        invoice: 'invoice'|url,
+        banklink: 'invoice/banklink'|url,
+        login: 'login'|url,
+        service: 'order/service/manage'|url,
+        services: 'order/service'|url,
+    },
+    texts: {
+        cycles: sm.cycle_texts()|trim,
+        once: 'One-time payment'|trans,
+        free: 'Free'|trans,
+        tax: 'Tax'|trans,
+        each: ':amount :per each, billed with the plan.'|trans,
+        eachOnce: ':amount each, charged once.'|trans,
+        notOffered: 'Not offered for this billing cycle'|trans,
+        setup: 'Setup fee'|trans,
+        promo: 'Promo code :code'|trans,
+        then: 'Then :amount :per, from :date.'|trans,
+        lines: ':count lines'|trans,
+        line: '1 line'|trans,
+        fillIn: 'Add :field to continue'|trans,
+        account: 'Fill in your account details to continue'|trans,
+        signIn: 'Sign in to continue'|trans,
+        pay: 'Pay :amount with :method'|trans,
+        placeOrder: 'Place order · :amount'|trans,
+        placeFree: 'Place order'|trans,
+        payBalance: 'Pay :amount from my balance'|trans,
+        hintOnline: 'You are sent to :method to pay, then back here.'|trans,
+        hintManual: 'Next you get the transfer details for :method. The order starts once we confirm your payment.'|trans,
+        hintBalance: 'Your balance covers this order, so it is paid from your balance.'|trans,
+        hintFree: 'Nothing to pay today.'|trans,
+        promoInvalid: 'This code cannot be used for this order.'|trans,
+        promoAgain: 'Your choice changed: apply the code again.'|trans,
+        doneManual: 'Your invoice is ready: pay it by :method and send us the receipt.'|trans,
+        doneBalance: 'It was paid from your balance.'|trans,
+        doneFree: 'There is nothing to pay.'|trans,
+        doneInvoice: 'Open the invoice to pay'|trans,
+        doneService: 'Go to my services'|trans,
+        stepCompact: 'Step :n of 3 · :label'|trans,
+        stepDone: 'Done'|trans,
+        failed: 'The order could not be placed: :error'|trans,
+    },
+} %}
+
+<div class="bf-checkout" data-bf-checkout>
+    <script nonce="{{ csp_nonce }}" type="application/json" data-bf-checkout-data>{{ data|json_encode|raw }}</script>
+
+    <form class="bf-checkout-grid" data-bf-checkout-form novalidate>
+        <div class="bf-checkout-main">
+            <a class="bf-linkbtn" href="{{ 'order'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back to the store'|trans }}</a>
+            <h1 class="bf-page-title">{{ 'Checkout'|trans }}</h1>
+
+            <section class="card bf-card bf-section" aria-labelledby="bf-h-plan">
+                <div class="bf-section-head">
+                    <h2 id="bf-h-plan">{{ product.title }}</h2>
+                    <a class="bf-linkbtn" href="{{ 'order'|url }}">{{ 'Change'|trans }}</a>
+                </div>
+                {% if prices|length > 0 %}
+                    <div class="bf-seg" role="group" aria-label="{{ 'Billing cycle'|trans }}" data-bf-cycles>
+                        {% for code in prices|keys %}
+                            <button type="button" class="bf-seg-item{{ code == period ? ' is-on' : '' }}" aria-pressed="{{ code == period ? 'true' : 'false' }}" data-cycle="{{ code }}">
+                                <span>{{ sm.cycle_label(code) }}</span>
+                                <span class="bf-seg-sub" data-cycle-total></span>
+                            </button>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="mb-0 text-body-secondary" data-bf-once-line></p>
+                {% endif %}
+                {% if product.allow_quantity_select %}
+                    <div class="bf-row-between bf-divided">
+                        <strong>{{ 'Quantity'|trans }}</strong>
+                        <div class="bf-stepper" role="group" aria-label="{{ 'Quantity'|trans }}" data-bf-stepper="product">
+                            <button type="button" aria-label="{{ 'One less'|trans }}" data-step="-1">−</button>
+                            <input type="number" min="1" value="1" inputmode="numeric" aria-label="{{ 'Quantity'|trans }}">
+                            <button type="button" aria-label="{{ 'One more'|trans }}" data-step="1">+</button>
+                        </div>
+                    </div>
+                {% endif %}
+                {# ClientFence: configurable options (Product/Options.php), priced by checkout.js. #}
+                <div class="bf-divided">{{ include('mod_product_options_form.html.twig', { 'product_id': product.id, 'currency': cart_currency }) }}</div>
+                {% for addon in addons %}
+                    <div class="bf-addon bf-divided" data-bf-addon="{{ addon.id }}">
+                        <div class="bf-addon-main">
+                            <button type="button" class="bf-toggle" role="switch" aria-checked="false" aria-labelledby="bf-addon-{{ addon.id }}" data-addon-toggle><span></span></button>
+                            <div class="bf-addon-text">
+                                <strong id="bf-addon-{{ addon.id }}">{{ addon.title }}</strong>
+                                <span><span>{{ addon.description }}</span> <span data-addon-each></span></span>
+                            </div>
+                        </div>
+                        {% if addon.quantity %}
+                            <div class="bf-stepper" role="group" aria-label="{{ 'Number of :item'|trans({ ':item': addon.title }) }}" data-bf-stepper="addon" hidden>
+                                <button type="button" aria-label="{{ 'One less'|trans }}" data-step="-1">−</button>
+                                <input type="number" min="1" value="1" inputmode="numeric" aria-label="{{ addon.title }}">
+                                <button type="button" aria-label="{{ 'One more'|trans }}" data-step="1">+</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </section>
+
+            {% if form and form.fields|default([])|length > 0 %}
+                <section class="card bf-card bf-section" aria-labelledby="bf-h-details">
+                    <div class="bf-section-head">
+                        <h2 id="bf-h-details">{{ 'Order details'|trans }}</h2>
+                    </div>
+                    {% for field in form.fields %}
+                        {% set fid = 'bf-field-' ~ field.id %}
+                        <div class="bf-field" data-bf-field data-label="{{ field.label }}">
+                            {% if field.type in ['checkbox', 'radio'] %}
+                                <span class="bf-label">{{ field.label }}{% if field.required %} <span class="bf-req" aria-hidden="true">*</span>{% endif %}</span>
+                                {% for option_label, option_value in field.options %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="{{ field.type }}" id="{{ fid }}-{{ loop.index }}" name="{{ field.name }}{{ field.type == 'checkbox' ? '[]' : '' }}" value="{{ option_value }}"{% if field.required and field.type == 'radio' %} required{% endif %}>
+                                        <label class="form-check-label" for="{{ fid }}-{{ loop.index }}">{{ option_label }}</label>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="bf-row-between">
+                                    <label class="bf-label" for="{{ fid }}">{{ field.label }}{% if field.required %} <span class="bf-req" aria-hidden="true">*</span>{% endif %}</label>
+                                    {% if field.type == 'textarea' %}<span class="bf-chip bf-chip-ok" data-lines hidden></span>{% endif %}
+                                </div>
+                                {% if field.type == 'textarea' %}
+                                    <textarea class="form-control bf-mono" id="{{ fid }}" name="{{ field.name }}" rows="3"{% if field.required %} required{% endif %}>{{ field.default_value }}</textarea>
+                                {% elseif field.type == 'select' %}
+                                    <select class="form-select" id="{{ fid }}" name="{{ field.name }}"{% if field.required %} required{% endif %}>
+                                        <option value="">{{ 'Choose'|trans }}</option>
+                                        {% for option_label, option_value in field.options %}
+                                            <option value="{{ option_value }}"{% if option_value == field.default_value %} selected{% endif %}>{{ option_label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <input class="form-control" id="{{ fid }}" name="{{ field.name }}" type="text" value="{{ field.default_value }}"{% if field.required %} required{% endif %}>
+                                {% endif %}
+                            {% endif %}
+                            {% if field.description %}<span class="bf-hint">{{ field.description }}</span>{% endif %}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            <section class="card bf-card bf-section" aria-labelledby="bf-h-account">
+                <h2 id="bf-h-account">{{ 'Account'|trans }}</h2>
+                {% if client %}
+                    <div class="bf-account">
+                        <span class="bf-avatar" aria-hidden="true">{{ (profile.first_name|default('')|first ~ profile.last_name|default('')|first)|upper|default('?') }}</span>
+                        <div class="bf-account-text">
+                            <strong>{{ profile.first_name }} {{ profile.last_name }}</strong>
+                            <span>{{ 'The order and its invoice go to this account.'|trans }}</span>
+                        </div>
+                    </div>
+                {% elseif signup_page %}
+                    <p class="mb-0">{{ 'Create your account first, then come back to this page.'|trans }} <a href="{{ 'signup'|url }}">{{ 'Sign up'|trans }}</a> · <a href="{{ 'login'|url({back: '/order/' ~ product.slug ~ (period ? '?period=' ~ period : '')}) }}">{{ 'Sign in'|trans }}</a></p>
+                {% elseif store.signup|default(false) %}
+                    {# Shown once the account is made but the sign-up did not sign in (checkout.js). #}
+                    <div class="alert alert-info" role="status" tabindex="-1" data-bf-account-ready hidden>
+                        <p class="mb-2">{{ 'Your account is ready. Sign in to place your order; you come back here.'|trans }}</p>
+                        <a class="btn btn-primary" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+                    </div>
+                    <div class="bf-grid-2" data-bf-signup data-bf-signup-part>
+                        <label class="bf-label bf-stack">{{ 'First name'|trans }}<input class="form-control" name="first_name" autocomplete="given-name" required></label>
+                        <label class="bf-label bf-stack">{{ 'Last name'|trans }}<input class="form-control" name="last_name" autocomplete="family-name" required></label>
+                        <label class="bf-label bf-stack">{{ 'Email'|trans }}<input class="form-control" type="email" name="email" autocomplete="email" required></label>
+                        <label class="bf-label bf-stack">{{ 'Password'|trans }}<input class="form-control" type="password" name="password" autocomplete="new-password" required></label>
+                        {# ClientFence core patch: the country decides the tax of the order (without it every new client was invoiced untaxed). #}
+                        <label class="bf-label bf-stack">{{ 'Country'|trans }}<select class="form-select" name="country" autocomplete="country" required>
+                            <option value="">{{ '-- Select Country --'|trans }}</option>
+                            {% for val, title in guest.system_countries %}
+                                <option value="{{ val }}"{% if guest.system_default_country == val %} selected{% endif %}>{{ title|e }}</option>
+                            {% endfor %}
+                        </select></label>
+                    </div>
+                    {% import "macro_functions.html.twig" as mf %}
+                    <div class="bf-captcha" data-bf-signup-part>{{ mf.recaptcha }}</div>
+                    <span class="bf-hint" data-bf-signup-part>{{ 'Already a client?'|trans }} <a href="{{ 'login'|url({back: '/order/' ~ product.slug ~ (period ? '?period=' ~ period : '')}) }}">{{ 'Sign in'|trans }}</a> {{ 'and your details fill in.'|trans }}</span>
+                    {# ClientFence: "Continue with Google" (Google sign-up), back to this checkout and its period. #}
+                    <div data-bf-signup-part>{{ render_widgets('client.page.signup.form.after', {google_return: 'order/' ~ product.slug ~ (period ? '?period=' ~ period : '')}) }}</div>
+                {% else %}
+                    <p class="mb-0">{{ 'Please sign in to order.'|trans }} <a href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a></p>
+                {% endif %}
+            </section>
+
+            <section class="card bf-card bf-section" aria-labelledby="bf-h-pay" data-bf-methods>
+                <h2 id="bf-h-pay">{{ 'Payment method'|trans }}</h2>
+                <div data-bf-methods-list>
+                    {{ include('partials/pay_methods.html.twig', { methods: methods, context: 'checkout', amount: 0, currency: cart_currency.code }) }}
+                </div>
+                <p class="mb-0 bf-hint" data-bf-methods-none hidden></p>
+            </section>
+        </div>
+
+        <aside class="bf-checkout-side" aria-label="{{ 'Order summary'|trans }}" id="bf-summary">
+            <div class="card bf-card bf-section bf-summary">
+                <h2>{{ 'Summary'|trans }}</h2>
+                <div class="bf-lines" data-bf-lines></div>
+                <div class="bf-line bf-line-promo" data-bf-promo-line hidden><span data-bf-promo-label></span><span data-bf-promo-amount></span></div>
+                <div class="bf-line" data-bf-tax-line hidden><span data-bf-tax-label></span><span data-bf-tax-amount></span></div>
+                <div class="bf-total">
+                    <span>{{ 'Due today'|trans }}</span>
+                    <strong data-bf-due></strong>
+                </div>
+                <span class="bf-hint" data-bf-then></span>
+                {% if not client and guest.clientfence_tax_enabled %}<span class="bf-hint bf-small">{{ 'Tax for your country, if any, is added on the invoice.'|trans }}</span>{% endif %}
+                <div class="bf-promo" data-bf-promo>
+                    <label class="bf-label" for="bf-promo">{{ 'Promo code'|trans }}</label>
+                    <div class="bf-promo-row">
+                        <input class="form-control" id="bf-promo" autocomplete="off" data-bf-promo-input>
+                        <button type="button" class="btn bf-btn-ghost" data-bf-promo-apply>{{ 'Apply'|trans }}</button>
+                    </div>
+                    <span class="bf-error" data-bf-promo-msg hidden></span>
+                </div>
+                <button type="button" class="bf-linkbtn" data-bf-promo-remove hidden>{{ 'Remove the promo code'|trans }}</button>
+                {% if settings.checkout_tos|default('0') == 'explicit' %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="bf-tos" required>
+                        <label class="form-check-label" for="bf-tos">{{ 'I agree to the'|trans }} <a href="{{ 'tos'|url }}" target="_blank">{{ 'Terms of Service'|trans }}</a> {{ 'and'|trans }} <a href="{{ 'privacy-policy'|url }}" target="_blank">{{ 'Privacy Policy'|trans }}</a>.</label>
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary bf-pay-btn" data-bf-pay></button>
+                <span class="bf-hint bf-small" data-bf-hint></span>
+                {% if settings.checkout_tos|default('0') == 'implicit' %}
+                    <span class="bf-hint bf-small">{{ 'By completing your order, you agree to our'|trans }} <a href="{{ 'tos'|url }}" target="_blank">{{ 'Terms of Service'|trans }}</a> {{ 'and'|trans }} <a href="{{ 'privacy-policy'|url }}" target="_blank">{{ 'Privacy Policy'|trans }}</a>.</span>
+                {% endif %}
+            </div>
+        </aside>
+
+        <div class="bf-paybar" data-bf-paybar>
+            <div class="bf-paybar-row">
+                <a class="bf-linkbtn" href="#bf-summary">{{ 'Summary and promo code'|trans }}</a>
+                <div class="bf-paybar-due"><span>{{ 'Due today'|trans }}</span><strong data-bf-due></strong></div>
+            </div>
+            <button type="submit" class="btn btn-primary bf-pay-btn" data-bf-pay></button>
+        </div>
+    </form>
+
+    <section class="bf-done" data-bf-done hidden tabindex="-1" aria-labelledby="bf-done-title">
+        <span class="bf-done-icon" aria-hidden="true"><svg class="icon"><use href="#check"/></svg></span>
+        <h1 id="bf-done-title">{{ 'Your order is placed.'|trans }}</h1>
+        <p data-bf-done-line></p>
+        <div class="bf-done-actions">
+            <a class="btn btn-primary bf-btn-lg" href="#" data-bf-done-primary></a>
+            <a class="btn bf-btn-ghost bf-btn-lg" href="{{ 'order/service'|url }}" data-bf-done-services>{{ 'Go to my services'|trans }}</a>
+            <a class="btn bf-btn-ghost bf-btn-lg" href="{{ 'order'|url }}">{{ 'Back to the store'|trans }}</a>
+        </div>
+    </section>
+</div>
+{% endif %}
+{% endblock %}

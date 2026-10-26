@@ -1,0 +1,9 @@
+{# Shown to signed-out visitors on any page other than sign-in and password reset.
+   The <meta refresh> in partials/head.html.twig sends them to the sign-in page. #}
+{% embed 'partials/auth_shell.html.twig' %}
+    {% block auth_content %}
+        <h1>{{ 'Sign in required'|trans }}</h1>
+        <p class="auth-lead">{{ 'Please sign in to your client area to continue.'|trans }}</p>
+        <a class="btn btn-primary btn-lg w-100" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+    {% endblock %}
+{% endembed %}

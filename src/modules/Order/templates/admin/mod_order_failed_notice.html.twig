@@ -1,0 +1,21 @@
+{# ClientFence: the order's open failed actions, on the order page (ClientFence\Mod\Order\ActionFailures). #}
+{% set order_failures = admin.order_failed_action_get_list({ 'status': 'open', 'order_id': order.id, 'per_page': 10 }).list %}
+{% if order_failures|length > 0 %}
+    {% set can_manage_failures = admin.system_is_allowed({ 'mod': 'order', 'f': 'manage' }) %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-title">{{ 'An action on this order failed'|trans }}</h4>
+        {% for failure in order_failures %}
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                <span class="badge bg-danger-lt">{{ failure.action|capitalize }}</span>
+                <span class="text-break">{{ failure.message }}</span>
+                <span class="text-muted small">({{ 'attempts'|trans }}: {{ failure.attempts }}, {{ failure.last_failed_at|format_datetime }})</span>
+                {% if can_manage_failures %}
+                    <a class="btn btn-sm btn-primary" href="{{ 'order/failed_action_retry'|api_url(query: { 'id': failure.id }) }}"
+                       {{ fb_api_link({ modal: { type: 'confirm', title: 'Retry this action?'|trans, content: 'The order action runs again against its service now.'|trans }, message: 'Action retried'|trans, reload: true }) }}>{{ 'Retry'|trans }}</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ 'order/failed_action_dismiss'|api_url(query: { 'id': failure.id }) }}"
+                       {{ fb_api_link({ modal: { type: 'confirm', title: 'Dismiss this failed action?'|trans, content: 'It is closed without running again; fix the service by hand first if needed.'|trans }, message: 'Dismissed'|trans, reload: true }) }}>{{ 'Dismiss'|trans }}</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

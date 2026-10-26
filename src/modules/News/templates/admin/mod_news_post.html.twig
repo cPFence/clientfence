@@ -1,0 +1,187 @@
+{% extends 'layout_default.html.twig' %}
+
+{% set active_menu = 'support' %}
+{% set can_manage = has_permission('news', 'manage') %}
+{% set news_base = 'news'|url(area: 'client') ~ '/' %}
+
+{% block meta_title %}{{ post ? post.title : 'New Announcement'|trans }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ '/'|url }}">
+                <svg class="icon">
+                    <use href="#home" />
+                </svg>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'news'|url }}">{{ 'News'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ post ? post.title : 'New Announcement'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block content %}
+<form id="news-form" novalidate data-id="{{ post.id|default('') }}" data-edit-url="{{ 'news/post'|url }}"
+      data-text-saved="{{ 'Saved.'|trans }}" data-text-required="{{ 'Required'|trans }}">
+    <fieldset class="row g-3"{% if not can_manage %} disabled{% endif %}>
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label required" for="news-title">{{ 'Title'|trans }}</label>
+                        <input class="form-control" type="text" id="news-title" name="title" value="{{ post.title|default('') }}" maxlength="255" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="news-slug">{{ 'Slug'|trans }}</label>
+                        <div class="input-group input-group-flat has-validation">
+                            <span class="input-group-text" dir="ltr">{{ news_base }}</span>
+                            <input class="form-control ps-0" type="text" id="news-slug" name="slug" value="{{ post.slug|default('') }}" maxlength="255" dir="ltr" autocomplete="off">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="news-content">{{ 'Content'|trans }}</label>
+                        <textarea class="editor-textarea" id="news-content" name="content" rows="12">{{ post.content|default('') }}</textarea>
+                        <small class="mt-2 form-hint">{{ 'If the text is very long you can use <strong>&lt;!--more--&gt;</strong> tag. Inserting this tag within the post will create and excerpt of text (before the tag) to be displayed in posts list. Users will be able to see whole content when they click on "Read more" button.'|trans|raw }}</small>
+                    </div>
+                    <div>
+                        <label class="form-label" for="news-description">{{ 'Meta Description'|trans }}</label>
+                        <textarea class="form-control" id="news-description" name="description" rows="2">{{ post.description|default('') }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="news-status">{{ 'Status'|trans }}</label>
+                        <select class="form-select" id="news-status" name="status">
+                            <option value="draft"{% if post.status|default('draft') == 'draft' %} selected{% endif %}>{{ 'Draft'|trans }}</option>
+                            <option value="active"{% if post.status|default('') == 'active' %} selected{% endif %}>{{ 'Published'|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="news-publish-at">{{ 'Publish date'|trans }}</label>
+                        <input class="form-control" type="datetime-local" id="news-publish-at" name="publish_at" value="{{ post.publish_at|default('')|slice(0, 16)|replace({ ' ': 'T' }) }}">
+                        <div class="form-text">{{ 'Leave empty to publish now.'|trans }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="news-expires-at">{{ 'Expiry date'|trans }}</label>
+                        <input class="form-control" type="datetime-local" id="news-expires-at" name="expires_at" value="{{ post.expires_at|default('')|slice(0, 16)|replace({ ' ': 'T' }) }}">
+                        <div class="form-text">{{ 'Leave empty to never expire.'|trans }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="news-section">{{ 'Section'|trans }}</label>
+                        <input class="form-control" type="text" id="news-section" name="section" value="{{ post.section|default('') }}" maxlength="255">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="news-image">{{ 'Image URL'|trans }}</label>
+                        <input class="form-control" type="url" id="news-image" name="image" value="{{ post.image|default('') }}" maxlength="255" dir="ltr" placeholder="https://www.yourdomain.com/image.jpg">
+                    </div>
+                    <label class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" name="pinned"{% if post.pinned|default(false) %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Pinned'|trans }}</span>
+                    </label>
+                </div>
+                <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+                    <a class="btn btn-outline-secondary" href="{{ 'news'|url }}">{{ 'Cancel'|trans }}</a>
+                    {% if can_manage %}
+                        <button class="btn btn-primary" type="submit">{{ post ? 'Save'|trans : 'Create'|trans }}</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}
+
+{% block head %}{{ wysiwyg('.editor-textarea') }}{% endblock %}
+
+{% block js %}
+{% if can_manage %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const form = document.getElementById('news-form');
+        const text = form.dataset;
+        const title = form.elements.title;
+        const slug = form.elements.slug;
+        const content = form.elements.content;
+        const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        let slugEdited = text.id !== '';
+        let dirty = false;
+        const markDirty = () => { dirty = true; };
+
+        title.addEventListener('input', () => {
+            if (!slugEdited) {
+                slug.value = slugify(title.value);
+            }
+        });
+        slug.addEventListener('input', () => { slugEdited = slug.value !== ''; });
+        slug.addEventListener('change', () => { slug.value = slugify(slug.value); });
+        form.addEventListener('input', markDirty);
+        form.addEventListener('change', markDirty);
+        // ClientFence core patch (ext news): the editor writes into the textarea without input events.
+        new MutationObserver((records, observer) => {
+            if (content.editor) {
+                observer.disconnect();
+                content.editor.onChange(markDirty);
+            }
+        }).observe(content, { attributes: true });
+        window.addEventListener('beforeunload', (event) => {
+            if (dirty) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        });
+
+        const invalid = (field, message) => {
+            field.classList.toggle('is-invalid', message !== '');
+            field.parentElement.querySelector('.invalid-feedback').textContent = message;
+        };
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            invalid(title, title.value.trim() === '' ? text.textRequired : '');
+            invalid(slug, '');
+            if (title.value.trim() === '') {
+                return;
+            }
+            const data = {
+                title: title.value,
+                slug: slug.value,
+                content: content.value,
+                description: form.elements.description.value,
+                status: form.elements.status.value,
+                publish_at: form.elements.publish_at.value,
+                expires_at: form.elements.expires_at.value,
+                section: form.elements.section.value,
+                image: form.elements.image.value,
+                pinned: form.elements.pinned.checked ? 1 : 0,
+            };
+            if (text.id) {
+                data.id = text.id;
+            }
+            ClientFence.api.admin.post(text.id ? 'news/update' : 'news/create', data, (id) => {
+                dirty = false;
+                if (!text.id) {
+                    window.location.href = text.editUrl + '/' + id;
+                    return;
+                }
+                ClientFence.message(text.textSaved, 'success');
+            }, (error) => {
+                if (error.code === 9999) {
+                    invalid(slug, error.message);
+                    slug.focus();
+                } else {
+                    ClientFence.message(error.message, 'error');
+                }
+            });
+        });
+    })();
+</script>
+{% endif %}
+{% endblock %}

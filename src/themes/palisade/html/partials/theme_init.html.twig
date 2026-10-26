@@ -1,0 +1,22 @@
+{# Sets the colour mode before paint: the visitor's own choice (the light/dark toggle), else the
+   theme setting "Colour Mode" (light, dark, or auto: the device's preference). #}
+{% set colour_mode = settings.theme|default('light') in ['light', 'dark', 'auto'] ? settings.theme|default('light') : 'light' %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        let theme = null;
+        try { theme = localStorage.getItem('theme'); } catch (_) { /* storage unavailable */ }
+        if (theme !== 'light' && theme !== 'dark') {
+            theme = {{ colour_mode|json_encode|raw }};
+            if (theme === 'auto') {
+                theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+        }
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        // The menu collapsed to its icons (the sidebar's collapse buttons, palisade.js).
+        try {
+            if (localStorage.getItem('clientfence_client_menu') === 'collapsed') {
+                document.documentElement.classList.add('cf-menu-collapsed');
+            }
+        } catch (_) { /* storage unavailable */ }
+    })();
+</script>

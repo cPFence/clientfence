@@ -1,0 +1,178 @@
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'extensions' %}
+{% set can_view = has_permission('custompages', 'view') %}
+{% set can_manage = has_permission('custompages', 'manage') %}
+{% set visibility_labels = { everyone: 'Everyone'|trans, clients: 'Signed-in clients'|trans, active: 'Clients with an active service'|trans } %}
+{% block meta_title %}{{ 'Custom Pages'|trans }}{% endblock %}
+
+{% block content %}
+    <div class="card" id="custom-pages" data-text-deleted="{{ 'Custom page deleted.'|trans }}">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Custom Pages'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Pages you write for the client area, with their own address.'|trans }}</p>
+            </div>
+            {% if can_view %}
+                <div class="card-actions d-flex flex-wrap gap-2">
+                    <div class="input-icon">
+                        <span class="input-icon-addon">
+                            <svg class="icon"><use href="#search" /></svg>
+                        </span>
+                        <input type="search" class="form-control" id="custom-page-search" placeholder="{{ 'Search'|trans }}" aria-label="{{ 'Search'|trans }}">
+                    </div>
+                    {% if can_manage %}
+                        <a class="btn btn-primary" href="{{ 'custompages/new'|url }}">
+                            <svg class="icon"><use href="#plus" /></svg>
+                            {{ 'New Custom Page'|trans }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if can_view %}
+            {% set pages = admin.custompages_get_list({ per_page: 500 }).list %}
+            <div class="table-responsive" id="custom-page-table"{% if not pages %} hidden{% endif %}>
+                <table class="table card-table table-vcenter">
+                    <thead>
+                    <tr>
+                        <th>{{ 'Title'|trans }}</th>
+                        <th>{{ 'Slug'|trans }}</th>
+                        <th class="w-1">{{ 'Status'|trans }}</th>
+                        <th class="w-1">{{ 'Links'|trans }}</th>
+                        <th>{{ 'Visibility'|trans }}</th>
+                        <th class="w-1">{{ 'Updated'|trans }}</th>
+                        <th class="w-1"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="custom-page-rows">
+                    {% for page in pages %}
+                        {% set page_url = ('page/' ~ page.slug)|url(area: 'client') %}
+                        <tr data-id="{{ page.id }}" data-title="{{ page.title }}" data-search="{{ (page.title ~ ' ' ~ page.slug)|lower }}">
+                            <td class="text-break">
+                                {% if can_manage %}<a href="{{ ('custompages/' ~ page.id)|url }}">{{ page.title }}</a>{% else %}{{ page.title }}{% endif %}
+                            </td>
+                            <td class="text-break">
+                                {% if page.status == 'published' %}
+                                    <a href="{{ page_url }}" target="_blank" rel="noopener">/page/{{ page.slug }}</a>
+                                {% else %}
+                                    <span class="text-secondary">/page/{{ page.slug }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if page.status == 'published' %}
+                                    <span class="badge bg-success-lt">{{ 'Published'|trans }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary-lt">{{ 'Draft'|trans }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-nowrap">
+                                {% if page.show_in_menu %}<span class="badge bg-blue-lt">{{ 'Menu'|trans }}</span>{% endif %}
+                                {% if page.show_in_footer %}<span class="badge bg-blue-lt">{{ 'Footer'|trans }}</span>{% endif %}
+                                {% if not page.show_in_menu and not page.show_in_footer %}<span class="text-secondary">–</span>{% endif %}
+                            </td>
+                            <td>{{ visibility_labels[page.visibility] }}</td>
+                            <td class="text-nowrap text-secondary">{{ (page.updated_at ?? page.created_at)|format_datetime }}</td>
+                            <td class="text-end text-nowrap">
+                                {% if can_manage %}
+                                    <a class="btn btn-icon btn-ghost-secondary" href="{{ ('custompages/' ~ page.id)|url }}" title="{{ 'Edit'|trans }}" aria-label="{{ 'Edit'|trans }}">
+                                        <svg class="icon"><use href="#edit" /></svg>
+                                    </a>
+                                {% endif %}
+                                <a class="btn btn-icon btn-ghost-secondary" href="{{ page_url }}?preview=1" target="_blank" rel="noopener" title="{{ 'Preview'|trans }}" aria-label="{{ 'Preview'|trans }}">
+                                    <svg class="icon"><use href="#eye" /></svg>
+                                </a>
+                                {% if can_manage %}
+                                    <button type="button" class="btn btn-icon btn-ghost-danger" data-action="delete" title="{{ 'Delete'|trans }}" aria-label="{{ 'Delete'|trans }}">
+                                        <svg class="icon"><use href="#trash" /></svg>
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body text-center text-secondary" id="custom-page-no-match" hidden>{{ 'No results'|trans }}</div>
+            <div class="empty" id="custom-page-empty"{% if pages %} hidden{% endif %}>
+                <div class="empty-icon">
+                    <svg class="icon"><use href="#notes" /></svg>
+                </div>
+                <p class="empty-title">{{ 'No custom pages yet.'|trans }}</p>
+                {% if can_manage %}
+                    <div class="empty-action">
+                        <a class="btn btn-primary" href="{{ 'custompages/new'|url }}">
+                            <svg class="icon"><use href="#plus" /></svg>
+                            {{ 'New Custom Page'|trans }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="card-body">
+                <p class="text-secondary mb-0">{{ 'You do not have permission to view custom pages.'|trans }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if can_manage %}
+        <div class="modal modal-blur fade" id="custom-page-delete-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-status bg-danger"></div>
+                    <div class="modal-body text-center py-4">
+                        <h3>{{ 'Are you sure?'|trans }}</h3>
+                        <div class="text-secondary text-break">{{ 'This page will be deleted:'|trans }} <strong id="custom-page-delete-title"></strong></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                        <button type="button" class="btn btn-danger" id="custom-page-delete-confirm">{{ 'Delete'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+{% if can_view %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const rows = document.getElementById('custom-page-rows');
+        const search = document.getElementById('custom-page-search');
+
+        const filter = () => {
+            const query = search.value.trim().toLowerCase();
+            let shown = 0;
+            for (const row of rows.children) {
+                row.hidden = !row.dataset.search.includes(query);
+                shown += row.hidden ? 0 : 1;
+            }
+            document.getElementById('custom-page-table').hidden = shown === 0;
+            document.getElementById('custom-page-empty').hidden = rows.children.length > 0;
+            document.getElementById('custom-page-no-match').hidden = rows.children.length === 0 || shown > 0;
+        };
+        search.addEventListener('input', filter);
+
+        const deleteElement = document.getElementById('custom-page-delete-modal');
+        let deleting = null;
+        rows.addEventListener('click', (event) => {
+            if (!event.target.closest('[data-action="delete"]')) {
+                return;
+            }
+            deleting = event.target.closest('tr');
+            document.getElementById('custom-page-delete-title').textContent = deleting.dataset.title;
+            bootstrap.Modal.getOrCreateInstance(deleteElement).show();
+        });
+        document.getElementById('custom-page-delete-confirm')?.addEventListener('click', () => {
+            ClientFence.api.admin.post('custompages/delete', { id: deleting.dataset.id }, () => {
+                bootstrap.Modal.getInstance(deleteElement).hide();
+                deleting.remove();
+                filter();
+                ClientFence.message(document.getElementById('custom-pages').dataset.textDeleted, 'success');
+            }, (error) => ClientFence.message(error.message, 'error'));
+        });
+    })();
+</script>
+{% endif %}
+{% endblock %}

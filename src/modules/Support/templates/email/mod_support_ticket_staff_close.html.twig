@@ -1,0 +1,74 @@
+{% block subject %}[{{ guest.system_company.name }}] [Ticket #{{ ticket.id|default('') }}] {{ticket.subject|default('')}}{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			color: #333333;
+		}
+
+		h1 {
+			font-size: 24px;
+			font-weight: bold;
+			margin: 0 0 20px;
+		}
+
+		p {
+			margin: 0 0 10px;
+		}
+
+		strong {
+			font-weight: bold;
+		}
+
+		.signature {
+			font-style: italic;
+			color: #999999;
+			margin-top: 20px;
+			border-top: 1px solid #cccccc;
+			padding-top: 10px;
+		}
+
+		.reply-line {
+			color: #999999;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+	{# ClientFence: replies by email go to the ticket (Support/MailImport.php): [Ticket #id] in the subject; text from this line on is cut. #}
+	<p class="reply-line">====== Please reply above this line ======</p>
+	{% set is_guest_ticket = ticket.author.role|default('') == 'guest' %}
+	<h1>Ticket Closed</h1>
+
+    <p>Hello, {{ ticket.author.name|default('') }}.</p>
+
+    <p>This a notification message to inform you that ticket <strong>{{ticket.subject|default('')}}</strong> is now closed.</p>
+
+    <p>Ticket info</p>
+    <ul>
+        <li><strong>Ticket ID:</strong> #{{ticket.id|default('')}}</li>
+        <li><strong>Department:</strong> {{ticket.helpdesk|default({}).name|default('')}}</li>
+        <li><strong>Status:</strong> {{ticket.status|default('')|title}}</li>
+    </ul>
+
+    {% if is_guest_ticket %}
+        <a href='{{ "support/ticket/#{ticket.hash|default('')}"|url(area: 'client') }}' target="_blank">Reply</a>
+    {% else %}
+        <a href='{{ "support/ticket/#{ticket.id|default('')}"|url(area: 'client') }}' target="_blank">Reply</a>
+    {% endif %}
+
+    <p>Please do not reply to this email directly. Use the link provided above.</p>
+
+    {% if not is_guest_ticket %}
+    <p>You may <a href="{{ 'login'|url(query: {'email': c.email|default('') }, area: 'client') }}" target="_blank">login</a> or <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank">edit your profile.</a>
+    {% endif %}
+
+	<div class="signature">{{ guest.system_email.signature }}</div>
+</body>
+</html>
+{% endblock %}

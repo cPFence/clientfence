@@ -1,0 +1,574 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2025 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+/**
+ * Clients API methods.
+ */
+
+namespace ClientFence\Mod\Client\Api;
+
+use ClientFence\Mod\Client\Entity\Client;
+use ClientFence\Mod\Client\Entity\ClientPasswordReset;
+use ClientFence\Mod\Client\Service;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManagerInterface;
+use ClientFence\Doctrine\EntityManagerFactory;
+use ClientFence\Http\CookieNames;
+use ClientFence\Security\RandomizedTimeFloor;
+use ClientFence\Tools;
+use ClientFence\Validation\Api\RequiredParams;
+use ClientFence\Mod\Client\Google;
+use ClientFence\Mod\Client\TwoFactor;
+use ClientFence\Mod\Client\Users;
+
+class Guest extends \ClientFence\Api\AbstractApi
+{
+    /**
+     * Client signup action.
+     *
+     * @optional string $last_name - last name
+     * @optional string $aid - Alternative id. Usually used by import tools.
+     * @optional string $gender - Gender - values: male|female|nonbinary|other
+     * @optional string $country - Country
+     * @optional string $city - city
+     * @optional string $birthday - Birthday
+     * @optional string $type - Identifies client type: company or individual
+     * @optional string $company - Company
+     * @optional string $company_vat - Company VAT number
+     * @optional string $company_number - Company number
+     * @optional string $address_1 - Address line 1
+     * @optional string $address_2 - Address line 2
+     * @optional string $postcode - zip or postcode
+     * @optional string $state - country state
+     * @optional string $phone - Phone number
+     * @optional string $phone_cc - Phone country code
+     * @optional string $notes - Notes about client. Visible for admin only
+     * @optional string $lang - Client language
+     * @optional string $timezone - IANA timezone identifier (e.g. "America/New_York"). Used to localize dates and times shown to the client.
+     * @optional string $custom_1 - Custom field 1
+     * @optional string $custom_2 - Custom field 2
+     * @optional string $custom_3 - Custom field 3
+     * @optional string $custom_4 - Custom field 4
+     * @optional string $custom_5 - Custom field 5
+     * @optional string $custom_6 - Custom field 6
+     * @optional string $custom_7 - Custom field 7
+     * @optional string $custom_8 - Custom field 8
+     * @optional string $custom_9 - Custom field 9
+     * @optional string $custom_10 - Custom field 10
+     * @optional string $custom_11 - Custom field 11
+     * @optional string $custom_12 - Custom field 12
+     * @optional string $custom_13 - Custom field 13
+     * @optional string $custom_14 - Custom field 14
+     * @optional string $custom_15 - Custom field 15
+     * @optional string $custom_16 - Custom field 16
+     * @optional string $custom_17 - Custom field 17
+     * @optional string $custom_18 - Custom field 18
+     * @optional string $custom_19 - Custom field 19
+     * @optional string $custom_20 - Custom field 20
+     */
+    #[RequiredParams(['email' => 'Email required', 'first_name' => 'First name required', 'password' => 'Password required', 'password_confirm' => 'Password confirmation required'])]
+    public function create($data = []): bool
+    {
+        $startedAt = microtime(true);
+
+        try {
+            $this->getDi()['rate_limiter']->consumeOrThrow('client_signup', (string) $this->getIp());
+
+            $config = $this->getDi()['mod_config']('client');
+
+            // ClientFence core patch: store preview. Sign-up stays off except for a browser session
+            // that opened the store preview link (modules/Clientfence/Service.php "Store page and preview link").
+            if (isset($config['disable_signup']) && $config['disable_signup']
+                && !\ClientFence\Mod\Clientfence\Service::signupOpen($this->getDi())) {
+                throw new \ClientFence\InformationException('New registrations are temporarily disabled');
+            }
+
+            $this->getDi()['validator']->passwordsMatch($data);
+
+            $this->getService()->checkExtraRequiredFields($data);
+            $this->getService()->checkCustomFields($data);
+
+            $this->getDi()['validator']->isPasswordStrong($data['password']);
+            $service = $this->getService();
+
+            $email = $data['email'] ?? null;
+            $email = $this->getDi()['tools']->validateAndSanitizeEmail($email);
+            $email = strtolower(trim((string) $email));
+
+            $this->checkCaptchaIfEnabled($data);
+            // ClientFence core patch: one CAPTCHA for sign-up. The sign-in this request makes right after
+            // (auto login after sign-up) does not ask for it again (modules/Clientfence/Service.php).
+            \ClientFence\Mod\Clientfence\Service::$signupCaptchaChecked = true;
+
+            // Keyed independently of the IP limiter above so that spreading
+            // probes across IPs doesn't help an attacker hammer one address.
+            // Check the quota without consuming it. A token is recorded only
+            // after client validation succeeds, so malformed submissions
+            // cannot exhaust another address's signup quota.
+            $emailLimit = $this->getDi()['rate_limiter']->consume('client_signup_email', $email, 0);
+
+            $autoLogin = Tools::normalizeBoolean($config['auto_login_after_signup'] ?? true, true);
+
+            if ($emailLimit->isLimited() || $service->clientAlreadyExists($email)) {
+                if (!$emailLimit->isLimited()) {
+                    $this->getDi()['rate_limiter']->consume('client_signup_email', $email);
+                }
+
+                return $this->handleExistingOrRateLimitedSignup($email, $data, $autoLogin);
+            }
+
+            try {
+                $client = $service->guestCreateClient($data);
+            } catch (UniqueConstraintViolationException $exception) {
+                $this->resetEntityManagerAfterViolation($service);
+
+                // guestCreateClient() only persists a Client, whose sole
+                // unique key is `client.email`. Re-check so an unrelated
+                // constraint failure still surfaces instead of being masked
+                // as an existing-account signup.
+                try {
+                    $duplicate = $service->clientAlreadyExists($email);
+                } catch (\Throwable) {
+                    throw $exception;
+                }
+
+                if (!$duplicate) {
+                    throw $exception;
+                }
+
+                // The zero-token probe above passed (a limited result would
+                // have returned early), so record the quota use just like the
+                // existing-account path does.
+                $this->getDi()['rate_limiter']->consume('client_signup_email', $email);
+
+                return $this->handleExistingOrRateLimitedSignup($email, $data, $autoLogin);
+            }
+
+            $this->getDi()['rate_limiter']->consume('client_signup_email', $email);
+
+            if (isset($config['require_email_confirmation']) && (bool) $config['require_email_confirmation']) {
+                $service->sendEmailConfirmationForClient($client);
+            }
+
+            if ($autoLogin) {
+                // ClientFence core patch: the sign-in of the account just made is not asked for an email
+                // PIN (Clientfence/SignInSecurity.php); a sign-up with an existing account's details is.
+                \ClientFence\Mod\Clientfence\SignInSecurity::$newClientId = (int) $client->getId();
+                try {
+                    $this->login(['email' => $client->getEmail(), 'password' => $data['password']]);
+                } catch (\Throwable $e) {
+                    error_log($e->getMessage());
+                }
+            }
+
+            return true;
+        } finally {
+            RandomizedTimeFloor::apply($startedAt, 300, 450);
+        }
+    }
+
+    private function handleExistingOrRateLimitedSignup(string $email, array $data, bool $autoLogin): bool
+    {
+        // Never disclose whether this address is already registered:
+        // no distinct error, no duplicate row, and the same return
+        // value as a genuine signup below. Falling through to an
+        // ordinary login attempt keeps the response and any session
+        // side effects identical to the success path, reusing
+        // login()'s own timing- and message-safe handling instead of
+        // reimplementing it here.
+        $this->getDi()['logger']->setChannel('security')->info('Client signup declined for an existing or rate-limited email from IP {ip}.', ['ip' => $this->getIp()]);
+
+        if ($autoLogin) {
+            try {
+                $this->login(['email' => $email, 'password' => $data['password']]);
+            } catch (\Throwable $e) {
+                error_log($e->getMessage());
+            }
+        }
+
+        return true;
+    }
+
+    private function resetEntityManagerAfterViolation(object $service): void
+    {
+        $di = $this->getDi();
+        if (!$di->offsetExists('em')) {
+            return;
+        }
+
+        $em = $di['em'];
+        if (!$em instanceof EntityManagerInterface || $em->isOpen()) {
+            return;
+        }
+
+        // A failed flush closes the EntityManager; replace it so the
+        // duplicate re-check and fallback login below use a usable one.
+        try {
+            $freshEm = EntityManagerFactory::create();
+        } catch (\Throwable) {
+            return;
+        }
+
+        unset($di['em']);
+        $di['em'] = $freshEm;
+
+        try {
+            if ($service instanceof Service) {
+                $service->setDi($di);
+            }
+        } catch (\Throwable) {
+            // The fallback login already tolerates failures; keep the
+            // generic signup response even if the refresh fails.
+        }
+    }
+
+    /**
+     * Client login action.
+     *
+     * @return array - session data
+     *
+     * @throws \ClientFence\InformationException
+     */
+    #[RequiredParams(['email' => 'Email required', 'password' => 'Password required'])]
+    public function login($data)
+    {
+        $startedAt = microtime(true);
+
+        try {
+            $this->getDi()['tools']->validateAndSanitizeEmail($data['email'], true, false);
+
+            // ClientFence core patch: CAPTCHA on the client login (Antispam settings), except for the
+            // sign-in a sign-up makes in the same request (its CAPTCHA was checked: one CAPTCHA for sign-up).
+            if (!\ClientFence\Mod\Clientfence\Service::$signupCaptchaChecked) {
+                $this->checkCaptchaIfEnabled($data);
+            }
+
+            $event_params = $data;
+            $event_params['ip'] = $this->ip;
+            $this->getDi()['events_manager']->fire(['event' => 'onBeforeClientLogin', 'params' => $event_params]);
+
+            $service = $this->getService();
+            $client = $service->authorizeClient($data['email'], $data['password']);
+
+            // ClientFence core patch: authorized users. When no client signs in with these details, an
+            // authorized user may (modules/Client/Users.php): the session is the user's, on the
+            // account the user used last.
+            $clientfenceUser = null;
+            if (!$client instanceof Client && is_string($data['password'] ?? null)) {
+                $clientfenceUser = \ClientFence\Mod\Client\Users::authorize($this->getDi(), (string) $data['email'], $data['password']);
+                $client = $clientfenceUser !== null ? $this->getDi()['em']->getRepository(Client::class)->find($clientfenceUser['client_id']) : null;
+            }
+
+            if (!$client instanceof Client) {
+                $this->getDi()['events_manager']->fire(['event' => 'onEventClientLoginFailed', 'params' => $event_params]);
+
+                throw new \ClientFence\InformationException('Please check your login details.', [], 401);
+            }
+
+            // ClientFence core patch: two-factor sign-in. With two-factor sign-in on, the password alone
+            // signs nobody in: the sign-in waits for the code (modules/Client/TwoFactor.php).
+            if (\ClientFence\Mod\Client\TwoFactor::challenge($this->getDi(), (int) $client->getId(), $clientfenceUser ?? null)) {
+                return ['clientfence_twofactor' => true];
+            }
+
+            // ClientFence core patch: sign-in security, the client email PIN (Clientfence/SignInSecurity.php).
+            // Not for the account this request just created (SignInSecurity::$newClientId); the code
+            // page (/two-factor/code) asks for the PIN.
+            if (\ClientFence\Mod\Clientfence\SignInSecurity::challenge(
+                    $this->getDi(),
+                    'client',
+                    \ClientFence\Mod\Clientfence\SignInSecurity::clientLogin($this->getDi(), $client, $clientfenceUser ?? null),
+                    ['client_id' => (int) $client->getId(), 'user' => $clientfenceUser ?? null],
+                    (string) $this->ip
+                )) {
+                return ['clientfence_twofactor' => true];
+            }
+
+            $this->getDi()['events_manager']->fire(['event' => 'onAfterClientLogin', 'params' => ['id' => $client->getId(), 'ip' => $this->ip]]);
+
+            $oldSession = $this->getDi()['session']->getId();
+            $this->getDi()['session']->regenerateId();
+            $result = $service->toSessionArray($client);
+            $this->getDi()['session']->set('client_id', $client->getId());
+            // ClientFence core patch: authorized users. The session is the user's, or the owner's.
+            \ClientFence\Mod\Client\Users::startSession($this->getDi(), $clientfenceUser);
+
+            $this->getDi()['logger']->info('Client #%s logged in', $client->getId());
+            $this->getDi()['session']->delete('redirect_uri');
+
+            if (!empty($client->getLang())) {
+                $this->getDi()['cookie_queue']->queue(CookieNames::LOCALE, $client->getLang(), strtotime('+1 month'), '/');
+            }
+
+            $this->getDi()['mod_service']('cart')->transferFromOtherSession($oldSession);
+
+            return $result;
+        } finally {
+            RandomizedTimeFloor::apply($startedAt);
+        }
+    }
+
+    /**
+     * Password reset confirmation email will be sent to email.
+     *
+     * @throws \ClientFence\Exception
+     */
+    #[RequiredParams(['email' => 'Email required'])]
+    public function reset_password($data): bool
+    {
+        $startedAt = microtime(true);
+
+        try {
+            $this->getDi()['events_manager']->fire(['event' => 'onBeforePasswordResetClient']);
+            $service = $this->getDi()['mod_service']('client');
+
+            // Sanitize email
+            $data['email'] = $this->getDi()['tools']->validateAndSanitizeEmail($data['email']);
+
+            $ipLimit = $this->getDi()['rate_limiter']->consume('client_password_reset_ip', (string) $this->getIp());
+            if ($ipLimit->isLimited()) {
+                $this->getDi()['logger']->setChannel('security')->info('Client password reset rate limited from IP %s: email %s', $this->getIp(), $data['email']);
+
+                return true;
+            }
+
+            $emailLimit = $this->getDi()['rate_limiter']->consume('client_password_reset_email', (string) $data['email']);
+            if ($emailLimit->isLimited()) {
+                $this->getDi()['logger']->setChannel('security')->info('Client password reset rate limited for email %s from IP %s', $data['email'], $this->getIp());
+
+                return true;
+            }
+
+            $this->checkCaptchaIfEnabled($data);
+
+            $this->getDi()['events_manager']->fire(['event' => 'onBeforeGuestPasswordResetRequest', 'params' => $data]);
+
+            $em = $this->getDi()['em'];
+            $client = $em->getRepository(Client::class)->findOneByEmailAndActive($data['email']);
+            if (!$client instanceof Client) {
+                // ClientFence core patch: authorized users get their own reset link (modules/Client/Users.php).
+                if (\ClientFence\Mod\Client\Users::requestReset($this->getDi(), (string) $data['email'])) {
+                    return true;
+                }
+                $this->getDi()['logger']->setChannel('security')->info('Client password reset requested for unknown email %s from IP %s', $data['email'], $this->getIp());
+
+                return true;
+            }
+
+            if ($client->getStatus() !== Client::ACTIVE) {
+                $this->getDi()['logger']->setChannel('security')->info('Client password reset requested for ineligible client #%s from IP %s: email %s, account status %s', $client->getId(), $this->getIp(), $data['email'], $client->getStatus());
+
+                return true;
+            }
+
+            $hash = $service->createPasswordResetRequestForClient($client);
+            $service->sendPasswordResetRequestEmailForClient($client, $hash);
+
+            $this->getDi()['logger']->setChannel('security')->info('Client password reset email queued for client #%s from IP %s: email %s', $client->getId(), $this->getIp(), $data['email']);
+
+            return true;
+        } finally {
+            RandomizedTimeFloor::apply($startedAt, 300, 450);
+        }
+    }
+
+    private function checkCaptchaIfEnabled(array $data): void
+    {
+        $extensionService = $this->getDi()['mod_service']('extension');
+        if (!$extensionService->isExtensionActive('mod', 'antispam')) {
+            return;
+        }
+
+        $this->getDi()['mod_service']('Antispam')->checkCaptcha($data);
+    }
+
+    #[RequiredParams(['hash' => 'No Hash provided', 'password' => 'Password required', 'password_confirm' => 'Password confirmation required'])]
+    public function update_password($data): bool
+    {
+        $startedAt = microtime(true);
+
+        try {
+            $this->getDi()['rate_limiter']->consumeOrThrow('client_password_reset_confirm_post_ip', (string) $this->getIp());
+
+            $this->getDi()['events_manager']->fire(['event' => 'onBeforeClientProfilePasswordReset', 'params' => $data['hash']]);
+
+            $this->getDi()['validator']->passwordsMatch($data);
+            $this->getDi()['validator']->isPasswordStrong($data['password']);
+
+            $em = $this->getDi()['em'];
+            $reset = $em->getRepository(ClientPasswordReset::class)->findOneByHash($data['hash']);
+            if (!$reset instanceof ClientPasswordReset) {
+                $this->getDi()['logger']->setChannel('security')->info('Client password reset confirmation failed from IP %s: reset token not found', $this->getIp());
+
+                throw new \ClientFence\InformationException('The link has expired or you have already reset your password.');
+            }
+
+            if (strtotime((string) $reset->getCreatedAt()?->format('Y-m-d H:i:s')) - time() + 900 < 0) {
+                $this->getDi()['logger']->setChannel('security')->info('Client password reset confirmation failed for client #%s from IP %s: reset token expired', $reset->getClientId(), $this->getIp());
+
+                throw new \ClientFence\InformationException('The link has expired or you have already reset your password.');
+            }
+
+            $client = $reset->getClientId() !== null ? $em->getRepository(Client::class)->find($reset->getClientId()) : null;
+            if (!$client instanceof Client) {
+                throw new \ClientFence\InformationException('The link has expired or you have already reset your password.');
+            }
+
+            if ($client->getStatus() !== Client::ACTIVE) {
+                $this->getDi()['logger']->setChannel('security')->info('Client password reset confirmation failed for client #%s from IP %s: account status %s', $client->getId(), $this->getIp(), $client->getStatus());
+
+                throw new \ClientFence\InformationException('The link has expired or you have already reset your password.');
+            }
+
+            $client->setPass($this->getDi()['password']->hashIt($data['password']));
+            $em->persist($client);
+            $em->remove($reset);
+            $em->flush();
+
+            $profileService = $this->getDi()['mod_service']('profile');
+            $profileService->invalidateSessions('client', (int) $client->getId());
+
+            $this->getDi()['logger']->setChannel('security')->info('Client password reset completed for client #%s from IP %s', $client->getId(), $this->getIp());
+
+            // send email
+            $email = [];
+            $email['to_client'] = $client->getId();
+            $email['code'] = 'mod_client_password_reset_information';
+            $emailService = $this->getDi()['mod_service']('email');
+            $emailService->sendTemplate($email);
+            $this->getDi()['events_manager']->fire(['event' => 'onAfterClientProfilePasswordReset', 'params' => ['id' => $client->getId()]]);
+
+            return true;
+        } finally {
+            RandomizedTimeFloor::apply($startedAt);
+        }
+    }
+
+    /**
+     * List of required fields for client registration.
+     */
+    public function required()
+    {
+        $config = $this->getDi()['mod_config']('client');
+
+        return $config['required'] ?? [];
+    }
+
+    /**
+     * Array of custom fields for client registration, sorted alphabetically by title.
+     */
+    public function custom_fields()
+    {
+        $config = $this->getDi()['mod_config']('client');
+        $customFields = $config['custom_fields'] ?? [];
+        $customFields = is_array($customFields) ? $customFields : [];
+
+        foreach ($customFields as $fieldName => $field) {
+            $field = is_array($field) ? $field : [];
+            $title = $field['title'] ?? '';
+
+            $field['title'] = is_scalar($title) ? (string) $title : '';
+            $field['active'] = Tools::normalizeBoolean($field['active'] ?? false);
+            $field['required'] = Tools::normalizeBoolean($field['required'] ?? false);
+            $customFields[$fieldName] = $field;
+        }
+
+        uasort($customFields, fn ($a, $b): int => strnatcasecmp($a['title'], $b['title']));
+
+        return $customFields;
+    }
+
+    public function is_email_validation_required(): bool
+    {
+        $config = $this->getDi()['mod_config']('client');
+
+        return (bool) ($config['require_email_confirmation'] ?? false);
+    }
+
+    /**
+     * ClientFence: sets an authorized user's new password from a reset link (`token`, `password`,
+     * `password_confirm`; Users.php).
+     */
+    public function user_password_reset($data): bool
+    {
+        Users::resetPassword($this->getDi(), (string) ($data['token'] ?? ''), $data['password'] ?? null, $data['password_confirm'] ?? null, (string) $this->getIp());
+
+        return true;
+    }
+
+    /**
+     * Accepts an invitation (`token`): an existing user sends `password`; a new user
+     * `first_name`, `last_name`, `password` and `password_confirm`. Signs the user in to the
+     * account; a user with two-factor sign-in gets {clientfence_twofactor: true} and the code page
+     * signs in.
+     */
+    public function user_invite_accept($data): bool|array
+    {
+        $di = $this->getDi();
+        $user = Users::acceptInvite($di, (string) ($data['token'] ?? ''), is_array($data) ? $data : [], (string) $this->getIp());
+        if (TwoFactor::challenge($di, $user['client_id'], $user)) {
+            return ['clientfence_twofactor' => true];
+        }
+        $di['session']->regenerateId();
+        $di['session']->set('client_id', $user['client_id']);
+        Users::startSession($di, $user);
+
+        return true;
+    }
+
+    /**
+     * The two-factor code page (`code`: from the authenticator app, or the backup code): finishes
+     * the sign-in that waits for it (TwoFactor.php). Works while the module is active.
+     */
+    public function twofactor_verify($data): array
+    {
+        return TwoFactor::verify($this->getDi(), $data['code'] ?? null, (string) $this->getIp());
+    }
+
+    /**
+     * ClientFence: the email PIN of a client sign-in waiting for it (Clientfence/SignInSecurity.php):
+     * `pin`, and `trust` to trust this browser for 30 days. Finishes the sign-in.
+     */
+    public function signin_pin($data): bool
+    {
+        $pending = \ClientFence\Mod\Clientfence\SignInSecurity::verify($this->getDi(), 'client', $data['pin'] ?? null, !empty($data['trust']), (string) $this->getIp());
+        $payload = is_array($pending['payload'] ?? null) ? $pending['payload'] : [];
+        TwoFactor::signIn($this->getDi(), (int) ($payload['client_id'] ?? 0), is_array($payload['user'] ?? null) ? $payload['user'] : null, (string) $this->getIp());
+
+        return true;
+    }
+
+    /**
+     * ClientFence: a new email PIN for the client sign-in waiting for one.
+     */
+    public function signin_pin_resend(): array
+    {
+        return \ClientFence\Mod\Clientfence\SignInSecurity::resend($this->getDi(), 'client', (string) $this->getIp());
+    }
+
+    /**
+     * The Google buttons (Google.php): {on, signup, terms_url, privacy_url, error}; on is the
+     * sign-in page's, signup the registration pages' (Google sign-up makes accounts); error is
+     * the message of the last Google sign-in that failed, given once.
+     */
+    public function google_button(): array
+    {
+        return Google::button($this->getDi());
+    }
+
+    /**
+     * Whether existing logins sign in with Google (the client area menu): not "Sign-up only".
+     */
+    public function google_on(): bool
+    {
+        return Google::signinOn($this->getDi());
+    }
+}

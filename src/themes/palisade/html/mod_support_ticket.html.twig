@@ -1,0 +1,312 @@
+{# ClientFence: FOSSBilling's ticket page with the help desk name translated, a plain text reply box
+   instead of the English-only rich editor, and ticket attachments (ClientFence: each message's
+   files, and files for the reply). #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'support' %}
+
+{% import "macro_functions.html.twig" as mf %}
+{% set is_guest_ticket = ticket.author.role|default('') == 'guest' %}
+{% set can_reply = ticket.status != 'closed' or (not is_guest_ticket and ticket.helpdesk.can_reopen) %}
+
+{% block meta_title %}{{ ticket.subject }}{% endblock %}
+
+{% block head %}
+    {{ 'css/markdown.css' | public_asset_url | stylesheet_tag }}
+{% endblock %}
+
+{% block body_class %}support-ticket{% endblock %}
+{% block breadcrumb %}
+    {% if is_guest_ticket %}
+        <li class="breadcrumb-item"><a href="{{ 'support/contact-us'|url }}">{{ 'Contact Us'|trans }}</a></li>
+    {% else %}
+        <li class="breadcrumb-item"><a href="{{ 'support'|url }}">{{ 'Support Tickets'|trans }}</a></li>
+    {% endif %}
+    <li class="breadcrumb-item active" aria-current="page">{{ ticket.subject }}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-2">{{ 'Ticket'|trans }} #{{ ticket.id }}</h5>
+                        </div>
+                        <div class="">
+                            <div class="d-flex gap-2">
+                                {% if can_reply %}
+                                    <button class="btn btn-primary btn-sm" id="reply-to-btn">{{ 'Reply'|trans }}</button>
+                                {% endif %}
+                                {% if ticket.status != 'closed' %}
+                                    <button class="btn btn-secondary btn-sm" type="button" id="ticket-close">{{ 'Close Ticket'|trans }}</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-sm">
+                        <tbody>
+                        <tr>
+                            <td>{{ 'Help Desk'|trans }}</td>
+                            <td>{{ ticket.helpdesk.name|trans }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ 'Status'|trans }}</td>
+                            <td>
+                                {{ mf.status_badge(ticket.status, 'ticket') }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ 'Urgency'|trans }}</td>
+                            <td>{{ {'high': 'High', 'medium': 'Medium', 'low': 'Low'}[ticket.priority_level|default('medium')]|default('Medium')|trans }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ 'Time Opened'|trans }}</td>
+                            <td>{{ ticket.created_at|format_date }}</td>
+                        </tr>
+
+                        {% if ticket.rel_type|default('') == 'order' and ticket.rel_id %}
+                            <tr>
+                                <td>{{ 'Related To'|trans }}</td>
+                                <td>
+                                    <a href='{{ "order/service/manage/#{ticket.rel_id}"|url }}'>{{ 'Service #'|trans }} {{ ticket.rel_id }}</a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column gap-3">
+            {% for i, message in ticket.messages %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card {% if message.author.role|default('') == 'admin' %}ticket-message-staff{% endif %}">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-2">
+                                    {{ avatar(message.author.email|default(''), 40, 'img-thumbnail d-none d-md-block', null, 'div') }}
+                                    <div class="d-flex flex-column align-items-start">
+                                        <span class="text-muted">
+                                            {{ message.author.name }}
+                                        </span>
+                                        {% if message.author.role|default('') == 'admin' %}
+                                            <span class="badge text-bg-primary">
+                                                    {{ 'Operator'|trans }}
+                                                </span>
+                                        {% elseif message.author.clientfence_user|default(false) %}
+                                            {# Written by an authorized user (ClientFence). #}
+                                            <span class="badge text-bg-info" data-clientfence-ticket-user>
+                                                    {{ 'Authorized user'|trans }}
+                                                </span>
+                                        {% else %}
+                                            <span class="badge text-bg-secondary">
+                                                    {{ 'You'|trans }}
+                                                </span>
+                                        {% endif %}
+                                    </div>
+                                    <span class="text-muted fs-7">{{ 'on :date'|trans({ ':date': message.created_at|format_date }) }}</span>
+                                </div>
+                                {% if can_reply %}
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <span class="text-muted fs-7">#{{ message.id }}</span>
+                                        <button class="btn btn-outline-secondary btn-quote-reply"
+                                                message-quote="{{ mf.markdown_quote(message.content) }}"
+                                                data-bs-toggle="tooltip" data-bs-title="{{ 'Quote Reply'|trans }}">
+                                            <svg class="icon"><use href="#quote" /></svg>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <article class="markdown-body bg-transparent text-reset" id="message-{{ message.id }}">
+                                            {{ (message.content ?? '')|markdown_to_html }}
+                                        </article>
+                                        {% include 'partials/ticket_files.html.twig' %}
+                                        {# Rate a staff reply, 1 to 5 stars, once, as WHMCS (Support/TicketFeedback.php). #}
+                                        {% if message.author.role|default('') == 'admin' and ticket.ratings_on|default(false) %}
+                                            {% set stars = ticket.message_ratings[message.id]|default(0) %}
+                                            <div class="d-flex flex-wrap align-items-center gap-1 mt-3 pt-2 border-top" data-reply-rating="{{ message.id }}">
+                                                {% if stars %}
+                                                    <span class="fs-5 lh-1" role="img" aria-label="{{ ':stars of 5 stars'|trans({ ':stars': stars }) }}">{% for n in 1..5 %}<span class="{{ n <= stars ? 'text-warning' : 'text-body-tertiary' }}">★</span>{% endfor %}</span>
+                                                    <span class="text-muted small ms-1">{{ 'You rated this reply.'|trans }}</span>
+                                                {% else %}
+                                                    <span class="text-muted small me-1">{{ 'Rate this reply:'|trans }}</span>
+                                                    {% for n in 1..5 %}
+                                                        <button type="button" class="btn btn-link p-0 fs-5 lh-1 text-body-tertiary text-decoration-none" data-rate="{{ n }}" aria-label="{{ ':stars of 5 stars'|trans({ ':stars': n }) }}">★</button>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div>
+            <div class="row">
+                <div class="col-md-12">
+                    {# The feedback form's link while it waits for an answer, as WHMCS (Support/TicketFeedback.php). #}
+                    {% if ticket.feedback_url|default(null) %}
+                        <div class="mt-3 alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <span>{{ 'How did we do? Tell us about the support you received on this ticket.'|trans }}</span>
+                            <a class="btn btn-primary btn-sm" href="{{ ticket.feedback_url }}">{{ 'Give Feedback'|trans }}</a>
+                        </div>
+                    {% endif %}
+                    {% if not can_reply %}
+                        <div class="mt-3 alert alert-secondary text-center">{{ 'Ticket was closed and cannot be reopened.'|trans }}</div>
+                    {% else %}
+                        {% if ticket.status == 'closed' %}
+                            <div class="mt-3 alert alert-secondary text-center">{{ 'This ticket was closed, but you can still reopen it by replying.'|trans }}</div>
+                        {% endif %}
+                        <div class="card mt-3" id="reply-to">
+                            <div class="card-body">
+                                <form id="ticket-reply-form">
+                                    {% if is_guest_ticket %}
+                                        <input type="hidden" name="hash" value="{{ ticket.hash }}">
+                                    {% else %}
+                                        <input type="hidden" name="id" value="{{ ticket.id }}">
+                                    {% endif %}
+                                    <textarea name="content" cols="5" rows="10" class="form-control" dir="auto" required="required"
+                                              id="ticket-reply-text"></textarea>
+                                    {% if not is_guest_ticket %}
+                                        {% include 'partials/ticket_upload.html.twig' with { ticket_id: ticket.id } %}
+                                    {% endif %}
+                                    <button class="mt-2 btn btn-primary" type="submit" id="post-reply-btn"
+                                            value="{{ 'Post'|trans }}">{{ 'Post'|trans }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script nonce="{{ csp_nonce }}">
+        document.addEventListener("DOMContentLoaded", function () {
+            const ticketReplyForm = document.getElementById('ticket-reply-form');
+            const closeTicketBtn = document.getElementById('ticket-close');
+            const postReplyBtn = document.getElementById('post-reply-btn');
+            const replyToMessageBtn = document.querySelectorAll('.btn-quote-reply');
+            const ticketReplyTextArea = document.getElementById('ticket-reply-text');
+            const supportApi = ClientFence.api.{{ is_guest_ticket ? 'guest' : 'client' }};
+
+            // Plain text box: keep each line break (Markdown hard break; blank lines stay paragraphs).
+            const keepLineBreaks = (text) => (text || '').replace(/\r\n?/g, '\n').replace(/([^\n])\n(?=[^\n])/g, '$1  \n');
+            ticketReplyForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const reply = ClientFence.tools.serializeFormDataToObject(new FormData(ticketReplyForm));
+                reply.content = keepLineBreaks(reply.content);
+                supportApi.post('support/ticket_reply', reply,
+                    () => {
+                        flashMessage({
+                            message: {{ 'Posted reply'|trans|json_encode|raw }},
+                            reload: true
+                        });
+                    },
+                    // ClientFence: an error hides the loader again (it stayed over the page).
+                    (res) => { hideLoader(); ClientFence.message(res.message, 'error'); }
+                )
+            });
+
+            closeTicketBtn?.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleLoader();
+                supportApi.post('support/ticket_close', ClientFence.tools.serializeFormDataToObject(new FormData(ticketReplyForm)),
+                    () => {
+                        flashMessage({
+                            message: {{ 'Closed ticket #:id'|trans({ ':id': ticket.id })|json_encode|raw }},
+                            reload: true
+                        });
+                    },
+                    // ClientFence: an error hides the loader again (it stayed over the page).
+                    (res) => { hideLoader(); ClientFence.message(res.message, 'error'); }
+                )
+            });
+
+            postReplyBtn?.addEventListener('click', () => {
+                if (document.getElementById('ticket-reply-text').value.length > 0) {
+                    toggleLoader();
+                }
+            });
+
+            // Reply stars (TicketFeedback): highlight up to the pointed star; a click rates the reply.
+            document.querySelectorAll('[data-reply-rating]').forEach((box) => {
+                const stars = box.querySelectorAll('[data-rate]');
+                const paint = (upTo) => stars.forEach((star) => {
+                    star.classList.toggle('text-warning', Number(star.dataset.rate) <= upTo);
+                    star.classList.toggle('text-body-tertiary', Number(star.dataset.rate) > upTo);
+                });
+                stars.forEach((star) => {
+                    star.addEventListener('mouseenter', () => paint(Number(star.dataset.rate)));
+                    star.addEventListener('focus', () => paint(Number(star.dataset.rate)));
+                    star.addEventListener('click', () => {
+                        const rating = { message_id: box.dataset.replyRating, rating: star.dataset.rate };
+                        {% if is_guest_ticket %}rating.hash = {{ ticket.hash|json_encode|raw }};{% else %}rating.id = {{ ticket.id }};{% endif %}
+                        supportApi.post('support/ticket_message_rate', rating,
+                            () => flashMessage({ message: {{ 'Thank you for rating this reply.'|trans|json_encode|raw }}, reload: true }),
+                            (res) => ClientFence.message(res.message, 'error'));
+                    });
+                });
+                box.addEventListener('mouseleave', () => paint(0));
+            });
+
+            replyToMessageBtn.forEach((reply) => {
+                reply.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let quote = e.currentTarget.getAttribute('message-quote');
+                    quote = quote.replace(/^\s*$(?:\r\n?|\n)/gm, '');
+                    if (ticketReplyTextArea.editor) {
+                        ticketReplyTextArea.editor.setData(quote);
+                        ticketReplyTextArea.editor.focus();
+                    } else {
+                        ticketReplyTextArea.value = quote;
+                        // Let the box take the direction of the quoted text (palisade.js).
+                        ticketReplyTextArea.dispatchEvent(new Event('input'));
+                        ticketReplyTextArea.focus();
+                    }
+                });
+            })
+
+            document.getElementById('reply-to-btn')?.addEventListener('click', () => {
+                if (ticketReplyTextArea.editor) {
+                    ticketReplyTextArea.editor.focus();
+                } else {
+                    ticketReplyTextArea.focus();
+                }
+            });
+
+            const hideLoader = () => {
+                const loader = document.querySelector('.wait');
+                if (loader) {
+                    loader.style.display = 'none';
+                }
+            };
+
+            const toggleLoader = () => {
+                let loader = document.querySelector('.wait');
+                if (!loader) {
+                    return;
+                }
+                if (loader.style.display === 'none') {
+                    loader.style.display = 'block';
+                } else {
+                    loader.style.display = 'none';
+                }
+            }
+        });
+    </script>
+{% endblock %}

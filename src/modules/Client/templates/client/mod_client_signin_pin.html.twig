@@ -1,0 +1,35 @@
+{# ClientFence, the email PIN step of a client sign-in (/two-factor/code with an email PIN waiting;
+   Clientfence/SignInSecurity.php, client guest API signin_pin). `pin`: {email (masked), minutes,
+   trust_days}; `back`: the page to return to (checkout). #}
+{% extends "layout_public.html.twig" %}
+{% set allow_guest = true %}
+{% set pin = pin|default({ email: '', minutes: 10, trust_days: 30 }) %}
+
+{% block meta_title %}{{ 'Check your email'|trans }}{% endblock %}
+{% block body_class %}page-two-factor{% endblock %}
+
+{% block body %}
+{% embed 'partials/auth_shell.html.twig' %}
+    {% block auth_content %}
+        <h1>{{ 'Check your email'|trans }}</h1>
+        <p class="auth-lead">{{ 'We sent a 6-digit sign-in PIN to %email%. It works for %minutes% minutes.'|trans({'%email%': pin.email, '%minutes%': pin.minutes}) }}</p>
+        <form method="post" action="{{ 'client/signin_pin'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({redirect: back ?: redirect_uri|default('/')|url}) }} autocomplete="off">
+            <div class="mb-3">
+                <label class="form-label" for="pin">{{ 'PIN'|trans }}</label>
+                <input class="form-control form-control-lg text-center" id="pin" type="text" name="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr" required autofocus>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="trust" name="trust" value="1">
+                <label class="form-check-label" for="trust">{{ 'Trust this browser for %days% days'|trans({'%days%': pin.trust_days}) }}</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">{{ 'Sign in'|trans }}</button>
+        </form>
+        <div class="d-flex flex-wrap justify-content-between gap-2 mt-3">
+            <a class="btn btn-link px-0" href="{{ 'client/signin_pin_resend'|api_url(role: 'guest') }}" {{ fb_api_link({ message: 'A new PIN is on its way.'|trans }) }}>{{ 'Send a new PIN'|trans }}</a>
+            <a class="btn btn-link px-0 d-inline-flex align-items-center gap-2" href="{{ 'login'|url }}">
+                <svg class="icon icon-sm flip-rtl" aria-hidden="true"><use href="#arrow-left"/></svg>{{ 'Back to Login'|trans }}
+            </a>
+        </div>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

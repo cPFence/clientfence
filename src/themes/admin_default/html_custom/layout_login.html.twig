@@ -1,0 +1,46 @@
+{# ClientFence admin frame: FOSSBilling's sign-in layout (staff login, password reset and update,
+   the error page for visitors, update finalizing) with the frame's stylesheet and fonts, the
+   page language and no blue top border. Every block and script of the stock
+   layout stays; the split sign-in screen itself is partial_admin_auth_card. #}
+{% set active_locale = guest.system_locale|default('en')|replace({'_': '-'}) %}
+<!DOCTYPE html>
+<html lang="{{ active_locale }}" data-bs-theme="dark">
+<head>
+    <title>{% block meta_title %}{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="{{ guest.system_company.favicon_url }}">
+
+    {{ include('partial_bb_meta.html.twig') }}
+
+    <link rel="stylesheet" href="{{ 'build/css/vendor.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    <link rel="stylesheet" href="{{ 'build/css/clientfence.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    <link rel="stylesheet" href="{{ 'clientfence/clientfence-admin.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    {# The brand color (Clientfence Branding.php): admin accents; none with the default color. #}
+    {% set brand_css = guest.clientfence_brand.css_url|default(null) %}
+    {% if brand_css %}<link rel="stylesheet" href="{{ brand_css }}">{% endif %}
+    {{ 'js/clientfence.js' | public_asset_url | script_tag }}
+    {{ 'js/api.js' | public_asset_url | script_tag }}
+    <script nonce="{{ csp_nonce }}" type="module" src="{{ 'build/js/clientfence.js' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}"></script>
+</head>
+
+<body class="d-flex flex-column bf-auth-page">
+    <script nonce="{{ csp_nonce }}">
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute("data-bs-theme", localStorage.getItem('theme'));
+        } else {
+            document.documentElement.removeAttribute("data-bs-theme");
+        }
+    </script>
+
+    {% block content %}{% endblock %}
+    {% block js %}{% endblock %}
+
+    <div class="d-none">
+        {{ svg_sprite() }}
+    </div>
+    {{ include('partial_clientfence_toasts.html.twig') }}
+</body>
+</html>

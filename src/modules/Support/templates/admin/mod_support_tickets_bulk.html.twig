@@ -1,0 +1,28 @@
+{# ClientFence: the ticket list's "With Selected" bar, above and below the list as WHMCS (Support/TicketBulk.php, TicketMerge.php, clientfence-admin.js). #}
+<div class="bf-bulk" data-bf-bulk
+    data-bf-ticket-url="{{ 'support/ticket'|url }}"
+    data-bf-none-title="{{ 'No tickets selected'|trans }}"
+    data-bf-none-text="{{ 'Tick the tickets first.'|trans }}"
+    data-bf-merge-few="{{ 'Tick two or more tickets to merge.'|trans }}"
+    data-bf-merge-title="{{ 'Merge tickets?'|trans }}"
+    data-bf-merge-text="{{ 'Tickets %list% will be merged into ticket %id%, the oldest. It gets all their messages, notes and attachments, and the others are deleted. This cannot be undone.'|trans }}"
+    data-bf-merge-confirm="{{ 'Merge'|trans }}"
+    data-bf-merge-cancel="{{ 'Cancel'|trans }}"
+    data-bf-close-title="{{ 'Close tickets?'|trans }}"
+    data-bf-close-text="{{ 'Tickets %list% will be closed.'|trans }}"
+    data-bf-close-confirm="{{ 'Close'|trans }}"
+    data-bf-delete-title="{{ 'Delete tickets?'|trans }}"
+    data-bf-delete-text="{{ 'Tickets %list% will be deleted with their messages and attachments. This cannot be undone.'|trans }}"
+    data-bf-delete-confirm="{{ 'Delete'|trans }}"
+    data-bf-block-title="{{ 'Block senders and delete?'|trans }}"
+    data-bf-block-text="{{ 'The senders of tickets %list% go on the blocked senders list of the email import (Support settings), so their emails no longer open tickets, and the tickets are deleted. This cannot be undone.'|trans }}"
+    data-bf-block-confirm="{{ 'Block and Delete'|trans }}"
+    data-bf-cancel="{{ 'Cancel'|trans }}">
+    <span class="bf-bulk-label">{{ 'With Selected:'|trans }}</span>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="pin">{{ 'Pin'|trans }}</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="unpin">{{ 'Unpin'|trans }}</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="merge">{{ 'Merge'|trans }}</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="close">{{ 'Close'|trans }}</button>
+    <button type="button" class="btn btn-sm btn-danger" data-bf-bulk-action="delete">{{ 'Delete'|trans }}</button>
+    <button type="button" class="btn btn-sm btn-danger" data-bf-bulk-action="block">{{ 'Block Sender & Delete'|trans }}</button>
+</div>

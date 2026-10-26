@@ -1,0 +1,315 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * Copyright 2022-2026 FOSSBilling
+ * SPDX-License-Identifier: Apache-2.0.
+ *
+ * @copyright FOSSBilling (https://www.fossbilling.org)
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ */
+
+namespace ClientFence\Mod\Servicecustom;
+
+use ClientFence\Mod\Product\Entity\Product;
+use ClientFence\Mod\Servicecustom\Entity\ServiceCustom;
+use ClientFence\Environment;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+
+class Service implements \ClientFence\InjectionAwareInterface
+{
+    protected ?\Pimple\Container $di = null;
+    private Filesystem $filesystem;
+
+    public function __construct()
+    {
+        $this->filesystem = new Filesystem();
+    }
+
+    public function setDi(\Pimple\Container $di): void
+    {
+        $this->di = $di;
+        if (isset($di['filesystem'])) {
+            $this->filesystem = $di['filesystem'];
+        }
+    }
+
+    public function getDi(): ?\Pimple\Container
+    {
+        return $this->di;
+    }
+
+    public function getModulePermissions(): array
+    {
+        return [
+            'manage' => [
+                'type' => 'bool',
+                'display_name' => __trans('Manage custom services'),
+                'description' => __trans('Allows the staff member to update custom service configurations and call custom service methods.'),
+            ],
+        ];
+    }
+
+    public function validateCustomForm(array &$data, array $product): void
+    {
+        if ($product['form_id']) {
+            $formbuilderService = $this->di['mod_service']('formbuilder');
+            $form = $formbuilderService->getForm((int) $product['form_id']);
+            foreach ($form['fields'] as $field) {
+                if (($field['required'] ?? 0) == 1) {
+                    $field_name = $field['name'];
+                    if (!isset($data[$field_name]) || empty($data[$field_name])) {
+                        throw new \ClientFence\InformationException('You must fill in all required fields. ' . $field['label'] . ' is missing', null, 9684);
+                    }
+                }
+
+                if (($field['readonly'] ?? 0) == 1) {
+                    $field_name = $field['name'];
+                    if ($data[$field_name] != $field['default_value']) {
+                        throw new \ClientFence\InformationException('Field ' . $field['label'] . ' is read only. You cannot change its value', null, 5468);
+                    }
+                }
+
+                if (($field['type'] ?? null) === 'url') {
+                    $field_name = $field['name'];
+                    if (!empty($data[$field_name])) {
+                        if (!is_string($data[$field_name])) {
+                            throw new \ClientFence\InformationException('Field ' . $field['label'] . ' must be a valid URL with a TLD (e.g., https://example.com)', null, 1248);
+                        }
+
+                        $formbuilderService = $this->di['mod_service']('formbuilder');
+                        if (!$formbuilderService->validateUrlField($data[$field_name])) {
+                            throw new \ClientFence\InformationException('Field ' . $field['label'] . ' must be a valid URL with a TLD (e.g., https://example.com)', null, 1248);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function action_create(\Model_ClientOrder $order): ServiceCustom
+    {
+        $product = $this->di['mod_service']('product')->findProductById((int) $order->product_id);
+        if (!$product instanceof Product) {
+            throw new \ClientFence\InformationException('Product not found');
+        }
+
+        $model = new ServiceCustom();
+        $model->setClientId((int) $order->client_id);
+        $model->setPlugin($product->getPlugin());
+        $model->setPluginConfig($product->getPluginConfig());
+        $model->setConfig($order->config);
+
+        $this->di['em']->persist($model);
+        $this->di['em']->flush();
+
+        return $model;
+    }
+
+    public function action_activate(\Model_ClientOrder $order): bool
+    {
+        $model = $this->_getOrderService($order);
+        $this->callOnAdapter($model, 'activate');
+
+        return true;
+    }
+
+    public function action_renew(\Model_ClientOrder $order): bool
+    {
+        $model = $this->_getOrderService($order);
+        $this->callOnAdapter($model, 'renew');
+
+        $this->di['em']->flush();
+
+        return true;
+    }
+
+    public function action_suspend(\Model_ClientOrder $order): bool
+    {
+        $model = $this->_getOrderService($order);
+
+        $this->callOnAdapter($model, 'suspend');
+
+        $this->di['em']->flush();
+
+        return true;
+    }
+
+    public function action_unsuspend(\Model_ClientOrder $order): bool
+    {
+        $model = $this->_getOrderService($order);
+
+        $this->callOnAdapter($model, 'unsuspend');
+
+        $this->di['em']->flush();
+
+        return true;
+    }
+
+    public function action_cancel(\Model_ClientOrder $order): bool
+    {
+        $model = $this->_getOrderService($order);
+
+        $this->callOnAdapter($model, 'cancel');
+
+        $this->di['em']->flush();
+
+        return true;
+    }
+
+    public function action_uncancel(\Model_ClientOrder $order): bool
+    {
+        $model = $this->_getOrderService($order);
+
+        $this->callOnAdapter($model, 'uncancel');
+
+        $this->di['em']->flush();
+
+        return true;
+    }
+
+    public function action_delete(\Model_ClientOrder $order): bool
+    {
+        try {
+            $model = $this->_getOrderService($order);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+
+            return true;
+        }
+
+        $this->callOnAdapter($model, 'delete');
+        $this->di['em']->remove($model);
+        $this->di['em']->flush();
+
+        return true;
+    }
+
+    public function getConfig(ServiceCustom $model): array
+    {
+        return json_decode($model->getConfig() ?? '', true) ?? [];
+    }
+
+    public function toApiArray(ServiceCustom $model): array
+    {
+        $data = $this->getConfig($model);
+        $data['id'] = $model->getId();
+        $data['client_id'] = $model->getClientId();
+        $data['plugin'] = $model->getPlugin();
+        $data['updated_at'] = $model->getUpdatedAt()?->format('Y-m-d H:i:s');
+        $data['created_at'] = $model->getCreatedAt()?->format('Y-m-d H:i:s');
+
+        return $data;
+    }
+
+    public function customCall(ServiceCustom $model, $method, $params = [])
+    {
+        $forbidden_methods = [
+            'delete',
+            'cancel',
+            'uncancel',
+            'suspend',
+            'unsuspend',
+            'renew',
+            'activate',
+        ];
+        // ClientFence core patch: PHP method names are case-insensitive ("Cancel" reached cancel), and a
+        // client must never reach magic or internal methods.
+        if (!is_string($method) || in_array(strtolower($method), $forbidden_methods, true) || str_starts_with($method, '_')) {
+            throw new \ClientFence\Exception('Custom plugin method :method is forbidden', [':method' => $method], 403);
+        }
+
+        return $this->callOnAdapter($model, $method, $params);
+    }
+
+    public function updateConfig($orderId, $config): void
+    {
+        if (!is_array($config)) {
+            throw new \ClientFence\Exception('Config must be an array');
+        }
+
+        $model = $this->getServiceCustomByOrderId($orderId);
+        $model->setConfig(json_encode($config));
+
+        $this->di['em']->flush();
+
+        $this->di['logger']->info('Custom service updated #%s', $model->getId());
+    }
+
+    public function getServiceCustomByOrderId($orderId, $clientId = null): ?ServiceCustom
+    {
+        $orderService = $this->di['mod_service']('order');
+
+        if ($clientId !== null) {
+            $order = $this->di['db']->findOne('ClientOrder', 'id = ? AND client_id = ?', [$orderId, $clientId]);
+            if (!$order instanceof \Model_ClientOrder) {
+                throw new \ClientFence\InformationException('Order not found');
+            }
+
+            $orderService->assertOrderUsable($order);
+
+            if ($order->status !== \Model_ClientOrder::STATUS_ACTIVE) {
+                throw new \ClientFence\InformationException('Order is not activated');
+            }
+        } else {
+            $order = $this->di['db']->getExistingModelById('ClientOrder', $orderId, 'Order not found');
+        }
+
+        $s = $orderService->getOrderService($order);
+
+        if (!$s instanceof ServiceCustom) {
+            throw new \ClientFence\Exception('Order is not activated');
+        }
+
+        return $s;
+    }
+
+    private function callOnAdapter(ServiceCustom $model, $method, $params = [])
+    {
+        $plugin = $model->getPlugin();
+        if (empty($plugin)) {
+            return null;
+        }
+
+        // check if plugin exists. If plugin does not exist, do not throw error. Simply add to log
+        $file = Path::join('Plugin', $plugin, "{$plugin}.php");
+        if (!Environment::isTesting() && !$this->filesystem->exists(Path::join(PATH_LIBRARY, $file))) {
+            $e = new \ClientFence\InformationException('Plugin class file :file was not found', [':file' => $file], 3124);
+            // @phpstan-ignore if.alwaysFalse (DEBUG is a runtime constant that may be true during debugging)
+            if (DEBUG) {
+                error_log($e->getMessage());
+            }
+
+            return null;
+        }
+
+        require_once Path::normalize($file);
+
+        $config = json_decode($model->getPluginConfig() ?? '', true) ?? [];
+
+        $adapter = new $plugin($config);
+
+        if (!method_exists($adapter, $method)) {
+            throw new \ClientFence\Exception('Plugin :plugin does not support action :action', [':plugin' => $plugin, ':action' => $method], 3125);
+        }
+
+        $orderService = $this->di['mod_service']('order');
+        $order = $orderService->getServiceOrder($model);
+        $order_data = $orderService->toApiArray($order);
+        $data = $this->toApiArray($model);
+
+        return $adapter->$method($data, $order_data, $params);
+    }
+
+    private function _getOrderService(\Model_ClientOrder $order): ServiceCustom
+    {
+        $orderService = $this->di['mod_service']('order');
+        $model = $orderService->getOrderService($order);
+        if (!$model instanceof ServiceCustom) {
+            throw new \ClientFence\Exception('Order :id has no active service', [':id' => $order->id]);
+        }
+
+        return $model;
+    }
+}

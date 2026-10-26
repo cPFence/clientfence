@@ -1,0 +1,53 @@
+ClientFence
+Copyright 2026 cPFence
+
+ClientFence is based on FOSSBilling (https://fossbilling.org/), release 0.8.8,
+Copyright 2022-2026 FOSSBilling, licensed under the Apache License, Version 2.0.
+The FOSSBilling copyright headers are kept in the files that came from it. ClientFence
+changed many of those files and added its own: any file that carries a FOSSBilling
+header may have been modified by ClientFence. All of them are under the same licence.
+
+ClientFence is not affiliated with or endorsed by the FOSSBilling project.
+"FOSSBilling" is the name of that project and is used here only to credit it.
+
+Bundled fonts (Geist, Plus Jakarta Sans and IBM Plex Sans Arabic, in
+src/themes/palisade/assets/src/fonts and src/themes/admin_default/assets/clientfence/fonts)
+are licensed under the SIL Open Font License 1.1. Icons from Tabler Icons
+(https://tabler.io/icons) are licensed under the MIT License.
+
+Third-party components
+----------------------
+
+ClientFence bundles the components below. Each keeps its own licence; the PHP libraries'
+licence texts are in their folders under vendor/.
+
+GPL-2.0-or-later:
+  phpmyadmin/motranslator (reads the translation catalogues)
+  CKEditor 5 (the staff text editor, public/assets/editor; https://ckeditor.com)
+
+LGPL:
+  dompdf/dompdf (LGPL-2.1), dompdf/php-font-lib (LGPL-2.1-or-later),
+  dompdf/php-svg-lib (LGPL-3.0-or-later), tecnickcom/tcpdf (LGPL-3.0-or-later)
+  These are shipped unmodified; their source is the PHP in vendor/.
+
+Apache-2.0:
+  maxmind-db/reader, opis/json-schema, opis/string, opis/uri, plesk/api-php-lib, Tom Select
+
+BSD-3-Clause:
+  gabordemooij/redbean, league/commonmark, league/config, twig/twig,
+  nette/schema and nette/utils (offered under BSD-3-Clause or GPL; used under BSD-3-Clause)
+
+MIT:
+  The other PHP libraries in vendor/ (Symfony components, Doctrine, Monolog, Pimple,
+  Stripe, Sentry and more; see vendor/composer/installed.json), Tabler, Tabler Icons,
+  Bootstrap, Chart.js, flag-icons, Litepicker, intl-tel-input, qrcode-generator and
+  github-markdown-css.
+
+Unlicense: sortable-tablesort.
+
+DiceBear (dicebear/core MIT): ClientFence uses the Identicon avatar style (CC0 1.0). The
+package also contains other styles under the licences listed in
+vendor/dicebear/styles/LICENSE.md.
+
+GeoIP databases in library/ClientFence/GeoIP/Databases: the country database under
+CC0 1.0 and the ASN database under the ODC Public Domain Dedication and License (PDDL).

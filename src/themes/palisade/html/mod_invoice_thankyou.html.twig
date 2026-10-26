@@ -1,0 +1,21 @@
+{# ClientFence: the page a payment provider sends the client back to (invoice/thank-you), in the
+   style of the checkout's confirmation. FOSSBilling's own page waits a minute and then opens
+   the invoice; here the client chooses. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% set active_menu = 'invoices' %}
+
+{% block meta_title %}{{ 'Thank You'|trans }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Thank You'|trans }}</li>{% endblock %}
+{% block body_class %}bf-thankyou-page{% endblock %}
+
+{% block content %}
+<section class="bf-done">
+    <span class="bf-done-icon" aria-hidden="true"><svg class="icon"><use href="#check"/></svg></span>
+    <h1>{{ 'Thank you for your payment.'|trans }}</h1>
+    <p>{{ 'Your payment was sent. The invoice is marked paid as soon as the payment is confirmed, which can take a few minutes.'|trans }}</p>
+    <div class="bf-done-actions">
+        <a class="btn btn-primary bf-btn-lg" href="{{ ('invoice/' ~ invoice.hash)|url }}">{{ 'View the invoice'|trans }}</a>
+        <a class="btn bf-btn-ghost bf-btn-lg" href="{{ 'order/service'|url }}">{{ 'Go to my services'|trans }}</a>
+    </div>
+</section>
+{% endblock %}

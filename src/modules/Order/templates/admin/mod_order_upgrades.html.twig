@@ -1,0 +1,80 @@
+{# ClientFence: an order's upgrades and downgrades (Order\Upgrades), on the order page's Upgrades tab. #}
+{% set upgrade_rule = admin.order_upgrade_rule_get({ scope: 'order', id: order.id }) %}
+{% set upgrades = admin.order_upgrade_history({ id: order.id }) %}
+{% set kind_names = { upgrade: 'Upgrade'|trans, downgrade: 'Downgrade'|trans } %}
+{% set status_classes = { pending: 'bg-warning-lt', applying: 'bg-info-lt', applied: 'bg-success-lt', failed: 'bg-danger-lt', cancelled: 'bg-secondary-lt' } %}
+<form method="post" action="admin/order/upgrade_rule_save" {{ fb_api_form({message: 'Upgrade rules saved'|trans}) }}>
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Client Upgrades and Downgrades'|trans,
+        subtitle: 'Whether the client can move this service to another product or billing cycle. Follow Product uses the product\'s rule and Settings > Orders.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_content %}
+            <div class="row g-3 px-3 pb-3">
+                {% for key, label in { upgrade: 'Upgrades'|trans, downgrade: 'Downgrades'|trans } %}
+                <div class="col-md-6">
+                    <label class="form-label" for="order_rule_{{ key }}">{{ label }}</label>
+                    <select class="form-select" id="order_rule_{{ key }}" name="{{ key }}">
+                        <option value="default" {{ upgrade_rule[key] == 'default' ? 'selected' : '' }}>{{ 'Follow Product'|trans }}</option>
+                        <option value="allow" {{ upgrade_rule[key] == 'allow' ? 'selected' : '' }}>{{ 'Allow'|trans }}</option>
+                        <option value="block" {{ upgrade_rule[key] == 'block' ? 'selected' : '' }}>{{ 'Block'|trans }}</option>
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+        {% endblock %}
+        {% block section_footer %}
+            <div class="d-flex justify-content-end">
+                <input type="hidden" name="scope" value="order">
+                <input type="hidden" name="id" value="{{ order.id }}">
+                <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+            </div>
+        {% endblock %}
+    {% endembed %}
+</form>
+{% embed 'partial_admin_related_section.html.twig' with {
+    title: 'Upgrade History'|trans,
+    subtitle: 'Changes the client asked for, with the prorated amounts. A paid change that could not be applied is listed under Orders > Failed actions.'|trans,
+    card_class: 'm-3'
+} %}
+    {% block section_content %}
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter table-striped">
+                <thead>
+                    <tr>
+                        <th class="w-1">{{ 'Date'|trans }}</th>
+                        <th>{{ 'Change'|trans }}</th>
+                        <th class="text-end">{{ 'Credit'|trans }}</th>
+                        <th class="text-end">{{ 'Charge'|trans }}</th>
+                        <th class="text-end">{{ 'Amount'|trans }}</th>
+                        <th>{{ 'Status'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for up in upgrades %}
+                    <tr>
+                        <td class="text-nowrap">{{ up.created_at|format_datetime }}</td>
+                        <td class="text-wrap">
+                            <span class="badge {{ up.kind == 'downgrade' ? 'bg-azure-lt' : 'bg-green-lt' }} me-1">{{ kind_names[up.kind]|default(up.kind) }}</span>
+                            {{ up.from_title }} ({{ up.from_period }}) → {{ up.to_title }} ({{ up.to_period }})
+                            <div class="text-secondary small">{{ '%left% of %total% days left'|trans({ '%left%': up.days_left, '%total%': up.days_total }) }}{% if up.to_expires_at %}, {{ 'new expiry'|trans }} {{ up.to_expires_at|format_date }}{% endif %}</div>
+                            {% if up.error %}<div class="text-danger small">{{ up.error }}</div>{% endif %}
+                        </td>
+                        <td class="text-end text-nowrap">{{ up.credit|format_currency(up.currency) }}</td>
+                        <td class="text-end text-nowrap">{{ up.charge|format_currency(up.currency) }}</td>
+                        <td class="text-end text-nowrap">{{ up.amount|format_currency(up.currency) }}</td>
+                        <td class="text-nowrap">
+                            <span class="badge {{ status_classes[up.status]|default('bg-secondary-lt') }}">{{ up.status|capitalize|trans }}</span>
+                            {% if up.invoice_id %}<a class="ms-1" href="{{ "invoice/manage/#{up.invoice_id}"|url }}">#{{ up.invoice_id }}</a>{% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td class="text-muted" colspan="6">{{ 'No upgrades or downgrades yet.'|trans }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+{% endembed %}

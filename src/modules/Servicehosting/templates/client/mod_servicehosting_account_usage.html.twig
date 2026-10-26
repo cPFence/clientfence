@@ -1,0 +1,136 @@
+{# ClientFence, Hosting accounts: live usage of one hosting order, read from its panel. Loaded by
+   the account's page (/hosting/:id/usage), and included by a hosting service page that has
+   `order` in scope:
+
+     {% include 'mod_servicehosting_account_usage.html.twig' with { 'order_id': order.id } %}
+
+   The API call never throws. When the panel cannot be reached it returns an `error` key
+   and this renders a line of text instead. Sizes from the panel are in MB (disk, bandwidth)
+   and bytes (websites). #}
+
+{% set usage = client.servicehosting_usage({ 'order_id': order_id }) %}
+
+{% macro size(bytes) %}
+    {%- if bytes >= 1000000000 %}{{ (bytes / 1000000000)|round(1) }} GB
+    {%- elseif bytes >= 1000000 %}{{ (bytes / 1000000)|number_format(0) }} MB
+    {%- elseif bytes >= 1000 %}{{ (bytes / 1000)|number_format(0) }} KB
+    {%- else %}{{ bytes }} B{% endif -%}
+{% endmacro %}
+
+{% macro bar(used, limit) %}
+    {% set percent = limit > 0 ? min(100, (used / limit * 100)|round) : 100 %}
+    <div class="progress clientfence-hosting-bar" role="progressbar" aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar {{ percent >= 90 ? 'bg-danger' : (percent >= 75 ? 'bg-warning' : '') }}" style="width: {{ percent }}%"></div>
+    </div>
+{% endmacro %}
+
+{% import _self as m %}
+
+{% if usage.error is defined %}
+    <div class="card">
+        <div class="card-body text-secondary">{{ 'Usage is unavailable right now.'|trans }}</div>
+    </div>
+{% else %}
+    <div class="clientfence-hosting-usage">
+        {% if usage.suspended %}
+            <div class="alert alert-danger d-flex align-items-start gap-2">
+                <svg class="icon flex-shrink-0" aria-hidden="true"><use href="#alert-triangle"/></svg>
+                <div><strong>{{ 'This account is suspended.'|trans }}</strong> {{ 'Websites, email and FTP are offline until it is reactivated.'|trans }}</div>
+            </div>
+        {% endif %}
+
+        {# Disk and bandwidth #}
+        <div class="row g-3 mb-3">
+            {% for meter in [
+                { 'label': 'Disk space', 'icon': 'database', 'used': usage.disk_used_mb, 'limit': usage.disk_quota_mb },
+                { 'label': 'Bandwidth this month', 'icon': 'activity', 'used': usage.bandwidth_used_mb, 'limit': usage.bandwidth_limit_mb },
+            ] %}
+                <div class="col-md-6">
+                    <div class="clientfence-hosting-meter card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#{{ meter.icon }}"/></svg></span>
+                                <span class="clientfence-hosting-meter-label">{{ meter.label|trans }}</span>
+                                {% if meter.limit %}
+                                    <span class="clientfence-hosting-meter-percent ms-auto">{{ min(100, (meter.used / meter.limit * 100)|round) }}%</span>
+                                {% endif %}
+                            </div>
+                            <div class="clientfence-hosting-meter-value">
+                                <span dir="ltr">{{ meter.used > 0 ? m.size(meter.used * 1000000) : '0 MB' }}</span>
+                                <span class="clientfence-hosting-meter-of">
+                                    {% if meter.limit is null %}{{ 'Unlimited'|trans }}{% else %}{{ 'of :size'|trans({ ':size': m.size(meter.limit * 1000000) }) }}{% endif %}
+                                </span>
+                            </div>
+                            {% if meter.limit %}
+                                {{ m.bar(meter.used, meter.limit) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# What the plan includes #}
+        {% set resources = [
+            { 'key': 'websites', 'label': 'Websites', 'icon': 'world' },
+            { 'key': 'addon_domains', 'label': 'Addon domains', 'icon': 'world-plus' },
+            { 'key': 'subdomains', 'label': 'Subdomains', 'icon': 'sitemap' },
+            { 'key': 'domain_aliases', 'label': 'Aliases', 'icon': 'link' },
+            { 'key': 'mailboxes', 'label': 'Mailboxes', 'icon': 'mail' },
+            { 'key': 'databases', 'label': 'Databases', 'icon': 'database' },
+            { 'key': 'ftp_users', 'label': 'FTP users', 'icon': 'folder' },
+        ] %}
+        <div class="clientfence-hosting-resources mb-4">
+            {% for resource in resources %}
+                {% if usage.counts[resource.key] is defined %}
+                    {% set count = usage.counts[resource.key] %}
+                    <div class="clientfence-hosting-resource">
+                        <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#{{ resource.icon }}"/></svg></span>
+                        <div class="min-w-0">
+                            <div class="clientfence-hosting-resource-value">
+                                {{ count.used }}{% if count.limit is not null %}<span class="clientfence-hosting-meter-of"> / {{ count.limit }}</span>{% endif %}
+                            </div>
+                            <div class="clientfence-hosting-resource-label">{{ resource.label|trans }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {# The websites of the account #}
+        {% if usage.websites is not empty %}
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ 'Websites'|trans }}</h2>
+                </div>
+                {% for site in usage.websites %}
+                    <div class="clientfence-hosting-site">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <svg class="icon text-secondary" aria-hidden="true"><use href="#world"/></svg>
+                            <a class="clientfence-hosting-site-domain" href="https://{{ site.domain }}" target="_blank" rel="noopener"><bdi dir="ltr">{{ site.domain }}</bdi></a>
+                            {% if site.primary and usage.websites|length > 1 %}<span class="badge text-bg-primary">{{ 'Primary'|trans }}</span>{% endif %}
+                            {% if site.kind == 'staging' %}<span class="badge text-bg-secondary">{{ 'Staging'|trans }}</span>{% endif %}
+                            {% if site.suspended %}<span class="badge text-bg-danger">{{ 'Suspended'|trans }}</span>{% endif %}
+                        </div>
+                        {% if site.aliases is not empty %}
+                            <div class="clientfence-hosting-site-aliases"><bdi dir="ltr">{{ site.aliases|join(', ') }}</bdi></div>
+                        {% endif %}
+                        <dl class="clientfence-hosting-site-stats">
+                            <div><dt>{{ 'Disk'|trans }}</dt><dd dir="ltr">{{ m.size(site.disk_used_bytes) }}</dd></div>
+                            {% if site.stats %}
+                                <div><dt>{{ 'Visitors'|trans }}</dt><dd>{{ site.stats.visitors|number_format(0) }}</dd></div>
+                                <div><dt>{{ 'Requests'|trans }}</dt><dd>{{ site.stats.requests|number_format(0) }}</dd></div>
+                                <div><dt>{{ 'Traffic'|trans }}</dt><dd dir="ltr">{{ m.size(site.stats.bytes_sent + site.stats.bytes_received) }}</dd></div>
+                            {% else %}
+                                <div><dt>{{ 'Visitors'|trans }}</dt><dd class="text-secondary">{{ 'Statistics unavailable'|trans }}</dd></div>
+                            {% endif %}
+                            <div><dt>{{ 'Last backup'|trans }}</dt><dd>{{ site.last_backup_at ? site.last_backup_at|format_date : 'None yet'|trans }}</dd></div>
+                            {% if site.php_version %}<div><dt>{{ 'PHP'|trans }}</dt><dd>{{ site.php_version }}</dd></div>{% endif %}
+                        </dl>
+                    </div>
+                {% endfor %}
+                <div class="card-footer small text-secondary">{{ 'Visitors, requests and traffic cover the last 30 days.'|trans }}</div>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

@@ -1,0 +1,153 @@
+{# ClientFence store page (/order): title and subtitle from the Orders settings, category tabs, one
+   billing-cycle switch for every product card, and a Select button that opens the one-page
+   checkout (mod_order_product.html.twig) with the chosen cycle. Products, descriptions and
+   prices come from FOSSBilling; the ClientFence store gate decides who sees them.
+
+   A product description's list items become the card's points (the first four and the last,
+   with the rest behind "Show all"); an item written entirely in bold (**...**) becomes the
+   card's highlight. /order?preview=<token> opens a store preview for this browser session.
+   A domain product has a price per TLD instead of a pricing type: its card shows the lowest
+   registration price a year ("From"), whatever cycle is picked. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% import 'partials/store_macros.html.twig' as sm %}
+
+{% set preview_opened = request.preview|default('') ? guest.clientfence_store_preview({ token: request.preview }) : false %}
+{% set store_open = guest.clientfence_store_open %}
+{% set store = guest.clientfence_store_info %}
+{% set allow_guest = store_open %}
+{% set active_menu = 'order' %}
+
+{% block meta_title %}{{ store.title|trim ?: 'Store'|trans }}{% endblock %}
+{% block meta_description %}{{ 'Browse available products and services, compare options, and place your order online.'|trans }}{% endblock %}
+{% block body_class %}order-index bf-store-page{% endblock %}
+
+{% block topbar_nav %}
+    {{ include('partials/order_steps.html.twig', { step: 1 }) }}
+{% endblock %}
+
+{% block content %}
+{% set cart_currency = guest.cart_get_currency %}
+{% set categories = guest.product_category_get_list({ per_page: 100 }).list|filter(c => c.products|length > 0) %}
+{% set order = ['1W', '1M', '3M', '6M', '1Y', '2Y', '3Y'] %}
+{% set used = [] %}
+{% for category in categories %}
+    {% for product in category.products %}
+        {% if (product.pricing.type ?? '') == 'recurrent' %}
+            {% for code, price in product.pricing.recurrent %}
+                {% if price.enabled and code not in used %}{% set used = used|merge([code]) %}{% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+{% set used = order|filter(code => code in used) %}
+{% set first_cycle = '1M' in used ? '1M' : (used|first ?: '') %}
+
+<div class="bf-store" data-bf-store
+     data-currency="{{ cart_currency.code }}" data-rate="{{ cart_currency.conversion_rate }}"
+     data-cycle="{{ first_cycle }}">
+    <script nonce="{{ csp_nonce }}" type="application/json" data-bf-store-texts>{{ {
+        cycles: sm.cycle_texts()|trim,
+        billedMonthly: 'Billed monthly'|trans,
+        billedWeekly: 'Billed weekly'|trans,
+        perMonth: ':amount a month'|trans,
+        notOffered: 'Not offered for this billing cycle'|trans,
+        saveUpTo: 'Save up to :percent%'|trans,
+        showFewer: 'Show fewer features'|trans,
+    }|json_encode|raw }}</script>
+
+    <header class="bf-store-head">
+        <h1>{{ store.title|trim ?: 'Store'|trans }}</h1>
+        {% if store.subtitle|trim %}<p>{{ store.subtitle }}</p>{% endif %}
+    </header>
+
+    {% if categories is empty %}
+        <div class="card bf-card"><div class="empty-state">{{ 'No products are available yet.'|trans }}</div></div>
+    {% else %}
+        <div class="bf-store-bar">
+            <div class="bf-tabs" role="group" aria-label="{{ 'Categories'|trans }}">
+                <button type="button" class="bf-tab is-on" aria-pressed="true" data-category="">{{ 'All products'|trans }}</button>
+                {% for category in categories %}
+                    <button type="button" class="bf-tab" aria-pressed="false" data-category="{{ category.id }}">{{ category.title }}</button>
+                {% endfor %}
+            </div>
+            {% if used|length > 1 %}
+                <div class="bf-seg bf-seg-cycles" role="group" aria-label="{{ 'Billing cycle'|trans }}">
+                    {% for code in used %}
+                        <button type="button" class="bf-seg-item{{ code == first_cycle ? ' is-on' : '' }}" aria-pressed="{{ code == first_cycle ? 'true' : 'false' }}" data-cycle="{{ code }}">
+                            <span>{{ sm.cycle_label(code) }}</span>
+                            <span class="bf-save" data-save hidden></span>
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {# A client whose profile has a currency orders only in it (the cart refuses another). #}
+            {% set currencies = guest.currency_get_pairs %}
+            {% if currencies|length > 1 and not (client ? client.profile_get.currency|default('') : '') %}
+                <select class="form-select bf-currency currency_selector" aria-label="{{ 'Currency'|trans }}">
+                    {% for code, title in currencies %}
+                        <option value="{{ code }}"{{ code == cart_currency.code ? ' selected' : '' }}>{{ code }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+        </div>
+
+        <div class="bf-products">
+            {% for category in categories %}
+                {% for product in category.products|sort((a, b) => a.priority <=> b.priority) %}
+                    {% set points = [] %}
+                    {% set highlight = '' %}
+                    {% set intro = [] %}
+                    {% for line in (product.description ?? '')|split("\n") %}
+                        {% set line = line|trim %}
+                        {% if line starts with '- ' or line starts with '* ' %}
+                            {% set item = line|slice(2)|trim %}
+                            {% if item starts with '**' and item ends with '**' and item|length > 4 %}
+                                {% set highlight = item|slice(2, item|length - 4) %}
+                            {% else %}
+                                {% set points = points|merge([item|replace({'**': ''})]) %}
+                            {% endif %}
+                        {% elseif line != '' %}
+                            {% set intro = intro|merge([line|replace({'**': ''})]) %}
+                        {% endif %}
+                    {% endfor %}
+                    {% set prices = {} %}
+                    {% set pricing_type = product.type == 'domain' ? 'domain' : (product.pricing.type ?? '') %}
+                    {% if pricing_type == 'recurrent' %}
+                        {% for code, price in product.pricing.recurrent %}
+                            {% if price.enabled %}{% set prices = prices|merge({ (code): price.price }) %}{% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% set once = pricing_type == 'once' ? product.pricing.once.price : (pricing_type == 'free' ? 0 : null) %}
+                    {% set from = pricing_type == 'domain' ? (product.price_starting_from ?? null) : null %}
+                    {% set href = ('order/' ~ (product.slug ?: product.id))|url %}
+                    <article class="bf-product" data-category="{{ category.id }}" data-href="{{ href }}"
+                             data-prices="{{ prices|json_encode }}"{% if once is not null %} data-once="{{ once }}"{% endif %}{% if pricing_type == 'domain' %} data-fixed{% endif %}>
+                        <h2>{{ product.title }}</h2>
+                        <div class="bf-price">
+                            <div class="bf-price-line">
+                                <span class="bf-price-amount" data-price>{% if from is not null %}{{ 'From'|trans }} {{ sm.money(from * cart_currency.conversion_rate, cart_currency.code) }}{% elseif once is not null %}{{ sm.money(once * cart_currency.conversion_rate, cart_currency.code) }}{% elseif prices[first_cycle] is defined %}{{ sm.money(prices[first_cycle] * cart_currency.conversion_rate, cart_currency.code) }}{% endif %}</span>
+                                <span class="bf-price-per" data-per>{% if from is not null %}{{ sm.cycle_per('1Y') }}{% elseif once is not null %}{{ once == 0 ? 'Free'|trans : 'one time'|trans }}{% elseif first_cycle %}{{ sm.cycle_per(first_cycle) }}{% endif %}</span>
+                            </div>
+                            <span class="bf-price-note" data-monthly></span>
+                        </div>
+                        {% if intro is not empty %}<p class="bf-product-intro">{{ intro|join(' ') }}</p>{% endif %}
+                        {% if points is not empty %}
+                            <ul class="bf-points">
+                                {% for point in points %}
+                                    {% set hidden = points|length > 5 and not loop.last and loop.index > 4 %}
+                                    <li{% if hidden %} class="bf-more" hidden{% endif %}><svg class="icon" aria-hidden="true"><use href="#check"/></svg><span>{{ point }}</span></li>
+                                {% endfor %}
+                            </ul>
+                            {% if points|length > 5 %}
+                                <button type="button" class="bf-linkbtn bf-show-all" aria-expanded="false" data-show-all>{{ 'Show all :count features'|trans({ ':count': points|length }) }}</button>
+                            {% endif %}
+                        {% endif %}
+                        {% if highlight %}<span class="bf-chip bf-chip-ok bf-highlight">{{ highlight }}</span>{% endif %}
+                        <a class="btn btn-primary bf-btn-lg bf-select" href="{{ href }}{% if first_cycle and once is null and pricing_type != 'domain' %}?period={{ first_cycle }}{% endif %}" data-select>{{ 'Select'|trans }}</a>
+                    </article>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

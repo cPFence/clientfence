@@ -1,0 +1,81 @@
+{# Dashboard of staff who cannot see the statistics but work the help desk (Support Staff,
+   Support Lead): ticket counts and the open tickets. Slot admin.index.dashboard, added to the
+   admin dashboard by the ClientFence core patch "dashboard widget slot". #}
+{% if not admin.system_is_allowed({ 'mod': 'stats' }) and admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) %}
+    {% set ticketStatuses = admin.support_ticket_get_statuses %}
+    {% set openTickets = admin.support_ticket_get_list({ 'status': 'open', 'per_page': 10, 'page': 1 }) %}
+    {% set ticketCards = [
+        { status: 'open', label: 'Waiting for Staff Reply'|trans, icon: 'headset', color: 'bg-warning' },
+        { status: 'on_hold', label: 'On Hold'|trans, icon: 'player-pause', color: 'bg-blue' },
+        { status: 'closed', label: 'Closed'|trans, icon: 'circle-check', color: 'bg-green' },
+    ] %}
+    {% for card in ticketCards %}
+        <div class="col-sm-6 col-lg-4">
+            <a href="{{ 'support'|url(query: { 'status': card.status }) }}" class="card card-sm h-100">
+                <div class="card-body d-flex align-items-center h-100">
+                    {% if card.status == 'open' and ticketStatuses.open|default(0) > 0 %}
+                        <div class="ribbon ribbon-top bg-red">{{ ticketStatuses.open }}</div>
+                    {% endif %}
+                    <div class="row align-items-center w-100">
+                        <div class="col-auto">
+                            <span class="{{ card.color }} text-white avatar">
+                                <svg class="icon">
+                                    <use href="#{{ card.icon }}" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium">{{ attribute(ticketStatuses, card.status)|default(0) }} {{ 'Tickets'|trans }}</div>
+                            <div class="text-muted">{{ card.label }}</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Waiting for Staff Reply'|trans }}</h3>
+                <div class="card-actions">
+                    <a href="{{ 'support'|url(query: { 'status': 'open' }) }}" class="btn-action" title="{{ 'View all'|trans }}">
+                        <svg class="icon">
+                            <use href="#dots-vertical" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Ticket'|trans }}</th>
+                            <th>{{ 'Client'|trans }}</th>
+                            <th>{{ 'Helpdesk'|trans }}</th>
+                            <th>{{ 'Updated'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in openTickets.list %}
+                        <tr>
+                            <td><a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'>#{{ ticket.id }} - {{ ticket.subject|truncate(50) }} ({{ ticket.replies }})</a></td>
+                            <td>{{ ticket.author.name|default('-') }}</td>
+                            <td>{{ ticket.helpdesk.name|default('-') }}</td>
+                            <td class="text-muted">{{ ticket.updated_at|timeago }} {{ 'ago'|trans }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="text-muted text-center" colspan="4">{{ 'No tickets are waiting for a reply.'|trans }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if openTickets.total|default(0) > openTickets.list|length %}
+                <div class="card-footer">
+                    <a href="{{ 'support'|url(query: { 'status': 'open' }) }}">{{ 'View all'|trans }} ({{ openTickets.total }})</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

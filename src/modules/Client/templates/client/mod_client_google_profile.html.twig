@@ -1,0 +1,72 @@
+{# ClientFence, the profile fields an account made by Google sign-up still has to fill
+   (/google-sign-in/profile, Google.php): the ones the portal requires at sign-up and its
+   required custom fields, and in "Sign-up only" a password (the sign-in page has no Google then).
+   The client area waits for them (core patch "Google sign-up: the required profile fields
+   first"). fields: Google::missingFields(); next: the page the sign-in was for. #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'profile' %}
+
+{% block meta_title %}{{ 'Finish setting up your account'|trans }}{% endblock %}
+{% block page_header %}{{ 'Finish setting up your account'|trans }}{% endblock %}
+{% block body_class %}clientfence-google-profile{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Finish setting up your account'|trans }}</li>{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>{{ 'Finish setting up your account'|trans }}</h1>
+    <p>{{ 'Your account is ready. Fill in the details below to continue; you only do this once.'|trans }}</p>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form action="{{ 'client/google_profile_update'|api_url }}" {{ fb_api_form({redirect: next|default('/')|url}) }} data-clientfence-google-profile>
+            <div class="row g-3">
+                {% for field in fields %}
+                    {% if field.name == 'password' %}
+                    <div class="col-md-6">
+                        <label class="form-label" for="gp_password">{{ 'Choose a password'|trans }}</label>
+                        <input type="password" class="form-control" id="gp_password" name="password" autocomplete="new-password" required>
+                        <div class="form-text">{{ 'Next time, sign in with your email and this password.'|trans }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="gp_password_confirm">{{ 'Confirm password'|trans }}</label>
+                        <input type="password" class="form-control" id="gp_password_confirm" name="password_confirm" autocomplete="new-password" required>
+                    </div>
+                    {% else %}
+                    <div class="col-md-6">
+                        <label class="form-label" for="gp_{{ field.name }}">{{ field.custom ? field.label : {
+                            'last_name': 'Last Name', 'company': 'Company', 'phone': 'Phone Number', 'birthday': 'Birthdate',
+                            'gender': 'Gender', 'address_1': 'Address Line 1', 'address_2': 'Address Line 2', 'city': 'City',
+                            'state': 'State', 'postcode': 'Zip/Postal Code', 'country': 'Country'
+                        }[field.name]|default(field.label)|trans }}</label>
+                        {% if field.name == 'country' %}
+                            <select class="form-select" id="gp_country" name="country" required>
+                                <option value="">{{ '-- Select Country --'|trans }}</option>
+                                {% for val, label in guest.system_countries %}
+                                    <option value="{{ val }}">{{ label|e }}</option>
+                                {% endfor %}
+                            </select>
+                        {% elseif field.name == 'gender' %}
+                            <select class="form-select" id="gp_gender" name="gender" required>
+                                <option value="">{{ '-- Select --'|trans }}</option>
+                                <option value="male">{{ 'Male'|trans }}</option>
+                                <option value="female">{{ 'Female'|trans }}</option>
+                                <option value="nonbinary">{{ 'Non-binary'|trans }}</option>
+                                <option value="other">{{ 'Other'|trans }}</option>
+                            </select>
+                        {% elseif field.name == 'birthday' %}
+                            <input type="date" class="form-control" id="gp_birthday" name="birthday" required>
+                        {% elseif field.name == 'phone' %}
+                            <input type="hidden" name="phone_cc" id="phone_cc" value="">
+                            <input type="tel" class="form-control js-phone-input" id="gp_phone" name="phone" autocomplete="tel" required>
+                        {% else %}
+                            <input type="text" class="form-control" id="gp_{{ field.name }}" name="{{ field.name }}" maxlength="250" required>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary mt-4">{{ 'Save and continue'|trans }}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

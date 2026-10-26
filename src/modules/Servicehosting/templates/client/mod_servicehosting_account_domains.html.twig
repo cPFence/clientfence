@@ -1,0 +1,72 @@
+{# ClientFence, Hosting accounts: the Domains tab of an account (loaded from /hosting/:id/domains):
+   whether each of the website's domains points to its server, for the website (A/AAAA) and for
+   mail (MX), looked up in public DNS by Servicehosting/Panel/Dns.php. The API never throws; `error` renders a
+   line of text. #}
+{% set dns = client.servicehosting_domains({ 'order_id': order_id, 'refresh': refresh ? 1 : 0 }) %}
+
+{% set web_states = {
+    'ok': { 'label': 'Points to your server', 'class': 'text-bg-success' },
+    'cloudflare': { 'label': 'Through Cloudflare', 'class': 'text-bg-info' },
+    'elsewhere': { 'label': 'Points elsewhere', 'class': 'text-bg-warning' },
+    'none': { 'label': 'Not in DNS', 'class': 'text-bg-danger' },
+} %}
+{% set mail_states = {
+    'ok': { 'label': 'Mail comes here', 'class': 'text-bg-success' },
+    'elsewhere': { 'label': 'Mail goes elsewhere', 'class': 'text-bg-warning' },
+    'none': { 'label': 'No MX record', 'class': 'text-bg-warning' },
+} %}
+{% set kinds = { 'primary': 'Primary', 'alias': 'Alias', 'addon': 'Addon domain', 'subdomain': 'Subdomain' } %}
+
+{% if dns.error is defined %}
+    <div class="card">
+        <div class="card-body text-secondary">{{ 'The domain check is unavailable right now.'|trans }}</div>
+    </div>
+{% else %}
+    {# The A record takes the IPv4 addresses. #}
+    {% set web_ips = dns.expected.web_ips|filter(ip => ':' not in ip)|join(', ') %}
+    <div class="card">
+        <div class="card-header clientfence-email-head">
+            <div class="me-auto">
+                <h2 class="mb-0">{{ 'Domains'|trans }}</h2>
+                <div class="small text-secondary">{{ 'Checked :time in public DNS.'|trans({ ':time': dns.checked_at|date('H:i', 'UTC') ~ ' UTC' }) }}</div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-domains-refresh>
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg>
+                {{ 'Check again'|trans }}
+            </button>
+        </div>
+        {% if dns.refresh_refused %}
+            <div class="alert alert-warning m-3 mb-0">{{ 'Too many checks in a short time. This is the last result; try again later.'|trans }}</div>
+        {% endif %}
+        {% for item in dns.domains %}
+            {% set web = web_states[item.web.status] %}
+            {% set mail = mail_states[item.mail.status] %}
+            <div class="clientfence-hosting-site">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <svg class="icon text-secondary" aria-hidden="true"><use href="#world"/></svg>
+                    <span class="clientfence-hosting-site-domain"><bdi dir="ltr">{{ item.domain }}</bdi></span>
+                    <span class="badge text-bg-secondary">{{ (kinds[item.kind] ?? item.kind)|trans }}</span>
+                </div>
+                <dl class="clientfence-hosting-site-stats">
+                    <div><dt>{{ 'Website'|trans }}</dt><dd><span class="badge {{ web.class }}">{{ web.label|trans }}</span></dd></div>
+                    <div><dt>{{ 'Mail'|trans }}</dt><dd><span class="badge {{ mail.class }}">{{ mail.label|trans }}</span></dd></div>
+                </dl>
+                {% if item.web.status == 'cloudflare' %}
+                    <p class="clientfence-dns-note">{{ 'Cloudflare hides the server behind it. In Cloudflare, the A record must point to :ip.'|trans({ ':ip': web_ips }) }}</p>
+                {% elseif item.web.status == 'elsewhere' %}
+                    <p class="clientfence-dns-note">{{ 'The website is not served from your hosting. Point the A record to :ip.'|trans({ ':ip': web_ips }) }} {{ 'Now:'|trans }} <bdi dir="ltr">{{ item.web.addresses|join(', ') }}</bdi></p>
+                {% elseif item.web.status == 'none' %}
+                    <p class="clientfence-dns-note">{{ 'The domain has no address in DNS. Check its nameservers at the registrar, then point the A record to :ip.'|trans({ ':ip': web_ips }) }}</p>
+                {% endif %}
+                {% if item.mail.status == 'elsewhere' %}
+                    <p class="clientfence-dns-note">{{ 'Its MX records point to another mail service, so the mailboxes here do not receive its mail.'|trans }} {{ 'Now:'|trans }} <bdi dir="ltr">{{ item.mail.hosts|join(', ') }}</bdi></p>
+                {% elseif item.mail.status == 'none' and dns.expected.mail_host %}
+                    <p class="clientfence-dns-note">{{ 'To receive mail here, add an MX record pointing to :host.'|trans({ ':host': dns.expected.mail_host }) }}</p>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="empty-state">{{ 'The website has no domains to check.'|trans }}</div>
+        {% endfor %}
+        <div class="card-footer small text-secondary">{{ 'Changes at your DNS provider can take up to a day to show everywhere.'|trans }}</div>
+    </div>
+{% endif %}

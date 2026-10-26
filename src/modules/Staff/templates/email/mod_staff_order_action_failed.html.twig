@@ -1,0 +1,58 @@
+{% block subject %}[{{ guest.system_company.name }}] Order action failed: {{ failure.action|default('')|title }} #{{ failure.order_id|default('') }}{% endblock %}
+{% block content %}
+{# ClientFence: sent once when an order action opens a new failed action (ClientFence\Mod\Order\ActionFailures). #}
+{% set failure = failure|default({}) %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			color: #333333;
+		}
+
+		h1 {
+			font-size: 24px;
+			font-weight: bold;
+			margin: 0 0 20px;
+		}
+
+		p {
+			margin: 0 0 10px;
+		}
+
+		strong {
+			font-weight: bold;
+		}
+
+		pre {
+			white-space: pre-wrap;
+			background: #f5f5f5;
+			padding: 10px;
+		}
+
+		.signature {
+			font-style: italic;
+			color: #999999;
+			margin-top: 20px;
+			border-top: 1px solid #cccccc;
+			padding-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Order Action Failed</h1>
+	<p>Hello {{ staff.name|default('') }},</p>
+	<p>The <strong>{{ failure.action|default('') }}</strong> action of order <strong>#{{ failure.order_id|default('') }} {{ failure.order_title|default('') }}</strong>{% if failure.client_name|default('') %} (client <strong>{{ failure.client_name }}</strong>){% endif %} failed. Its hosting panel, registrar or other service refused it or could not finish it.</p>
+	<p>Error:</p>
+	<pre>{{ failure.message|default('') }}</pre>
+	<p>Fix the cause, then retry the action from Orders &gt; Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email.</p>
+
+	<p><a href='{{ failure.order_url|default('') }}' target="_blank">Manage order</a> | <a href='{{ failure.list_url|default('') }}' target="_blank">Failed actions</a></p>
+
+	<div class="signature">{{ guest.system_email.signature }}</div>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends "layout_default.html.twig" %}
+
+{% set active_menu = 'extensions' %}
+{% set can_manage = has_permission('custompages', 'manage') %}
+{% set page = page_id ? admin.custompages_get_page({ page_id }) : null %}
+{% set page_base = 'page'|url(area: 'client') ~ '/' %}
+
+{% block meta_title %}{{ page ? page.title : 'New Custom Page'|trans }}{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li class="breadcrumb-item">
+        <svg class="icon">
+            <use href="#home" />
+        </svg>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ 'custompages'|url }}">{{ 'Custom Pages'|trans }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ page ? page.title : 'New Custom Page'|trans }}</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+{% if page or not page_id %}
+<form id="custom-page-form" novalidate data-id="{{ page.id|default('') }}" data-list-url="{{ 'custompages'|url }}"
+      data-text-saved="{{ 'Saved.'|trans }}" data-text-required="{{ 'Required'|trans }}">
+    <fieldset class="row g-3"{% if not can_manage %} disabled{% endif %}>
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label required" for="custom-page-title">{{ 'Title'|trans }}</label>
+                        <input class="form-control" type="text" id="custom-page-title" name="title" value="{{ page.title|default('') }}" maxlength="255" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required" for="custom-page-slug">{{ 'Slug'|trans }}</label>
+                        <div class="input-group input-group-flat has-validation">
+                            <span class="input-group-text" dir="ltr">{{ page_base }}</span>
+                            <input class="form-control ps-0" type="text" id="custom-page-slug" name="slug" value="{{ page.slug|default('') }}" maxlength="255" dir="ltr" autocomplete="off">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label required" for="custom-page-content">{{ 'Content'|trans }}</label>
+                        <textarea class="editor-textarea" id="custom-page-content" name="content" rows="12" required>{{ page.content|default('') }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header">
+                    <a class="card-title text-reset d-flex align-items-center gap-2" href="#custom-page-seo" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="custom-page-seo">
+                        <svg class="icon"><use href="#chevron-down" /></svg>
+                        {{ 'SEO Metadata'|trans }}
+                    </a>
+                </div>
+                <div class="collapse" id="custom-page-seo">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="custom-page-description">{{ 'Meta Description'|trans }}</label>
+                            <textarea class="form-control" id="custom-page-description" name="description" rows="2" maxlength="555">{{ page.description|default('') }}</textarea>
+                        </div>
+                        <div>
+                            <label class="form-label" for="custom-page-keywords">{{ 'Meta Keywords'|trans }}</label>
+                            <input class="form-control" type="text" id="custom-page-keywords" name="keywords" value="{{ page.keywords|default('') }}" maxlength="555">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="custom-page-status">{{ 'Status'|trans }}</label>
+                        <select class="form-select" id="custom-page-status" name="status">
+                            <option value="published"{% if page.status|default('published') == 'published' %} selected{% endif %}>{{ 'Published'|trans }}</option>
+                            <option value="draft"{% if page.status|default('') == 'draft' %} selected{% endif %}>{{ 'Draft'|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="custom-page-visibility">{{ 'Visibility'|trans }}</label>
+                        <select class="form-select" id="custom-page-visibility" name="visibility">
+                            {% for value, label in { everyone: 'Everyone'|trans, clients: 'Signed-in clients'|trans, active: 'Clients with an active service'|trans } %}
+                                <option value="{{ value }}"{% if page.visibility|default('everyone') == value %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <label class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" name="show_in_menu"{% if page.show_in_menu|default(false) %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Show in the client-area menu'|trans }}</span>
+                    </label>
+                    <label class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="show_in_footer"{% if page.show_in_footer|default(false) %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Show in the footer'|trans }}</span>
+                    </label>
+                    <div>
+                        <label class="form-label" for="custom-page-order">{{ 'Sort order'|trans }}</label>
+                        <input class="form-control" type="number" id="custom-page-order" name="sort_order" value="{{ page.sort_order|default(0) }}">
+                        <div class="form-text">{{ 'Lower numbers come first.'|trans }}</div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+                    {% if page %}
+                        <a class="btn btn-outline-secondary" href="{{ page_base ~ page.slug }}?preview=1" target="_blank" rel="noopener">
+                            <svg class="icon"><use href="#eye" /></svg>
+                            {{ 'Preview'|trans }}
+                        </a>
+                    {% endif %}
+                    {% if can_manage %}
+                        <button class="btn btn-primary" type="submit">{{ page ? 'Save'|trans : 'Create'|trans }}</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+{% else %}
+<script nonce="{{ csp_nonce }}">
+    window.location.href = "{{ 'custompages'|url }}"
+</script>
+{% endif %}
+{% endblock %}
+
+{% block head %}{{ wysiwyg('.editor-textarea') }}{% endblock %}
+
+{% block js %}
+{% if can_manage and (page or not page_id) %}
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const form = document.getElementById('custom-page-form');
+        const text = form.dataset;
+        const title = form.elements.title;
+        const slug = form.elements.slug;
+        const content = form.elements.content;
+        const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        let slugEdited = text.id !== '';
+        let dirty = false;
+        const markDirty = () => { dirty = true; };
+
+        title.addEventListener('input', () => {
+            if (!slugEdited) {
+                slug.value = slugify(title.value);
+            }
+        });
+        slug.addEventListener('input', () => { slugEdited = slug.value !== ''; });
+        slug.addEventListener('change', () => { slug.value = slugify(slug.value); });
+        form.addEventListener('input', markDirty);
+        form.addEventListener('change', markDirty);
+        // The editor writes into the textarea without input events.
+        new MutationObserver((records, observer) => {
+            if (content.editor) {
+                observer.disconnect();
+                content.editor.onChange(markDirty);
+            }
+        }).observe(content, { attributes: true });
+        window.addEventListener('beforeunload', (event) => {
+            if (dirty) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        });
+
+        const invalid = (field, message) => {
+            field.classList.toggle('is-invalid', message !== '');
+            field.parentElement.querySelector('.invalid-feedback').textContent = message;
+        };
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            invalid(title, title.value.trim() === '' ? text.textRequired : '');
+            invalid(slug, '');
+            if (title.value.trim() === '') {
+                return;
+            }
+            const data = {
+                title: title.value,
+                slug: slug.value,
+                content: content.value,
+                description: form.elements.description.value,
+                keywords: form.elements.keywords.value,
+                status: form.elements.status.value,
+                visibility: form.elements.visibility.value,
+                show_in_menu: form.elements.show_in_menu.checked ? 1 : 0,
+                show_in_footer: form.elements.show_in_footer.checked ? 1 : 0,
+                sort_order: form.elements.sort_order.value || 0,
+            };
+            if (text.id) {
+                data.id = text.id;
+            }
+            ClientFence.api.admin.post(text.id ? 'custompages/update' : 'custompages/create', data, (id) => {
+                dirty = false;
+                if (!text.id) {
+                    window.location.href = text.listUrl + '/' + id;
+                    return;
+                }
+                ClientFence.message(text.textSaved, 'success');
+            }, (error) => {
+                if (error.code === 9999) {
+                    invalid(slug, error.message);
+                    slug.focus();
+                } else {
+                    ClientFence.message(error.message, 'error');
+                }
+            });
+        });
+    })();
+</script>
+{% endif %}
+{% endblock %}

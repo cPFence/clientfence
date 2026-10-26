@@ -1,0 +1,37 @@
+{# Shared <head> contents. Expects page_title and is_rtl from the layout. Theme settings: the meta
+   fields (title prefix and suffix, description, keywords, robots, author). #}
+<meta charset="utf-8">
+{# page_title joins the already-escaped meta_title block with fixed strings, so it is not escaped
+   again; the prefix and suffix are escaped. #}
+<title>{% if settings.meta_title_prefix|default('')|trim %}{{ settings.meta_title_prefix|trim }} {% endif %}{{ page_title|raw }}{% if settings.meta_title_suffix|default('')|trim %} {{ settings.meta_title_suffix|trim }}{% endif %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+{# A client area is not for search engines unless the robots field says otherwise. #}
+<meta name="robots" content="{{ settings.meta_robots|default('')|trim ?: 'noindex, nofollow' }}">
+{% if settings.meta_description|default('')|trim %}<meta name="description" content="{{ settings.meta_description|trim }}">{% endif %}
+{% if settings.meta_keywords|default('')|trim %}<meta name="keywords" content="{{ settings.meta_keywords|trim }}">{% endif %}
+{% if settings.meta_author|default('')|trim %}<meta name="author" content="{{ settings.meta_author|trim }}">{% endif %}
+<meta name="referrer" content="strict-origin-when-cross-origin">
+{# Search engine verification codes (SEO Tools extension). #}
+{% if guest.extension_is_on({ mod: 'seo' }) %}
+    {% set seo = guest.seo_verification %}
+    {% if seo.google %}<meta name="google-site-verification" content="{{ seo.google }}">{% endif %}
+    {% if seo.bing %}<meta name="msvalidate.01" content="{{ seo.bing }}">{% endif %}
+{% endif %}
+{% if guest_gated %}
+    <meta http-equiv="refresh" content="0; url={{ 'login'|url }}">
+{% endif %}
+{% set v = '?v=' ~ include('partials/asset_version.html.twig')|trim %}
+{{ include('partials/theme_init.html.twig') }}
+<link rel="stylesheet" href="{{ (is_rtl ? 'build/css/palisade.rtl.css' : 'build/css/palisade.css')|asset_url ~ v }}">
+{# The brand color chosen in the admin (Clientfence Branding.php): a generated stylesheet that sets
+   the theme's color variables; none with the default color. #}
+{% set brand_css = guest.clientfence_brand.css_url|default(null) %}
+{% if brand_css %}<link rel="stylesheet" href="{{ brand_css }}">{% endif %}
+{% if guest.system_company.favicon_url %}
+<link rel="icon" href="{{ guest.system_company.favicon_url }}">
+{% endif %}
+{{ include('partials/i18n.html.twig') }}
+{{ 'js/clientfence.js'|public_asset_url|script_tag }}
+{{ 'js/api.js'|public_asset_url|script_tag }}
+<script nonce="{{ csp_nonce }}" type="module" src="{{ 'build/js/palisade.js'|asset_url ~ v }}"></script>

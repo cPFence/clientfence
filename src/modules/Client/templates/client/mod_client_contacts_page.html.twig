@@ -1,0 +1,173 @@
+{# ClientFence, Contacts (/contacts, Contacts.php): people who do not sign in but get a copy of the
+   account's emails of the kinds chosen for them. The owner, owner links and users with the
+   contacts permission add, change and remove them. contacts_page comes from
+   client_contacts_get_list. Each form posts to the API and comes back with ?done=<what happened>;
+   forms with data-clientfence-confirm ask first (palisade.js). #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'contacts' %}
+
+{% block meta_title %}{{ 'Contacts'|trans }}{% endblock %}
+{% block page_header %}{{ 'Contacts'|trans }}{% endblock %}
+{% block body_class %}clientfence-contacts{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Contacts'|trans }}</li>{% endblock %}
+
+{% macro contact_fields(contact, kinds, prefix, countries) %}
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-first_name">{{ 'First Name'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-first_name" name="first_name" value="{{ contact.first_name|default('') }}" maxlength="100" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-last_name">{{ 'Last Name'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-last_name" name="last_name" value="{{ contact.last_name|default('') }}" maxlength="100">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-email">{{ 'Email'|trans }}</label>
+            <input class="form-control" type="email" id="{{ prefix }}-email" name="email" value="{{ contact.email|default('') }}" maxlength="255" autocomplete="off" dir="ltr" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-company">{{ 'Company'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-company" name="company" value="{{ contact.company|default('') }}" maxlength="100">
+        </div>
+        <div class="col-4 col-md-2">
+            <label class="form-label" for="{{ prefix }}-phone_cc">{{ 'Code'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-phone_cc" name="phone_cc" value="{{ contact.phone_cc|default('') }}" maxlength="5" inputmode="numeric" placeholder="+1" dir="ltr">
+        </div>
+        <div class="col-8 col-md-4">
+            <label class="form-label" for="{{ prefix }}-phone">{{ 'Phone Number'|trans }}</label>
+            <input class="form-control" type="tel" id="{{ prefix }}-phone" name="phone" value="{{ contact.phone|default('') }}" maxlength="100" dir="ltr">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-tax_id">{{ 'Tax ID'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-tax_id" name="tax_id" value="{{ contact.tax_id|default('') }}" maxlength="100">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-address_1">{{ 'Address'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-address_1" name="address_1" value="{{ contact.address_1|default('') }}" maxlength="100">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-address_2">{{ 'Address line 2'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-address_2" name="address_2" value="{{ contact.address_2|default('') }}" maxlength="100">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-city">{{ 'City'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-city" name="city" value="{{ contact.city|default('') }}" maxlength="100">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-state">{{ 'State'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-state" name="state" value="{{ contact.state|default('') }}" maxlength="100">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-postcode">{{ 'Zip/Postal Code'|trans }}</label>
+            <input class="form-control" type="text" id="{{ prefix }}-postcode" name="postcode" value="{{ contact.postcode|default('') }}" maxlength="100">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="{{ prefix }}-country">{{ 'Country'|trans }}</label>
+            <select class="form-select" id="{{ prefix }}-country" name="country">
+                <option value="">{{ '-- Select Country --'|trans }}</option>
+                {% for val, label in countries %}
+                    <option value="{{ val }}"{% if val == contact.country|default('') %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <p class="form-label mt-3 mb-2">{{ 'Send this contact a copy of'|trans }}</p>
+    <input type="hidden" name="emails[]" value="">
+    <div class="row g-2">
+        {% for kind in kinds %}
+            <div class="col-md-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="emails[]" value="{{ kind.name }}" id="{{ prefix }}-emails-{{ kind.name }}"{% if kind.name in contact.emails|default([]) %} checked{% endif %}{% if not kind.allowed %} disabled{% endif %}>
+                    <label class="form-check-label" for="{{ prefix }}-emails-{{ kind.name }}">{{ kind.label }}</label>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% if kinds|filter(k => not k.allowed) is not empty %}
+        <div class="form-text">{{ 'Your permissions on this account decide which emails you can share; the account owner can change the others.'|trans }}</div>
+    {% endif %}
+{% endmacro %}
+{% import _self as contacts_ui %}
+
+{% block content %}
+{% set labels = {} %}
+{% for kind in contacts_page.kinds %}{% set labels = labels|merge({ (kind.name): kind.label }) %}{% endfor %}
+{% set done = {
+    added: 'The contact was added.'|trans,
+    updated: 'The contact was saved.'|trans,
+    removed: 'The contact was removed.'|trans,
+} %}
+{% set full = contacts_page.contacts|length >= contacts_page.max %}
+{% set countries = guest.system_countries %}
+
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Contacts'|trans }}</h1>
+        <p class="bf-hint mb-0">{{ 'People who get a copy of this account\'s emails, such as your accountant for invoices. Contacts do not sign in; to give someone a sign-in, invite them as a user.'|trans }}</p>
+    </div>
+    {% if not full %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-contact-add" aria-controls="clientfence-contact-add" aria-expanded="{{ contacts_page.contacts is empty ? 'true' : 'false' }}">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#plus"/></svg>{{ 'Add contact'|trans }}
+        </button>
+    {% endif %}
+</div>
+
+{% if done[request.done|default('')] is defined %}
+    <div class="alert alert-success" role="status" data-clientfence-done="{{ request.done }}">{{ done[request.done] }}</div>
+{% endif %}
+
+{% if not full %}
+    <div class="collapse{{ contacts_page.contacts is empty ? ' show' : '' }} mb-4" id="clientfence-contact-add">
+        <div class="card">
+            <div class="card-header"><h2>{{ 'Add contact'|trans }}</h2></div>
+            <div class="card-body">
+                <form action="{{ 'client/contacts_save'|api_url }}" {{ fb_api_form({redirect: 'contacts'|url(query: { done: 'added' })}) }}>
+                    {{ contacts_ui.contact_fields({ emails: ['invoice'] }, contacts_page.kinds, 'contact-add', countries) }}
+                    <button type="submit" class="btn btn-primary mt-3">{{ 'Add contact'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header"><h2>{{ 'Contacts of this account'|trans }}</h2></div>
+    {% if contacts_page.contacts is empty %}
+        <div class="empty-state">{{ 'This account has no contacts yet.'|trans }}</div>
+    {% else %}
+        <div class="list-group list-group-flush">
+            {% for contact in contacts_page.contacts %}
+                <div class="list-group-item py-3" data-clientfence-contact="{{ contact.id }}">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                        <div class="min-w-0">
+                            <div class="fw-semibold">{{ contact.first_name }} {{ contact.last_name }}{% if contact.company %} <span class="text-body-secondary fw-normal">· {{ contact.company }}</span>{% endif %}</div>
+                            <div class="small text-body-secondary text-truncate" dir="ltr">{{ contact.email }}</div>
+                            <div class="small mt-1">
+                                {% if contact.emails is empty %}
+                                    <span class="text-body-secondary">{{ 'Gets no emails'|trans }}</span>
+                                {% else %}
+                                    {% for kind in contact.emails %}<span class="badge text-bg-secondary me-1 mb-1">{{ labels[kind] }}</span>{% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#clientfence-contact-{{ contact.id }}" aria-expanded="false" aria-controls="clientfence-contact-{{ contact.id }}">{{ 'Edit'|trans }}</button>
+                            <form action="{{ 'client/contacts_delete'|api_url }}" {{ fb_api_form({redirect: 'contacts'|url(query: { done: 'removed' })}) }} data-clientfence-confirm="{{ 'Remove this contact?'|trans }}">
+                                <input type="hidden" name="id" value="{{ contact.id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">{{ 'Remove'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="collapse" id="clientfence-contact-{{ contact.id }}">
+                        <form class="mt-3" action="{{ 'client/contacts_save'|api_url }}" {{ fb_api_form({redirect: 'contacts'|url(query: { done: 'updated' })}) }}>
+                            <input type="hidden" name="id" value="{{ contact.id }}">
+                            {{ contacts_ui.contact_fields(contact, contacts_page.kinds, 'contact-' ~ contact.id, countries) }}
+                            <button type="submit" class="btn btn-sm btn-primary mt-3">{{ 'Save contact'|trans }}</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

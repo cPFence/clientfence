@@ -1,0 +1,684 @@
+{# ClientFence admin dashboard (replaces FOSSBilling's mod_index_dashboard): what needs the staff
+   member first, then this month against last month, income, top products, the latest orders and
+   invoices, recent activity and system health. Each part keeps FOSSBilling's permission: a part
+   the staff member may not open is left out. The system notices and the admin.index.dashboard
+   widget slot (the ClientFence support dashboard for staff without statistics) stay, and so does
+   the dashboard_section answer of FOSSBilling's own dashboard cards. #}
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{% set active_menu = 'dashboard' %}
+
+{% block meta_title %}{{ 'Dashboard'|trans }}{% endblock %}
+
+{# An IP opens its lookup on whatismyipaddress.com (IPv4 and IPv6) in a new tab, with no referrer,
+   so the admin address stays private; anything that is not an IP stays plain text. #}
+{% macro ip_link(ip) %}{% if ip matches '/^[0-9A-Fa-f:.]{2,45}$/' %}<a class="bf-ip" href="https://whatismyipaddress.com/ip/{{ ip }}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" dir="ltr" title="{{ 'Look up :ip'|trans({ ':ip': ip }) }}">{{ ip }}</a>{% else %}<span dir="ltr">{{ ip|default('Unknown'|trans) }}</span>{% endif %}{% endmacro %}
+
+{# A client's name links to the client, for staff who may view clients. #}
+{% macro client_link(id, name, allowed) %}{% if allowed and id %}<a class="bf-name-link" href="{{ ('client/manage/' ~ id)|url }}">{{ name|default('Unknown'|trans) }}</a>{% else %}{{ name|default('Unknown'|trans) }}{% endif %}{% endmacro %}
+
+{% block content %}
+    {% import _self as bf %}
+    {% set dashboardPageSizes = ['5', '10', '20'] %}
+    {% set dashboardSection = request.dashboard_section|default('') %}
+
+    {% if request.ajax and dashboardSection in ['invoices', 'orders', 'product-sales'] %}
+        {% if dashboardSection == 'invoices' and admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }) %}
+            {{ include('partial_dashboard_invoices_card.html.twig') }}
+        {% elseif dashboardSection == 'orders' and admin.system_is_allowed({ 'mod': 'order', 'f': 'view' }) %}
+            {{ include('partial_dashboard_orders_card.html.twig') }}
+        {% elseif dashboardSection == 'product-sales' and admin.system_is_allowed({ 'mod': 'stats', 'f': 'view' }) %}
+            {{ include('partial_dashboard_product_sales_card.html.twig') }}
+        {% endif %}
+    {% else %}
+    {# System notices need the system.manage_settings permission; other staff see none. #}
+    {% set alerts = admin.system_is_allowed({ 'mod': 'system', 'f': 'manage_settings' }) ? admin.system_cas_messages()|merge(admin.system_messages()) : [] %}
+    {% for alert in alerts %}
+    {% set alertIcon = {danger: 'alert-triangle', warning: 'alert-triangle', success: 'circle-check', info: 'info-circle'}[alert.type]|default('info-circle') %}
+    <div class="alert alert-{{ alert.type }} {{ alert.dismissible ? "alert-dismissible" : "" }} fade show mb-3" role="alert">
+        <div class="alert-icon">
+            <svg class="icon alert-icon icon-2" aria-hidden="true">
+                <use href="#{{ alertIcon }}" />
+            </svg>
+        </div>
+        {% if alert.title %}
+            <strong>{{ alert.title }}</strong>{% if alert.message %} {% endif %}
+        {% endif %}
+        {{ alert.message }}
+        {% for button in alert.buttons %}
+            <a href="{{ button.link }}" class="alert-action">{{ button.text }}</a>
+        {% endfor %}
+        {% if alert.dismissible %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'Close'|trans }}"></button>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    {# FOSSBilling's calls need the module's "view" permission, not only its "Module access". #}
+    {% set can = {
+        'stats': admin.system_is_allowed({ 'mod': 'stats', 'f': 'view' }),
+        'client': admin.system_is_allowed({ 'mod': 'client', 'f': 'view' }),
+        'order': admin.system_is_allowed({ 'mod': 'order', 'f': 'view' }),
+        'invoice': admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }),
+        'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }),
+        'activity': admin.system_is_allowed({ 'mod': 'activity', 'f': 'view' }),
+        'settings': admin.system_is_allowed({ 'mod': 'system', 'f': 'manage_settings' })
+    } %}
+    {% set extra = admin.clientfence_dashboard_get %}
+    {% set currency = guest.currency_get %}
+    {% set me = admin.profile_get %}
+    {% set hour = 'now'|date('G') %}
+    {% set greeting = hour < 12 ? 'Good morning, :name'|trans({ ':name': me.name }) : (hour < 18 ? 'Good afternoon, :name'|trans({ ':name': me.name }) : 'Good evening, :name'|trans({ ':name': me.name })) %}
+
+    {% set order_statuses = can.order ? admin.order_get_statuses : {} %}
+    {% set invoice_statuses = can.invoice ? admin.invoice_get_statuses : {} %}
+    {% set support_statuses = can.support ? admin.support_ticket_get_statuses : {} %}
+    {% set now = 'now'|date('U') %}
+    {% set overdue = extra.invoices_overdue|default(0) %}
+
+    {# What needs the staff member: each check that finds nothing goes into the "all clear" line. #}
+    {% set items = [] %}
+    {% set clear = [] %}
+    {% if can.support %}
+        {% if support_statuses.open|default(0) > 0 %}
+            {% set items = items|merge([{ 'tone': 'bad', 'icon': 'headset', 'title': 'Tickets waiting for a reply'|trans, 'detail': ':count waiting for a staff reply'|trans({ ':count': support_statuses.open }), 'url': 'support'|url(query: { 'status': 'open' }), 'action': 'Reply'|trans }]) %}
+        {% else %}
+            {% set clear = clear|merge(['no tickets waiting for a reply'|trans]) %}
+        {% endif %}
+    {% endif %}
+    {% if can.invoice %}
+        {% if invoice_statuses.unpaid|default(0) > 0 %}
+            {% set items = items|merge([{ 'tone': overdue > 0 ? 'bad' : 'warn', 'icon': 'receipt', 'title': 'Unpaid invoices'|trans, 'detail': ':count unpaid, :overdue overdue'|trans({ ':count': invoice_statuses.unpaid, ':overdue': overdue }), 'chip': overdue > 0 ? 'Overdue'|trans : '', 'url': 'invoice'|url(query: { 'status': 'unpaid' }), 'action': 'Review'|trans }]) %}
+        {% else %}
+            {% set clear = clear|merge(['no unpaid invoices'|trans]) %}
+        {% endif %}
+    {% endif %}
+    {% if can.order %}
+        {% if order_statuses.failed_setup|default(0) > 0 %}
+            {% set items = items|merge([{ 'tone': 'bad', 'icon': 'bf-alert', 'title': 'Orders that failed to activate'|trans, 'detail': order_statuses.failed_setup == 1 ? '1 order'|trans : ':count orders'|trans({ ':count': order_statuses.failed_setup }), 'url': 'order'|url(query: { 'status': 'failed_setup' }), 'action': 'Open'|trans }]) %}
+        {% endif %}
+        {% if order_statuses.failed_renew|default(0) > 0 %}
+            {% set items = items|merge([{ 'tone': 'bad', 'icon': 'refresh', 'title': 'Orders that failed to renew'|trans, 'detail': order_statuses.failed_renew == 1 ? '1 order'|trans : ':count orders'|trans({ ':count': order_statuses.failed_renew }), 'url': 'order'|url(query: { 'status': 'failed_renew' }), 'action': 'Open'|trans }]) %}
+        {% endif %}
+        {% if order_statuses.pending_setup|default(0) > 0 %}
+            {% set items = items|merge([{ 'tone': 'warn', 'icon': 'package', 'title': 'Orders pending setup'|trans, 'detail': order_statuses.pending_setup == 1 ? '1 order'|trans : ':count orders'|trans({ ':count': order_statuses.pending_setup }), 'url': 'order'|url(query: { 'status': 'pending_setup' }), 'action': 'Open'|trans }]) %}
+        {% else %}
+            {% set clear = clear|merge(['no orders pending setup'|trans]) %}
+        {% endif %}
+    {% endif %}
+    {% if can.support %}
+        {% if support_statuses.on_hold|default(0) > 0 %}
+            {% set items = items|merge([{ 'tone': 'warn', 'icon': 'player-pause', 'title': 'Tickets on hold'|trans, 'detail': ':count on hold'|trans({ ':count': support_statuses.on_hold }), 'url': 'support'|url(query: { 'status': 'on_hold' }), 'action': 'Open'|trans }]) %}
+        {% endif %}
+    {% endif %}
+    {% if extra.domains_expiring is not null %}
+        {% if extra.domains_expiring > 0 %}
+            {% set items = items|merge([{ 'tone': 'warn', 'icon': 'bf-world', 'title': 'Domains expiring within 30 days'|trans, 'detail': extra.domains_expiring == 1 ? '1 domain'|trans : ':count domains'|trans({ ':count': extra.domains_expiring }), 'url': 'order'|url(query: { 'type': 'domain', 'status': 'active' }), 'action': 'Open'|trans }]) %}
+        {% else %}
+            {% set clear = clear|merge(['no domains expiring in 30 days'|trans]) %}
+        {% endif %}
+    {% endif %}
+    {% if can.order %}
+        {% if order_statuses.suspended|default(0) > 0 %}
+            {% set items = items|merge([{ 'tone': 'warn', 'icon': 'lock', 'title': 'Suspended services'|trans, 'detail': order_statuses.suspended == 1 ? '1 order'|trans : ':count orders'|trans({ ':count': order_statuses.suspended }), 'url': 'order'|url(query: { 'status': 'suspended' }), 'action': 'Open'|trans }]) %}
+        {% else %}
+            {% set clear = clear|merge(['no suspended services'|trans]) %}
+        {% endif %}
+    {% endif %}
+
+    {% set layout = admin.clientfence_dashboard_layout_get %}
+<div class="bf-dash">
+    <section class="bf-hero">
+        <div class="bf-hero-text">
+            <span class="bf-muted">{{ 'now'|format_date('full') }}</span>
+            <h1 class="bf-h bf-hero-title">{{ greeting }}</h1>
+            <p class="bf-muted">{{ 'Here is what needs you today.'|trans }}</p>
+        </div>
+        {% if layout.can_arrange %}
+        <div class="bf-board-bar" data-bf-board-bar>
+            <button type="button" class="bf-btn bf-btn-sm" data-bf-arrange aria-pressed="false">
+                <svg class="icon" aria-hidden="true"><use href="#bf-move" /></svg>{{ 'Arrange cards'|trans }}
+            </button>
+            <span class="bf-board-tools" data-bf-arrange-tools hidden>
+                <span class="bf-muted bf-small">{{ 'Drag a card, or use its arrows.'|trans }}</span>
+                <button type="button" class="bf-btn bf-btn-sm" data-bf-arrange-reset>{{ 'Default order'|trans }}</button>
+                <button type="button" class="bf-btn bf-btn-sm" data-bf-arrange-cancel>{{ 'Cancel'|trans }}</button>
+                <button type="button" class="btn btn-primary btn-sm" data-bf-arrange-save>{{ 'Save order'|trans }}</button>
+            </span>
+            <span class="bf-muted bf-small" data-bf-arrange-status role="status"></span>
+        </div>
+        {% endif %}
+    </section>
+
+    {# Staff announcements pinned for this staff member (Notification Center), newest first. #}
+    {% set pinned = guest.extension_is_on({ mod: 'notification' }) and admin.system_is_allowed({ 'mod': 'notification', 'f': 'view' }) ? admin.notification_get_pinned : [] %}
+    {% if pinned %}
+    <section class="bf-card" aria-labelledby="bf-announcements-title">
+        <div class="bf-card-head">
+            <h2 class="bf-h bf-card-title" id="bf-announcements-title">{{ 'Announcements'|trans }}</h2>
+            <a class="bf-link" href="{{ 'notification'|url }}">{{ 'View all'|trans }}</a>
+        </div>
+        {% for item in pinned %}
+        <div class="bf-row bf-row-static bf-row-top">
+            <span class="bf-tile bf-tone-warn" aria-hidden="true"><svg class="icon"><use href="#pinned" /></svg></span>
+            <span class="bf-row-main text-break">
+                <span class="bf-strong">{{ item.title }}</span>
+                <span class="bf-small">{{ item.message|nl2br }}</span>
+                <span class="bf-muted bf-small">{{ item.author|default('Unknown'|trans) }} · {{ item.created_at|format_date }}</span>
+            </span>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if items|length > 0 or clear|length > 0 %}
+    <section class="bf-card bf-attention" aria-labelledby="bf-attention-title">
+        <div class="bf-card-head">
+            <h2 class="bf-h bf-card-title" id="bf-attention-title">{{ 'Needs attention'|trans }}</h2>
+            <span class="bf-muted bf-small">{{ items|length == 0 ? 'Nothing to do'|trans : (items|length == 1 ? '1 item'|trans : ':count items'|trans({ ':count': items|length })) }}</span>
+        </div>
+        {% for item in items %}
+        <a class="bf-row" href="{{ item.url }}">
+            <span class="bf-tile bf-tone-{{ item.tone }}" aria-hidden="true"><svg class="icon"><use href="#{{ item.icon }}" /></svg></span>
+            <span class="bf-row-main">
+                <span class="bf-strong">{{ item.title }}</span>
+                <span class="bf-muted bf-small">{{ item.detail }}</span>
+            </span>
+            {% if item.chip|default('') %}<span class="bf-chip bf-tone-{{ item.tone }}">{{ item.chip }}</span>{% endif %}
+            <span class="bf-row-action">{{ item.action }}</span>
+        </a>
+        {% endfor %}
+        {% if clear|length > 0 %}
+        <div class="bf-row bf-row-static">
+            <span class="bf-tile bf-tone-ok" aria-hidden="true"><svg class="icon"><use href="#circle-check" /></svg></span>
+            <span class="bf-row-main bf-muted bf-small">{{ 'All clear:'|trans }} {{ clear|join(', ') }}.</span>
+        </div>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    {% set dashboard_widgets %}{{ render_widgets('admin.index.dashboard') }}{% endset %}
+    {% if dashboard_widgets|trim is not empty %}
+    <div class="row row-deck row-cards">
+        {{ dashboard_widgets }}
+    </div>
+    {% endif %}
+
+    {# The cards below the key figures are captured one by one into `cards` (id => HTML; a card the
+       staff member may not open is not set) and placed at the end in two columns. #}
+    {% set cards = {} %}
+    {% if can.stats %}
+        {% set stats = admin.stats_get_summary %}
+        {% set income = admin.stats_get_summary_income %}
+        {# The all-time total in a quiet footer line (FOSSBilling's summary), with ClientFence its
+           companion figure (clientfence_dashboard_totals): active clients, orders pending setup, the
+           unpaid amount and the monthly recurring revenue. #}
+        {% set all_time = admin.clientfence_dashboard_totals %}
+        {% set kpis = [
+            { 'label': 'Income this month'|trans, 'value': income.this_month|format_currency(currency.code), 'now': income.this_month, 'last': income.last_month, 'last_text': income.last_month|format_currency(currency.code), 'url': 'invoice'|url(query: { 'status': 'paid' }),
+              'total': income.total|format_currency(currency.code), 'extra': all_time ? all_time.mrr|format_currency(currency.code) : '', 'extra_label': 'MRR', 'tip': true },
+            { 'label': 'New clients'|trans, 'value': stats.clients_this_month, 'now': stats.clients_this_month, 'last': stats.clients_last_month, 'last_text': stats.clients_last_month, 'url': 'client'|url,
+              'total': stats.clients_total|number_format(0), 'extra': all_time ? all_time.active_clients|number_format(0) : '', 'extra_label': 'active'|trans },
+            { 'label': 'New orders'|trans, 'value': stats.orders_this_month, 'now': stats.orders_this_month, 'last': stats.orders_last_month, 'last_text': stats.orders_last_month, 'url': 'order'|url,
+              'total': stats.orders_total|number_format(0), 'extra': all_time ? all_time.pending_orders|number_format(0) : '', 'extra_label': 'pending'|trans },
+            { 'label': 'New invoices'|trans, 'value': stats.invoices_this_month, 'now': stats.invoices_this_month, 'last': stats.invoices_last_month, 'last_text': stats.invoices_last_month, 'url': 'invoice'|url,
+              'total': stats.invoices_total|number_format(0), 'extra': all_time ? all_time.unpaid|format_currency(currency.code) : '', 'extra_label': 'unpaid'|trans }
+        ] %}
+    <section class="bf-kpis" aria-label="{{ 'Key figures'|trans }}">
+        {% for kpi in kpis %}
+            {% set diff = kpi.now - kpi.last %}
+            <a class="bf-card bf-kpi" href="{{ kpi.url }}"{% if kpi.tip|default(false) and kpi.extra is not empty %} aria-describedby="bf-mrr-tip"{% endif %}>
+                <span class="bf-kpi-head">
+                    <span class="bf-muted bf-small">{{ kpi.label }}</span>
+                    <svg class="icon bf-flip bf-muted" aria-hidden="true"><use href="#bf-arrow-up-right" /></svg>
+                </span>
+                <span class="bf-h bf-kpi-value" dir="ltr">{{ kpi.value }}</span>
+                <span class="bf-kpi-foot">
+                    {% if diff > 0 %}
+                        <span class="bf-chip bf-tone-ok" dir="ltr">{{ kpi.last > 0 ? '+' ~ ((diff / kpi.last) * 100)|round ~ '%' : 'New'|trans }}</span>
+                    {% elseif diff < 0 %}
+                        <span class="bf-chip bf-tone-bad" dir="ltr">{{ kpi.last > 0 ? ((diff / kpi.last) * 100)|round ~ '%' : '' }}</span>
+                    {% else %}
+                        <span class="bf-chip">{{ 'Same'|trans }}</span>
+                    {% endif %}
+                    <span class="bf-muted bf-small">{{ 'Last month: :value'|trans({ ':value': kpi.last_text }) }}</span>
+                </span>
+                <span class="bf-kpi-total bf-small" data-bf-kpi-total>
+                    <span>{{ 'Total'|trans }} <span class="bf-strong" dir="ltr">{{ kpi.total }}</span></span>
+                    {% if kpi.extra is not empty %}{# "0" counts too: a plain test would hide it #}
+                    <span aria-hidden="true">·</span>
+                    <span><span class="bf-strong" dir="ltr">{{ kpi.extra }}</span>
+                    {% if kpi.tip|default(false) %}
+                        <span class="bf-tip">{{ kpi.extra_label }}<span class="bf-tip-box" role="tooltip" id="bf-mrr-tip"><strong>{{ 'Monthly recurring revenue'|trans }}</strong> {{ 'Every active order that renews with an invoice, at its renewal price after any recurring discount and before tax, divided by the months of its billing period (yearly ÷ 12, quarterly ÷ 3) and converted to :currency. Free orders and orders that issue no invoice count 0.'|trans({ ':currency': currency.code }) }} {{ all_time.mrr_orders == 1 ? '1 order counts.'|trans : ':count orders count.'|trans({ ':count': all_time.mrr_orders }) }}</span></span>
+                    {% else %}{{ kpi.extra_label }}{% endif %}</span>
+                    {% endif %}
+                </span>
+            </a>
+        {% endfor %}
+    </section>
+
+        {# Today (the default) is hour by hour from the ClientFence module; its amount is FOSSBilling's own
+           "today", as in the stock Statistics table. FOSSBilling's series start the day after
+           date_from, so "-N days" gives N days ending today. #}
+        {% set ranges = ['today', 7, 30, 90] %}
+        {% set default_range = 'today' %}
+        {% set series = {} %}
+        {% set totals = {} %}
+        {% for days in ranges %}
+            {% if days == 'today' %}
+                {% set series = series|merge({ 'today': admin.clientfence_dashboard_today({ 'metric': 'income' }) }) %}
+                {% set totals = totals|merge({ 'today': income.today }) %}
+            {% else %}
+                {% set data = admin.stats_get_income({ 'date_from': ('-' ~ days ~ ' days')|date('Y-m-d'), 'date_to': '+1 day'|date('Y-m-d') }) %}
+                {% set series = series|merge({ ('d' ~ days): data }) %}
+                {% set totals = totals|merge({ ('d' ~ days): data|reduce((carry, point) => carry + point[1], 0) }) %}
+            {% endif %}
+        {% endfor %}
+        {# The chart's other figures (the rows of FOSSBilling's Statistics table), each offered with
+           its module's view permission; their series load when picked (90 days from FOSSBilling's
+           stats_get_*, 7 and 30 days are its last points; Today hour by hour from the pack). #}
+        {% set metrics = { 'income': { 'label': 'Income'|trans, 'total': 'Received'|trans, 'kind': 'currency' } } %}
+        {% if can.client %}{% set metrics = metrics|merge({ 'clients': { 'label': 'Clients'|trans, 'total': 'New clients'|trans, 'kind': 'count', 'endpoint': 'stats/get_clients', 'today': stats.clients_today } }) %}{% endif %}
+        {% if can.order %}{% set metrics = metrics|merge({ 'orders': { 'label': 'Orders'|trans, 'total': 'New orders'|trans, 'kind': 'count', 'endpoint': 'stats/get_orders', 'today': stats.orders_today } }) %}{% endif %}
+        {% if can.invoice %}{% set metrics = metrics|merge({ 'invoices': { 'label': 'Invoices'|trans, 'total': 'New invoices'|trans, 'kind': 'count', 'endpoint': 'stats/get_invoices', 'today': stats.invoices_today } }) %}{% endif %}
+        {% if can.support %}{% set metrics = metrics|merge({ 'tickets': { 'label': 'Tickets'|trans, 'total': 'New tickets'|trans, 'kind': 'count', 'endpoint': 'stats/get_tickets', 'today': stats.tickets_today } }) %}{% endif %}
+        {% set formatted = {} %}
+        {% for key, total in totals %}{% set formatted = formatted|merge({ (key): total|format_currency(currency.code) }) %}{% endfor %}
+        {% set products = admin.stats_get_product_summary|default([])|filter(p => p.orders > 0)|sort((a, b) => b.orders <=> a.orders)|slice(0, 5) %}
+        {% set top_orders = products|length > 0 ? (products|first).orders : 0 %}
+        {% set card %}
+        <div class="bf-card bf-income" data-bf-income
+             data-series="{{ series|json_encode|e('html_attr') }}"
+             data-currency="{{ currency|json_encode|e('html_attr') }}"
+             data-totals="{{ formatted|json_encode|e('html_attr') }}"
+             data-metrics="{{ metrics|json_encode|e('html_attr') }}"
+             data-from="{{ '-90 days'|date('Y-m-d') }}"
+             data-to="{{ '+1 day'|date('Y-m-d') }}"
+             data-label="{{ 'Income'|trans }}"
+             data-error="{{ 'The figures could not be loaded.'|trans }}"
+             data-range="{{ default_range }}">
+            <div class="bf-card-head">
+                {% if metrics|length > 1 %}
+                <h2 class="bf-h bf-card-title bf-metric">
+                    <label class="visually-hidden" for="bf-metric">{{ 'Figure'|trans }}</label>
+                    <select id="bf-metric" class="bf-metric-select" data-bf-metric>
+                        {% for key, metric in metrics %}<option value="{{ key }}">{{ metric.label }}</option>{% endfor %}
+                    </select>
+                    <svg class="icon bf-metric-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+                </h2>
+                {% else %}
+                <h2 class="bf-h bf-card-title">{{ 'Income'|trans }}</h2>
+                {% endif %}
+                <div class="bf-tabs" role="group" aria-label="{{ 'Period'|trans }}">
+                    {% for days in ranges %}
+                        {% set key = days == 'today' ? 'today' : 'd' ~ days %}
+                        <button type="button" class="bf-tab{% if key == default_range %} is-on{% endif %}" data-bf-range="{{ key }}" aria-pressed="{{ key == default_range ? 'true' : 'false' }}">{{ days == 'today' ? 'Today'|trans : ':count days'|trans({ ':count': days }) }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="bf-income-total">
+                <span class="bf-muted bf-small" data-bf-total-label>{{ 'Received'|trans }}</span>
+                <span class="bf-h bf-income-value" dir="ltr" data-bf-total>{{ formatted[default_range] }}</span>
+                <span class="bf-muted bf-small" data-bf-error role="status" hidden></span>
+            </div>
+            <div class="bf-income-chart" dir="ltr" id="bf-income-chart"></div>
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'income': card }) %}{% set card %}
+        <div class="bf-card bf-products">
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title">{{ 'Top products'|trans }}</h2>
+                <span class="bf-muted bf-small">{{ 'by orders'|trans }}</span>
+            </div>
+            <div class="bf-bars">
+                {% for product in products %}
+                    {% set pct = top_orders > 0 ? ((product.orders / top_orders) * 100)|round : 0 %}
+                    <div class="bf-bar">
+                        <div class="bf-bar-text"><span>{{ product.title }}</span><span class="bf-strong">{{ product.orders }}</span></div>
+                        <div class="bf-bar-track"><div class="bf-bar-fill bf-w-{{ (pct / 5)|round * 5 }}"></div></div>
+                    </div>
+                {% else %}
+                    <p class="bf-muted bf-small">{{ 'No orders yet.'|trans }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'products': card }) %}
+    {% endif %}
+
+    {# ClientFence: income at four points in time (clientfence_dashboard_billing, as FOSSBilling's own
+       summary counts it) and the clients seen lately (clientfence_dashboard_clients: sign-ins and the
+       clients' own logged actions, one row per client). #}
+    {% set billing = can.stats and can.invoice ? admin.clientfence_dashboard_billing : null %}
+    {% set seen = can.client ? admin.clientfence_dashboard_clients : null %}
+        {% if billing %}
+        {% set card %}
+        <div class="bf-card bf-billing">
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title">{{ 'Billing'|trans }}</h2>
+                <a class="bf-link" href="{{ 'invoice'|url(query: { 'status': 'paid' }) }}">{{ 'Paid invoices'|trans }}</a>
+            </div>
+            <div class="bf-figures">
+                {% for figure in [
+                    { 'key': 'today', 'label': 'Today'|trans, 'tone': 'brand' },
+                    { 'key': 'this_month', 'label': 'This month'|trans, 'tone': 'ok' },
+                    { 'key': 'this_year', 'label': 'This year'|trans, 'tone': 'violet' },
+                    { 'key': 'total', 'label': 'All time'|trans, 'tone': 'teal' }
+                ] %}
+                <div class="bf-figure bf-figure-{{ figure.tone }}">
+                    <span class="bf-small bf-figure-label">{{ figure.label }}</span>
+                    <span class="bf-h bf-figure-value" dir="ltr" data-bf-billing="{{ figure.key }}">{{ billing[figure.key]|format_currency(currency.code) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'billing': card }) %}
+        {% endif %}
+        {% if seen %}
+        {% set card %}
+        <div class="bf-card bf-seen">
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title">{{ 'Client activity'|trans }}</h2>
+                <a class="bf-link" href="{{ 'client'|url }}">{{ 'View all'|trans }}</a>
+            </div>
+            <div class="bf-figures">
+                <a class="bf-figure bf-figure-brand" href="{{ 'client'|url(query: { 'status': 'active' }) }}">
+                    <span class="bf-small bf-figure-label">{{ 'Active clients'|trans }}</span>
+                    <span class="bf-h bf-figure-value" data-bf-seen="active">{{ seen.active|number_format(0) }}</span>
+                </a>
+                {% if seen.active_hour is not null %}
+                <div class="bf-figure bf-figure-ok">
+                    <span class="bf-small bf-figure-label">{{ 'Active in the last hour'|trans }}</span>
+                    <span class="bf-h bf-figure-value" data-bf-seen="hour">{{ seen.active_hour|number_format(0) }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% if seen.active_hour is not null %}
+            <div class="bf-seen-list">
+                {% for client in seen.recent %}
+                <div class="bf-row bf-row-static" data-bf-seen-client="{{ client.id }}">
+                    <span class="bf-row-main">
+                        <span class="bf-strong bf-ellipsis">{{ bf.client_link(client.id, client.name, true) }}</span>
+                        <span class="bf-muted bf-small bf-ellipsis">{% if client.company %}{{ client.company }} · {% endif %}{{ bf.ip_link(client.ip) }}</span>
+                    </span>
+                    <span class="bf-muted bf-small bf-nowrap">{{ ':time ago'|trans({ ':time': client.at|timeago }) }}</span>
+                </div>
+                {% else %}
+                <div class="bf-row bf-row-static bf-muted bf-small">{{ 'No client was seen in the last 30 days.'|trans }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'clients': card }) %}
+        {% endif %}
+
+    {% set order_tone ={ 'active': 'ok', 'pending_setup': 'warn', 'failed_setup': 'bad', 'failed_renew': 'bad', 'suspended': 'warn', 'canceled': '' } %}
+    {% set order_label = { 'active': 'Active'|trans, 'pending_setup': 'Pending setup'|trans, 'failed_setup': 'Failed setup'|trans, 'failed_renew': 'Failed renew'|trans, 'suspended': 'Suspended'|trans, 'canceled': 'Canceled'|trans } %}
+    {% set invoice_label = { 'paid': 'Paid'|trans, 'unpaid': 'Unpaid'|trans, 'refunded': 'Refunded'|trans, 'canceled': 'Canceled'|trans } %}
+        {# ClientFence: the newest by date (clientfence_dashboard_latest_orders/_invoices); FOSSBilling's
+           lists sort by id, so records imported later with their old dates would come first. #}
+        {% if can.order %}
+        {% set latest_orders = admin.clientfence_dashboard_latest_orders %}
+        {% set card %}
+        <div class="bf-card">
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title">{{ 'Latest orders'|trans }}</h2>
+                <a class="bf-link" href="{{ 'order'|url }}">{{ 'View all'|trans }}</a>
+            </div>
+            {% for order in latest_orders %}
+            <a class="bf-row" href="{{ ('order/manage/' ~ order.id)|url }}">
+                <span class="bf-row-main">
+                    <span class="bf-strong bf-ellipsis">{{ order.title }}</span>
+                    <span class="bf-muted bf-small">{{ order.client.first_name|default('') }} {{ order.client.last_name|default('') }} · {{ order.created_at|format_date('medium') }}</span>
+                </span>
+                <span class="bf-strong" dir="ltr">{{ order.total|format_currency(order.currency|default(currency.code)) }}</span>
+                <span class="bf-chip bf-tone-{{ order_tone[order.status]|default('') }}">{{ order_label[order.status]|default(order.status) }}</span>
+            </a>
+            {% else %}
+            <div class="bf-row bf-row-static bf-muted bf-small">{{ 'No orders yet.'|trans }}</div>
+            {% endfor %}
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'orders': card }) %}
+        {% endif %}
+        {% if can.invoice %}
+        {% set latest_invoices = admin.clientfence_dashboard_latest_invoices %}
+        {% set card %}
+        <div class="bf-card">
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title">{{ 'Latest invoices'|trans }}</h2>
+                <a class="bf-link" href="{{ 'invoice'|url }}">{{ 'View all'|trans }}</a>
+            </div>
+            {% for invoice in latest_invoices %}
+            {% set late = invoice.status == 'unpaid' and invoice.due_at and invoice.due_at|date('U') < now %}
+            <a class="bf-row" href="{{ ('invoice/manage/' ~ invoice.id)|url }}">
+                <span class="bf-row-main">
+                    <span class="bf-strong" dir="ltr">{{ invoice.serie_nr|default('#' ~ invoice.id) }}</span>
+                    <span class="bf-muted bf-small">{{ invoice.buyer.first_name|default('') }} {{ invoice.buyer.last_name|default('') }}{% if invoice.due_at %} · {{ 'due :date'|trans({ ':date': invoice.due_at|format_date('medium') }) }}{% endif %}</span>
+                </span>
+                <span class="bf-strong" dir="ltr">{{ invoice.total|format_currency(invoice.currency|default(currency.code)) }}</span>
+                <span class="bf-chip bf-tone-{{ invoice.status == 'paid' ? 'ok' : (late ? 'bad' : (invoice.status == 'unpaid' ? 'warn' : '')) }}">{{ late ? 'Overdue'|trans : invoice_label[invoice.status]|default(invoice.status) }}</span>
+            </a>
+            {% else %}
+            <div class="bf-row bf-row-static bf-muted bf-small">{{ 'No invoices yet.'|trans }}</div>
+            {% endfor %}
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'invoices': card }) %}
+        {% endif %}
+
+    {% set show_health = can.settings %}
+    {# Recent activity in four tabs, each one of FOSSBilling's own lists with its own permission:
+       client and staff activity (activity view), sign-ins of clients and staff merged by date
+       (client "view login history", staff "manage settings"), and sent emails (email "view email
+       history"). The first allowed tab is open; "View all" opens the tab's Activity page. #}
+    {% set activity_tabs = [] %}
+    {% if can.activity %}
+        {% set activity_tabs = activity_tabs|merge([
+            { 'key': 'clients', 'label': 'Clients'|trans, 'url': 'activity'|url(query: { 'user_filter': 'only_clients' }), 'rows': admin.activity_log_get_list({ 'per_page': 6, 'page': 1, 'user_filter': 'only_clients' }).list },
+            { 'key': 'staff', 'label': 'Staff'|trans, 'url': 'activity'|url(query: { 'user_filter': 'only_staff' }), 'rows': admin.activity_log_get_list({ 'per_page': 6, 'page': 1, 'user_filter': 'only_staff' }).list }
+        ]) %}
+    {% endif %}
+    {% set can_client_logins = admin.system_is_allowed({ 'mod': 'client', 'f': 'view_login_history' }) %}
+    {% set can_staff_logins = admin.system_is_allowed({ 'mod': 'staff', 'f': 'manage_settings' }) %}
+    {% if can_client_logins or can_staff_logins %}
+        {% set logins = [] %}
+        {% if can_client_logins %}
+            {% for event in admin.client_login_history_get_list({ 'per_page': 6, 'page': 1 }).list %}
+                {% set logins = logins|merge([{ 'kind': 'client', 'name': (event.client.first_name ~ ' ' ~ event.client.last_name)|trim, 'id': event.client.id, 'ip': event.ip, 'at': event.created_at }]) %}
+            {% endfor %}
+        {% endif %}
+        {% if can_staff_logins %}
+            {% for event in admin.staff_login_history_get_list({ 'per_page': 6, 'page': 1 }).list %}
+                {% set logins = logins|merge([{ 'kind': 'staff', 'name': event.staff.name|default(''), 'id': event.staff.id|default(0), 'ip': event.ip, 'at': event.created_at }]) %}
+            {% endfor %}
+        {% endif %}
+        {% set logins = logins|sort((a, b) => b.at|date('U') <=> a.at|date('U'))|slice(0, 6) %}
+        {% set activity_tabs = activity_tabs|merge([{ 'key': 'logins', 'label': 'Logins'|trans, 'url': can_client_logins ? 'client/logins'|url : 'staff/logins'|url, 'rows': logins }]) %}
+    {% endif %}
+    {% if admin.system_is_allowed({ 'mod': 'email', 'f': 'view_email_history' }) %}
+        {% set activity_tabs = activity_tabs|merge([{ 'key': 'emails', 'label': 'Emails'|trans, 'url': 'email/history'|url, 'rows': admin.email_email_get_list({ 'per_page': 6, 'page': 1 }).list }]) %}
+    {% endif %}
+        {% if activity_tabs|length > 0 %}
+        {% set first_tab = (activity_tabs|first).key %}
+        {% set card %}
+        <div class="bf-card" data-bf-tabset>
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title" id="bf-activity-title">{{ 'Recent activity'|trans }}</h2>
+                <a class="bf-link" href="{{ (activity_tabs|first).url }}" data-bf-tabset-link>{{ 'View all'|trans }}</a>
+                {% if activity_tabs|length > 1 %}
+                <div class="bf-tabs bf-tabs-wide" role="tablist" aria-labelledby="bf-activity-title">
+                    {% for tab in activity_tabs %}
+                    <button type="button" class="bf-tab{% if tab.key == first_tab %} is-on{% endif %}" role="tab" id="bf-activity-tab-{{ tab.key }}" aria-controls="bf-activity-{{ tab.key }}" aria-selected="{{ tab.key == first_tab ? 'true' : 'false' }}" tabindex="{{ tab.key == first_tab ? '0' : '-1' }}" data-bf-tab="{{ tab.key }}" data-bf-href="{{ tab.url }}">{{ tab.label }}</button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% for tab in activity_tabs %}
+            <div class="bf-pane" role="tabpanel" id="bf-activity-{{ tab.key }}"{% if activity_tabs|length > 1 %} aria-labelledby="bf-activity-tab-{{ tab.key }}"{% endif %} data-bf-pane="{{ tab.key }}"{% if tab.key != first_tab %} hidden{% endif %}>
+                {% for row in tab.rows %}
+                    {% if tab.key in ['clients', 'staff'] %}
+                    <div class="bf-row bf-row-static bf-row-top">
+                        <span class="bf-dot{% if tab.key == 'clients' %} bf-dot-client{% endif %}" aria-hidden="true"></span>
+                        <span class="bf-row-main">
+                            <span>{{ row.message|truncate(90) }}</span>
+                            <span class="bf-muted bf-small">
+                                {% if row.client is defined %}{{ 'Client'|trans }}: {{ bf.client_link(row.client.id, row.client.name, can.client) }}{% endif %}
+                                {% if row.staff is defined %}{% if row.client is defined %} · {% endif %}{{ 'Staff'|trans }}: {{ row.staff.name }}{% endif %}
+                                {% if row.ip|default('') %} · {{ bf.ip_link(row.ip) }}{% endif %}
+                            </span>
+                        </span>
+                        <span class="bf-muted bf-small bf-nowrap">{{ ':time ago'|trans({ ':time': row.created_at|timeago }) }}</span>
+                    </div>
+                    {% elseif tab.key == 'logins' %}
+                    {% set country = row.ip ? row.ip|ip_country_name : '' %}
+                    {# The row holds two links (the client, the IP lookup), so it is not one link itself. #}
+                    <div class="bf-row bf-row-static bf-row-top">
+                        <span class="bf-row-main">
+                            <span class="bf-strong bf-ellipsis">{{ bf.client_link(row.id, row.name, row.kind == 'client' and can.client) }}</span>
+                            <span class="bf-muted bf-small">{{ bf.ip_link(row.ip) }} · {{ country|default('Unknown'|trans) }}</span>
+                        </span>
+                        <span class="bf-chip{% if row.kind == 'staff' %} bf-tone-ok{% endif %}">{{ row.kind == 'client' ? 'Client'|trans : 'Staff'|trans }}</span>
+                        <span class="bf-muted bf-small bf-nowrap">{{ ':time ago'|trans({ ':time': row.at|timeago }) }}</span>
+                    </div>
+                    {% else %}
+                    <a class="bf-row bf-row-top" href="{{ ('email/' ~ row.id)|url }}">
+                        <span class="bf-row-main">
+                            <span class="bf-strong bf-ellipsis">{{ row.subject|default('')|truncate(70) }}</span>
+                            <span class="bf-muted bf-small bf-ellipsis" dir="ltr">{{ row.recipients|default('') }}</span>
+                        </span>
+                        <span class="bf-muted bf-small bf-nowrap">{{ ':time ago'|trans({ ':time': row.created_at|timeago }) }}</span>
+                    </a>
+                    {% endif %}
+                {% else %}
+                <div class="bf-row bf-row-static bf-muted bf-small">{{ 'The list is empty'|trans }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'activity': card }) %}
+        {% endif %}
+        {% if show_health %}
+        {# ClientFence system health (Health.php): the last run of the hourly checks. #}
+        {% set report = admin.clientfence_health_get %}
+        {% set ratings = { 'excellent': 'Excellent'|trans, 'good': 'Good'|trans, 'attention': 'Needs attention'|trans } %}
+        {% set rating_tone = report ? { 'excellent': 'ok', 'good': 'ok', 'attention': 'bad' }[report.rating] : 'warn' %}
+        {% set card %}
+        <div class="bf-card bf-health-card">
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title">{{ 'System health'|trans }}</h2>
+                <a class="bf-link" href="{{ 'clientfence/health'|url }}">{{ report and (report.counts.bad + report.counts.warn) > 0 ? 'View issues'|trans : 'View checks'|trans }}</a>
+            </div>
+            <div class="bf-health-summary">
+                <span class="bf-tile bf-tone-{{ rating_tone }}" aria-hidden="true"><svg class="icon"><use href="#bf-health" /></svg></span>
+                <span class="bf-row-main">
+                    <span class="bf-muted bf-small">{{ 'Overall rating'|trans }}</span>
+                    <span class="bf-h bf-health-rating-text bf-text-{{ rating_tone }}">{{ report ? ratings[report.rating] : 'Not checked yet'|trans }}</span>
+                </span>
+            </div>
+            {% if report %}
+            <div class="bf-health-bar" role="img" aria-label="{{ ':percent% of the checks passed'|trans({ ':percent': report.passed }) }}">
+                <div class="bf-health-fill bf-w-{{ (report.passed / 5)|round(0, 'floor') * 5 }}{% if report.counts.bad > 0 %} bf-health-fill-bad{% elseif report.counts.warn > 0 %} bf-health-fill-warn{% endif %}"></div>
+            </div>
+            <div class="bf-health-mini">
+                {# A count of 0 has no list on the page to jump to. #}
+                {% set tag = report.counts.warn > 0 ? 'a' : 'span' %}
+                <{{ tag }} class="bf-health-mini-item bf-text-warn"{% if tag == 'a' %} href="{{ 'clientfence/health'|url(query: { show: 'warn' }) }}"{% endif %}><svg class="icon" aria-hidden="true"><use href="#info-circle" /></svg>{{ report.counts.warn == 1 ? '1 warning'|trans : ':count warnings'|trans({ ':count': report.counts.warn }) }}</{{ tag }}>
+                {% set tag = report.counts.bad > 0 ? 'a' : 'span' %}
+                <{{ tag }} class="bf-health-mini-item bf-text-bad"{% if tag == 'a' %} href="{{ 'clientfence/health'|url(query: { show: 'bad' }) }}"{% endif %}><svg class="icon" aria-hidden="true"><use href="#alert-triangle" /></svg>{{ report.counts.bad == 1 ? '1 needs attention'|trans : ':count need attention'|trans({ ':count': report.counts.bad }) }}</{{ tag }}>
+            </div>
+            <p class="bf-muted bf-small bf-health-when">{{ ':passed of :total checks passed'|trans({ ':passed': report.counts.ok, ':total': report.counts.total }) }} · {{ 'Last run :time ago'|trans({ ':time': report.ran_at|timeago }) }}</p>
+            {% else %}
+            <p class="bf-muted bf-small bf-health-when">{{ 'The checks run hourly with the cron; open the page to run them now.'|trans }}</p>
+            {% endif %}
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'health': card }) %}
+        {% endif %}
+
+    {# Two columns, each card right under the one above it (as WHMCS): the staff member's saved
+       order (Super Administrators, clientfence_dashboard_layout_save) or the default. One column on
+       small screens, the first column first. Super Administrators can arrange the cards
+       ("Arrange cards", in the greeting row: drag, or the move buttons) and save the order in
+       their account. The order (`layout`) is read before the greeting. #}
+    {% if cards|length > 0 %}
+    <section class="bf-board{% if layout.can_arrange %} bf-board-arrangeable{% endif %}" aria-label="{{ 'Dashboard cards'|trans }}" data-bf-board
+             {% if layout.can_arrange %}data-text="{{ {
+                'saved': 'The order is saved.'|trans,
+                'reset': 'The default order is back.'|trans,
+                'failed': 'The order could not be saved.'|trans
+             }|json_encode|e('html_attr') }}"{% endif %}>
+        {% set labels = {
+            'income': 'Income'|trans, 'products': 'Top products'|trans, 'billing': 'Billing'|trans,
+            'health': 'System health'|trans, 'orders': 'Latest orders'|trans, 'invoices': 'Latest invoices'|trans,
+            'activity': 'Recent activity'|trans, 'clients': 'Client activity'|trans
+        } %}
+        {% for col in layout.cols %}
+        <div class="bf-col" data-bf-col="{{ loop.index0 }}">
+            {% for key in col %}
+            {% if cards[key] is defined %}
+            <div class="bf-slot" data-bf-card="{{ key }}">
+                {% if layout.can_arrange %}
+                <div class="bf-slot-tools" hidden>
+                    <span class="bf-slot-grip" aria-hidden="true"><svg class="icon"><use href="#bf-grip" /></svg></span>
+                    <span class="bf-small bf-strong bf-slot-name">{{ labels[key] }}</span>
+                    <button type="button" class="bf-icon-btn" data-bf-move="up" aria-label="{{ 'Move :card up'|trans({ ':card': labels[key] }) }}"><svg class="icon" aria-hidden="true"><use href="#bf-chevron-up" /></svg></button>
+                    <button type="button" class="bf-icon-btn" data-bf-move="down" aria-label="{{ 'Move :card down'|trans({ ':card': labels[key] }) }}"><svg class="icon" aria-hidden="true"><use href="#chevron-down" /></svg></button>
+                    <button type="button" class="bf-icon-btn" data-bf-move="across" aria-label="{{ 'Move :card to the other column'|trans({ ':card': labels[key] }) }}"><svg class="icon bf-flip" aria-hidden="true"><use href="#bf-arrows-lr" /></svg></button>
+                </div>
+                {% endif %}
+                {{ cards[key] }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+</div>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    <script nonce="{{ csp_nonce }}">
+        document.addEventListener('click', async function(event) {
+            const link = event.target.closest('[data-dashboard-section]');
+            if (!link) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const section = link.dataset.dashboardSection;
+            const currentCard = document.querySelector(`[data-dashboard-card="${section}"]`);
+            if (!currentCard) {
+                window.location.href = link.href;
+                return;
+            }
+
+            const requestUrl = new URL(link.href, window.location.origin);
+            requestUrl.searchParams.set('dashboard_section', section);
+
+            currentCard.style.opacity = '0.6';
+
+            try {
+                const response = await fetch(requestUrl.toString(), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Request failed with status ${response.status}`);
+                }
+
+                const html = await response.text();
+                const template = document.createElement('template');
+                template.innerHTML = html.trim();
+                const replacement = template.content.firstElementChild;
+
+                if (!replacement) {
+                    throw new Error('Dashboard fragment response was empty.');
+                }
+
+                currentCard.replaceWith(replacement);
+            } catch (error) {
+                window.location.href = link.href;
+            }
+        });
+    </script>
+{% endblock %}

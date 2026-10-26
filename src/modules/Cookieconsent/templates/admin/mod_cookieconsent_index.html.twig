@@ -1,0 +1,84 @@
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+
+{% block meta_title %}{{ 'Cookie Consent'|trans }}{% endblock %}
+
+{% set active_menu = 'extensions' %}
+
+{% block content %}
+    {% set notice = admin.cookieconsent_get_settings %}
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Cookie Consent'|trans }}</h3>
+                <p class="card-subtitle">{{ 'A notice about cookies for visitors of the client area. Once a visitor accepts it, it does not show again in that browser.'|trans }}</p>
+            </div>
+        </div>
+        <form method="post" action="{{ 'cookieconsent/save_settings'|api_url }}" id="cookie-form" {{ fb_api_form({ message: 'Saved.'|trans }) }}>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label class="form-label required" for="cookie-message">{{ 'Message'|trans }}</label>
+                            <textarea class="form-control" rows="4" maxlength="1000" name="message" id="cookie-message" required>{{ notice.message }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="cookie-button">{{ 'Button text'|trans }}</label>
+                            <input class="form-control" type="text" maxlength="40" name="button" id="cookie-button" value="{{ notice.button }}" placeholder="{{ 'Accept'|trans }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="cookie-privacy-url">{{ 'Privacy Policy'|trans }}</label>
+                            <input class="form-control" type="url" maxlength="300" name="privacy_url" id="cookie-privacy-url" value="{{ notice.privacy_url }}" placeholder="https://">
+                            <div class="form-text">{{ 'Empty: no link.'|trans }}</div>
+                        </div>
+                        <div>
+                            <label class="form-label" for="cookie-position">{{ 'Position'|trans }}</label>
+                            <select class="form-select" name="position" id="cookie-position">
+                                <option value="bar"{% if notice.position == 'bar' %} selected{% endif %}>{{ 'Bar along the bottom'|trans }}</option>
+                                <option value="card"{% if notice.position == 'card' %} selected{% endif %}>{{ 'Card in the bottom corner'|trans }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="form-label">{{ 'Preview'|trans }}</span>
+                        <div class="ratio ratio-4x3 border rounded bg-body-tertiary overflow-hidden" aria-hidden="true">
+                            <div>
+                                <div id="cookie-preview" class="position-absolute bottom-0 start-0 d-flex flex-wrap align-items-center justify-content-center gap-2 p-3 bg-body shadow-sm small">
+                                    <p class="m-0">
+                                        <span id="cookie-preview-message"></span>
+                                        <span class="link-primary text-decoration-underline" id="cookie-preview-link">{{ 'Privacy Policy'|trans }}</span>
+                                    </p>
+                                    <span class="btn btn-primary btn-sm" id="cookie-preview-button"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+            </div>
+        </form>
+    </div>
+    <script nonce="{{ csp_nonce }}">
+        (() => {
+            const fields = document.getElementById('cookie-form').elements;
+            const preview = document.getElementById('cookie-preview');
+            const update = () => {
+                const card = fields.position.value === 'card';
+                document.getElementById('cookie-preview-message').textContent = fields.message.value;
+                document.getElementById('cookie-preview-button').textContent = fields.button.value.trim() || fields.button.placeholder;
+                document.getElementById('cookie-preview-link').hidden = fields.privacy_url.value.trim() === '';
+                preview.classList.toggle('end-0', !card);
+                preview.classList.toggle('border-top', !card);
+                preview.classList.toggle('m-3', card);
+                preview.classList.toggle('w-50', card);
+                preview.classList.toggle('flex-column', card);
+                preview.classList.toggle('align-items-stretch', card);
+                preview.classList.toggle('border', card);
+                preview.classList.toggle('rounded-3', card);
+            };
+            document.getElementById('cookie-form').addEventListener('input', update);
+            update();
+        })();
+    </script>
+{% endblock %}

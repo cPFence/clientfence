@@ -1,0 +1,37 @@
+{# Payment method cards (checkout, invoice and wallet pages).
+   methods: guest.invoice_payment_methods(...); context: 'checkout', 'invoice' or 'wallet';
+   amount: the amount in `currency`, shown on each card unless context is 'checkout'.
+   EGP methods show the amount converted at today's rate (rounded up, as the invoice shows it).
+   selected: the method id to select (optional); otherwise the first card is selected. #}
+{% import 'partials/store_macros.html.twig' as sm %}
+{% set ids = methods|map(m => m.id ~ '') %}
+{% set picked = (selected|default('') ~ '') in ids ? selected ~ '' : (ids|first ?: '') %}
+<div class="bf-pay-list" role="radiogroup" aria-label="{{ 'Payment method'|trans }}" data-bf-pay-list>
+    {% for m in methods %}
+        {% if not m.manual %}
+            {% set note = context == 'wallet'
+                ? 'Added to your balance as soon as :name confirms.'|trans({ ':name': m.title|trans })
+                : (m.code == 'PayPalEmail' ? 'Pay online with PayPal or a card.'|trans : 'Pay online with :name.'|trans({ ':name': m.title|trans })) %}
+        {% elseif m.converts %}
+            {% set note = context == 'wallet'
+                ? 'Converted at today’s rate. Added after we confirm.'|trans
+                : (context == 'checkout' ? 'Shown in :currency at today’s rate. Send us the receipt.'|trans({ ':currency': 'EGP' }) : 'Converted at today’s rate. Send us the receipt.'|trans) %}
+        {% else %}
+            {% set note = context == 'wallet'
+                ? 'Transfer in :currency. Added after we confirm.'|trans({ ':currency': currency })
+                : 'Transfer in :currency. Send us the receipt.'|trans({ ':currency': currency }) %}
+        {% endif %}
+        <label class="bf-pay">
+            <input type="radio" name="gateway_id" value="{{ m.id }}"{% if m.id ~ '' == picked %} checked{% endif %}
+                data-title="{{ m.title|trans }}" data-manual="{{ m.manual ? 1 : 0 }}" data-code="{{ m.code }}"
+                {% if m.quote %}data-rate="{{ m.quote.rate }}" data-quote-currency="{{ m.quote.currency }}"{% endif %}>
+            <span class="bf-pay-mark bf-tone-{{ m.tone }}" aria-hidden="true">{{ m.mark }}</span>
+            <span class="bf-pay-text"><strong>{{ m.title|trans }}</strong><span>{{ note }}</span></span>
+            {% if context != 'checkout' %}
+                <span class="bf-pay-amount" data-pay-amount>{% if m.quote %}{{ m.quote.currency }} {{ m.quote.total }}{% else %}{{ sm.money(amount, currency) }}{% endif %}</span>
+            {% endif %}
+        </label>
+    {% else %}
+        <p class="mb-0 text-body-secondary">{{ 'No payment method is available. Please contact support.'|trans }}</p>
+    {% endfor %}
+</div>

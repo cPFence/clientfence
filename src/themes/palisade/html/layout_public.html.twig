@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{# Full-screen pages (sign-in, password reset, maintenance). Who may see a page while signed out
+   is set in partials/guest_access.html.twig, as in layout_default; others get the sign-in gate. #}
+{% set locale = guest.system_locale|default('en_US') %}
+{% set is_rtl = locale starts with 'ar' %}
+{% set guest_gated = include('partials/guest_access.html.twig')|trim == 'gated' %}
+{% set page_title = guest_gated ? 'Sign in required'|trans : (block('meta_title') is defined ? block('meta_title')|trim : '') %}
+{% set page_title = (page_title ? page_title ~ ' · ' : '') ~ guest.system_company.name|default('ClientFence')|e %}
+<html lang="{{ locale|replace({'_': '-'}) }}" dir="{{ is_rtl ? 'rtl' : 'ltr' }}" data-bs-theme="{{ settings.theme|default('light') == 'dark' ? 'dark' : 'light' }}">
+<head>
+    {{ include('partials/head.html.twig') }}
+    {% block head %}{% endblock %}
+    {# A gated page shows only the sign-in gate, so its own scripts (which expect its content) stay out. #}
+    {% if not guest_gated %}{% block js %}{% endblock %}{% endif %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="d-none">{{ svg_sprite() }}</div>
+{{ render_widgets('client.theme.body.start') }}
+{% if guest_gated %}
+    {{ include('partials/guest_gate.html.twig') }}
+{% else %}
+    {% block body %}{% endblock %}
+{% endif %}
+{{ include('partials/toasts.html.twig') }}
+{{ render_widgets('client.theme.body.end') }}
+{{ include('partials/page_end.html.twig') }}
+</body>
+</html>

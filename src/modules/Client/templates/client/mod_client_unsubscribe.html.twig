@@ -1,0 +1,33 @@
+{# ClientFence: the unsubscribe link of marketing email (/unsubscribe/<id>/<token>, Client/Privacy.php).
+   Open without sign-in: the link is the key. One button posts back to the same address, so link
+   checkers that open the page never unsubscribe; a mail provider's one-click POST lands there too.
+   state: ask, done, invalid (a wrong link) or off (no opt-out on this site). #}
+{% extends "layout_default.html.twig" %}
+{% set allow_guest = true %}
+
+{% block meta_title %}{{ 'Unsubscribe'|trans }}{% endblock %}
+{% block body_class %}clientfence-unsubscribe{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Unsubscribe'|trans }}</li>{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header py-3">
+            <h1 class="h5 mb-0">{{ 'Marketing Email'|trans }}</h1>
+        </div>
+        <div class="card-body">
+            {% if state == 'done' %}
+                <div class="alert alert-success mb-2">{{ 'You are unsubscribed. We will not send you marketing email any more.'|trans }}</div>
+                <p class="mb-0">{{ 'Emails about your services, invoices and tickets still reach you. You can turn marketing email on again on the Privacy tab of your profile.'|trans }}</p>
+            {% elseif state == 'invalid' %}
+                <div class="alert alert-warning mb-0">{{ 'This unsubscribe link is not valid.'|trans }}</div>
+            {% elseif state == 'off' %}
+                <div class="alert alert-info mb-0">{{ 'Marketing email settings are not available. Please contact us.'|trans }}</div>
+            {% else %}
+                <p>{{ 'Stop getting marketing email from us? Emails about your services, invoices and tickets will still reach you.'|trans }}</p>
+                <form method="post" action="{{ ('unsubscribe/' ~ id ~ '/' ~ token)|url }}">
+                    <button class="btn btn-primary" type="submit">{{ 'Unsubscribe'|trans }}</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

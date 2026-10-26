@@ -1,0 +1,109 @@
+{# ClientFence, two-factor sign-in settings of the signed-in login (/two-factor, TwoFactor.php):
+   the owner's own, or an authorized user's own (for every account the user has). Off: set up
+   with an authenticator app (QR code or the key), confirmed with a code and the password; the
+   backup code is shown once. On: a new backup code, or switch off with the password and a code.
+   The setup and the backup code run in assets/src/js/twofactor.js. twofactor comes from
+   client_twofactor_status. #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'twofactor' %}
+
+{% block meta_title %}{{ 'Two-factor sign-in'|trans }}{% endblock %}
+{% block page_header %}{{ 'Two-factor sign-in'|trans }}{% endblock %}
+{% block body_class %}clientfence-twofactor{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Two-factor sign-in'|trans }}</li>{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>{{ 'Two-factor sign-in'|trans }}</h1>
+    <p>{{ 'After your password, sign-in also asks for a code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password and others).'|trans }}</p>
+</div>
+
+<div data-clientfence-twofactor>
+    <div class="card mb-4" data-clientfence-twofactor-backup hidden>
+        <div class="card-header"><h2>{{ 'Your backup code'|trans }}</h2></div>
+        <div class="card-body">
+            <p>{{ 'Keep this code somewhere safe, away from your phone. If you lose your phone, it signs you in once instead of a code. It is shown only now.'|trans }}</p>
+            <p class="fs-4 fw-semibold font-monospace" dir="ltr" data-clientfence-twofactor-backup-code></p>
+            <a class="btn btn-primary" href="{{ 'two-factor'|url }}">{{ 'Done'|trans }}</a>
+        </div>
+    </div>
+
+    {% if twofactor.enabled %}
+        <div class="row g-4" data-clientfence-twofactor-on>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header"><h2>{{ 'Backup code'|trans }}</h2></div>
+                    <div class="card-body">
+                        <div class="alert {{ twofactor.backup ? 'alert-success' : 'alert-warning' }}" role="status">
+                            {{ 'Two-factor sign-in is on.'|trans }}
+                            {{ twofactor.backup ? 'You have a backup code.'|trans : 'You have no backup code left: make a new one.'|trans }}
+                        </div>
+                        <form data-clientfence-twofactor-form="client/twofactor_backup" autocomplete="off">
+                            <div class="mb-3">
+                                <label class="form-label" for="backup_password">{{ 'Password'|trans }}</label>
+                                <input class="form-control" id="backup_password" type="password" name="password" autocomplete="current-password" required>
+                                <div class="form-text">{{ 'A new backup code replaces the old one.'|trans }}</div>
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary">{{ 'Make a new backup code'|trans }}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header"><h2>{{ 'Switch off'|trans }}</h2></div>
+                    <div class="card-body">
+                        <form action="{{ 'client/twofactor_disable'|api_url }}" {{ fb_api_form({reload: true, message: 'Two-factor sign-in is off: your password alone signs you in.'|trans}) }} autocomplete="off" data-clientfence-confirm="{{ 'Switch off two-factor sign-in? Your password alone will sign you in again.'|trans }}">
+                            <div class="mb-3">
+                                <label class="form-label" for="off_password">{{ 'Password'|trans }}</label>
+                                <input class="form-control" id="off_password" type="password" name="password" autocomplete="current-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="off_code">{{ 'Code from your app, or your backup code'|trans }}</label>
+                                <input class="form-control" id="off_code" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="19" dir="ltr" required>
+                            </div>
+                            <button type="submit" class="btn btn-outline-danger">{{ 'Switch off two-factor sign-in'|trans }}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card" data-clientfence-twofactor-off>
+            <div class="card-body">
+                <div class="alert alert-secondary" role="status">{{ 'Two-factor sign-in is off: your password alone signs you in.'|trans }}</div>
+                <button type="button" class="btn btn-primary" data-clientfence-twofactor-start>{{ 'Set up two-factor sign-in'|trans }}</button>
+                <div data-clientfence-twofactor-setup hidden>
+                    <ol class="mb-4">
+                        <li>{{ 'Open your authenticator app and add an account.'|trans }}</li>
+                        <li>{{ 'Scan this QR code, or type the key below.'|trans }}</li>
+                        <li>{{ 'Enter the 6-digit code the app shows, and your password.'|trans }}</li>
+                    </ol>
+                    <div class="row g-4 align-items-start">
+                        <div class="col-sm-auto">
+                            <div class="clientfence-qr border rounded p-2 bg-white" data-clientfence-twofactor-qr></div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <div class="form-label">{{ 'Key'|trans }}</div>
+                                <div class="font-monospace fw-semibold" dir="ltr" data-clientfence-twofactor-secret></div>
+                            </div>
+                            <form data-clientfence-twofactor-form="client/twofactor_enable" autocomplete="off">
+                                <div class="mb-3">
+                                    <label class="form-label" for="setup_code">{{ 'Code'|trans }}</label>
+                                    <input class="form-control" id="setup_code" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" dir="ltr" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="setup_password">{{ 'Password'|trans }}</label>
+                                    <input class="form-control" id="setup_password" type="password" name="password" autocomplete="current-password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">{{ 'Switch on two-factor sign-in'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

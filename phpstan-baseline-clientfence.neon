@@ -1,0 +1,92 @@
+# ClientFence: FOSSBilling code that ClientFence switches off on purpose. Each disabled method keeps
+# FOSSBilling's original code after the early return or throw, so FOSSBilling changes still merge
+# cleanly; PHPStan sees that code as unreachable or unused. Fix anything else instead of adding it here.
+parameters:
+	ignoreErrors:
+		# No calls to FOSSBilling's servers: central alerts, extension directory and updater.
+		-
+			message: '#^Property ClientFence\\CentralAlerts\:\:\$apiUrl is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/library/ClientFence/CentralAlerts.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: src/library/ClientFence/CentralAlerts.php
+
+		-
+			message: '#^Property ClientFence\\ExtensionManager\:\:\$apiUrl is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/library/ClientFence/ExtensionManager.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: src/library/ClientFence/ExtensionManager.php
+
+		-
+			message: '#^Constant ClientFence\\Update\:\:LOCK_STALE_SECONDS is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: src/library/ClientFence/Update.php
+
+		-
+			message: '#^Property ClientFence\\Update\:\:\$allowedDownloadPrefixes is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/library/ClientFence/Update.php
+
+		-
+			message: '#^Method ClientFence\\Update\:\:buildCompleteChangelog\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: src/library/ClientFence/Update.php
+
+		-
+			message: '#^Method ClientFence\\Update\:\:validateDownloadedArchive\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: src/library/ClientFence/Update.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 2
+			path: src/library/ClientFence/Update.php
+
+		# Error reporting: releases send none, so the opt-in nudge is off.
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
+			count: 1
+			path: src/modules/System/Service.php
+
+		# Client API keys are disabled.
+		-
+			message: '#^Instanceof between null and Model_Client will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: src/modules/Api/Controller/Client.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: src/modules/Api/Controller/Client.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 2
+			path: src/modules/Profile/Api/Client.php
+
+		# Hosting usernames and domains are changed by staff.
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 2
+			path: src/modules/Servicehosting/Api/Client.php

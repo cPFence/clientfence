@@ -1,0 +1,65 @@
+<?php
+
+declare(strict_types=1);
+
+namespace ClientFence\Mod\Support;
+
+use ClientFence\Mod\Support\Entity\SupportTicket;
+
+class SupportTicketValidator
+{
+    // ClientFence core patch: ticket message length, far below the column (MEDIUMTEXT) so long pasted logs fit.
+    public const MAX_CONTENT = 100000;
+
+    public static function validateContent(?string $content): void
+    {
+        if ($content !== null && mb_strlen($content) > self::MAX_CONTENT) {
+            throw new \ClientFence\InformationException('The message is too long: it can have at most :max characters.', [':max' => number_format(self::MAX_CONTENT)]);
+        }
+    }
+
+    public static function validateTicketCreation(array $data): void
+    {
+        $rel_type = isset($data['rel_type']) ? (string) $data['rel_type'] : null;
+        $rel_task = isset($data['rel_task']) ? (string) $data['rel_task'] : null;
+        $rel_status = isset($data['rel_status']) ? (string) $data['rel_status'] : null;
+
+        self::validateRelType($rel_type);
+        self::validateRelTask($rel_task);
+        self::validateRelStatus($rel_status);
+
+        if ($rel_task === SupportTicket::REL_TASK_UPGRADE) {
+            self::validateUpgradeRequest($data, $rel_type);
+        }
+    }
+
+    protected static function validateRelStatus(?string $rel_status): void
+    {
+        if ($rel_status !== null && !in_array($rel_status, [SupportTicket::REL_STATUS_PENDING, SupportTicket::REL_STATUS_COMPLETE], true)) {
+            throw new \ClientFence\Exception('Invalid related status.');
+        }
+    }
+
+    protected static function validateRelType(?string $rel_type): void
+    {
+        if ($rel_type !== null && !in_array($rel_type, [SupportTicket::REL_TYPE_ORDER], true)) {
+            throw new \ClientFence\Exception('Invalid related type.');
+        }
+    }
+
+    protected static function validateRelTask(?string $rel_task): void
+    {
+        if ($rel_task !== null && !in_array($rel_task, [SupportTicket::REL_TASK_CANCEL, SupportTicket::REL_TASK_UPGRADE], true)) {
+            throw new \ClientFence\Exception('Invalid related task.');
+        }
+    }
+
+    protected static function validateUpgradeRequest(array $data, ?string $rel_type): void
+    {
+        $rel_id = $data['rel_id'] ?? null;
+        $rel_new_value = $data['rel_new_value'] ?? null;
+        if ($rel_type !== SupportTicket::REL_TYPE_ORDER || $rel_id === null || empty($rel_new_value)) {
+            throw new \ClientFence\Exception('You must provide both an order ID and a new product ID in order to request an upgrade.');
+        }
+    }
+}

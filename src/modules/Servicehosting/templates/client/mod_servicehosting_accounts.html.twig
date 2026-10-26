@@ -1,0 +1,56 @@
+{# ClientFence, Hosting accounts (/hosting): one card per hosting account (no panel calls); a card
+   opens the account's page, /hosting/:id (mod_servicehosting_account.html.twig).
+   Styles: .clientfence-hosting-* in the Palisade theme (src/themes/palisade/assets/src/scss/palisade.scss);
+   other themes show it with Bootstrap's own styles. #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'hosting' %}
+
+{% import "macro_functions.html.twig" as mf %}
+
+{% block meta_title %}{{ 'Hosting accounts'|trans }}{% endblock %}
+{% block page_header %}{{ 'Hosting accounts'|trans }}{% endblock %}
+
+{% block body_class %}clientfence-hosting{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Hosting accounts'|trans }}</li>{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>{{ 'Hosting accounts'|trans }}</h1>
+    <p>{{ 'Open an account to see its usage, read live from the server it runs on.'|trans }}</p>
+</div>
+
+{% if accounts is empty %}
+    <div class="card">
+        <div class="empty-state">{{ 'You have no hosting accounts yet.'|trans }}</div>
+    </div>
+{% else %}
+    <div class="row g-3">
+        {% for account in accounts %}
+            {% set name = account.domain ?: account.title %}
+            <div class="col-md-6 col-xxl-4">
+                <a class="clientfence-hosting-card card h-100" href="{{ ('hosting/' ~ account.order_id)|url }}">
+                    <div class="card-body d-flex flex-column gap-3">
+                        <div class="d-flex align-items-start justify-content-between gap-2">
+                            <span class="clientfence-hosting-monogram" aria-hidden="true">{{ name|first|upper }}</span>
+                            {{ mf.status_badge(account.status, 'order') }}
+                        </div>
+                        <div class="min-w-0">
+                            <div class="clientfence-hosting-card-domain text-truncate"><bdi dir="ltr">{{ name }}</bdi></div>
+                            <div class="clientfence-hosting-card-plan text-truncate"><bdi>{{ account.plan ?: account.title }}</bdi></div>
+                        </div>
+                        <div class="clientfence-hosting-card-foot mt-auto">
+                            <span>
+                                {% if account.expires_at %}{{ 'Renews :date'|trans({ ':date': account.expires_at|format_date }) }}{% endif %}
+                            </span>
+                            <span class="clientfence-hosting-card-open">
+                                {{ 'View account'|trans }}
+                                <svg class="icon icon-sm flip-rtl" aria-hidden="true"><use href="#arrow-right"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

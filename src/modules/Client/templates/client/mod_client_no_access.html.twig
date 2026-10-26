@@ -1,0 +1,17 @@
+{# ClientFence, a client page an authorized user's permissions do not open (Users.php
+   pageDenied(), core patch "authorized users: page gate"; answered with status 403). #}
+{% extends "layout_default.html.twig" %}
+
+{% block meta_title %}{{ 'No access'|trans }}{% endblock %}
+{% block page_header %}{{ 'No access'|trans }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'No access'|trans }}</li>{% endblock %}
+
+{% block content %}
+<div class="card" data-clientfence-no-access="{{ permission }}">
+    <div class="empty-state">
+        <h1 class="h4">{{ 'You do not have access to this page'|trans }}</h1>
+        <p>{{ 'Your user on this account cannot open this page. Ask the account owner for access.'|trans }}</p>
+        <a class="btn btn-primary" href="{{ '/'|url }}">{{ 'Back to Dashboard'|trans }}</a>
+    </div>
+</div>
+{% endblock %}
