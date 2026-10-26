@@ -478,3 +478,19 @@ test('deletes a promo', function (): void {
     $api->setService($serviceMock);
     expect($api->promo_delete($data))->toBeTrue();
 });
+
+test('product mutations reject missing IDs during API validation', function (string $method, string $message, array $data): void {
+    $dispatcher = new ClientFence\Api\Dispatcher();
+
+    expect(fn () => $dispatcher->validateRequiredParams(new Admin(), $method, $data))
+        ->toThrow(ClientFence\InformationException::class, $message);
+})->with([
+    ['update', 'Product ID was not passed'],
+    ['update_config', 'Product ID was not passed'],
+    ['delete', 'Product ID was not passed'],
+    ['addon_delete', 'Addon ID was not passed'],
+])->with([
+    'omitted' => [[]],
+    'null' => [['id' => null]],
+    'blank' => [['id' => '   ']],
+]);

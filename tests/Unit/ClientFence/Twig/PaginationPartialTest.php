@@ -183,3 +183,25 @@ test('palisade pagination partial skips paginator when the list fits on a single
 
     expect($html)->not->toContain('class="pagination"');
 });
+
+test('service pagination links stay on the service list', function (): void {
+    $twig = new Twig\Environment(new Twig\Loader\ChainLoader([
+        new Twig\Loader\ArrayLoader([
+            'layout_default.html.twig' => '{% block content %}{% endblock %}',
+            'macro_functions.html.twig' => '',
+            'partial_pagination.html.twig' => '<a href="/{{ url }}?page=2">Next</a>',
+        ]),
+        new Twig\Loader\FilesystemLoader(PATH_MODS . '/Order/templates/client'),
+    ]), ['strict_variables' => true]);
+    foreach (['trans', 'url', 'format_currency', 'period_title', 'format_date'] as $filter) {
+        $twig->addFilter(new Twig\TwigFilter($filter, fn ($value) => $value));
+    }
+    $client = new class {
+        public function order_get_list(): array
+        {
+            return ['list' => []];
+        }
+    };
+    $html = $twig->render('mod_order_list.html.twig', ['request' => ['ajax' => false, 'page' => 1], 'client' => $client]);
+    expect($html)->toContain('href="/order/service?page=2"');
+});

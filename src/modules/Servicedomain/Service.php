@@ -793,7 +793,7 @@ class Service implements \ClientFence\InjectionAwareInterface
             $di = $event->getDi();
             $domainService = $di['mod_service']('servicedomain');
             $domainService->batchSyncExpirationDates();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             error_log($e->getMessage());
         }
 
@@ -812,15 +812,22 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         $list = $this->di['db']->find('ServiceDomain');
 
+        $hadProgrammingError = false;
         foreach ($list as $domain) {
             try {
                 $this->syncExpirationDate($domain);
-            } catch (\Exception $e) {
-                error_log($e->getMessage());
+            } catch (\Throwable $e) {
+                $this->di['logger']->error(sprintf('Domain #%s synchronization failed: %s', $domain->id, $e->getMessage()));
+                // ClientFence core patch (0.8.9 port): programming failures keep the batch eligible for retry.
+                if ($e instanceof \Error) {
+                    $hadProgrammingError = true;
+                }
             }
         }
 
-        $ss->setParamValue($key, date('Y-m-d H:i:s'));
+        if (!$hadProgrammingError) {
+            $ss->setParamValue($key, date('Y-m-d H:i:s'));
+        }
 
         $this->di['logger']->info('Executed action to synchronize domain expiration dates with registrar');
 

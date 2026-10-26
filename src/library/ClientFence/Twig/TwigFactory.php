@@ -29,6 +29,7 @@ use ClientFence\Twig\Markdown\ClientFenceMarkdown;
 use ClientFence\Version;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Intl\Currencies;
+use Symfony\Component\Intl\Locales;
 use Twig\Environment;
 use Twig\Extension\AttributeExtension;
 use Twig\Extension\CoreExtension;
@@ -203,17 +204,26 @@ class TwigFactory
      * Used for database-stored templates (email templates, mass mailer).
      *
      * The env is built per-call (not memoized) so each email can be rendered
-     * with the recipient's timezone.
+     * with the recipient's timezone and locale.
      *
      * @param string|null $timezone IANA timezone to use for date formatting;
      *                              pass the recipient's timezone so emails
      *                              render in their local time. Defaults to
      *                              the active user's timezone / config.
+     * @param string|null $locale   ICU locale to use for date formatting;
+     *                              pass the recipient's language so emails
+     *                              render in their language. An explicit
+     *                              recipient language outranks browser
+     *                              auto-detection. Defaults to the active
+     *                              locale / config.
      */
-    public function createEmailEnvironment(?string $timezone = null): Environment
+    public function createEmailEnvironment(?string $timezone = null, ?string $locale = null): Environment
     {
         // Get internationalisation settings from config
-        $locale = i18n::getActiveLocale($this->di['request'], true, $this->di['cookie_queue']);
+        // ClientFence core patch (0.8.9 port): a valid recipient locale takes precedence over browser detection.
+        if (empty($locale) || !Locales::exists($locale)) {
+            $locale = i18n::getActiveLocale($this->di['request'], true, $this->di['cookie_queue']);
+        }
         $timezone ??= $this->resolveTimezoneForActiveUser();
         $dateFormat = strtoupper((string) Config::getProperty('i18n.date_format', 'MEDIUM'));
         $timeFormat = strtoupper((string) Config::getProperty('i18n.time_format', 'SHORT'));

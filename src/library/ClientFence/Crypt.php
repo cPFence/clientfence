@@ -89,6 +89,11 @@ class Crypt implements \ClientFence\InjectionAwareInterface
         }
 
         $ivsize = openssl_cipher_iv_length(self::METHOD);
+        // ClientFence core patch (0.8.9 port): truncated values cannot contain both an IV and encrypted payload.
+        if (strlen($decoded) <= $ivsize) {
+            return false;
+        }
+
         $iv = mb_substr($decoded, 0, $ivsize, '8bit');
         $ciphertext = mb_substr($decoded, $ivsize, null, '8bit');
 

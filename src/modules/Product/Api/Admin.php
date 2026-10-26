@@ -130,6 +130,8 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @throws \ClientFence\Exception
      */
+    // ClientFence core patch (0.8.9 port): the dispatcher validates parameters on the public mutation methods.
+    #[RequiredParams(['id' => 'Product ID was not passed'])]
     public function update($data)
     {
         $this->checkPermissions('product', 'manage_products');
@@ -174,6 +176,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @return bool
      */
+    #[RequiredParams(['id' => 'Product ID was not passed'])]
     public function update_config($data)
     {
         $this->checkPermissions('product', 'manage_products');
@@ -283,6 +286,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @return bool
      */
+    #[RequiredParams(['id' => 'Addon ID was not passed'])]
     public function addon_delete($data)
     {
         $this->checkPermissions('product', 'manage_products');
@@ -295,6 +299,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @return bool
      */
+    #[RequiredParams(['id' => 'Product ID was not passed'])]
     public function delete($data)
     {
         $this->checkPermissions('product', 'manage_products');

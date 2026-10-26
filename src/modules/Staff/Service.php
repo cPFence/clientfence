@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Staff;
 
+use ClientFence\Mod\Staff\Entity\Admin;
 use ClientFence\Mod\Staff\Entity\AdminGroup;
 use ClientFence\Mod\Staff\Entity\AdminGroupMember;
+use ClientFence\Mod\Staff\Entity\AdminPasswordReset;
 use ClientFence\Mod\Staff\Repository\AdminGroupMemberRepository;
 use ClientFence\Mod\Staff\Repository\AdminGroupRepository;
 use ClientFence\Mod\Support\Entity\Helpdesk;
@@ -599,9 +601,13 @@ class Service implements InjectionAwareInterface
 
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminStaffPasswordChange', 'params' => ['id' => $model->id]]);
 
-        $model->pass = $this->di['password']->hashIt($password);
+        // ClientFence core patch (0.8.9 port): revoke recovery links together with the password change.
+        $admin = $this->di['em']->getRepository(Admin::class)->find($model->id)
+            ?? throw new \ClientFence\InformationException('Admin not found');
+        $this->di['em']->getRepository(AdminPasswordReset::class)
+            ->changePassword($admin, $this->di['password']->hashIt($password));
+        $model->pass = $admin->getPass();
         $model->updated_at = date('Y-m-d H:i:s');
-        $this->di['db']->store($model);
 
         $profileService = $this->di['mod_service']('profile');
         $profileService->invalidateSessions('admin', (int) $model->id);

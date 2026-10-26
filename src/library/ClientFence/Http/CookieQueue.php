@@ -31,7 +31,8 @@ final class CookieQueue
         ?string $domain = null,
         bool $secure = false,
         bool $httpOnly = false,
-        ?string $sameSite = null,
+        // ClientFence core patch (0.8.9 port): queued cookies default to same-site navigation.
+        ?string $sameSite = 'Lax',
     ): void {
         $this->cookies[] = new Cookie(
             $name,

@@ -147,9 +147,6 @@ test('deletePreset removes a theme preset', function (): void {
 test('getThemePresets returns available presets', function (): void {
     $service = new Service();
     $serviceMock = Mockery::mock(Service::class)->makePartial();
-    $serviceMock->shouldReceive('updateSettings')
-        ->atLeast()
-        ->once();
 
     $repositoryMock = Mockery::mock(ClientFence\Mod\Extension\Repository\ExtensionMetaRepository::class);
     $repositoryMock->shouldReceive('findByExtensionAndScope')

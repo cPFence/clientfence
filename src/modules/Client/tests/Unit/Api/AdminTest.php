@@ -45,6 +45,7 @@ test('getList returns array', function (): void {
         ->andReturn([1 => ['balance' => 10.0, 'group' => 'VIP']]);
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock
     ->shouldReceive('getClientRepository')
     ->once()
@@ -72,6 +73,7 @@ test('getList returns array', function (): void {
 test('getPairs returns array', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('getPairs')->atLeast()->once()->andReturn([]);
 
     $di = container();
@@ -89,6 +91,7 @@ test('get returns array', function (): void {
     $model = createEntity(ClientFence\Mod\Client\Entity\Client::class);
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('get')->atLeast()->once()->andReturn($model);
     $serviceMock
     ->shouldReceive('toApiArray')
@@ -111,6 +114,7 @@ test('login returns array', function (): void {
         'role' => 'client',
     ];
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('toSessionArray')->atLeast()->once()->andReturn($sessionArray);
 
     $sessionMock = Mockery::mock(ClientFence\Session::class);
@@ -142,6 +146,7 @@ test('create returns int', function (): void {
     $model = createEntity(ClientFence\Mod\Client\Entity\Client::class);
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('emailAlreadyRegistered')->atLeast()->once()->andReturn(false);
     $serviceMock->shouldReceive('adminCreateClient')->atLeast()->once()->andReturn(1);
 
@@ -171,6 +176,7 @@ test('create throws exception when email is already registered', function (): vo
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('emailAlreadyRegistered')->atLeast()->once()->andReturn(true);
 
     $toolsMock = Mockery::mock(ClientFence\Tools::class);
@@ -249,6 +255,7 @@ test('update returns true', function (): void {
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('emailAlreadyRegistered')->atLeast()->once()->andReturn(false);
     $serviceMock->shouldReceive('canChangeCurrency')->atLeast()->once()->andReturn(true);
 
@@ -301,6 +308,7 @@ test('update unconfirms a changed email, and keeps the confirmation of an unchan
     $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
     $clientRepository->shouldReceive('find')->once()->with(1)->andReturn($client);
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('emailAlreadyRegistered')->andReturn(false);
     $toolsMock = Mockery::mock(ClientFence\Tools::class);
     $toolsMock->shouldReceive('validateAndSanitizeEmail')->andReturnArg(0);
@@ -404,6 +412,7 @@ test('update throws exception when email is already registered', function (): vo
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('emailAlreadyRegistered')->atLeast()->once()->andReturn(true);
 
     $eventMock = Mockery::mock('ClientFence\EventManager');
@@ -556,6 +565,7 @@ test('balanceAddFunds returns true', function (): void {
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('addFunds')->atLeast()->once();
 
     $di = container();
@@ -577,6 +587,7 @@ test('batchExpirePasswordReminders returns true', function (): void {
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('getExpiredPasswordReminders')->atLeast()->once()->andReturn($expiredArr);
 
     $di = container();
@@ -597,6 +608,7 @@ test('loginHistoryGetList returns array', function (): void {
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock
     ->shouldReceive('getHistorySearchQuery')
     ->atLeast()->once()
@@ -622,6 +634,7 @@ test('loginHistoryGetList returns array', function (): void {
 test('getStatuses returns array', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('counter')->atLeast()->once()->andReturn([]);
 
     $di = container();
@@ -636,6 +649,7 @@ test('getStatuses returns array', function (): void {
 test('groupGetPairs returns array', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('getGroupPairs')->atLeast()->once()->andReturn([]);
 
     $di = container();
@@ -653,6 +667,7 @@ test('groupCreate returns int', function (): void {
 
     $newGroupId = 1;
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('createGroup')->atLeast()->once()->andReturn($newGroupId);
 
     $di = container();
@@ -738,6 +753,7 @@ test('export_csv requires both view and export permissions', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('exportCSV')->never();
 
     $di = container();
@@ -760,6 +776,7 @@ test('export_csv delegates to service when permissions granted', function (): vo
 
     $response = new Symfony\Component\HttpFoundation\Response('id,email', 200, ['Content-Type' => 'text/csv']);
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $serviceMock->shouldReceive('exportCSV')
         ->once()
         ->with(['email'])
@@ -785,3 +802,27 @@ test('export_csv delegates to service when permissions granted', function (): vo
 
     expect($result)->toBeInstanceOf(Symfony\Component\HttpFoundation\Response::class);
 });
+
+test('delete rejects malformed client IDs before accessing the repository', function (mixed $id): void {
+    $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
+    $di = container();
+    $entityManager = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $entityManager->shouldNotReceive('getRepository');
+    $di['em'] = $entityManager;
+    $adminClient->setDi($di);
+
+    (new ClientFence\Api\Dispatcher())->validateRequiredParams($adminClient, 'delete', ['id' => $id]);
+
+    expect(fn () => $adminClient->delete(['id' => $id]))
+        ->toThrow(ClientFence\InformationException::class, 'Invalid client ID');
+})->with([
+    'array without identifier' => [['unexpected' => 1]],
+    'identifier array' => [['id' => 1]],
+    'boolean' => [true],
+    'fraction' => [1.5],
+    'fraction string' => ['1.5'],
+    'zero' => [0],
+    'negative' => [-1],
+    'text' => ['invalid'],
+    'overflow' => ['9223372036854775808'],
+]);

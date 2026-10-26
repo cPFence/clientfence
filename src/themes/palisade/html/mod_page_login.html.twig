@@ -16,6 +16,8 @@
         {% set back = request.back|default('') %}
         {% set back = back is iterable or not (back matches '#^/(?![/\\\\])[^\\s\\\\]*$#') or '://' in back ? '' : back %}
         <form method="post" action="{{ 'client/login'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignIn'}) }} data-clientfence-sign-in data-redirect="{{ back ?: redirect_uri|default('/')|url }}" data-twofactor="{{ back ? 'two-factor/code'|url({back: back}) : 'two-factor/code'|url }}">
+    {# ClientFence core patch (0.8.9 port): bind guest authentication to this browser session. #}
+    <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
             <div class="mb-3">
                 <label class="form-label" for="email">{{ 'Email'|trans }}</label>
                 <input class="form-control" id="email" type="email" name="email" value="{{ request.email }}" autocomplete="username" required autofocus>

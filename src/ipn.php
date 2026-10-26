@@ -39,7 +39,11 @@ if ($gatewayID !== null) {
     }
 }
 
-$rawBody = $request->getContent();
+// ClientFence core patch (0.8.9 port): bound callback input before parsing or queuing it.
+$rawBody = stream_get_contents($request->getContent(true), ClientFence\Mod\Invoice\ServiceTransaction::MAX_CALLBACK_BODY_SIZE + 1);
+if ($rawBody === false || strlen($rawBody) > ClientFence\Mod\Invoice\ServiceTransaction::MAX_CALLBACK_BODY_SIZE) {
+    emitResponse(new JsonResponse(['result' => null, 'error' => ['message' => 'Callback body is too large']], 413));
+}
 
 $ipn = [
     'invoice_id' => $invoiceID,

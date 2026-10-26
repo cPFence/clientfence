@@ -329,6 +329,12 @@ class Service
             if (!$this->canUpdateParam($key)) {
                 throw new \ClientFence\InformationException('You do not have permission to update the parameter :param', [':param' => $key]);
             }
+
+            if (strtolower((string) $key) === 'invoice_starting_number'
+                && ((!is_int($val) && !is_string($val))
+                    || filter_var($val, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => PHP_INT_MAX - 1]]) === false)) {
+                throw new \ClientFence\InformationException('Next invoice number must be a positive whole number no greater than :max.', [':max' => PHP_INT_MAX - 1]);
+            }
         }
 
         foreach ($data as $key => $val) {
@@ -625,15 +631,20 @@ class Service
      *                              pass the recipient's so emails render in
      *                              their local time. Falls back to the active
      *                              user's timezone, then the config.
+     * @param string|null $locale   Optional ICU locale for date formatting;
+     *                              pass the recipient's language so emails
+     *                              render in their language. Outranks browser
+     *                              auto-detection. Falls back to the active
+     *                              locale, then the config.
      *
      * @return string The rendered template
      *
      * @throws \ClientFence\InformationException If template violates sandbox policy or has syntax errors
      */
-    public function renderEmailTplString(string $tpl, array $vars, ?string $timezone = null): string
+    public function renderEmailTplString(string $tpl, array $vars, ?string $timezone = null, ?string $locale = null): string
     {
         $twigFactory = $this->di['twig_factory'];
-        $twig = $twigFactory->createEmailEnvironment($timezone);
+        $twig = $twigFactory->createEmailEnvironment($timezone, $locale);
 
         return SandboxedStringRenderer::render(
             $twig,
@@ -653,9 +664,9 @@ class Service
      * HTML-autoescaping email environment, decoding once to restore it as
      * typed. Never use this for the HTML body.
      */
-    public function renderEmailSubjectString(string $tpl, array $vars, ?string $timezone = null): string
+    public function renderEmailSubjectString(string $tpl, array $vars, ?string $timezone = null, ?string $locale = null): string
     {
-        $rendered = $this->renderEmailTplString($tpl, $vars, $timezone);
+        $rendered = $this->renderEmailTplString($tpl, $vars, $timezone, $locale);
 
         return html_entity_decode($rendered, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
@@ -844,6 +855,12 @@ class Service
                 'SELECT value FROM setting WHERE param = :param FOR UPDATE',
                 ['param' => $param]
             );
+
+            // ClientFence core patch (0.8.9 port): reject an invalid invoice counter before reserving or incrementing it.
+            if ($param === 'invoice_starting_number' && $current !== false && filter_var($current, FILTER_VALIDATE_INT) !== false
+                && filter_var($current, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => PHP_INT_MAX - 1]]) === false) {
+                throw new \ClientFence\InformationException('Next invoice number must be a positive whole number no greater than :max.', [':max' => PHP_INT_MAX - 1]);
+            }
 
             $exists = $current !== false;
             if (!$exists || filter_var($current, FILTER_VALIDATE_INT) === false) {

@@ -1494,7 +1494,6 @@ test('changePassword updates admin password', function (): void {
     $logStub = $this->createStub('ClientFence\Log');
 
     $dbMock = Mockery::mock('ClientFence\Database');
-    $dbMock->shouldReceive('store')->atLeast()->once();
 
     $passwordMock = Mockery::mock(ClientFence\PasswordManager::class);
     $passwordMock->shouldReceive('hashIt')->atLeast()->once()
@@ -1510,6 +1509,8 @@ test('changePassword updates admin password', function (): void {
     $di['events_manager'] = $eventsMock;
     $di['logger'] = $logStub;
     $di['db'] = $dbMock;
+    $di['em']->getRepository(ClientFence\Mod\Staff\Entity\Admin::class)->shouldReceive('find')->andReturn(Tests\Helpers\createEntity(ClientFence\Mod\Staff\Entity\Admin::class, ['id' => 1]));
+    $di['em']->getRepository(ClientFence\Mod\Staff\Entity\AdminPasswordReset::class)->shouldReceive('changePassword')->once();
     $di['password'] = $passwordMock;
     $di['mod_service'] = $di->protect(fn () => $profileServiceStub);
     $di['loggedin_admin'] = staffHierarchyBypassAdmin();

@@ -126,8 +126,6 @@ test('updatePassword invalidates existing sessions', function (): void {
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('findOne')->atLeast()->once()->andReturn($modelPasswordReset);
     $dbMock->shouldReceive('getExistingModelById')->atLeast()->once()->andReturn($admin);
-    $dbMock->shouldReceive('store')->atLeast()->once();
-    $dbMock->shouldReceive('trash')->atLeast()->once();
 
     $eventMock = Mockery::mock('ClientFence\EventManager');
     $eventMock->shouldReceive('fire')->times(2);
@@ -143,6 +141,8 @@ test('updatePassword invalidates existing sessions', function (): void {
 
     $di = container();
     $di['db'] = $dbMock;
+    $di['em']->getRepository(ClientFence\Mod\Staff\Entity\Admin::class)->shouldReceive('find')->andReturn(Tests\Helpers\createEntity(ClientFence\Mod\Staff\Entity\Admin::class, ['id' => 1]));
+    $di['em']->getRepository(ClientFence\Mod\Staff\Entity\AdminPasswordReset::class)->shouldReceive('changePassword')->once();
     $di['events_manager'] = $eventMock;
     $di['logger'] = new Tests\Helpers\TestLogger();
     $di['password'] = $passwordMock;

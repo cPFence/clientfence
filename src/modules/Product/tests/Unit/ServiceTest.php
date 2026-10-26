@@ -2698,3 +2698,14 @@ test('enrich promo redemption leaves invoice serie_nr null when invoice is missi
         'status' => null,
     ]);
 });
+
+test('partial category updates retain omitted fields and allow explicit clearing', function (): void {
+    $category = (new ProductCategory())->setTitle('Saved')->setDescription('Description')->setIconUrl('icon.svg');
+    $di = container();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = new Service();
+    $service->setDi($di);
+    $service->updateCategory($category, description: '');
+    expect($category->getTitle())->toBe('Saved')->and($category->getIconUrl())->toBe('icon.svg')
+        ->and($category->getDescription())->toBe('')->and($category->getUpdatedAt())->not->toBeNull();
+});

@@ -2516,10 +2516,6 @@
         "done": "the message in a sandboxed frame without scripts (its HTML ran"
     },
     {
-        "file": "modules/Formbuilder/templates/admin/mod_formbuilder_manage.html.twig",
-        "done": "only the keys the order's config has"
-    },
-    {
         "file": "modules/News/Entity/Post.php",
         "done": "the column allows no author"
     },
@@ -2802,5 +2798,297 @@
     {
         "file": "modules/Seo/Service.php",
         "done": "ClientFence core patch (ext seo): a failed submit is retried after a day"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch (0.8.9 port): renewal metadata still names the paid first invoice."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): replace form answers without losing service settings or retaining unchecked choices."
+    },
+    {
+        "file": "modules/Formbuilder/templates/admin/mod_formbuilder_manage.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): service settings are preserved on the server."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch (0.8.9 port): PayPal can echo the number from before the invoice was issued."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch (0.8.9 port): IPN fields must be scalar before rebuilding the verification body."
+    },
+    {
+        "file": "index.php",
+        "done": "ClientFence core patch (0.8.9 port): return to the invoice before any session is started."
+    },
+    {
+        "file": "index.php",
+        "done": "ClientFence core patch (0.8.9 port): session recovery is restricted to the bound Google callback."
+    },
+    {
+        "file": "ipn.php",
+        "done": "ClientFence core patch (0.8.9 port): bound callback input before parsing or queuing it."
+    },
+    {
+        "file": "library/ClientFence/Http/CookieQueue.php",
+        "done": "ClientFence core patch (0.8.9 port): queued cookies default to same-site navigation."
+    },
+    {
+        "file": "library/ClientFence/Http/RequestFactory.php",
+        "done": "ClientFence core patch (0.8.9 port): malformed query overrides must not abort bootstrap."
+    },
+    {
+        "file": "library/ClientFence/Session.php",
+        "done": "ClientFence core patch (0.8.9 port): every session mode needs an explicit SameSite policy."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch (0.8.9 port): invoice history cannot safely determine an unused replacement counter."
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch (0.8.9 port): guest identity and cart changes require the browser session's nonce and origin."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch (0.8.9 port): staff address edits share the confirmation lock until flush."
+    },
+    {
+        "file": "modules/Client/Google.php",
+        "done": "ClientFence core patch (0.8.9 port): only this callback's state and browser cookie can redeem its opaque restore token."
+    },
+    {
+        "file": "modules/Client/Repository/ClientPasswordResetRepository.php",
+        "done": "ClientFence core patch (0.8.9 port): A deferred SQLite transaction needs a write before it can serialize readers."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): address changes and one-use confirmations serialize on the client row."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): legacy callers use the same transactional reset issuance."
+    },
+    {
+        "file": "modules/Client/Users.php",
+        "done": "ClientFence core patch (0.8.9 port): a reset cannot race another reset or password change."
+    },
+    {
+        "file": "modules/Cron/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): Single-request sessions never receive created_at; expire them by last activity too."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch (0.8.9 port): gateway URLs carry invoice destinations without session credentials."
+    },
+    {
+        "file": "modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): cart mutations use POST with the API wrapper's session token."
+    },
+    {
+        "file": "modules/Orderbutton/templates/client/mod_orderbutton_client.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
+    },
+    {
+        "file": "modules/Page/templates/client/mod_page_login.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
+    },
+    {
+        "file": "modules/Page/templates/client/mod_page_signup.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
+    },
+    {
+        "file": "modules/Profile/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): confirmation cannot approve an address while it is being replaced."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): programming failures keep the batch eligible for retry."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): Adapter messages and stack arguments may contain credentials."
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "ClientFence core patch (0.8.9 port): password changes and token revocation share the identity lock."
+    },
+    {
+        "file": "modules/Staff/Repository/AdminPasswordResetRepository.php",
+        "done": "ClientFence core patch (0.8.9 port): Read the capability again under the identity lock, never from the identity map."
+    },
+    {
+        "file": "modules/Staff/Repository/AdminPasswordResetRepository.php",
+        "done": "ClientFence core patch (0.8.9 port): A deferred SQLite transaction needs a write before it can safely read credentials."
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): revoke recovery links together with the password change."
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_login.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): reject an invalid invoice counter before reserving or incrementing it."
+    },
+    {
+        "file": "modules/Theme/Controller/Admin.php",
+        "done": "ClientFence core patch (0.8.9 port): the direct theme form must validate its session nonce before hooks or saves."
+    },
+    {
+        "file": "themes/palisade/html/mod_page_login.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
+    },
+    {
+        "file": "themes/palisade/html/mod_page_signup.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
+    },
+    {
+        "file": "library/ClientFence/Doctrine/RowLock.php",
+        "done": "ClientFence core patch (0.8.9 port): SQLite omits the row-lock suffix used inside credential transactions."
+    },
+    {
+        "file": "library/ClientFence/Http/PaymentReturn.php",
+        "done": "ClientFence core patch (0.8.9 port): resume Strict cookies through same-site navigation before starting a session."
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch (0.8.9 port): modern WHM responses nest packages under data.pkg."
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): queued mail uses each recipient's date context."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): omitted category fields retain their saved values."
+    },
+    {
+        "file": "install/install.php",
+        "done": "ClientFence core patch (0.8.9 port): an existing configuration blocks public installation even in debug mode."
+    },
+    {
+        "file": "library/ClientFence/Crypt.php",
+        "done": "ClientFence core patch (0.8.9 port): truncated values cannot contain both an IV and encrypted payload."
+    },
+    {
+        "file": "library/ClientFence/Module.php",
+        "done": "ClientFence core patch (0.8.9 port): a module manifest must be an object, including an empty object."
+    },
+    {
+        "file": "library/ClientFence/Tools.php",
+        "done": "ClientFence core patch (0.8.9 port): registrars need normalized local phone digits, including leading zeroes."
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "ClientFence core patch (0.8.9 port): a valid recipient locale takes precedence over browser detection."
+    },
+    {
+        "file": "library/ClientFence/i18n.php",
+        "done": "ClientFence core patch (0.8.9 port): headerless requests must retain the configured locale."
+    },
+    {
+        "file": "library/Registrar/Adapter/Internetbs.php",
+        "done": "ClientFence core patch (0.8.9 port): registrar responses may omit optional contact fields."
+    },
+    {
+        "file": "library/Server/Manager/CWP.php",
+        "done": "ClientFence core patch (0.8.9 port): incomplete account details must fail before changing the local account."
+    },
+    {
+        "file": "library/Server/Manager/Directadmin.php",
+        "done": "ClientFence core patch (0.8.9 port): password fields belong in the POST body rather than request URLs."
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch (0.8.9 port): request packages hidden from the API user's ordinary list."
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch (0.8.9 port): a hidden existing package has a distinct recoverable result."
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch (0.8.9 port): a hidden existing generated package can be synchronized and used."
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch (0.8.9 port): an existing package can still provision accounts when its limits cannot be edited."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch (0.8.9 port): redemption rechecks and revokes credentials under the account lock."
+    },
+    {
+        "file": "modules/Client/Repository/ClientPasswordResetRepository.php",
+        "done": "ClientFence core patch (0.8.9 port): a previously loaded token may have been revoked while waiting for the identity lock."
+    },
+    {
+        "file": "modules/Cron/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): idle expiry also removes sessions without a creation timestamp."
+    },
+    {
+        "file": "modules/Extension/Api/Guest.php",
+        "done": "ClientFence core patch (0.8.9 port): only available modules expose public settings."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): validate local module files before persisting activation state."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): reading absent settings must not create metadata."
+    },
+    {
+        "file": "modules/Formbuilder/templates/client/mod_formbuilder_build.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): standalone forms have a route id rather than a product."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): logo requests use a bounded client that rejects private networks."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch (0.8.9 port): callback input must be bounded before unauthenticated allocation."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_settings.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): the invoice counter needs a positive bounded whole number."
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_list.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): pagination stays on the service list."
+    },
+    {
+        "file": "modules/Orderbutton/templates/client/mod_orderbutton_js.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): cart removal must use POST with the API wrapper's session nonce."
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "ClientFence core patch (0.8.9 port): the dispatcher validates parameters on the public mutation methods."
+    },
+    {
+        "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): explicit zero and false formatting choices must survive rendering."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): trusted preset initialization must remain separate from permission-checked writes."
+    },
+    {
+        "file": "modules/Theme/templates/admin/mod_theme_preset.html.twig",
+        "done": "ClientFence core patch (0.8.9 port): the direct settings form submits the session nonce."
+    },
+    {
+        "file": "library/Server/Manager/Hestia.php",
+        "done": "ClientFence core patch (0.8.9 port): Hestia needs a configured hostname before constructing an endpoint."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch (0.8.9 port): queued email uses the recipient's date context."
     }
 ]

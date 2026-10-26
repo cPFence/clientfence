@@ -537,6 +537,8 @@ class Service implements InjectionAwareInterface
 
     public function updateProduct(Product $model, $data): bool
     {
+        $this->validateIconUrl($data['icon_url'] ?? $model->getIconUrl());
+
         // pricing
         if (isset($data['pricing'])) {
             $types = $this->getPaymentTypes();
@@ -658,6 +660,8 @@ class Service implements InjectionAwareInterface
 
     public function createAddon($title, $description = null, $setup = null, $status = null, $iconUrl = null): ?int
     {
+        $this->validateIconUrl($iconUrl);
+
         $productPayment = $this->createDefaultProductPayment();
         $paymentId = (int) $productPayment->getId();
 
@@ -720,10 +724,19 @@ class Service implements InjectionAwareInterface
 
     public function updateCategory(ProductCategory $productCategory, $title = null, $description = null, $icon_url = null): bool
     {
-        $productCategory
-            ->setTitle($title)
-            ->setIconUrl($icon_url)
-            ->setDescription($description);
+        $this->validateIconUrl($icon_url);
+
+        // ClientFence core patch (0.8.9 port): omitted category fields retain their saved values.
+        if ($title !== null) {
+            $productCategory->setTitle($title);
+        }
+        if ($icon_url !== null) {
+            $productCategory->setIconUrl($icon_url);
+        }
+        if ($description !== null) {
+            $productCategory->setDescription($description);
+        }
+        $productCategory->setUpdatedAt(new \DateTime());
         $this->di['em']->flush();
 
         $this->di['logger']->info('Updated product category #%s', $productCategory->getId());
@@ -733,6 +746,8 @@ class Service implements InjectionAwareInterface
 
     public function createCategory($title, $description = null, $icon_url = null): ?int
     {
+        $this->validateIconUrl($icon_url);
+
         $model = (new ProductCategory())
             ->setTitle($title)
             ->setDescription($description)
@@ -2066,6 +2081,13 @@ class Service implements InjectionAwareInterface
         }
 
         return $this->di['em']->getConnection();
+    }
+
+    private function validateIconUrl(?string $iconUrl): void
+    {
+        if ($iconUrl !== null && mb_strlen($iconUrl, 'UTF-8') > 255) {
+            throw new \ClientFence\InformationException('Icon URL must not exceed 255 characters.');
+        }
     }
 
     private function createDefaultProductPayment(): ProductPayment

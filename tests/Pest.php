@@ -51,6 +51,9 @@ if (!function_exists('__pluralTrans')) {
 // Load application bootstrap
 require_once __DIR__ . '/../src/load.php';
 require_once __DIR__ . '/../src/vendor/autoload.php';
+require_once __DIR__ . '/../src/library/ClientFence/Doctrine/RowLock.php';
+require_once __DIR__ . '/../src/library/ClientFence/Http/PaymentReturn.php';
+require_once __DIR__ . '/../src/library/Server/PackageExistsException.php';
 
 // Load test helpers
 require_once __DIR__ . '/Helpers/Container.php';

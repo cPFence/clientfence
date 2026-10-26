@@ -534,30 +534,35 @@ class Server_Manager_Whm extends Server_Manager
      */
     public function getPackages(): array
     {
-        // Send a request to the WHM server to list the packages
-        $pkgs = $this->request('listpkgs');
+        // ClientFence core patch (0.8.9 port): request packages hidden from the API user's ordinary list.
+        $pkgs = $this->request('listpkgs', ['want' => 'all']);
+        $packages = $this->extractPackageList($pkgs);
         $return = [];
 
         // Iterate over the packages and add their details to the return array
-        foreach ($pkgs->package as $pkg) {
+        foreach ($packages as $pkg) {
+            $name = (string) $this->getPackageField($pkg, ['name'], '');
+            if ($name === '') {
+                continue;
+            }
             $return[] = [
-                'title' => $pkg->name,
-                'name' => $pkg->name,
-                'feature_list' => $pkg->FEATURELIST,
-                'theme' => $pkg->CPMOD,
-                'quota' => $pkg->QUOTA,
-                'bandwidth' => $pkg->BWLIMIT,
-                'max_ftp' => $pkg->MAXFTP,
-                'max_sql' => $pkg->MAXSQL,
-                'max_emails' => $pkg->MAXLST,
-                'max_sub' => $pkg->MAXSUB,
-                'max_pop' => $pkg->MAXPOP,
-                'max_park' => $pkg->MAXPARK,
-                'max_addon' => $pkg->MAXADDON,
-                'has_shell' => $pkg->HASSHELL == 'n' ? 0 : 1,
-                'has_ip' => $pkg->IP == 'n' ? 0 : 1,
-                'has_cgi' => $pkg->CGI == 'n' ? 0 : 1,
-                'has_frontpage' => $pkg->FRONTPAGE == 'n' ? 0 : 1,
+                'title' => $name,
+                'name' => $name,
+                'feature_list' => $this->getPackageField($pkg, ['FEATURELIST', 'featurelist']),
+                'theme' => $this->getPackageField($pkg, ['CPMOD', 'cpmod']),
+                'quota' => $this->getPackageField($pkg, ['QUOTA', 'quota']),
+                'bandwidth' => $this->getPackageField($pkg, ['BWLIMIT', 'bwlimit']),
+                'max_ftp' => $this->getPackageField($pkg, ['MAXFTP', 'maxftp']),
+                'max_sql' => $this->getPackageField($pkg, ['MAXSQL', 'maxsql']),
+                'max_emails' => $this->getPackageField($pkg, ['MAXLST', 'maxlst']),
+                'max_sub' => $this->getPackageField($pkg, ['MAXSUB', 'maxsub']),
+                'max_pop' => $this->getPackageField($pkg, ['MAXPOP', 'maxpop']),
+                'max_park' => $this->getPackageField($pkg, ['MAXPARK', 'maxpark']),
+                'max_addon' => $this->getPackageField($pkg, ['MAXADDON', 'maxaddon']),
+                'has_shell' => $this->getPackageField($pkg, ['HASSHELL', 'hasshell'], 'n') == 'n' ? 0 : 1,
+                'has_ip' => $this->getPackageField($pkg, ['IP', 'ip'], 'n') == 'n' ? 0 : 1,
+                'has_cgi' => $this->getPackageField($pkg, ['CGI', 'cgi'], 'n') == 'n' ? 0 : 1,
+                'has_frontpage' => $this->getPackageField($pkg, ['FRONTPAGE', 'frontpage'], 'n') == 'n' ? 0 : 1,
                 'free_registration' => 0,
                 'free_transfer' => 0,
                 'free_renewal' => 0,
@@ -633,35 +638,51 @@ class Server_Manager_Whm extends Server_Manager
         }
 
         if (isset($json->cpanelresult->error)) {
-            $this->getLog()->critical(sprintf('WHM server response error calling action %s: "%s"', $action, $json->cpanelresult->error));
-            $placeholders = ['action' => $action, 'type' => 'cPanel'];
+            $reason = (string) $json->cpanelresult->error;
 
-            throw new Server_Exception('Failed to :action: on the :type: server, check the error logs for further details', $placeholders);
+            $this->throwWhmError($action, $reason);
         }
 
         if (isset($json->data->result) && $json->data->result == '0') {
-            $this->getLog()->critical(sprintf('WHM server response error calling action %s: "%s"', $action, $json->data->reason));
-            $placeholders = [':action:' => $action, ':type:' => 'cPanel'];
+            $reason = (string) ($json->data->reason ?? 'Unknown error');
 
-            throw new Server_Exception('Failed to :action: on the :type: server, check the error logs for further details', $placeholders);
+            $this->throwWhmError($action, $reason);
         }
 
         if (isset($json->result) && is_array($json->result) && $json->result[0]->status == 0) {
-            $this->getLog()->critical(sprintf('WHM server response error calling action %s: "%s"', $action, $json->result[0]->statusmsg));
-            $placeholders = [':action:' => $action, ':type:' => 'cPanel'];
+            $reason = (string) ($json->result[0]->statusmsg ?? 'Unknown error');
 
-            throw new Server_Exception('Failed to :action: on the :type: server, check the error logs for further details', $placeholders);
+            $this->throwWhmError($action, $reason);
         }
 
         if (isset($json->status) && $json->status != '1') {
-            $this->getLog()->critical(sprintf('WHM server response error calling action %s: "%s"', $action, $json->statusmsg));
-            $placeholders = [':action:' => $action, ':type:' => 'cPanel'];
+            $reason = (string) ($json->statusmsg ?? 'Unknown error');
 
-            throw new Server_Exception('Failed to :action: on the :type: server, check the error logs for further details', $placeholders);
+            $this->throwWhmError($action, $reason);
+        }
+
+        if (isset($json->metadata->result) && $json->metadata->result == '0') {
+            $reason = (string) ($json->metadata->reason ?? 'Unknown error');
+
+            $this->throwWhmError($action, $reason);
         }
 
         // Return the response
         return $json;
+    }
+
+    // ClientFence core patch (0.8.9 port): a hidden existing package has a distinct recoverable result.
+    private function throwWhmError(string $action, string $reason): never
+    {
+        $this->getLog()->critical(sprintf('WHM server response error calling action %s: "%s"', $action, $reason));
+        $placeholders = [':action:' => $action, ':type:' => 'cPanel'];
+        $message = 'Failed to :action: on the :type: server, check the error logs for further details';
+
+        if (str_contains(strtolower($reason), 'already exists')) {
+            throw new Server_PackageExistsException($message, $placeholders);
+        }
+
+        throw new Server_Exception($message, $placeholders);
     }
 
     /**
@@ -681,13 +702,14 @@ class Server_Manager_Whm extends Server_Manager
         $exact = trim((string) $package->getCustomValue('package')) !== '';
 
         // Send a request to the WHM server to list the packages
-        $json = $this->request('listpkgs');
-        $packages = $json->package;
+        // ClientFence core patch (0.8.9 port): modern WHM responses nest packages under data.pkg.
+        $json = $this->request('listpkgs', ['want' => 'all']);
+        $packages = $this->extractPackageList($json);
 
         // Check if the package exists
         $exists = false;
         foreach ($packages as $p) {
-            if ($p->name == $name) {
+            if ((string) $this->getPackageField($p, ['name'], '') === $name) {
                 $exists = true;
 
                 break;
@@ -716,9 +738,58 @@ class Server_Manager_Whm extends Server_Manager
                 'hasshell' => $package->getCustomValue('hasshell'),
             ];
 
-            // Send a request to the WHM server to add the package
-            $this->request('addpkg', $varHash);
+            try {
+                $this->request('addpkg', $varHash);
+            } catch (Server_PackageExistsException) {
+                // ClientFence core patch (0.8.9 port): a hidden existing generated package can be synchronized and used.
+                try {
+                    $this->request('editpkg', $varHash);
+                    $this->getLog()->info(sprintf('Updated existing WHM package "%s"', $name));
+                } catch (Server_Exception $editException) {
+                    // ClientFence core patch (0.8.9 port): an existing package can still provision accounts when its limits cannot be edited.
+                    $this->getLog()->warning(sprintf('WHM package "%s" already exists and could not be updated: "%s"', $name, $editException->getMessage()));
+                }
+            }
         }
+    }
+
+    private function extractPackageList(mixed $json): array
+    {
+        $raw = null;
+        if (is_object($json)) {
+            if (isset($json->package)) {
+                $raw = $json->package;
+            } elseif (isset($json->data->pkg)) {
+                $raw = $json->data->pkg;
+            }
+        }
+
+        if ($raw === null) {
+            return [];
+        }
+
+        if (is_object($raw)) {
+            return [$raw];
+        }
+
+        return is_array($raw) ? array_values($raw) : [];
+    }
+
+    private function getPackageField(mixed $pkg, array $candidates, mixed $default = null): mixed
+    {
+        if (!is_object($pkg)) {
+            return $default;
+        }
+
+        $lowered = array_change_key_case(get_object_vars($pkg), CASE_LOWER);
+        foreach ($candidates as $candidate) {
+            $lookup = strtolower((string) $candidate);
+            if (array_key_exists($lookup, $lowered)) {
+                return $lowered[$lookup];
+            }
+        }
+
+        return $default;
     }
 
     /**

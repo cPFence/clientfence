@@ -101,7 +101,7 @@
                                     </label>
                                     <div class="form-text">{{ 'Hidden products remain usable for existing orders and direct links, but they will not appear in normal product listings.'|trans }}</div>
                                 </div>
-                                {% if guest.extension_is_on({ 'mod': 'formbuilder' }) %}
+                                {% if guest.extension_is_on({ 'mod': 'formbuilder' }) and has_permission('formbuilder', 'view') %}
                                 <div class="col-12">
                                     <label class="form-label">{{ 'Order Form'|trans }}</label>
                                     {% set tpl = 'mod_service' ~ product.type ~ '_order_form.html.twig' %}
@@ -185,7 +185,7 @@
 
         <div class="tab-pane fade" id="tab-config" role="tabpanel" aria-labelledby="config-tab">
             {% set service_partial = 'mod_service' ~ product.type ~ '_config.html.twig' %}
-            {% if admin.system_template_exists({ 'file': service_partial }) %}
+            {% if source(service_partial, ignore_missing: true) is not empty %}
                 <div class="p-3">
                     {{ include(service_partial, { 'product': product }) }}
                 </div>

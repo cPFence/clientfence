@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Profile;
 
 use ClientFence\Mod\Client\Entity\Client;
+use ClientFence\Mod\Client\Entity\ClientPasswordReset;
 use ClientFence\Mod\Staff\Entity\Admin;
+use ClientFence\Mod\Staff\Entity\AdminPasswordReset;
 use ClientFence\i18n;
 use ClientFence\InformationException;
 use ClientFence\InjectionAwareInterface;
@@ -47,9 +49,8 @@ class Service implements InjectionAwareInterface
         $event_params = ['id' => $admin->getId()];
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminStaffProfilePasswordChange', 'params' => $event_params]);
 
-        $admin->setPass($this->di['password']->hashIt($new_password));
-        $this->di['em']->persist($admin);
-        $this->di['em']->flush();
+        $this->di['em']->getRepository(AdminPasswordReset::class)
+            ->changePassword($admin, $this->di['password']->hashIt($new_password));
 
         $event_params = [];
         $event_params['id'] = $admin->getId();
@@ -120,6 +121,16 @@ class Service implements InjectionAwareInterface
 
     public function updateClient(Client $client, array $data = []): bool
     {
+        // ClientFence core patch (0.8.9 port): confirmation cannot approve an address while it is being replaced.
+        return $this->di['dbal']->transactional(function () use ($client, $data): bool {
+            $this->di['dbal']->executeStatement('UPDATE client SET email_approved = email_approved WHERE id = ?', [$client->getId()]);
+
+            return $this->updateClientProfile($client, $data);
+        });
+    }
+
+    private function updateClientProfile(Client $client, array $data): bool
+    {
         $event_params = $data;
         $event_params['id'] = $client->getId();
         $this->di['events_manager']->fire(['event' => 'onBeforeClientProfileUpdate', 'params' => $event_params]);
@@ -144,6 +155,8 @@ class Service implements InjectionAwareInterface
             }
 
             if ($client->getEmail() !== $email) {
+                $this->di['dbal']->executeStatement('UPDATE client SET email_approved = 0 WHERE id = ?', [$client->getId()]);
+                $clientService->revokeEmailConfirmations((int) $client->getId());
                 $client->setEmail($email);
                 $client->setEmailApproved(false);
 
@@ -244,9 +257,7 @@ class Service implements InjectionAwareInterface
         $event_params = ['id' => $client->getId()];
         $this->di['events_manager']->fire(['event' => 'onBeforeClientProfilePasswordChange', 'params' => $event_params]);
 
-        $client->setPass($this->di['password']->hashIt($new_password));
-        $this->di['em']->persist($client);
-        $this->di['em']->flush();
+        $this->di['em']->getRepository(ClientPasswordReset::class)->changePassword($client, $this->di['password']->hashIt($new_password));
 
         $this->di['events_manager']->fire(['event' => 'onAfterClientProfilePasswordChange', 'params' => ['id' => $client->getId()]]);
 

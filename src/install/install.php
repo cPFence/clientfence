@@ -126,7 +126,7 @@ final class ClientFence_Installer
                 // Installer validation
                 try {
                     // Make sure we are not already installed. Prevents tampered requests from being able to trigger the installer.
-                    if (!$this->isDebug && $this->isAlreadyInstalled()) {
+                    if ($this->isAlreadyInstalled()) {
                         throw new Exception('ClientFence is already installed.');
                     }
 
@@ -360,7 +360,8 @@ final class ClientFence_Installer
      */
     public function isAlreadyInstalled(): bool
     {
-        return !$this->isDebug && $this->filesystem->exists(PATH_CONFIG);
+        // ClientFence core patch (0.8.9 port): an existing configuration blocks public installation even in debug mode.
+        return $this->filesystem->exists(PATH_CONFIG);
     }
 
     private function getExistingConfig(): ?array

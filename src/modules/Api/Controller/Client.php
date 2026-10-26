@@ -18,7 +18,6 @@ namespace ClientFence\Mod\Api\Controller;
 use ClientFence\Config;
 use ClientFence\Environment;
 use ClientFence\Http\ApiResponseFactory;
-use ClientFence\Http\ResponseFactory;
 use ClientFence\InjectionAwareInterface;
 use ClientFence\Security\AuthenticationRequiredException;
 use ClientFence\Security\EmailValidationRequiredException;
@@ -233,6 +232,7 @@ class Client implements InjectionAwareInterface
 
         $this->checkUpdateFinalization($role, $class, $method);
         $this->checkRateLimit($role, $method);
+        $this->checkGuestAuthentication($role, $method, $params);
 
         $api = $this->di['api_identity']($role);
         unset($params['CSRFToken']);
@@ -242,22 +242,35 @@ class Client implements InjectionAwareInterface
             return $this->sendResponse($result);
         }
 
-        $isAjax = $this->di['request']->isXmlHttpRequest();
-        $isLoginMethod = ($method === 'login');
-        $isStaffLogin = ($class === 'staff');
-        $isClientLogin = ($class === 'client');
-
-        if ($isLoginMethod && !$isAjax && ($isStaffLogin || $isClientLogin)) {
-            if ($isStaffLogin) {
-                $redirectUrl = $this->di['url']->adminLink('');
-            } else {
-                $redirectUrl = $this->di['url']->link('');
-            }
-
-            return (new ResponseFactory())->redirect($redirectUrl);
-        }
-
         return $this->renderJson($result);
+    }
+
+    // ClientFence core patch (0.8.9 port): guest identity and cart changes require the browser session's nonce and origin.
+    private function checkGuestAuthentication(string $role, string $method, array $params): void
+    {
+        if ($role !== 'guest' || !in_array(strtolower($method), [
+            'client_login', 'client_create', 'staff_login', 'client_user_invite_accept',
+            'client_twofactor_verify', 'client_signin_pin', 'staff_login_pin',
+            'cart_add_item', 'cart_remove_item', 'cart_apply_promo',
+            'cart_remove_promo', 'cart_reset', 'cart_set_currency',
+        ], true)) {
+            return;
+        }
+        $request = $this->di['request'];
+        if (!$request->isMethod('POST')) {
+            throw new \ClientFence\InformationException('This action requires POST', null, 405);
+        }
+        $token = $params['CSRFToken'] ?? $request->headers->get('X-CSRF-TOKEN');
+        $sessionToken = $this->di['session']->get('csrf_token');
+        if (!is_string($token) || !is_string($sessionToken) || $sessionToken === '' || !hash_equals($sessionToken, $token)) {
+            throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
+        }
+        $origin = $request->headers->get('Origin');
+        $expectedOrigin = \Symfony\Component\HttpFoundation\Request::create(SYSTEM_URL)->getSchemeAndHttpHost();
+        if (($origin !== null && strcasecmp($origin, $expectedOrigin) !== 0)
+            || $request->headers->get('Sec-Fetch-Site') === 'cross-site') {
+            throw new \ClientFence\InformationException('Invalid request origin', null, 403);
+        }
     }
 
     private function getAuth(): array

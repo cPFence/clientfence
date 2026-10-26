@@ -120,6 +120,7 @@ test('updates client', function (): void {
     $toolsMock->shouldReceive('validateAndSanitizeEmail');
 
     $clientServiceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientServiceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $clientServiceMock->shouldReceive('emailAlreadyRegistered')
         ->andReturn(false);
 
@@ -201,6 +202,7 @@ test('throws exception when email change is not allowed', function (): void {
         ]);
 
     $clientServiceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientServiceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $clientServiceMock->shouldReceive('emailAlreadyRegistered')
         ->never()
         ->andReturn(false);
@@ -245,6 +247,7 @@ test('throws exception when email already registered', function (): void {
     $toolsMock->shouldReceive('validateAndSanitizeEmail');
 
     $clientServiceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientServiceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
     $clientServiceMock->shouldReceive('emailAlreadyRegistered')
         ->atLeast()->once()
         ->andReturn(true);

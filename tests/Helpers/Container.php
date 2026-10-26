@@ -67,6 +67,7 @@ function container(): Container
     };
     $di['dbal'] = static function (): object {
         $dbal = \Mockery::mock(\Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+        $dbal->shouldReceive('transactional')->byDefault()->andReturnUsing(static fn (callable $work): mixed => $work($dbal));
         $result = \Mockery::mock(\Doctrine\DBAL\Result::class)->shouldIgnoreMissing();
         $result->shouldReceive('fetchAssociative')->byDefault()->andReturn(false);
         $result->shouldReceive('fetchAllAssociative')->byDefault()->andReturn([]);

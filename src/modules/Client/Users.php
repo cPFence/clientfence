@@ -549,13 +549,16 @@ final class Users
         $db = $di['em']->getConnection();
         $token = bin2hex(random_bytes(32));
         $now = time();
-        $db->executeStatement('DELETE FROM client_user_password_reset WHERE user_id = ? OR expires_at < ?', [(int) $user['id'], date('Y-m-d H:i:s', $now)]);
-        $db->insert('client_user_password_reset', [
-            'token_hash' => hash('sha256', $token),
-            'user_id' => (int) $user['id'],
-            'created_at' => date('Y-m-d H:i:s', $now),
-            'expires_at' => date('Y-m-d H:i:s', $now + self::RESET_MINUTES * 60),
-        ]);
+        $db->transactional(function () use ($db, $user, $token, $now): void {
+            $db->executeStatement('UPDATE client_user SET id = id WHERE id = ?', [(int) $user['id']]);
+            $db->executeStatement('DELETE FROM client_user_password_reset WHERE user_id = ? OR expires_at < ?', [(int) $user['id'], date('Y-m-d H:i:s', $now)]);
+            $db->insert('client_user_password_reset', [
+                'token_hash' => hash('sha256', $token),
+                'user_id' => (int) $user['id'],
+                'created_at' => date('Y-m-d H:i:s', $now),
+                'expires_at' => date('Y-m-d H:i:s', $now + self::RESET_MINUTES * 60),
+            ]);
+        });
         $di['mod_service']('email')->sendTemplate([
             'code' => 'mod_client_user_password_reset',
             'to' => (string) $user['email'],
@@ -585,16 +588,27 @@ final class Users
         $di['rate_limiter']->consumeOrThrow('client_password_reset_confirm_post_ip', $ip);
         $di['validator']->passwordsMatch(['password' => $password, 'password_confirm' => $confirm]);
         $di['validator']->isPasswordStrong($password);
+        // ClientFence core patch (0.8.9 port): a reset cannot race another reset or password change.
+        $db = $di['em']->getConnection();
         $userId = self::resetUser($di, $token);
         if ($userId === null) {
             throw new InformationException('The link has expired or you have already reset your password.');
         }
-        $db = $di['em']->getConnection();
-        $db->executeStatement(
-            'UPDATE client_user SET pass = ?, session_version = session_version + 1, updated_at = ? WHERE id = ?',
-            [$di['password']->hashIt((string) $password), date('Y-m-d H:i:s'), $userId]
-        );
-        $db->delete('client_user_password_reset', ['user_id' => $userId]);
+        $db->transactional(function () use ($di, $db, $token, $password, $userId): void {
+            $db->executeStatement('UPDATE client_user SET id = id WHERE id = ?', [$userId]);
+            $current = $db->fetchOne(
+                'SELECT r.user_id FROM client_user_password_reset r JOIN client_user u ON u.id = r.user_id AND u.status = ? WHERE r.token_hash = ? AND r.expires_at >= ?' . \ClientFence\Doctrine\RowLock::suffix($db),
+                ['active', hash('sha256', $token), date('Y-m-d H:i:s')]
+            );
+            if ($current === false) {
+                throw new InformationException('The link has expired or you have already reset your password.');
+            }
+            $db->executeStatement(
+                'UPDATE client_user SET pass = ?, session_version = session_version + 1, updated_at = ? WHERE id = ?',
+                [$di['password']->hashIt((string) $password), date('Y-m-d H:i:s'), $userId]
+            );
+            $db->delete('client_user_password_reset', ['user_id' => $userId]);
+        });
         self::forget();
         $di['logger']->setChannel('security')->info('Authorized user #%s password reset completed from IP %s', $userId, $ip);
         self::activity($di, self::linkedClients($db, $userId), sprintf('Authorized user %s set a new password from a reset link', self::userEmail($db, $userId)));
@@ -988,17 +1002,20 @@ final class Users
         $di['rate_limiter']->consumeOrThrow('profile_password_change_ip', $ip);
         $di['rate_limiter']->consumeOrThrow('profile_password_change_account', 'clientfence-user-' . $context['user_id']);
         $db = $di['em']->getConnection();
-        $pass = (string) $db->fetchOne('SELECT pass FROM client_user WHERE id = ?', [$context['user_id']]);
-        if (!is_string($data['current_password'] ?? null) || !$di['password']->verify($data['current_password'], $pass)) {
-            throw new InformationException('The current password is not correct.');
-        }
-        $di['validator']->passwordsMatch(['password' => $data['new_password'] ?? null, 'password_confirm' => $data['confirm_password'] ?? null]);
-        $di['validator']->isPasswordStrong($data['new_password'] ?? null);
-        $db->executeStatement(
-            'UPDATE client_user SET pass = ?, session_version = session_version + 1, updated_at = ? WHERE id = ?',
-            [$di['password']->hashIt((string) $data['new_password']), date('Y-m-d H:i:s'), $context['user_id']]
-        );
-        $db->delete('client_user_password_reset', ['user_id' => $context['user_id']]);
+        $db->transactional(function () use ($di, $db, $context, $data): void {
+            $db->executeStatement('UPDATE client_user SET id = id WHERE id = ?', [$context['user_id']]);
+            $pass = (string) $db->fetchOne('SELECT pass FROM client_user WHERE id = ?', [$context['user_id']]);
+            if (!is_string($data['current_password'] ?? null) || !$di['password']->verify($data['current_password'], $pass)) {
+                throw new InformationException('The current password is not correct.');
+            }
+            $di['validator']->passwordsMatch(['password' => $data['new_password'] ?? null, 'password_confirm' => $data['confirm_password'] ?? null]);
+            $di['validator']->isPasswordStrong($data['new_password'] ?? null);
+            $db->executeStatement(
+                'UPDATE client_user SET pass = ?, session_version = session_version + 1, updated_at = ? WHERE id = ?',
+                [$di['password']->hashIt((string) $data['new_password']), date('Y-m-d H:i:s'), $context['user_id']]
+            );
+            $db->delete('client_user_password_reset', ['user_id' => $context['user_id']]);
+        });
         $state = $di['session']->get(self::SESSION);
         $state['version'] = (int) $db->fetchOne('SELECT session_version FROM client_user WHERE id = ?', [$context['user_id']]);
         $di['session']->set(self::SESSION, $state);

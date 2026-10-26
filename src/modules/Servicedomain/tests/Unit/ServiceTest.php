@@ -2507,3 +2507,64 @@ test('updates domain', function (): void {
 
     expect($result)->toBeTrue();
 });
+
+test('handles domain sync failures without blocking other domains', function (Throwable $failure): void {
+    $retryAfterFailure = $failure instanceof Error;
+    $failedDomain = new Model_ServiceDomain();
+    $healthyDomain = new Model_ServiceDomain();
+    $failedDomain->loadBean(new Tests\Helpers\DummyBean());
+    $healthyDomain->loadBean(new Tests\Helpers\DummyBean());
+    $attempts = 0;
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('syncExpirationDate')
+        ->times($retryAfterFailure ? 2 : 1)
+        ->with($failedDomain)
+        ->andReturnUsing(static function () use (&$attempts, $failure): void {
+            if (++$attempts === 1) {
+                throw $failure;
+            }
+        });
+    $serviceMock->shouldReceive('syncExpirationDate')
+        ->times($retryAfterFailure ? 2 : 1)
+        ->with($healthyDomain);
+
+    $lastSync = null;
+    $systemServiceMock = Mockery::mock(SystemService::class);
+    $systemServiceMock->shouldReceive('getParamValue')
+        ->times(3)
+        ->andReturnUsing(static function () use (&$lastSync): ?string {
+            return $lastSync;
+        });
+    $systemServiceMock->shouldReceive('setParamValue')
+        ->once()
+        ->with('servicedomain_last_sync', Mockery::type('string'))
+        ->andReturnUsing(static function (string $key, string $value) use (&$lastSync): bool {
+            $lastSync = $value;
+
+            return true;
+        });
+
+    $dbMock = Mockery::mock(ClientFence\Database::class);
+    $dbMock->shouldReceive('find')->with('ServiceDomain')->times($retryAfterFailure ? 2 : 1)->andReturn([$failedDomain, $healthyDomain]);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn ($name) => $systemServiceMock);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $serviceMock->setDi($di);
+
+        $firstResult = $serviceMock->batchSyncExpirationDates();
+        expect($lastSync === null)->toBe($retryAfterFailure);
+
+        $secondResult = $serviceMock->batchSyncExpirationDates();
+        expect($lastSync)->not->toBeNull();
+
+        $thirdResult = $serviceMock->batchSyncExpirationDates();
+
+    expect($firstResult)->toBeTrue()
+        ->and($secondResult)->toBe($retryAfterFailure)
+        ->and($thirdResult)->toBeFalse();
+})->with([
+    'registrar exception' => [new Exception('registrar unavailable')],
+    'adapter type error' => [new TypeError('broken registrar adapter')],
+]);

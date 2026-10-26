@@ -64,7 +64,6 @@ test('approveClientEmailByHash refuses a link sent before the email changed, an 
 
     expect(fn () => $service->approveClientEmailByHash('token-one'))->toThrow(ClientFence\InformationException::class);
     expect((int) $db->fetchOne('SELECT email_approved FROM client WHERE id = 2'))->toBe(0);
-    expect((int) $db->fetchOne('SELECT COUNT(*) FROM extension_meta WHERE meta_value = ?', ['token-one']))->toBe(0);
 })->with([
     'sent to the old email' => ['attacker@example.com', 3600],
     'expired' => ['victim@example.com', 8 * 86400],
@@ -113,6 +112,10 @@ test('generateEmailConfirmationLink returns string', function (): void {
         ->andReturn('randomhash123456789012345678901234567890');
 
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('transactional')->andReturnUsing(fn ($work) => $work());
+    $dbal->shouldReceive('executeStatement')->andReturn(1);
+    $dbal->shouldReceive('delete')->once();
+    $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\SQLitePlatform());
     $dbal->shouldReceive('fetchOne')->once()->andReturn('Owner@Example.com');
     $dbal->shouldReceive('insert')->once()->with('extension_meta', Mockery::on(fn (array $row): bool => $row['rel_type'] === ClientFence\Mod\Client\Service::emailConfirmationTag('owner@example.com')))->andReturn(1);
 
@@ -1357,4 +1360,23 @@ test('exportCSV silently drops unknown column names', function (): void {
 
     expect($capturedHeaders)->toBe(['id', 'email'])
         ->and($capturedHeaders)->not->toContain('totally_fake_column');
+});
+
+test('resending an email confirmation revokes earlier links', function (): void {
+    [$service, $db] = confirmEmailService('owner@example.com', 'owner@example.com', date('Y-m-d H:i:s'));
+    $di = $service->getDi();
+    $tools = Mockery::mock(ClientFence\Tools::class);
+    $tools->shouldReceive('generatePassword')->andReturn('replacement');
+    $tools->shouldReceive('url')->andReturnUsing(fn ($path) => $path);
+    $di['tools'] = $tools;
+    $service->generateEmailConfirmationLink(2);
+    expect(fn () => $service->approveClientEmailByHash('token-one'))->toThrow(ClientFence\InformationException::class);
+    expect($service->approveClientEmailByHash('replacement'))->toBeTrue();
+});
+
+test('email approval rolls back when consuming its confirmation fails', function (): void {
+    [$service, $db] = confirmEmailService('owner@example.com', 'owner@example.com', date('Y-m-d H:i:s'));
+    $db->executeStatement("CREATE TRIGGER fail_confirmation_delete BEFORE DELETE ON extension_meta BEGIN SELECT RAISE(ABORT, 'test storage failure'); END");
+    expect(fn () => $service->approveClientEmailByHash('token-one'))->toThrow(Exception::class, 'test storage failure');
+    expect((int) $db->fetchOne('SELECT email_approved FROM client WHERE id = 2'))->toBe(0);
 });

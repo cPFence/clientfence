@@ -4264,3 +4264,23 @@ test('applyPaidRenewal runs the oldest waiting paid renewal line once, or report
     expect($service->applyPaidRenewal(7))->toBeTrue()
         ->and($service->applyPaidRenewal(8))->toBeFalse();
 });
+
+test('form answer updates retain service config and clear omitted choices', function (): void {
+    $order = createEntity(Order::class, ['id' => 7, 'form_id' => 11, 'config' => json_encode([
+        'hostname' => 'old', 'addons' => ['backup'], 'server_id' => 4, 'options' => [2 => 3], 'option_lines' => ['saved'],
+    ])]);
+    $formService = Mockery::mock(ClientFence\Mod\Formbuilder\Service::class);
+    $formService->shouldReceive('getForm')->once()->with(11)->andReturn(['fields' => [
+        ['name' => 'hostname', 'label' => 'Hostname', 'type' => 'text'],
+        ['name' => 'addons', 'label' => 'Addons', 'type' => 'checkbox'],
+    ]]);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn () => $formService);
+    $di['em'] = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $service = new Service();
+    $service->setDi($di);
+    $service->updateOrderConfig($order, ['hostname' => 'new', 'options' => [], 'option_lines' => []]);
+    expect(json_decode($order->getConfig(), true))->toEqual([
+        'server_id' => 4, 'hostname' => 'new', 'options' => [2 => 3], 'option_lines' => ['saved'],
+    ]);
+});

@@ -169,6 +169,8 @@ function createTestController(array $sessionData = [], ?object $api = null, mixe
     $request = Mockery::mock(Request::class);
     $request->shouldReceive('getClientIp')->andReturn('127.0.0.1');
     $request->shouldReceive('isXmlHttpRequest')->byDefault()->andReturn(false);
+    $request->shouldReceive('isMethod')->with('POST')->andReturn(true);
+    $request->headers = new Symfony\Component\HttpFoundation\HeaderBag();
 
     $rateLimitCalls = new ArrayObject();
     $rateLimiter = new ClientTestRateLimiterDouble($rateLimitCalls);
@@ -177,7 +179,7 @@ function createTestController(array $sessionData = [], ?object $api = null, mixe
     $di = new Pimple\Container();
     $di['request'] = $request;
     $di['rate_limiter'] = $rateLimiter;
-    $di['session'] = new ClientTestSessionDouble($sessionData);
+    $di['session'] = new ClientTestSessionDouble($sessionData + ['csrf_token' => 'test-token']);
     $di['update_finalization'] = new ClientTestUpdateFinalizationDouble();
     $di['api_identity'] = $di->protect(fn (string $role): object => $api);
     $di['api_dispatcher'] = new ClientTestApiDispatcherDouble($dispatcherResult);
@@ -311,20 +313,17 @@ test('raw response bypasses JSON rendering', function (): void {
     expect($controller->renderedException)->toBeNull();
 });
 
-test('non-AJAX client login returns a redirect response', function (): void {
+test('non-AJAX client login returns the API response', function (): void {
     [$controller] = createTestController();
-
-    $response = invokeApiCall($controller, 'guest', 'client', 'login', []);
-
+    $response = invokeApiCall($controller, 'guest', 'client', 'client_login', ['CSRFToken' => 'test-token']);
     expect($response)->toBeInstanceOf(Response::class)
-        ->and($response->isRedirect())->toBeTrue()
-        ->and($response->headers->get('Location'))->toBe('https://client.example.test/');
+        ->and($response->isRedirect())->toBeFalse();
 });
 
 test('guest client login is throttled under the anti-brute-force api_login policy', function (): void {
     [$controller, $rateLimitCalls] = createTestController();
 
-    invokeApiCall($controller, 'guest', 'client', 'client_login', []);
+    invokeApiCall($controller, 'guest', 'client', 'client_login', ['CSRFToken' => 'test-token']);
 
     expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 1]]);
 });
@@ -332,7 +331,7 @@ test('guest client login is throttled under the anti-brute-force api_login polic
 test('login calls in any letter case are throttled under the api_login policy', function (string $call): void {
     [$controller, $rateLimitCalls] = createTestController();
 
-    invokeApiCall($controller, 'guest', 'staff', $call, []);
+    invokeApiCall($controller, 'guest', 'staff', $call, ['CSRFToken' => 'test-token']);
 
     expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 1]]);
 })->with(['Staff_login', 'staff_LOGIN', 'CLIENT_Login']);

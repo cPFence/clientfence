@@ -52,7 +52,7 @@ use ClientFence\InformationException;
  * session. start() therefore keeps the session id in the cache under the state's hash, with
  * the hash of a SameSite=Lax cookie (COOKIE, HttpOnly, ten minutes, on /google-sign-in only)
  * that the browser does send then; restoreUrl() checks both and sends the browser once more to
- * the callback with FOSSBilling's signed restore_token (as payment gateways come back), which
+ * the callback with an opaque one-use restore token, which
  * puts the real session back. The cookie keeps someone else's state from pulling a browser into
  * that person's session. The callback then gives the session a new id, so the token in the
  * address works no more. The callback answers with a page that moves on (not a redirect), so
@@ -356,8 +356,11 @@ final class Google
         if (!is_array($kept) || !hash_equals((string) ($kept['bind'] ?? ''), hash('sha256', $cookie)) || (string) ($kept['session'] ?? '') === '') {
             return null;
         }
-        $di['cache']->deleteItem($key);
-        $back = ['state' => $state, 'restore_token' => \ClientFence\Tools::createSessionRestoreToken((string) $kept['session'])];
+        $restore = bin2hex(random_bytes(32));
+        $kept['restore'] = hash('sha256', $restore);
+        $item->set($kept);
+        $di['cache']->save($item);
+        $back = ['state' => $state, 'restore_token' => $restore];
         foreach (['code', 'error'] as $name) {
             if (is_string($query[$name] ?? null)) {
                 $back[$name] = $query[$name];
@@ -365,6 +368,29 @@ final class Google
         }
 
         return $di['url']->link('google-sign-in/callback', $back);
+    }
+
+    // ClientFence core patch (0.8.9 port): only this callback's state and browser cookie can redeem its opaque restore token.
+    public static function consumeRestoreToken(\Pimple\Container $di, array $query, string $cookie): ?string
+    {
+        $state = $query['state'] ?? null;
+        $token = $query['restore_token'] ?? null;
+        if (!is_string($state) || !is_string($token) || $cookie === '') {
+            return null;
+        }
+        return \ClientFence\Tools::withLock($di, 'google-restore:' . substr(hash('sha256', $state), 0, 40), function () use ($di, $state, $token, $cookie): ?string {
+            $key = self::cacheKey($state);
+            $item = $di['cache']->getItem($key);
+            $kept = $item->isHit() ? $item->get() : null;
+            if (!is_array($kept) || !isset($kept['restore'])
+                || !hash_equals($kept['restore'], hash('sha256', $token))
+                || !hash_equals($kept['bind'], hash('sha256', $cookie))) {
+                return null;
+            }
+            $di['cache']->deleteItem($key);
+
+            return $kept['session'];
+        });
     }
 
     /**

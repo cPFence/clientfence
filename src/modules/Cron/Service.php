@@ -184,8 +184,10 @@ class Service
     private function clearOldSessions(): ?int
     {
         $maxAge = time() - Config::getProperty('security.session_lifespan', 7200);
-        $sql = 'DELETE FROM session WHERE created_at <= :age';
+        // ClientFence core patch (0.8.9 port): Single-request sessions never receive created_at; expire them by last activity too.
+        // ClientFence core patch (0.8.9 port): idle expiry also removes sessions without a creation timestamp.
+        $sql = 'DELETE FROM session WHERE modified_at <= :idle_age OR created_at <= :age';
 
-        return $this->di['db']->exec($sql, [':age' => $maxAge]);
+        return $this->di['db']->exec($sql, [':idle_age' => $maxAge, ':age' => $maxAge]);
     }
 }

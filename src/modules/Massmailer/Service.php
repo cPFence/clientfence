@@ -359,9 +359,12 @@ class Service implements \ClientFence\InjectionAwareInterface
         $clientArr = $clientService->toApiArray($client, true, null);
 
         $vars = ['c' => $clientArr];
-        $ps = $systemService->renderEmailSubjectString($model->getSubject(), $vars);
+        // ClientFence core patch (0.8.9 port): queued mail uses each recipient's date context.
+        $timezone = !empty($clientArr['timezone']) ? (string) $clientArr['timezone'] : null;
+        $locale = !empty($clientArr['lang']) ? (string) $clientArr['lang'] : null;
+        $ps = $systemService->renderEmailSubjectString($model->getSubject(), $vars, $timezone, $locale);
         // ClientFence core patch (ext massmailer): the rich editor writes Markdown; the signature is HTML, so it goes after.
-        $pc = $systemService->renderEmailTplString("{% apply markdown_to_html %}\n" . $model->getContent() . "\n{% endapply %}\n{{ guest.system_email.signature }}", $vars);
+        $pc = $systemService->renderEmailTplString("{% apply markdown_to_html %}\n" . $model->getContent() . "\n{% endapply %}\n{{ guest.system_email.signature }}", $vars, $timezone, $locale);
 
         return [$ps, $pc];
     }

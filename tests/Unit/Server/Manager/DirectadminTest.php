@@ -88,7 +88,7 @@ test('modifyAccount sends custom package values to DirectAdmin', function (): vo
     expect($manager->modifyAccount($account))->toBeTrue()
         ->and($requests)->toHaveCount(1);
 
-    parse_str((string) parse_url($requests[0]['url'], PHP_URL_QUERY), $fields);
+    parse_str($requests[0]['options']['body'], $fields);
 
     expect($fields)->toMatchArray([
         'action' => 'customize',
@@ -128,7 +128,7 @@ test('modifyAccount honors explicit false DNS and system information permissions
 
     expect($manager->modifyAccount($account))->toBeTrue();
 
-    parse_str((string) parse_url($requests[0]['url'], PHP_URL_QUERY), $fields);
+    parse_str($requests[0]['options']['body'], $fields);
 
     expect($fields['dnscontrol'])->toBe('OFF')
         ->and($fields['sysinfo'])->toBe('OFF');
@@ -137,7 +137,7 @@ test('modifyAccount honors explicit false DNS and system information permissions
 test('suspendAccount forwards the suspension reason to DirectAdmin', function (): void {
     $requests = [];
     $httpClient = new MockHttpClient(function (string $method, string $url, array $options) use (&$requests): MockResponse {
-        $requests[] = $url;
+        $requests[] = ['url' => $url, 'body' => $options['body'] ?? ''];
 
         return new MockResponse('suspended=no');
     });
@@ -148,8 +148,20 @@ test('suspendAccount forwards the suspension reason to DirectAdmin', function ()
 
     expect($manager->suspendAccount($account))->toBeTrue();
 
-    parse_str((string) parse_url($requests[1], PHP_URL_QUERY), $fields);
+    parse_str($requests[1]['body'], $fields);
 
     expect($fields['reason'])->toBe('billing')
         ->and($fields['details'])->toBe('Non-payment');
+});
+
+test('DirectAdmin password fields stay in the POST body', function (): void {
+    $client = new MockHttpClient(function (string $method, string $url, array $options): MockResponse {
+        expect($method)->toBe('POST')->and(parse_url($url, PHP_URL_QUERY))->toBeNull();
+        parse_str($options['body'], $body);
+        expect($body['passwd'])->toBe('test-password')->and($body['passwd2'])->toBe('test-password');
+
+        return new MockResponse('error=0');
+    });
+    $manager = createDirectadminManager($client);
+    (new ReflectionMethod($manager, 'request'))->invoke($manager, 'API_PASSWD', ['passwd' => 'test-password', 'passwd2' => 'test-password']);
 });

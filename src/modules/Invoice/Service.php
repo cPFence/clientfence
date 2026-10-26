@@ -2533,10 +2533,10 @@ class Service implements InjectionAwareInterface
         $sellerLines = 0;
         $buyerLines = 0;
         $logoSource = '';
+        $options->set('isRemoteEnabled', false);
 
         if (!empty($c['logo_url'])) {
-            [$logoSource, $remote] = $this->getPdfLogoSource($c['logo_url']);
-            $options->set('isRemoteEnabled', $remote);
+            [$logoSource] = $this->getPdfLogoSource($c['logo_url']);
         }
 
         $vars = [
@@ -2999,6 +2999,9 @@ class Service implements InjectionAwareInterface
     {
         $source = parse_url($originalUrl, PHP_URL_PATH);
         $remote = false;
+        if (!is_string($source) || $source === '') {
+            return [$this->fetchPdfLogo($originalUrl), false];
+        }
 
         // prevent openbasedir error from preventing pdf creation when debug mode is enabled
         if (@!$this->filesystem->exists($source)) {
@@ -3021,23 +3024,44 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        // Only permit http/https remote URLs. Other schemes such as file://, php://, or phar://
-        // could be passed to Dompdf with remote loading enabled, leading to local file disclosure
-        // or other server-side vulnerabilities. Malformed URLs (where parse_url returns non-string)
-        // are also rejected by skipping the logo entirely.
         if ($remote) {
-            $scheme = parse_url($source, PHP_URL_SCHEME);
-            if (!is_string($scheme) || !in_array(strtolower($scheme), ['http', 'https'], true)) {
-                return ['', false];
-            }
+            return [$this->fetchPdfLogo($originalUrl), false];
         }
 
-        if (!$remote && str_ends_with($source, '.svg')) {
+        if (str_ends_with($source, '.svg')) {
             $source = 'data:image/svg+xml;base64,' . base64_encode($this->filesystem->readFile($source));
             $remote = false;
         }
 
         return [$source, $remote];
+    }
+
+    // ClientFence core patch (0.8.9 port): logo requests use a bounded client that rejects private networks.
+    private function fetchPdfLogo(string $url): string
+    {
+        if (!in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)) {
+            return '';
+        }
+
+        try {
+            $client = new \Symfony\Component\HttpClient\NoPrivateNetworkHttpClient($this->di['http_client']);
+            $bytes = $client->request('GET', $url, [
+                'max_redirects' => 3,
+                'timeout' => 5,
+                'max_duration' => 10,
+                'on_progress' => static function (int $downloaded): void {
+                    if ($downloaded > 2 * 1024 * 1024) {
+                        throw new \Symfony\Component\HttpClient\Exception\TransportException('Invoice logo is too large');
+                    }
+                },
+            ])->getContent();
+        } catch (\Symfony\Contracts\HttpClient\Exception\ExceptionInterface) {
+            return '';
+        }
+        // Raster images only: a remote SVG could load further resources.
+        $image = @getimagesizefromstring($bytes);
+
+        return $image === false ? '' : 'data:' . $image['mime'] . ';base64,' . base64_encode($bytes);
     }
 
     private function getSellerData(array $invoice, int &$lines): array

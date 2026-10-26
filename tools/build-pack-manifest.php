@@ -18,6 +18,9 @@ $paths = [
     'library/Registrar/Adapter/Dynadot.php',
     'library/Server/Manager/Enhance.php',
     'library/ClientFence/Twig/Extension/RtlDateExtension.php',
+    'library/ClientFence/Doctrine/RowLock.php',
+    'library/ClientFence/Http/PaymentReturn.php',
+    'library/Server/PackageExistsException.php',
     'clientfence-security-headers.php',
     'modules/Clientfence',
     // Moved from the ClientFence module into its home module.

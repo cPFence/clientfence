@@ -2382,3 +2382,43 @@ test('checkout buyer details are encoded as JS string literals', function (): vo
         ->and(json_decode($encoded))->toBe("O'Brien & <Sons>")
         ->and($encoded)->not->toContain('</script>');
 });
+
+test('records a renewal against its renewal invoice when the subscription original is paid', function (bool $paymentShape): void {
+    $tx = buildTransaction();
+    $tx->id = 101;
+    $original = new Model_Invoice();
+    $original->loadBean(new DummyBean());
+    $original->id = 42;
+    $original->status = Model_Invoice::STATUS_PAID;
+    $renewal = new Model_Invoice();
+    $renewal->loadBean(new DummyBean());
+    $renewal->id = 43;
+    $invoice = (object) ['id' => 'in_renewal', 'subscription' => 'sub_abc', 'billing_reason' => 'subscription_cycle', 'amount_paid' => 1000, 'currency' => 'usd'];
+    $stripe = Mockery::mock(StripeClient::class);
+    $stripe->subscriptions = Mockery::mock();
+    $stripe->subscriptions->shouldReceive('retrieve')->once()->with('sub_abc', [])->andReturn((object) [
+        'id' => 'sub_abc', 'metadata' => (object) ['invoice_id' => '42', 'client_id' => '7'],
+    ]);
+    $payload = $invoice;
+    if ($paymentShape) {
+        $payload = (object) ['object' => 'invoice_payment', 'invoice' => 'in_renewal'];
+        $stripe->invoices = Mockery::mock();
+        $stripe->invoices->shouldReceive('retrieve')->once()->with('in_renewal', [])->andReturn($invoice);
+    }
+    setPrivateProperty($this->adapter, 'stripe', $stripe);
+    $di = container();
+    $di['db']->shouldReceive('findOne')->with('Invoice', 'id = :id', [':id' => 42])->andReturn($original);
+    expectPaymentIntentLock($di['dbal'], 'in_renewal', 1);
+    $transactionService = Mockery::mock();
+    $transactionService->shouldReceive('claimForProcessing')->once()->with(101)->andReturnTrue();
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('generateRenewalInvoiceForSubscriptionPayment')->once()->with('sub_abc', 7)->andReturn($renewal);
+    $invoiceService->shouldReceive('isInvoiceTypeDeposit')->with($renewal)->andReturnFalse();
+    $invoiceService->shouldReceive('payInvoiceWithCredits')->once()->with($renewal);
+    $di['mod_service'] = $di->protect(fn ($module, $service = null) => $service === 'Transaction' ? $transactionService : $invoiceService);
+    $this->adapter->setDi($di);
+    $api = Mockery::mock();
+    $api->shouldReceive('client_balance_add_funds')->once()->with(Mockery::on(fn ($data) => $data['amount'] === 10.0));
+    expect(invokePrivateMethod($this->adapter, 'handleInvoicePaymentSucceeded', [$api, $tx, (object) ['data' => (object) ['object' => $payload]], 1]))->toBeTrue()
+        ->and($tx->invoice_id)->toBe(43);
+})->with([false, true]);

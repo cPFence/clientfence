@@ -428,10 +428,8 @@ class Guest extends \ClientFence\Api\AbstractApi
                 throw new \ClientFence\InformationException('The link has expired or you have already reset your password.');
             }
 
-            $client->setPass($this->getDi()['password']->hashIt($data['password']));
-            $em->persist($client);
-            $em->remove($reset);
-            $em->flush();
+            // ClientFence core patch (0.8.9 port): redemption rechecks and revokes credentials under the account lock.
+            $em->getRepository(ClientPasswordReset::class)->changePassword($client, $this->getDi()['password']->hashIt($data['password']), $data['hash']);
 
             $profileService = $this->getDi()['mod_service']('profile');
             $profileService->invalidateSessions('client', (int) $client->getId());

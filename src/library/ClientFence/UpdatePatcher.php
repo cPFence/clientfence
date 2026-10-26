@@ -197,6 +197,11 @@ class UpdatePatcher implements InjectionAwareInterface
 
         // ClientFence core patch: then ClientFence's own migrations (Mod\Clientfence\Migrations).
         \ClientFence\Mod\Clientfence\Migrations::apply($this->di);
+        // ClientFence core patch (0.8.9 port): invoice history cannot safely determine an unused replacement counter.
+        $counter = $this->fetchOne('SELECT value FROM setting WHERE param = :param', ['param' => 'invoice_starting_number']);
+        if (filter_var($counter, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => PHP_INT_MAX - 1]]) === false) {
+            $this->di['logger']->setChannel('update')->warning('The next invoice number is missing or invalid. Review invoice history and set an unused positive whole number in Invoice Settings before issuing invoices.');
+        }
     }
 
     /**

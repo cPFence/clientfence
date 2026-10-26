@@ -81,3 +81,43 @@ test('Google sign-in links only a client account whose email is confirmed', func
         ->and(fn () => $match->invoke(null, $di, $claims('unconfirmed@example.com')))->toThrow(ClientFence\InformationException::class, 'not confirmed')
         ->and(fn () => $match->invoke(null, $di, $claims('zero@example.com')))->toThrow(ClientFence\InformationException::class, 'not confirmed');
 });
+
+test('Google session recovery uses an opaque callback token bound to state and browser cookie once', function (): void {
+    $di = container();
+    $di['dbal']->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MariaDBPlatform());
+    $di['dbal']->shouldReceive('fetchOne')->times(3)->with('SELECT GET_LOCK(?, ?)', Mockery::on(fn ($args) => strlen($args[0]) <= 64))->andReturn(1);
+    $di['dbal']->shouldReceive('fetchOne')->times(3)->with('SELECT RELEASE_LOCK(?)', Mockery::any())->andReturn(1);
+    $di['cache'] = new Symfony\Component\Cache\Adapter\ArrayAdapter();
+    $state = str_repeat('a', 64);
+    $key = (new ReflectionMethod(Google::class, 'cacheKey'))->invoke(null, $state);
+    $item = $di['cache']->getItem($key);
+    $item->set(['session' => 'original-browser-session', 'bind' => hash('sha256', 'browser-cookie')])->expiresAfter(300);
+    $di['cache']->save($item);
+    $url = Mockery::mock(ClientFence\Url::class);
+    $url->shouldReceive('link')->andReturnUsing(fn ($path, $query) => '/' . $path . '?' . http_build_query($query));
+    $di['url'] = $url;
+    $next = Google::restoreUrl($di, ['state' => $state, 'code' => 'authorization-code'], 'browser-cookie');
+    parse_str(parse_url($next, PHP_URL_QUERY), $query);
+    expect($next)->not->toContain('original-browser-session')
+        ->and($query['restore_token'])->toMatch('/^[a-f0-9]{64}$/')
+        ->and(Google::consumeRestoreToken($di, $query, 'another-cookie'))->toBeNull()
+        ->and(Google::consumeRestoreToken($di, $query, 'browser-cookie'))->toBe('original-browser-session')
+        ->and(Google::consumeRestoreToken($di, $query, 'browser-cookie'))->toBeNull();
+});
+
+test('authorized-user password and token consumption roll back together on a storage failure', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_user (id INTEGER PRIMARY KEY, status TEXT, pass TEXT, session_version INTEGER, updated_at TEXT)');
+    $db->executeStatement('CREATE TABLE client_user_password_reset (user_id INTEGER, token_hash TEXT, expires_at TEXT)');
+    $db->insert('client_user', ['id' => 1, 'status' => 'active', 'pass' => 'old', 'session_version' => 0]);
+    $token = str_repeat('a', 64);
+    $db->insert('client_user_password_reset', ['user_id' => 1, 'token_hash' => hash('sha256', $token), 'expires_at' => date('Y-m-d H:i:s', time() + 300)]);
+    $db->executeStatement("CREATE TRIGGER fail_reset_delete BEFORE DELETE ON client_user_password_reset BEGIN SELECT RAISE(ABORT, 'test storage failure'); END");
+    $di = container();
+    $di['em']->shouldReceive('getConnection')->andReturn($db);
+    $di['password'] = Mockery::mock(ClientFence\PasswordManager::class);
+    $di['password']->shouldReceive('hashIt')->andReturn('new');
+    expect(fn () => Users::resetPassword($di, $token, 'NewPassword123!', 'NewPassword123!', '127.0.0.1'))->toThrow(Exception::class, 'test storage failure');
+    expect($db->fetchOne('SELECT pass FROM client_user'))->toBe('old')
+        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM client_user_password_reset'))->toBe(1);
+});

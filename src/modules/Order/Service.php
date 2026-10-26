@@ -2521,6 +2521,13 @@ class Service implements InjectionAwareInterface
             $formbuilderService = $this->di['mod_service']('formbuilder');
             $form = $formbuilderService->getForm((int) $formId);
             $this->validateConfigAgainstForm($config, $form);
+
+            // ClientFence core patch (0.8.9 port): replace form answers without losing service settings or retaining unchecked choices.
+            $existingConfig = $this->getConfig($order);
+            foreach ($form['fields'] as $field) {
+                unset($existingConfig[$field['name']]);
+            }
+            $config = array_replace($existingConfig, $config);
         }
 
         $oldConfig = $this->orderConfig($order);

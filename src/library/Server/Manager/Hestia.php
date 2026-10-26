@@ -46,8 +46,12 @@ class Server_Manager_Hestia extends Server_Manager
      * Method is called just after object construct is complete.
      * Add required parameters checks here.
      */
-    public function init()
+    public function init(): void
     {
+        // ClientFence core patch (0.8.9 port): Hestia needs a configured hostname before constructing an endpoint.
+        if (trim((string) ($this->_config['host'] ?? '')) === '') {
+            throw new Server_Exception('The HestiaCP server hostname is missing. Please configure it in the server settings.');
+        }
     }
 
     /**

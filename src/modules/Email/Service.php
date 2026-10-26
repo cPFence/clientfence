@@ -140,14 +140,14 @@ class Service implements \ClientFence\InjectionAwareInterface
      *
      * @return array{0: string, 1: string}
      */
-    public function renderTemplate(string $code, array $vars, array $previewVars = [], ?string $timezone = null): array
+    public function renderTemplate(string $code, array $vars, array $previewVars = [], ?string $timezone = null, ?string $locale = null): array
     {
         $template = $this->getOrCreateTemplateByCode($code, ['code' => $code]);
         if ($this->getVars($template) === []) {
             $this->setVars($template, $previewVars);
         }
 
-        return $this->_parse($template, $vars, $timezone);
+        return $this->_parse($template, $vars, $timezone, $locale);
     }
 
     public function setVars(EmailTemplate $template, array $vars): bool
@@ -350,11 +350,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
         $systemService = $this->di['mod_service']('system');
 
-        // Pick a timezone for the date filters. Client-bound and individual
-        // staff-bound emails render in the recipient's timezone; broadcasts and
-        // misc fall through to the config default. Staff broadcasts parse per
-        // recipient in the send loop below; the value computed here is unused
-        // for that branch.
+        // ClientFence core patch (0.8.9 port): queued email uses the recipient's date context.
         $recipientTimezone = null;
         if (isset($customer) && !empty($customer['timezone'])) {
             $recipientTimezone = (string) $customer['timezone'];
@@ -362,7 +358,9 @@ class Service implements \ClientFence\InjectionAwareInterface
             $recipientTimezone = (string) $oneStaff['timezone'];
         }
 
-        [$subject, $content] = $this->_parse($template, $vars, $recipientTimezone);
+        $recipientLocale = $customer['lang'] ?? null;
+
+        [$subject, $content] = $this->_parse($template, $vars, $recipientTimezone, $recipientLocale);
 
         $emailMod = $this->di['mod']('email');
         $emailSettings = $emailMod->getConfig();
@@ -387,7 +385,7 @@ class Service implements \ClientFence\InjectionAwareInterface
                 $staffVars = $vars;
                 $staffVars['staff'] = $this->safeStaffTemplateVars($staff);
                 $staffTimezone = !empty($staff['timezone'] ?? null) ? (string) $staff['timezone'] : null;
-                [$subject, $content] = $this->_parse($template, $staffVars, $staffTimezone);
+                [$subject, $content] = $this->_parse($template, $staffVars, $staffTimezone, $staff['lang'] ?? null);
 
                 $to = $staff['email'];
                 $to_name = $staff['name'];
@@ -742,14 +740,14 @@ class Service implements \ClientFence\InjectionAwareInterface
         return $str . '{% endapply %}';
     }
 
-    private function _parse(EmailTemplate $template, array $vars, ?string $timezone = null): array
+    private function _parse(EmailTemplate $template, array $vars, ?string $timezone = null, ?string $locale = null): array
     {
         $systemService = $this->di['mod_service']('System');
         [$subjectTemplate, $contentTemplate] = $this->getEffectiveTemplateParts($template);
 
         try {
-            $pc = $systemService->renderEmailTplString($contentTemplate, $vars, $timezone);
-            $ps = $systemService->renderEmailSubjectString($subjectTemplate, $vars, $timezone);
+            $pc = $systemService->renderEmailTplString($contentTemplate, $vars, $timezone, $locale);
+            $ps = $systemService->renderEmailSubjectString($subjectTemplate, $vars, $timezone, $locale);
 
             if ($template->hasError()) {
                 $template->clearError();

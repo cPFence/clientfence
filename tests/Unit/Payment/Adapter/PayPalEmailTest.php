@@ -527,39 +527,18 @@ describe('PayPal callback invoice binding', function (): void {
         ], 2);
     })->throws(Payment_Exception::class, 'PayPal callback signature is invalid');
 
-    test('rejects a completed payment whose echoed item_number names a different invoice', function (): void {
-        $apiAdmin = Mockery::mock();
-        $apiAdmin->shouldReceive('invoice_transaction_get')->twice()->with(['id' => 42])->andReturn(
-            ['invoice_id' => 16, 'type' => null, 'txn_id' => null, 'txn_status' => null, 'amount' => null, 'currency' => null, 'status' => 'received'],
-            ['invoice_id' => 16, 'type' => 'web_accept', 'txn_id' => 'TXN-9', 'txn_status' => 'Completed', 'amount' => '120.00', 'currency' => 'USD', 'status' => 'processing']
-        );
-        $apiAdmin->shouldNotReceive('invoice_transaction_claim_for_processing');
-        $apiAdmin->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn([
-            'id' => 16, 'currency' => 'USD', 'client' => ['id' => 9],
-        ]);
-        $apiAdmin->shouldReceive('invoice_transaction_update')->byDefault()->andReturnTrue();
-        $apiAdmin->shouldNotReceive('client_balance_add_funds');
-
-        $invoiceBean = paypalBean(Model_Invoice::class, ['id' => 16, 'nr' => '00042']);
-
-        $dbMock = paypalDbMocks();
-        $dbMock->shouldReceive('load')->with('Invoice', 16)->andReturn($invoiceBean);
+    test('warns about a stale display number while accepting the stable invoice reference', function (): void {
+        $adapter = new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'test_mode' => false]);
         $di = container();
-        $di['db'] = $dbMock;
-        $di['logger'] = new Tests\Helpers\TestLogger();
-
-        paypalProcessAdapter($di)->processTransaction($apiAdmin, 42, [
-            'post' => [
-                'txn_type' => 'web_accept',
-                'payment_status' => 'Completed',
-                'txn_id' => 'TXN-9',
-                'mc_gross' => '120.00',
-                'mc_currency' => 'USD',
-                'item_number' => '99999',
-            ],
-            'get' => signedPayPalGet(16, 2),
-        ], 2);
-    })->throws(Payment_Exception::class, 'PayPal item_number does not match invoice 16');
+        $logger = Mockery::mock(Psr\Log\LoggerInterface::class);
+        $logger->shouldReceive('warning')->once()->with(Mockery::pattern('/invoice 16/'));
+        $di['logger'] = $logger;
+        $adapter->setDi($di);
+        invokePrivateMethod($adapter, 'verifyIpnEcho', [
+            ['item_number' => 'old', 'invoice' => '16'],
+            paypalBean(Model_Invoice::class, ['id' => 16, 'nr' => 'new']),
+        ]);
+    });
 
     test('accepts a completed payment whose echoed references match the invoice', function (): void {
         $funds = [];
@@ -713,4 +692,9 @@ describe('PayPal callback invoice binding', function (): void {
         expect((int) ($query['invoice_id'] ?? 0))->toBe(16)
             ->and(ClientFence\Tools::verifyCallbackSignature(2, 16, $query['sig'] ?? null))->toBeTrue();
     });
+});
+
+test('rejects array-valued IPN fields before verification', function (): void {
+    $adapter = buildPayPalEmailAdapter('merchant@example.com', 'VERIFIED');
+    expect(callIsIpnValid($adapter, 'receiver_email=merchant%40example.com&item_number[]=1'))->toBeFalse();
 });

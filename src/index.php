@@ -14,12 +14,19 @@ global $di;
 
 use DebugBar\DataCollector\TimeDataCollector;
 use ClientFence\Http\RequestFactory;
+use ClientFence\Http\PaymentReturn;
 
 $config = ClientFence\Config::getConfig();
 $debugBar = null;
 $timeCollector = null;
 /* @var Symfony\Component\HttpFoundation\Request $request */
 global $request;
+
+// ClientFence core patch (0.8.9 port): return to the invoice before any session is started.
+$paymentReturn = PaymentReturn::createResponse($request, $di['url']);
+if ($paymentReturn !== null) {
+    emitResponse($paymentReturn);
+}
 
 if ((bool) ($config['debug_and_monitoring']['debug'] ?? false)) {
     // Setting up the debug bar
@@ -55,17 +62,13 @@ if ((bool) ($config['debug_and_monitoring']['debug'] ?? false)) {
 }
 
 $url = RequestFactory::normalizeRoutePath($request);
-$http_err_code = $request->query->get('_errcode');
+$http_err_code = RequestFactory::getHttpErrorCode($request);
 
 $timeCollector?->startMeasure('session_start', 'Starting / restoring the session');
 
-/*
- * Workaround: Session IDs get reset when using PGs like PayPal because of the `samesite=strict` cookie attribute, resulting in the client getting logged out.
- * The return and cancel URLs include a signed restore_token that contains the session ID. We validate and extract it here.
- */
-if ($request->query->has('restore_token')) {
-    $restoreToken = $request->query->get('restore_token');
-    $restoredSessionId = is_string($restoreToken) ? ClientFence\Tools::validateSessionRestoreToken($restoreToken) : null;
+// ClientFence core patch (0.8.9 port): session recovery is restricted to the bound Google callback.
+if ($url === '/google-sign-in/callback') {
+    $restoredSessionId = \ClientFence\Mod\Client\Google::consumeRestoreToken($di, $request->query->all(), (string) $request->cookies->get(\ClientFence\Mod\Client\Google::COOKIE, ''));
     if ($restoredSessionId !== null) {
         session_id($restoredSessionId);
     }
@@ -95,7 +98,6 @@ $timeCollector?->stopMeasure('translate');
 
 // If HTTP error code has been passed, handle it.
 if (!is_null($http_err_code)) {
-    $http_err_code = intval($http_err_code);
     switch ($http_err_code) {
         case 404:
             $e = new ClientFence\Exception('Page :url not found', [':url' => $url], 404);

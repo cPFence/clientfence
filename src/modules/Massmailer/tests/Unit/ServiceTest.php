@@ -251,9 +251,9 @@ test('the content is rendered as Markdown with the email signature after it', fu
     $clientService->shouldReceive('get')->andReturn($client);
     $clientService->shouldReceive('toApiArray')->andReturn(['first_name' => 'Ann']);
     $systemService = Mockery::mock(ClientFence\Mod\System\Service::class);
-    $systemService->shouldReceive('renderEmailSubjectString')->with('Hi', ['c' => ['first_name' => 'Ann']])->andReturn('Hi');
+    $systemService->shouldReceive('renderEmailSubjectString')->with('Hi', ['c' => ['first_name' => 'Ann']], null, null)->andReturn('Hi');
     $systemService->shouldReceive('renderEmailTplString')
-        ->with("{% apply markdown_to_html %}\n**Hi {{ c.first_name }}**\n{% endapply %}\n{{ guest.system_email.signature }}", ['c' => ['first_name' => 'Ann']])
+        ->with("{% apply markdown_to_html %}\n**Hi {{ c.first_name }}**\n{% endapply %}\n{{ guest.system_email.signature }}", ['c' => ['first_name' => 'Ann']], null, null)
         ->once()->andReturn('<p><strong>Hi Ann</strong></p>');
 
     $di = createMassmailerDi();

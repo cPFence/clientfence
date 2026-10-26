@@ -204,3 +204,37 @@ test('try token login requires active non-cron admin token', function (): void {
     expect(fn (): mixed => invokeControllerPrivate($controller, '_tryTokenLogin', ['admin']))
         ->toThrow(InformationException::class);
 });
+
+test('guest identity and cart mutations require POST and a same-origin session nonce', function (string $method, string $verb, ?string $token, string $origin, ?int $error): void {
+    $di = createControllerDiWithRequest();
+    $di['request'] = Request::create('/', $verb, [], [], [], ['HTTP_ORIGIN' => $origin]);
+    $di['session'] = Mockery::mock();
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('session-token');
+    $controller = new Client();
+    $controller->setDi($di);
+    $call = fn () => invokeControllerPrivate($controller, 'checkGuestAuthentication', ['guest', $method, ['CSRFToken' => $token]]);
+    if ($error === null) {
+        expect($call())->toBeNull();
+    } else {
+        try {
+            $call();
+            test()->fail('Request was accepted');
+        } catch (InformationException $exception) {
+            expect($exception->getCode())->toBe($error);
+        }
+    }
+})->with([
+    ['CLIENT_LOGIN', 'POST', 'session-token', rtrim(SYSTEM_URL, '/'), null],
+    ['client_create', 'POST', null, rtrim(SYSTEM_URL, '/'), 403],
+    ['staff_login', 'GET', 'session-token', rtrim(SYSTEM_URL, '/'), 405],
+    ['client_user_invite_accept', 'POST', 'session-token', 'https://foreign.example', 403],
+    ['client_twofactor_verify', 'POST', null, rtrim(SYSTEM_URL, '/'), 403],
+    ['client_signin_pin', 'POST', null, rtrim(SYSTEM_URL, '/'), 403],
+    ['staff_login_pin', 'POST', null, rtrim(SYSTEM_URL, '/'), 403],
+    ['cart_add_item', 'POST', 'session-token', rtrim(SYSTEM_URL, '/'), null],
+    ['cart_remove_item', 'GET', 'session-token', rtrim(SYSTEM_URL, '/'), 405],
+    ['cart_apply_promo', 'POST', null, rtrim(SYSTEM_URL, '/'), 403],
+    ['cart_remove_promo', 'POST', 'session-token', 'https://foreign.example', 403],
+    ['cart_reset', 'POST', null, rtrim(SYSTEM_URL, '/'), 403],
+    ['cart_set_currency', 'GET', 'session-token', rtrim(SYSTEM_URL, '/'), 405],
+]);

@@ -9,6 +9,8 @@
  */
 
 declare(strict_types=1);
+use ClientFence\Config;
+use Doctrine\DBAL\DriverManager;
 
 use ClientFence\Mod\Cron\Service;
 
@@ -177,4 +179,49 @@ test('runCrons marks a run skipped while another one holds the cron lock', funct
 
     expect($service->runCrons())->toBeTrue()
         ->and($service->skipped)->toBeTrue();
+});
+
+test('session cleanup removes expired sessions even without a creation timestamp', function (): void {
+    $connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+
+    try {
+        $connection->executeStatement('CREATE TABLE session (id TEXT PRIMARY KEY, modified_at INTEGER, created_at INTEGER)');
+        $now = time();
+        $maxAge = $now - Config::getProperty('security.session_lifespan', 7200);
+        $sessions = [
+            ['id' => 'expired-single-request', 'modified_at' => $maxAge - 60, 'created_at' => null],
+            ['id' => 'active-single-request', 'modified_at' => $now, 'created_at' => null],
+            ['id' => 'expired-idle', 'modified_at' => $maxAge - 60, 'created_at' => $now],
+            ['id' => 'expired-age', 'modified_at' => $now, 'created_at' => $maxAge - 60],
+            ['id' => 'active', 'modified_at' => $now, 'created_at' => $now],
+            ['id' => 'legacy-expired', 'modified_at' => null, 'created_at' => $maxAge - 60],
+        ];
+        foreach ($sessions as $session) {
+            $connection->insert('session', $session);
+        }
+
+        $db = Mockery::mock(ClientFence\Database::class);
+        $db->shouldReceive('exec')->once()->andReturnUsing(
+            function (string $sql, array $params) use ($connection): int {
+                $bindings = [];
+                foreach ($params as $name => $value) {
+                    $bindings[ltrim($name, ':')] = $value;
+                }
+
+                return $connection->executeStatement($sql, $bindings);
+            },
+        );
+        $di = container();
+        $di['db'] = $db;
+        $service = new Service();
+        $service->setDi($di);
+
+        $removed = (new ReflectionMethod(Service::class, 'clearOldSessions'))->invoke($service);
+
+        expect($removed)->toBe(4)
+            ->and($connection->fetchFirstColumn('SELECT id FROM session ORDER BY id'))
+            ->toBe(['active', 'active-single-request']);
+    } finally {
+        $connection->close();
+    }
 });

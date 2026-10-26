@@ -2138,3 +2138,79 @@ test('a generated template renders with strict variables, so it can be saved unc
 
     expect($html)->toContain('1.0.0')->toContain('Acme')->toContain(date('Y-m-d'));
 });
+
+test('sendTemplate renders client-bound email in the client language', function (): void {
+    $service = new ClientFence\Mod\Email\Service();
+    $di = container();
+
+    $emailTemplate = emailTemplate(data: ['enabled' => true]);
+
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->andReturn($emailTemplate);
+
+    $em = emailBuildEm(null, $templateRepo);
+    $em->shouldReceive('persist')->atLeast()->once();
+    $em->shouldReceive('flush')->atLeast()->once();
+
+    $seenLocales = [];
+    $captureLocale = function (string $tpl, array $vars, ?string $timezone = null, ?string $locale = null) use (&$seenLocales): string {
+        $seenLocales[] = $locale;
+
+        return 'value';
+    };
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->atLeast()->once()->andReturn('value');
+    $system->shouldReceive('renderEmailTplString')->atLeast()->once()->andReturnUsing($captureLocale);
+    $system->shouldReceive('renderEmailSubjectString')->atLeast()->once()->andReturnUsing($captureLocale);
+
+    $clientServiceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientServiceMock->shouldReceive('get')->atLeast()->once()->andReturn(createEntity(ClientFence\Mod\Client\Entity\Client::class));
+    $clientServiceMock->shouldReceive('toApiArray')->atLeast()->once()->andReturn([
+        'id' => 1,
+        'email' => 'client@example.com',
+        'first_name' => 'John',
+        'last_name' => 'Smith',
+        'lang' => 'es_ES',
+        'timezone' => 'UTC',
+    ]);
+    $staffServiceMock = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+
+    $cryptMock = Mockery::mock(ClientFence\Crypt::class);
+    $cryptMock->shouldReceive('encrypt')->atLeast()->once();
+
+    $modMock = Mockery::mock(ClientFence\Module::class)->makePartial();
+    $modMock->shouldReceive('getConfig')->atLeast()->once()->andReturn([
+        'from_name' => 'Test',
+        'from_email' => 'test@test.com',
+    ]);
+
+    $di['api_admin'] = function () use ($di) {
+        $api = new ClientFence\Api\Proxy(\Tests\Helpers\admin());
+        $api->setDi($di);
+
+        return $api;
+    };
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('checkRequiredParamsForArray')->byDefault();
+    $di['validator'] = $validatorMock;
+
+    $di['em'] = $em;
+    $di['crypt'] = $cryptMock;
+    $di['mod'] = $di->protect(fn () => $modMock);
+    $di['mod_service'] = $di->protect(moduleService([
+        'staff' => $staffServiceMock,
+        'system' => $system,
+        'client' => $clientServiceMock,
+    ]));
+    $di['tools'] = new ClientFence\Tools();
+
+    $service->setDi($di);
+
+    $result = $service->sendTemplate(['code' => 'mod_email_test', 'to_client' => 1]);
+
+    expect($result)->toBeTrue();
+    expect($seenLocales)->not->toBeEmpty();
+    foreach ($seenLocales as $locale) {
+        expect($locale)->toBe('es_ES');
+    }
+});

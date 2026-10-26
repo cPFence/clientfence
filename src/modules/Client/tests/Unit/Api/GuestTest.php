@@ -514,6 +514,7 @@ test('updatePassword returns true', function (): void {
 
     $passwordResetRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientPasswordResetRepository::class);
     $passwordResetRepository->shouldReceive('findOneByHash')->atLeast()->once()->andReturn($passwordReset);
+    $passwordResetRepository->shouldReceive('changePassword')->once();
 
     $client = new ClientFence\Mod\Client\Entity\Client();
     $rp = new ReflectionProperty($client, 'id');

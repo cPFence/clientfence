@@ -50,3 +50,16 @@ test('checkInstaller does not delete the install directory when APP_ENV is dev o
 test('checkInstaller deletes the install directory when APP_ENV is explicitly prod', function (): void {
     withAppEnv('prod', fn () => runCheckInstallerWithStubbedFilesystem(expectRemoval: true));
 });
+
+test('an existing configuration blocks installation even in debug mode', function (): void {
+    $source = file_get_contents(PATH_ROOT . '/install/install.php');
+    preg_match_all('/^use [^;]+;/m', $source, $imports);
+    eval(implode("\n", $imports[0]) . "\n" . substr($source, strpos($source, 'final class ClientFence_Installer')));
+    $reflection = new ReflectionClass(ClientFence_Installer::class);
+    $installer = $reflection->newInstanceWithoutConstructor();
+    $filesystem = Mockery::mock(Filesystem::class);
+    $filesystem->shouldReceive('exists')->with(PATH_CONFIG)->andReturnTrue();
+    $reflection->getProperty('filesystem')->setValue($installer, $filesystem);
+    $reflection->getProperty('isDebug')->setValue($installer, true);
+    expect($installer->isAlreadyInstalled())->toBeTrue();
+});

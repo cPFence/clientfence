@@ -1257,6 +1257,7 @@ test('get manager urls exception', function (): void {
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getServerManager')->atLeast()->once()->andThrow(new Exception('Controlled unit test exception'));
+    $serviceMock->setDi(container());
 
     $result = $serviceMock->getManagerUrls($hostingServerModel);
     expect($result)->toBeArray();
@@ -1779,4 +1780,26 @@ test('_getAM trusts the client email by confirmation or a stored hosting login o
     'confirmed' => [1, 0, true],
     'a stored login' => [0, 1, true],
     'neither' => [0, 0, false],
+]);
+
+test('get manager urls logs adapter failures and returns unavailable links', function (Throwable $error): void {
+    $hostingServerModel = new Model_ServiceHostingServer();
+    $hostingServerModel->loadBean(new Tests\Helpers\DummyBean());
+    $hostingServerModel->id = 42;
+    $hostingServerModel->manager = 'Custom';
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('getServerManager')->once()->with($hostingServerModel)->andThrow($error);
+
+    $di = container();
+    $serviceMock->setDi($di);
+
+    expect($serviceMock->getManagerUrls($hostingServerModel))->toBe([false, false]);
+    $message = $di['logger']->calls[0]['params'][0];
+    expect($message)->toContain('server #42 (Custom)', $error::class, $error->getFile())
+        ->not->toContain('Adapter credentials: secret');
+})->with([
+    'exception' => [new Exception('Adapter credentials: secret')],
+    'parse error' => [new ParseError('Adapter credentials: secret')],
+    'type error' => [new TypeError('Adapter credentials: secret')],
 ]);

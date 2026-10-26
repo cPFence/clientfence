@@ -209,3 +209,32 @@ test('normalize route path rejects invalid path and falls back to root', functio
     expect($path)->toBe('/');
     expect(RequestFactory::getRoutePath($request))->toBe('/');
 });
+
+test('HTTP error overrides accept only valid error status codes', function (mixed $value, ?int $expected): void {
+    $request = Request::create('http://billing.example.com/', 'GET', ['_errcode' => $value]);
+
+    expect(RequestFactory::getHttpErrorCode($request))->toBe($expected);
+})->with([
+    [null, null],
+    ['', null],
+    [[], null],
+    [['404'], null],
+    [['nested' => ['404']], null],
+    [true, null],
+    [404.5, null],
+    ['404extra', null],
+    ['404.0', null],
+    ['99999999999999999999999', null],
+    [200, null],
+    [399, null],
+    [600, null],
+    [400, 400],
+    ['404', 404],
+    ['500', 500],
+    [599, 599],
+]);
+
+test('array route overrides fall back to the actual request path', function (): void {
+    $request = Request::create('/invoice', 'GET', ['_url' => ['x']]);
+    expect(RequestFactory::normalizeRoutePath($request))->toBe('/invoice');
+});

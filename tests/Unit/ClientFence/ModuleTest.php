@@ -65,3 +65,14 @@ test('get service sub', function (): void {
     $subService = $mod->getService($subServiceName);
     expect($subService)->toBeInstanceOf(ClientFence\Mod\Invoice\ServiceTransaction::class);
 });
+
+test('module manifests reject non-object JSON as an information error', function (string $json): void {
+    $di = container();
+    $filesystem = Mockery::mock(Symfony\Component\Filesystem\Filesystem::class);
+    $filesystem->shouldReceive('exists')->andReturnTrue();
+    $filesystem->shouldReceive('readFile')->andReturn($json);
+    $di['filesystem'] = $filesystem;
+    $module = new Module('Client');
+    $module->setDi($di);
+    expect(fn () => $module->getManifest())->toThrow(ClientFence\InformationException::class, 'Invalid manifest file');
+})->with(['null', '[]', '"module"', '1', '{broken']);

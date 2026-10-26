@@ -62,9 +62,8 @@ class Session implements InjectionAwareInterface
             'httponly' => $currentCookieParams['httponly'],
         ];
 
-        if (Config::getProperty('security.mode', 'strict') === 'strict') {
-            $cookieParams['samesite'] = 'Strict';
-        }
+        // ClientFence core patch (0.8.9 port): every session mode needs an explicit SameSite policy.
+        $cookieParams['samesite'] = Config::getProperty('security.mode', 'strict') === 'strict' ? 'Strict' : 'Lax';
 
         session_set_cookie_params($cookieParams);
         session_start();

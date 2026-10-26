@@ -140,7 +140,7 @@ test('renderEmailSubjectString decodes the HTML autoescape pass', function (): v
     $service = Mockery::mock(Service::class)->makePartial();
     $service->shouldReceive('renderEmailTplString')
         ->once()
-        ->with('[A & B Ltd] Invoice', [], null)
+        ->with('[A & B Ltd] Invoice', [], null, null)
         ->andReturn('[A &amp; B Ltd] Invoice');
 
     expect($service->renderEmailSubjectString('[A & B Ltd] Invoice', []))->toBe('[A & B Ltd] Invoice');
@@ -548,3 +548,27 @@ test('reserveNextNumericParamValue reserves from the winning row when seeding co
     // Must not be 101: that is the number the winner reserved.
     expect($service->reserveNextNumericParamValue('invoice_starting_number', 101))->toBe(102);
 });
+
+test('updateParams rejects invalid invoice counters before writing any settings', function (mixed $value): void {
+    $di = container();
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldNotReceive('setParamValue');
+    $service->setDi($di);
+
+    expect(fn () => $service->updateParams(['invoice_series' => 'NEW-', 'INVOICE_STARTING_NUMBER' => $value]))
+        ->toThrow(ClientFence\InformationException::class, 'Next invoice number must be a positive whole number');
+})->with([
+    'null' => [null],
+    'empty' => [''],
+    'blank' => ['   '],
+    'fraction' => ['5.5'],
+    'exponent' => ['1e3'],
+    'text' => ['INV-1'],
+    'zero' => [0],
+    'negative' => [-1],
+    'boolean' => [true],
+    'array' => [[]],
+    'float' => [1.0],
+    'maximum' => [(string) PHP_INT_MAX],
+    'overflow' => [PHP_INT_MAX . '0'],
+]);

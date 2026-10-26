@@ -42,6 +42,13 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $this->di['mod_service']('Staff')->checkPermissionsAndThrowException('theme', 'manage_settings');
 
         $body = $app->getRequest()->request->all();
+        // ClientFence core patch (0.8.9 port): the direct theme form must validate its session nonce before hooks or saves.
+        $token = $body['CSRFToken'] ?? null;
+        $sessionToken = $this->di['session']->get('csrf_token');
+        if (!is_string($token) || !is_string($sessionToken) || $sessionToken === '' || !hash_equals($sessionToken, $token)) {
+            throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
+        }
+        unset($body['CSRFToken']);
         $this->di['events_manager']->fire(['event' => 'onBeforeThemeSettingsSave', 'params' => $body]);
 
         $api = $this->di['api_admin'];
@@ -93,6 +100,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
     public function get_theme(\ClientFence\App $app, $theme): string
     {
         $this->di['is_admin_logged'];
+        $this->di['mod_service']('Staff')->checkPermissionsAndThrowException('theme', 'view');
 
         $mod = $this->di['mod']('theme');
         $service = $mod->getService();

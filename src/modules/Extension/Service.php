@@ -619,6 +619,11 @@ class Service implements InjectionAwareInterface
             throw new \ClientFence\InformationException('Extension type and ID are required');
         }
 
+        // ClientFence core patch (0.8.9 port): validate local module files before persisting activation state.
+        if ($data['type'] === \ClientFence\ExtensionManager::TYPE_MOD) {
+            $this->di['mod']($data['id'])->getManifest();
+        }
+
         $ext = $this->getExtensionRepository()->findOneByTypeAndName($data['type'], $data['id']);
         $persistedNewly = false;
         if (!$ext instanceof Extension) {
@@ -656,13 +661,8 @@ class Service implements InjectionAwareInterface
             $item->expiresAfter(60 * 60);
 
             $meta = $this->getExtensionMetaRepository()->findOneByExtensionAndScope($ext, 'config');
+            // ClientFence core patch (0.8.9 port): reading absent settings must not create metadata.
             if ($meta === null) {
-                $meta = new ExtensionMeta();
-                $meta->setExtension($ext);
-                $meta->setMetaKey('config');
-                $meta->setMetaValue(null);
-                $this->di['em']->persist($meta);
-                $this->di['em']->flush();
                 $config = [];
             } else {
                 $decrypted = $this->di['crypt']->decrypt($meta->getMetaValue(), $this->_getSalt());
@@ -681,7 +681,7 @@ class Service implements InjectionAwareInterface
         // so authorization is enforced here independently of any caller-side checks.
         $this->hasManagePermission($data['ext']);
         $ext = $data['ext'];
-        $stored = $this->getConfig($ext); // Creates new config if it does not exist in DB
+        $stored = $this->getConfig($ext);
         // ClientFence: settings a module's settings page saves with their own forms
         // (Clientfence\Service::SETTINGS, the hosting panels' switches, Google sign-in, ticket files,
         // email import and network status) are kept

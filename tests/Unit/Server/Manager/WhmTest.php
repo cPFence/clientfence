@@ -125,3 +125,50 @@ test('a plan naming an exact package uses it as it is and never creates it', fun
     expect(fn () => $manager->createAccount(createWhmAccount($missing, false)))->toThrow(Server_Exception::class, 'reseller1_gone');
     expect(array_map(actionOf(...), $requests))->toBe(['listpkgs']);
 });
+
+test('createAccount skips addpkg when listpkgs uses the modern data.pkg format', function (): void {
+    $requests = [];
+    $client = new MockHttpClient(function (string $method, string $url, array $options) use (&$requests): MockResponse {
+        $requests[] = ['method' => $method, 'url' => $url, 'options' => $options];
+
+        if (str_contains($url, 'listpkgs')) {
+            return new MockResponse(json_encode(['data' => ['pkg' => [['name' => 'admin_ClientFence']]]]));
+        }
+
+        if (str_contains($url, 'createacct')) {
+            return new MockResponse(json_encode(['result' => [['status' => 1]]]));
+        }
+
+        return new MockResponse(json_encode(['status' => 1]));
+    });
+    $manager = createWhmManager($client);
+    $account = createWhmAccount(new Server_Package(), false);
+
+    expect($manager->createAccount($account))->toBeTrue();
+
+    $actions = array_map(actionOf(...), $requests);
+    expect($actions)->toBe(['listpkgs', 'createacct']);
+});
+
+test('generated WHM packages handle typed existing-package responses and surface genuine errors', function (string $reason, bool $exists): void {
+    $requests = [];
+    $client = new MockHttpClient(function (string $method, string $url, array $options) use (&$requests, $reason): MockResponse {
+        $action = basename(parse_url($url, PHP_URL_PATH));
+        $requests[] = $action;
+        return new MockResponse(json_encode(match ($action) {
+            'listpkgs' => ['data' => ['pkg' => []]],
+            'addpkg' => ['metadata' => ['result' => 0, 'reason' => $reason]],
+            'createacct' => ['result' => [['status' => 1]]],
+            default => ['metadata' => ['result' => 1]],
+        }));
+    });
+    $manager = createWhmManager($client);
+    $account = createWhmAccount(new Server_Package(), false);
+    if ($exists) {
+        expect($manager->createAccount($account))->toBeTrue()
+            ->and($requests)->toBe(['listpkgs', 'addpkg', 'editpkg', 'createacct']);
+    } else {
+        expect(fn () => $manager->createAccount($account))->toThrow(Server_Exception::class)
+            ->and($requests)->toBe(['listpkgs', 'addpkg']);
+    }
+})->with([['Package already exists', true], ['Permission denied', false]]);

@@ -392,7 +392,8 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
         if ($echoedNr !== '') {
             $expectedNr = trim((string) ($invoice->nr ?? ''));
             if ($expectedNr !== '' && $echoedNr !== $expectedNr) {
-                throw new Payment_Exception('PayPal item_number does not match invoice ' . $invoice->id);
+                // ClientFence core patch (0.8.9 port): PayPal can echo the number from before the invoice was issued.
+                $this->di['logger']->warning('PayPal item_number differs from the current number for invoice ' . $invoice->id);
             }
         }
 
@@ -446,6 +447,10 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
         parse_str((string) $data['http_raw_post_data'], $post);
         $req = 'cmd=_notify-validate';
         foreach ($post as $key => $value) {
+            // ClientFence core patch (0.8.9 port): IPN fields must be scalar before rebuilding the verification body.
+            if (is_array($value)) {
+                return false;
+            }
             // No stripslashes() here: that undid PHP's long-removed magic_quotes_gpc
             // escaping. Applied unconditionally it corrupts any value containing a
             // backslash, so the re-posted request no longer matches what PayPal sent.
@@ -582,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $data['business'] = $this->config['email'];
 
         $data['cmd'] = '_xclick-subscriptions';
-        $data['rm'] = '2';
+        $data['rm'] = '1';
 
         $data['invoice'] = $invoice['id'];
 
@@ -625,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $data['no_shipping'] = '1';
         $data['no_note'] = '1';
         $data['currency_code'] = $invoice['currency'];
-        $data['rm'] = '2';
+        $data['rm'] = '1';
         $data['return'] = $this->config['thankyou_url'];
         $data['cancel_return'] = $this->config['cancel_url'];
         $data['notify_url'] = $this->signNotifyUrl($this->config['notify_url'], $invoice['id']);

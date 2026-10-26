@@ -313,6 +313,7 @@ test('signup renders country options with one default-country lookup', function 
     $twig->addFunction(new TwigFunction('fb_api_form', static fn (array $config = []): string => ''));
 
     $html = $twig->render('@Page_client/mod_page_signup.html.twig', [
+        'CSRFToken' => 'test-token',
         'guest' => $guest,
         'request' => $request,
         'settings' => new PermissiveStub(['signup_tos' => 'disabled']),

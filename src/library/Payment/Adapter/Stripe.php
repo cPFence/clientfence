@@ -929,14 +929,15 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             $this->di['db']->store($tx);
         }
 
-        $isInitialPayment = ($stripeInvoice->billing_reason ?? '') === 'subscription_create';
+        $billingReason = (string) ($stripeInvoice->billing_reason ?? '');
+        $isInitialPayment = $billingReason === 'subscription_create';
 
         // Single DB fetch covers: (a) skip if already paid, (b) billing_reason fallback.
         if ($invoiceId) {
             $existingInvoice = $this->di['db']->findOne('Invoice', 'id = :id', [':id' => (int) $invoiceId]);
             if ($existingInvoice instanceof Model_Invoice) {
-                // Skip if already paid — redirect flow may have processed it first.
-                if ($existingInvoice->status === Model_Invoice::STATUS_PAID) {
+                // ClientFence core patch (0.8.9 port): renewal metadata still names the paid first invoice.
+                if ($existingInvoice->status === Model_Invoice::STATUS_PAID && ($isInitialPayment || $billingReason === '')) {
                     return false;
                 }
                 // ClientFence core patch (security S-3): the initial payment was credited before its invoice was refunded.

@@ -18,6 +18,7 @@ namespace ClientFence\Mod\Client\Api;
 use ClientFence\Mod\Client\Entity\Client;
 use ClientFence\Mod\Client\Entity\ClientBalance;
 use ClientFence\Mod\Client\Entity\ClientGroup;
+use ClientFence\Mod\Client\Entity\ClientPasswordReset;
 use ClientFence\InformationException;
 use ClientFence\PaginationOptions;
 use ClientFence\Tools;
@@ -252,7 +253,12 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('client', 'delete');
 
-        $model = $this->getDi()['em']->getRepository(Client::class)->find($data['id']) ?? throw new InformationException('Client not found');
+        $id = $data['id'];
+        if ((!is_int($id) && !is_string($id)) || filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+            throw new InformationException('Invalid client ID');
+        }
+
+        $model = $this->getDi()['em']->getRepository(Client::class)->find((int) $id) ?? throw new InformationException('Client not found');
 
         $clientId = $model->getId();
 
@@ -318,6 +324,16 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('client', 'edit_profile');
 
+        // ClientFence core patch (0.8.9 port): staff address edits share the confirmation lock until flush.
+        return $this->getDi()['dbal']->transactional(function () use ($data): bool {
+            $this->getDi()['dbal']->executeStatement('UPDATE client SET email_approved = email_approved WHERE id = ?', [$data['id']]);
+
+            return $this->updateClient($data);
+        });
+    }
+
+    private function updateClient(array $data): bool
+    {
         $client = $this->getDi()['em']->getRepository(Client::class)->find($data['id']) ?? throw new InformationException('Client not found');
 
         $service = $this->getDi()['mod_service']('client');
@@ -451,6 +467,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         // ClientFence core patch: a new address is unconfirmed, also when staff change it (the form posts the old
         // "confirmed" back, and a confirmed address may take over that address's existing panel login).
         if (strcasecmp($oldEmail, (string) $client->getEmail()) !== 0) {
+            $this->getDi()['dbal']->executeStatement('UPDATE client SET email_approved = 0 WHERE id = ?', [$client->getId()]);
+            $service->revokeEmailConfirmations((int) $client->getId());
             $client->setEmailApproved(false);
         }
 
@@ -509,9 +527,7 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminClientPasswordChange', 'params' => ['id' => $client->getId()]]);
 
-        $client->setPass($this->getDi()['password']->hashIt($data['password']));
-        $this->getDi()['em']->persist($client);
-        $this->getDi()['em']->flush();
+        $this->getDi()['em']->getRepository(ClientPasswordReset::class)->changePassword($client, $this->getDi()['password']->hashIt($data['password']));
 
         $profileService = $this->getDi()['mod_service']('profile');
         $profileService->invalidateSessions('client', (int) $data['id']);

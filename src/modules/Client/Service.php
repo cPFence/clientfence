@@ -169,20 +169,31 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
     public function approveClientEmailByHash($hash): bool
     {
         $dbal = $this->di['dbal'];
-        $result = $dbal->fetchAssociative('SELECT m.id, m.client_id, m.rel_type, m.created_at, c.email FROM extension_meta m JOIN client c ON c.id = m.client_id WHERE m.extension = "mod_client" AND m.meta_key = "confirm_email" AND m.meta_value = :hash', ['hash' => (string) $hash]);
-        if (!$result) {
-            throw new InformationException('Invalid email confirmation link');
-        }
-        $fresh = strtotime((string) $result['created_at']) >= time() - self::EMAIL_CONFIRMATION_DAYS * 86400;
-        if (!$fresh || !hash_equals(self::emailConfirmationTag((string) $result['email']), (string) $result['rel_type'])) {
-            $dbal->executeStatement('DELETE FROM extension_meta WHERE id = :id', ['id' => $result['id']]);
+        // ClientFence core patch (0.8.9 port): address changes and one-use confirmations serialize on the client row.
+        return $dbal->transactional(function () use ($dbal, $hash): bool {
+            $result = $dbal->fetchAssociative('SELECT id, client_id, rel_type, created_at FROM extension_meta WHERE extension = "mod_client" AND meta_key = "confirm_email" AND meta_value = :hash', ['hash' => (string) $hash]);
+            if (!$result) {
+                throw new InformationException('Invalid email confirmation link');
+            }
+            $dbal->executeStatement('UPDATE client SET email_approved = email_approved WHERE id = :id', ['id' => $result['client_id']]);
+            $email = $dbal->fetchOne('SELECT email FROM client WHERE id = :id' . \ClientFence\Doctrine\RowLock::suffix($dbal), ['id' => $result['client_id']]);
+            $fresh = strtotime((string) $result['created_at']) >= time() - self::EMAIL_CONFIRMATION_DAYS * 86400;
+            if (!$fresh || !is_string($email) || !hash_equals(self::emailConfirmationTag($email), (string) $result['rel_type'])) {
+                throw new InformationException('This email confirmation link has expired or was sent to another email address. Ask for a new one from your profile.');
+            }
+            if ($dbal->executeStatement('DELETE FROM extension_meta WHERE id = :id', ['id' => $result['id']]) !== 1) {
+                throw new InformationException('Invalid email confirmation link');
+            }
+            $dbal->executeStatement('UPDATE client SET email_approved = 1 WHERE id = :id', ['id' => $result['client_id']]);
+            $this->revokeEmailConfirmations((int) $result['client_id']);
 
-            throw new InformationException('This email confirmation link has expired or was sent to another email address. Ask for a new one from your profile.');
-        }
-        $dbal->executeStatement('UPDATE client SET email_approved = 1 WHERE id = :id', ['id' => $result['client_id']]);
-        $dbal->executeStatement('DELETE FROM extension_meta WHERE extension = "mod_client" AND meta_key = "confirm_email" AND client_id = :id', ['id' => $result['client_id']]);
+            return true;
+        });
+    }
 
-        return true;
+    public function revokeEmailConfirmations(int $clientId): void
+    {
+        $this->di['dbal']->delete('extension_meta', ['extension' => 'mod_client', 'client_id' => $clientId, 'meta_key' => 'confirm_email']);
     }
 
     /**
@@ -192,17 +203,22 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
     public function generateEmailConfirmationLink($client_id, ?string $email = null)
     {
         $hash = strtolower((string) $this->di['tools']->generatePassword(50));
-        $email ??= (string) $this->di['dbal']->fetchOne('SELECT email FROM client WHERE id = :id', ['id' => $client_id]);
+        $dbal = $this->di['dbal'];
+        $dbal->transactional(function () use ($dbal, $client_id, $hash, $email): void {
+            $dbal->executeStatement('UPDATE client SET email_approved = email_approved WHERE id = :id', ['id' => $client_id]);
+            $email ??= (string) $dbal->fetchOne('SELECT email FROM client WHERE id = :id' . \ClientFence\Doctrine\RowLock::suffix($dbal), ['id' => $client_id]);
+            $this->revokeEmailConfirmations((int) $client_id);
 
-        $this->di['dbal']->insert('extension_meta', [
-            'extension' => 'mod_client',
-            'client_id' => $client_id,
-            'rel_type' => self::emailConfirmationTag($email),
-            'meta_key' => 'confirm_email',
-            'meta_value' => $hash,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+            $dbal->insert('extension_meta', [
+                'extension' => 'mod_client',
+                'client_id' => $client_id,
+                'rel_type' => self::emailConfirmationTag($email),
+                'meta_key' => 'confirm_email',
+                'meta_value' => $hash,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        });
 
         return $this->di['tools']->url('/client/confirm-email/' . $hash);
     }
@@ -919,25 +935,15 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         $clientId = $this->getClientId($client);
         $clientIp = $client instanceof Client ? $client->getIp() : $client->ip;
 
-        $existingReset = $this->clientPasswordResetRepository->findOneBy(['clientId' => $clientId]);
-        if ($existingReset instanceof ClientPasswordReset) {
-            $this->di['em']->remove($existingReset);
-            $this->di['em']->flush();
-        }
-
         $requestIp = null;
         if (isset($this->di['request']) && is_object($this->di['request']) && method_exists($this->di['request'], 'getClientIp')) {
             $requestIp = $this->di['request']->getClientIp();
         }
 
         $hash = hash('sha256', random_bytes(32));
-        $reset = new ClientPasswordReset();
-        $reset->setClientId($clientId);
-        $reset->setIp($requestIp ?? $clientIp);
-        $reset->setHash($hash);
-
-        $this->di['em']->persist($reset);
-        $this->di['em']->flush();
+        // ClientFence core patch (0.8.9 port): legacy callers use the same transactional reset issuance.
+        $entity = $client instanceof Client ? $client : $this->clientRepository->find($clientId);
+        $this->clientPasswordResetRepository->createRequest($entity, $hash, $requestIp ?? $clientIp);
 
         return $hash;
     }

@@ -31,6 +31,8 @@
         {% else %}
             <p class="auth-lead">{{ 'One account for your services, invoices and support tickets.'|trans }}</p>
             <form method="post" action="{{ 'client/create'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignUp'}) }} data-clientfence-sign-up data-redirect="{{ '/'|url }}">
+    {# ClientFence core patch (0.8.9 port): bind guest authentication to this browser session. #}
+    <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
                 {% set r = guest.client_required %}
                 <div class="row g-3 mb-3">
                     <div class="col-sm-6">

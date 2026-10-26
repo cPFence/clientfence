@@ -70,7 +70,8 @@ final class RequestFactory
 
     public static function normalizeRoutePath(Request $request): string
     {
-        $rawPath = $request->query->get('_url');
+        // ClientFence core patch (0.8.9 port): malformed query overrides must not abort bootstrap.
+        $rawPath = $request->query->all()['_url'] ?? null;
         if (!is_string($rawPath)) {
             $rawPath = $request->getPathInfo();
         }
@@ -87,6 +88,17 @@ final class RequestFactory
         $request->attributes->set(self::ROUTE_PATH_ATTRIBUTE, $path);
 
         return $path;
+    }
+
+    public static function getHttpErrorCode(Request $request): ?int
+    {
+        $code = $request->query->all()['_errcode'] ?? null;
+        if (!is_int($code) && !is_string($code)) {
+            return null;
+        }
+        $valid = filter_var($code, FILTER_VALIDATE_INT, ['options' => ['min_range' => 400, 'max_range' => 599]]);
+
+        return $valid === false ? null : $valid;
     }
 
     public static function getRoutePath(Request $request): string

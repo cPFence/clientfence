@@ -244,3 +244,11 @@ test('getActiveLocale migrates and expires the legacy locale cookie', function (
     expect($queued[CookieNames::LOCALE]->getValue())->toBe('en_US')
         ->and($queued[CookieNames::LEGACY_LOCALE]->getExpiresTime())->toBeLessThan(time());
 });
+
+test('headerless email requests use the configured locale', function (): void {
+    Config::setProperty('i18n.locale', 'de_DE');
+    Config::setProperty('i18n.auto_detect_locale', true);
+    $request = Request::create('/');
+    $request->headers->remove('Accept-Language');
+    expect(i18n::getActiveLocale($request, true, new CookieQueue()))->toBe('de_DE');
+});

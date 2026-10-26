@@ -196,10 +196,12 @@ test('save theme settings reads body from request and strips preset control keys
     $di['is_admin_logged'] = true;
     $di['mod'] = $di->protect(fn () => $modMock);
     $di['events_manager'] = $eventsManager;
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('theme-token');
     $controller->setDi($di);
 
     $request = Symfony\Component\HttpFoundation\Request::create('/theme/palisade', 'POST', [
         'color' => 'blue',
+        'CSRFToken' => 'theme-token',
         'save-current-setting' => '1',
         'save-current-setting-preset' => 'My Preset',
     ]);
@@ -242,7 +244,8 @@ test('saving theme settings requires the relevant staff permission', function (s
     $di['events_manager'] = Mockery::mock()->shouldIgnoreMissing();
     $controller->setDi($di);
 
-    $request = Symfony\Component\HttpFoundation\Request::create('/theme/palisade', 'POST', $preset + ['inject_javascript' => '<script>alert(1)</script>']);
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('theme-token');
+    $request = Symfony\Component\HttpFoundation\Request::create('/theme/palisade', 'POST', ['CSRFToken' => 'theme-token'] + $preset + ['inject_javascript' => '<script>alert(1)</script>']);
     $boxAppMock = Mockery::mock('ClientFence\App');
     $boxAppMock->shouldReceive('getRequest')->andReturn($request);
     $boxAppMock->shouldReceive('redirect')->andReturn(new Symfony\Component\HttpFoundation\RedirectResponse('/theme/palisade'));
@@ -309,3 +312,36 @@ test('unticked-box filling skips list boxes and empty pages (ClientFence)', func
     expect(ClientFence\Mod\Theme\Service::addUncheckedBoxes($html, []))->toBe(['plain' => '0'])
         ->and(ClientFence\Mod\Theme\Service::addUncheckedBoxes('', ['x' => '1']))->toBe(['x' => '1']);
 });
+
+test('theme save rejects invalid CSRF tokens before any side effects', function (mixed $token, mixed $sessionToken): void {
+    $controller = new ClientFence\Mod\Theme\Controller\Admin();
+    $di = container();
+    $di['api_admin'] = Mockery::mock();
+
+    $staffMock = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffMock->shouldReceive('checkPermissionsAndThrowException')->once()->with('theme', 'manage_settings');
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $staffMock);
+
+    $sessionMock = Mockery::mock(ClientFence\Session::class);
+    $sessionMock->shouldReceive('get')->with('csrf_token')->andReturn($sessionToken);
+    $di['session'] = $sessionMock;
+
+    $di['mod'] = $di->protect(static fn () => throw new LogicException('Module must not be resolved'));
+    $controller->setDi($di);
+
+    $request = Symfony\Component\HttpFoundation\Request::create('/theme/huraga', 'POST', [
+        'CSRFToken' => $token,
+        'color' => 'blue',
+    ]);
+    $app = Mockery::mock(ClientFence\App::class);
+    $app->shouldReceive('getRequest')->once()->andReturn($request);
+
+    expect(fn () => $controller->save_theme_settings($app, 'huraga'))
+        ->toThrow(ClientFence\InformationException::class, 'CSRF token invalid');
+})->with([
+    'missing' => [null, 'valid-token'],
+    'mismatch' => ['wrong-token', 'valid-token'],
+    'array' => [['valid-token'], 'valid-token'],
+    'empty session' => ['', ''],
+    'missing session' => ['valid-token', null],
+]);

@@ -12,6 +12,8 @@
     {% block auth_form %}
                 {{ render_widgets('admin.staff.login.form.before') }}
                 <form method="post" action="{{ 'staff/login'|api_url(role: 'guest') }}" {{ fb_api_form({redirect: redirect_uri|default('/')|url}) }}>
+    {# ClientFence core patch (0.8.9 port): bind guest authentication to this browser session. #}
+    <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
                     <div class="mb-3">
                         <label class="form-label" for="inputEmail">{{ 'Email'|trans }}</label>
                         <input class="form-control"

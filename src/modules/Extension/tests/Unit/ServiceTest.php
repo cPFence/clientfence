@@ -718,7 +718,7 @@ test('getConfig returns extension config', function (): void {
     expect($result)->toBeArray();
 });
 
-test('getConfig creates new ExtensionMeta when not found', function (): void {
+test('getConfig reads missing settings without writing metadata', function (): void {
     $service = new Service();
     $data = [
         'ext' => 'extensionName',
@@ -731,8 +731,8 @@ test('getConfig creates new ExtensionMeta when not found', function (): void {
         ->andReturn(null);
 
     $em = extensionBuildEm(null, $metaRepo);
-    $em->shouldReceive('persist')->atLeast()->once();
-    $em->shouldReceive('flush')->atLeast()->once();
+    $em->shouldNotReceive('persist');
+    $em->shouldNotReceive('flush');
 
     $di = container();
     $di['em'] = $em;
@@ -1061,3 +1061,16 @@ test('hasManagePermission refuses a name that is not an exact extension name', f
 
     expect(fn () => $service->hasManagePermission($module))->toThrow(ClientFence\InformationException::class, 'Unknown extension.');
 })->with(['mod_email ', 'mod_email%', 'MOD_EMAIL', "mod_email\t", '']);
+
+test('guest settings ignore inactive modules and normalize active module names', function (string $extension, bool $active): void {
+    $service = Mockery::mock(Service::class);
+    $service->shouldReceive('getCoreAndActiveModules')->andReturn(['client']);
+    if ($active) {
+        $service->shouldReceive('getConfig')->once()->with('mod_client')->andReturn(['public' => ['enabled' => true]]);
+    } else {
+        $service->shouldNotReceive('getConfig');
+    }
+    $api = apiEndpoint(new ClientFence\Mod\Extension\Api\Guest());
+    $api->setService($service);
+    expect($api->settings(['ext' => $extension]))->toBe($active ? ['enabled' => true] : []);
+})->with([['MOD_CLIENT', true], ['mod_inactive', false]]);

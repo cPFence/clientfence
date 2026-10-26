@@ -1,5 +1,16 @@
 <script nonce="{{ csp_nonce }}">
     document.addEventListener("DOMContentLoaded", function() {
+        // ClientFence core patch (0.8.9 port): cart removal must use POST with the API wrapper's session nonce.
+        document.addEventListener('click', function(event) {
+            const button = event.target.closest('[data-cart-remove-item], [data-cart-remove-promo]');
+            if (!button || (button.hasAttribute('data-cart-remove-item') && !window.confirm(button.dataset.confirmMessage))) {
+                return;
+            }
+            const itemId = button.dataset.cartRemoveItem;
+            ClientFence.api.guest.post(itemId === undefined ? 'cart/remove_promo' : 'cart/remove_item',
+                itemId === undefined ? {} : {id: itemId}, () => window.location.reload());
+        });
+
         document.querySelectorAll('.accordion-body').forEach(accordionBody => {
             accordionBody.addEventListener('shown.bs.collapse', function() {
                 document.getElementById('popup-iframe').height = document.body.clientHeight;

@@ -1573,8 +1573,9 @@ class Service implements InjectionAwareInterface
             $m = $this->getServerManager($model);
 
             return [$m->getLoginUrl(null), $m->getResellerLoginUrl(null)];
-        } catch (\Exception $e) {
-            $this->logInfo("Error while retrieving control panel url: {$e->getMessage()}.");
+        } catch (\Throwable $e) {
+            // ClientFence core patch (0.8.9 port): Adapter messages and stack arguments may contain credentials.
+            $this->di['logger']->error(sprintf('Control panel URL lookup failed for server #%s (%s): %s in %s:%s', $model->id, $model->manager, $e::class, $e->getFile(), $e->getLine()));
         }
 
         return [false, false];

@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Staff\Api;
 
+use ClientFence\Mod\Staff\Entity\Admin;
+use ClientFence\Mod\Staff\Entity\AdminPasswordReset;
 use ClientFence\Security\RandomizedTimeFloor;
 use ClientFence\Validation\Api\RequiredParams;
 
@@ -143,8 +145,14 @@ class Guest extends \ClientFence\Api\AbstractApi
                 throw new \ClientFence\InformationException('The link has expired or you have already confirmed the password reset.');
             }
 
-            $admin->pass = $this->getDi()['password']->hashIt($data['password']);
-            $this->getDi()['db']->store($admin);
+            $em = $this->getDi()['em'];
+            $adminEntity = $em->getRepository(Admin::class)->find((int) $admin->id);
+            // ClientFence core patch (0.8.9 port): password changes and token revocation share the identity lock.
+            if (!$adminEntity instanceof Admin) {
+                throw new \ClientFence\InformationException('Admin not found');
+            }
+            $em->getRepository(AdminPasswordReset::class)
+                ->changePassword($adminEntity, $this->getDi()['password']->hashIt($data['password']), $data['code']);
 
             $profileService = $this->getDi()['mod_service']('profile');
             $profileService->invalidateSessions('admin', (int) $admin->id);
@@ -159,8 +167,6 @@ class Guest extends \ClientFence\Api\AbstractApi
             $email['code'] = 'mod_staff_password_reset_approve';
             $emailService = $this->getDi()['mod_service']('email');
             $emailService->sendTemplate($email);
-
-            $this->getDi()['db']->trash($reset);
         } finally {
             RandomizedTimeFloor::apply($startedAt, 300, 450);
         }
@@ -216,13 +222,11 @@ class Guest extends \ClientFence\Api\AbstractApi
 
             $hash = hash('sha256', random_bytes(32));
 
-            $reset = $this->getDi()['db']->dispense('AdminPasswordReset');
-            $reset->admin_id = $c->id;
-            $reset->ip = $this->ip;
-            $reset->hash = $hash;
-            $reset->created_at = date('Y-m-d H:i:s');
-            $reset->updated_at = date('Y-m-d H:i:s');
-            $this->getDi()['db']->store($reset);
+            $em = $this->getDi()['em'];
+            $adminEntity = $em->getRepository(Admin::class)->find((int) $c->id);
+            if (!$adminEntity instanceof Admin || !$em->getRepository(AdminPasswordReset::class)->replaceReset($adminEntity, $hash, $this->ip)) {
+                return true;
+            }
 
             // send email
             $email = [];
