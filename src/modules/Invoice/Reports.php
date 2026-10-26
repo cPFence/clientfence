@@ -695,7 +695,7 @@ final class Reports
     /** SQL: an invoice's tax, as Invoice\Service::getTax() (once on the taxed subtotal, rounded to cents). */
     private static function invoiceTax(): string
     {
-        return '(SELECT CASE WHEN (i.taxrate + 0) > 0 THEN ROUND(COALESCE(SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END), 0) * (i.taxrate + 0) / 100, 2) ELSE 0 END FROM invoice_item ii WHERE ii.invoice_id = i.id)';
+        return '(SELECT CASE WHEN CAST(i.taxrate AS DECIMAL(20, 10)) > 0 THEN ROUND(CAST(COALESCE(SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2) ELSE 0 END FROM invoice_item ii WHERE ii.invoice_id = i.id)';
     }
 
     private static function invoiceTotal(): string

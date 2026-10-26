@@ -166,8 +166,8 @@ class Admin extends \ClientFence\Api\AbstractApi
             "SELECT t.currency, SUM(t.total + t.tax)
                FROM (SELECT i.currency,
                             SUM(ii.price * ii.quantity) AS total,
-                            CASE WHEN CAST(i.taxrate AS DECIMAL(10, 4)) > 0
-                                 THEN ROUND(SUM(CASE WHEN ii.taxed THEN ii.price * ii.quantity ELSE 0 END) * CAST(i.taxrate AS DECIMAL(10, 4)) / 100, 2)
+                            CASE WHEN CAST(i.taxrate AS DECIMAL(20, 10)) > 0
+                                 THEN ROUND(CAST(SUM(CASE WHEN ii.taxed THEN ii.price * ii.quantity ELSE 0 END) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2)
                                  ELSE 0 END AS tax
                        FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
                       WHERE i.status = 'unpaid'

@@ -2587,15 +2587,15 @@ class Service implements InjectionAwareInterface
      * @return array
      */
     /**
-     * ClientFence core patch: getTotalWithTax() of invoice `m` in SQL (`taxrate + 0` reads the rate as
-     * a double, as PHP's (float) cast does, every decimal kept). findAllUnpaid() keeps only
-     * invoices the client's whole credit covers, with two cents of slack (SQL rounds the tax exactly,
-     * PHP as a float; the payment re-checks): one credit row larger than one item let every unpaid
+     * ClientFence core patch: getTotalWithTax() of invoice `m` in SQL (taxed subtotal and rate as
+     * DECIMAL, so ROUND takes half-cents up as PHP's round() does; on doubles it took some down).
+     * findAllUnpaid() keeps only invoices the client's whole credit covers, with two cents of slack
+     * (the payment re-checks): one credit row larger than one item let every unpaid
      * invoice of anyone who ever added funds through, and the cron tried to pay each on every run.
      * The summed credit is the only credit check: a per-row check skipped credit split over several rows.
      */
     private const TOTAL_WITH_TAX_SQL = '(SELECT COALESCE(SUM(t.price * t.quantity), 0)
-            + IF(m.taxrate + 0 > 0, ROUND(COALESCE(SUM(CASE WHEN t.taxed <> 0 THEN t.price * t.quantity ELSE 0 END), 0) * (m.taxrate + 0) / 100, 2), 0)
+            + IF(CAST(m.taxrate AS DECIMAL(20, 10)) > 0, ROUND(CAST(COALESCE(SUM(CASE WHEN t.taxed <> 0 THEN t.price * t.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(m.taxrate AS DECIMAL(20, 10)) / 100, 2), 0)
             FROM invoice_item t WHERE t.invoice_id = m.id)';
 
     public function findAllUnpaid(?array $filter = null)
