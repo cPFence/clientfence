@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.4 (2026-10-28)
+
+### Added
+
+- Client page summary: invoice totals per status, revenue, credit, services and quick actions (add funds invoice, due invoices, statement, send email, close account).
+- Product, domain and addon lists on the client page, with renewal invoices and delete for the selected orders.
+- Staff notes and private files on each client.
+- The client profile shows whether the email is verified, how long the client has been a customer, and the last login IP.
+
+### Fixed
+
+- The payment email and the renewal run as soon as an invoice is paid, by staff or by the client.
+- Arabic invoice PDFs keep addresses that mix Arabic and Latin text in the right order.
+
 ## 1.0.3 (2026-10-28)
 
 ### Security
