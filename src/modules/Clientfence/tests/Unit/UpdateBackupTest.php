@@ -156,6 +156,7 @@ test('extracted files are dated now, not at the time the zip stored', function (
     UpdateBackup::extract($zip, $this->root . '/site');
     $zip->close();
 
+    clearstatcache();
     expect(file_get_contents($this->root . '/site/lib/future.twig'))->toBe('template')
         ->and(filemtime($this->root . '/site/lib/future.twig'))->toBeLessThanOrEqual(time());
 });
