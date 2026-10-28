@@ -733,7 +733,8 @@ class Service implements InjectionAwareInterface
         return $email;
     }
 
-    public function markAsPaid(\Model_Invoice $invoice, $charge = true, $execute = false, bool $deferEvents = false): bool
+    // ClientFence core patch: payment tasks run immediately unless the caller runs them after releasing its lock.
+    public function markAsPaid(\Model_Invoice $invoice, $charge = true, $execute = true, bool $deferEvents = false): bool
     {
         if ($invoice->status == \Model_Invoice::STATUS_PAID) {
             return true;
@@ -840,7 +841,6 @@ class Service implements InjectionAwareInterface
 
     private function markAsPaidByAdminLocked(\Model_Invoice $invoice, array $data): bool
     {
-        $execute = Tools::normalizeBoolean($data['execute'] ?? false);
         $payGateway = $this->validateAdminMarkAsPaidRequest($data, $invoice);
         $transactionId = isset($data['transactionId']) ? trim((string) $data['transactionId']) : null;
 
@@ -874,7 +874,7 @@ class Service implements InjectionAwareInterface
                 throw new InformationException('Transaction ID is already associated with another invoice.');
             }
 
-            $result = $this->markAsPaid($invoice, false, $execute);
+            $result = $this->markAsPaid($invoice, false);
             if ($result) {
                 $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId, $invoiceTotal);
                 $transaction->amount = $invoiceTotal;
@@ -890,7 +890,7 @@ class Service implements InjectionAwareInterface
             return $result;
         }
 
-        $result = $this->markAsPaid($invoice, false, $execute);
+        $result = $this->markAsPaid($invoice, false);
         if ($result) {
             $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId);
         }
@@ -1786,6 +1786,7 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: the status cannot undo a payment or fake a refund (a paid invoice set to
         // unpaid or canceled lost its locks); a refund goes through Refund, which makes the credit note.
         $newStatus = $data['status'] ?? $previousStatus;
+        $markPaid = $newStatus === \Model_Invoice::STATUS_PAID && $previousStatus !== \Model_Invoice::STATUS_PAID;
         if ($newStatus !== $previousStatus && ($this->isBooked($model) || $newStatus === \Model_Invoice::STATUS_REFUNDED)) {
             throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
         }
@@ -1846,10 +1847,10 @@ class Service implements InjectionAwareInterface
 
         $model->serie = $data['serie'] ?? (empty($model->serie) ? null : $model->serie);
         $model->nr = $data['nr'] ?? (empty($model->nr) ? null : $model->nr);
-        $model->status = $data['status'] ?? (empty($model->status) ? null : $model->status);
+        $model->status = $markPaid ? $previousStatus : ($data['status'] ?? (empty($model->status) ? null : $model->status));
         // ClientFence core patch (QA r10 C-6): a payment recorded here is booked when it is recorded, as Mark as paid does (a
         // date before it put a renewal paid after a downgrade before that credit, so a refund counted it as funding it).
-        if ($model->status === \Model_Invoice::STATUS_PAID && $previousStatus !== \Model_Invoice::STATUS_PAID) {
+        if ($markPaid) {
             $model->paid_at = date('Y-m-d H:i:s');
         }
         $model->taxrate = $data['taxrate'] ?? (empty($model->taxrate) ? null : $model->taxrate);
@@ -1879,6 +1880,11 @@ class Service implements InjectionAwareInterface
         $model->updated_at = date('Y-m-d H:i:s');
 
         $this->di['db']->store($model);
+
+        // ClientFence core patch: a paid status saved on Manage needs the same payment event and tasks.
+        if ($markPaid) {
+            $this->markAsPaid($model, false);
+        }
 
         if ($previousStatus === \Model_Invoice::STATUS_UNPAID && $model->status === \Model_Invoice::STATUS_CANCELED) {
             $productService = $this->di['mod_service']('Product');
@@ -2166,10 +2172,49 @@ class Service implements InjectionAwareInterface
         return $proforma;
     }
 
-    public function generateInvoicesForExpiringOrders(): bool
+    // ClientFence core patch: selected renewals preserve the single-order generation and locking path.
+    public function batchRenewalInvoice(mixed $ids): array
+    {
+        if (!is_array($ids) || $ids === []) {
+            throw new InformationException('Order IDs are required');
+        }
+        $orders = [];
+        $clientId = null;
+        foreach ($ids as $id) {
+            $order = $this->di['db']->getExistingModelById('ClientOrder', (int) $id, 'Order not found');
+            if ($clientId !== null && $clientId !== (int) $order->client_id) {
+                throw new InformationException('Selected orders must belong to one client');
+            }
+            $clientId = (int) $order->client_id;
+            $orders[(int) $id] = $order;
+        }
+        $created = $skipped = [];
+        foreach ($orders as $id => $order) {
+            $invoiceId = Tools::withLock($this->di, 'fb:renewal:order:' . $id, function () use ($order): ?int {
+                $unpaid = $this->di['dbal']->fetchOne(
+                    'SELECT i.id FROM client_order co JOIN invoice i ON i.id = co.unpaid_invoice_id WHERE co.id = ? AND i.status = ?',
+                    [(int) $order->id, \Model_Invoice::STATUS_UNPAID]
+                );
+                if ($unpaid !== false) {
+                    return null;
+                }
+
+                return (int) $this->renewInvoice($order, []);
+            });
+            if ($invoiceId === null) {
+                $skipped[] = $id;
+            } else {
+                $created[] = $invoiceId;
+            }
+        }
+
+        return ['invoice_ids' => $created, 'skipped_order_ids' => $skipped];
+    }
+
+    public function generateInvoicesForExpiringOrders(?int $clientId = null): bool
     {
         $orderService = $this->di['mod_service']('Order');
-        $orders = $orderService->getSoonExpiringActiveOrders();
+        $orders = $orderService->getSoonExpiringActiveOrders($clientId === null ? [] : ['client_id' => $clientId]);
 
         if (Tools::safeCount($orders) == 0) {
             return true;

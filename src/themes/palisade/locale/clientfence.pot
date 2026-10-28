@@ -34,12 +34,20 @@ msgstr ""
 msgid "$cc_encryption_hash in WHMCS's configuration.php. It lets the import read what WHMCS keeps encrypted, such as two-factor secrets."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "%active% (%total% Total)"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_kb_index.html.twig
 msgid "%active% active, %draft% draft"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "%count% files of ClientFence %version% were changed on this site."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "%count% months"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -188,6 +196,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "1 line"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "1 month"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -926,6 +938,10 @@ msgstr ""
 msgid "Account Settings"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Account Statement (PDF)"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Account Synced"
 msgstr ""
@@ -1162,6 +1178,10 @@ msgstr ""
 msgid "Add New Form"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Add New Order"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "Add New Payment Gateway"
 msgstr ""
@@ -1170,7 +1190,7 @@ msgstr ""
 msgid "Add New Top Level Domain"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "Add Note"
 msgstr ""
 
@@ -1220,6 +1240,10 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Add field types to this form and edit each field individually."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Add file"
 msgstr ""
 
 #: src/modules/Invoice/ServiceInvoiceItem.php
@@ -1322,6 +1346,10 @@ msgstr ""
 msgid "Additional Settings"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Addon"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Addon Domains"
 msgstr ""
@@ -1342,7 +1370,7 @@ msgstr ""
 msgid "Addon quantity"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/modules/Product/templates/admin/mod_product_addon_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "Addons"
 msgstr ""
 
@@ -1418,7 +1446,7 @@ msgstr ""
 msgid "Admin Area Themes"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_new_form.html.twig
+#: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Admin Notes"
 msgstr ""
 
@@ -1438,7 +1466,7 @@ msgstr ""
 msgid "Admin identity not found"
 msgstr ""
 
-#: src/modules/Email/Service.php src/modules/Profile/Api/Admin.php
+#: src/modules/Email/Service.php src/modules/Profile/Api/Admin.php src/modules/Staff/Api/Guest.php …
 msgid "Admin not found"
 msgstr ""
 
@@ -2226,7 +2254,7 @@ msgstr ""
 msgid "Also discount configurable options"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig …
 msgid "Amount"
 msgstr ""
 
@@ -3178,8 +3206,12 @@ msgstr ""
 msgid "CAPTCHA verification failed. Please try again."
 msgstr ""
 
-#: src/modules/Api/Controller/Client.php src/modules/Client/Controller/Admin.php src/modules/Clientfence/Controller/Admin.php
+#: src/modules/Api/Controller/Client.php src/modules/Client/Controller/Admin.php src/modules/Clientfence/Controller/Admin.php …
 msgid "CSRF token invalid"
+msgstr ""
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP did not return valid account details. Check that the account exists and the API key has permission to view it."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -3226,7 +3258,7 @@ msgstr ""
 msgid "Can't modify client"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Cancel"
 msgstr ""
 
@@ -3284,6 +3316,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Cancellation requests"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Cancelled"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_canned_response.html.twig
@@ -3678,7 +3714,7 @@ msgstr ""
 msgid "Choose a field type to add it to this form and configure it further."
 msgstr ""
 
-#: src/modules/Support/TicketFiles.php
+#: src/modules/Client/Files.php src/modules/Support/TicketFiles.php
 msgid "Choose a file to attach."
 msgstr ""
 
@@ -4158,6 +4194,10 @@ msgstr ""
 msgid "Client custom fields"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Client for"
+msgstr ""
+
 #: src/modules/Client/Api/Admin.php
 msgid "Client group not found"
 msgstr ""
@@ -4410,12 +4450,16 @@ msgstr ""
 msgid "Clients, their authorized users and staff can attach up to 5 files of 10 MB to a ticket message: images, PDF, text and log files, CSV and archives (zip, rar, tar). Staff can remove a file from the ticket page."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Close"
 msgstr ""
 
 #: src/modules/Orderbutton/templates/admin/mod_orderbutton_settings.html.twig
 msgid "Close Behavior"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Close Client Account"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/modules/Support/templates/client/mod_support_ticket.html.twig src/themes/palisade/html/mod_support_ticket.html.twig
@@ -4432,6 +4476,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/partial_clientfence_sidebar.html.twig
 msgid "Close menu"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Close this client account?"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
@@ -4950,6 +4998,10 @@ msgstr ""
 msgid "Could not connect to :host::port: :error"
 msgstr ""
 
+#: src/library/Server/Manager/CWP.php
+msgid "Could not connect to the CWP server. Check the server address, port and API configuration."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Source.php
 msgid "Could not connect to the WHMCS database: :error"
 msgstr ""
@@ -5030,6 +5082,10 @@ msgstr ""
 msgid "Create Account"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Create Add Funds Invoice"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
 msgid "Create Client"
 msgstr ""
@@ -5048,6 +5104,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Create Hosting Plan"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Create Invoice"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_addons.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig
@@ -5104,6 +5164,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Create New Tax Rule"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Create Quote"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
@@ -5184,6 +5248,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php src/modules/Invoice/StatementPdf.php src/modules/Order/templates/admin/mod_order_upgrades.html.twig …
 msgid "Credit"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Credit Balance"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
@@ -5344,6 +5412,10 @@ msgstr ""
 
 #: src/modules/Theme/templates/admin/mod_theme_preset.html.twig
 msgid "Current Preset"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Current Quotes"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_user_profile.html.twig
@@ -5734,7 +5806,7 @@ msgstr ""
 msgid "Delegated staff updates"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_group.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig …
+#: src/modules/Client/templates/admin/mod_client_group.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Delete"
 msgstr ""
 
@@ -5770,6 +5842,10 @@ msgstr ""
 msgid "Delete redirects"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Delete services?"
+msgstr ""
+
 #: src/modules/Staff/Service.php
 msgid "Delete staff members"
 msgstr ""
@@ -5782,12 +5858,20 @@ msgstr ""
 msgid "Delete the Server"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Delete this file?"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_index.html.twig
 msgid "Delete this group and its options? Services keep the options they have."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
 msgid "Delete this issue?"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Delete this note?"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option_group.html.twig
@@ -5890,7 +5974,7 @@ msgstr ""
 msgid "Discord"
 msgstr ""
 
-#: src/modules/Invoice/QuotePdf.php src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_print.html.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/QuotePdf.php src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig …
 msgid "Discount"
 msgstr ""
 
@@ -6290,7 +6374,7 @@ msgstr ""
 msgid "Downloads"
 msgstr ""
 
-#: src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig src/modules/Invoice/Quotes.php …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig …
 msgid "Draft"
 msgstr ""
 
@@ -6310,7 +6394,7 @@ msgstr ""
 msgid "Due :date"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_index.html.twig …
 msgid "Due Date"
 msgstr ""
 
@@ -6354,7 +6438,7 @@ msgstr ""
 msgid "Each email import list can hold up to 20,000 characters."
 msgstr ""
 
-#: src/modules/Support/TicketFiles.php src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig src/themes/palisade/html/partials/ticket_upload.html.twig
+#: src/modules/Client/Files.php src/modules/Support/TicketFiles.php src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig …
 msgid "Each file must be smaller than :size MB."
 msgstr ""
 
@@ -6592,6 +6676,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Email sending"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Email sent"
 msgstr ""
 
 #: src/modules/Email/Service.php
@@ -7294,6 +7382,10 @@ msgstr ""
 msgid "Every Year"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Every active or suspended service is cancelled and the client status becomes Canceled."
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Every active order that renews with an invoice, at its renewal price after any recurring discount and before tax, divided by the months of its billing period (yearly ÷ 12, quarterly ÷ 3) and converted to :currency. Free orders and orders that issue no invoice count 0."
 msgstr ""
@@ -7706,7 +7798,7 @@ msgstr ""
 msgid "File is not available at the moment. Please contact support."
 msgstr ""
 
-#: src/modules/Support/TicketFiles.php
+#: src/modules/Client/Files.php src/modules/Support/TicketFiles.php
 msgid "File not found"
 msgstr ""
 
@@ -7728,6 +7820,10 @@ msgstr ""
 
 #: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_manage.html.twig
 msgid "Filename"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Files"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -8098,6 +8194,10 @@ msgstr ""
 msgid "Generate"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Generate Due Invoices"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Generate New Invoice Before Order Expiration"
 msgstr ""
@@ -8108,6 +8208,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_profile.html.twig
 msgid "Generate a New Key"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Generate due invoices for this client now?"
 msgstr ""
 
 #: src/modules/Orderbutton/templates/admin/mod_orderbutton_settings.html.twig
@@ -8300,6 +8404,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig
 msgid "Greeting"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Gross Revenue"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
@@ -8814,6 +8922,10 @@ msgstr ""
 msgid "Icon URL"
 msgstr ""
 
+#: src/modules/Product/Service.php
+msgid "Icon URL must not exceed 255 characters."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "Icon/Image URL"
 msgstr ""
@@ -9098,6 +9210,10 @@ msgstr ""
 msgid "Instant payment notification (IPN) did not pass gateway :id validation"
 msgstr ""
 
+#: src/modules/Client/ServiceBalance.php
+msgid "Insufficient credit balance"
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
 msgid "Integrations / Automation"
 msgstr ""
@@ -9140,6 +9256,10 @@ msgstr ""
 
 #: src/modules/Profile/ClientValidator.php
 msgid "Invalid birthdate value"
+msgstr ""
+
+#: src/modules/Client/Api/Admin.php
+msgid "Invalid client ID"
 msgstr ""
 
 #: src/modules/Client/Api/Admin.php
@@ -9259,6 +9379,10 @@ msgid "Invalid related type."
 msgstr ""
 
 #: src/modules/Api/Controller/Client.php
+msgid "Invalid request origin"
+msgstr ""
+
+#: src/modules/Api/Controller/Client.php
 msgid "Invalid request. Make sure request origin is :from"
 msgstr ""
 
@@ -9358,7 +9482,7 @@ msgstr ""
 msgid "Invoice :number paid: :amount"
 msgstr ""
 
-#: src/modules/Invoice/templates/client/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_print.html.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/client/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig …
 msgid "Invoice Date"
 msgstr ""
 
@@ -9378,7 +9502,7 @@ msgstr ""
 msgid "Invoice Management"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_print.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_print.html.twig …
 msgid "Invoice Number"
 msgstr ""
 
@@ -9390,7 +9514,7 @@ msgstr ""
 msgid "Invoice Option"
 msgstr ""
 
-#: src/modules/Invoice/Controller/Admin.php src/modules/Invoice/Controller/Client.php
+#: src/modules/Invoice/Controller/Client.php
 msgid "Invoice PDF response could not be generated"
 msgstr ""
 
@@ -9398,11 +9522,15 @@ msgstr ""
 msgid "Invoice Prefix / Series"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Invoice Selected Items"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Invoice Settings"
 msgstr ""
 
-#: src/modules/Invoice/templates/client/mod_invoice_print.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig src/themes/palisade/html/mod_invoice_print.html.twig
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/client/mod_invoice_print.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig …
 msgid "Invoice Status"
 msgstr ""
 
@@ -9508,6 +9636,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Invoices, receipts, password resets and ticket replies are sent by email."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Invoices/Billing"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -9746,8 +9878,12 @@ msgstr ""
 msgid "Labels on the Left"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Extension/templates/admin/mod_extension_languages.html.twig src/themes/admin_default/html_custom/layout_default.html.twig …
+#: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Extension/templates/admin/mod_extension_languages.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
 msgid "Language"
+msgstr ""
+
+#: src/modules/Invoice/Controller/Admin.php
+msgid "Language not found"
 msgstr ""
 
 #: src/modules/Extension/Controller/Admin.php
@@ -9972,6 +10108,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Length of generated passwords when creating user accounts. Defaults to 10"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Less than a month"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
@@ -10484,6 +10624,10 @@ msgstr ""
 
 #: src/modules/System/Service.php
 msgid "Manage Company Legal"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Manage Credits"
 msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
@@ -11014,7 +11158,7 @@ msgstr ""
 msgid "Merged Tickets"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig …
 msgid "Message"
 msgstr ""
 
@@ -11386,6 +11530,10 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Never signed in"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig
 msgid "Never synced with registrar"
 msgstr ""
@@ -11570,6 +11718,10 @@ msgstr ""
 msgid "New message"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "New note"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "New option"
 msgstr ""
@@ -11662,6 +11814,10 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Next Due"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_list.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "Next Due Date"
 msgstr ""
@@ -11680,6 +11836,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Next date is counted from renewal (payment) date"
+msgstr ""
+
+#: src/modules/System/Service.php
+msgid "Next invoice number must be a positive whole number no greater than :max."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
@@ -11858,6 +12018,10 @@ msgstr ""
 msgid "No emails"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No emails sent yet."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "No emails were read yet."
 msgstr ""
@@ -11888,6 +12052,10 @@ msgstr ""
 
 #: src/modules/Servicedownloadable/Service.php
 msgid "No filename available for order file update"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No files yet. Only staff see the files here."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
@@ -11932,6 +12100,10 @@ msgstr ""
 
 #: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/client/mod_news_index.html.twig
 msgid "No news or announcements"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No notes yet."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/layout_default.html.twig src/themes/palisade/html/layout_default.html.twig
@@ -12056,6 +12228,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
 msgid "No service matches."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No services yet."
 msgstr ""
 
 #: src/modules/Theme/templates/admin/mod_theme_settings.html.twig
@@ -12186,6 +12362,10 @@ msgstr ""
 msgid "Not switched on"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Not verified"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_print.html.twig …
 msgid "Note"
 msgstr ""
@@ -12202,7 +12382,19 @@ msgstr ""
 msgid "Note Title"
 msgstr ""
 
-#: src/modules/Support/Repository/SupportTicketNoteRepository.php
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Note added"
+msgstr ""
+
+#: src/modules/Client/Notes.php
+msgid "Note is required"
+msgstr ""
+
+#: src/modules/Client/Notes.php
+msgid "Note is too long"
+msgstr ""
+
+#: src/modules/Client/Notes.php src/modules/Support/Repository/SupportTicketNoteRepository.php
 msgid "Note not found"
 msgstr ""
 
@@ -12216,6 +12408,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "Nothing is banned."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Nothing selected"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -12558,8 +12754,12 @@ msgstr ""
 msgid "Open Domain Management"
 msgstr ""
 
-#: src/modules/Support/templates/client/mod_support_tickets.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Support/templates/client/mod_support_tickets.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
 msgid "Open New Ticket"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Open Quotes"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -12572,6 +12772,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_tickets.html.twig
 msgid "Open Ticket for Existing Client"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Open Tickets"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
@@ -12774,6 +12978,10 @@ msgstr ""
 msgid "Order ID is required"
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "Order IDs are required"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Order Invoices"
 msgstr ""
@@ -12890,6 +13098,10 @@ msgstr ""
 msgid "Orders"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Orders %list% will be deleted. This cannot be undone."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Orders Settings"
 msgstr ""
@@ -12912,6 +13124,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Orderbutton/templates/client/mod_orderbutton_client.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig …
 msgid "Other"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Other Actions"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -13066,7 +13282,7 @@ msgstr ""
 msgid "Pagination"
 msgstr ""
 
-#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/StatementPdf.php src/modules/Invoice/templates/admin/mod_invoice_index.html.twig …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/StatementPdf.php …
 msgid "Paid"
 msgstr ""
 
@@ -13124,6 +13340,10 @@ msgstr ""
 
 #: src/modules/Email/Api/Admin.php
 msgid "Parameters `to` and `to_client` cannot be combined. Client-bound emails are always sent to the client's registered email address."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Parent"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig src/modules/Staff/templates/admin/mod_staff_settings.html.twig
@@ -13291,10 +13511,6 @@ msgid "PayPal invoice reference does not match invoice "
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
-msgid "PayPal item_number does not match invoice "
-msgstr ""
-
-#: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal payment is missing currency details"
 msgstr ""
 
@@ -13314,7 +13530,7 @@ msgstr ""
 msgid "Payment Amount After Discount"
 msgstr ""
 
-#: src/modules/Invoice/templates/pdf/default-invoice.twig
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/pdf/default-invoice.twig
 msgid "Payment Details"
 msgstr ""
 
@@ -13534,7 +13750,7 @@ msgstr ""
 msgid "Performs simple checks to validate your if webserver blocks access to sensitive files."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig …
 msgid "Period"
 msgstr ""
 
@@ -13586,7 +13802,7 @@ msgstr ""
 msgid "Pick any color"
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
 msgid "Pin"
 msgstr ""
 
@@ -13594,7 +13810,7 @@ msgstr ""
 msgid "Pin on the dashboard until"
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig src/modules/News/templates/client/mod_news_index.html.twig …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig …
 msgid "Pinned"
 msgstr ""
 
@@ -14058,7 +14274,7 @@ msgstr ""
 msgid "Processing Payment..."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig src/modules/Order/templates/admin/mod_order_index.html.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig …
 msgid "Product"
 msgstr ""
 
@@ -14176,6 +14392,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php
 msgid "Products and services"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Products/Services"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig …
@@ -14322,7 +14542,7 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
-#: src/modules/Invoice/templates/pdf/default-invoice.twig
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/pdf/default-invoice.twig
 msgid "Quantity & Price"
 msgstr ""
 
@@ -14538,6 +14758,10 @@ msgstr ""
 msgid "Recent Client Activity"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Recent Emails"
+msgstr ""
+
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Recent News"
 msgstr ""
@@ -14674,7 +14898,7 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/admin_default/html/macro_functions.html.twig …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
 msgid "Refunded"
 msgstr ""
 
@@ -15854,7 +16078,7 @@ msgstr ""
 msgid "Select a default value"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "Select all"
 msgstr ""
 
@@ -15906,6 +16130,10 @@ msgstr ""
 msgid "Selected currency :selected does not match your profile currency :code. Please change cart currency to continue."
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "Selected orders must belong to one client"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Selected price is 0.00"
 msgstr ""
@@ -15918,8 +16146,12 @@ msgstr ""
 msgid "Selecting this will force the item to be removed from the database even if errors occur."
 msgstr ""
 
-#: src/modules/Embed/templates/client/mod_embed_contact.html.twig src/modules/Support/templates/client/mod_support_contact_us.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig src/modules/Support/templates/client/mod_support_contact_us.html.twig
 msgid "Send"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Send Email"
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -17014,7 +17246,7 @@ msgstr ""
 msgid "Subdomain ordering is not available for this product."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig …
 msgid "Subject"
 msgstr ""
 
@@ -17386,7 +17618,7 @@ msgstr ""
 msgid "Task"
 msgstr ""
 
-#: src/modules/Invoice/QuotePdf.php src/modules/Invoice/Reports.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/QuotePdf.php src/modules/Invoice/Reports.php …
 msgid "Tax"
 msgstr ""
 
@@ -17658,6 +17890,14 @@ msgstr ""
 msgid "The :what is not valid."
 msgstr ""
 
+#: src/library/Server/Manager/CWP.php
+msgid "The CWP server returned HTTP status :status. Check server availability and API configuration."
+msgstr ""
+
+#: src/library/Server/Manager/CWP.php
+msgid "The CWP server returned an invalid JSON response. Check the server address, port and API configuration."
+msgstr ""
+
 #: src/modules/Clientfence/Updates.php
 msgid "The ClientFence release feed answered HTTP :code."
 msgstr ""
@@ -17712,6 +17952,10 @@ msgstr ""
 
 #: src/modules/Client/Google.php
 msgid "The Google sign-in has expired or was not started here. Please try again."
+msgstr ""
+
+#: src/library/Server/Manager/Hestia.php
+msgid "The HestiaCP server hostname is missing. Please configure it in the server settings."
 msgstr ""
 
 #: src/library/Server/Manager/Enhance.php
@@ -18159,11 +18403,11 @@ msgstr ""
 msgid "The lines and tax rate of a paid invoice cannot be changed. Refund it and make a new invoice."
 msgstr ""
 
-#: src/modules/Staff/Api/Guest.php
+#: src/modules/Staff/Api/Guest.php src/modules/Staff/Repository/AdminPasswordResetRepository.php
 msgid "The link has expired or you have already confirmed the password reset."
 msgstr ""
 
-#: src/modules/Client/Api/Guest.php src/modules/Client/Controller/Client.php src/modules/Client/Service.php …
+#: src/modules/Client/Api/Guest.php src/modules/Client/Controller/Client.php src/modules/Client/Repository/ClientPasswordResetRepository.php …
 msgid "The link has expired or you have already reset your password."
 msgstr ""
 
@@ -18751,6 +18995,10 @@ msgstr ""
 msgid "This action cannot be retried."
 msgstr ""
 
+#: src/modules/Api/Controller/Client.php
+msgid "This action requires POST"
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "This action will delete the email template"
 msgstr ""
@@ -19131,7 +19379,7 @@ msgstr ""
 msgid "This ticket was closed, but you can still reopen it by replying."
 msgstr ""
 
-#: src/modules/Support/TicketFiles.php src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig src/themes/palisade/html/partials/ticket_upload.html.twig
+#: src/modules/Client/Files.php src/modules/Support/TicketFiles.php src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig …
 msgid "This type of file cannot be attached. Allowed: :types."
 msgstr ""
 
@@ -19181,6 +19429,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "This year"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Tick the services first."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
@@ -19389,6 +19641,10 @@ msgstr ""
 
 #: src/modules/Antispam/Service.php
 msgid "To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>here</a>"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "To: %email%"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_report.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/themes/admin_default/html/mod_index_dashboard.html.twig …
@@ -20027,7 +20283,11 @@ msgstr ""
 msgid "Unpaid invoices by how long they are overdue."
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Notification/templates/admin/mod_notification_index.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Unpaid/Due"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Notification/templates/admin/mod_notification_index.html.twig …
 msgid "Unpin"
 msgstr ""
 
@@ -20747,6 +21007,10 @@ msgstr ""
 msgid "Verification codes"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Verified"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Verify TLS Certificate"
 msgstr ""
@@ -20767,6 +21031,10 @@ msgstr ""
 msgid "View"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "View All Tickets"
+msgstr ""
+
 #: src/modules/Client/Service.php
 msgid "View Client Details"
 msgstr ""
@@ -20785,6 +21053,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "View GitHub Comparison"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "View Orders"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
@@ -21099,7 +21371,7 @@ msgstr ""
 msgid "Webserver Check"
 msgstr ""
 
-#: src/modules/Invoice/templates/pdf/default-invoice.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/pdf/default-invoice.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "Website"
 msgstr ""
 
@@ -21287,7 +21559,7 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
 msgid "With Selected:"
 msgstr ""
 
@@ -21645,6 +21917,10 @@ msgstr ""
 
 #: src/modules/System/Api/Admin.php
 msgid "You need to be a Super Administrator to finalize this update."
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "You need to enter a positive numeric value"
 msgstr ""
 
 #: src/modules/Invoice/Api/Client.php

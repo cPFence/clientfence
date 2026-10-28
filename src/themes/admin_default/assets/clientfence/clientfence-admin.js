@@ -994,7 +994,8 @@ const bulkNotice = (bar, message) => {
 if (document.querySelector('[data-bf-bulk]')) {
   document.addEventListener('change', (event) => {
     if (!event.target.matches?.('input.batch-delete-master-checkbox')) return;
-    document.querySelectorAll('input.batch-delete-checkbox').forEach((box) => { box.checked = event.target.checked; });
+    // Only its own table: the client page has three order tables under one bar.
+    event.target.closest('table').querySelectorAll('input.batch-delete-checkbox').forEach((box) => { box.checked = event.target.checked; });
   });
   document.addEventListener('click', (event) => {
     const button = event.target.closest?.('[data-bf-bulk-action]');
@@ -1007,7 +1008,11 @@ if (document.querySelector('[data-bf-bulk]')) {
       return;
     }
     const post = (call) => window.ClientFence.api.admin.post(call, { ids }, () => window.location.reload());
-    if (action === 'pin') post('support/batch_ticket_pin');
+    // Other lists name their call (and the confirm texts' kind) on the button.
+    if (button.dataset.bfBulkCall) {
+      if (button.dataset.bfBulkAsk) bulkAsk(bar, button.dataset.bfBulkAsk, ids, () => post(button.dataset.bfBulkCall));
+      else post(button.dataset.bfBulkCall);
+    } else if (action === 'pin') post('support/batch_ticket_pin');
     else if (action === 'unpin') post('support/batch_ticket_unpin');
     else if (action === 'close') bulkAsk(bar, 'Close', ids, () => post('support/batch_ticket_close'));
     else if (action === 'delete') bulkAsk(bar, 'Delete', ids, () => post('support/batch_delete'));
@@ -1327,3 +1332,24 @@ if (bell) {
   bell.addEventListener('show.bs.dropdown', load);
   all.addEventListener('click', () => apiPost('clientfence/notifications_read', {}).then(() => reload()));
 }
+
+// ---- Client summary cards (mod_client_summary_cards): a created invoice opens, and a chosen
+// file is uploaded at once (client/file_upload, staff only).
+window.clientfenceInvoiceCreated = (id) => {
+  const base = document.querySelector('[data-bf-invoice-url]')?.dataset.bfInvoiceUrl;
+  if (base && Number(id) > 0) window.location.href = `${base}/${Number(id)}`;
+};
+document.querySelectorAll('[data-bf-client-files] input[type="file"]').forEach((input) => {
+  input.addEventListener('change', () => {
+    if (!input.files.length) return;
+    const data = new FormData();
+    data.append('file', input.files[0]);
+    data.append('client_id', input.closest('[data-bf-client-files]').dataset.client);
+    input.disabled = true;
+    window.ClientFence.api.admin.post('client/file_upload', data, () => window.location.reload(), (e) => {
+      input.disabled = false;
+      input.value = '';
+      window.ClientFence.message?.(e.message, 'error');
+    });
+  });
+});

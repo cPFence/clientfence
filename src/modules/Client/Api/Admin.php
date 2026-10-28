@@ -95,7 +95,16 @@ class Admin extends \ClientFence\Api\AbstractApi
         $client = $service->get($data);
         $includeSensitive = $this->getDi()['mod_service']('Staff')->hasPermission(null, 'client', 'manage_api_keys');
 
-        return $service->toApiArray($client, true, $this->getIdentity(), $includeSensitive);
+        $details = $service->toApiArray($client, true, $this->getIdentity(), $includeSensitive);
+        // ClientFence core patch: imported clients can have login history without a stored profile IP.
+        $login = $this->getDi()['dbal']->fetchAssociative(
+            'SELECT ip, created_at FROM activity_client_history WHERE client_id = ? ORDER BY created_at DESC, id DESC LIMIT 1',
+            [$details['id']]
+        );
+        $details['last_login_ip'] = ($login === false ? $details['ip'] : $login['ip']) ?: null;
+        $details['last_login_at'] = $login['created_at'] ?? null;
+
+        return $details;
     }
 
     /**
@@ -602,6 +611,98 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $service = $this->getDi()['mod_service']('client');
         $service->addFunds($client, $data['amount'], $data['description'], $data);
+
+        return true;
+    }
+
+    // ClientFence core patch: summary cards and staff records use the permissions of their owning modules.
+    #[RequiredParams(['id' => 'Client ID is missing'])]
+    public function summary($data): array
+    {
+        $this->checkPermissions('client', 'view');
+        $this->checkPermissions('invoice', 'view');
+        $this->checkPermissions('order', 'view');
+        $this->checkPermissions('support', 'view');
+
+        return $this->getService()->summary((int) $data['id']);
+    }
+
+    #[RequiredParams(['id' => 'Client ID required', 'amount' => 'Amount is required', 'description' => 'Description is required'])]
+    public function balance_deduct($data): bool
+    {
+        $this->checkPermissions('client', 'manage_balance');
+        $client = $this->getDi()['em']->getRepository(Client::class)->find($data['id']) ?? throw new InformationException('Client not found');
+
+        $this->getDi()['mod_service']('Client', 'Balance')->deductByAdmin($client, $data['amount'], $data['description']);
+
+        return true;
+    }
+
+    #[RequiredParams(['id' => 'Client ID is missing'])]
+    public function close($data): array
+    {
+        $this->checkPermissions('client', 'edit_profile');
+        $this->checkPermissions('order', 'manage');
+        $client = $this->getDi()['em']->getRepository(Client::class)->find($data['id']) ?? throw new InformationException('Client not found');
+
+        return ['cancelled' => $this->getService()->close($client)];
+    }
+
+    #[RequiredParams(['client_id' => 'Client ID is missing'])]
+    public function note_get_list($data): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return \ClientFence\Mod\Client\Notes::getList($this->getDi(), (int) $data['client_id']);
+    }
+
+    #[RequiredParams(['client_id' => 'Client ID is missing', 'note' => 'Note is required'])]
+    public function note_create($data): int
+    {
+        $this->checkPermissions('client', 'edit_profile');
+
+        return \ClientFence\Mod\Client\Notes::create($this->getDi(), (int) $data['client_id'], (int) $this->getIdentity()->id, $data['note']);
+    }
+
+    #[RequiredParams(['id' => 'Note ID is missing', 'note' => 'Note is required', 'pinned' => 'Pinned is required'])]
+    public function note_update($data): bool
+    {
+        $this->checkPermissions('client', 'edit_profile');
+        \ClientFence\Mod\Client\Notes::update($this->getDi(), (int) $data['id'], $data['note'], Tools::normalizeBoolean($data['pinned']));
+
+        return true;
+    }
+
+    #[RequiredParams(['id' => 'Note ID is missing'])]
+    public function note_delete($data): bool
+    {
+        $this->checkPermissions('client', 'edit_profile');
+        \ClientFence\Mod\Client\Notes::delete($this->getDi(), (int) $data['id']);
+
+        return true;
+    }
+
+    #[RequiredParams(['client_id' => 'Client ID is missing'])]
+    public function file_get_list($data): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return \ClientFence\Mod\Client\Files::getList($this->getDi(), (int) $data['client_id']);
+    }
+
+    #[RequiredParams(['client_id' => 'Client ID is missing'])]
+    public function file_upload($data): array
+    {
+        $this->checkPermissions('client', 'edit_profile');
+
+        return \ClientFence\Mod\Client\Files::upload($this->getDi(), (int) $data['client_id'], (int) $this->getIdentity()->id, $this->getDi()['request']->files->get('file'));
+    }
+
+    #[RequiredParams(['id' => 'File ID is missing'])]
+    public function file_delete($data): bool
+    {
+        $this->checkPermissions('client', 'edit_profile');
+        \ClientFence\Mod\Client\Files::delete($this->getDi(), (int) $data['id']);
 
         return true;
     }

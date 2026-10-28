@@ -1824,6 +1824,11 @@ CREATE TABLE `mod_clientfence_import_warning` (`id` bigint(20) unsigned NOT NULL
 --
 
 CREATE TABLE `mod_clientfence_notification` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `audience` varchar(10) NOT NULL, `recipient_id` bigint(20) NOT NULL, `kind` varchar(40) NOT NULL, `params` text NOT NULL, `url` varchar(255) NOT NULL, `dedupe` varchar(120) DEFAULT NULL, `created_at` datetime NOT NULL, `read_at` datetime DEFAULT NULL, PRIMARY KEY (`id`), UNIQUE KEY `dedupe` (`audience`, `recipient_id`, `dedupe`), KEY `recipient` (`audience`, `recipient_id`, `read_at`, `id`), KEY `created` (`created_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ClientFence core patch: private client notes and documents.
+CREATE TABLE `client_note` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_id` bigint(20) NOT NULL, `admin_id` bigint(20) NOT NULL, `note` text NOT NULL, `pinned` tinyint(1) NOT NULL DEFAULT 0, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `client_notes` (`client_id`, `pinned`, `created_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `client_file` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_id` bigint(20) NOT NULL, `admin_id` bigint(20) NOT NULL, `name` varchar(191) NOT NULL, `stored_name` char(32) NOT NULL, `size` int(10) unsigned NOT NULL, `mime` varchar(100) NOT NULL, `created_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `stored_name` (`stored_name`), KEY `client_files` (`client_id`, `created_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

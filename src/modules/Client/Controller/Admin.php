@@ -68,6 +68,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/client/logins', 'get_history', [], static::class);
         // ClientFence core patch: a client's data as a JSON file (Privacy.php).
         $app->get('/client/privacy-export/:id', 'get_privacy_export', ['id' => '[0-9]+'], static::class);
+        // ClientFence core patch: private client documents are streamed only after staff authorization.
+        $app->get('/client/file/:id', 'get_file', ['id' => '[0-9]+'], static::class);
     }
 
     public function get_index(\ClientFence\App $app): string
@@ -133,7 +135,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
         if (!is_string($token) || !is_string($session) || $session === '' || !hash_equals($session, $token)) {
             throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
         }
-        $json = json_encode(\ClientFence\Mod\Client\Privacy::export($this->di, (int) $id), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+        $json = json_encode(\ClientFence\Mod\Client\Privacy::export($this->di, (int) $id, true), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         $this->di['logger']->setChannel('privacy')->info(sprintf('Data of client #%d exported by staff', (int) $id));
 
         return new Response((string) $json, 200, [
@@ -142,5 +144,13 @@ class Admin implements \ClientFence\InjectionAwareInterface
             'X-Content-Type-Options' => 'nosniff',
             'Cache-Control' => 'private, no-store',
         ]);
+    }
+
+    public function get_file(\ClientFence\App $app, $id): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $this->di['is_admin_logged'];
+        $this->di['mod_service']('staff')->checkPermissionsAndThrowException('client', 'view');
+
+        return \ClientFence\Mod\Client\Files::download($this->di, (int) $id);
     }
 }

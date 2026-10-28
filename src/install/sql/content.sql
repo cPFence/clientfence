@@ -329,7 +329,8 @@ VALUES
 	(30,'company_favicon','public/branding/favicon.ico',0,NULL,NULL,NOW(),NOW()),
 	(31,'hide_company_public',1,0,NULL,NULL,NOW(), NOW()),
 	(32,'invoice_hash_lifetime_days','90',0,NULL,NULL,NOW(),NOW()),
-	(33,'clientfence_patch','3',0,NULL,NULL,NOW(),NOW()),
+	-- ClientFence core patch: fresh installs include the private client records migration.
+	(33,'clientfence_patch','4',0,NULL,NULL,NOW(),NOW()),
 	(34,'clientfence_setup','pending',0,NULL,NULL,NOW(),NOW());
 
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;

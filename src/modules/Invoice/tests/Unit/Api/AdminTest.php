@@ -713,20 +713,72 @@ test('updates a transaction', function (): void {
     expect($result)->toBeBool()->toBeTrue();
 });
 
-test('creates a transaction', function (): void {
+test('a staff-created manual transaction pays the invoice and runs its renewal without cron', function (): void {
     $api = apiEndpoint(new Admin());
-    $newTransactionId = 1;
-    $transactionService = Mockery::mock(ServiceTransaction::class);
-    $transactionService->shouldReceive('create')
-        ->atLeast()->once()
-        ->andReturn($newTransactionId);
+    $invoice = Tests\Helpers\model(Model_Invoice::class, ['id' => 10, 'client_id' => 5, 'currency' => 'USD', 'status' => Model_Invoice::STATUS_UNPAID]);
+    $item = Tests\Helpers\model(Model_InvoiceItem::class, ['id' => 11, 'invoice_id' => 10, 'type' => Model_InvoiceItem::TYPE_ORDER, 'rel_id' => 12, 'task' => Model_InvoiceItem::TASK_RENEW, 'price' => 62, 'quantity' => 1]);
+    $order = Tests\Helpers\model(Model_ClientOrder::class, ['id' => 12, 'status' => Model_ClientOrder::STATUS_ACTIVE]);
+    $gateway = Tests\Helpers\model(Model_PayGateway::class, ['id' => 3, 'gateway' => 'Custom', 'name' => 'Bank transfer']);
+    $client = Tests\Helpers\model(Model_Client::class, ['id' => 5]);
+    $transaction = Tests\Helpers\model(Model_Transaction::class, ['id' => 20]);
+    $models = ['Invoice' => $invoice, 'ClientOrder' => $order, 'PayGateway' => $gateway, 'Client' => $client, 'Transaction' => $transaction];
+
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getExistingModelById')->andReturnUsing(fn (string $type) => $models[$type]);
+    $db->shouldReceive('load')->andReturnUsing(fn (string $type) => $models[$type]);
+    $db->shouldReceive('dispense')->with('Transaction')->once()->andReturn($transaction);
+    $db->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ?', [10])->andReturn([$item]);
+    $db->shouldReceive('getCell')->with('SELECT currency FROM client WHERE id = :id', ['id' => 5])->andReturn('USD');
+    $db->shouldReceive('store')->andReturnUsing(static fn (object $model): int => (int) $model->id);
+
+    $transactionService = new ServiceTransaction();
+    $invoices = Mockery::mock(Service::class)->makePartial();
+    $invoices->shouldReceive('countIncome')->once()->with($invoice);
+    $items = Mockery::mock(ClientFence\Mod\Invoice\ServiceInvoiceItem::class)->makePartial();
+    $items->shouldReceive('creditInvoiceItem')->once()->with($item);
+    $orders = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orders->shouldReceive('unsetUnpaidInvoice')->once()->with($order);
+    $orders->shouldReceive('renewOrder')->once()->with($order)->andReturn(true);
+    $clients = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clients->shouldReceive('get')->with(['id' => 5])->andReturn($client);
+    $clients->shouldReceive('addFunds')->once()->with($client, 62.0, Mockery::any(), []);
+    $adapter = new Payment_Adapter_Custom([]);
+    $gateways = Mockery::mock(ServicePayGateway::class);
+    $gateways->shouldReceive('getPaymentAdapter')->with($gateway)->andReturn($adapter);
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->with('invoice_series_paid')->andReturn('');
+    $rates = Mockery::mock(ClientFence\Mod\Currency\Repository\CurrencyRepository::class);
+    $rates->shouldReceive('getRateByCode')->with('USD')->andReturn(1.0);
+    $currency = Mockery::mock(ClientFence\Mod\Currency\Service::class);
+    $currency->shouldReceive('getCurrencyRepository')->andReturn($rates);
+    $products = Mockery::mock(ClientFence\Mod\Product\Service::class);
+    $products->shouldReceive('commitReservedPromoRedemptionsForInvoice')->once()->with($invoice);
 
     $di = container();
-    $di['mod_service'] = $di->protect(moduleService(['invoice:transaction' => $transactionService]));
+    $di['db'] = $db;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['dbal'] = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $di['dbal']->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY)');
+    $di['dbal']->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, status TEXT)');
+    $di['api_system'] = (new ReflectionClass(ClientFence\Api\Proxy::class))->newInstanceWithoutConstructor();
+    $di['mod_service'] = $di->protect(moduleService([
+        'invoice' => $invoices, 'invoice:transaction' => $transactionService,
+        'invoice:invoiceitem' => $items, 'invoice:paygateway' => $gateways,
+        'order' => $orders, 'client' => $clients, 'system' => $system,
+        'currency' => $currency, 'product' => $products,
+    ]));
+    foreach ([$transactionService, $invoices, $items, $adapter] as $service) {
+        $service->setDi($di);
+    }
     $api->setDi($di);
 
-    $result = $api->transaction_create([]);
-    expect($result)->toBeInt()->toBe($newTransactionId);
+    $result = $api->transaction_create(['invoice_id' => 10, 'gateway_id' => 3, 'amount' => 62, 'currency' => 'USD']);
+
+    expect($result)->toBe(20)
+        ->and($transaction->status)->toBe(Model_Transaction::STATUS_PROCESSED)
+        ->and($invoice->status)->toBe(Model_Invoice::STATUS_PAID)
+        ->and($item->status)->toBe(Model_InvoiceItem::STATUS_EXECUTED)
+        ->and($di['events_manager']->events)->toContain(['event' => 'onAfterAdminInvoicePaymentReceived', 'params' => ['id' => 10]]);
 });
 
 test('deletes a transaction', function (): void {

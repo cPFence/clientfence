@@ -49,12 +49,12 @@ final class Privacy
     }
 
     /**
-     * Everything kept about the client, for the client or staff. Secrets (password hash, API
-     * token, invoice and ticket links) and staff-only notes are left out.
+     * Everything kept about the client, without secrets (password hash, API token, invoice and
+     * ticket links). Private notes and documents are included only in staff exports.
      *
      * @return array<string, mixed>
      */
-    public static function export(\Pimple\Container $di, int $clientId): array
+    public static function export(\Pimple\Container $di, int $clientId, bool $includeStaffData = false): array
     {
         $db = self::db($di);
         $client = $db->fetchAssociative('SELECT * FROM client WHERE id = ?', [$clientId]);
@@ -75,7 +75,7 @@ final class Privacy
             $tickets[$i]['messages'] = array_values(array_filter($messages, static fn (array $m): bool => (int) $m['support_ticket_id'] === (int) $ticket['id']));
         }
 
-        return [
+        $data = [
             'exported_at' => date('c'),
             'client' => $client,
             'marketing_email' => self::optedOut($db, $clientId) ? 'off' : 'on',
@@ -92,6 +92,12 @@ final class Privacy
             'emails_sent' => self::rows($db, 'SELECT sender, recipients, subject, content_text, created_at FROM activity_client_email WHERE client_id = ? ORDER BY id', [$clientId]),
             'sign_ins' => self::rows($db, 'SELECT ip, created_at FROM activity_client_history WHERE client_id = ? ORDER BY id', [$clientId]),
         ];
+        if ($includeStaffData) {
+            $data['notes'] = Notes::getList($di, $clientId);
+            $data['files'] = Files::getList($di, $clientId);
+        }
+
+        return $data;
     }
 
     /**
@@ -123,7 +129,9 @@ final class Privacy
         $ticketIds = array_map(intval(...), $db->fetchFirstColumn('SELECT id FROM support_ticket WHERE client_id = ?', [$clientId]));
         $tickets = $ticketIds === [] ? '0' : implode(',', $ticketIds);
 
-        $db->transactional(static function (Connection $db) use ($clientId, $email, $oldEmail, $now, $tickets): void {
+        $db->transactional(static function (Connection $db) use ($di, $clientId, $email, $oldEmail, $now, $tickets): void {
+            $db->delete('client_note', ['client_id' => $clientId]);
+            Files::forgetClient($db, $clientId, $di['filesystem']);
             $erase = ['billing_email', 'salt', 'gender', 'birthday', 'phone_cc', 'phone', 'company', 'company_vat', 'company_number', 'address_1', 'address_2', 'city', 'state', 'postcode', 'notes', 'ip', 'api_token', 'referred_by', 'aid', 'auth_type'];
             for ($i = 1; $i <= 20; ++$i) {
                 $erase[] = 'custom_' . $i;

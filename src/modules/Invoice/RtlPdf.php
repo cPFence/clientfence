@@ -81,7 +81,8 @@ final class RtlPdf
                 return $escape($embed($value));
             }
 
-            return $escape((string) preg_replace_callback('/' . self::LATIN_WORD . '(?:[ \t]+' . self::LATIN_WORD . ')*/u', static function (array $m) use ($embed): string {
+            // TCPDF infers paragraph direction from the first strong character, including an embedded LRM.
+            return $escape("\u{200F}" . (string) preg_replace_callback('/' . self::LATIN_WORD . '(?:[ \t]+' . self::LATIN_WORD . ')*/u', static function (array $m) use ($embed): string {
                 $run = $m[0];
                 $words = preg_match('/\s/', $run) === 1;
                 if ($words && mb_strlen($run) > self::RUN_MAX) {

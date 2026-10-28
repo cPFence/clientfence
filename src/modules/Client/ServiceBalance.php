@@ -150,6 +150,21 @@ class ServiceBalance implements InjectionAwareInterface
         return [$q, $params];
     }
 
+    // ClientFence core patch: staff deductions share the payment lock so the same credit cannot be spent twice.
+    public function deductByAdmin(Client $client, mixed $amount, string $description): void
+    {
+        if (!is_numeric($amount) || !is_finite((float) $amount) || round((float) $amount, 2) <= 0) {
+            throw new \ClientFence\InformationException('Funds amount is invalid');
+        }
+        $amount = round((float) $amount, 2);
+        \ClientFence\Tools::withLock($this->di, 'fb:credit_payment:client:' . $client->getId(), function () use ($client, $amount, $description): void {
+            if ($amount > $this->clientTotal($client)) {
+                throw new \ClientFence\InformationException('Insufficient credit balance');
+            }
+            $this->deductFunds($client, $amount, $description);
+        });
+    }
+
     /**
      * @param float|string $amount
      *

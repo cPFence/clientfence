@@ -608,9 +608,10 @@ class Service implements InjectionAwareInterface
         $this->di['em']->flush();
     }
 
-    public function getSoonExpiringActiveOrders()
+    // ClientFence core patch: pass the existing client filter through to due-order selection.
+    public function getSoonExpiringActiveOrders($data = [])
     {
-        [$query, $bindings] = $this->getSoonExpiringActiveOrdersQuery();
+        [$query, $bindings] = $this->getSoonExpiringActiveOrdersQuery($data);
 
         return $this->di['em']->getConnection()->fetchAllAssociative($query, $bindings);
     }

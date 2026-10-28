@@ -126,7 +126,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-end">{{ 'Email'|trans }}</td>
-                                        <td>{{ client.email }}</td>
+                                        <td>{{ client.email }} <span class="badge {{ client.email_approved ? 'bg-green-lt' : 'bg-yellow-lt' }} ms-1">{{ client.email_approved ? 'Verified'|trans : 'Not verified'|trans }}</span></td>
                                     </tr>
                                     <tr>
                                         <td class="text-end">{{ 'Status'|trans }}</td>
@@ -165,7 +165,8 @@
                                     {% endif %}
                                     <tr>
                                         <td class="text-end">IP</td>
-                                        <td>{% if client.ip %}{{ mf.ip_lookup_link(client.ip) }}{% else %}{{ 'Unknown'|trans }}{% endif %}</td>
+                                        {# ClientFence core patch: the last sign-in's address (imported clients have no sign-up IP), the email check and the client's age. #}
+                                        <td>{% if client.last_login_ip %}{{ mf.ip_lookup_link(client.last_login_ip) }}{% if client.last_login_at %} <span class="text-secondary">{{ client.last_login_at|format_datetime }}</span>{% endif %}{% else %}{{ 'Never signed in'|trans }}{% endif %}</td>
                                     </tr>
                                     {% if can_manage_api_keys %}
                                     <tr>
@@ -187,6 +188,12 @@
                                     <tr>
                                         <td class="text-end">{{ 'Registered on'|trans }}</td>
                                         <td>{{ client.created_at|format_date }}</td>
+                                    </tr>
+                                    {% set since = date(client.created_at).diff(date()) %}
+                                    {% set months = since.y * 12 + since.m %}
+                                    <tr>
+                                        <td class="text-end">{{ 'Client for'|trans }}</td>
+                                        <td>{{ months < 1 ? 'Less than a month'|trans : (months == 1 ? '1 month'|trans : '%count% months'|trans({ '%count%': months })) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -232,6 +239,8 @@
                         {% endif %}
                     {% endblock %}
                 {% endembed %}
+                {# ClientFence core patch: the WHMCS-style summary cards (billing, services, notes, files). #}
+                {% include 'mod_client_summary_cards.html.twig' %}
             </div>
         </div>
 

@@ -27,6 +27,7 @@ final class Migrations
         1 => 'm1Tables',
         2 => 'm2UnverifiedSenders',
         3 => 'm3Privacy',
+        4 => 'm4ClientRecords',
     ];
 
     public static function latest(): int
@@ -116,6 +117,11 @@ final class Migrations
 
     /** 3: client_marketing_optout and email_queue_unsubscribe (Client/Privacy.php). */
     private static function m3Privacy(\Pimple\Container $di): void
+    {
+        Service::ensureTables($di, true);
+    }
+
+    private static function m4ClientRecords(\Pimple\Container $di): void
     {
         Service::ensureTables($di, true);
     }

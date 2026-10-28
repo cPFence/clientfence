@@ -488,14 +488,15 @@ test('the quote PDF renders in English, Arabic and Hebrew', function (string $lo
 test('right-to-left PDF text keeps Latin values, short Latin phrases and numbered words left to right', function (): void {
     $text = ClientFence\Mod\Invoice\RtlPdf::text(true);
     $e = static fn (string $run): string => "\u{202A}\u{200E}" . $run . "\u{202C}";
+    $r = "\u{200F}";
 
     expect($text('UI design & SEO'))->toBe($e('UI design &amp; SEO'))
-        ->and($text('تصميم الواجهة / UI design'))->toBe('تصميم الواجهة / ' . $e('UI design'))
-        ->and($text('دفعة Stripe'))->toBe('دفعة Stripe')
-        ->and($text('فاتورة CF-00002 بقيمة -$80.00'))->toBe('فاتورة ' . $e('CF-00002') . ' بقيمة ' . $e('-$80.00'))
+        ->and($text('تصميم الواجهة / UI design'))->toBe($r . 'تصميم الواجهة / ' . $e('UI design'))
+        ->and($text('دفعة Stripe'))->toBe($r . 'دفعة Stripe')
+        ->and($text('فاتورة CF-00002 بقيمة -$80.00'))->toBe($r . 'فاتورة ' . $e('CF-00002') . ' بقيمة ' . $e('-$80.00'))
         // A long Latin run is left to wrap; only its words with digits are embedded.
         ->and($text('دفعة Bank transfer to account number LNK-308 at Example Bank'))
-        ->toBe('دفعة Bank transfer to account number ' . $e('LNK-308') . ' at Example Bank')
+        ->toBe($r . 'دفعة Bank transfer to account number ' . $e('LNK-308') . ' at Example Bank')
         ->and(ClientFence\Mod\Invoice\RtlPdf::text(false)('UI <b>'))->toBe('UI &lt;b&gt;');
 });
 

@@ -1300,7 +1300,7 @@ test('marks invoice as paid', function (): void {
     $di['logger'] = new Tests\Helpers\TestLogger();
 
     $serviceMock->setDi($di);
-    $result = $serviceMock->markAsPaid($invoiceModel, true, true);
+    $result = $serviceMock->markAsPaid($invoiceModel);
     expect($result)->toBeBool()->toBeTrue();
 });
 
@@ -1308,7 +1308,7 @@ test('admin mark as paid with custom gateway records transaction and marks invoi
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('markAsPaid')
         ->once()
-        ->with(Mockery::type(Model_Invoice::class), false, true)
+        ->with(Mockery::type(Model_Invoice::class), false)
         ->andReturn(true);
     $serviceMock->shouldReceive('getTotalWithTax')
         ->once()
@@ -1372,7 +1372,7 @@ test('admin mark as paid with custom gateway records transaction and marks invoi
     $serviceMock->setDi($di);
 
     $result = $serviceMock->markAsPaidByAdmin($invoiceModel, [
-        'execute' => true,
+        'execute' => false,
         'transactionId' => 'manual-reference-1',
     ]);
 
@@ -1387,7 +1387,7 @@ test('admin mark as paid credits client balance for a deposit invoice', function
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('markAsPaid')
         ->once()
-        ->with(Mockery::type(Model_Invoice::class), false, true)
+        ->with(Mockery::type(Model_Invoice::class), false)
         ->andReturn(true);
     $serviceMock->shouldReceive('getTotalWithTax')
         ->once()
@@ -2619,11 +2619,19 @@ test('an invoice marked paid on the Manage tab is paid when it is saved, whateve
     $di['events_manager'] = Mockery::mock('ClientFence\EventManager')->shouldIgnoreMissing();
     $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => Mockery::mock()->shouldIgnoreMissing());
     $di['logger'] = new Tests\Helpers\TestLogger();
-    $service = new Service();
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('toApiArray')->andReturn([]);
+    $service->shouldReceive('markAsPaid')->once()->with($model, false)->andReturnUsing(static function (Model_Invoice $invoice): bool {
+        expect($invoice->status)->toBe(Model_Invoice::STATUS_UNPAID);
+        $invoice->status = Model_Invoice::STATUS_PAID;
+        $invoice->paid_at = date('Y-m-d H:i:s');
+
+        return true;
+    });
     $service->setDi($di);
     $before = time();
 
-    (fn (): bool => $this->updateInvoiceLocked($model, ['status' => 'paid', 'paid_at' => $posted]))->call($service);
+    (new ReflectionMethod(Service::class, 'updateInvoiceLocked'))->invoke($service, $model, ['status' => 'paid', 'paid_at' => $posted]);
     expect($model->status)->toBe(Model_Invoice::STATUS_PAID)
         ->and(strtotime((string) $model->paid_at))->toBeGreaterThanOrEqual($before);
 })->with(['a day before' => '2020-01-01', 'no date' => '', 'today, date only' => date('Y-m-d')]);
@@ -4483,6 +4491,7 @@ test('markAsPaid transitions a deposit invoice to paid status', function (): voi
         ->atLeast()->once();
     $invoiceItemService->shouldReceive('getTotal')
         ->andReturn(30.0);
+    $invoiceItemService->shouldReceive('executeTask')->once()->with($depositItem);
 
     $eventsManager = Mockery::mock('ClientFence\EventManager');
     $eventsManager->shouldReceive('fire')

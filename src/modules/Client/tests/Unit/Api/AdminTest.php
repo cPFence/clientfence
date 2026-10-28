@@ -86,9 +86,17 @@ test('getPairs returns array', function (): void {
     expect($result)->toBeArray();
 });
 
-test('get returns array', function (): void {
+test('get includes the last login with a profile IP fallback', function (?array $history, ?string $ip, ?string $expectedIp, ?string $expectedAt): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
-    $model = createEntity(ClientFence\Mod\Client\Entity\Client::class);
+    $model = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 7]);
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)');
+    $db->insert('activity_client_history', ['id' => 4, 'client_id' => 8, 'ip' => '203.0.113.8', 'created_at' => '2026-10-28 13:00:00']);
+    if ($history !== null) {
+        $db->insert('activity_client_history', ['id' => 1, 'client_id' => 7, 'ip' => '203.0.113.1', 'created_at' => '2026-10-26 12:00:00']);
+        $db->insert('activity_client_history', ['id' => 2, 'client_id' => 7] + $history);
+        $db->insert('activity_client_history', ['id' => 3, 'client_id' => 7, 'ip' => '203.0.113.3', 'created_at' => '2026-10-25 12:00:00']);
+    }
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
     $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
@@ -96,13 +104,21 @@ test('get returns array', function (): void {
     $serviceMock
     ->shouldReceive('toApiArray')
     ->atLeast()->once()
-    ->andReturn([]);
+    ->andReturn(['id' => 7, 'ip' => $ip]);
 
+    $di = container();
+    $di['dbal'] = $db;
+    $adminClient->setDi($di);
     $adminClient->setService($serviceMock);
 
-    $result = $adminClient->get([]);
-    expect($result)->toBeArray();
-});
+    $result = $adminClient->get(['id' => 7]);
+    expect($result['last_login_ip'])->toBe($expectedIp)
+        ->and($result['last_login_at'])->toBe($expectedAt);
+})->with([
+    'history' => [['ip' => '2001:db8::7', 'created_at' => '2026-10-27 12:00:00'], '', '2001:db8::7', '2026-10-27 12:00:00'],
+    'profile IP only' => [null, '203.0.113.7', '203.0.113.7', null],
+    'unknown' => [null, '', null, null],
+]);
 
 test('login returns array', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());

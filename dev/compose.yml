@@ -70,13 +70,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    # Uploaded files, receipts, ticket attachments and kept backups survive a rebuild of the image.
+    # Uploaded files, receipts, ticket attachments, client files and kept backups survive a rebuild of the image.
     # config.php lives in dev/state/ (a folder, so the site can rewrite it, as a settings save
     # does) and is linked into the web root. The link belongs to www-data: the web root is sticky
     # and world-writable (mode 1777), where Linux does not follow another user's links.
     command: >-
-      sh -c "mkdir -p /var/www/.clientfence-receipts /var/www/.clientfence-ticket-files /var/www/.clientfence-backups
-      && chown www-data:www-data /var/www/.clientfence-receipts /var/www/.clientfence-ticket-files /var/www/.clientfence-backups /var/www/clientfence-state
+      sh -c "mkdir -p /var/www/.clientfence-receipts /var/www/.clientfence-ticket-files /var/www/.clientfence-client-files /var/www/.clientfence-backups
+      && chown www-data:www-data /var/www/.clientfence-receipts /var/www/.clientfence-ticket-files /var/www/.clientfence-client-files /var/www/.clientfence-backups /var/www/clientfence-state
       && chmod 700 /var/www/clientfence-state
       && chown -R www-data:www-data data
       && if [ -f /var/www/clientfence-state/config.php ]; then ln -sfn /var/www/clientfence-state/config.php config.php && chown -h www-data:www-data config.php; fi
@@ -86,6 +86,7 @@ services:
       - data:/var/www/html/data
       - receipts:/var/www/.clientfence-receipts
       - ticket-files:/var/www/.clientfence-ticket-files
+      - client-files:/var/www/.clientfence-client-files
       - backups:/var/www/.clientfence-backups
     ports:
       - "127.0.0.1:${SITE_PORT:-8090}:80"
@@ -96,4 +97,5 @@ volumes:
   data:
   receipts:
   ticket-files:
+  client-files:
   backups:

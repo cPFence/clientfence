@@ -23,6 +23,9 @@ function privacyDb(): Connection
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, title TEXT, period TEXT, quantity INTEGER, unit TEXT, price REAL, taxed INTEGER, created_at TEXT)',
         'CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, txn_id TEXT, amount REAL, currency TEXT, type TEXT, status TEXT, ip TEXT, ipn TEXT, output TEXT, created_at TEXT)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, amount REAL, description TEXT, created_at TEXT)',
+        'CREATE TABLE client_note (id INTEGER PRIMARY KEY, client_id INTEGER, admin_id INTEGER, note TEXT, pinned INTEGER, created_at TEXT, updated_at TEXT)',
+        'CREATE TABLE client_file (id INTEGER PRIMARY KEY, client_id INTEGER, admin_id INTEGER, name TEXT, stored_name TEXT, size INTEGER, mime TEXT, created_at TEXT)',
+        'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice_quote (id INTEGER PRIMARY KEY, client_id INTEGER, first_name TEXT, last_name TEXT, company TEXT, email TEXT, country TEXT, currency TEXT, subject TEXT, stage TEXT, valid_until TEXT, customer_notes TEXT, admin_notes TEXT, sent_at TEXT, accepted_at TEXT, declined_at TEXT, created_at TEXT)',
         'CREATE TABLE service_domain (id INTEGER PRIMARY KEY, client_id INTEGER, sld TEXT, tld TEXT, ns1 TEXT, ns2 TEXT, ns3 TEXT, ns4 TEXT, period INTEGER, privacy INTEGER, transfer_code TEXT, contact_email TEXT, contact_company TEXT, contact_first_name TEXT, contact_last_name TEXT, contact_address1 TEXT, contact_address2 TEXT, contact_city TEXT, contact_state TEXT, contact_postcode TEXT, contact_country TEXT, contact_phone_cc TEXT, contact_phone TEXT, registered_at TEXT, expires_at TEXT)',
         'CREATE TABLE support_ticket (id INTEGER PRIMARY KEY, client_id INTEGER, subject TEXT, status TEXT, priority INTEGER, author_name TEXT, author_email TEXT, created_at TEXT, updated_at TEXT)',
@@ -63,6 +66,10 @@ function privacyDb(): Connection
 function privacyDi(Connection $db, array $config = ['privacy_tools' => '1', 'marketing_optout' => '1']): Pimple\Container
 {
     $di = container();
+    $di['dbal'] = $db;
+    $filesystem = Mockery::mock(Symfony\Component\Filesystem\Filesystem::class);
+    $filesystem->shouldReceive('remove')->with(ClientFence\Mod\Client\Files::dir() . '/7');
+    $di['filesystem'] = $filesystem;
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getConnection')->andReturn($db);
     $di['em'] = $em;
@@ -75,6 +82,23 @@ test('both privacy switches are off by default', function (): void {
     $di = privacyDi(privacyDb(), []);
 
     expect(Privacy::toolsOn($di))->toBeFalse()->and(Privacy::optOutOn($di))->toBeFalse();
+});
+
+test('staff privacy exports list private notes and documents while client exports omit them', function (): void {
+    $db = privacyDb();
+    $db->insert('admin', ['id' => 2, 'name' => 'Jane Staff']);
+    $db->insert('client_note', ['client_id' => 7, 'admin_id' => 2, 'note' => 'Private note']);
+    $token = str_repeat('a', 32);
+    $db->insert('client_file', ['client_id' => 7, 'admin_id' => 2, 'name' => 'contract.txt', 'stored_name' => $token]);
+    $di = privacyDi($db);
+
+    $client = Privacy::export($di, 7);
+    $staff = Privacy::export($di, 7, true);
+
+    expect($client)->not->toHaveKeys(['notes', 'files'])
+        ->and($staff['notes'][0])->toMatchArray(['note' => 'Private note', 'author' => 'Jane Staff'])
+        ->and($staff['files'][0])->toMatchArray(['name' => 'contract.txt', 'author' => 'Jane Staff'])
+        ->and($staff['files'][0])->not->toHaveKey('stored_name');
 });
 
 test('the export holds the client\'s data and no secrets or staff notes', function (): void {
@@ -101,7 +125,12 @@ test('the export holds the client\'s data and no secrets or staff notes', functi
 
 test('anonymizing erases the person and keeps the money records', function (): void {
     $db = privacyDb();
+    $db->insert('client_note', ['client_id' => 7, 'note' => 'Private note']);
+    $db->insert('client_file', ['client_id' => 7, 'name' => 'contract.pdf']);
     Privacy::anonymize(privacyDi($db), 7, 1);
+
+    expect((int) $db->fetchOne('SELECT COUNT(*) FROM client_note'))->toBe(0)
+        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM client_file'))->toBe(0);
 
     $client = $db->fetchAssociative('SELECT * FROM client WHERE id = 7');
     expect($client['email'])->toBe('anonymized-7@anonymized.invalid')

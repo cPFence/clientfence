@@ -1,5 +1,65 @@
 [
     {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the WHMCS-style summary cards (billing, services, notes, files)."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the private client records migration."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: summary cards and staff records use the permissions of their owning modules."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: aggregate invoice lines before statuses so a multi-line invoice is counted once."
+    },
+    {
+        "file": "modules/Client/ServiceBalance.php",
+        "done": "ClientFence core patch: staff deductions share the payment lock so the same credit cannot be spent twice."
+    },
+    {
+        "file": "modules/Client/Controller/Admin.php",
+        "done": "ClientFence core patch: private client documents are streamed only after staff authorization."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: the due-invoice action can be limited to the client being managed."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: selected renewals preserve the single-order generation and locking path."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: pass the existing client filter through to due-order selection."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: private client notes and documents."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the last sign-in's address (imported clients have no sign-up IP), the email check and the client's age."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: settle staff payments now, recording and notifying failures as cron does."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: payment tasks run immediately unless the caller runs them after releasing its lock."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a paid status saved on Manage needs the same payment event and tasks."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: imported clients can have login history without a stored profile IP."
+    },
+    {
         "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig",
         "done": "ClientFence core patch (QA launch L-01): new API key products have no saved capitalization setting."
     },

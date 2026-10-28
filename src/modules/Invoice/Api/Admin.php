@@ -75,7 +75,6 @@ class Admin extends \ClientFence\Api\AbstractApi
      * The gateway must be enabled; when the invoice has no gateway, gateway_id
      * is required and is saved on the invoice.
      *
-     * @optional bool $execute - execute related tasks on invoice items. Default false.
      * @optional int $gateway_id - Payment gateway to associate with the invoice. Required when the invoice has no gateway.
      * @optional string $transactionId - Custom transaction ID to use when the selected gateway is Custom
      *
@@ -348,11 +347,35 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @return bool
      */
-    public function batch_generate()
+    // ClientFence core patch: the due-invoice action can be limited to the client being managed.
+    public function batch_generate($data = [])
     {
         $this->checkPermissions('invoice', 'manage_invoices');
 
-        return $this->getService()->generateInvoicesForExpiringOrders();
+        return $this->getService()->generateInvoicesForExpiringOrders(isset($data['client_id']) ? (int) $data['client_id'] : null);
+    }
+
+    #[RequiredParams(['ids' => 'Order IDs are required'])]
+    public function batch_renewal_invoice($data): array
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+
+        return $this->getService()->batchRenewalInvoice($data['ids']);
+    }
+
+    #[RequiredParams(['client_id' => 'Client ID is missing', 'amount' => 'Amount is required'])]
+    public function funds_invoice($data): int
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+        if (!is_numeric($data['amount']) || !is_finite((float) $data['amount']) || (float) $data['amount'] <= 0) {
+            throw new InformationException('You need to enter a positive numeric value');
+        }
+        $client = $this->getDi()['db']->getExistingModelById('Client', $data['client_id'], 'Client not found');
+        $invoice = $this->getService()->generateFundsInvoice($client, $data['amount']);
+        $this->getService()->approveInvoice($invoice, ['id' => $invoice->id]);
+        $this->getDi()['logger']->info('Generated add funds invoice #%s', $invoice->id);
+
+        return (int) $invoice->id;
     }
 
     /**
@@ -509,7 +532,11 @@ class Admin extends \ClientFence\Api\AbstractApi
         $transactionService = $this->getDi()['mod_service']('Invoice', 'Transaction');
         $data['source'] ??= 'admin';
 
-        return $transactionService->create($data);
+        $id = $transactionService->create($data);
+        // ClientFence core patch: settle staff payments now, recording and notifying failures as cron does.
+        $transactionService->processAndCatchErrors((int) $id);
+
+        return $id;
     }
 
     /**

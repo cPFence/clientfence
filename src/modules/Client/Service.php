@@ -988,6 +988,78 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         }
     }
 
+    // ClientFence core patch: aggregate invoice lines before statuses so a multi-line invoice is counted once.
+    public function summary(int $clientId): array
+    {
+        $db = $this->di['dbal'];
+        $client = $db->fetchAssociative('SELECT currency FROM client WHERE id = ?', [$clientId]);
+        if ($client === false) {
+            throw new InformationException('Client not found');
+        }
+        $invoices = $db->fetchAllAssociative(
+            "SELECT CASE WHEN i.status = 'canceled' THEN 'cancelled'
+                         WHEN i.status = 'unpaid' AND i.approved = 0 THEN 'draft' ELSE i.status END AS status,
+                    COUNT(*) AS count,
+                    COALESCE(SUM(COALESCE(li.subtotal, 0) + CASE WHEN CAST(i.taxrate AS DECIMAL(20,10)) > 0
+                        THEN ROUND(CAST(COALESCE(li.taxable, 0) AS DECIMAL(20,2)) * CAST(i.taxrate AS DECIMAL(20,10)) / 100, 2) ELSE 0 END), 0) AS total
+               FROM invoice i
+               LEFT JOIN (SELECT ii.invoice_id, SUM(ii.price * ii.quantity) AS subtotal,
+                                 SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END) AS taxable
+                            FROM invoice_item ii JOIN invoice ci ON ci.id = ii.invoice_id
+                           WHERE ci.client_id = ? GROUP BY ii.invoice_id) li ON li.invoice_id = i.id
+              WHERE i.client_id = ? AND i.currency = ?
+                AND NOT (i.status = 'refunded' AND COALESCE(li.subtotal, 0) < 0) GROUP BY 1",
+            [$clientId, $clientId, $client['currency']]
+        );
+        $invoices = array_replace(array_fill_keys(['paid', 'unpaid', 'draft', 'cancelled', 'refunded'], ['count' => 0, 'total' => 0.0]), array_column(array_map(
+            static fn (array $row): array => ['status' => $row['status'], 'figures' => ['count' => (int) $row['count'], 'total' => round((float) $row['total'], 2)]],
+            $invoices
+        ), 'figures', 'status'));
+        $services = $db->fetchAllAssociative(
+            "SELECT service_type AS type,
+                    SUM(CASE WHEN status = 'active' AND (group_master = 1 OR group_id IS NULL) THEN 1 ELSE 0 END) AS active,
+                    SUM(CASE WHEN group_master = 1 OR group_id IS NULL THEN 1 ELSE 0 END) AS total,
+                    SUM(CASE WHEN (group_master = 0 OR group_master IS NULL) AND group_id IS NOT NULL THEN 1 ELSE 0 END) AS addons
+               FROM client_order WHERE client_id = ? GROUP BY service_type",
+            [$clientId]
+        );
+
+        return [
+            'currency' => $client['currency'],
+            'invoices' => $invoices,
+            'gross_revenue' => $invoices['paid']['total'],
+            'credit_balance' => (float) $db->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM client_balance WHERE client_id = ?', [$clientId]),
+            'services' => array_column(array_map(static fn (array $row): array => ['type' => $row['type'], 'active' => (int) $row['active'], 'total' => (int) $row['total']], $services), null, 'type'),
+            'addon_count' => (int) array_sum(array_column($services, 'addons')),
+            'open_quotes' => (int) $db->fetchOne('SELECT COUNT(*) FROM invoice_quote WHERE client_id = ? AND stage IN (?, ?, ?)', [$clientId, ...\ClientFence\Mod\Invoice\Quotes::OPEN_STAGES]),
+            'open_tickets' => (int) $db->fetchOne("SELECT COUNT(*) FROM support_ticket WHERE client_id = ? AND status <> 'closed'", [$clientId]),
+        ];
+    }
+
+    public function close(Client $client): int
+    {
+        $orders = $this->di['em']->getRepository(\ClientFence\Mod\Order\Entity\Order::class)->findBy(
+            ['clientId' => $client->getId(), 'status' => ['active', 'suspended']],
+            ['groupMaster' => 'DESC']
+        );
+        $orderService = $this->di['mod_service']('Order');
+        foreach ($orders as $order) {
+            if (in_array($order->getStatus(), ['active', 'suspended'], true)) {
+                $orderService->cancelFromOrder($order);
+            }
+        }
+        $wasActive = $client->getStatus() === Client::ACTIVE;
+        $client->setStatus(Client::CANCELED);
+        $client->setApiToken(null);
+        $client->setUpdatedAt(new \DateTime());
+        $this->di['em']->flush();
+        if ($wasActive) {
+            $this->di['mod_service']('Profile')->invalidateSessions('client', (int) $client->getId());
+        }
+
+        return count($orders);
+    }
+
     public function remove(Client|\Model_Client $model): void
     {
         $clientId = $this->getClientId($model);
@@ -1025,6 +1097,9 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 ->where('client_id = :id')
                 ->setParameter('id', $clientId);
             $query->executeStatement();
+
+            $connection->delete('client_note', ['client_id' => $clientId]);
+            Files::forgetClient($connection, $clientId, $this->di['filesystem']);
 
             $client = $model instanceof Client ? $model : $this->clientRepository->find($clientId);
             if ($client instanceof Client) {
