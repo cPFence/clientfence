@@ -57,7 +57,12 @@
                 {% if client and settings.sidebar_balance_enabled|default('1') and profile and profile.currency is not null %}
                     <div class="sidebar-balance">
                         <span>{{ 'Account Balance'|trans }}</span>
-                        <strong>{{ (profile.balance|default(0))|format_currency(profile.currency) }}</strong>
+                        <div class="sidebar-balance-row">
+                            <strong>{{ (profile.balance|default(0))|format_currency(profile.currency) }}</strong>
+                            {% if guest.invoice_funds_enabled %}
+                                <a class="sidebar-balance-add" href="{{ 'client/balance'|url }}#bf-h-amount"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>{{ 'Add credit'|trans }}</a>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endif %}
                 {% if settings.sidebar_note_enabled|default('0') and (settings.sidebar_note_title|default('')|trim or settings.sidebar_note_content|default('')|trim) %}

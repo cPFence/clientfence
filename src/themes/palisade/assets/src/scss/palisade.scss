@@ -455,6 +455,35 @@ h1, h2, h3, h4, h5, h6,
   }
 }
 
+.sidebar-balance-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.sidebar-balance-add {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  padding: .25rem .5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+  color: var(--bf-sidebar-text);
+  font-size: .75rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  .icon { width: .875rem; height: .875rem; }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--pal-brand);
+    color: #fff;
+  }
+}
+
 .tool-btn {
   display: inline-flex;
   align-items: center;
@@ -3618,4 +3647,152 @@ a.list-group-item {
   .bf-topbar-register {
     display: none;
   }
+}
+
+// ---- Network Status page (mod_support_network_status): a status summary, the group switch and one
+// card per issue with a status colour along its start edge.
+.network-status {
+  .ns-ok { --ns: var(--bf-ok); --ns-bg: var(--bf-ok-bg); }
+  .ns-warn { --ns: var(--bf-warn); --ns-bg: var(--bf-warn-bg); }
+  .ns-danger { --ns: var(--bf-tone-1); --ns-bg: var(--bf-tone-1-bg); }
+  .ns-info { --ns: var(--bf-tone-0); --ns-bg: var(--bf-tone-0-bg); }
+}
+
+.ns-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: $border-radius-lg;
+  background: var(--ns-bg);
+  color: var(--bf-ink);
+
+  strong {
+    display: block;
+    font-size: 1.0625rem;
+  }
+
+  span:not(.ns-summary-icon) {
+    color: var(--bf-muted);
+    font-size: .875rem;
+  }
+}
+
+.ns-summary-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--bf-surface);
+  color: var(--ns);
+
+  .icon { width: 1.375rem; height: 1.375rem; }
+}
+
+.ns-tabs {
+  max-width: 34rem;
+
+  .bf-seg-item {
+    flex: 1 1 0;
+    min-height: 42px;
+    text-decoration: none;
+  }
+}
+
+.ns-count {
+  display: inline-block;
+  min-width: 1.5rem;
+  margin-inline-start: .5rem;
+  padding: .0625rem .4375rem;
+  border-radius: 999px;
+  background: var(--bf-surface);
+  color: var(--bf-muted);
+  font-size: .75rem;
+  text-align: center;
+
+  .is-on & { background: var(--bf-seg-bg); }
+}
+
+.ns-issue {
+  margin-bottom: 1rem;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--bf-line);
+  border-inline-start: 4px solid var(--ns);
+  border-radius: $border-radius-lg;
+  background: var(--bf-surface);
+}
+
+.ns-issue-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .5rem 1rem;
+  margin-bottom: .875rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+}
+
+.ns-status {
+  padding: .25rem .625rem;
+  border-radius: 999px;
+  background: var(--ns-bg);
+  color: var(--ns);
+  font-size: .8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ns-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: .75rem 1.5rem;
+  margin: 0 0 .875rem;
+
+  dt {
+    color: var(--bf-muted);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: .125rem 0 0;
+    color: var(--bf-ink);
+    font-size: .9375rem;
+  }
+}
+
+.ns-text {
+  margin: 0 0 .75rem;
+  color: var(--bf-ink-2);
+}
+
+.ns-updated {
+  padding-top: .75rem;
+  border-top: 1px solid var(--bf-line);
+  color: var(--bf-muted);
+  font-size: .8125rem;
+}
+
+.ns-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+  padding: 2.5rem 1.25rem;
+  border: 1px dashed var(--bf-line-strong);
+  border-radius: $border-radius-lg;
+  color: var(--bf-muted);
+  text-align: center;
+
+  .icon { width: 2rem; height: 2rem; color: var(--bf-ok); }
 }
