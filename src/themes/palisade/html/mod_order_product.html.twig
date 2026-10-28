@@ -6,8 +6,8 @@
    code, checks out and then opens the payment (online methods) or shows the confirmation with
    the invoice (manual methods). The page script is assets/src/js/checkout.js.
 
-   Products with their own FOSSBilling order form (hosting, domains) keep FOSSBilling's order
-   steps. #}
+   Products with their own FOSSBilling order form (hosting, domains) are configured with
+   partials/order_configure.html.twig and go to the cart page. #}
 {% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
 {% import 'partials/store_macros.html.twig' as sm %}
 
@@ -33,10 +33,7 @@
 
 {% block content %}
 {% if stock_form %}
-    <div class="card mb-4">
-        <div class="card-header py-3"><h1 class="mb-1">{{ product.title }}</h1></div>
-        <div class="card-body overflow-hidden">{{ include('mod_orderbutton_content.html.twig') }}</div>
-    </div>
+    <div class="bf-checkout">{{ include('partials/order_configure.html.twig') }}</div>
 {% else %}
 {% set cart_currency = guest.cart_get_currency %}
 {% set store = guest.clientfence_store_info %}
@@ -80,6 +77,7 @@
     currency: cart_currency.code,
     rate: cart_currency.conversion_rate,
     signedIn: client ? true : false,
+    cartCount: guest.cart_count,
     signup: store.signup|default(false) and not signup_page,
     balance: profile ? (profile.balance|default(0)) : 0,
     tax: client ? client.clientfence_tax : { name: '', rate: 0 },
@@ -90,6 +88,7 @@
         login: 'login'|url,
         service: 'order/service/manage'|url,
         services: 'order/service'|url,
+        cart: 'cart'|url,
     },
     texts: {
         cycles: sm.cycle_texts()|trim,
@@ -125,6 +124,8 @@
         stepCompact: 'Step :n of 3 · :label'|trans,
         stepDone: 'Done'|trans,
         failed: 'The order could not be placed: :error'|trans,
+        promoOthers: 'Your cart has :count other item(s). Checking a code here empties your cart. Continue?'|trans,
+        cartOthers: 'Your cart has :count other item(s). Paying here orders only this plan and empties your cart. Continue?'|trans,
     },
 } %}
 
@@ -303,6 +304,7 @@
                     </div>
                 {% endif %}
                 <button type="submit" class="btn btn-primary bf-pay-btn" data-bf-pay></button>
+                <button type="button" class="btn bf-btn-ghost w-100 d-inline-flex align-items-center justify-content-center gap-2" data-bf-add-cart><svg class="icon" aria-hidden="true"><use href="#shopping-cart"/></svg> {{ 'Add to cart'|trans }}</button>
                 <span class="bf-hint bf-small" data-bf-hint></span>
                 {% if settings.checkout_tos|default('0') == 'implicit' %}
                     <span class="bf-hint bf-small">{{ 'By completing your order, you agree to our'|trans }} <a href="{{ 'tos'|url }}" target="_blank">{{ 'Terms of Service'|trans }}</a> {{ 'and'|trans }} <a href="{{ 'privacy-policy'|url }}" target="_blank">{{ 'Privacy Policy'|trans }}</a>.</span>

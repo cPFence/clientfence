@@ -597,6 +597,20 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * Total in, total out and balance of a client's processed transactions, one row per currency.
+     *
+     * @return array list of ['currency', 'in', 'out', 'balance']
+     */
+    #[RequiredParams(['client_id' => 'Client ID is missing'])]
+    public function transaction_client_totals($data)
+    {
+        // ClientFence core patch: staff client page transaction totals
+        $this->checkPermissions('invoice', 'manage_transactions');
+
+        return $this->getDi()['mod_service']('Invoice', 'Transaction')->getClientTotals((int) $data['client_id']);
+    }
+
+    /**
      * Return transactions statuses with counter.
      *
      * @return array

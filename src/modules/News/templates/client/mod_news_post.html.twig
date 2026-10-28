@@ -27,23 +27,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="card ms-0 ms-md-3 w-100">
-            <div class="card-header">
-                <h3 class="link-body-emphasis mb-1">{{ post.title }}</h3>
-                <span class="text-muted">{{ (post.publish_at ?? post.created_at)|format_datetime }}{% if post.author.name is defined %} {{ 'by'|trans }} {{ post.author.name }}{% endif %}</span>
-            </div>
-            <div class="card-body">
-                <div class="pt-3 px-2">
-                    {% if post.image %}<img src="{{ post.image }}" alt="{{ post.title }}">{% endif %}
-                    {{ (post.content ?? '')|markdown_to_html }}
-                </div>
-            </div>
-            <div class="card-footer">
-                <a href="{{ 'news'|url }}" class="btn btn-primary">{{ 'Back to the List'|trans }}</a>
-            </div>
-        </div>
-    </div>
+{# ClientFence core patch: the post title as the page title, then the post in a card (the title sat small in a card header). #}
+<a class="bf-linkbtn" href="{{ 'news'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back to the List'|trans }}</a>
+<div class="page-heading mt-2">
+    <h1 dir="auto">{{ post.title }}</h1>
+    <p>{{ (post.publish_at ?? post.created_at)|format_datetime }}{% if post.author.name is defined %} {{ 'by'|trans }} {{ post.author.name }}{% endif %}</p>
 </div>
+<article class="card">
+    <div class="card-body news-post-body" dir="auto">
+        {% if post.image %}<img class="img-fluid rounded mb-3" src="{{ post.image }}" alt="{{ post.title }}">{% endif %}
+        {{ (post.content ?? '')|markdown_to_html }}
+    </div>
+</article>
 {% endblock %}

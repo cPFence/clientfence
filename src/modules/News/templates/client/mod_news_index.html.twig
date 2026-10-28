@@ -27,13 +27,8 @@
                                     {% if post.pinned %}<span class="badge text-bg-primary align-middle fs-6 ms-1">{{ 'Pinned'|trans }}</span>{% endif %}
                                 </h3>
                                 <span class="text-muted">{{ (post.publish_at ?? post.created_at)|format_datetime }}</span>
-                                <p>
-                                    {% if post.excerpt %}
-                                        {{ (post.excerpt ?? '')|truncate(200)|markdown_to_html }}
-                                    {% else %}
-                                        {{ (post.content ?? '')|truncate(200)|markdown_to_html }}
-                                    {% endif %}
-                                </p>
+                                {# ClientFence core patch: the excerpt as plain text (a heading in the post showed as a second, larger title); raw: striptags leaves Markdown's escaped entities, no tags. #}
+                                <p class="mt-2" dir="auto">{{ ((post.excerpt ?: post.content ?? '')|markdown_to_html|striptags|trim)|truncate(200)|raw }}</p>
                                 <a class="link-offset-2 link-underline" href='{{ "news/#{post.slug}"|url }}'>{{ 'Continue reading'|trans }}
                                     <svg class="icon"><use href="#chevron-right" /></svg>
                                 </a>

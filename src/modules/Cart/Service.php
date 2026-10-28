@@ -258,6 +258,14 @@ class Service implements InjectionAwareInterface
         return is_string($code) && $code !== '' ? $code : null;
     }
 
+    // ClientFence core patch: the header counts cart items on every page, so a visitor without a cart gets no cart row.
+    public function countSessionCartItems(): int
+    {
+        $cart = $this->getCartRepository()->findBySessionId((string) $this->di['session']->getId());
+
+        return $cart instanceof Cart ? $this->getCartProductRepository()->count(['cartId' => $cart->getId()]) : 0;
+    }
+
     public function getSessionCart(?string $sessionID = null): Cart
     {
         $sessionID ??= $this->di['session']->getId();

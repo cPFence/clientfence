@@ -1,7 +1,7 @@
 /**
  * One-page checkout (mod_order_product.html.twig). Keeps the summary, the cycle totals, the
  * add-ons, the Pay button and the phone pay bar in step with the choices, and places the order:
- * sign-up for a new customer (signed in by FOSSBilling's "auto login after sign-up"), cart/add_item (which empties the cart first), the promo
+ * Add to cart (the cart page) or, with Pay, sign-up for a new customer (signed in by FOSSBilling's "auto login after sign-up"), cart/add_item (which empties the cart first), the promo
  * code, cart/checkout, then the payment page (online methods) or the confirmation (manual
  * methods, balance, nothing to pay). Amounts shown before the promo code are the product
  * prices; with a promo code the cart's own totals are shown.
@@ -30,6 +30,7 @@ export default function initCheckout(root) {
     signedIn: !!data.signedIn,
     accountReady: false, // the account was made, but the sign-up did not sign in
     busy: false,
+    planInCart: false, // Apply put this plan in the cart (and emptied it)
   };
 
   const recurrent = product.type === 'recurrent';
@@ -371,10 +372,16 @@ export default function initCheckout(root) {
     if (!code) {
       return;
     }
+    // The code is checked on this plan alone: cart/add_item without `multiple` empties the cart.
+    if (Number(data.cartCount) > 0 && !window.confirm(fill(t.promoOthers, { count: data.cartCount }))) {
+      return;
+    }
     promoMessage('');
     setBusy(true);
     try {
       await api('guest', 'cart/add_item', cartItem());
+      state.planInCart = true;
+      data.cartCount = 0;
       await api('guest', 'cart/apply_promo', { promocode: code });
       const cart = await api('guest', 'cart/get');
       if (!(Number(cart.discount) > 0)) {
@@ -436,9 +443,37 @@ export default function initCheckout(root) {
     done.focus();
   };
 
+  // Add to cart keeps what is in the cart and opens the cart page; only the order details are checked.
+  $('[data-bf-add-cart]')?.addEventListener('click', async () => {
+    if (state.busy) {
+      return;
+    }
+    const invalid = $$('[data-bf-field] input, [data-bf-field] textarea, [data-bf-field] select').find((input) => !input.checkValidity());
+    if (invalid) {
+      invalid.reportValidity();
+      return;
+    }
+    setBusy(true);
+    try {
+      // After Apply the cart holds this plan alone (perhaps with old choices): replace it, not add a second.
+      await api('guest', 'cart/add_item', state.planInCart ? cartItem() : { ...cartItem(), multiple: 1 });
+      if (state.promo) {
+        await api('guest', 'cart/apply_promo', { promocode: state.promo.code });
+      }
+      window.location.assign(data.urls.cart);
+    } catch (error) {
+      setBusy(false);
+      ClientFence.message(errorText(error), 'error');
+    }
+  });
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (state.busy) {
+      return;
+    }
+    // Pay orders this plan alone: cart/add_item empties the cart first.
+    if (Number(data.cartCount) > 0 && !window.confirm(fill(t.cartOthers, { count: data.cartCount }))) {
       return;
     }
     const invalid = [...form.querySelectorAll('input, textarea, select')].find((input) => !input.closest('[hidden]') && !input.checkValidity());

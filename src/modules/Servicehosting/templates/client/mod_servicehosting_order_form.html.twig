@@ -31,7 +31,8 @@
     {% set default_action = 'subdomain' %}
 {% endif %}
 
-<h5 class="mb-1">{{ product_details }}</h5>
+{# ClientFence core patch: the plan details as plain text (inside an h5 every line showed as a heading). #}
+<div class="mb-1">{{ product_details }}</div>
 
 {% if show_domain_config %}
 <hr />

@@ -30,9 +30,9 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/cart', 'get_cart', [], static::class);
     }
 
-    public function get_cart(\ClientFence\App $app): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function get_cart(\ClientFence\App $app): string
     {
-        // ClientFence core patch: no theme has a cart page (the store holds the cart), so /cart was an error page.
-        return $app->redirect('order');
+        // ClientFence core patch: /cart renders the theme's cart page (it was an error page).
+        return $app->render('mod_cart_index');
     }
 }

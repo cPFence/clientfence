@@ -680,6 +680,29 @@
 
                 {% block section_content %}
                     {% import 'macro_functions.html.twig' as mf %}
+                    {# ClientFence core patch: WHMCS-style ticket counts and a search over this client's tickets. #}
+                    {% set year = 'now'|date('Y') %}
+                    {% set ticket_periods = [
+                        { label: 'Opened this month'|trans, from: 'first day of this month'|date('Y-m-d'), to: 'now'|date('Y-m-d') },
+                        { label: 'Opened last month'|trans, from: 'first day of last month'|date('Y-m-d'), to: 'last day of last month'|date('Y-m-d') },
+                        { label: 'Opened this year'|trans, from: year ~ '-01-01', to: 'now'|date('Y-m-d') },
+                        { label: 'Opened last year'|trans, from: (year - 1) ~ '-01-01', to: (year - 1) ~ '-12-31' },
+                    ] %}
+                    <div class="row g-2 p-3 pb-0">
+                        {% for period in ticket_periods %}
+                            <div class="col-6 col-lg-3">
+                                <div class="border rounded-3 bg-body-tertiary px-3 py-2 h-100">
+                                    <div class="fs-2 fw-semibold lh-sm">{{ admin.support_ticket_get_list({ 'client_id': client.id, 'date_from': period.from, 'date_to': period.to, 'per_page': 1, 'deep': 0, 'include_first': 0 }).total }}</div>
+                                    <div class="text-secondary small text-uppercase">{{ period.label }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <form class="d-flex gap-2 p-3" method="get" action="{{ ('client/manage/' ~ client.id)|url }}#tab-support" role="search">
+                        <input class="form-control" type="search" name="ticket_search" value="{{ request.ticket_search|default('') }}" placeholder="{{ 'Search this client’s tickets'|trans }}" aria-label="{{ 'Search this client’s tickets'|trans }}">
+                        <button class="btn btn-outline-secondary" type="submit">{{ 'Search'|trans }}</button>
+                        {% if request.ticket_search|default('') %}<a class="btn btn-link" href="{{ ('client/manage/' ~ client.id)|url }}#tab-support">{{ 'Clear'|trans }}</a>{% endif %}
+                    </form>
                     <div class="table-responsive">
                         <table class="table card-table table-vcenter table-striped text-nowrap">
                             <thead>
@@ -692,7 +715,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set tickets = admin.support_ticket_get_list({ 'per_page': 20, 'client_id': client.id, 'deep': 0, 'include_first': 0 }) %}
+                                {% set tickets = admin.support_ticket_get_list({ 'per_page': 20, 'client_id': client.id, 'search': request.ticket_search|default(''), 'deep': 0, 'include_first': 0 }) %}
                                 {% for ticket in tickets.list %}
                                 <tr>
                                     <td>{{ ticket.id }}</td>
@@ -917,6 +940,23 @@
                 {% block section_content %}
                     {% import 'macro_functions.html.twig' as mf %}
                     {% set transactions = admin.invoice_transaction_get_list({ 'client_id': client.id, 'per_page': 100 }).list %}
+                    {# ClientFence core patch: WHMCS-style totals of the money this client paid and was refunded (processed transactions, per currency). #}
+                    {% for totals in admin.invoice_transaction_client_totals({ 'client_id': client.id }) %}
+                        <div class="row g-2 p-3">
+                            {% for box in [
+                                { label: 'Total in'|trans, value: totals.in },
+                                { label: 'Total out'|trans, value: totals.out },
+                                { label: 'Balance'|trans, value: totals.balance },
+                            ] %}
+                                <div class="col-12 col-sm-4">
+                                    <div class="border rounded-3 bg-body-tertiary px-3 py-2 h-100">
+                                        <div class="fs-2 fw-semibold lh-sm">{{ box.value|format_currency(totals.currency) }}</div>
+                                        <div class="text-secondary small text-uppercase">{{ box.label }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                     <div class="table-responsive">
                         <table class="table card-table table-vcenter table-striped text-nowrap">
                             <thead>

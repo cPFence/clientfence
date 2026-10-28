@@ -1,0 +1,157 @@
+{# ClientFence: the cart page (/cart, Cart/Controller/Client.php). Hosting and domain plans and
+   "Add to cart" on the one-page checkout put plans here; the visitor reviews them, applies a promo
+   code, signs in and checks out. The page script is assets/src/js/cart.js: remove, promo code
+   and checkout through the API, then the payment page (online methods) or the invoice. #}
+{% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
+{% import 'partials/store_macros.html.twig' as sm %}
+
+{% set active_menu = 'order' %}
+{% set allow_guest = guest.clientfence_store_open %}
+
+{% block meta_title %}{{ 'Cart'|trans }}{% endblock %}
+{% block body_class %}bf-cart-page{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ 'order'|url }}">{{ 'Store'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'Cart'|trans }}</li>
+{% endblock %}
+
+{% block content %}
+{% set cart = guest.cart_get %}
+{% set cur = guest.cart_get_currency %}
+{% set rate = cur.conversion_rate %}
+<div class="bf-checkout" data-bf-cart>
+    <a class="bf-linkbtn" href="{{ 'order'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Continue shopping'|trans }}</a>
+    <h1 class="bf-page-title mt-2 mb-4">{{ 'Your cart'|trans }}</h1>
+
+{% if not cart.items %}
+    <div class="card bf-card bf-cart-empty">
+        <span class="bf-cart-empty-icon" aria-hidden="true"><svg class="icon"><use href="#shopping-cart"/></svg></span>
+        <p class="mb-0">{{ 'Your cart is empty.'|trans }}</p>
+        <a class="btn btn-primary" href="{{ 'order'|url }}">{{ 'Browse the store'|trans }}</a>
+    </div>
+{% else %}
+    {# ClientFence core patch (kept from the old cart step): the balance is in the client's currency, so the cart's total, tax included, is compared in that currency. #}
+    {% set tax = client ? client.clientfence_tax : { name: '', rate: 0 } %}
+    {% set total = cart.total * rate %}
+    {% set tax_amount = tax.rate > 0 ? ((total * tax.rate)|round) / 100 : 0 %}
+    {% set due = total + tax_amount %}
+    {% set from_balance = client and due > 0 and client.profile_get.currency|default(cur.code) == cur.code and client.client_balance_get_total >= due %}
+    {% set methods = client and due > 0 and not from_balance ? guest.invoice_payment_methods({ amount: due, currency: cur.code }) : [] %}
+    {% set back = 'cart' %}
+    <script nonce="{{ csp_nonce }}" type="application/json" data-bf-cart-data>{{ {
+        urls: { invoice: 'invoice'|url, banklink: 'invoice/banklink'|url, service: 'order/service/manage'|url },
+        texts: {
+            remove: 'Remove :item from your cart?'|trans,
+            failed: 'The order could not be placed: :error'|trans,
+        },
+    }|json_encode|raw }}</script>
+
+    <div class="bf-checkout-grid">
+        <div class="bf-checkout-main">
+            <section class="card bf-card bf-section" aria-labelledby="bf-h-items">
+                <h2 id="bf-h-items">{{ ':count item(s)'|trans({ ':count': cart.items|length }) }}</h2>
+                <ul class="bf-cart-items">
+                    {% for item in cart.items %}
+                        <li class="bf-cart-item">
+                            <span class="bf-cart-item-icon" aria-hidden="true"><svg class="icon"><use href="#{{ item.type == 'hosting' ? 'server' : (item.type == 'domain' ? 'world' : 'apps') }}"/></svg></span>
+                            <div class="bf-cart-item-text">
+                                <strong dir="auto">{{ item.title }}</strong>
+                                <span>
+                                    {%- if item.period|default(false) %}{{ sm.cycle_label(item.period) }}{% else %}{{ 'One-time payment'|trans }}{% endif -%}
+                                    {%- if item.quantity > 1 %} · {{ 'Quantity'|trans }} {{ item.quantity }}{% endif -%}
+                                    {%- if item.setup_price > 0 %} · {{ 'Setup fee'|trans }} {{ ((item.setup_price - item.discount_setup) * rate)|format_currency(cur.code) }}{% endif -%}
+                                </span>
+                            </div>
+                            <div class="bf-cart-item-price">
+                                {% if item.discount_price > 0 %}<del>{{ (item.total * rate)|format_currency(cur.code) }}</del>{% endif %}
+                                <strong>{{ ((item.total - item.discount_price) * rate)|format_currency(cur.code) }}</strong>
+                            </div>
+                            <button type="button" class="bf-cart-remove" data-bf-cart-remove="{{ item.id }}" data-title="{{ item.title }}" aria-label="{{ 'Remove :item'|trans({ ':item': item.title }) }}" title="{{ 'Remove'|trans }}">
+                                <svg class="icon" aria-hidden="true"><use href="#trash"/></svg>
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <section class="card bf-card bf-section" aria-labelledby="bf-h-account">
+                <h2 id="bf-h-account">{{ 'Account'|trans }}</h2>
+                {% if client %}
+                    {% set profile = client.profile_get %}
+                    <div class="bf-account">
+                        <span class="bf-avatar" aria-hidden="true">{{ (profile.first_name|default('')|first ~ profile.last_name|default('')|first)|upper|default('?') }}</span>
+                        <div class="bf-account-text">
+                            <strong>{{ profile.first_name }} {{ profile.last_name }}</strong>
+                            <span>{{ 'The order and its invoice go to this account.'|trans }}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="mb-0">{{ 'Sign in to place your order; you come back to this cart.'|trans }}</p>
+                    <div class="bf-cart-signin">
+                        <a class="btn btn-primary" href="{{ 'login'|url({ back: '/cart' }) }}">{{ 'Sign in'|trans }}</a>
+                        {% if guest.clientfence_signup_info.open %}<a class="btn bf-btn-ghost" href="{{ 'signup'|url }}">{{ 'Create an account'|trans }}</a>{% endif %}
+                    </div>
+                {% endif %}
+            </section>
+
+            {% if methods %}
+                <section class="card bf-card bf-section" aria-labelledby="bf-h-pay">
+                    <h2 id="bf-h-pay">{{ 'Payment method'|trans }}</h2>
+                    {{ include('partials/pay_methods.html.twig', { methods: methods, context: 'checkout', amount: due, currency: cur.code }) }}
+                </section>
+            {% endif %}
+        </div>
+
+        <aside class="bf-checkout-side" aria-label="{{ 'Order summary'|trans }}">
+            <div class="card bf-card bf-section bf-summary">
+                <h2>{{ 'Summary'|trans }}</h2>
+                <div class="bf-lines">
+                    <div class="bf-line"><span>{{ 'Subtotal'|trans }}</span><span>{{ (cart.subtotal * rate)|format_currency(cur.code) }}</span></div>
+                    {% if cart.discount > 0 %}
+                        <div class="bf-line bf-line-promo"><span>{{ 'Promo code :code'|trans({ ':code': cart.promocode }) }}</span><span>− {{ (cart.discount * rate)|format_currency(cur.code) }}</span></div>
+                    {% endif %}
+                    {% if tax_amount > 0 %}
+                        <div class="bf-line"><span>{{ tax.name ?: 'Tax'|trans }} ({{ tax.rate }}%)</span><span>{{ tax_amount|format_currency(cur.code) }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="bf-total"><span>{{ 'Due today'|trans }}</span><strong>{{ due|format_currency(cur.code) }}</strong></div>
+                {% if not client and guest.clientfence_tax_enabled %}<span class="bf-hint bf-small">{{ 'Tax for your country, if any, is added on the invoice.'|trans }}</span>{% endif %}
+
+                {% if cart.promocode %}
+                    <div class="bf-row-between bf-small">
+                        <span>{{ 'Promo code :code applied.'|trans({ ':code': cart.promocode }) }}</span>
+                        <button type="button" class="bf-linkbtn" data-bf-cart-promo-remove>{{ 'Remove'|trans }}</button>
+                    </div>
+                {% else %}
+                    <form class="bf-promo" data-bf-cart-promo novalidate>
+                        <label class="bf-label" for="bf-cart-promo">{{ 'Promo code'|trans }}</label>
+                        <div class="bf-promo-row">
+                            <input class="form-control" id="bf-cart-promo" name="promocode" autocomplete="off" required>
+                            <button type="submit" class="btn bf-btn-ghost">{{ 'Apply'|trans }}</button>
+                        </div>
+                    </form>
+                {% endif %}
+
+                {% if client %}
+                    <form class="d-flex flex-column gap-2" data-bf-cart-checkout novalidate>
+                        {% if settings.checkout_tos|default('0') == 'explicit' %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="bf-tos" required>
+                                <label class="form-check-label" for="bf-tos">{{ 'I agree to the'|trans }} <a href="{{ 'tos'|url }}" target="_blank">{{ 'Terms of Service'|trans }}</a> {{ 'and'|trans }} <a href="{{ 'privacy-policy'|url }}" target="_blank">{{ 'Privacy Policy'|trans }}</a>.</label>
+                            </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary bf-pay-btn" data-bf-cart-pay{% if due > 0 and not from_balance and not methods %} disabled{% endif %}>{{ 'Place order · :amount'|trans({ ':amount': due|format_currency(cur.code) }) }}</button>
+                        <span class="bf-hint bf-small">{{ from_balance ? 'Your balance covers this order, so it is paid from your balance.'|trans : (due > 0 ? 'Next you pay the invoice with the method you chose.'|trans : 'Nothing to pay today.'|trans) }}</span>
+                    </form>
+                {% else %}
+                    <a class="btn btn-primary bf-pay-btn d-inline-flex align-items-center justify-content-center" href="{{ 'login'|url({ back: '/cart' }) }}">{{ 'Sign in to continue'|trans }}</a>
+                {% endif %}
+                {% if settings.checkout_tos|default('0') == 'implicit' %}
+                    <span class="bf-hint bf-small">{{ 'By completing your order, you agree to our'|trans }} <a href="{{ 'tos'|url }}" target="_blank">{{ 'Terms of Service'|trans }}</a> {{ 'and'|trans }} <a href="{{ 'privacy-policy'|url }}" target="_blank">{{ 'Privacy Policy'|trans }}</a>.</span>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+{% endif %}
+</div>
+{% endblock %}

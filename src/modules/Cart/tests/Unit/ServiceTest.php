@@ -121,6 +121,41 @@ test('getSessionCart returns existing cart', function (): void {
     expect($result->getSessionId())->toEqual($session_id);
 });
 
+test('countSessionCartItems counts the products and creates no cart', function (?int $cartId, int $products, int $expected): void {
+    $cart = null;
+    if ($cartId !== null) {
+        $cart = new Cart();
+        (new ReflectionProperty($cart, 'id'))->setValue($cart, $cartId);
+    }
+
+    $cartRepo = Mockery::mock(CartRepository::class);
+    $cartRepo->shouldReceive('findBySessionId')->once()->with('s1')->andReturn($cart);
+    $cartProductRepo = Mockery::mock(CartProductRepository::class);
+    if ($cart === null) {
+        $cartProductRepo->shouldNotReceive('count');
+    } else {
+        $cartProductRepo->shouldReceive('count')->once()->with(['cartId' => $cartId])->andReturn($products);
+    }
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getRepository')->with(Cart::class)->andReturn($cartRepo);
+    $em->shouldReceive('getRepository')->with(CartProduct::class)->andReturn($cartProductRepo);
+    $em->shouldNotReceive('persist');
+    $em->shouldNotReceive('flush');
+    $session = Mockery::mock(ClientFence\Session::class);
+    $session->shouldReceive('getId')->andReturn('s1');
+
+    $di = container();
+    $di['em'] = $em;
+    $di['session'] = $session;
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->countSessionCartItems())->toBe($expected);
+})->with([
+    'no cart' => [null, 0, 0],
+    'a cart with two products' => [5, 2, 2],
+]);
+
 test('a cart started before signing in follows the client\'s profile currency', function (?string $profileCurrency, int $expected): void {
     $cart = new Cart();
     (new ReflectionProperty($cart, 'id'))->setValue($cart, 1);

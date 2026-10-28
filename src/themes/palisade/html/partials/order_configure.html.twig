@@ -1,0 +1,53 @@
+{# ClientFence: the configure step for plans with their own order form (hosting, domains), in place
+   of FOSSBilling's order steps: the plan, its billing cycle and options, the product's order form
+   (domain choice) and add-ons, then Add to cart, which opens the cart page. The order button
+   embed (Orderbutton module) keeps FOSSBilling's steps. #}
+{% set cart_currency = guest.cart_get_currency %}
+{% set product_details %}
+    <div class="bf-configure-plan">
+        {% if product.description %}<div class="bf-configure-desc">{{ (product.description ?? '')|markdown_to_html }}</div>{% endif %}
+        {% if product.pricing.type is defined %}
+            <div class="bf-configure-row">
+                {% if product.pricing.type == 'recurrent' %}
+                    {% set periods = guest.system_periods %}
+                    <label class="bf-label" for="period-selector">{{ 'Billing cycle'|trans }}</label>
+                    <select class="form-select" name="period" id="period-selector">
+                        {% for code, prices in product.pricing.recurrent %}
+                            {% if prices.enabled %}
+                                <option value="{{ code }}"{% if request.period == code %} selected{% endif %}>{{ (prices.price * cart_currency.conversion_rate)|format_currency(cart_currency.code) }} ({{ periods[code] }})</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <span class="bf-label">{{ 'Price'|trans }}</span>
+                    <strong>{{ ((product.pricing.type == 'free' ? 0 : product.pricing.once.price) * cart_currency.conversion_rate)|format_currency(cart_currency.code) }}</strong>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if product.allow_quantity_select %}
+            <div class="bf-configure-row">
+                <label class="bf-label" for="bf-configure-qty">{{ 'Quantity'|trans }}</label>
+                <input class="form-control bf-configure-qty" id="bf-configure-qty" type="number" name="quantity" value="1" min="1"{% if product.stock_control %} max="{{ product.quantity_in_stock }}"{% endif %}>
+            </div>
+        {% endif %}
+        {# ClientFence core patch: configurable options (Product/Options.php). #}
+        {{ include('mod_product_options_form.html.twig', { 'product_id': product.id, 'currency': cart_currency }) }}
+    </div>
+{% endset %}
+
+<a class="bf-linkbtn" href="{{ 'order'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back to the store'|trans }}</a>
+<h1 class="bf-page-title mt-2 mb-4">{{ product.title }}</h1>
+<form class="card bf-card bf-section bf-configure" method="post" action="{{ 'cart/add_item'|api_url(role: 'guest') }}"
+    {{ fb_api_form({ message: 'Added to your cart'|trans, redirect: 'cart'|url }) }}>
+    {% set tpl = 'mod_service' ~ product.type ~ '_order_form.html.twig' %}
+    {{ include(tpl, product) }}
+    {{ include('mod_orderbutton_addons.html.twig', product) }}
+    <input type="hidden" name="multiple" value="1">
+    <input type="hidden" name="id" value="{{ product.id }}">
+    <div class="bf-configure-actions">
+        {# id config-next: the domain order form hides it until a domain is checked. #}
+        <button type="submit" class="btn btn-primary bf-btn-lg" id="config-next">
+            <svg class="icon" aria-hidden="true"><use href="#shopping-cart"/></svg> {{ 'Add to cart'|trans }}
+        </button>
+    </div>
+</form>

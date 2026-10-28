@@ -837,9 +837,10 @@ class Service implements InjectionAwareInterface
         [$sld, $tld] = [null, null];
 
         if ($data['domain']['action'] == 'owndomain') {
+            // ClientFence core patch: an empty own-domain field shows a client-readable message.
             $required = [
-                'owndomain_sld' => 'Hosting product must have defined owndomain_sld parameter',
-                'owndomain_tld' => 'Hosting product must have defined owndomain_tld parameter',
+                'owndomain_sld' => 'Domain name is required.',
+                'owndomain_tld' => 'Domain extension is required.',
             ];
             $this->di['validator']->checkRequiredParamsForArray($required, $data['domain']);
 

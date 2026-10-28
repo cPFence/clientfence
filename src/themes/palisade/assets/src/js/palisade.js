@@ -368,6 +368,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (checkout) {
     import('./checkout.js').then((module) => module.default(checkout));
   }
+  const cart = document.querySelector('[data-bf-cart]');
+  if (cart) {
+    import('./cart.js').then((module) => module.default(cart));
+  }
   // Configurable options on FOSSBilling's order steps (the checkout prices its own).
   document.querySelectorAll('[data-cf-options]').forEach((box) => {
     if (!box.closest('[data-bf-checkout]')) {

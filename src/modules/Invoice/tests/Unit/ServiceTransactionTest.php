@@ -511,3 +511,23 @@ test('custom transfers only credit the client when the invoice is no longer unpa
         ->and($tx->amount)->toBe($amount);
 })->with([Model_Invoice::STATUS_REFUNDED, Model_Invoice::STATUS_CANCELED, Model_Invoice::STATUS_PAID])
     ->with([6.0, 10.0])->with([false, true]);
+
+test('sums a client\'s processed payments and refunds per currency', function (): void {
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getAll')
+        ->once()
+        ->with(Mockery::type('string'), [5, 'processed'])
+        ->andReturn([
+            ['cur' => 'EUR', 'total_in' => null, 'total_out' => '0.00'],
+            ['cur' => 'USD', 'total_in' => '105.00', 'total_out' => '0.01'],
+        ]);
+    $di = container();
+    $di['db'] = $db;
+    $service = new ServiceTransaction();
+    $service->setDi($di);
+
+    expect($service->getClientTotals(5))->toBe([
+        ['currency' => 'EUR', 'in' => 0.0, 'out' => 0.0, 'balance' => 0.0],
+        ['currency' => 'USD', 'in' => 105.0, 'out' => 0.01, 'balance' => 104.99],
+    ]);
+});

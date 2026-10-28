@@ -118,6 +118,14 @@
                 {% endif %}
                 {# Language and colour mode, as in the admin area's top bar (Sign Out is in the account menu). #}
                 <div class="topbar-tools">{{ include('partials/tools.html.twig', { tool_class: 'topbar-tool', compact: true }) }}</div>
+                {# The cart and its item count (cart/count makes no cart for visitors who have none). #}
+                {% if guest.clientfence_store_open %}
+                    {% set cart_count = guest.cart_count %}
+                    <a class="topbar-bell-btn topbar-cart" href="{{ 'cart'|url }}" title="{{ 'Cart'|trans }}" aria-label="{{ cart_count ? ':count item(s) in your cart'|trans({ ':count': cart_count }) : 'Cart'|trans }}">
+                        <svg class="icon" aria-hidden="true"><use href="#shopping-cart"/></svg>
+                        {% if cart_count %}<span class="topbar-bell-count">{{ cart_count }}</span>{% endif %}
+                    </a>
+                {% endif %}
                 {% if client %}
                     {# The bell: the account's notifications (palisade.js fills the list). #}
                     <div class="topbar-bell dropdown" data-cf-bell data-text="{{ {empty: 'No notifications yet'|trans, error: 'Notifications could not be loaded'|trans, now: 'just now'|trans, read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans}|json_encode }}">

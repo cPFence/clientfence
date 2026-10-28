@@ -402,6 +402,33 @@ class ServiceTransaction implements InjectionAwareInterface
         return [$sql, $params];
     }
 
+    /**
+     * Processed transactions of a client's invoices per currency, as the reports count them: a refund
+     * or a negative amount is out (positive), everything else is in. The type may be empty.
+     *
+     * @return list<array{currency: string, in: float, out: float, balance: float}>
+     */
+    public function getClientTotals(int $clientId): array
+    {
+        // ClientFence core patch: the client page shows total in, total out and balance per currency.
+        $sql = "SELECT COALESCE(NULLIF(m.currency, ''), i.currency) AS cur,
+                    SUM(CASE WHEN m.type = 'refund' OR m.amount < 0 THEN 0 ELSE m.amount END) AS total_in,
+                    SUM(CASE WHEN m.type = 'refund' OR m.amount < 0 THEN ABS(m.amount) ELSE 0 END) AS total_out
+                FROM transaction as m
+                JOIN invoice as i on m.invoice_id = i.id
+                WHERE i.client_id = ? AND m.status = ?
+                GROUP BY cur
+                ORDER BY cur";
+        $rows = $this->di['db']->getAll($sql, [$clientId, \Model_Transaction::STATUS_PROCESSED]);
+
+        return array_map(static fn (array $row): array => [
+            'currency' => (string) $row['cur'],
+            'in' => round((float) $row['total_in'], 2),
+            'out' => round((float) $row['total_out'], 2),
+            'balance' => round((float) $row['total_in'] - (float) $row['total_out'], 2),
+        ], $rows);
+    }
+
     public function counter(): array
     {
         $sql = 'SELECT status, count(id) as counter

@@ -34,6 +34,15 @@ class Guest extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * Number of products in the current shopping cart, without creating a cart.
+     */
+    public function count(): int
+    {
+        // ClientFence core patch: the header shows the cart count on every page.
+        return $this->getService()->countSessionCartItems();
+    }
+
+    /**
      * Completely remove shopping cart contents.
      *
      * @return bool

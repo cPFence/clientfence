@@ -33,6 +33,12 @@ $dark: $navy-850;
 $font-family-sans-serif: "Geist", "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 $headings-font-family: "Jakarta", "IBM Plex Sans Arabic", "Geist", system-ui, sans-serif;
 $headings-font-weight: 700;
+$h1-font-size: 1.75rem;
+$h2-font-size: 1.375rem;
+$h3-font-size: 1.1875rem;
+$h4-font-size: 1.0625rem;
+$h5-font-size: 1rem;
+$h6-font-size: .9375rem;
 $font-size-base: .9375rem;
 $line-height-base: 1.55;
 
@@ -153,6 +159,13 @@ body {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   letter-spacing: -.01em;
+}
+
+// Jakarta has 700 and 800 only: below the page title, headings use the body font at 600.
+h2, h3, h4, h5, h6,
+.h2, .h3, .h4, .h5, .h6 {
+  font-family: $font-family-sans-serif;
+  font-weight: 600;
 }
 
 [dir="rtl"] {
@@ -1161,7 +1174,7 @@ h1, h2, h3, h4, h5, h6,
   h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 600;
   }
 }
 
@@ -1639,7 +1652,7 @@ a.list-group-item {
   color: #fff;
   font-family: $headings-font-family;
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 700;
 
   &.is-large {
     width: 60px;
@@ -2027,7 +2040,7 @@ a.list-group-item {
   h2 {
     max-width: 22ch;
     color: #fff;
-    font-size: 2.1rem;
+    font-size: 1.625rem;
     line-height: 1.2;
   }
 
@@ -2185,7 +2198,7 @@ a.list-group-item {
 .error-code {
   font-family: $headings-font-family;
   font-size: clamp(4rem, 12vw, 7rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   background: linear-gradient(135deg, var(--pal-accent), var(--pal-brand-deep));
   -webkit-background-clip: text;
@@ -2384,8 +2397,8 @@ a.list-group-item {
 
   h2 {
     margin: 0;
-    font-size: 1.125rem;
-    font-weight: 800;
+    font-size: 1.0625rem;
+    font-weight: 600;
   }
 }
 
@@ -2405,12 +2418,12 @@ a.list-group-item {
 
 .bf-page-title {
   margin: 0;
-  font-size: 2rem;
-  font-weight: 800;
+  font-size: 1.625rem;
+  font-weight: 700;
   letter-spacing: -.02em;
 
   @include media-breakpoint-down(md) {
-    font-size: 1.6rem;
+    font-size: 1.375rem;
   }
 }
 
@@ -2620,9 +2633,9 @@ a.list-group-item {
 
   h1 {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: 2rem;
     line-height: 1.12;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -.02em;
 
     @include media-breakpoint-down(md) {
@@ -2704,7 +2717,7 @@ a.list-group-item {
   h2 {
     margin: 0;
     font-size: 1.1875rem;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.3;
   }
 
@@ -2733,7 +2746,7 @@ a.list-group-item {
 .bf-price-amount {
   font-family: $headings-font-family;
   font-size: 2.125rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -.02em;
 }
@@ -3146,7 +3159,7 @@ a.list-group-item {
   strong {
     font-family: $headings-font-family;
     font-size: 2rem;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: -.02em;
   }
@@ -3269,7 +3282,7 @@ a.list-group-item {
   strong {
     font-family: $headings-font-family;
     font-size: 1.5rem;
-    font-weight: 800;
+    font-weight: 700;
   }
 }
 
@@ -3300,8 +3313,8 @@ a.list-group-item {
 
   h1 {
     margin: 0;
-    font-size: 2.25rem;
-    font-weight: 800;
+    font-size: 1.75rem;
+    font-weight: 700;
     letter-spacing: -.02em;
   }
 
@@ -3395,7 +3408,7 @@ a.list-group-item {
   strong {
     font-family: $headings-font-family;
     font-size: 1.75rem;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1;
   }
 }
@@ -3795,4 +3808,203 @@ a.list-group-item {
   text-align: center;
 
   .icon { width: 2rem; height: 2rem; color: var(--bf-ok); }
+}
+
+// Cart page (mod_cart_index.html.twig) and the top bar's cart.
+.topbar-cart {
+  color: var(--bs-secondary-color);
+
+  .topbar-bell-count {
+    background: var(--bs-primary);
+  }
+}
+
+.bf-cart-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-cart-item {
+  display: flex;
+  align-items: center;
+  gap: .875rem;
+  padding: .875rem 0;
+
+  & + & {
+    border-top: 1px solid var(--bf-line);
+  }
+}
+
+.bf-cart-item-icon,
+.bf-cart-empty-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--bf-soft);
+  color: var(--bs-primary);
+}
+
+.bf-cart-item-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: .125rem;
+  min-width: 0;
+
+  strong {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  span {
+    color: var(--bf-muted);
+    font-size: .875rem;
+  }
+}
+
+.bf-cart-item-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  white-space: nowrap;
+
+  del {
+    color: var(--bf-muted);
+    font-size: .8125rem;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.bf-cart-remove {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--bf-muted);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--bs-danger-bg-subtle);
+    color: var(--bs-danger);
+  }
+
+  .icon { width: 18px; height: 18px; }
+}
+
+.bf-cart-signin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    border-radius: 12px;
+  }
+}
+
+.bf-cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--bf-ink-2);
+}
+
+@include media-breakpoint-down(sm) {
+  .bf-cart-item {
+    flex-wrap: wrap;
+  }
+
+  .bf-cart-item-text {
+    flex-basis: calc(100% - 100px);
+  }
+
+  .bf-cart-item-price {
+    flex-direction: row;
+    gap: .5rem;
+    margin-inline-start: calc(42px + .875rem);
+  }
+}
+
+// Configure step for hosting and domain plans (partials/order_configure.html.twig). The order
+// forms and add-ons are FOSSBilling's templates: their headings become section titles here.
+.bf-configure {
+  gap: 1.25rem;
+
+  h4 {
+    margin: .5rem 0 .25rem !important;
+    font-size: 1.0625rem;
+    font-weight: 650;
+
+    strong { font-weight: inherit; }
+  }
+
+  h6,
+  h6 strong {
+    margin: 0;
+    font-size: .9375rem;
+    font-weight: 600;
+  }
+
+  hr { display: none; }
+
+  .table { --bs-table-bg: transparent; --bs-table-striped-bg: transparent; margin: 0; }
+
+  .table td {
+    padding: .875rem 0;
+    border-top: 1px solid var(--bf-line);
+    vertical-align: middle;
+  }
+
+  .table td p { margin: .125rem 0 0; color: var(--bf-muted); font-size: .875rem; }
+}
+
+.bf-configure-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bf-configure-desc {
+  color: var(--bf-ink-2);
+
+  p { margin-bottom: .5rem; }
+  ul { margin: 0; padding-inline-start: 1.25rem; }
+}
+
+.bf-configure-row {
+  display: flex;
+  flex-direction: column;
+  gap: .375rem;
+  max-width: 420px;
+}
+
+.bf-configure-qty { max-width: 120px; }
+
+.bf-configure-actions {
+  padding-top: 1rem;
+  border-top: 1px solid var(--bf-line);
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+  }
 }

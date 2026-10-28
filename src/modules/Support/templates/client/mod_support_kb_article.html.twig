@@ -21,7 +21,8 @@
 <div class="row g-4 justify-content-center">
     <article class="col-lg-9">
         <div class="mb-4">
-            <h1 class="display-6 mt-2 mb-3">{{ article.title }}</h1>
+            {# ClientFence core patch: the page title size used across the client area (display-6 was oversized). #}
+            <h1 class="bf-page-title mt-2 mb-3">{{ article.title }}</h1>
             <div class="d-flex flex-wrap gap-3 text-muted small">
                 {% if article.updated_at %}
                     <span>{{ 'Updated'|trans }} {{ '%time% ago'|trans({ '%time%': article.updated_at|timeago }) }}</span>
