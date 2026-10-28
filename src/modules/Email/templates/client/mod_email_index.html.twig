@@ -22,8 +22,9 @@
                     {% if emails.list is empty %}
                     <div class="empty-state" id="information-block">{{ 'There are no emails to display'|trans }}</div>
                     {% else %}
-                    <div class="d-flex">
-                        <div class="nav nav-tabs flex-column col-md-4 border-0">
+                    {# ClientFence core patch: keep email content readable on phones. #}
+                    <div class="d-flex flex-column flex-md-row">
+                        <div class="nav nav-tabs flex-column col-12 col-md-4 border-0 text-break">
                             <div class="list-group email-list" id="list-tab" role="tablist">
                                 {% for i, email in emails.list %}
                                     <a class="list-group-item list-group-item-action mt-0{% if loop.first %} active{% endif %}"
@@ -37,15 +38,15 @@
                             </div>
                         </div>
 
-                        <div class="col-md-8 tab-content m-0 border-start">
+                        <div class="col-12 col-md-8 tab-content m-0 border-start text-break">
                             {% for i, email in emails.list %}
                                 <div class="tab-pane fade{% if loop.first %} show active{% endif %}"
                                      id="mail-{{ loop.index }}" role="tabpanel">
                                     <div class="card-body">
                                         <h6 class="mb-0">{{ email.subject }}</h6>
                                         <div class="card-header px-0">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="d-flex flex-column gap-1">
+                                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 gap-md-0">
+                                                <div class="d-flex flex-column gap-1 min-w-0">
                                                     <span class="d-block"><span class="text-muted me-2">{{ 'From'|trans }}</span>{{ email.sender }}</span>
                                                     <span class="d-block"><span class="text-muted me-2">{{ 'To'|trans }}</span>{{ email.recipients }}</span>
                                                 </div>

@@ -214,6 +214,8 @@
                 card_class: 'mb-3'
             } %}
                 {% block section_content %}
+                {# ClientFence core patch: keep wide invoice items inside the card on phones. #}
+                <div class="table-responsive">
                 {% if not invoice.approved %}
                 <form method="post" action="{{ 'invoice/update'|api_url }}" {{ fb_api_form({reload: true}) }}>
                     <table class="table card-table table-vcenter table-striped text-nowrap">
@@ -349,6 +351,7 @@
                     </tfoot>
                 </table>
                 {% endif %}
+                </div>
                 {% endblock %}
             {% endembed %}
 

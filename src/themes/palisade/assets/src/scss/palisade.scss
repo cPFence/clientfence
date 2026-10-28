@@ -543,10 +543,21 @@ h1, h2, h3, h4, h5, h6,
     }
   }
 
-  .topbar-logo img {
-    display: block;
-    height: 28px;
-    width: auto;
+  .topbar-logo {
+    min-width: 0;
+
+    img {
+      display: block;
+      height: 28px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .bf-logo-text {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
   }
 
   .breadcrumb {
@@ -560,6 +571,7 @@ h1, h2, h3, h4, h5, h6,
 
 .topbar-menu-btn {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 40px;

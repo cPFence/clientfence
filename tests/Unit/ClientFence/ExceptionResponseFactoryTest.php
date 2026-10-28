@@ -51,34 +51,59 @@ test('error page can render without sending output', function (): void {
         ->and($page)->toContain('Missing route');
 });
 
-test('exception response factory renders string SQLSTATE errors outside testing', function (): void {
-    $previousEnv = getenv('APP_ENV');
-    putenv('APP_ENV=prod');
-    $exception = new PDOException('Unknown column');
+test('exception error pages disclose database details only to signed-in staff', function (array $session, bool $showDetails): void {
+    $previousSession = $_SESSION ?? [];
+    $_SESSION = $session;
+    $message = "SQLSTATE[42S22]: SELECT denied to user 'billing'@'localhost' for table `private_db`.`invoice` <query>";
+    $exception = new PDOException($message);
     (new ReflectionProperty($exception, 'code'))->setValue($exception, '42S22');
 
     try {
-        $response = (new ExceptionResponseFactory())->create($exception);
+        $response = withAppEnv('prod', fn (): Response => (new ExceptionResponseFactory())->create($exception));
     } finally {
-        putenv($previousEnv === false ? 'APP_ENV' : 'APP_ENV=' . $previousEnv);
+        $_SESSION = $previousSession;
     }
 
     expect($response->getStatusCode())->toBe(Response::HTTP_INTERNAL_SERVER_ERROR)
-        ->and($response->getContent())->toContain('Powered by ClientFence')
-        ->and($response->getContent())->toContain('Unknown column');
-});
+        ->and($response->getContent())->toContain('Error code #0', 'Instance ' . INSTANCE_ID)
+        ->and($response->getContent())->not->toContain($message);
 
-test('exception response factory escapes the message on the HTML error page', function (): void {
-    $previousEnv = getenv('APP_ENV');
-    putenv('APP_ENV=prod');
+    if ($showDetails) {
+        expect($response->getContent())->toContain(htmlspecialchars($message));
+    } else {
+        expect($response->getContent())->toContain('An unexpected error occurred. Please contact support.')
+            ->and($response->getContent())->not->toContain('SQLSTATE', 'billing', 'localhost', 'private_db', '&lt;query&gt;');
+    }
+})->with([
+    'guest' => [[], false],
+    'client' => [['client_id' => 12], false],
+    'staff' => [['admin' => ['id' => 3]], true],
+]);
+
+test('application error messages stay visible to guests', function (): void {
+    $previousSession = $_SESSION ?? [];
+    $_SESSION = [];
 
     try {
-        $response = (new ExceptionResponseFactory())->create(new RuntimeException('A & B <Ltd> failed', 0));
+        $response = withAppEnv('prod', fn (): Response => (new ExceptionResponseFactory())->create(new ClientFence\Exception('Invoice not found & <gone>')));
     } finally {
-        putenv($previousEnv === false ? 'APP_ENV' : 'APP_ENV=' . $previousEnv);
+        $_SESSION = $previousSession;
     }
 
-    expect($response->getStatusCode())->toBe(Response::HTTP_INTERNAL_SERVER_ERROR)
-        ->and($response->getContent())->toContain('A &amp; B &lt;Ltd&gt; failed')
-        ->and($response->getContent())->not->toContain('A & B <Ltd> failed');
+    expect($response->getContent())->toContain('Invoice not found &amp; &lt;gone&gt;');
+});
+
+test('application messages wrapped by template rendering stay visible to guests', function (): void {
+    $previousSession = $_SESSION ?? [];
+    $_SESSION = [];
+    $wrapped = new Twig\Error\RuntimeError('An exception has been thrown during the rendering of a template ("Product not found").', -1, null, new ClientFence\InformationException('Product not found'));
+
+    try {
+        $response = withAppEnv('prod', fn (): Response => (new ExceptionResponseFactory())->create($wrapped));
+    } finally {
+        $_SESSION = $previousSession;
+    }
+
+    expect($response->getContent())->toContain('Product not found')
+        ->and($response->getContent())->not->toContain('rendering of a template');
 });

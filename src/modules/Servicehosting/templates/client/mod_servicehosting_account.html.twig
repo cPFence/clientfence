@@ -25,7 +25,7 @@
     <div class="card-body d-flex flex-wrap align-items-center gap-3">
         <span class="clientfence-hosting-monogram is-large" aria-hidden="true">{{ name|first|upper }}</span>
         <div class="min-w-0 flex-grow-1">
-            <h1 class="clientfence-hosting-hero-domain text-truncate mb-1"><bdi dir="ltr">{{ name }}</bdi></h1>
+            <h1 class="clientfence-hosting-hero-domain mb-1"><bdi class="d-block text-truncate" dir="ltr">{{ name }}</bdi></h1>
             <div class="clientfence-hosting-hero-meta">
                 {{ mf.status_badge(account.status, 'order') }}
                 <span><bdi>{{ account.plan ?: account.title }}</bdi></span>

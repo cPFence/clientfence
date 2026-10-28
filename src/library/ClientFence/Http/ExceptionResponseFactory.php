@@ -33,13 +33,22 @@ final readonly class ExceptionResponseFactory
             ]);
         }
 
+        // ClientFence core patch: database, template and PHP errors can carry SQL and account names, so only staff
+        // (known from the session, without querying a failing database) see them; application messages stay.
+        $showDetails = !empty($_SESSION['admin']['id']);
+        if (!$showDetails && !$exception instanceof \ClientFence\Exception) {
+            // Twig wraps an application message thrown while rendering; show that inner message.
+            $previous = $exception->getPrevious();
+            $message = $previous instanceof \ClientFence\Exception ? $previous->getMessage() : 'An unexpected error occurred. Please contact support.';
+        }
+
         if (defined('API_MODE')) {
             $code = $exception->getCode() ?: 9998;
 
             return new JsonResponse(['result' => null, 'error' => ['message' => $message, 'code' => $code]]);
         }
 
-        if (defined('DEBUG') && DEBUG && (new Filesystem())->exists(PATH_VENDOR)) {
+        if ($showDetails && defined('DEBUG') && DEBUG && (new Filesystem())->exists(PATH_VENDOR)) {
             return new Response($this->renderWhoops($exception), $this->getStatusCode($exception));
         }
 
