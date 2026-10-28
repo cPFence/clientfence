@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.6 (2026-10-28)
+
+### Added
+
+- A cart page with the promo code, a summary and checkout; hosting and domain plans go to it with Add to cart.
+- A cart icon in the header with the number of items.
+- Add to cart on the one-page checkout.
+- Staff client page: tickets opened this month, last month, this year and last year, and a search over the client's tickets.
+- Staff client page: total in, total out and balance of the client's transactions.
+
+### Changed
+
+- Smaller, lighter headings across the client area; news posts and knowledge base articles get a clear page title.
+
+### Fixed
+
+- An empty domain field on a hosting order now says "Domain name is required." instead of a technical message.
+
 ## 1.0.5 (2026-10-28)
 
 ### Added
