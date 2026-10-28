@@ -322,6 +322,14 @@ msgstr ""
 msgid ":count in total"
 msgstr ""
 
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid ":count item(s)"
+msgstr ""
+
+#: src/themes/palisade/html/layout_default.html.twig
+msgid ":count item(s) in your cart"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid ":count items"
 msgstr ""
@@ -894,7 +902,7 @@ msgstr ""
 msgid "Access"
 msgstr ""
 
-#: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
 msgid "Account"
 msgstr ""
 
@@ -1306,7 +1314,7 @@ msgstr ""
 msgid "Add this amount to the current price (a negative amount lowers it)"
 msgstr ""
 
-#: src/modules/Orderbutton/templates/client/mod_orderbutton_addons.html.twig
+#: src/modules/Orderbutton/templates/client/mod_orderbutton_addons.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_configure.html.twig
 msgid "Add to cart"
 msgstr ""
 
@@ -1336,6 +1344,10 @@ msgstr ""
 
 #: src/themes/palisade/html/partials/pay_methods.html.twig
 msgid "Added to your balance as soon as :name confirms."
+msgstr ""
+
+#: src/themes/palisade/html/partials/order_configure.html.twig
+msgid "Added to your cart"
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
@@ -2470,7 +2482,7 @@ msgstr ""
 msgid "Applies to Any State"
 msgstr ""
 
-#: src/modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Apply"
 msgstr ""
 
@@ -2838,7 +2850,7 @@ msgstr ""
 msgid "Back to the group"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_configure.html.twig
 msgid "Back to the store"
 msgstr ""
 
@@ -3002,7 +3014,7 @@ msgstr ""
 msgid "Billing Settings"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_order_index.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_configure.html.twig
 msgid "Billing cycle"
 msgstr ""
 
@@ -3154,6 +3166,10 @@ msgstr ""
 msgid "Browse support articles in this knowledge base category."
 msgstr ""
 
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Browse the store"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Browser tab icon. Square, at least 64 × 64."
 msgstr ""
@@ -3190,7 +3206,7 @@ msgstr ""
 msgid "Button text contrast: :ratio to 1 (4.5 or more reads well)."
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "By completing your order, you agree to our"
 msgstr ""
 
@@ -3446,7 +3462,7 @@ msgstr ""
 msgid "Cards and wallets. Keys are in your Stripe dashboard under Developers → API keys."
 msgstr ""
 
-#: src/modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig
+#: src/modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig src/themes/palisade/html/layout_default.html.twig src/themes/palisade/html/mod_cart_index.html.twig
 msgid "Cart"
 msgstr ""
 
@@ -4060,6 +4076,10 @@ msgstr ""
 
 #: src/modules/Orderbutton/templates/admin/mod_orderbutton_settings.html.twig
 msgid "Class name should start with dot (.) or hashtag (#) for ID"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Clear"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -4810,6 +4830,10 @@ msgstr ""
 msgid "Continue reading"
 msgstr ""
 
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Continue shopping"
+msgstr ""
+
 #: src/modules/Client/templates/client/widgets/mod_client_google_button.html.twig src/modules/Client/templates/client/widgets/mod_client_google_signup_button.html.twig
 msgid "Continue with Google"
 msgstr ""
@@ -5198,7 +5222,7 @@ msgstr ""
 msgid "Create account"
 msgstr ""
 
-#: src/themes/palisade/html/mod_page_login.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_page_login.html.twig src/themes/palisade/html/mod_page_signup.html.twig
 msgid "Create an account"
 msgstr ""
 
@@ -6410,7 +6434,7 @@ msgstr ""
 msgid "Due Date"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Due today"
 msgstr ""
 
@@ -8838,7 +8862,7 @@ msgstr ""
 msgid "I accept this quote and the :link."
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
 msgid "I agree to the"
 msgstr ""
 
@@ -11874,6 +11898,10 @@ msgstr ""
 msgid "Next you get the transfer details for :method. The order starts once we confirm your payment."
 msgstr ""
 
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Next you pay the invoice with the method you chose."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig …
 msgid "No"
 msgstr ""
@@ -12430,7 +12458,7 @@ msgstr ""
 msgid "Nothing to do"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Nothing to pay today."
 msgstr ""
 
@@ -12606,7 +12634,7 @@ msgstr ""
 msgid "One version per line"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig src/themes/palisade/html/mod_cart_index.html.twig …
 msgid "One-time payment"
 msgstr ""
 
@@ -12828,6 +12856,22 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "Opened"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Opened last month"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Opened last year"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Opened this month"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Opened this year"
 msgstr ""
 
 #: src/modules/Invoice/Reports.php src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
@@ -13102,7 +13146,7 @@ msgstr ""
 msgid "Order steps"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Order summary"
 msgstr ""
 
@@ -13658,7 +13702,7 @@ msgstr ""
 msgid "Payment instructions"
 msgstr ""
 
-#: src/themes/palisade/html/mod_client_balance.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/pay_methods.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_client_balance.html.twig src/themes/palisade/html/mod_order_product.html.twig …
 msgid "Payment method"
 msgstr ""
 
@@ -13846,7 +13890,7 @@ msgstr ""
 msgid "Place order"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Place order · :amount"
 msgstr ""
 
@@ -14442,12 +14486,16 @@ msgstr ""
 msgid "Promo ID"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Promo code"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Promo code :code"
+msgstr ""
+
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Promo code :code applied."
 msgstr ""
 
 #: src/modules/Cart/Api/Guest.php src/modules/Cart/Service.php
@@ -15104,6 +15152,14 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig …
 msgid "Remove"
+msgstr ""
+
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Remove :item"
+msgstr ""
+
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Remove :item from your cart?"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
@@ -15958,7 +16014,7 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
-#: src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig …
 msgid "Search"
 msgstr ""
 
@@ -15988,6 +16044,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/partial_clientfence_palette.html.twig
 msgid "Search failed"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Search this client’s tickets"
 msgstr ""
 
 #: src/themes/admin_default/html/macro_functions.html.twig
@@ -16610,7 +16670,7 @@ msgstr ""
 msgid "Setup Price"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Setup fee"
 msgstr ""
 
@@ -16830,12 +16890,16 @@ msgstr ""
 msgid "Sign in required"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Sign in to continue"
 msgstr ""
 
 #: src/themes/palisade/html/mod_page_login.html.twig src/themes/palisade/html/partials/guest_dashboard.html.twig
 msgid "Sign in to manage your services, invoices and support tickets."
+msgstr ""
+
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Sign in to place your order; you come back to this cart."
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -17366,7 +17430,7 @@ msgstr ""
 msgid "Suggested knowledge base articles"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Summary"
 msgstr ""
 
@@ -17678,7 +17742,7 @@ msgstr ""
 msgid "Tax amount"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Tax for your country, if any, is added on the invoice."
 msgstr ""
 
@@ -18551,11 +18615,11 @@ msgstr ""
 msgid "The order action runs again against its service now."
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "The order and its invoice go to this account."
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "The order could not be placed: :error"
 msgstr ""
 
@@ -19761,6 +19825,14 @@ msgstr ""
 
 #: src/modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig
 msgid "Total amount will be deducted from account balance"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Total in"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Total out"
 msgstr ""
 
 #: src/modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig
@@ -22051,12 +22123,28 @@ msgstr ""
 msgid "Your backup code"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Your balance covers this order, so it is paid from your balance."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Your business"
+msgstr ""
+
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Your cart"
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "Your cart has :count other item(s). Checking a code here empties your cart. Continue?"
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "Your cart has :count other item(s). Paying here orders only this plan and empties your cart. Continue?"
+msgstr ""
+
+#: src/themes/palisade/html/mod_cart_index.html.twig
+msgid "Your cart is empty."
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
@@ -22223,7 +22311,7 @@ msgstr ""
 msgid "ago"
 msgstr ""
 
-#: src/modules/Client/templates/client/widgets/mod_client_google_button.html.twig src/modules/Client/templates/client/widgets/mod_client_google_signup_button.html.twig src/themes/palisade/html/mod_order_product.html.twig …
+#: src/modules/Client/templates/client/widgets/mod_client_google_button.html.twig src/modules/Client/templates/client/widgets/mod_client_google_signup_button.html.twig src/themes/palisade/html/mod_cart_index.html.twig …
 msgid "and"
 msgstr ""
 
