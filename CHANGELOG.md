@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.3 (2026-10-28)
+
+### Security
+
+- Visitors and clients no longer see database or server details on error pages; staff still do.
+
+### Added
+
+- Staff can download an invoice PDF in any installed language from the invoice page.
+
+### Fixed
+
+- Arabic and Hebrew text in invoice PDFs is joined and reads right to left. Invoice PDFs are in the client's language again, not always English.
+- Phone layouts: the client header, hosting page, email history and admin invoice items fit narrow screens.
+
 ## 1.0.2 (2026-10-27)
 
 ### Security
