@@ -33,11 +33,12 @@ parameters:
 		- '#^Function __trans not found\.$#'
 		- '#^Function __pluralTrans not found\.$#'
 		# ClientFence: TCPDF 6 marks itself deprecated in favour of tc-lib-pdf (15 new packages); the
-		# statement and quote PDFs stay on TCPDF 6, which still gets fixes, until tc-lib-pdf is worth the move.
+		# statement, quote and invoice PDFs stay on TCPDF 6, which still gets fixes, until tc-lib-pdf is worth the move.
 		-
 			message: '#deprecated class TCPDF#'
 			paths:
 				- src/modules/Invoice/StatementPdf.php
 				- src/modules/Invoice/RtlPdf.php
 				- src/modules/Invoice/QuotePdf.php
+				- src/modules/Invoice/InvoicePdf.php
 		- '#^Inner named functions are not supported by PHPStan\. Consider refactoring to an anonymous function, class method, or a top\-level\-defined function\. See issue \#165 \(https\://github\.com/phpstan/phpstan/issues/165\) for more details\.$#'

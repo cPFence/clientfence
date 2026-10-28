@@ -199,12 +199,21 @@
                             <span>{{ 'Refund'|trans }}</span>
                         </a>
                         {% endif %}
-                        <a href='{{ "invoice/pdf/#{invoice.hash}"|url(area: 'client') }}' class="btn btn-primary" target="_blank">
-                            <svg class="icon" width="24" height="24">
-                                <use href="#download" />
-                            </svg>
-                            <span>{{ 'PDF'|trans }}</span>
-                        </a>
+                        {# ClientFence: PDF language links keep the admin's current interface language. #}
+                        <div class="btn-group">
+                            <a href='{{ "invoice/pdf/#{invoice.hash}"|url }}' class="btn btn-primary" target="_blank">
+                                <svg class="icon" width="24" height="24">
+                                    <use href="#download" />
+                                </svg>
+                                <span>{{ 'PDF'|trans }}</span>
+                            </a>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ 'Language'|trans }}"></button>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                {% for lang in guest.extension_languages(true) %}
+                                    <a class="dropdown-item" href='{{ "invoice/pdf/#{invoice.hash}"|url({lang: lang.locale}) }}' target="_blank">{{ lang.title }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
                 {% endblock %}
             {% endembed %}
 

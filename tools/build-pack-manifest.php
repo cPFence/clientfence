@@ -47,6 +47,7 @@ $paths = [
     'modules/Invoice/RtlPdf.php',
     'modules/Invoice/Quotes.php',
     'modules/Invoice/QuotePdf.php',
+    'modules/Invoice/InvoicePdf.php',
     'modules/Invoice/templates/admin/mod_invoice_quotes.html.twig',
     'modules/Invoice/templates/admin/mod_invoice_quote.html.twig',
     'modules/Invoice/templates/email/mod_invoice_quote.html.twig',

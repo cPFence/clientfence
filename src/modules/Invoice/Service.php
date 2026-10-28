@@ -2458,7 +2458,7 @@ class Service implements InjectionAwareInterface
         ];
     }
 
-    public function generatePDF($hash, $identity): Response
+    public function generatePDF($hash, $identity, ?string $locale = null): Response
     {
         $invoiceModel = $this->di['db']->findOne('Invoice', 'hash = :hash', [':hash' => $hash]);
 
@@ -2469,7 +2469,9 @@ class Service implements InjectionAwareInterface
         $this->checkInvoiceAuth($invoiceModel, InvoiceOperation::READ);
 
         $invoice = $this->toApiArray($invoiceModel, false, $identity);
-        $content = $this->renderInvoicePdfContent($invoiceModel, $invoice);
+        // ClientFence: a staff session's language can differ from the invoice recipient's.
+        $locale ??= $identity instanceof \Model_Admin ? (($invoice['client']['lang'] ?? '') ?: \Locale::getDefault()) : \Locale::getDefault();
+        $content = $this->renderInvoicePdfContent($invoiceModel, $invoice, $locale);
 
         return $this->createPdfResponse($content, $invoice['serie_nr']);
     }
@@ -2504,17 +2506,11 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    protected function renderInvoicePdfContent(\Model_Invoice $invoiceModel, array $invoice): string
+    protected function renderInvoicePdfContent(\Model_Invoice $invoiceModel, array $invoice, ?string $locale = null): string
     {
         $systemService = $this->di['mod_service']('system');
-        // ClientFence core patch: Dompdf cannot join Arabic letters, so an Arabic invoice PDF showed every
-        // word as separate letters in reverse order. Invoice PDFs are built in English, also for
-        // email attachments; the locale of the request is restored afterwards.
-        $previousPdfLocale = \Locale::getDefault();
-        (new \ClientFence\Translate())->setLocale('en_US')->setup();
-        try {
+        $locale ??= ($invoice['client']['lang'] ?? '') ?: \Locale::getDefault();
         $c = $systemService->getCompany();
-        $document_format = $systemService->getParamValue('invoice_document_format', 'Letter');
 
         if (isset($invoiceModel->currency)) {
             $currencyCode = $invoiceModel->currency;
@@ -2523,17 +2519,9 @@ class Service implements InjectionAwareInterface
             $currencyCode = $client->currency;
         }
 
-        $CSS = $this->getPdfCss();
-
-        $pdf = $this->createPdfGenerator();
-        $pdf->setPaper($document_format, 'portrait');
-        $pdf->setBasePath(Path::join(__DIR__, 'templates', 'pdf'));
-        $options = $pdf->getOptions();
-
         $sellerLines = 0;
         $buyerLines = 0;
         $logoSource = '';
-        $options->set('isRemoteEnabled', false);
 
         if (!empty($c['logo_url'])) {
             [$logoSource] = $this->getPdfLogoSource($c['logo_url']);
@@ -2541,7 +2529,6 @@ class Service implements InjectionAwareInterface
 
         $vars = [
             'currency_code' => $currencyCode,
-            'css' => $CSS,
             'logo_source' => $logoSource,
             'seller' => $this->getSellerData($invoice, $sellerLines),
             'seller_lines' => $sellerLines,
@@ -2549,23 +2536,37 @@ class Service implements InjectionAwareInterface
             'buyer' => $this->getBuyerData($invoice, $buyerLines),
             'buyer_lines' => $buyerLines,
             'invoice' => $invoice,
-            // ClientFence core patch: English PDF (see above), so dates and amounts are formatted for en_US.
-            'locale' => 'en_US',
+            'locale' => $locale,
         ];
 
-        $twigFactory = $this->di['twig_factory'];
-        $twig = $twigFactory->createBaseEnvironment();
-        $loader = new FilesystemLoader(Path::join(__DIR__, 'templates', 'pdf'));
-        $twig->setLoader($loader);
-        $html = $twig->render($this->getPdfTemplate(), $vars);
+        $template = $this->getPdfTemplate();
+        if ($template !== 'custom-invoice.twig') {
+            return InvoicePdf::render($this->di, $vars, $locale);
+        }
 
-        $pdf->setOptions($options);
-        $pdf->loadHtml($html);
-        $pdf->render();
+        // ClientFence: custom templates retain Dompdf so existing layouts keep working.
+        $previousPdfLocale = \Locale::getDefault();
+        (new \ClientFence\Translate())->setLocale($locale)->setup();
+        try {
+            $vars['css'] = $this->getPdfCss();
+            $pdf = $this->createPdfGenerator();
+            $pdf->setPaper($systemService->getParamValue('invoice_document_format', 'Letter'), 'portrait');
+            $pdf->setBasePath(Path::join(__DIR__, 'templates', 'pdf'));
+            $options = $pdf->getOptions();
+            $options->set('isRemoteEnabled', false);
 
-        return $pdf->output();
+            $twigFactory = $this->di['twig_factory'];
+            $twig = $twigFactory->createBaseEnvironment();
+            $loader = new FilesystemLoader(Path::join(__DIR__, 'templates', 'pdf'));
+            $twig->setLoader($loader);
+            $html = $twig->render($template, $vars);
+
+            $pdf->setOptions($options);
+            $pdf->loadHtml($html);
+            $pdf->render();
+
+            return $pdf->output();
         } finally {
-            // ClientFence core patch: back to the locale of the request (English PDF, see above).
             (new \ClientFence\Translate())->setLocale($previousPdfLocale ?: 'en_US')->setup();
         }
     }

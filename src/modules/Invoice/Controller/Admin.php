@@ -220,17 +220,14 @@ class Admin implements \ClientFence\InjectionAwareInterface
 
     public function get_pdf(\ClientFence\App $app, $hash): Response
     {
-        $api = $this->di['api_guest'];
-        $data = [
-            'hash' => $hash,
-        ];
-        $response = $api->invoice_pdf($data);
-
-        if (!$response instanceof Response) {
-            throw new \ClientFence\Exception('Invoice PDF response could not be generated');
+        $this->di['is_admin_logged'];
+        // ClientFence: a query value must name an installed, enabled language before reaching the translator.
+        $locale = $app->getRequest()->query->get('lang');
+        if ($locale !== null && !in_array($locale, \ClientFence\i18n::getLocales(), true)) {
+            throw new \ClientFence\InformationException('Language not found', [], 400);
         }
 
-        return $response;
+        return $this->di['mod_service']('invoice')->generatePDF($hash, $this->di['loggedin_admin'], $locale);
     }
 
     /**

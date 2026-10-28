@@ -197,19 +197,19 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: Dompdf cannot join Arabic letters, so an Arabic invoice PDF showed every"
+        "done": "ClientFence: a staff session's language can differ from the invoice recipient's."
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: English PDF (see above), so dates and amounts are formatted for en_US."
+        "done": "ClientFence: custom templates retain Dompdf so existing layouts keep working."
     },
     {
-        "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: back to the locale of the request (English PDF, see above)."
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence: a query value must name an installed, enabled language before reaching the translator."
     },
     {
-        "file": "modules/Invoice/templates/pdf/default-invoice.twig",
-        "done": "ClientFence core patch: the PDF is English (Invoice\\Service), but the default date formatter follows the request locale."
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence: PDF language links keep the admin's current interface language."
     },
     {
         "file": "modules/Invoice/Service.php",

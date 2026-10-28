@@ -44,7 +44,6 @@
 		<hr class='TopSectionDivider'>
 		<div class='InvoiceInfo'>
 			<p>{{ 'Invoice Number'|trans }}: {{ invoice.serie_nr }}</p>
-			{# ClientFence core patch: the PDF is English (Invoice\Service), but the default date formatter follows the request locale. #}
 			<p>{{ 'Invoice Date'|trans }}: {{ invoice.created_at|format_date(locale=locale) }}</p>
 			<p>{{ 'Due Date'|trans }}: {{ invoice.due_at|format_date(locale=locale) }}</p>
 			<p>{{ 'Invoice Status'|trans }}: {{ invoice.status|capitalize }}</p>
