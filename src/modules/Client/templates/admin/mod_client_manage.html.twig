@@ -541,6 +541,10 @@
 
         {% if can_view_orders %}
         <div class="tab-pane fade" id="tab-orders" role="tabpanel">
+            {# ClientFence core patch: paging on every list tab, each tab with its own page parameters (orders_page, tickets_page...). #}
+            {% set ordersPage = request.orders_page matches '/^[1-9]\\d*$/' ? request.orders_page : 1 %}
+            {% set ordersPerPage = request.orders_per_page in [10, 25, 50, 100] ? request.orders_per_page : 20 %}
+            {% set orders = admin.order_get_list({ 'per_page': ordersPerPage, 'page': ordersPage, 'client_id': client.id }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Client Orders'|trans,
                 subtitle: 'Review the client’s active and historical orders, or create a new order directly for this client.'|trans,
@@ -570,7 +574,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set orders = admin.order_get_list({ 'per_page': 20, 'client_id': client.id }) %}
                                 {% for order in orders.list %}
                                 <tr>
                                     <td>{{ order.id }}</td>
@@ -597,12 +600,20 @@
                         </table>
                     </div>
                 {% endblock %}
+                {% block section_footer %}
+                    <div class="d-flex align-items-center">
+                        {{ include('partial_pagination.html.twig', { 'list': orders, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-orders', 'page_param': 'orders_page', 'per_page_param': 'orders_per_page', 'split_footer_controls': true }) }}
+                    </div>
+                {% endblock %}
             {% endembed %}
         </div>
         {% endif %}
 
         {% if can_view_invoices %}
         <div class="tab-pane fade" id="tab-invoices" role="tabpanel">
+            {% set invoicesPage = request.invoices_page matches '/^[1-9]\\d*$/' ? request.invoices_page : 1 %}
+            {% set invoicesPerPage = request.invoices_per_page in [10, 25, 50, 100] ? request.invoices_per_page : 100 %}
+            {% set invoices = admin.invoice_get_list({ 'per_page': invoicesPerPage, 'page': invoicesPage, 'client_id': client.id, 'summary': 1 }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Client Invoices'|trans,
                 subtitle: 'Review invoices issued to this client or prepare a new invoice directly from the account view.'|trans,
@@ -632,7 +643,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set invoices = admin.invoice_get_list({ 'per_page': 100, 'client_id': client.id, 'summary': 1 }) %}
                                 {% for invoice in invoices.list %}
                                 <tr>
                                     <td>
@@ -659,12 +669,20 @@
                         </table>
                     </div>
                 {% endblock %}
+                {% block section_footer %}
+                    <div class="d-flex align-items-center">
+                        {{ include('partial_pagination.html.twig', { 'list': invoices, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-invoices', 'page_param': 'invoices_page', 'per_page_param': 'invoices_per_page', 'split_footer_controls': true }) }}
+                    </div>
+                {% endblock %}
             {% endembed %}
         </div>
         {% endif %}
 
         {% if can_view_tickets %}
         <div class="tab-pane fade" id="tab-support" role="tabpanel" aria-labelledby="support-tab">
+            {% set ticketsPage = request.tickets_page matches '/^[1-9]\\d*$/' ? request.tickets_page : 1 %}
+            {% set ticketsPerPage = request.tickets_per_page in [10, 25, 50, 100] ? request.tickets_per_page : 20 %}
+            {% set tickets = admin.support_ticket_get_list({ 'per_page': ticketsPerPage, 'page': ticketsPage, 'client_id': client.id, 'search': request.ticket_search|default(''), 'deep': 0, 'include_first': 0 }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Help Desk'|trans,
                 subtitle: 'Track the client’s support tickets and open a new ticket without leaving the client profile.'|trans,
@@ -716,7 +734,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set tickets = admin.support_ticket_get_list({ 'per_page': 20, 'client_id': client.id, 'search': request.ticket_search|default(''), 'deep': 0, 'include_first': 0 }) %}
                                 {% for ticket in tickets.list %}
                                 <tr>
                                     <td>{{ ticket.id }}</td>
@@ -742,12 +759,20 @@
                         </table>
                     </div>
                 {% endblock %}
+                {% block section_footer %}
+                    <div class="d-flex align-items-center">
+                        {{ include('partial_pagination.html.twig', { 'list': tickets, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-support', 'page_param': 'tickets_page', 'per_page_param': 'tickets_per_page', 'split_footer_controls': true }) }}
+                    </div>
+                {% endblock %}
             {% endembed %}
         </div>
         {% endif %}
 
         {% if can_manage_balance %}
         <div class="tab-pane fade" id="tab-balance" role="tabpanel" aria-labelledby="balance-tab">
+            {% set paymentsPage = request.payments_page matches '/^[1-9]\\d*$/' ? request.payments_page : 1 %}
+            {% set paymentsPerPage = request.payments_per_page in [10, 25, 50, 100] ? request.payments_per_page : 20 %}
+            {% set payments = admin.client_balance_get_list({ 'per_page': paymentsPerPage, 'page': paymentsPage, 'client_id': client.id }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Client Payments History'|trans,
                 subtitle: 'Review balance adjustments and record a manual credit for this client when needed.'|trans,
@@ -765,7 +790,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set payments = admin.client_balance_get_list({ 'per_page': 20, 'client_id': client.id }) %}
                                 {% for i, tx in payments.list %}
                                 <tr>
                                     <td>{{ (tx.amount ?? 0)|format_currency(tx.currency ?? default_currency) }}</td>
@@ -787,6 +811,11 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                {% endblock %}
+                {% block section_footer %}
+                    <div class="d-flex align-items-center">
+                        {{ include('partial_pagination.html.twig', { 'list': payments, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-balance', 'page_param': 'payments_page', 'per_page_param': 'payments_per_page', 'split_footer_controls': true }) }}
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -830,6 +859,9 @@
 
         {% if can_view_client_login_history %}
         <div class="tab-pane fade" id="tab-history" role="tabpanel" aria-labelledby="history-tab">
+            {% set loginsPage = request.logins_page matches '/^[1-9]\\d*$/' ? request.logins_page : 1 %}
+            {% set loginsPerPage = request.logins_per_page in [10, 25, 50, 100] ? request.logins_per_page : 10 %}
+            {% set logins = admin.client_login_history_get_list({ 'per_page': loginsPerPage, 'page': loginsPage, 'client_id': client.id }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Login History'|trans,
                 subtitle: 'See recent client login activity, including originating IP address and detected country.'|trans,
@@ -848,7 +880,6 @@
                             </thead>
 
                             <tbody>
-                                {% set logins = admin.client_login_history_get_list({ 'per_page': 10, 'page': request.page, 'client_id': client.id }) %}
                                 {% for i, login in logins.list %}
                                 <tr>
                                     <td>{{ mf.ip_lookup_link(login.ip) }}</td>
@@ -862,6 +893,11 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                {% endblock %}
+                {% block section_footer %}
+                    <div class="d-flex align-items-center">
+                        {{ include('partial_pagination.html.twig', { 'list': logins, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-history', 'page_param': 'logins_page', 'per_page_param': 'logins_per_page', 'split_footer_controls': true }) }}
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -933,6 +969,9 @@
 
         {% if can_view_transactions %}
         <div class="tab-pane fade" id="tab-transactions" role="tabpanel" aria-labelledby="transactions-tab">
+            {% set transactionsPage = request.transactions_page matches '/^[1-9]\\d*$/' ? request.transactions_page : 1 %}
+            {% set transactionsPerPage = request.transactions_per_page in [10, 25, 50, 100] ? request.transactions_per_page : 100 %}
+            {% set transactions = admin.invoice_transaction_get_list({ 'client_id': client.id, 'per_page': transactionsPerPage, 'page': transactionsPage }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Transactions Received'|trans,
                 subtitle: 'Review payment transactions recorded against this client across all gateways.'|trans,
@@ -940,7 +979,6 @@
             } %}
                 {% block section_content %}
                     {% import 'macro_functions.html.twig' as mf %}
-                    {% set transactions = admin.invoice_transaction_get_list({ 'client_id': client.id, 'per_page': 100 }).list %}
                     {# ClientFence core patch: WHMCS-style totals of the money this client paid and was refunded (processed transactions, per currency). #}
                     {% for totals in admin.invoice_transaction_client_totals({ 'client_id': client.id }) %}
                         <div class="row g-2 p-3">
@@ -972,7 +1010,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for i, tx in transactions %}
+                            {% for i, tx in transactions.list %}
                                 <tr>
                                     <td>{{ tx.txn_id }}</td>
                                     <td>{{ tx.type }}</td>
@@ -999,6 +1037,11 @@
                             {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                {% endblock %}
+                {% block section_footer %}
+                    <div class="d-flex align-items-center">
+                        {{ include('partial_pagination.html.twig', { 'list': transactions, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-transactions', 'page_param': 'transactions_page', 'per_page_param': 'transactions_per_page', 'split_footer_controls': true }) }}
                     </div>
                 {% endblock %}
             {% endembed %}
