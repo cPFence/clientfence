@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.5 (2026-10-28)
+
+### Added
+
+- An Add credit button next to the account balance in the client area.
+- Clients can dismiss the network status notice on their dashboard; it shows again when an issue changes.
+
+### Changed
+
+- A new Network Status page: a status summary, tabs for open, scheduled and resolved issues, and clearer issue cards.
+
 ## 1.0.4 (2026-10-28)
 
 ### Added
