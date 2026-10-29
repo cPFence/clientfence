@@ -1216,6 +1216,24 @@ h2, h3, h4, h5, h6,
   margin-top: 1.25rem;
 }
 
+// Wrap instead of running out of a narrow card or phone screen; the small size in side columns.
+.pagination {
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+}
+
+.bf-checkout-side .pagination {
+  --bs-pagination-padding-x: 0.5rem;
+  --bs-pagination-padding-y: 0.25rem;
+  --bs-pagination-font-size: 0.875rem;
+
+  // Previous/next only: the first/last arrows do not fit one row in the side card.
+  > .page-item:first-child,
+  > .page-item:last-child {
+    display: none;
+  }
+}
+
 [dir="rtl"] .pagination .icon {
   transform: scaleX(-1);
 }

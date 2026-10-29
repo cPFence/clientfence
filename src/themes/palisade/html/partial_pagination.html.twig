@@ -32,7 +32,8 @@
                 </a>
             </li>
 
-            {% for i in 1..list.pages %}
+            {# ClientFence: at most 7 page numbers around the current page (the paginator's range). #}
+            {% for i in paginator.range %}
                 <li class="page-item{% if i == currentPage %} active{% endif %}">
                     {% if i == currentPage or (not currentPage and i == 1) %}
                         <span class="page-link" aria-current="page">{{ i }}</span>
