@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.8 (2026-10-29)
+
+### Changed
+
+- Sign-in pages: the language button is an icon.
+
+### Fixed
+
+- Sign-in pages no longer slide sideways on phones when the logo is wide.
+- Staff ticket reply: the canned responses list fits the card on phones and looks like the other fields.
+- Staff reports, News, Notifications and Mass Mail: buttons and search move under the title on phones.
+- Staff transaction and subscription pages: the details table scrolls on phones instead of running off the card.
+- Client email view: the sender row wraps on phones.
+- Staff client page: long subjects in Recent Emails wrap.
+
 ## 1.0.7 (2026-10-29)
 
 ### Security
