@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.7 (2026-10-29)
+
+### Security
+
+- Email: symfony/mime 7.4.22 fixes CVE-2026-45070 (header injection through MIME parameter names).
+- Staff editor: CKEditor 48.5.3 fixes two cross-site scripting issues (GHSA-v6mg-96c6-gmpq, GHSA-rh54-vffm-5fvp).
+
+### Added
+
+- Staff client page: an Add Funds shortcut next to the balance.
+- Staff client page: paging on every list tab.
+
+### Fixed
+
+- Client area: long page lists no longer overflow the Wallet side card; they show at most 7 page numbers and wrap.
+
 ## 1.0.6 (2026-10-28)
 
 ### Added
