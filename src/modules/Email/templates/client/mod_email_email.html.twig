@@ -14,8 +14,9 @@
         <div class="card-body">
             <h5 class="mb-0">{{ email.subject }}</h5>
             <div class="card-header px-0">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex flex-column gap-1">
+                {# ClientFence: the sender row wraps on phones and long addresses break. #}
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                    <div class="d-flex flex-column gap-1 text-break">
                         <span class="d-block"><span class="text-muted me-2">{{ 'From'|trans }}</span>{{ email.sender }}</span>
                         <span class="d-block"><span class="text-muted me-2">{{ 'To'|trans }}</span>{{ email.recipients }}</span>
                     </div>

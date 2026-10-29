@@ -268,7 +268,8 @@
                                     <h5 class="card-title mb-0">{{ 'Respond as'|trans }} {{ profile.name }}</h5>
                                     <p class="text-secondary mb-0">{{ 'Compose a reply, insert a canned response, and close the ticket when appropriate.'|trans }}</p>
                                 </div>
-                                <div>{{ include('mod_support_canned_selector.html.twig') }}</div>
+                                {# ClientFence: the canned responses fit the reply card on phones. #}
+                                <div class="canned-picker">{{ include('mod_support_canned_selector.html.twig') }}</div>
                             </div>
 
                             <textarea class="editor-textarea" id="rt" name="content" rows="10" required>{# ClientFence core patch: help desk greeting in the reply box (ClientFence; empty means none). #}{% if ticket.helpdesk.greeting is defined %}{% if ticket.helpdesk.greeting %}{{ ticket.helpdesk.greeting|replace({ '{name}': ticket.author.first_name|default(ticket.author.name) }) }}

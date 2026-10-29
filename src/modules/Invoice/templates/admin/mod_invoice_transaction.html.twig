@@ -60,6 +60,8 @@
                             </div>
                         {% endif %}
 
+                        {# ClientFence: the details table scrolls on phones instead of running off the card. #}
+                        <div class="table-responsive">
                         <table class="table card-table table-vcenter table-striped text-nowrap">
                             <tbody>
                                 <tr>
@@ -132,6 +134,7 @@
                                 {% endif %}
                             </tbody>
                         </table>
+                        </div>
                     {% endblock %}
 
                     {% block summary_actions %}

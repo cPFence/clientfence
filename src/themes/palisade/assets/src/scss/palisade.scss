@@ -2134,9 +2134,16 @@ a.list-group-item {
   justify-content: space-between;
   gap: 1rem;
 
+  // A wide logo shrinks on phones instead of pushing the tools off the screen.
+  .auth-logo {
+    min-width: 0;
+  }
+
   .auth-logo img {
     display: block;
     height: 32px;
+    max-width: 100%;
+    object-fit: contain;
     width: auto;
   }
 }

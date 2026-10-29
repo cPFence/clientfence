@@ -221,7 +221,7 @@
                     {% for email in admin.email_email_get_list({ 'per_page': 5, 'client_id': client.id }).list %}
                     <tr>
                         <td class="text-secondary text-nowrap">{{ email.created_at|format_datetime }}</td>
-                        <td dir="auto"><a href="{{ ('email/' ~ email.id)|url }}">{{ email.subject }}</a></td>
+                        <td class="text-break" dir="auto"><a href="{{ ('email/' ~ email.id)|url }}">{{ email.subject }}</a></td>
                     </tr>
                     {% else %}
                     <tr><td class="text-secondary">{{ 'No emails sent yet.'|trans }}</td></tr>

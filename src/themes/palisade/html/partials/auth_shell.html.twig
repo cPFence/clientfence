@@ -26,7 +26,7 @@
         <div class="auth-top">
             {{ include('partial_company_logo.html.twig', { link_class: 'auth-logo', link_url: 'login'|url }|merge(auth_logo)) }}
             <div class="auth-tools">
-                {{ include('partials/tools.html.twig') }}
+                {{ include('partials/tools.html.twig', { icon_only: true }) }}
             </div>
         </div>
         <div class="auth-body">

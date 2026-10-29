@@ -1,7 +1,8 @@
+{# ClientFence: form-select, so the canned responses look like the other fields. #}
 <select
     name="canned_response"
     placeholder="Canned Responses"
-    class="canned_response_select canned_ticket_response"
+    class="form-select canned_response_select canned_ticket_response"
     data-resturl="/api/admin/support/canned_get"
 >
     {% for ctitle, cat in admin.support_canned_pairs %}

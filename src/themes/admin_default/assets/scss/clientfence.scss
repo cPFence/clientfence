@@ -67,8 +67,32 @@ body {
     }
 }
 
+// On phones, card actions (buttons, search) go under the title, lined up with it, instead of running off the card.
+@media (max-width: 575.98px) {
+    .card-header {
+        flex-wrap: wrap;
+        row-gap: .75rem;
+    }
+
+    .card-header > .card-actions {
+        max-width: 100%;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
+
+        &.d-flex {
+            flex-wrap: wrap;
+        }
+    }
+}
+
+// At most 18rem, narrower on phones so it stays inside the reply card.
+.canned-picker {
+    flex: 0 1 18rem;
+    min-width: 0;
+}
+
 .canned_ticket_response {
-    width: 18rem;
+    width: 100%;
 }
 
 .navbar-brand-image {
