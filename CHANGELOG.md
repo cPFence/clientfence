@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.13 (2026-10-31)
+
+### Added
+
+- Enhance hosting: a daily status check compares each hosting service with its Enhance subscription. A service suspended in Enhance but active in billing (or the reverse), a subscription deleted in Enhance, or a service that cannot be linked is listed in Orders > Failed actions. The check never changes billing or Enhance. Retry checks the service again and closes the entry once it matches.
+- Enhance hosting: a Backups tab on the client's hosting account lists the last ten Enhance backups of each website. Staff can let clients restore them per product (Clients can restore backups, on the product's Configuration tab). Only the account owner can restore, with a confirmation, and email is optional. Each restore is written to the client's activity log.
+
 ## 1.0.12 (2026-10-30)
 
 ### Changed
