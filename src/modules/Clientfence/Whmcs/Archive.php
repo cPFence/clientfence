@@ -143,13 +143,14 @@ final class Archive
             $this->cut($expected);
         }
         $this->before = $expected;
-        $gz = @gzopen($this->path, 'ab9');
-        if ($gz === false) {
+        $member = gzencode($lines, 9);
+        $handle = @fopen($this->path, 'ab');
+        if ($handle === false) {
             throw new \RuntimeException('The archive file ' . basename($this->path) . ' could not be written.');
         }
-        $written = gzwrite($gz, $lines);
-        gzclose($gz);
-        if ($written === false || $written < strlen($lines)) {
+        $written = fwrite($handle, $member);
+        $closed = fclose($handle);
+        if ($written !== strlen($member) || !$closed) {
             throw new \RuntimeException('The archive file ' . basename($this->path) . ' could not be written (is the disk full?).');
         }
         clearstatcache(true, $this->path);

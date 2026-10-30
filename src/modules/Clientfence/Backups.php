@@ -13,7 +13,7 @@ use ClientFence\InformationException;
  * WHMCS a method is turned on only after its connection test passes ("Save & Activate"), the
  * file is not encrypted and old copies are not removed from the remote server. ClientFence adds a
  * third method (owner request): keep the newest N days on this server, in a folder outside the
- * web root (localDir(), ~/.clientfence-backups), listed on the page to download.
+ * web root (localDir(), ~/.clientfence-backups/<install>), listed on the page to download.
  *
  * The backup email goes straight through the Email settings' mailer, never through the email
  * queue or the email log, so the database is never stored in itself. Settings and the last run
@@ -118,10 +118,10 @@ final class Backups
         self::saveMethod($di, 'local', ['enabled' => $activate || (bool) $old['enabled'], 'days' => $days]);
     }
 
-    /** Where this server keeps backups: outside the web root; CLIENTFENCE_BACKUP_DIR overrides it. */
+    /** Per-install backups outside the web root; CLIENTFENCE_BACKUP_DIR overrides the folder. */
     public static function localDir(): string
     {
-        return rtrim((string) (getenv('CLIENTFENCE_BACKUP_DIR') ?: dirname(PATH_ROOT) . '/.clientfence-backups'), '/');
+        return rtrim((string) (getenv('CLIENTFENCE_BACKUP_DIR') ?: dirname(PATH_ROOT) . '/.clientfence-backups/' . basename(PATH_ROOT)), '/');
     }
 
     /**

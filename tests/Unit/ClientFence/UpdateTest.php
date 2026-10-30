@@ -177,6 +177,24 @@ test('isSafeArchiveEntry accepts a filename that legitimately contains spaces an
     expect(Update::isSafeArchiveEntry('src/data/my file v1.2.3.txt'))->toBeTrue();
 });
 
+test('performUpdate refuses a concurrent update before checking finalization', function (): void {
+    $requests = [];
+    $di = updateTestDi('0.1.0', $requests);
+    $finalization = Mockery::mock(UpdateFinalization::class);
+    $finalization->shouldNotReceive('isRequired');
+    $di['update_finalization'] = $finalization;
+    $update = new Update();
+    $update->setDi($di);
+    $lock = fopen(PATH_ROOT . '/data/cache/update.flock', 'c');
+    try {
+        expect(flock($lock, LOCK_EX | LOCK_NB))->toBeTrue();
+
+        expect(fn () => $update->performUpdate())->toThrow(InformationException::class, 'Another update appears to already be in progress.');
+    } finally {
+        fclose($lock);
+    }
+});
+
 // ClientFence: an install is updated by installing the new ClientFence release, never by a download.
 test('performUpdate refuses when the feed has no newer release, before touching any file', function (): void {
     $requests = [];

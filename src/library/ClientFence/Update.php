@@ -38,6 +38,8 @@ class Update implements InjectionAwareInterface
 
     protected ?\Pimple\Container $di = null;
     private Filesystem $filesystem;
+    /** @var resource|false|null */
+    private $updateLock = null;
 
     public function __construct()
     {
@@ -265,6 +267,12 @@ class Update implements InjectionAwareInterface
      */
     public function performUpdate(): void
     {
+        // ClientFence core patch: concurrent updates must not prune each other's rollback backup.
+        $this->updateLock = @fopen(Path::join(PATH_ROOT, 'data', 'cache', 'update.flock'), 'c');
+        if ($this->updateLock === false || !flock($this->updateLock, LOCK_EX | LOCK_NB)) {
+            throw new InformationException('Another update appears to already be in progress. Please wait for it to finish before trying again.');
+        }
+
         $finalization = $this->di['update_finalization'];
         if ($finalization->isRequired()) {
             throw new InformationException('An update finalization is already pending. Complete finalization before starting another update.');

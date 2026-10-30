@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 use ClientFence\Mod\Clientfence\Backups;
 use ClientFence\Mod\Clientfence\DatabaseDump;
+use ClientFence\Mod\Clientfence\UpdateBackup;
 use Doctrine\DBAL\DriverManager;
 use ClientFence\InformationException;
+use Symfony\Component\Filesystem\Filesystem;
 
 function backupsContainer(array $state = []): array
 {
@@ -104,6 +106,28 @@ test('Health warns with no method on, needs attention after a failure and warns 
     expect(Backups::health($di)[1])->toContain('being made now');
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => date('Y-m-d H:i:s', time() - 7200)] + $running]);
     expect(Backups::health($di))->toBe(['bad', 'The backup of ' . date('Y-m-d H:i:s', time() - 7200) . ' failed (dump: Started, but did not finish (the process stopped).).']);
+});
+
+test('update backups refuse a folder inside the site root', function (): void {
+    $previous = getenv('CLIENTFENCE_BACKUP_DIR');
+    $dir = PATH_ROOT . '/data/cache/cf-backup-' . bin2hex(random_bytes(4));
+    putenv('CLIENTFENCE_BACKUP_DIR=' . $dir);
+    try {
+        expect(fn () => UpdateBackup::make(new Pimple\Container(), '', '99.0.0'))->toThrow(InformationException::class, 'inside the website');
+    } finally {
+        (new Filesystem())->remove($dir);
+        putenv($previous === false ? 'CLIENTFENCE_BACKUP_DIR' : 'CLIENTFENCE_BACKUP_DIR=' . $previous);
+    }
+});
+
+test('the default backups folder belongs to this install', function (): void {
+    $previous = getenv('CLIENTFENCE_BACKUP_DIR');
+    putenv('CLIENTFENCE_BACKUP_DIR');
+    try {
+        expect(Backups::localDir())->toBe(dirname(PATH_ROOT) . '/.clientfence-backups/' . basename(PATH_ROOT));
+    } finally {
+        putenv($previous === false ? 'CLIENTFENCE_BACKUP_DIR' : 'CLIENTFENCE_BACKUP_DIR=' . $previous);
+    }
 });
 
 test('backups kept on this server: owner-only, old ones removed, the newest always stays', function (): void {

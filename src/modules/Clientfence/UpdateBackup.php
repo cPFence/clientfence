@@ -30,7 +30,7 @@ final class UpdateBackup
     public static function make(\Pimple\Container $di, string $archiveFile, string $toVersion): array
     {
         $safe = static fn (string $v): string => (string) preg_replace('/[^A-Za-z0-9._-]/', '_', $v);
-        $dir = Backups::localDir() . '/update-' . $safe(\ClientFence\Version::CLIENTFENCE) . '-to-' . $safe($toVersion) . '-' . date('Ymd-His');
+        $dir = Backups::localFolder() . '/update-' . $safe(\ClientFence\Version::CLIENTFENCE) . '-to-' . $safe($toVersion) . '-' . date('Ymd-His');
         if (!is_dir($dir) && !@mkdir($dir, 0o700, true)) {
             throw new \RuntimeException('The backup folder could not be made: ' . $dir);
         }
@@ -169,6 +169,15 @@ final class UpdateBackup
     public static function restoreFiles(array $backup, string $root = PATH_ROOT): void
     {
         $failed = [];
+        // Free space first when unpacking has filled the disk.
+        clearstatcache();
+        foreach ($backup['added'] as $entry) {
+            // Unpacking may have stopped before it wrote the file.
+            $path = $root . '/' . $entry;
+            if (\ClientFence\Update::isSafeArchiveEntry($entry) && is_file($path) && !@unlink($path)) {
+                $failed[] = $entry;
+            }
+        }
         $zip = new ZipFile();
         $zip->openFile($backup['files']);
         foreach ($zip->getListFiles() as $entry) {
@@ -180,19 +189,11 @@ final class UpdateBackup
             if (is_file($path) && @file_get_contents($path) === $contents) {
                 continue;
             }
-            if (@file_put_contents($path, $contents) === false) {
+            if (@file_put_contents($path, $contents) !== strlen($contents)) {
                 $failed[] = $entry;
             }
         }
         $zip->close();
-        clearstatcache();
-        foreach ($backup['added'] as $entry) {
-            // Unpacking may have stopped before it wrote the file.
-            $path = $root . '/' . $entry;
-            if (\ClientFence\Update::isSafeArchiveEntry($entry) && is_file($path) && !@unlink($path)) {
-                $failed[] = $entry;
-            }
-        }
         if ($failed !== []) {
             throw new \RuntimeException('These files could not be put back: ' . implode(', ', array_slice($failed, 0, 20)));
         }

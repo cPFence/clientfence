@@ -64,7 +64,7 @@ docker buildx build --target release-artifact --output type=local,dest=build/rel
 
 From the admin area: **System → Update** shows the new release and its notes; **Update
 ClientFence** saves a backup of the database and the files it replaces (in
-`.clientfence-backups` next to the site folder), installs the release, updates the database and
+`.clientfence-backups/<site folder name>` next to the site folder), installs the release, updates the database and
 signs you out. The site reopens on its own once the update is complete; only if the database
 update needs attention does the admin area ask you to finalize it after signing in again. If the
 release cannot be unpacked, the previous files are put back and the site keeps running the version
