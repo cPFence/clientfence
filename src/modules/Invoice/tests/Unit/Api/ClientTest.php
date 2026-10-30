@@ -154,6 +154,46 @@ test('creates renewal invoice for free order', function (): void {
     expect($result)->toBeString()->toBe($generatedHash);
 });
 
+test('renewal invoices use the order reloaded inside the lock', function (): void {
+    $before = new Model_ClientOrder();
+    $before->loadBean(new Tests\Helpers\DummyBean());
+    $before->id = 1;
+    $before->status = Model_ClientOrder::STATUS_ACTIVE;
+    $before->product_id = 5;
+    $before->price = 10;
+    $before->period = '1M';
+    $before->expires_at = '2026-11-01 10:00:00';
+    $after = new Model_ClientOrder();
+    $after->loadBean(new Tests\Helpers\DummyBean());
+    $after->id = 1;
+    $after->status = Model_ClientOrder::STATUS_ACTIVE;
+    $after->product_id = 6;
+    $after->price = 100;
+    $after->period = '1Y';
+    $after->expires_at = $before->expires_at;
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('findOne')->twice()->with('ClientOrder', 'client_id = ? and id = ?', [3, 1])->andReturn($before, $after);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 9;
+    $invoice->hash = 'renewal-hash';
+    $service = Mockery::mock(Service::class);
+    $service->shouldReceive('generateForOrder')->once()->with($after)->andReturn($invoice);
+    $service->shouldReceive('approveInvoice')->once()->with($invoice, ['id' => 9, 'use_credits' => true]);
+    $di = container();
+    $di['db'] = $db;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $api = apiEndpoint(new Client());
+    $api->setDi($di);
+    $api->setService($service);
+    $identity = new Model_Client();
+    $identity->loadBean(new Tests\Helpers\DummyBean());
+    $identity->id = 3;
+    $api->setIdentity($identity);
+
+    expect($api->renewal_invoice(['order_id' => 1]))->toBe('renewal-hash');
+});
+
 test('refuses a renewal click made before another click renewed the order', function (): void {
     $api = apiEndpoint(new Client());
     $serviceMock = Mockery::mock(Service::class);
@@ -165,14 +205,17 @@ test('refuses a renewal click made before another click renewed the order', func
     $clientOrder->expires_at = '2026-11-01 10:00:00';
     $clientOrder->status = Model_ClientOrder::STATUS_ACTIVE;
     $clientOrder->period = '1M';
+    $renewedOrder = new Model_ClientOrder();
+    $renewedOrder->loadBean(new Tests\Helpers\DummyBean());
+    $renewedOrder->id = 1;
+    $renewedOrder->status = Model_ClientOrder::STATUS_ACTIVE;
+    $renewedOrder->period = '1M';
+    $renewedOrder->expires_at = '2026-12-01 10:00:00';
     $dbMock = Mockery::mock('ClientFence\Database');
-    $dbMock->shouldReceive('findOne')->andReturn($clientOrder);
-    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
-    $dbal->shouldReceive('fetchOne')->with('SELECT expires_at FROM client_order WHERE id = ?', [1])->andReturn('2026-12-01 10:00:00');
+    $dbMock->shouldReceive('findOne')->twice()->andReturn($clientOrder, $renewedOrder);
 
     $di = container();
     $di['db'] = $dbMock;
-    $di['dbal'] = $dbal;
     $api->setDi($di);
     $api->setService($serviceMock);
     $identity = new Model_Admin();

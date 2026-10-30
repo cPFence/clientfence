@@ -86,6 +86,13 @@ function productTestCreateInvoiceModel(int $id): Model_Invoice
     return $invoice;
 }
 
+test('a period-restricted promotion does not apply to a one-time cart line', function (): void {
+    $promo = productTestCreatePromoEntity(1)->setPeriods('["1M"]');
+    $product = productTestCreateProductEntity(5);
+
+    expect((new Service())->isPromoApplicableToProduct($promo, $product, ['quantity' => 1]))->toBeFalse();
+});
+
 function productTestCreateEntityManagerWithRepositories(
     ?ProductRepository $productRepo = null,
     ?ProductPaymentRepository $paymentRepo = null,

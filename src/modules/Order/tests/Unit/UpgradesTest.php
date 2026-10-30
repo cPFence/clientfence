@@ -195,7 +195,12 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
         }
     };
     $di['status_notes'] = new ArrayObject();
+    $productService = Mockery::mock(ClientFence\Mod\Product\Service::class);
+    $productService->shouldReceive('isStockAvailable')->byDefault()->andReturn(true);
+    $productService->shouldReceive('reduceStock')->byDefault()->andReturn(true);
+    $productService->shouldReceive('returnStock')->byDefault()->andReturnNull();
     $services = [
+        'product' => $productService,
         'invoice' => new class($db, $di, $fail['tax_rate'] ?? 14.0) {
             public function __construct(private readonly Connection $db, private readonly Pimple\Container $di, private readonly float $taxRate)
             {
@@ -367,6 +372,32 @@ test('a monthly Starter lists its yearly cycle and the listed products, each pri
     expect($options['available'])->toBeTrue()
         ->and($options['current'])->toMatchArray(['product_id' => 1, 'period' => '1M', 'price' => 5.0])
         ->and($options['options'][0])->toMatchArray(['title' => 'Starter', 'same_product' => true, 'same_cycle' => false, 'days_left' => 16, 'days_total' => 31]);
+});
+
+test('a sold-out target is omitted and a product change to it is refused', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['product']->shouldReceive('isStockAvailable')->with(2, 3)->andReturn(false);
+    $order = upgradesOrder($di, 4);
+
+    expect(array_column(Upgrades::options($di, $order, UPGRADES_NOW)['options'], 'product_id'))->not->toContain(2);
+    expect(fn () => Upgrades::request($di, $order, 2, '1M', UPGRADES_NOW))->toThrow(InformationException::class, 'This change is not available');
+    expect($db->fetchOne('SELECT COUNT(*) FROM ' . Upgrades::TABLE))->toBe(0);
+});
+
+test('a downloadable product change replaces the service file with the target file', function (): void {
+    $db = upgradesDb();
+    $db->executeStatement('CREATE TABLE service_downloadable (id INTEGER PRIMARY KEY, filename TEXT, stored_filename TEXT)');
+    $oldFile = ['filename' => 'starter.zip', 'stored_filename' => str_repeat('a', 64)];
+    $newFile = ['filename' => 'starter-plus.zip', 'stored_filename' => str_repeat('b', 64)];
+    $db->insert('service_downloadable', ['id' => 101] + $oldFile);
+    $db->update('product', ['type' => 'downloadable', 'config' => json_encode($oldFile)], ['id' => 1]);
+    $db->update('product', ['type' => 'downloadable', 'config' => json_encode($newFile)], ['id' => 8]);
+    $db->update('client_order', ['service_type' => 'downloadable', 'config' => json_encode($oldFile)], ['id' => 1]);
+    $di = upgradesContainer($db);
+
+    expect(Upgrades::request($di, upgradesOrder($di, 1), 8, '1M', UPGRADES_NOW)['status'])->toBe(Upgrades::STATUS_APPLIED)
+        ->and($db->fetchAssociative('SELECT filename, stored_filename FROM service_downloadable WHERE id = 101'))->toBe($newFile);
 });
 
 test('a yearly Business mid-period: every choice is a downgrade with account credit', function (): void {

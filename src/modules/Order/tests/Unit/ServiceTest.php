@@ -2420,33 +2420,35 @@ test('activateOrder force re-activates an already active order', function (): vo
     expect($result)->toBeTrue();
 });
 
-test('activateOrderAddons activates addons', function (): void {
-    $order = createEntity(Order::class);
-
+test('activateOrderAddons respects the fresh status and product setup policy', function (string $status, string $setup, bool $activate): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
-    $serviceMock->shouldAllowMockingProtectedMethods();
-    $serviceMock->shouldReceive('createFromOrder')->atLeast()->once()->andReturn([]);
+    $master = createEntity(Order::class, ['id' => 1, 'group_master' => true]);
+    $addon = createEntity(Order::class, ['id' => 2, 'product_id' => 5, 'status' => Order::STATUS_PENDING_SETUP]);
+    $serviceMock->shouldReceive('getOrderAddonsList')->once()->with($master)->andReturn([$addon]);
+    $serviceMock->shouldReceive('createFromOrder')->times($activate ? 1 : 0)->with($addon)->andReturn([]);
 
-    $clientOrderModel = createEntity(Order::class);
-    $clientOrderModel->status = Order::STATUS_PENDING_SETUP;
-    $clientOrderModel->group_master = 1;
-
-    $serviceMock->shouldReceive('getOrderAddonsList')
-        ->atLeast()->once()
-        ->andReturn([$clientOrderModel]);
+    $product = orderServiceCreateProductEntity(5);
+    $product->setSetup($setup);
+    $productService = Mockery::mock(ClientFence\Mod\Product\Service::class);
+    $productService->shouldReceive('findProductById')->times($status === Order::STATUS_ACTIVE ? 0 : 1)->with(5)->andReturn($product);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->once()->with('SELECT status FROM client_order WHERE id = ?', [2])->andReturn($status);
 
     $eventMock = Mockery::mock(\ClientFence\EventManager::class);
-    $eventMock->shouldReceive('fire')->atLeast()->once();
+    $eventMock->shouldReceive('fire')->times($activate ? 2 : 0);
 
     $di = container();
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(fn (string $name) => $productService);
     $di['events_manager'] = $eventMock;
-
     $serviceMock->setDi($di);
 
-    $result = $serviceMock->activateOrderAddons($clientOrderModel);
-
-    expect($result)->toBeTrue();
-});
+    expect($serviceMock->activateOrderAddons($master))->toBeTrue();
+})->with([
+    'already active' => [Order::STATUS_ACTIVE, ClientFence\Mod\Product\Service::SETUP_AFTER_ORDER, false],
+    'awaiting payment' => [Order::STATUS_PENDING_SETUP, ClientFence\Mod\Product\Service::SETUP_AFTER_PAYMENT, false],
+    'after order' => [Order::STATUS_PENDING_SETUP, ClientFence\Mod\Product\Service::SETUP_AFTER_ORDER, true],
+]);
 
 test('getOrderAddonsList returns addons', function (): void {
     $modelClientOrder = createEntity(Order::class);

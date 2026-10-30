@@ -2228,9 +2228,10 @@ class Service implements InjectionAwareInterface
             return false;
         }
 
-        if (isset($config['period'])) {
+        // ClientFence core patch: a period-restricted promotion cannot discount a one-time cart line.
+        if ($config !== null) {
             $periods = $this->getPeriods($promo);
-            if (!empty($periods) && !in_array($config['period'], $periods)) {
+            if (!empty($periods) && (!isset($config['period']) || !in_array($config['period'], $periods))) {
                 return false;
             }
         }

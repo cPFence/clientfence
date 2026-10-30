@@ -1280,6 +1280,15 @@ class Service implements InjectionAwareInterface
             $addonId = $this->orderId($addon);
 
             try {
+                // ClientFence core patch: family activation must respect each add-on's current state and setup policy.
+                $status = $this->di['dbal']->fetchOne('SELECT status FROM client_order WHERE id = ?', [$addonId]);
+                if (!in_array($status, [Order::STATUS_PENDING_SETUP, Order::STATUS_FAILED_SETUP], true)) {
+                    continue;
+                }
+                $product = $this->di['mod_service']('product')->findProductById((int) $this->orderProductId($addon));
+                if ($product->getSetup() !== \ClientFence\Mod\Product\Service::SETUP_AFTER_ORDER) {
+                    continue;
+                }
                 $this->di['events_manager']->fire(['event' => 'onBeforeAdminOrderActivate', 'params' => ['id' => $addonId]]);
                 $this->createFromOrder($addon);
                 $this->di['events_manager']->fire(['event' => 'onAfterAdminOrderActivate', 'params' => ['id' => $addonId]]);

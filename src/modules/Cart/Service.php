@@ -1041,6 +1041,8 @@ class Service implements InjectionAwareInterface
                             'price' => $setup_price,
                             'quantity' => 1,
                             'unit' => 'service',
+                            // ClientFence core patch: deleting an unprovisioned order must remove its setup fee too.
+                            'rel_id' => $order->getId(),
                             'taxed' => $taxed,
                         ];
                     }

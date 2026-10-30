@@ -78,17 +78,21 @@ class Client extends \ClientFence\Api\AbstractApi
         if (!$model instanceof \Model_ClientOrder) {
             throw new \ClientFence\InformationException('Order not found');
         }
-        // ClientFence core patch: only a running service renews; a cancelled one was charged and stayed cancelled.
-        if (empty($model->period) || !in_array($model->status, [\Model_ClientOrder::STATUS_ACTIVE, \Model_ClientOrder::STATUS_SUSPENDED], true)) {
-            throw new \ClientFence\InformationException('Only an active or suspended service can be renewed.');
-        }
         $service = $this->getService();
         // ClientFence core patch: the order's lock covers making and paying the invoice, and a click made
         // before another one renewed the order is refused: a double click renewed (and charged) twice.
         $seenExpiry = $model->expires_at;
         $invoice = \ClientFence\Tools::withLock($this->getDi(), 'fb:renewal:order:' . (int) $model->id, function () use ($service, $model, $seenExpiry) {
-            $expiry = $this->getDi()['dbal']->fetchOne('SELECT expires_at FROM client_order WHERE id = ?', [$model->id]);
-            if ($expiry !== false && $expiry !== null && $expiry !== $seenExpiry) {
+            // ClientFence core patch: an upgrade waiting for this lock may have changed the renewal price and cycle.
+            $model = $this->getDi()['db']->findOne('ClientOrder', 'client_id = ? and id = ?', [$this->getIdentity()->id, $model->id]);
+            if (!$model instanceof \Model_ClientOrder) {
+                throw new \ClientFence\InformationException('Order not found');
+            }
+            // ClientFence core patch: only a running service renews; a cancelled one was charged and stayed cancelled.
+            if (empty($model->period) || !in_array($model->status, [\Model_ClientOrder::STATUS_ACTIVE, \Model_ClientOrder::STATUS_SUSPENDED], true)) {
+                throw new \ClientFence\InformationException('Only an active or suspended service can be renewed.');
+            }
+            if ($model->expires_at !== null && $model->expires_at !== $seenExpiry) {
                 throw new \ClientFence\InformationException('This order was renewed a moment ago. Reload the page to see it.');
             }
             $invoice = $service->generateForOrder($model);

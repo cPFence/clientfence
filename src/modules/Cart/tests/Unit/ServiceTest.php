@@ -1136,6 +1136,66 @@ test('createFromCart normalizes legacy invoice id before setting it on the order
     expect($result[0]->getUnpaidInvoiceId())->toBe(456);
 });
 
+test('createFromCart links the setup fee invoice line to its order', function (): void {
+    $cart = createEntity(Cart::class, ['id' => 3, 'currency_id' => 2]);
+    $client = createEntity(Client::class, ['id' => 9, 'currency' => 'USD']);
+    $currency = createEntity(Currency::class, ['code' => 'USD', 'conversion_rate' => 1.0]);
+    $currencyRepository = Mockery::mock(CurrencyRepository::class);
+    $currencyRepository->shouldReceive('find')->once()->with(2)->andReturn($currency);
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->once()->andReturn($currencyRepository);
+    $clientService = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientService->shouldReceive('isClientTaxable')->once()->with($client)->andReturn(false);
+    $product = createEntity(Product::class, ['id' => 5, 'status' => 'enabled', 'type' => 'service', 'setup' => 'manual']);
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->twice()->with(5)->andReturn($product);
+    $cartProduct = createEntity(CartProduct::class, ['id' => 13]);
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->shouldReceive('saveStatusChange')->once();
+    $orderService->shouldReceive('toApiArray')->once()->andReturn(['product_id' => 5, 'total' => 10, 'discount' => 0]);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 456;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+    $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
+    $invoiceService->shouldReceive('prepareInvoice')->once()->with(Mockery::type(Model_Client::class), Mockery::on(
+        fn (array $data): bool => $data['items'][1]['price'] === 10.0 && ($data['items'][1]['rel_id'] ?? null) === 99
+    ))->andReturn($invoice);
+    $invoiceService->shouldReceive('approveInvoice')->once()->andReturn(true);
+    $balanceService = Mockery::mock(ClientFence\Mod\Client\ServiceBalance::class);
+    $balanceService->shouldReceive('getClientBalance')->once()->andReturn(0.0);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('wrapInTransaction')->once()->andReturnUsing(fn (Closure $work) => $work());
+    $em->shouldReceive('persist')->with(Mockery::type(Order::class))->andReturnUsing(function (Order $order): void {
+        (new ReflectionProperty($order, 'id'))->setValue($order, 99);
+    });
+    $em->shouldReceive('flush');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getSessionCart')->once()->andReturn($cart);
+    $service->shouldReceive('toApiArray')->once()->with($cart)->andReturn(['items' => [['id' => 13]], 'total' => 10]);
+    $service->shouldReceive('getCartProducts')->once()->with($cart)->andReturn([$cartProduct]);
+    $service->shouldReceive('cartProductToApiArray')->once()->andReturn([
+        'product_id' => 5, 'form_id' => null, 'title' => 'Example product', 'type' => 'service',
+        'unit' => 'service', 'period' => '1M', 'quantity' => 1, 'price' => 0,
+        'discount_price' => 0, 'setup_price' => 10, 'discount_setup' => 0, 'notes' => null,
+    ]);
+    $service->shouldReceive('isStockAvailable')->once()->with($product, 1)->andReturn(true);
+    $di = container();
+    $di['db']->shouldReceive('getExistingModelById')->andReturn(cartServiceCreateLegacyClient());
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => match ($name) {
+        'currency' => $currencyService,
+        'client' => $clientService,
+        'Product' => $productService,
+        'order', 'Order' => $orderService,
+        'Invoice' => $invoiceService,
+        'Client' => $balanceService,
+    });
+    $service->setDi($di);
+
+    expect($service->createFromCart($client)[1])->toBe($invoice);
+});
+
 test('createFromCart compensates promo usage on transaction failure', function (): void {
     $cart = createEntity(Cart::class);
     $cart->id = 3;

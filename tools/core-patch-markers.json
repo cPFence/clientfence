@@ -3282,5 +3282,25 @@
     {
         "file": "modules/Staff/Api/Guest.php",
         "done": "ClientFence core patch: reset email delivery must not reveal staff accounts through response time."
+    },
+    {
+        "file": "modules/Order/Api/Client.php",
+        "done": "ClientFence core patch: only discounted bundled domains depend on the hosting order."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: family activation must respect each add-on's current state and setup policy."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: a period-restricted promotion cannot discount a one-time cart line."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: deleting an unprovisioned order must remove its setup fee too."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: an upgrade waiting for this lock may have changed the renewal price and cycle."
     }
 ]

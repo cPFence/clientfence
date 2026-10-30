@@ -178,11 +178,15 @@ final class Upgrades
         $productRule = self::rule($di, self::SCOPE_PRODUCT, (int) $order->product_id);
         $orderRule = self::rule($di, self::SCOPE_ORDER, (int) $order->id);
         $anchor = self::periodAnchor($db, $order);
+        $quantity = max(1, (int) ($order->quantity ?? 1));
 
         $options = [];
         foreach (array_unique(array_merge([(int) $order->product_id], $from['upgrades'])) as $productId) {
             $to = $productId === (int) $order->product_id ? ($from['on_sale'] ? $from : null) : self::catalog($db, $productId, true, (string) $order->currency);
             if ($to === null || !self::compatible($from, $to)) {
+                continue;
+            }
+            if ($productId !== (int) $order->product_id && !$di['mod_service']('product')->isStockAvailable($productId, $quantity)) {
                 continue;
             }
             foreach ($to['prices'] as $period => $price) {
@@ -195,7 +199,6 @@ final class Upgrades
                 if ($target === null) {
                     continue;
                 }
-                $quantity = max(1, (int) ($order->quantity ?? 1));
                 $newTotal = round(($price + $target['price']) * $rate * $quantity, 2);
                 $sameCycle = isset($from['prices'][$period]) && $here !== null ? round(($from['prices'][$period] + $here['price']) * $rate * $quantity, 2) : null;
                 $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, $newTotal, $period, $now, $sameCycle, $anchor);
@@ -444,7 +447,16 @@ final class Upgrades
         $optionsNote = '';
         $opt = null;
         $locked = false;
+        $renewalLock = 'fb:renewal:order:' . $orderId;
+        $renewalLocked = false;
         try {
+            // A paid invoice may already hold the money lock; waiting for renewal here would reverse the lock order.
+            if (self::isMysql($db) && (int) $db->fetchOne('SELECT IS_USED_LOCK(?) = CONNECTION_ID()', ['fb:credit_payment:client:' . (int) $up['client_id']]) !== 1) {
+                if ((int) $db->fetchOne('SELECT GET_LOCK(?, 10)', [$renewalLock]) !== 1) {
+                    throw new InformationException('Another request is being processed. Please try again.');
+                }
+                $renewalLocked = true;
+            }
             // ClientFence (QA r10 D-09): under the client's money lock too, as refunds and credit payments, so a refund
             // never reads the service's credit notes between the refund check below and this change's credit.
             $locked = self::moneyLock($di, (int) $up['client_id']);
@@ -480,6 +492,13 @@ final class Upgrades
                 if ($to === null) {
                     throw new InformationException('The new product no longer exists.');
                 }
+                $quantity = max(1, (int) ($order->quantity ?? 1));
+                $productChanged = (int) $up['to_product_id'] !== (int) $up['from_product_id'];
+                if ($productChanged) {
+                    $productService = $di['mod_service']('product');
+                    $productService->reduceStock((int) $up['to_product_id'], $quantity);
+                    $productService->returnStock((int) $up['from_product_id'], $quantity);
+                }
                 // A renewal invoice issued at the old price and cycle must not renew the new one.
                 $renewalNote = self::cancelRenewalInvoice($db, $order);
 
@@ -489,6 +508,14 @@ final class Upgrades
 
                 $config = json_decode((string) $order->config, true);
                 $config = is_array($config) ? $config : [];
+                if ($productChanged && $order->service_type === 'downloadable') {
+                    $config['filename'] = $to['config']['filename'];
+                    $config['stored_filename'] = $to['config']['stored_filename'];
+                    $db->update('service_downloadable', [
+                        'filename' => $config['filename'],
+                        'stored_filename' => $config['stored_filename'],
+                    ], ['id' => (int) $order->service_id]);
+                }
                 if ($opt !== null) {
                     $before = Options::summary(self::optionsOf($row['config'])['lines']);
                     $after = Options::summary($opt['lines']);
@@ -512,7 +539,6 @@ final class Upgrades
                         }
                     }
                 }
-                $quantity = max(1, (int) ($order->quantity ?? 1));
                 $fromProduct = self::catalog($db, (int) $up['from_product_id'], false);
                 $order->product_id = (int) $up['to_product_id'];
                 if (!$optionsOnly) {
@@ -555,6 +581,9 @@ final class Upgrades
         } finally {
             if ($locked) {
                 $di['dbal']->fetchOne('SELECT RELEASE_LOCK(?)', ['fb:credit_payment:client:' . (int) $up['client_id']]);
+            }
+            if ($renewalLocked) {
+                $db->fetchOne('SELECT RELEASE_LOCK(?)', [$renewalLock]);
             }
         }
 

@@ -163,17 +163,42 @@ class Client extends \ClientFence\Api\AbstractApi
         if (!in_array($status, [Order::STATUS_PENDING_SETUP, Order::STATUS_FAILED_SETUP])) {
             throw new \ClientFence\InformationException('Only pending and failed setup orders can be deleted.');
         }
+        // ClientFence core patch: only discounted bundled domains depend on the hosting order.
+        $orders = [$model];
+        $groupId = $model instanceof Order ? $model->getGroupId() : $model->group_id;
+        if ($groupId && ($model instanceof Order ? $model->isGroupMaster() : (bool) $model->group_master)) {
+            $family = $this->getService()->getOrderRepository()->findBy([
+                'clientId' => $model instanceof Order ? $model->getClientId() : (int) $model->client_id,
+                'groupId' => $groupId,
+                'status' => [Order::STATUS_PENDING_SETUP, Order::STATUS_FAILED_SETUP],
+                'unpaidInvoiceId' => $model instanceof Order ? $model->getUnpaidInvoiceId() : $model->unpaid_invoice_id,
+            ]);
+            foreach ($family as $sibling) {
+                $config = json_decode($sibling->getConfig() ?? '', true);
+                if ($sibling->getId() !== (int) ($model instanceof Order ? $model->getId() : $model->id)
+                    && $sibling->getServiceType() === 'domain'
+                    && $sibling->getDiscount() > 0
+                    && (!empty($config['free_domain']) || !empty($config['free_transfer']))) {
+                    $orders[] = $sibling;
+                }
+            }
+        }
         // ClientFence core patch: an order that was paid for stays (its paid invoice would keep no order and the
         // failed action would be dismissed); staff can still delete it.
-        $paid = $this->getDi()['dbal']->fetchOne(
-            'SELECT 1 FROM invoice_item ii JOIN invoice i ON i.id = ii.invoice_id WHERE ii.type = ? AND ii.rel_id = ? AND i.status IN (?, ?) LIMIT 1',
-            [\Model_InvoiceItem::TYPE_ORDER, (string) ($model instanceof Order ? $model->getId() : $model->id), \Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED]
-        );
-        if ($paid) {
-            throw new \ClientFence\InformationException('A paid order cannot be deleted. Please contact support.');
+        foreach ($orders as $order) {
+            $paid = $this->getDi()['dbal']->fetchOne(
+                'SELECT 1 FROM invoice_item ii JOIN invoice i ON i.id = ii.invoice_id WHERE ii.type = ? AND ii.rel_id = ? AND i.status IN (?, ?) LIMIT 1',
+                [\Model_InvoiceItem::TYPE_ORDER, (string) ($order instanceof Order ? $order->getId() : $order->id), \Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED]
+            );
+            if ($paid) {
+                throw new \ClientFence\InformationException('A paid order cannot be deleted. Please contact support.');
+            }
+        }
+        foreach ($orders as $order) {
+            $this->getService()->deleteFromOrder($order);
         }
 
-        return $this->getService()->deleteFromOrder($model);
+        return true;
     }
 
     protected function _getOrder($data)

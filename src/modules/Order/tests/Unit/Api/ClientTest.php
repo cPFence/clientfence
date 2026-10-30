@@ -169,6 +169,47 @@ test('deletes a pending setup order', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('deleting a family master only removes a sibling with a bundled free-domain discount', function (string $siblingType, array $config, float $discount, bool $deleteSibling): void {
+    $master = createEntity(ClientFence\Mod\Order\Entity\Order::class, [
+        'id' => 7, 'client_id' => 3, 'group_id' => 'family-7', 'group_master' => true,
+        'status' => ClientFence\Mod\Order\Entity\Order::STATUS_PENDING_SETUP, 'unpaid_invoice_id' => 11,
+        'service_type' => $siblingType === 'domain' ? 'hosting' : 'domain',
+        'config' => '{"free_domain":true}', 'discount' => 10.0,
+    ]);
+    $sibling = createEntity(ClientFence\Mod\Order\Entity\Order::class, [
+        'id' => 8, 'client_id' => 3, 'group_id' => 'family-7', 'group_master' => true,
+        'status' => ClientFence\Mod\Order\Entity\Order::STATUS_PENDING_SETUP, 'unpaid_invoice_id' => 11,
+        'service_type' => $siblingType, 'config' => json_encode($config), 'discount' => $discount,
+    ]);
+    $repository = Mockery::mock(ClientFence\Mod\Order\Repository\OrderRepository::class);
+    $repository->shouldReceive('findBy')->once()->with([
+        'clientId' => 3,
+        'groupId' => 'family-7',
+        'status' => ['pending_setup', 'failed_setup'],
+        'unpaidInvoiceId' => 11,
+    ])->andReturn([$master, $sibling]);
+    $service = Mockery::mock(Service::class);
+    $service->shouldReceive('getOrderRepository')->once()->andReturn($repository);
+    $service->shouldReceive('deleteFromOrder')->once()->with($master)->andReturn(true);
+    $service->shouldReceive('deleteFromOrder')->times($deleteSibling ? 1 : 0)->with($sibling)->andReturn(true);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->once()->with(Mockery::type('string'), ['order', '7', 'paid', 'refunded'])->andReturn(false);
+    $dbal->shouldReceive('fetchOne')->times($deleteSibling ? 1 : 0)->with(Mockery::type('string'), ['order', '8', 'paid', 'refunded'])->andReturn(false);
+    $api = apiEndpoint(Mockery::mock(Client::class)->makePartial());
+    $api->shouldAllowMockingProtectedMethods();
+    $api->shouldReceive('_getOrder')->once()->andReturn($master);
+    $api->getDi()['dbal'] = $dbal;
+    $api->setService($service);
+
+    expect($api->delete(['id' => 7]))->toBeTrue();
+})->with([
+    'free domain' => ['domain', ['free_domain' => true], 10.0, true],
+    'free transfer' => ['domain', ['free_transfer' => true], 10.0, true],
+    'domain without a bundle flag' => ['domain', [], 10.0, false],
+    'domain without a discount' => ['domain', ['free_domain' => true], 0.0, false],
+    'deleting a domain keeps its discounted hosting' => ['hosting', ['free_domain' => true], 10.0, false],
+]);
+
 // ClientFence: a client cannot delete an order that was paid for (staff still can).
 test('refuses to delete a failed setup order that was paid for', function (): void {
     $order = createEntity(ClientFence\Mod\Order\Entity\Order::class, ['id' => 7, 'status' => ClientFence\Mod\Order\Entity\Order::STATUS_FAILED_SETUP]);
