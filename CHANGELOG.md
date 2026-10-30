@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.14 (2026-10-31)
+
+### Fixed
+
+- Translations: the hosting texts added in 1.0.12 and 1.0.13 (Backups tab, backup restore, panel messages) are now translated in all languages.
+- Enhance hosting: backups show their real size (files, databases and email); every backup showed 10 KB.
+- Automation: an overdue suspended order the client pays while the daily cancellation runs is no longer cancelled.
+- Automation: a client who renews while renewal invoices are being made is no longer charged a second renewal from credit.
+- Domains: a renewal is no longer sent to the registrar again when reading the domain details afterwards fails.
+- Invoices: with "remove unpaid invoices" on, the renewal invoice of an active or suspended order is kept; it was deleted and made again on every cron run, with an email each time.
+
 ## 1.0.13 (2026-10-31)
 
 ### Added
