@@ -234,9 +234,18 @@ class Guest extends \ClientFence\Api\AbstractApi
             $email['code'] = 'mod_staff_password_reset_request';
             $email['hash'] = $hash;
             $emailService = $this->getDi()['mod_service']('email');
-            $emailService->sendTemplate($email);
+            // ClientFence core patch: reset email delivery must not reveal staff accounts through response time.
+            register_shutdown_function(static function () use ($emailService, $email): void {
+                if (function_exists('fastcgi_finish_request')) {
+                    fastcgi_finish_request();
+                } elseif (function_exists('litespeed_finish_request')) {
+                    litespeed_finish_request();
+                }
+                // shortcut: without either finish function (Apache mod_php or CLI), email is sent before the response ends.
+                $emailService->sendTemplate($email);
+            });
 
-            $this->getDi()['logger']->setChannel('security')->info('Staff password reset email queued for admin #%s from IP %s: email %s', $c->id, $this->getIp(), $data['email']);
+            $this->getDi()['logger']->setChannel('security')->info('Staff password reset email sent for admin #%s from IP %s: email %s', $c->id, $this->getIp(), $data['email']);
 
             return true;
         } finally {

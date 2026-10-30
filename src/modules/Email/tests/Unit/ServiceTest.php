@@ -301,6 +301,69 @@ test('getVars merges stored examples over preview defaults', function (): void {
         ->and($vars)->toHaveKeys(['staff.email', 'ticket.priority', 'ticket.client.email']);
 });
 
+test('sendTemplate does not store staff password reset variables', function (): void {
+    $service = new ClientFence\Mod\Email\Service();
+    $template = emailTemplate('mod_staff_password_reset_request', data: ['enabled' => false]);
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->once()->andReturn($template);
+    $crypt = Mockery::mock(ClientFence\Crypt::class);
+    $crypt->shouldNotReceive('encrypt');
+
+    $di = container();
+    $di['em'] = emailBuildEm(templateRepo: $templateRepo);
+    $di['crypt'] = $crypt;
+    $service->setDi($di);
+
+    $service->sendTemplate([
+        'code' => 'mod_staff_password_reset_request',
+        'to' => 'staff@example.com',
+        'hash' => 'reset-secret',
+    ]);
+
+    expect($template->getVars())->toBeNull();
+});
+
+test('sendTemplate sends sign-in emails immediately without keeping queue or history copies', function (string $mailer): void {
+    $service = new ClientFence\Mod\Email\Service();
+    $template = emailTemplate('mod_staff_password_reset_request', data: ['is_custom' => true]);
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->once()->andReturn($template);
+    $adminRepo = Mockery::mock(ClientFence\Mod\Staff\Repository\AdminRepository::class);
+    $adminRepo->shouldReceive('find')->once()->with(7)->andReturn(createEntity(ClientFence\Mod\Staff\Entity\Admin::class, [
+        'id' => 7, 'email' => 'staff@example.com', 'name' => 'Staff', 'signature' => '', 'timezone' => 'UTC',
+    ]));
+
+    $em = emailBuildEm(templateRepo: $templateRepo, adminRepo: $adminRepo);
+    $em->shouldNotReceive('persist');
+
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->andReturn('company@example.com');
+    $system->shouldReceive('renderEmailSubjectString')->once()->andReturn('Password reset');
+    $system->shouldReceive('renderEmailTplString')->once()->andReturn('reset-secret');
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->shouldReceive('isExtensionActive')->once()->with('mod', 'demo')->andReturn(false);
+    $activity = Mockery::mock(ClientFence\Mod\Activity\Service::class);
+    $activity->shouldNotReceive('logEmail');
+    $mod = Mockery::mock(ClientFence\Module::class);
+    $mod->shouldReceive('getConfig')->andReturn([
+        'from_email' => 'company@example.com', 'from_name' => 'Company',
+        'log_enabled' => true, 'mailer' => $mailer, 'custom_dsn' => 'null://null',
+    ]);
+
+    $di = container();
+    $di['em'] = $em;
+    $di['mod'] = $di->protect(fn () => $mod);
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system, 'extension' => $extension, 'activity' => $activity]));
+    $service->setDi($di);
+
+    withAppEnv('prod', fn () => $service->sendTemplate([
+        'code' => 'mod_staff_password_reset_request', 'to_admin' => 7, 'hash' => 'reset-secret', 'send_now' => false,
+    ]));
+
+    $errors = array_filter($di['logger']->calls, fn (array $call): bool => $call['method'] === 'error');
+    expect($errors)->toHaveCount($mailer === 'custom' ? 0 : 1);
+})->with(['sent' => ['custom'], 'failed' => ['invalid']]);
+
 test('sendTemplate returns false when template does not exist', function (): void {
     $service = new ClientFence\Mod\Email\Service();
     $di = container();
@@ -635,6 +698,7 @@ dataset('sendTemplateExistsStaffProvider', fn (): array => [
 
 test('sendTemplate handles to_staff and to_client options', function (array $data, string $clientGetExpects, string $staffResolveExpects, string $expectedRecipient): void {
     $service = new ClientFence\Mod\Email\Service();
+    $signInLink = in_array($data['code'], ClientFence\Mod\Email\Service::SIGN_IN_LINK_TEMPLATES, true);
 
     $di = container();
 
@@ -650,7 +714,7 @@ test('sendTemplate handles to_staff and to_client options', function (array $dat
     $persistedQueue = null;
     $em = emailBuildEm(null, $templateRepo, null, true, $templateGroupRepo);
     $em->shouldReceive('persist')
-        ->atLeast()->once()
+        ->zeroOrMoreTimes()
         ->with(Mockery::on(function ($entity) use (&$persistedQueue): bool {
             if ($entity instanceof ClientFence\Mod\Email\Entity\QueuedEmail) {
                 $persistedQueue = $entity;
@@ -714,8 +778,11 @@ test('sendTemplate handles to_staff and to_client options', function (array $dat
     $twigStub = Mockery::mock(Twig\Environment::class);
 
     $cryptMock = Mockery::mock('ClientFence\Crypt');
-    $cryptMock->shouldReceive('encrypt')
-        ->atLeast()->once();
+    if ($signInLink) {
+        $cryptMock->shouldNotReceive('encrypt');
+    } else {
+        $cryptMock->shouldReceive('encrypt')->atLeast()->once();
+    }
 
     $di['api_admin'] = function () use ($di) {
         $api = new ClientFence\Api\Proxy(new Model_Admin());
@@ -752,11 +819,15 @@ test('sendTemplate handles to_staff and to_client options', function (array $dat
     $result = $service->sendTemplate($data);
 
     expect($result)->toBeTrue();
+    if ($signInLink) {
+        expect($persistedQueue)->toBeNull();
+
+        return;
+    }
     expect($persistedQueue)->not->toBeNull();
     expect($persistedQueue->getRecipient())->toBe($expectedRecipient);
     if (($data['to_client'] ?? 0) > 0) {
-        // Emails with a sign-in link stay out of the account's email history (authorized users read it).
-        expect($persistedQueue->getClientId())->toBe(in_array($data['code'], ClientFence\Mod\Email\Service::SIGN_IN_LINK_TEMPLATES, true) ? null : 1);
+        expect($persistedQueue->getClientId())->toBe(1);
     }
 })->with('sendTemplateExistsStaffProvider');
 
@@ -853,7 +924,7 @@ test('sendTemplate only routes client-bound email to a validated billing address
     expect($persistedQueue->getClientId())->toBe(1);
 })->with('sendTemplateClientBillingProvider');
 
-test('sendTemplate copies a client email to the account\'s contacts of its kind (Client/Contacts.php)', function (string $code, array $expected): void {
+test('sendTemplate copies a client email to the account\'s contacts of its kind (Client/Contacts.php)', function (string $code, ?array $expected): void {
     $service = new ClientFence\Mod\Email\Service();
     $di = container();
 
@@ -900,12 +971,12 @@ test('sendTemplate copies a client email to the account\'s contacts of its kind 
     $service->setDi($di);
 
     expect($service->sendTemplate(['code' => $code, 'to_client' => 1, 'default_subject' => 'S', 'default_template' => 'T', 'default_description' => 'D']))->toBeTrue()
-        ->and(array_map(fn ($q) => $q->getRecipient(), $queued))->toBe(['client@example.com', ...$expected]);
+        ->and(array_map(fn ($q) => $q->getRecipient(), $queued))->toBe($expected === null ? [] : ['client@example.com', ...$expected]);
 })->with([
     'invoice email' => ['mod_invoice_created', ['ann@example.com']],
     'ticket reply' => ['mod_support_ticket_staff_reply', ['bob@example.com']],
     'domain email, no domain contact' => ['mod_servicedomain_renewed', []],
-    'password reset link, never copied' => ['mod_client_password_reset_request', []],
+    'password reset link, never stored' => ['mod_client_password_reset_request', null],
 ]);
 
 test('sendTemplate sends to a specific admin via to_admin using the Admin entity', function (): void {

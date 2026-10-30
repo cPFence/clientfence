@@ -31,10 +31,11 @@ use Symfony\Component\Finder\Finder;
 
 class Service implements \ClientFence\InjectionAwareInterface
 {
-    /** ClientFence: client emails carrying a sign-in, password or email confirmation link. */
+    /** ClientFence: emails carrying a sign-in, password or email confirmation link. */
     public const SIGN_IN_LINK_TEMPLATES = [
         'mod_client_password_reset_request', 'mod_client_signup_admin', 'mod_client_signup', 'mod_client_confirm',
-        'mod_client_user_password_reset',
+        'mod_client_user_password_reset', 'mod_staff_password_reset_request', 'mod_client_user_invite',
+        'mod_client_clientfence_signin_pin', 'mod_staff_clientfence_signin_pin',
     ];
 
     protected ?\Pimple\Container $di = null;
@@ -342,7 +343,11 @@ class Service implements \ClientFence\InjectionAwareInterface
             }
         }
 
-        $this->setVars($template, $vars);
+        // ClientFence core patch: template previews must never retain sign-in credentials.
+        $signInLink = in_array($data['code'], self::SIGN_IN_LINK_TEMPLATES, true);
+        if (!$signInLink) {
+            $this->setVars($template, $vars);
+        }
 
         // do not send inactive template
         if (!$template->isEnabled()) {
@@ -389,12 +394,12 @@ class Service implements \ClientFence\InjectionAwareInterface
 
                 $to = $staff['email'];
                 $to_name = $staff['name'];
-                $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $staff['id'], $send_now, $throw_exceptions, $attachment);
+                $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $staff['id'], $send_now, $throw_exceptions, $attachment, sensitive: $signInLink);
             }
         } elseif (isset($oneStaff)) {
             $to = $oneStaff['email'];
             $to_name = $oneStaff['name'];
-            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $oneStaff['id'], $send_now, $throw_exceptions, $attachment);
+            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $oneStaff['id'], $send_now, $throw_exceptions, $attachment, sensitive: $signInLink);
         } elseif (isset($customer)) {
             // A generic `to` is ignored for client-bound emails so their
             // rendered data cannot be redirected to an arbitrary recipient.
@@ -402,13 +407,13 @@ class Service implements \ClientFence\InjectionAwareInterface
             $to_name = $customer['first_name'] . ' ' . $customer['last_name'];
             // ClientFence core patch: emails with a sign-in link stay out of the account's email history,
             // which authorized users may read (a password reset link there hands over the owner login).
-            $historyClientId = in_array($data['code'] ?? '', self::SIGN_IN_LINK_TEMPLATES, true) ? null : $customer['id'];
-            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, $historyClientId, null, $send_now, $throw_exceptions, $attachment, $replyTo);
+            $historyClientId = $signInLink ? null : $customer['id'];
+            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, $historyClientId, null, $send_now, $throw_exceptions, $attachment, $replyTo, sensitive: $signInLink);
             // ClientFence core patch: contact copies: the account's contacts who get this kind of email
             // (Client/Contacts.php); a failed copy never fails the email itself.
             foreach (\ClientFence\Mod\Client\Contacts::copies($this->di, (int) $customer['id'], (string) $data['code'], (string) $to) as $contact) {
                 try {
-                    $this->sendMail($contact['email'], $from, $subject, $content, $contact['name'], $from_name, $historyClientId, null, $send_now, false, $attachment, $replyTo);
+                    $this->sendMail($contact['email'], $from, $subject, $content, $contact['name'], $from_name, $historyClientId, null, $send_now, false, $attachment, $replyTo, sensitive: $signInLink);
                 } catch (\Throwable $e) {
                     $this->di['logger']->setChannel('email')->warning('Contact copy not sent: ' . $e->getMessage());
                 }
@@ -416,7 +421,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         } else {
             $to = $data['to'];
             $to_name = $data['to_name'] ?? null;
-            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, null, $send_now, $throw_exceptions, $attachment, $replyTo);
+            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, null, $send_now, $throw_exceptions, $attachment, $replyTo, sensitive: $signInLink);
         }
 
         return $sent;
@@ -459,19 +464,19 @@ class Service implements \ClientFence\InjectionAwareInterface
     /**
      * @param array{content: string, name: string, mime?: string}|null $attachment a file to attach to the email, e.g. a generated invoice PDF
      */
-    public function sendMail($to, $from, $subject, $content, $to_name = null, $from_name = null, $client_id = null, $admin_id = null, bool $send_now = false, bool $throw_exceptions = false, ?array $attachment = null, ?string $reply_to = null, ?string $unsubscribe = null): bool
+    public function sendMail($to, $from, $subject, $content, $to_name = null, $from_name = null, $client_id = null, $admin_id = null, bool $send_now = false, bool $throw_exceptions = false, ?array $attachment = null, ?string $reply_to = null, ?string $unsubscribe = null, bool $sensitive = false): bool
     {
-        // Add the email to the queue
-        $email = $this->_queue($to, $from, $subject, $content, $to_name, $from_name, $client_id, $admin_id, $attachment);
-        if ($reply_to !== null) {
+        // ClientFence core patch: sign-in emails are sent at once and never stored: staff can read the queue.
+        $email = $this->_queue($to, $from, $subject, $content, $to_name, $from_name, $client_id, $admin_id, $attachment, !$sensitive);
+        if ($reply_to !== null && !$sensitive) {
             ReplyTo::remember($this->di, (int) $email->getId(), $reply_to);
         }
         // ClientFence core patch: the one-click unsubscribe link of a marketing email (Client/Privacy.php).
         if ($unsubscribe !== null) {
             \ClientFence\Mod\Client\Privacy::rememberUnsubscribe($this->di, (int) $email->getId(), $unsubscribe);
         }
-        if ($send_now) {
-            $this->_sendFromQueue($email, $throw_exceptions);
+        if ($send_now || $sensitive) {
+            $this->_sendFromQueue($email, $throw_exceptions, $sensitive);
         }
 
         return true;
@@ -693,7 +698,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         return [$template->getSubject() ?? '', $template->getContent() ?? ''];
     }
 
-    private function _queue($to, $from, $subject, $content, $to_name = null, $from_name = null, $client_id = null, $admin_id = null, ?array $attachment = null): QueuedEmail
+    private function _queue($to, $from, $subject, $content, $to_name = null, $from_name = null, $client_id = null, $admin_id = null, ?array $attachment = null, bool $persist = true): QueuedEmail
     {
         $em = $this->di['em'];
 
@@ -718,8 +723,10 @@ class Service implements \ClientFence\InjectionAwareInterface
             $queue->setAttachmentMime((string) ($attachment['mime'] ?? 'application/octet-stream'));
         }
 
-        $em->persist($queue);
-        $em->flush();
+        if ($persist) {
+            $em->persist($queue);
+            $em->flush();
+        }
 
         return $queue;
     }
@@ -1248,7 +1255,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         return $addresses;
     }
 
-    private function _sendFromQueue(QueuedEmail $queue, bool $throw_exceptions = false): bool
+    private function _sendFromQueue(QueuedEmail $queue, bool $throw_exceptions = false, bool $sensitive = false): bool
     {
         $extensionService = $this->di['mod_service']('extension');
         if ($extensionService->isExtensionActive('mod', 'demo')) {
@@ -1265,7 +1272,7 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         $mod = $this->di['mod']('email');
         $settings = $mod->getConfig();
-        $log = isset($settings['log_enabled']) && $settings['log_enabled'];
+        $log = !$sensitive && isset($settings['log_enabled']) && $settings['log_enabled'];
 
         $transport = $settings['mailer'] ?? 'sendmail';
         $sender = [

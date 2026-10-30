@@ -158,3 +158,13 @@ test('logs out client', function (): void {
     $result = $api->logout();
     expect($result)->toBeTrue();
 });
+
+test('destroy_sessions explicitly invalidates the signed-in client sessions', function (): void {
+    $api = apiEndpoint(new Client());
+    $service = Mockery::mock(Service::class);
+    $service->shouldReceive('invalidateSessions')->once()->with('client', 42)->andReturn(true);
+    $api->setService($service);
+    $api->setIdentity(createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 42]));
+
+    expect($api->destroy_sessions([]))->toBeTrue();
+});

@@ -158,7 +158,8 @@ class Client extends \ClientFence\Api\AbstractApi
             throw new InformationException('Current password incorrect');
         }
 
-        $this->getService()->invalidateSessions();
+        // ClientFence core patch: impersonation keeps a staff identity, so session revocation must name the client.
+        $this->getService()->invalidateSessions('client', $client->getId());
 
         return $this->getService()->changeClientPassword($client, $data['new_password']);
     }
@@ -178,7 +179,9 @@ class Client extends \ClientFence\Api\AbstractApi
      */
     public function destroy_sessions(array $data): bool
     {
-        return $this->getService()->invalidateSessions();
+        $client = $this->getClientEntity();
+
+        return $this->getService()->invalidateSessions('client', $client->getId());
     }
 
     private function getClientEntity(): ClientEntity

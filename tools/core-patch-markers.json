@@ -3258,5 +3258,29 @@
     {
         "file": "library/Payment/Adapter/ClientBalance.php",
         "done": "ClientFence core patch: the invoice page can select balance without changing the saved gateway."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: template previews must never retain sign-in credentials."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: sign-in emails are sent at once and never stored: staff can read the queue."
+    },
+    {
+        "file": "modules/Client/Controller/Admin.php",
+        "done": "ClientFence core patch: switching client identity requires the session's CSRF token."
+    },
+    {
+        "file": "modules/Profile/Api/Client.php",
+        "done": "ClientFence core patch: impersonation keeps a staff identity, so session revocation must name the client."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "\"client/login/#{client.id}\"|url(query: { CSRFToken: CSRFToken })"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "ClientFence core patch: reset email delivery must not reveal staff accounts through response time."
     }
 ]

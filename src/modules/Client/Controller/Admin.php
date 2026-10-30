@@ -105,6 +105,12 @@ class Admin implements \ClientFence\InjectionAwareInterface
 
     public function get_login(\ClientFence\App $app, $id): Response
     {
+        // ClientFence core patch: switching client identity requires the session's CSRF token.
+        $token = $this->di['request']->query->get('CSRFToken');
+        $session = $this->di['session']->get('csrf_token');
+        if (!is_string($token) || !is_string($session) || $session === '' || !hash_equals($session, $token)) {
+            throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
+        }
         $api = $this->di['api_admin'];
         $api->client_login(['id' => $id]);
 

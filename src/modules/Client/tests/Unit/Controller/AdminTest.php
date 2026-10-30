@@ -27,6 +27,8 @@ test('register configures routes', function (): void {
 test('get login redirects to default url when r parameter is absent', function (): void {
     $controller = new Admin();
     $di = container();
+    $di['request'] = Request::create('/client/login/5?CSRFToken=current-token');
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('current-token');
 
     $apiAdmin = Mockery::mock();
     $apiAdmin->shouldReceive('client_login')->once()->with(['id' => '5'])->andReturn(true);
@@ -55,6 +57,8 @@ test('get login redirects to default url when r parameter is absent', function (
 test('get login redirects to r target when r parameter is present', function (): void {
     $controller = new Admin();
     $di = container();
+    $di['request'] = Request::create('/client/login/5?CSRFToken=current-token');
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('current-token');
 
     $apiAdmin = Mockery::mock();
     $apiAdmin->shouldReceive('client_login')->once()->with(['id' => '5'])->andReturn(true);
@@ -79,3 +83,17 @@ test('get login redirects to r target when r parameter is present', function ():
         ->and($response)->toBeInstanceOf(RedirectResponse::class)
         ->and($response->getStatusCode())->toBe(301);
 });
+
+test('get login rejects missing or mismatched CSRF tokens before signing in', function (?string $token): void {
+    $controller = new Admin();
+    $di = container();
+    $di['request'] = Request::create('/client/login/5', 'GET', $token === null ? [] : ['CSRFToken' => $token]);
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('current-token');
+    $apiAdmin = Mockery::mock();
+    $apiAdmin->shouldNotReceive('client_login');
+    $di['api_admin'] = $apiAdmin;
+    $controller->setDi($di);
+
+    expect(fn () => $controller->get_login(Mockery::mock(ClientFence\App::class), '5'))
+        ->toThrow(new ClientFence\InformationException('CSRF token invalid', null, 403));
+})->with(['missing' => [null], 'mismatched' => ['wrong-token']]);

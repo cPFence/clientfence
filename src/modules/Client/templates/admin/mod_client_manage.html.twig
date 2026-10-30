@@ -204,7 +204,7 @@
                     {% block summary_actions %}
                         {# ClientFence core patch: only for staff who may sign in as the client (others got an error page). #}
                         {% if has_permission('client', 'impersonate_login') %}
-                        <a href='{{ "client/login/#{client.id}"|url }}' class="btn btn-primary" target="_blank">
+                        <a href='{{ "client/login/#{client.id}"|url(query: { CSRFToken: CSRFToken }) }}' class="btn btn-primary" target="_blank">
                             <svg class="icon" width="24" height="24">
                                 <use href="#login" />
                             </svg>
