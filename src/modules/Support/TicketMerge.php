@@ -23,9 +23,9 @@ use ClientFence\InformationException;
  * Unlike WHMCS, only tickets of the same owner can be merged: one client's tickets, or guest
  * tickets from the same email address, so no client sees another's messages or files.
  *
- * support_ticket_merge keeps each merged ticket's id and guest link: old ticket pages (staff,
- * client, guest link) open the ticket they were merged into, and emailed replies with an old
- * [Ticket #N] go to it (MailImport::decide()).
+ * Old staff and client ticket pages open the ticket they were merged into, and emailed replies
+ * with an old [Ticket #N] go to it (MailImport::decide()).
+ * A guest merge gives the ticket a new guest link, sent with the next staff reply.
  */
 final class TicketMerge
 {
@@ -80,6 +80,9 @@ final class TicketMerge
                 'status' => self::status($db, $tickets),
                 'updated_at' => max(array_map(fn (array $t): string => (string) $t['updated_at'], $tickets)) ?: date('Y-m-d H:i:s'),
             ];
+            if ((int) $master['client_id'] === 0) {
+                $update['access_hash'] = bin2hex(random_bytes(random_int(15, 30)));
+            }
             $update += self::task($tickets, $masterId);
 
             $list = ['ids' => $others];
@@ -174,33 +177,6 @@ final class TicketMerge
         }
 
         return $target === false || $target === null ? null : (int) $target;
-    }
-
-    /**
-     * The ticket a merged guest ticket's link now opens: its id and guest link, or null when it
-     * was not merged or the ticket it went to is not a guest ticket.
-     *
-     * @return array{id: int, hash: string}|null
-     */
-    public static function targetForHash(\Pimple\Container $di, string $hash): ?array
-    {
-        if ($hash === '') {
-            return null;
-        }
-        try {
-            $row = self::db($di)->fetchAssociative(
-                'SELECT t.id, t.access_hash FROM ' . self::TABLE . ' m JOIN support_ticket t ON t.id = m.merged_into
-                  WHERE m.access_hash = ? AND t.client_id IS NULL',
-                [$hash]
-            );
-        } catch (\Exception) {
-            return null;
-        }
-        if ($row === false || (string) $row['access_hash'] === '') {
-            return null;
-        }
-
-        return ['id' => (int) $row['id'], 'hash' => (string) $row['access_hash']];
     }
 
     /**

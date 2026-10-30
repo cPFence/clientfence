@@ -70,6 +70,7 @@ test('tickets of one client merge into the oldest', function (): void {
     $master = $db->fetchAssociative('SELECT * FROM support_ticket WHERE id = 10');
     // Subject gets [MERGED]; the status is that of the ticket with the latest message (15).
     expect($master)->toMatchArray(['subject' => 'Site down [MERGED]', 'status' => 'open', 'updated_at' => '2026-10-05 10:00:00'])
+        ->and($master['access_hash'])->toBeNull()
         ->and($db->fetchFirstColumn('SELECT id FROM support_ticket ORDER BY id'))->toBe([10, 11, 20, 21, 22])
         ->and($db->fetchFirstColumn('SELECT id FROM support_ticket_message WHERE support_ticket_id = 10 ORDER BY created_at'))->toBe([100, 101, 102, 104, 103])
         ->and($db->fetchOne('SELECT support_ticket_id FROM support_ticket_note WHERE id = 1'))->toBe(10)
@@ -119,6 +120,21 @@ test('a typed subject replaces the merged subject', function (): void {
     expect($db->fetchOne('SELECT subject FROM support_ticket WHERE id = 10'))->toBe('Website outage');
 });
 
+test('a merged guest ticket link is not forwarded', function (): void {
+    $di = ticketMergeContainer(ticketMergeDb());
+    TicketMerge::merge($di, [20, 21], null, 1);
+    $api = Mockery::mock();
+    $api->shouldReceive('support_ticket_get')->once()->with(['hash' => 'hash21'])
+        ->andThrow(new ClientFence\Exception('Guest ticket not found'));
+    $di['api_guest'] = $api;
+    $app = Mockery::mock(ClientFence\App::class);
+    $app->shouldNotReceive('redirect');
+    $controller = new ClientFence\Mod\Support\Controller\Client();
+    $controller->setDi($di);
+
+    expect(fn () => $controller->get_ticket($app, 'hash21'))->toThrow(ClientFence\Exception::class, 'Guest ticket not found');
+});
+
 test('only tickets of the same owner merge', function (): void {
     $db = ticketMergeDb();
     $di = ticketMergeContainer($db);
@@ -131,12 +147,9 @@ test('only tickets of the same owner merge', function (): void {
         ->and($db->fetchOne('SELECT COUNT(*) FROM support_ticket'))->toBe(7)
         ->and($db->fetchOne('SELECT COUNT(*) FROM ' . TicketMerge::TABLE))->toBe(0);
 
-    // Guest tickets from one address (any case) merge; the old guest link opens the merged ticket.
     expect(TicketMerge::merge($di, [21, 20], null, 1)['id'])->toBe(20)
         ->and($db->fetchOne('SELECT status FROM support_ticket WHERE id = 20'))->toBe('closed')
-        ->and(TicketMerge::targetForHash($di, 'hash21'))->toBe(['id' => 20, 'hash' => 'hash20'])
-        ->and(TicketMerge::targetForHash($di, 'hash20'))->toBeNull()
-        ->and(TicketMerge::targetForHash($di, ''))->toBeNull();
+        ->and($db->fetchOne('SELECT access_hash FROM support_ticket WHERE id = 20'))->not->toBe('hash20')->not->toBeEmpty();
 });
 
 test('a task moves to the merged ticket, and a pending one that cannot stops the merge', function (): void {
@@ -159,7 +172,6 @@ test('lookups survive a missing table and ids are cleaned', function (): void {
 
     expect(TicketMerge::target($di, 5))->toBeNull()
         ->and(TicketMerge::targetForClient($di, 5, 1))->toBeNull()
-        ->and(TicketMerge::targetForHash($di, 'abc'))->toBeNull()
         ->and(TicketMerge::mergedInto($di, 5))->toBe([])
         ->and(TicketMerge::ids(['12', 3, ' 7 ', 3, 0, -2, 'x', '1.5', null, [4]]))->toBe([3, 7, 12]);
 });

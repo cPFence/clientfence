@@ -90,10 +90,6 @@ class Client implements \ClientFence\InjectionAwareInterface
             }
             $ticket = $this->di['api_client']->support_ticket_get(['id' => $id]);
         } else {
-            $merged = \ClientFence\Mod\Support\TicketMerge::targetForHash($this->di, $id);
-            if ($merged !== null) {
-                return $app->redirect('support/ticket/' . $merged['hash']);
-            }
             $ticket = $this->di['api_guest']->support_ticket_get(['hash' => $id]);
         }
 

@@ -279,7 +279,10 @@
 {{ profile.signature }}
 {{ ticket.helpdesk.signature|default('') }}</textarea>
                             {# ClientFence core patch: ticket attachments (files for the reply, Support/TicketFiles.php). #}
+                            {# Not on guest tickets: guests cannot download ticket files. #}
+                            {% if ticket.author.role|default('') != 'guest' %}
                             {{ include('mod_support_ticket_reply_files.html.twig', { ticket: ticket }) }}
+                            {% endif %}
                         </div>
                         <div class="card-footer d-flex flex-wrap align-items-center gap-2">
                             <input type="hidden" name="id" value="{{ ticket.id }}">

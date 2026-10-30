@@ -187,15 +187,17 @@ final class Privacy
         if ($open !== false) {
             return (int) $open;
         }
-        $helpdeskId = $db->fetchOne('SELECT id FROM support_helpdesk ORDER BY id LIMIT 1');
-        if ($helpdeskId === false) {
+        $support = $di['mod_service']('support');
+        $helpdesk = $support->getHelpdeskRepository()->findOneBy([], ['id' => 'ASC']);
+        if ($helpdesk === null) {
             throw new InformationException('Your request could not be sent: there is no support desk. Please contact us.');
         }
+        $client = $di['db']->load('Client', $clientId);
 
-        return (int) $di['api_client']->support_ticket_create([
-            'support_helpdesk_id' => (int) $helpdeskId,
+        return $support->ticketCreateForClient($client, $helpdesk, [
+            'support_helpdesk_id' => $helpdesk->getId(),
             'subject' => self::DELETION_SUBJECT,
-            'content' => __trans('Please delete my account and the personal data you keep about me. (Sent from the Privacy tab of my profile.)'),
+            'content' => \ClientFence\Tools::sanitizeMarkdownContent(__trans('Please delete my account and the personal data you keep about me. (Sent from the Privacy tab of my profile.)')),
         ]);
     }
 
