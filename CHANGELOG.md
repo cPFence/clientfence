@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.0.9 (2026-10-30)
+
+### Security
+
+- Ticket merge: an old guest link no longer opens the merged ticket; the ticket gets a new guest link, sent with the next staff reply.
+- System → Update: the backup made before an update is never saved inside the website.
+
+### Changed
+
+- Backups kept on this server go into a folder per install, `.clientfence-backups/<site folder name>`; move older backups there by hand to keep them listed.
+
+### Fixed
+
+- PayPal: a payment that is Pending first is credited when PayPal completes it.
+- Stripe: 3-month, 6-month, 2-year and 3-year subscriptions are billed once per period, not every month or year. Subscriptions made before keep their old schedule: cancel them and subscribe again.
+- Stripe and PayPal: an invoice with a one-time discount is paid once instead of starting a subscription at the discounted price.
+- Paying an invoice from the account balance works when the invoice was set to another payment method.
+- Account deletion requests work when the first help desk is hidden from clients.
+- Staff ticket replies: no attach button on guest tickets, where uploads always failed.
+- System → Update: two updates started together no longer remove each other's backup; a failed update frees disk space before putting the old files back and names any file it could not restore.
+- WHMCS import: an archive batch that could not be written in full (full disk) stops the import instead of being skipped.
+
 ## 1.0.8 (2026-10-29)
 
 ### Changed
