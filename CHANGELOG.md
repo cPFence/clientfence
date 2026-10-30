@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.10 (2026-10-30)
+
+### Security
+
+- Password reset, sign-in code, invite and email confirmation emails are no longer kept in email template previews, the email queue or the email history, where staff with email access could read the link. They are sent at once; if one fails, ask for a new link.
+- Staff password reset: the response time no longer shows whether an email belongs to a staff account.
+- Login as client: the link now needs the page's security token, so another site cannot switch your client session.
+
+### Fixed
+
+- Changing a client's password, or signing out their other sessions, while signed in as that client from the admin now signs out the client's other sessions instead of the staff member's.
+
 ## 1.0.9 (2026-10-30)
 
 ### Security
