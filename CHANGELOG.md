@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.11 (2026-10-30)
+
+### Fixed
+
+- Orders: deleting an unpaid hosting order also deletes the free domain that came with it, so the domain is no longer registered for free.
+- Orders: an add-on set to activate after payment, or by staff, is no longer activated with its main service before it is paid.
+- Orders: an add-on is no longer activated a second time when an order includes hosting and a domain, which gave it an extra billing period.
+- Orders: deleting an unpaid order also removes its setup fee from the invoice.
+- Promo codes: a code limited to certain billing periods no longer discounts one-time products.
+- Upgrades: a sold-out product is no longer offered as an upgrade, and an upgrade now takes one from its stock.
+- Upgrades: changing a downloadable product now gives access to the new product's file.
+- Renewals: a renewal invoice made while an upgrade is being applied now uses the new price.
+
 ## 1.0.10 (2026-10-30)
 
 ### Security
