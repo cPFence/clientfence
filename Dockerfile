@@ -175,6 +175,7 @@ COPY --from=php-dev-vendor /app/src/vendor ./src/vendor
 COPY composer.json composer.lock phpstan.neon phpstan-baseline.neon phpstan-baseline-clientfence.neon phpunit.xml.dist ./
 COPY tests ./tests
 COPY tools/core-patch-markers.json ./tools/core-patch-markers.json
+COPY src/themes/palisade/locale ./src/themes/palisade/locale
 
 RUN set -eux; \
   php -r '$config = require "./src/config-sample.php"; file_put_contents("./src/config.php", "<?php\nreturn " . var_export($config, true) . ";\n");'; \

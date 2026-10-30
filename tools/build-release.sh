@@ -42,6 +42,7 @@ trap 'rm -rf -- "$work"' EXIT
 mkdir -p "$OUT"
 
 "$ROOT/tools/update-geoip.sh" --check 7 || { echo "the bundled GeoIP databases are not current: run tools/update-geoip.sh" >&2; exit 1; }
+python3 "$ROOT/tools/locales.py" verify || exit 1
 
 docker buildx build --quiet --target release-artifact --output "type=local,dest=$work/tree" "$ROOT" >/dev/null
 

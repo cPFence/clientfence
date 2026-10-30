@@ -4,6 +4,7 @@
     python3 tools/locales.py extract          write the template of every text the code translates
     python3 tools/locales.py starter LANG...  add the texts LANG still lacks to its clientfence.po
     python3 tools/locales.py check LANG...    every text translated, placeholders and spacing kept
+    python3 tools/locales.py verify           fail if the template is stale or any language is incomplete
     python3 tools/locales.py build LANG...    write src/locale/LANG/LC_MESSAGES/messages.mo (and the
                                               completion figures, src/locale/completion.php)
     python3 tools/locales.py status           how many texts each language still lacks
@@ -191,7 +192,7 @@ def literal(m, i, php):
     return unescape(double, '"', php)
 
 
-def extract():
+def extract(destination=TEMPLATE):
     found = {}
     for dirpath, dirnames, filenames in os.walk(SRC):
         dirnames[:] = sorted(d for d in dirnames if d not in SKIP_DIRS)
@@ -228,8 +229,9 @@ def extract():
             unique[e['id']] = e
     header = {'comments': ['# ClientFence: every text the code translates (tools/locales.py extract).'],
               'strs': ['Project-Id-Version: ClientFence\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n']}
-    write_po(TEMPLATE, header, list(unique.values()))
-    print('%s: %d texts' % (os.path.relpath(TEMPLATE, ROOT), len(unique)))
+    write_po(destination, header, list(unique.values()))
+    if destination == TEMPLATE:
+        print('%s: %d texts' % (os.path.relpath(TEMPLATE, ROOT), len(unique)))
 
 
 # ----- per language --------------------------------------------------------------------------
@@ -308,7 +310,7 @@ def placeholders(text):
     return sorted(PLACEHOLDER.findall(text))
 
 
-def check(lang):
+def check(lang, strict=False):
     _, cf_path, _ = paths(lang)
     header, entries = split_header(read_po(cf_path))
     problems = []
@@ -336,10 +338,28 @@ def check(lang):
     if result.returncode != 0:
         problems.append('msgfmt: ' + result.stderr.strip())
     left = len(missing(lang))
+    if strict and left:
+        problems.append('%d template texts still missing' % left)
     for p in problems:
-        print('%s: %s' % (lang, p))
-    print('%s: %d entries, %d problems, %d template texts still missing' % (lang, len(entries), len(problems), left))
+        print('%s: %s' % (lang, p.replace('\n', ' ')))
+    if not strict:
+        print('%s: %d entries, %d problems, %d template texts still missing' % (lang, len(entries), len(problems), left))
     return not problems
+
+
+def verify():
+    ok = True
+    with tempfile.TemporaryDirectory() as work:
+        extracted = os.path.join(work, 'clientfence.pot')
+        extract(extracted)
+        with open(extracted, encoding='utf-8') as fresh, open(TEMPLATE, encoding='utf-8') as committed:
+            if fresh.read() != committed.read():
+                print('the template is out of date: run extract')
+                ok = False
+    for lang in languages(['all']):
+        if not check(lang, strict=True):
+            ok = False
+    return ok
 
 
 def build(lang):
@@ -452,6 +472,8 @@ def main(argv):
     command, args = argv[0], argv[1:]
     if command == 'extract':
         extract()
+    elif command == 'verify':
+        return 0 if verify() else 1
     elif command == 'status':
         status()
     elif command == 'todo' and args:

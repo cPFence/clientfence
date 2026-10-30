@@ -211,7 +211,8 @@ final class Panel
                     'id' => (int) $backup['id'],
                     'startedAt' => $backup['startedAt'],
                     'finishedAt' => $backup['finishedAt'] ?? null,
-                    'size' => $backup['size'] ?? null,
+                    // Enhance's own `size` is not the backup's size; its parts are, in bytes.
+                    'size' => array_sum(array_intersect_key($backup, array_flip(['filesSize', 'mysqlDbsSize', 'emailsSize']))) ?: null,
                     'files' => ($backup['homeDirStatus'] ?? '') === 'successful',
                     'databases' => ($backup['mysqlDbsStatus'] ?? '') === 'successful',
                     'mailboxes' => ($backup['emailsStatus'] ?? '') === 'successful',

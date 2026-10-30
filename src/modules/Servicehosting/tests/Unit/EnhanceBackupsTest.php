@@ -35,7 +35,8 @@ function enhanceBackupsFixture(string $case = 'success'): array
     for ($id = 1; $id <= 12; ++$id) {
         $backups[] = [
             'id' => $id, 'startedAt' => sprintf('2026-10-%02dT00:00:00Z', $id), 'finishedAt' => sprintf('2026-10-%02dT00:05:00Z', $id),
-            'size' => 1024 * $id, 'homeDirStatus' => 'successful', 'mysqlDbsStatus' => 'successful', 'emailsStatus' => 'failed',
+            'size' => 10000, 'filesSize' => 700183584, 'mysqlDbsSize' => 1048576, 'emailsSize' => 9942349,
+            'homeDirStatus' => 'successful', 'mysqlDbsStatus' => 'successful', 'emailsStatus' => 'failed',
         ];
     }
     $http = new MockHttpClient(static function (string $method, string $url, array $options) use ($case, $calls, $backups): MockResponse {
@@ -139,7 +140,7 @@ test('backups list the latest ten per subscription website and the current resto
         ->and(array_column($list['websites'][0]['backups'], 'id'))->toBe(range(12, 3))
         ->and($list['websites'][0]['backups'][0])->toBe([
             'id' => 12, 'startedAt' => '2026-10-12T00:00:00Z', 'finishedAt' => '2026-10-12T00:05:00Z',
-            'size' => 12288, 'files' => true, 'databases' => true, 'mailboxes' => false,
+            'size' => 711174509, 'files' => true, 'databases' => true, 'mailboxes' => false,
         ])
         ->and($list['websites'][1]['backups'][0])->toMatchArray(['finishedAt' => null, 'size' => null, 'databases' => false, 'mailboxes' => true]);
 })->with(['owner' => ['success', true], 'current product disabled' => ['disabled product', false], 'sub-user' => ['sub-user', false], 'suspended' => ['suspended', false], 'unavailable' => ['unavailable', false]]);

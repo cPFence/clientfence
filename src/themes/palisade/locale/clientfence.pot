@@ -2278,6 +2278,10 @@ msgstr ""
 msgid "Also discount configurable options"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
+msgid "Also restore the email"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig …
 msgid "Amount"
 msgstr ""
@@ -2872,6 +2876,18 @@ msgstr ""
 
 #: src/modules/Clientfence/Controller/Admin.php
 msgid "Backup not found."
+msgstr ""
+
+#: src/modules/Servicehosting/Api/Client.php
+msgid "Backup restores are not enabled for this product."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
+msgid "Backups"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
+msgid "Backups are unavailable right now."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -3710,6 +3726,10 @@ msgstr ""
 msgid "Choose a PNG, JPEG, GIF or WebP image."
 msgstr ""
 
+#: src/modules/Servicehosting/Panel/Enhance/Panel.php
+msgid "Choose a backup with a successful files backup for this website."
+msgstr ""
+
 #: src/modules/Order/Service.php
 msgid "Choose a billing period this product sells, or set a price."
 msgstr ""
@@ -4426,6 +4446,10 @@ msgstr ""
 msgid "Clients can move an active service to another product or billing cycle from its page. The price is prorated: the unused part of the current period is credited, an upgrade is invoiced and applied when paid, and a downgrade credit goes to the client's account balance. Each product, and each service, can also allow or block them."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Clients can restore backups"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Clients can turn marketing email off on their profile. Every Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers, and Mass Mailer skips clients who opted out. Service email (invoices, tickets, sign-in) always goes."
 msgstr ""
@@ -4756,6 +4780,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Confirm that the first invoice has already been paid by the client"
+msgstr ""
+
+#: src/modules/Servicehosting/Api/Client.php
+msgid "Confirm that you want to restore this backup."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -6998,6 +7026,10 @@ msgstr ""
 msgid "Enhance logins are email addresses and cannot be renamed here."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Enhance only. The account owner can restore, sub-users only see the backups."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Enter Custom Transaction ID"
 msgstr ""
@@ -8878,6 +8910,10 @@ msgstr ""
 msgid "I have saved my changed files."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
+msgid "I understand, restore this backup"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig
 msgid "I want to use my nameservers"
 msgstr ""
@@ -9606,10 +9642,6 @@ msgstr ""
 msgid "Invoice hash not passed. Missing param hash"
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php
-msgid "Invoice is not configured to use this payment gateway."
-msgstr ""
-
 #: src/modules/Invoice/ServiceInvoiceItem.php
 msgid "Invoice item is not in a failed state"
 msgstr ""
@@ -10336,6 +10368,10 @@ msgstr ""
 
 #: src/modules/Orderbutton/templates/admin/mod_orderbutton_settings.html.twig
 msgid "Loading Indicator"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
+msgid "Loading backups…"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
@@ -11974,6 +12010,10 @@ msgstr ""
 msgid "No backup has been made yet."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
+msgid "No backups yet."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_canned_category.html.twig
 msgid "No canned responses in this category yet."
 msgstr ""
@@ -12766,6 +12806,10 @@ msgstr ""
 msgid "Only the account owner can change the account email."
 msgstr ""
 
+#: src/modules/Servicehosting/Api/Client.php
+msgid "Only the account owner can restore backups."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_report.html.twig
 msgid "Only the first :count rows are shown. Narrow the filters to see the rest."
 msgstr ""
@@ -13376,6 +13420,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "Panel plan"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Panel status check"
 msgstr ""
 
 #: src/modules/Staff/Service.php
@@ -15492,6 +15540,14 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_canned_category.html.twig
 msgid "Responses"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
+msgid "Restore"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
+msgid "Restore backup"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update_finalize.html.twig
@@ -18266,6 +18322,10 @@ msgstr ""
 msgid "The description can be at most :max characters."
 msgstr ""
 
+#: src/modules/Servicehosting/Panel/Enhance/Panel.php
+msgid "The domain :domain: already exists on the :panel: panel under another subscription and must be moved or removed first."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "The domain check is unavailable right now."
 msgstr ""
@@ -18393,6 +18453,10 @@ msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "The hosting account of this service was not found."
+msgstr ""
+
+#: src/modules/Order/ActionFailures.php
+msgid "The hosting status still differs from the panel."
 msgstr ""
 
 #: src/modules/Clientfence/Branding.php
@@ -18655,6 +18719,18 @@ msgstr ""
 msgid "The paid renewal could not be applied. The order history has the error."
 msgstr ""
 
+#: src/modules/Servicehosting/Panel/Enhance/Panel.php
+msgid "The panel subscription :id: belongs to another organization or vendor."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Panel.php
+msgid "The panel subscription :id: no longer exists."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Panel.php
+msgid "The panel subscription :id: of :domain: was not found."
+msgstr ""
+
 #: src/modules/Client/TwoFactor.php
 msgid "The password is not correct."
 msgstr ""
@@ -18783,6 +18859,10 @@ msgstr ""
 msgid "The requested page could not be rendered."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
+msgid "The restore has started. It can take a few minutes; check your website afterwards."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
 msgid "The senders of tickets %list% go on the blocked senders list of the email import (Support settings), so their emails no longer open tickets, and the tickets are deleted. This cannot be undone."
 msgstr ""
@@ -18907,8 +18987,16 @@ msgstr ""
 msgid "The web server cannot write :file, which this release replaces or adds (:count such files in all). Fix their owner or permissions and try again; nothing was changed."
 msgstr ""
 
+#: src/library/Server/Manager/Enhance.php
+msgid "The website :domain: has no panel subscription."
+msgstr ""
+
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The website :domain: has no subscription on the :panel: server."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
+msgid "The website files and databases are replaced with this backup. Changes made since then are lost."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -18917,6 +19005,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "The website is not served from your hosting. Point the A record to :ip."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Panel.php
+msgid "The website was not found on this hosting account."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -19195,8 +19287,24 @@ msgstr ""
 msgid "This hosting account does not offer this feature."
 msgstr ""
 
+#: src/modules/Servicehosting/Panel/Enhance/Panel.php
+msgid "This hosting account has no stored panel subscription. Run Sync on the service first."
+msgstr ""
+
+#: src/modules/Servicehosting/Api/Client.php
+msgid "This hosting account is suspended, so backups cannot be restored."
+msgstr ""
+
 #: src/modules/Servicehosting/Api/Client.php src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "This hosting account is suspended, so its email accounts cannot be changed."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/StatusCheck.php
+msgid "This hosting order cannot be checked."
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan cannot be ordered right now. Please contact us."
 msgstr ""
 
 #: src/modules/Formbuilder/Api/Admin.php
