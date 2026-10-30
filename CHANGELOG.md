@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.12 (2026-10-30)
+
+### Changed
+
+- Enhance hosting: each service now keeps its Enhance organization and subscription, and every action (suspend, unsuspend, cancel, plan change, sign-in, mailboxes, DNS) uses them. A changed client email or domain, a website moved to another server, or a plan change in Enhance no longer breaks a service.
+- Enhance hosting: services created before this version are linked to their subscription the first time they are used. A service that is not linked yet must be synced (Sync on the service) before it can be cancelled.
+
+### Fixed
+
+- Enhance hosting: making another domain the main one in the Enhance panel no longer stops the overdue suspension of the service.
+- Enhance hosting: a new order no longer takes over a website the client made in the panel under another service, which let cancelling the new order delete the other service's websites.
+- Enhance hosting: cancelling a service whose subscription is already gone from Enhance now completes.
+- Cancellations: the payment subscription is cancelled before the hosting is removed, so a payment gateway error no longer leaves a deleted account on an open order.
+- Upgrades: an upgrade paid after the service expired is no longer applied in billing without changing the server; staff settle it.
+- Hosting servers: a server that is turned off, or has reached its maximum number of accounts, no longer gets new accounts.
+
 ## 1.0.11 (2026-10-30)
 
 ### Fixed
