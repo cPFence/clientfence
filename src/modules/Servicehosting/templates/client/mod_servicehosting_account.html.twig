@@ -2,7 +2,8 @@
    then three tabs: Overview, its usage, loaded from /hosting/:id/usage
    (mod_servicehosting_account_usage.html.twig) so the page shows at once; Domains, their DNS status,
    loaded from /hosting/:id/domains (mod_servicehosting_account_domains.html.twig) when the tab first
-   opens; and Email (mod_servicehosting_account_email.html.twig). #clientfence-hosting-domains and
+   opens; Email (mod_servicehosting_account_email.html.twig); and Backups, loaded from /hosting/:id/backups
+   (mod_servicehosting_account_backups.html.twig) when the tab first opens. #clientfence-hosting-domains and
    #clientfence-hosting-email open a tab. `account` is one row of client.servicehosting_accounts (the controller checks
    that it is the client's). #}
 {% extends "layout_default.html.twig" %}
@@ -69,6 +70,12 @@
             {{ 'Email'|trans }}
         </button>
     </li>
+    <li class="nav-item" role="presentation">
+        <button type="button" class="nav-link" data-bs-toggle="pill" data-bs-target="#clientfence-hosting-backups" role="tab" aria-controls="clientfence-hosting-backups" aria-selected="false">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#history"/></svg>
+            {{ 'Backups'|trans }}
+        </button>
+    </li>
 </ul>
 
 <div class="tab-content">
@@ -95,6 +102,16 @@
     <div class="tab-pane fade" id="clientfence-hosting-email" role="tabpanel" tabindex="0">
         {% include 'mod_servicehosting_account_email.html.twig' with { 'account': account } %}
     </div>
+    <div class="tab-pane fade" id="clientfence-hosting-backups" role="tabpanel" tabindex="0">
+        <div class="clientfence-hosting-backups-content" data-fragment-url="{{ ('hosting/' ~ account.order_id ~ '/backups')|url }}" aria-live="polite">
+            <div class="card">
+                <div class="card-body d-flex align-items-center gap-2 small text-secondary">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span>{{ 'Loading backups…'|trans }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -104,6 +121,8 @@
         const texts = {{ {
             'unavailable': 'Usage is unavailable right now.'|trans,
             'domains_unavailable': 'The domain check is unavailable right now.'|trans,
+            'backups_unavailable': 'Backups are unavailable right now.'|trans,
+            'restore_started': 'The restore has started. It can take a few minutes; check your website afterwards.'|trans,
             'retry': 'Try again'|trans,
         }|json_encode|raw }};
 
@@ -168,6 +187,33 @@
             if (event.target.closest('[data-domains-refresh]')) {
                 loadDomains('refresh=1');
             }
+        });
+
+        // The backups are listed the first time their tab opens; a restore is sent from its form.
+        const backups = document.querySelector('.clientfence-hosting-backups-content[data-fragment-url]');
+        const loadBackups = panel(backups, backups.dataset.fragmentUrl, texts.backups_unavailable);
+        document.querySelector('[data-bs-target="#clientfence-hosting-backups"]').addEventListener('shown.bs.tab', () => {
+            if (!backups.dataset.loaded) {
+                backups.dataset.loaded = '1';
+                loadBackups();
+            }
+        }, { once: true });
+        backups.addEventListener('submit', (event) => {
+            const form = event.target.closest('[data-backup-restore]');
+            if (!form) {
+                return;
+            }
+            event.preventDefault();
+            const button = form.querySelector('[type="submit"]');
+            button.disabled = true;
+            ClientFence.api.client.post('servicehosting/restore', { order_id: {{ account.order_id }}, ...Object.fromEntries(new FormData(form)) }, () => {
+                form.closest('details').open = false;
+                button.disabled = false;
+                ClientFence.message(texts.restore_started, 'success');
+            }, (error) => {
+                button.disabled = false;
+                ClientFence.message(error?.message || String(error), 'error');
+            });
         });
 
         // A one-time sign-in link to the control panel, opened in a new tab. The tab opens on the

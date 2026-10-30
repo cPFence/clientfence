@@ -184,7 +184,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
     public function linkAccount(Server_Account $account): array
     {
         ['org' => $org, 'website' => $website] = $this->panel()->find($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
-        $subscriptionId = Panel::subscriptionOf($website) ?? throw new Server_Exception('The website :domain: has no panel subscription.', [':domain:' => $account->getDomain()]);
+        $subscriptionId = Panel::subscriptionOf($website) ?? throw new Server_Exception('The website :domain: has no panel subscription.', [':domain:' => $account->getDomain()], Panel::ACCOUNT_NOT_FOUND);
 
         return ['org' => (string) $org['id'], 'subscription' => $subscriptionId];
     }
@@ -271,6 +271,21 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
     public function clientfenceUsage(Server_Account $account): array
     {
         return $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->usage($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+    }
+
+    public function clientfenceSubscriptionState(Server_Account $account): string
+    {
+        return $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->subscriptionState();
+    }
+
+    public function clientfenceBackups(Server_Account $account): array
+    {
+        return $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->backups();
+    }
+
+    public function clientfenceRestore(Server_Account $account, string $websiteId, int $backupId, bool $includeEmails): array
+    {
+        return $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->restore($websiteId, $backupId, $includeEmails);
     }
 
     /**

@@ -116,7 +116,7 @@ final class Users
         ],
         'servicedownloadable' => ['send_file' => 'products'],
         'servicehosting' => [
-            'accounts' => 'products', 'usage' => 'products', 'server' => 'products',
+            'accounts' => 'products', 'usage' => 'products', 'server' => 'products', 'backups' => 'products',
             'domains' => 'products', 'emails' => 'products', 'email_get' => 'products', 'email_settings' => 'products',
             'email_create' => 'manageproducts', 'email_update' => 'manageproducts',
             'email_password' => 'manageproducts', 'email_delete' => 'manageproducts',

@@ -31,6 +31,21 @@
                         </label>
                     </div>
                 </div>
+                {# ClientFence core patch: the account owner may restore the panel's backups (Hosting accounts > Backups). #}
+                <div class="col-lg-6">
+                    <label class="form-label">{{ 'Clients can restore backups'|trans }}</label>
+                    <div class="d-flex flex-wrap gap-3 pt-1">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[client_backup_restore]" value="1"{% if config.client_backup_restore|default('0') == '1' %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[client_backup_restore]" value="0"{% if config.client_backup_restore|default('0') != '1' %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="form-text">{{ 'Enhance only. The account owner can restore, sub-users only see the backups.'|trans }}</div>
+                </div>
             </div>
         </div>
 

@@ -10,7 +10,8 @@ use ClientFence\Mod\Servicehosting\Panel\Panels;
  * Client area pages of hosting accounts, while a hosting panel is on (Panel/Panels.php).
  *
  * /hosting lists the client's hosting accounts, /hosting/:id is one account's page, which loads
- * its usage from /hosting/:id/usage and its domains' DNS status from /hosting/:id/domains.
+ * its usage from /hosting/:id/usage, its domains' DNS status from /hosting/:id/domains and its
+ * backups from /hosting/:id/backups.
  * FOSSBilling routes a path to the module its first segment names, so a core change
  * (\ClientFence\AppClient's page map) gives /hosting to this module. /enhance, the retired Enhance
  * extension's page, goes there too (.htaccess block CLIENTFENCE OLD HOSTING PAGE).
@@ -35,6 +36,7 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/hosting/:id', 'get_account', ['id' => '[0-9]+'], static::class);
         $app->get('/hosting/:id/usage', 'get_account_usage', ['id' => '[0-9]+'], static::class);
         $app->get('/hosting/:id/domains', 'get_account_domains', ['id' => '[0-9]+'], static::class);
+        $app->get('/hosting/:id/backups', 'get_account_backups', ['id' => '[0-9]+'], static::class);
     }
 
     public function get_accounts(\ClientFence\App $app): string
@@ -79,6 +81,17 @@ class Client implements \ClientFence\InjectionAwareInterface
         $this->panelOn();
 
         return $app->render('mod_servicehosting_account_domains', ['order_id' => (int) $id, 'refresh' => $this->di['request']->query->getBoolean('refresh')]);
+    }
+
+    /**
+     * The backups panel of one hosting order (an HTML fragment for the Backups tab). The API checks
+     * that the order is the signed-in client's.
+     */
+    public function get_account_backups(\ClientFence\App $app, $id): string
+    {
+        $this->panelOn();
+
+        return $app->render('mod_servicehosting_account_backups', ['order_id' => (int) $id]);
     }
 
     private function panelOn(): void

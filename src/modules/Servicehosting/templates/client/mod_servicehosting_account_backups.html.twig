@@ -1,0 +1,64 @@
+{# ClientFence, Hosting accounts: the panel's backups of one hosting order, newest first (the last ten
+   per website). Loaded by the account's Backups tab (/hosting/:id/backups). `can_restore` is set
+   only for the account owner, on an active order of a product where staff allow restores; each
+   restore is a form that the account page sends to servicehosting/restore. #}
+
+{% from 'mod_servicehosting_account_usage.html.twig' import size %}
+
+{% set backups = client.servicehosting_backups({ 'order_id': order_id }) %}
+
+{% if backups.error is defined %}
+    <div class="card">
+        <div class="card-body text-secondary">{{ 'Backups are unavailable right now.'|trans }}</div>
+    </div>
+{% else %}
+    {% for site in backups.websites %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2><bdi dir="ltr">{{ site.domain }}</bdi></h2>
+            </div>
+            {% for backup in site.backups %}
+                <div class="clientfence-hosting-site">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <strong>{{ backup.startedAt|format_datetime('medium', 'short') }}</strong>
+                        {% if backup.size %}<span class="text-secondary small" dir="ltr">{{ size(backup.size) }}</span>{% endif %}
+                        {% for part in [
+                            { 'ok': backup.files, 'label': 'Files' },
+                            { 'ok': backup.databases, 'label': 'Databases' },
+                            { 'ok': backup.mailboxes, 'label': 'Email' },
+                        ] %}
+                            <span class="badge {{ part.ok ? 'text-bg-success' : 'text-bg-secondary' }}">{{ part.label|trans }}</span>
+                        {% endfor %}
+                    </div>
+                    {% if backups.can_restore and backup.files %}
+                        <details class="mt-2">
+                            <summary class="btn btn-sm btn-outline-secondary">{{ 'Restore'|trans }}</summary>
+                            <form class="mt-2" data-backup-restore>
+                                <input type="hidden" name="website_id" value="{{ site.id }}">
+                                <input type="hidden" name="backup_id" value="{{ backup.id }}">
+                                <p class="small mb-2">{{ 'The website files and databases are replaced with this backup. Changes made since then are lost.'|trans }}</p>
+                                {% if backup.mailboxes %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="include_emails" value="1" id="restore-emails-{{ backup.id }}">
+                                        <label class="form-check-label" for="restore-emails-{{ backup.id }}">{{ 'Also restore the email'|trans }}</label>
+                                    </div>
+                                {% endif %}
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="confirm" value="1" id="restore-confirm-{{ backup.id }}" required>
+                                    <label class="form-check-label" for="restore-confirm-{{ backup.id }}">{{ 'I understand, restore this backup'|trans }}</label>
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-danger">{{ 'Restore backup'|trans }}</button>
+                            </form>
+                        </details>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="card-body text-secondary">{{ 'No backups yet.'|trans }}</div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body text-secondary">{{ 'No backups yet.'|trans }}</div>
+        </div>
+    {% endfor %}
+{% endif %}

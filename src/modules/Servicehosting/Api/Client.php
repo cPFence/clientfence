@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Servicehosting\Api;
 
+use ClientFence\Mod\Client\Users;
 use ClientFence\Mod\Servicehosting\Panel\Dns;
 use ClientFence\Mod\Servicehosting\Panel\Mailboxes;
 use ClientFence\Mod\Servicehosting\Panel\PanelManager;
@@ -131,6 +132,49 @@ class Client extends \ClientFence\Api\AbstractApi
     public function usage($data): array
     {
         return $this->panelFeature($data, 'usage', static fn (PanelManager $m, \Server_Account $a): array => $m->clientfenceUsage($a));
+    }
+
+    // ClientFence core patch: backup restores require the account owner and the product's current permission.
+    public function backups($data): array
+    {
+        return $this->panelFeature($data, 'backups', function (PanelManager $manager, \Server_Account $account, array $order): array {
+            $config = json_decode((string) $this->getDi()['em']->getConnection()->fetchOne('SELECT config FROM product WHERE id = ?', [$order['product_id']]), true);
+
+            return [
+                'websites' => $manager->clientfenceBackups($account),
+                'can_restore' => $order['status'] === 'active' && Users::context($this->getDi()) === null && (string) ($config['client_backup_restore'] ?? '0') === '1',
+            ];
+        });
+    }
+
+    public function restore($data): bool
+    {
+        $di = $this->getDi();
+        if (Users::context($di) !== null) {
+            throw new InformationException('Only the account owner can restore backups.');
+        }
+        ['order' => $order, 'manager' => $manager, 'account' => $account] = Panels::forClientOrder($di, (int) ($data['order_id'] ?? 0), (int) $this->getIdentity()->id, 'backups');
+        $config = json_decode((string) $di['em']->getConnection()->fetchOne('SELECT config FROM product WHERE id = ?', [$order['product_id']]), true);
+        if ((string) ($config['client_backup_restore'] ?? '0') !== '1') {
+            throw new InformationException('Backup restores are not enabled for this product.');
+        }
+        if ($order['status'] !== 'active') {
+            throw new InformationException('This hosting account is suspended, so backups cannot be restored.');
+        }
+        if (empty($data['confirm'])) {
+            throw new InformationException('Confirm that you want to restore this backup.');
+        }
+
+        try {
+            $restored = $manager->clientfenceRestore($account, (string) ($data['website_id'] ?? ''), (int) ($data['backup_id'] ?? 0), !empty($data['include_emails']));
+        } catch (\Server_Exception $e) {
+            throw new InformationException($e->getMessage());
+        }
+        $message = sprintf('Started restoring the backup from %s for %s on hosting order #%d', $restored['startedAt'], $restored['domain'], $order['id']);
+        Users::activity($di, [(int) $this->getIdentity()->id], $message);
+        $di['logger']->info('Client #%s: %s', (int) $this->getIdentity()->id, $message);
+
+        return true;
     }
 
     /**
@@ -455,9 +499,9 @@ class Client extends \ClientFence\Api\AbstractApi
         $orderId = (int) (is_array($data) ? ($data['order_id'] ?? 0) : 0);
 
         try {
-            ['manager' => $manager, 'account' => $account] = Panels::forClientOrder($this->getDi(), $orderId, (int) $this->getIdentity()->id, $feature);
+            ['order' => $order, 'manager' => $manager, 'account' => $account] = Panels::forClientOrder($this->getDi(), $orderId, (int) $this->getIdentity()->id, $feature);
 
-            return $read($manager, $account);
+            return $read($manager, $account, $order);
         } catch (\ClientFence\InformationException) {
             // Not the client's hosting account, or not on a panel that is on: nothing to log.
             return ['error' => true];

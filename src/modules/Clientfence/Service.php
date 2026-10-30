@@ -644,6 +644,11 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
             $di['logger']->error('ClientFence: the database backup failed: %s', $e->getMessage());
         }
         try {
+            \ClientFence\Mod\Servicehosting\Panel\StatusCheck::runIfDue($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('ClientFence: hosting status checks failed: %s', $e->getMessage());
+        }
+        try {
             Updates::runIfDue($di);
         } catch (\Throwable $e) {
             $di['logger']->error('ClientFence: the release check failed: %s', $e->getMessage());

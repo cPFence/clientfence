@@ -671,6 +671,8 @@ class Service implements InjectionAwareInterface
             $adapter = $this->getServerManager($server);
         }
 
+        // ClientFence core patch: retain auto-link errors so status checks distinguish missing accounts from panel outages.
+        $linkError = null;
         // ClientFence core patch: link older hosting services once so later actions keep their panel subscription.
         // Only an account that was created, and never while creating (a domain match may be another service's) or cancelling.
         if ($link && !empty($model->username) && $adapter instanceof \Server_Manager_Enhance && $model->panel_subscription_id === null) {
@@ -678,6 +680,7 @@ class Service implements InjectionAwareInterface
                 $link = $adapter->linkAccount($server_account);
             } catch (\Server_Exception $e) {
                 $this->di['logger']->warning('Hosting account #%s could not be linked to its panel subscription: %s', $model->id, $e->getMessage());
+                $linkError = $e;
                 $link = null;
             }
             if ($link !== null) {
@@ -688,7 +691,7 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        return [$adapter, $server_account];
+        return [$adapter, $server_account, $linkError];
     }
 
     public function toApiArray(\Model_ServiceHosting $model, $deep = false, $identity = null): array

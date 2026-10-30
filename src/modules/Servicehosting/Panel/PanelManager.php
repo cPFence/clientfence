@@ -42,4 +42,9 @@ interface PanelManager
      * @return array{domains: list<array{domain: string, kind: string}>, web_ips: list<string>, mail_ips: list<string>, mail_host: string}
      */
     public function clientfenceDomains(\Server_Account $account): array;
+
+    public function clientfenceBackups(\Server_Account $account): array;
+
+    /** @return array{domain: string, startedAt: string} */
+    public function clientfenceRestore(\Server_Account $account, string $websiteId, int $backupId, bool $includeEmails): array;
 }

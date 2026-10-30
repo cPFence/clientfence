@@ -17,6 +17,7 @@ namespace ClientFence\Mod\Servicehosting\Panel\Enhance;
 final class Panel
 {
     public const OWNER = 'Owner';
+    public const ACCOUNT_NOT_FOUND = 2002;
 
     // Website kinds clients see; the control panel, webmail and hostname sites are Enhance's own.
     public const CLIENT_SITE_KINDS = ['normal', 'staging'];
@@ -181,7 +182,62 @@ final class Panel
             }
         }
 
-        throw new \Server_Exception('No website for :domain: belonging to :email: was found on the :panel: server.', [':domain:' => $domain, ':email:' => $clientEmail, ':panel:' => Api::PANEL]);
+        throw new \Server_Exception('No website for :domain: belonging to :email: was found on the :panel: server.', [':domain:' => $domain, ':email:' => $clientEmail, ':panel:' => Api::PANEL], self::ACCOUNT_NOT_FOUND);
+    }
+
+    public function subscriptionState(): string
+    {
+        $subscription = $this->resolveSubscription(true);
+
+        return $subscription === null ? 'gone' : (empty($subscription['suspendedBy']) ? 'active' : 'suspended');
+    }
+
+    /** @return list<array{id: string, domain: string, backups: list<array<string, mixed>>}> */
+    public function backups(): array
+    {
+        $this->resolveSubscription();
+        $websites = [];
+        foreach ($this->api->each("/orgs/{$this->orgId}/websites", ['subscriptionId' => $this->subscriptionId]) as $website) {
+            if (($website['status'] ?? '') === 'deleted') {
+                continue;
+            }
+            $answer = $this->api->get("/orgs/{$this->orgId}/websites/" . rawurlencode((string) $website['id']) . '/backups');
+            $backups = $answer['items'];
+            usort($backups, static fn (array $a, array $b): int => strtotime($b['startedAt']) <=> strtotime($a['startedAt']));
+            $websites[] = [
+                'id' => (string) $website['id'],
+                'domain' => (string) $website['domain']['domain'],
+                'backups' => array_map(static fn (array $backup): array => [
+                    'id' => (int) $backup['id'],
+                    'startedAt' => $backup['startedAt'],
+                    'finishedAt' => $backup['finishedAt'] ?? null,
+                    'size' => $backup['size'] ?? null,
+                    'files' => ($backup['homeDirStatus'] ?? '') === 'successful',
+                    'databases' => ($backup['mysqlDbsStatus'] ?? '') === 'successful',
+                    'mailboxes' => ($backup['emailsStatus'] ?? '') === 'successful',
+                ], array_slice($backups, 0, 10)),
+            ];
+        }
+
+        return $websites;
+    }
+
+    /** @return array{domain: string, startedAt: string} */
+    public function restore(string $websiteId, int $backupId, bool $includeEmails): array
+    {
+        $this->resolveSubscription();
+        $path = "/orgs/{$this->orgId}/websites/" . rawurlencode($websiteId);
+        $website = $this->api->find($path);
+        if ($website === null || ($website['status'] ?? '') === 'deleted' || self::subscriptionOf($website) !== $this->subscriptionId) {
+            throw new \Server_Exception('The website was not found on this hosting account.');
+        }
+        $backup = $this->api->find($path . '/backups/' . $backupId);
+        if ($backup === null || ($backup['homeDirStatus'] ?? '') !== 'successful') {
+            throw new \Server_Exception('Choose a backup with a successful files backup for this website.');
+        }
+        $this->api->put($path . '/backups/' . $backupId, ['restoreFiles' => true, 'restoreAllEmails' => $includeEmails]);
+
+        return ['domain' => (string) $website['domain']['domain'], 'startedAt' => (string) $backup['startedAt']];
     }
 
     /** @return ($allowMissing is true ? array|null : array) */

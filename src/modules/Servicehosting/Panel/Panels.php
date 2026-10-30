@@ -27,7 +27,7 @@ final class Panels
             'manager' => 'Enhance',
             'class' => 'Server_Manager_Enhance',
             'setting' => 'panel_enhance',
-            'features' => ['usage', 'server', 'email', 'dns'],
+            'features' => ['usage', 'server', 'email', 'dns', 'backups'],
             'options' => ['enhance_global_webmail'],
         ],
     ];
@@ -115,7 +115,7 @@ final class Panels
     public static function forClientOrder(\Pimple\Container $di, int $orderId, int $clientId, string $feature): array
     {
         $order = $di['em']->getConnection()->fetchAssociative(
-            'SELECT id, client_id, status, service_id, service_type, title FROM client_order WHERE id = ? AND client_id = ? AND service_type = ?',
+            'SELECT id, client_id, product_id, status, service_id, service_type, title FROM client_order WHERE id = ? AND client_id = ? AND service_type = ?',
             [$orderId, $clientId, 'hosting']
         );
         if ($order === false || !in_array($order['status'], self::HOSTING_STATUSES, true) || empty($order['service_id'])) {

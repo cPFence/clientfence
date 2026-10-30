@@ -1,5 +1,9 @@
 [
     {
+        "file": "modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig",
+        "done": "ClientFence core patch: the account owner may restore the panel's backups"
+    },
+    {
         "file": "modules/Servicehosting/Service.php",
         "done": "ClientFence core patch: link older hosting services once so later actions keep their panel subscription."
     },
@@ -3338,5 +3342,13 @@
     {
         "file": "modules/Invoice/Api/Client.php",
         "done": "ClientFence core patch: an upgrade waiting for this lock may have changed the renewal price and cycle."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: retain auto-link errors so status checks distinguish missing accounts from panel outages."
+    },
+    {
+        "file": "modules/Servicehosting/Api/Client.php",
+        "done": "ClientFence core patch: backup restores require the account owner and the product's current permission."
     }
 ]
