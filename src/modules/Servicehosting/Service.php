@@ -187,6 +187,13 @@ class Service implements InjectionAwareInterface
 
         $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $c['server_id'], 'Server from order configuration was not found');
 
+        // ClientFence core patch: a disabled or full server takes no new accounts (cancelled ones do not count; an unset flag is active).
+        if ((string) $server->active === '0'
+            || ((int) $server->max_accounts > 0 && (int) $this->di['dbal']->fetchOne("SELECT COUNT(*) FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id WHERE sh.service_hosting_server_id = ? AND co.status <> 'canceled'", [$server->id]) >= (int) $server->max_accounts)
+        ) {
+            throw new InformationException('This hosting plan cannot be ordered right now. Please contact us.');
+        }
+
         $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $c['hosting_plan_id'], 'Hosting plan from order configuration was not found');
 
         $model = $this->di['db']->dispense('ServiceHosting');
@@ -256,8 +263,11 @@ class Service implements InjectionAwareInterface
 
         // If the order's configuration does not specify that the service should be imported, create an account for the service on the server
         if (!$alreadyProvisioned && (!isset($config['import']) || !$config['import'])) {
-            [$adapter, $account] = $this->_getAM($model);
+            [$adapter, $account] = $this->_getAM($model, null, false);
             $adapter->createAccount($account);
+            // ClientFence core patch: persist the created subscription so domain changes cannot redirect account actions.
+            $model->panel_org_id = $account->getPanelOrgId();
+            $model->panel_subscription_id = $account->getPanelSubscriptionId();
 
             // ClientFence core patch: Enhance logins are email addresses, so the generated username
             // (e.g. "clientfence1") was shown to the client but signs in nowhere. Store the login the
@@ -373,7 +383,7 @@ class Service implements InjectionAwareInterface
         $neverCreated = empty($model->username)
             && in_array($order->status, [\Model_ClientOrder::STATUS_PENDING_SETUP, \Model_ClientOrder::STATUS_FAILED_SETUP], true);
         if (!$neverCreated) {
-            [$adapter, $account] = $this->_getAM($model);
+            [$adapter, $account] = $this->_getAM($model, null, false);
             $adapter->cancelAccount($account);
         }
 
@@ -400,8 +410,10 @@ class Service implements InjectionAwareInterface
         $model->pass = $pass;
 
         // Retrieve the adapter and account, then create the account on the server
-        [$adapter, $account] = $this->_getAM($model);
+        [$adapter, $account] = $this->_getAM($model, null, false);
         $adapter->createAccount($account);
+        $model->panel_org_id = $account->getPanelOrgId();
+        $model->panel_subscription_id = $account->getPanelSubscriptionId();
 
         // Update the service's password to a placeholder value for security reasons
         $model->pass = self::PASSWORD_PLACEHOLDER;
@@ -602,7 +614,7 @@ class Service implements InjectionAwareInterface
         return $this->getServerManager($server);
     }
 
-    public function _getAM(\RedBeanPHP\SimpleModel $model, ?\Model_ServiceHostingHp $hp = null): array
+    public function _getAM(\RedBeanPHP\SimpleModel $model, ?\Model_ServiceHostingHp $hp = null, bool $link = true): array
     {
         if (!$hp instanceof \Model_ServiceHostingHp) {
             $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $model->service_hosting_hp_id, 'Hosting plan not found');
@@ -639,6 +651,8 @@ class Service implements InjectionAwareInterface
         $server_account
             ->setClient($server_client)
             ->setPackage($package)
+            ->setPanelOrgId($model->panel_org_id)
+            ->setPanelSubscriptionId($model->panel_subscription_id === null ? null : (int) $model->panel_subscription_id)
             ->setUsername($model->username)
             ->setReseller(Tools::normalizeBoolean($model->reseller))
             ->setDomain($model->sld . $model->tld)
@@ -655,6 +669,23 @@ class Service implements InjectionAwareInterface
             $adapter = $this->getServerManagerWithLog($server, $order);
         } else {
             $adapter = $this->getServerManager($server);
+        }
+
+        // ClientFence core patch: link older hosting services once so later actions keep their panel subscription.
+        // Only an account that was created, and never while creating (a domain match may be another service's) or cancelling.
+        if ($link && !empty($model->username) && $adapter instanceof \Server_Manager_Enhance && $model->panel_subscription_id === null) {
+            try {
+                $link = $adapter->linkAccount($server_account);
+            } catch (\Server_Exception $e) {
+                $this->di['logger']->warning('Hosting account #%s could not be linked to its panel subscription: %s', $model->id, $e->getMessage());
+                $link = null;
+            }
+            if ($link !== null) {
+                $model->panel_org_id = $link['org'];
+                $model->panel_subscription_id = $link['subscription'];
+                $server_account->setPanelOrgId($link['org'])->setPanelSubscriptionId($link['subscription']);
+                $this->di['db']->store($model);
+            }
         }
 
         return [$adapter, $server_account];

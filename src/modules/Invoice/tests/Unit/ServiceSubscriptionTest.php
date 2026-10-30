@@ -229,9 +229,10 @@ test('updates subscription status from a gateway without calling the adapter', f
         ->and($subscriptionModel->status)->toBe('canceled');
 });
 
-test('cancels subscriptions linked to an order', function (): void {
+test('cancels subscriptions linked to an order and skips them on retry', function (): void {
     $subscriptionModel = new Model_Subscription();
     $subscriptionModel->loadBean(new Tests\Helpers\DummyBean());
+    $subscriptionModel->status = 'active';
 
     $orderModel = new Model_ClientOrder();
     $orderModel->loadBean(new Tests\Helpers\DummyBean());
@@ -239,7 +240,7 @@ test('cancels subscriptions linked to an order', function (): void {
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('getExistingModelById')
-        ->once()
+        ->twice()
         ->with('Subscription', 7, 'Subscription not found')
         ->andReturn($subscriptionModel);
 
@@ -250,7 +251,9 @@ test('cancels subscriptions linked to an order', function (): void {
     $di['dbal'] = createSubscriptionDbal();
     $service->setDi($di);
 
-    $service->cancelForOrder($orderModel);
+    expect($service->cancelForOrder($orderModel))->toBe(1);
+    $subscriptionModel->status = 'canceled';
+    expect($service->cancelForOrder($orderModel))->toBe(0);
 });
 
 test('finalizes a scheduled cancellation by canceling its order and service', function (): void {

@@ -1960,11 +1960,12 @@ class Service implements InjectionAwareInterface
     {
         $orderId = $this->orderId($order);
         $this->assertOrderCanBeCanceled($order);
-        $this->beginCancellation($order, $skipEvent);
 
+        // ClientFence core patch: a gateway failure must leave the hosting available for cancellation retries.
         $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
         $subscriptionService->cancelForOrder($order instanceof Order ? $this->getLegacyOrder($order) : $order);
 
+        $this->beginCancellation($order, $skipEvent);
         $this->completeCancellation($order, $reason, $skipEvent);
 
         $productService = $this->di['mod_service']('Product');

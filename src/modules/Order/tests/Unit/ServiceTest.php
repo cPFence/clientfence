@@ -2832,7 +2832,7 @@ test('deleteFromOrder cancels the open invoices of an active order', function ()
     expect($serviceMock->deleteFromOrder($order))->toBeTrue();
 });
 
-test('cancelFromOrder cancels linked subscriptions', function (): void {
+test('cancelFromOrder cancels linked subscriptions before the service action', function (): void {
     $clientOrderModel = createEntity(Order::class);
     $clientOrderModel->id = 10;
     $clientOrderModel->status = Order::STATUS_ACTIVE;
@@ -2897,7 +2897,7 @@ test('cancelFromOrder cancels linked subscriptions', function (): void {
 
     expect($serviceMock->cancelFromOrder($clientOrderModel, skipEvent: true))->toBeTrue()
         ->and($clientOrderModel->status)->toBe(Order::STATUS_CANCELED)
-        ->and($calls)->toBe(['service', 'subscriptions']);
+        ->and($calls)->toBe(['subscriptions', 'service']);
 });
 
 test('cancelFromOrder cancels the addons of a RedBean order too (staff Retry)', function (): void {
@@ -2989,15 +2989,17 @@ test('scheduleCancellationFromOrder does not mark the order when no subscription
         ->toThrow(ClientFence\InformationException::class, 'No active gateway subscription is linked to this order.');
 });
 
-test('cancelFromOrder does not cancel subscriptions when service cancellation fails', function (): void {
+test('cancelFromOrder keeps the order open when the service action fails after subscription cancellation', function (): void {
     $clientOrderModel = createEntity(Order::class);
     $clientOrderModel->status = Order::STATUS_ACTIVE;
+    $legacyOrder = orderServiceCreateLegacyOrderModel(0);
 
     $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
-    $subscriptionService->shouldNotReceive('cancelForOrder');
+    $subscriptionService->shouldReceive('cancelForOrder')->once()->with($legacyOrder)->andReturn(1);
 
     $dbMock = Mockery::mock(\ClientFence\Database::class);
     $dbMock->shouldNotReceive('store');
+    $dbMock->shouldReceive('getExistingModelById')->once()->with('ClientOrder', 0)->andReturn($legacyOrder);
 
     $di = container();
     $di['db'] = $dbMock;
@@ -3038,7 +3040,7 @@ test('cancelFromOrder remains retryable when subscription cancellation fails', f
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldAllowMockingProtectedMethods();
-    $serviceMock->shouldReceive('_callOnService')->once();
+    $serviceMock->shouldNotReceive('_callOnService');
     $serviceMock->setDi($di);
 
     expect(fn () => $serviceMock->cancelFromOrder($clientOrderModel, skipEvent: true))

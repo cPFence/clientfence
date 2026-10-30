@@ -23,6 +23,33 @@ class Server_Account
     private ?string $ns_3 = null;
     private ?string $ns_4 = null;
     private ?string $note = null;
+    // ClientFence core patch: a stored panel subscription keeps lifecycle actions on their hosting service.
+    private ?string $panelOrgId = null;
+    private ?int $panelSubscriptionId = null;
+
+    public function getPanelOrgId(): ?string
+    {
+        return $this->panelOrgId;
+    }
+
+    public function setPanelOrgId(?string $id): static
+    {
+        $this->panelOrgId = $id;
+
+        return $this;
+    }
+
+    public function getPanelSubscriptionId(): ?int
+    {
+        return $this->panelSubscriptionId;
+    }
+
+    public function setPanelSubscriptionId(?int $id): static
+    {
+        $this->panelSubscriptionId = $id;
+
+        return $this;
+    }
 
     /**
      * Get the username associated with the Server_Account instance.

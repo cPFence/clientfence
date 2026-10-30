@@ -922,6 +922,20 @@ test('a renewal before the upgrade invoice is paid fails the upgrade for staff, 
         ->and($db->fetchOne('SELECT attempts FROM ' . ActionFailures::TABLE))->toBe(2);
 });
 
+test('a hosting upgrade paid at expiry fails for staff without changing the plan', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $result = Upgrades::request($di, upgradesOrder($di, 5), 21, '1Y', UPGRADES_NOW);
+    upgradesPay($db, $result['id']);
+
+    Upgrades::onPaid($di, $result['id'], '2027-01-01 00:00:00');
+
+    expect($db->fetchOne('SELECT product_id FROM client_order WHERE id = 5'))->toBe(20)
+        ->and($di['db']->planChanges)->toBe([])
+        ->and($db->fetchAssociative('SELECT status, error FROM ' . Upgrades::TABLE))->toBe(['status' => 'failed', 'error' => 'The service changed after this upgrade was priced (it has expired). Change it by hand and settle the amount with the client.'])
+        ->and($db->fetchAssociative('SELECT client_order_id, action, status FROM ' . ActionFailures::TABLE))->toBe(['client_order_id' => 5, 'action' => 'upgrade', 'status' => 'open']);
+});
+
 test('a hosting upgrade moves the panel plan; a panel failure is retried by staff', function (): void {
     $db = upgradesDb();
     $di = upgradesContainer($db, [], ['panel' => 'Panel offline']);

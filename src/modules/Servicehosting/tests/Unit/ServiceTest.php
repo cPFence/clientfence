@@ -179,6 +179,37 @@ test('action create', function (): void {
     expect($servhostingModel->tld)->toBe($confArr['tld']);
 });
 
+test('action create refuses an inactive or full server', function (int $active, int $maxAccounts): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+    $server->id = 1;
+    $server->active = $active;
+    $server->max_accounts = $maxAccounts;
+
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->shouldReceive('getConfig')->once()->with($order)->andReturn(['server_id' => 1, 'hosting_plan_id' => 2, 'sld' => 'site', 'tld' => 'test']);
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getCell')->once()->andReturn(0);
+    $db->shouldReceive('getExistingModelById')->once()->with('ServiceHostingServer', 1, Mockery::any())->andReturn($server);
+    $db->shouldNotReceive('dispense');
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->times($active)->with("SELECT COUNT(*) FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id WHERE sh.service_hosting_server_id = ? AND co.status <> 'canceled'", [1])->andReturn(2);
+
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->action_create($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan cannot be ordered right now. Please contact us.');
+})->with([
+    'inactive server' => [0, 0],
+    'full server' => [1, 2],
+]);
+
 test('action renew', function (): void {
     $service = new Service();
     $orderModel = new Model_ClientOrder();
@@ -246,7 +277,7 @@ test('action renew order without active service', function (): void {
         ->toThrow(ClientFence\Exception::class, sprintf('Order %d has no active service', $orderModel->id));
 });
 
-test('action activate creates the account when it has not been provisioned yet', function (): void {
+test('action activate stores the created panel subscription id', function (): void {
     $orderModel = new Model_ClientOrder();
     $orderModel->loadBean(new Tests\Helpers\DummyBean());
 
@@ -275,7 +306,11 @@ test('action activate creates the account when it has not been provisioned yet',
     $serverManagerMock->shouldReceive('generateUsername')->atLeast()->once()->with('example.com')->andReturn('example');
 
     $adapterMock = Mockery::mock('\Server_Manager_Custom');
-    $adapterMock->shouldReceive('createAccount')->once();
+    $adapterMock->shouldReceive('createAccount')->once()->andReturnUsing(function (Server_Account $account): bool {
+        $account->setPanelOrgId('B')->setPanelSubscriptionId(7);
+
+        return true;
+    });
 
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('getServerManager')->atLeast()->once()->andReturn($serverManagerMock);
@@ -285,7 +320,9 @@ test('action activate creates the account when it has not been provisioned yet',
     $result = $serviceMock->action_activate($orderModel);
 
     expect($result)->toBe(['username' => 'example'])
-        ->and($model->username)->toBe('example');
+        ->and($model->username)->toBe('example')
+        ->and($model->panel_subscription_id)->toBe(7)
+        ->and($model->panel_org_id)->toBe('B');
 });
 
 test('action activate does not recreate an account that was already provisioned', function (): void {
@@ -1757,6 +1794,8 @@ test('_getAM trusts the client email by confirmation or a stored hosting login o
     $model->loadBean(new Tests\Helpers\DummyBean());
     $model->id = 4;
     $model->client_id = 9;
+    $model->panel_subscription_id = '7';
+    $model->panel_org_id = 'B';
 
     $db = Mockery::mock('ClientFence\Database');
     $db->shouldReceive('getExistingModelById')->andReturn($hp, $server, $client);
@@ -1775,12 +1814,80 @@ test('_getAM trusts the client email by confirmation or a stored hosting login o
     $service->setDi($di);
 
     [, $account] = $service->_getAM($model);
-    expect($account->getClient()->isEmailTrusted())->toBe($trusted);
+    expect($account->getClient()->isEmailTrusted())->toBe($trusted)
+        ->and($account->getPanelSubscriptionId())->toBe(7)
+        ->and($account->getPanelOrgId())->toBe('B');
 })->with([
     'confirmed' => [1, 0, true],
     'a stored login' => [0, 1, true],
     'neither' => [0, 0, false],
 ]);
+
+test('_getAM persists an automatic panel link and leaves failed lookups unlinked', function (bool $found): void {
+    $hp = new Model_ServiceHostingHp();
+    $hp->loadBean(new Tests\Helpers\DummyBean());
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->email = 'b@example.test';
+    $client->email_approved = 1;
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->id = 4;
+    $model->client_id = 9;
+    $model->sld = 'site';
+    $model->tld = '.example';
+    $model->username = 'b@example.test';
+
+    // Mockery cannot mock the manager (its `never` methods), so a stand-in answers the lookup.
+    $adapter = new class($found) extends Server_Manager_Enhance {
+        public function __construct(private readonly bool $found)
+        {
+        }
+
+        public function linkAccount(Server_Account $account): array
+        {
+            expect($account->getDomain())->toBe('site.example');
+
+            return $this->found ? ['org' => 'B', 'subscription' => 7] : throw new Server_Exception('Panel unavailable');
+        }
+    };
+    $logger = new class {
+        public array $warnings = [];
+
+        public function warning(string $message, mixed ...$args): void
+        {
+            $this->warnings[] = vsprintf($message, $args);
+        }
+    };
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getExistingModelById')->andReturn($hp, $server, $client);
+    if ($found) {
+        $db->shouldReceive('store')->once()->with(Mockery::on(fn ($m): bool => $m === $model && $m->panel_org_id === 'B' && $m->panel_subscription_id === 7));
+    } else {
+        $db->shouldNotReceive('store');
+    }
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->shouldReceive('getServiceOrder')->andReturn(null);
+    $di = container();
+    $di['db'] = $db;
+    $di['logger'] = $logger;
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getServerPackage')->andReturn(new Server_Package());
+    $service->shouldReceive('getServerManager')->andReturn($adapter);
+    $service->setDi($di);
+
+    [, $account] = $service->_getAM($model);
+
+    expect($logger->warnings)->toBe($found ? [] : ['Hosting account #4 could not be linked to its panel subscription: Panel unavailable'])
+        ->and($model->panel_org_id)->toBe($found ? 'B' : null)
+        ->and($model->panel_subscription_id)->toBe($found ? 7 : null)
+        ->and($account->getPanelOrgId())->toBe($found ? 'B' : null)
+        ->and($account->getPanelSubscriptionId())->toBe($found ? 7 : null);
+})->with(['linked' => true, 'lookup failed' => false]);
 
 test('get manager urls logs adapter failures and returns unavailable links', function (Throwable $error): void {
     $hostingServerModel = new Model_ServiceHostingServer();

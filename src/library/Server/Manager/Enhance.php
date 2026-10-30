@@ -135,7 +135,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
         }
 
         try {
-            return $this->panel()->signInUrl($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+            return $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->signInUrl($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
         } catch (Server_Exception $e) {
             $this->getLog()?->error('No control panel sign-in link for ' . $account->getDomain() . ': ' . $e->getMessage());
 
@@ -155,13 +155,13 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
 
     public function createAccount(Server_Account $account): bool
     {
-        $panel = $this->panel();
+        $panel = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId());
         $email = $this->clientEmail($account);
         $client = $account->getClient();
         $fullName = trim((string) $client?->getFullName());
         $package = $account->getPackage();
 
-        $panel->create(
+        $link = $panel->create(
             $email,
             trim((string) $client?->getCompany()) ?: ($fullName ?: $email),
             $fullName ?: $email,
@@ -171,6 +171,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
             (string) $package->getName(),
             $client?->isEmailTrusted() ?? false,
         );
+        $account->setPanelOrgId($link['org'])->setPanelSubscriptionId($link['subscription']);
         // Per hosting plan (custom value send_setup_email): Enhance emails the client a "set your password" link.
         if (ClientFence\Tools::normalizeBoolean($package->getCustomValue('send_setup_email'), false)) {
             $panel->sendPasswordSetup($email);
@@ -179,9 +180,18 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
         return true;
     }
 
+    /** @return array{org: string, subscription: int} */
+    public function linkAccount(Server_Account $account): array
+    {
+        ['org' => $org, 'website' => $website] = $this->panel()->find($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+        $subscriptionId = Panel::subscriptionOf($website) ?? throw new Server_Exception('The website :domain: has no panel subscription.', [':domain:' => $account->getDomain()]);
+
+        return ['org' => (string) $org['id'], 'subscription' => $subscriptionId];
+    }
+
     public function synchronizeAccount(Server_Account $account): Server_Account
     {
-        $found = $this->panel()->sync($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+        $found = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->sync($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
         $synced = clone $account;
         $synced->setUsername($found['username']);
         if ($found['ip'] !== null) {
@@ -193,28 +203,28 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
 
     public function suspendAccount(Server_Account $account): bool
     {
-        $this->panel()->setSuspended($this->clientEmail($account), (string) $account->getDomain(), true, $this->loginEmail($account));
+        $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->setSuspended($this->clientEmail($account), (string) $account->getDomain(), true, $this->loginEmail($account));
 
         return true;
     }
 
     public function unsuspendAccount(Server_Account $account): bool
     {
-        $this->panel()->setSuspended($this->clientEmail($account), (string) $account->getDomain(), false, $this->loginEmail($account));
+        $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->setSuspended($this->clientEmail($account), (string) $account->getDomain(), false, $this->loginEmail($account));
 
         return true;
     }
 
     public function cancelAccount(Server_Account $account): bool
     {
-        $this->panel()->cancel($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+        $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->cancel($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
 
         return true;
     }
 
     public function changeAccountPackage(Server_Account $account, Server_Package $package): bool
     {
-        $panel = $this->panel();
+        $panel = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId());
         $panel->changePlan($this->clientEmail($account), (string) $account->getDomain(), $panel->planId($package->getCustomValue('plan_id'), (string) $package->getName()), $this->loginEmail($account));
 
         return true;
@@ -222,7 +232,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
 
     public function changeAccountPassword(Server_Account $account, string $newPassword): bool
     {
-        $this->panel()->changePassword($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account), $newPassword);
+        $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->changePassword($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account), $newPassword);
 
         return true;
     }
@@ -240,7 +250,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
                 throw new Server_Exception('Domain changes are made by our staff. Please open a support ticket.');
             }
         }
-        $this->panel()->changeDomain($this->clientEmail($account), (string) $account->getDomain(), $newDomain, $this->loginEmail($account));
+        $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->changeDomain($this->clientEmail($account), (string) $account->getDomain(), $newDomain, $this->loginEmail($account));
 
         return true;
     }
@@ -260,7 +270,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
      */
     public function clientfenceUsage(Server_Account $account): array
     {
-        return $this->panel()->usage($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+        return $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->usage($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
     }
 
     /**
@@ -271,7 +281,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
      */
     public function clientfenceServer(Server_Account $account): array
     {
-        return $this->panel()->server($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+        return $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->server($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
     }
 
     /**
@@ -279,7 +289,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
      */
     public function clientfenceMailboxes(Server_Account $account): Mailboxes
     {
-        $panel = $this->panel();
+        $panel = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId());
         ['org' => $org, 'website' => $website] = $panel->find($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
         // The full record names the website's mail server.
         $full = $panel->api()->get('/orgs/' . rawurlencode((string) $org['id']) . '/websites/' . rawurlencode((string) $website['id']));
@@ -307,7 +317,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
      */
     public function clientfenceDomains(Server_Account $account): array
     {
-        $panel = $this->panel();
+        $panel = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId());
         ['org' => $org, 'website' => $website] = $panel->find($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
 
         return $panel->dnsSite((string) $org['id'], (string) $website['id']);

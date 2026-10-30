@@ -32,13 +32,40 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(5)
+    expect($patches)->toHaveCount(6)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
         ->and($patches[117][1])->toBe('patch117')
         ->and($patches)->toHaveKey(118)
-        ->and($patches[118][1])->toBe('patch118');
+        ->and($patches[118][1])->toBe('patch118')
+        ->and($patches)->toHaveKey(119)
+        ->and($patches[119][1])->toBe('patch119');
+});
+
+test('hosting subscription patch adds both panel identifiers for existing installs', function (): void {
+    $columns = Mockery::mock(PDOStatement::class);
+    $columns->shouldReceive('execute')->twice()->with([])->andReturnTrue();
+    $columns->shouldReceive('fetchAll')->twice()->with(PDO::FETCH_ASSOC)->andReturn([]);
+
+    $addColumn = Mockery::mock(PDOStatement::class);
+    $addColumn->shouldReceive('execute')->twice()->with([])->andReturnTrue();
+
+    $pdo = Mockery::mock(PDO::class);
+    $pdo->shouldReceive('prepare')->twice()->with('SHOW COLUMNS FROM `service_hosting`')->andReturn($columns);
+    $pdo->expects('prepare')
+        ->with('ALTER TABLE `service_hosting` ADD COLUMN `panel_org_id` varchar(64) DEFAULT NULL AFTER `service_hosting_hp_id`')
+        ->andReturn($addColumn);
+    $pdo->expects('prepare')
+        ->with('ALTER TABLE `service_hosting` ADD COLUMN `panel_subscription_id` bigint(20) DEFAULT NULL AFTER `panel_org_id`')
+        ->andReturn($addColumn);
+
+    $di = new Pimple\Container();
+    $di['pdo'] = $pdo;
+
+    $patcher = new UpdatePatcher();
+    $patcher->setDi($di);
+    (new ReflectionMethod($patcher, 'patch119'))->invoke($patcher);
 });
 
 test('tld periods patch adds the column for existing installs', function (): void {

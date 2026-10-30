@@ -479,10 +479,14 @@ final class Upgrades
                 if ($changed === null && self::refunded($db, $orderId)) {
                     $changed = 'an invoice of it was refunded';
                 }
+                $now ??= date('Y-m-d H:i:s');
+                if ($changed === null && (string) $row['expires_at'] !== '' && strtotime((string) $row['expires_at']) <= strtotime($now)) {
+                    $changed = 'it has expired';
+                }
                 // ClientFence (QA r10 D-05, D-07): priced for the days left on the day it was asked; on a later day
                 // (an invoice paid late, a failed change retried) it must not ask less or credit more than is due now.
                 if ($changed === null) {
-                    $changed = self::repriced($up, $now ?? date('Y-m-d H:i:s'));
+                    $changed = self::repriced($up, $now);
                 }
                 if ($changed !== null) {
                     throw new InformationException('The service changed after this ' . $up['kind'] . ' was priced (' . $changed . '). Change it by hand and settle the amount with the client.');

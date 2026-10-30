@@ -556,6 +556,7 @@ class UpdatePatcher implements InjectionAwareInterface
             // schema sync): decode rows written while service-layer code
             // HTML-escaped values before storing them.
             118 => 'patch118',
+            119 => 'patch119',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2576,6 +2577,17 @@ class UpdatePatcher implements InjectionAwareInterface
 
         if ($repaired['invoices'] > 0 || $repaired['notifications'] > 0) {
             $this->di['logger']->setChannel('update')->info('Decoded legacy HTML entities in stored data', $repaired);
+        }
+    }
+
+    private function patch119(): void
+    {
+        // ClientFence core patch: existing hosting services need a stable panel subscription reference.
+        if (!$this->tableHasColumn('service_hosting', 'panel_org_id')) {
+            $this->executeSql('ALTER TABLE `service_hosting` ADD COLUMN `panel_org_id` varchar(64) DEFAULT NULL AFTER `service_hosting_hp_id`');
+        }
+        if (!$this->tableHasColumn('service_hosting', 'panel_subscription_id')) {
+            $this->executeSql('ALTER TABLE `service_hosting` ADD COLUMN `panel_subscription_id` bigint(20) DEFAULT NULL AFTER `panel_org_id`');
         }
     }
 

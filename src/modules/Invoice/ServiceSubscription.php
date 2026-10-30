@@ -267,6 +267,10 @@ class ServiceSubscription implements InjectionAwareInterface
     {
         $canceledSubscriptions = 0;
         foreach ($this->getSubscriptionsForOrder($order) as $subscription) {
+            // ClientFence core patch: order cancellation retries must not cancel the same gateway subscription twice.
+            if ($subscription->status === 'canceled') {
+                continue;
+            }
             $this->cancel($subscription);
             ++$canceledSubscriptions;
         }

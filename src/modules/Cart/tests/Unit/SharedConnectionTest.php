@@ -142,7 +142,7 @@ test('free hosting checkout provisions once through the legacy service', functio
     $plan->name = 'test';
     $planId = $this->db->store($plan);
     // Create the legacy table before checkout, as on a real installation.
-    $this->connection->executeStatement('CREATE TABLE service_hosting (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, service_hosting_server_id INTEGER, service_hosting_hp_id INTEGER, sld TEXT, tld TEXT, ip TEXT, reseller INTEGER, username TEXT, pass TEXT, created_at TEXT, updated_at TEXT)');
+    $this->connection->executeStatement('CREATE TABLE service_hosting (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, service_hosting_server_id INTEGER, service_hosting_hp_id INTEGER, panel_org_id TEXT, panel_subscription_id INTEGER, sld TEXT, tld TEXT, ip TEXT, reseller INTEGER, username TEXT, pass TEXT, created_at TEXT, updated_at TEXT)');
     Facade::freeze(true);
 
     $product = new Product();

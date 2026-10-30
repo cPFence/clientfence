@@ -47,6 +47,9 @@ final class Panel
     // Enhance's password rule for logins.
     public const PASSWORD_RULE = 'The password must be at least 10 characters long and contain lowercase and uppercase letters, numbers and special characters.';
 
+    private ?string $orgId = null;
+    private ?int $subscriptionId = null;
+
     public function __construct(
         private readonly Api $api,
         private readonly string $masterOrg,
@@ -66,6 +69,15 @@ final class Panel
     public function api(): Api
     {
         return $this->api;
+    }
+
+    public function forAccount(?string $orgId, ?int $subscriptionId): self
+    {
+        $panel = clone $this;
+        $panel->orgId = $orgId;
+        $panel->subscriptionId = $subscriptionId;
+
+        return $panel;
     }
 
     public function testConnection(): bool
@@ -133,6 +145,23 @@ final class Panel
      */
     public function find(string $clientEmail, string $domain, string $loginEmail = ''): array
     {
+        if ($this->subscriptionId !== null) {
+            $this->resolveSubscription();
+            $first = null;
+            foreach ($this->api->each("/orgs/{$this->orgId}/websites", ['subscriptionId' => $this->subscriptionId]) as $website) {
+                if (($website['status'] ?? '') === 'deleted') {
+                    continue;
+                }
+                $found = ['org' => ['id' => $this->orgId], 'website' => $website];
+                if (strcasecmp((string) ($website['domain']['domain'] ?? ''), $domain) === 0) {
+                    return $found;
+                }
+                $first ??= $found;
+            }
+
+            return $first ?? throw new \Server_Exception('The panel subscription :id: of :domain: was not found.', [':id:' => $this->subscriptionId, ':domain:' => $domain]);
+        }
+
         foreach ($this->customerOrgs($clientEmail) as $org) {
             $website = $this->websiteIn((string) $org['id'], $domain);
             if ($website !== null) {
@@ -155,12 +184,30 @@ final class Panel
         throw new \Server_Exception('No website for :domain: belonging to :email: was found on the :panel: server.', [':domain:' => $domain, ':email:' => $clientEmail, ':panel:' => Api::PANEL]);
     }
 
+    /** @return ($allowMissing is true ? array|null : array) */
+    private function resolveSubscription(bool $allowMissing = false): ?array
+    {
+        $subscription = $this->api->find("/orgs/{$this->orgId}/subscriptions/{$this->subscriptionId}");
+        if ($subscription === null || $subscription['status'] === 'deleted') {
+            if ($allowMissing) {
+                return null;
+            }
+
+            throw new \Server_Exception('The panel subscription :id: no longer exists.', [':id:' => $this->subscriptionId]);
+        }
+        if (strcasecmp((string) $subscription['subscriberId'], (string) $this->orgId) !== 0 || strcasecmp((string) $subscription['vendorId'], $this->masterOrg) !== 0) {
+            throw new \Server_Exception('The panel subscription :id: belongs to another organization or vendor.', [':id:' => $this->subscriptionId]);
+        }
+
+        return $subscription;
+    }
+
     /**
      * Creates what an account needs and reuses what exists: the customer organization, its owner
      * login, the subscription and the website. What this call created is removed again when a later
      * step fails, so a retry starts clean.
      */
-    public function create(string $clientEmail, string $orgName, string $loginName, string $password, string $domain, int $planId, string $subscriptionName, bool $emailTrusted = false): void
+    public function create(string $clientEmail, string $orgName, string $loginName, string $password, string $domain, int $planId, string $subscriptionName, bool $emailTrusted = false): array
     {
         if ($this->isStaff('', $clientEmail)) {
             throw new \Server_Exception('The client email :email: is a staff login on the :panel: server. Give the client a different email address.', [':email:' => $clientEmail, ':panel:' => Api::PANEL]);
@@ -185,13 +232,31 @@ final class Panel
 
         try {
             $this->ensureOwner($orgId, $clientEmail, $loginName, $password);
-            if ($this->websiteIn($orgId, $domain) !== null) {
+            $website = $this->websiteIn($orgId, $domain);
+            if ($website !== null) {
+                $existingId = self::subscriptionOf($website);
+                $subscription = $existingId === null ? null : $this->api->get("/orgs/{$orgId}/subscriptions/{$existingId}");
+                $reusable = $existingId !== null && (int) ($subscription['planId'] ?? 0) === $planId;
+                if ($reusable) {
+                    foreach ($this->api->each("/orgs/{$orgId}/websites") as $other) {
+                        if (($other['status'] ?? '') !== 'deleted' && $other['id'] !== $website['id'] && self::subscriptionOf($other) === $existingId) {
+                            $reusable = false;
+
+                            break;
+                        }
+                    }
+                }
+                if (!$reusable) {
+                    throw new \Server_Exception('The domain :domain: already exists on the :panel: panel under another subscription and must be moved or removed first.', [':domain:' => $domain, ':panel:' => Api::PANEL]);
+                }
                 $this->log?->info(sprintf('Website %s already exists on the panel and is used for the account', $domain));
 
-                return;
+                return ['org' => $orgId, 'subscription' => (int) $existingId];
             }
             $subscriptionId = (int) Api::id($this->api->post("/orgs/{$this->masterOrg}/customers/{$orgId}/subscriptions", ['planId' => $planId, 'friendlyName' => $subscriptionName]), 'create the subscription');
             $this->api->post("/orgs/{$orgId}/websites", ['domain' => $domain, 'subscriptionId' => $subscriptionId]);
+
+            return ['org' => $orgId, 'subscription' => $subscriptionId];
         } catch (\Throwable $e) {
             $this->undoCreate($orgId, $subscriptionId, $newOrg);
 
@@ -212,11 +277,25 @@ final class Panel
     }
 
     /**
-     * Suspends or reactivates the subscription and the website (a website can outlive its
+     * Suspends or reactivates the subscription and its websites (a website can outlive its
      * subscription, so it is always flagged too).
      */
     public function setSuspended(string $clientEmail, string $domain, bool $suspended, string $loginEmail = ''): void
     {
+        if ($this->subscriptionId !== null) {
+            $subscription = $this->resolveSubscription();
+            if (!empty($subscription['suspendedBy']) !== $suspended) {
+                $this->api->patch("/orgs/{$this->orgId}/subscriptions/{$this->subscriptionId}", ['isSuspended' => $suspended]);
+            }
+            foreach ($this->api->each("/orgs/{$this->orgId}/websites", ['subscriptionId' => $this->subscriptionId]) as $website) {
+                if (($website['status'] ?? '') !== 'deleted') {
+                    $this->api->patch("/orgs/{$this->orgId}/websites/{$website['id']}", ['isSuspended' => $suspended]);
+                }
+            }
+
+            return;
+        }
+
         ['org' => $org, 'website' => $website] = $this->find($clientEmail, $domain, $loginEmail);
         $subscriptionId = self::subscriptionOf($website);
         if ($subscriptionId !== null) {
@@ -231,15 +310,25 @@ final class Panel
      */
     public function cancel(string $clientEmail, string $domain, string $loginEmail = ''): void
     {
-        ['org' => $org, 'website' => $website] = $this->find($clientEmail, $domain, $loginEmail);
-        $subscriptionId = self::subscriptionOf($website);
-        $subscriptionId !== null
-            ? $this->api->delete("/orgs/{$org['id']}/subscriptions/{$subscriptionId}")
-            : $this->api->delete("/orgs/{$org['id']}/websites/{$website['id']}");
+        if ($this->orgId === null || $this->subscriptionId === null) {
+            throw new \Server_Exception('This hosting account has no stored panel subscription. Run Sync on the service first.');
+        }
+        if ($this->resolveSubscription(true) !== null) {
+            $this->api->delete("/orgs/{$this->orgId}/subscriptions/{$this->subscriptionId}");
+        }
     }
 
     public function changePlan(string $clientEmail, string $domain, int $planId, string $loginEmail = ''): void
     {
+        if ($this->subscriptionId !== null) {
+            $subscription = $this->resolveSubscription();
+            if ((int) $subscription['planId'] !== $planId) {
+                $this->api->patch("/orgs/{$this->orgId}/subscriptions/{$this->subscriptionId}", ['planId' => $planId]);
+            }
+
+            return;
+        }
+
         ['org' => $org, 'website' => $website] = $this->find($clientEmail, $domain, $loginEmail);
         $subscriptionId = self::subscriptionOf($website) ?? throw new \Server_Exception('The website :domain: has no subscription on the :panel: server.', [':domain:' => $domain, ':panel:' => Api::PANEL]);
         $this->api->patch("/orgs/{$org['id']}/subscriptions/{$subscriptionId}", ['planId' => $planId]);
@@ -309,7 +398,8 @@ final class Panel
      */
     public function server(string $clientEmail, string $domain, string $loginEmail = ''): array
     {
-        ['website' => $website] = $this->find($clientEmail, $domain, $loginEmail);
+        ['org' => $org, 'website' => $website] = $this->find($clientEmail, $domain, $loginEmail);
+        $website = $this->api->get("/orgs/{$org['id']}/websites/{$website['id']}");
         $hostname = (string) ($website['appServerName'] ?? '');
         $ip = null;
         if (!empty($website['appServerId'])) {

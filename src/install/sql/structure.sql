@@ -1113,6 +1113,9 @@ CREATE TABLE `service_hosting` (
   `client_id` bigint(20) DEFAULT NULL,
   `service_hosting_server_id` bigint(20) DEFAULT NULL,
   `service_hosting_hp_id` bigint(20) DEFAULT NULL,
+  -- ClientFence core patch: the panel subscription identifies a service after its primary domain changes.
+  `panel_org_id` varchar(64) DEFAULT NULL,
+  `panel_subscription_id` bigint(20) DEFAULT NULL,
   `sld` varchar(255) DEFAULT NULL,
   `tld` varchar(255) DEFAULT NULL,
   `ip` varchar(45) DEFAULT NULL,

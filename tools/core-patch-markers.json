@@ -1,5 +1,41 @@
 [
     {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: link older hosting services once so later actions keep their panel subscription."
+    },
+    {
+        "file": "library/Server/Account.php",
+        "done": "ClientFence core patch: a stored panel subscription keeps lifecycle actions on their hosting service."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: persist the created subscription so domain changes cannot redirect account actions."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: the panel subscription identifies a service after its primary domain changes."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the hosting panel subscription column."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: existing hosting services need a stable panel subscription reference."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a gateway failure must leave the hosting available for cancellation retries."
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: order cancellation retries must not cancel the same gateway subscription twice."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: a disabled or full server takes no new accounts (cancelled ones do not count; an unset flag is active)."
+    },
+    {
         "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
         "done": "ClientFence core patch: the WHMCS-style summary cards (billing, services, notes, files)."
     },
