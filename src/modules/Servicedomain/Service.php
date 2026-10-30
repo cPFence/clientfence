@@ -312,7 +312,12 @@ class Service implements \ClientFence\InjectionAwareInterface
         [$domain, $adapter] = $this->_getD($model);
         $adapter->renewDomain($domain);
 
-        $this->syncWhois($model, $order);
+        // ClientFence core patch: a failed WHOIS refresh must not retry a successful registrar renewal.
+        try {
+            $this->syncWhois($model, $order);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+        }
 
         return true;
     }

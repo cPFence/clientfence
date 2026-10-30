@@ -23,6 +23,7 @@ use ClientFence\Mod\Product\Entity\Product;
 use ClientFence\Mod\Staff\Entity\Admin;
 use ClientFence\InformationException;
 use ClientFence\InjectionAwareInterface;
+use ClientFence\Tools;
 use ClientFence\Validation\PriceValidator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -656,6 +657,11 @@ class Service implements InjectionAwareInterface
         if ($client_id !== null) {
             $where[] = 'co.client_id = :client_id';
             $bindings['client_id'] = $client_id;
+        }
+
+        if (isset($data['id'])) {
+            $where[] = 'co.id = :id';
+            $bindings['id'] = $data['id'];
         }
 
         if (!empty($where)) {
@@ -2391,14 +2397,21 @@ class Service implements InjectionAwareInterface
 
         foreach ($orders as $orderArr) {
             try {
-                $order = $this->getOrderRepository()->find((int) $orderArr['id']);
-                if (!$order instanceof Order) {
-                    throw new \ClientFence\Exception('Order not found');
-                }
-                if ($this->isExemptFromAutoSuspension($order)) {
-                    continue;
-                }
-                $this->cancelFromOrder($order, $reason);
+                // ClientFence core patch: cancellation must recheck payment changes under the paid-task lock.
+                Tools::withLock($this->di, 'fb:order_task:' . (int) $orderArr['id'], function () use ($orderArr, $reason): void {
+                    $order = $this->getOrderRepository()->find((int) $orderArr['id']);
+                    if (!$order instanceof Order) {
+                        throw new \ClientFence\Exception('Order not found');
+                    }
+                    $this->di['em']->refresh($order);
+                    if ($order->getStatus() !== Order::STATUS_SUSPENDED || $order->getExpiresAt() === null || $order->getExpiresAt() > new \DateTime()) {
+                        return;
+                    }
+                    if ($this->isExemptFromAutoSuspension($order)) {
+                        return;
+                    }
+                    $this->cancelFromOrder($order, $reason);
+                });
             } catch (\Exception $e) {
                 $this->di['logger']->info($e->getMessage());
             }

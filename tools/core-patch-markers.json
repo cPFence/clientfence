@@ -1,5 +1,21 @@
 [
     {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: cancellation must recheck payment changes under the paid-task lock."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: due-order selection can change before the renewal lock is acquired."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a failed WHOIS refresh must not retry a successful registrar renewal."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: live renewal invoices must survive overdue cleanup to avoid repeated billing emails."
+    },
+    {
         "file": "modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig",
         "done": "ClientFence core patch: the account owner may restore the panel's backups"
     },

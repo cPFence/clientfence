@@ -599,6 +599,28 @@ test('renews action', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('renewal succeeds when the registrar renews but the WHOIS refresh fails', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $domainModel = new Model_ServiceDomain();
+    $domainModel->loadBean(new Tests\Helpers\DummyBean());
+    $orderService = Mockery::mock(OrderService::class);
+    $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($domainModel);
+
+    $domain = new Registrar_Domain();
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive('renewDomain')->once()->with($domain)->ordered()->andReturn(true);
+    $adapter->shouldReceive('getDomainDetails')->once()->with($domain)->ordered()->andThrow(new RuntimeException('WHOIS refresh failed'));
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_getD')->twice()->with($domainModel)->andReturn([$domain, $adapter]);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
+    $service->setDi($di);
+
+    expect($service->action_renew($order))->toBeTrue();
+});
+
 test('throws exception when renewing without order service', function (): void {
     $service = new Service();
     $orderServiceMock = Mockery::mock(OrderService::class);

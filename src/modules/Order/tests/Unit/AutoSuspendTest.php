@@ -40,6 +40,7 @@ function autoSuspendService(array $config, OrderRepository $repository, array $m
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getRepository')->with(Order::class)->andReturn($repository);
     $em->shouldReceive('getRepository')->with(OrderMeta::class)->andReturn(autoSuspendMetaRepository($meta));
+    $em->shouldReceive('refresh');
     // batchCancelSuspended(): suspended orders past their due date only (not staff suspensions
     // of orders that are paid up).
     $em->shouldReceive('getConnection')->andReturn(Mockery::mock(Doctrine\DBAL\Connection::class)
@@ -137,10 +138,10 @@ test('batchSuspendExpired waits the configured days past the expiry and skips ex
 
 test('batchCancelSuspended cancels overdue suspended orders only, skipping domains and overridden orders', function (): void {
     $orders = [
-        1 => createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting']),
-        2 => createEntity(Order::class, ['id' => 2, 'serviceType' => 'domain']),
-        3 => createEntity(Order::class, ['id' => 3, 'serviceType' => 'hosting']),
-        4 => createEntity(Order::class, ['id' => 4, 'serviceType' => 'hosting']),
+        1 => createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting', 'status' => Order::STATUS_SUSPENDED, 'expiresAt' => new DateTime('-1 day')]),
+        2 => createEntity(Order::class, ['id' => 2, 'serviceType' => 'domain', 'status' => Order::STATUS_SUSPENDED, 'expiresAt' => new DateTime('-1 day')]),
+        3 => createEntity(Order::class, ['id' => 3, 'serviceType' => 'hosting', 'status' => Order::STATUS_SUSPENDED, 'expiresAt' => new DateTime('-1 day')]),
+        4 => createEntity(Order::class, ['id' => 4, 'serviceType' => 'hosting', 'status' => Order::STATUS_SUSPENDED, 'expiresAt' => new DateTime('-1 day')]),
     ];
     $repository = Mockery::mock(OrderRepository::class);
     $repository->shouldReceive('find')->andReturnUsing(fn (int $id): Order => $orders[$id]);
@@ -160,6 +161,59 @@ test('batchCancelSuspended cancels overdue suspended orders only, skipping domai
     expect($service->batchCancelSuspended())->toBeTrue()
         ->and($cancelled)->toBe([[1, 'Unpaid'], [4, 'Unpaid']]);
 });
+
+test('batchCancelSuspended skips orders renewed since selection under the paid-task lock', function (string $status, string $expiry): void {
+    $order = createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting', 'status' => Order::STATUS_SUSPENDED, 'expiresAt' => new DateTime('-1 day')]);
+    $repository = Mockery::mock(OrderRepository::class);
+    $repository->shouldReceive('find')->once()->with(1)->andReturn($order);
+
+    $locked = $refreshedUnderLock = false;
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
+    $connection->shouldReceive('fetchAllAssociative')->once()->andReturn([['id' => 1]]);
+    $connection->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(?, ?)', ['fb:order_task:1', 10])
+        ->andReturnUsing(function () use (&$locked): int {
+            $locked = true;
+
+            return 1;
+        });
+    $connection->shouldReceive('fetchOne')->once()->with('SELECT RELEASE_LOCK(?)', ['fb:order_task:1'])
+        ->andReturnUsing(function () use (&$locked): int {
+            $locked = false;
+
+            return 1;
+        });
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getRepository')->with(Order::class)->andReturn($repository);
+    $em->shouldReceive('getConnection')->andReturn($connection);
+    $em->shouldReceive('refresh')->once()->with($order)->andReturnUsing(function () use ($order, $status, $expiry, &$locked, &$refreshedUnderLock): void {
+        $refreshedUnderLock = $locked;
+        $order->setStatus($status);
+        $order->setExpiresAt(new DateTime($expiry));
+    });
+
+    $di = container();
+    $di['em'] = $em;
+    $di['dbal'] = $connection;
+    $di['mod_config'] = $di->protect(fn (string $name): array => ['batch_cancel_suspended' => '1']);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('isExemptFromAutoSuspension')->andReturn(false);
+    $cancelled = [];
+    $service->shouldReceive('cancelFromOrder')->andReturnUsing(function (Order $order) use (&$cancelled): bool {
+        $cancelled[] = $order->getId();
+
+        return true;
+    });
+    $service->setDi($di);
+
+    expect($service->batchCancelSuspended())->toBeTrue()
+        ->and($refreshedUnderLock)->toBeTrue()
+        ->and($cancelled)->toBe([])
+        ->and($locked)->toBeFalse();
+})->with([
+    'unsuspended' => [Order::STATUS_ACTIVE, '-1 day'],
+    'expiry extended' => [Order::STATUS_SUSPENDED, '+1 month'],
+]);
 
 test('the Edit Order tab saves the override in the order meta', function (array $posted, array $meta): void {
     $order = createEntity(Order::class, ['id' => 5, 'price' => 10]);

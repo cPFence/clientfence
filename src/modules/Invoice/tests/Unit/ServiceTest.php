@@ -3332,8 +3332,11 @@ test('generates invoices for expiring orders', function (): void {
 
     $orderService = Mockery::mock(OrderService::class);
     $orderService->shouldReceive('getSoonExpiringActiveOrders')
-        ->atLeast()->once()
-        ->andReturn([[]]);
+        ->once()->with([])
+        ->andReturn([['id' => 1]]);
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')
+        ->once()->with(['id' => 1])
+        ->andReturn([['id' => 1]]);
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('getExistingModelById')
@@ -3348,6 +3351,63 @@ test('generates invoices for expiring orders', function (): void {
     $serviceMock->setDi($di);
     $result = $serviceMock->generateInvoicesForExpiringOrders();
     expect($result)->toBeBool()->toBeTrue();
+});
+
+test('does not invoice or charge an order renewed since the expiring-order selection', function (): void {
+    $locked = $recheckedUnderLock = false;
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
+    $connection->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(?, ?)', ['fb:renewal:order:1', 10])
+        ->andReturnUsing(function () use (&$locked): int {
+            $locked = true;
+
+            return 1;
+        });
+    $connection->shouldReceive('fetchOne')->once()->with('SELECT RELEASE_LOCK(?)', ['fb:renewal:order:1'])
+        ->andReturnUsing(function () use (&$locked): int {
+            $locked = false;
+
+            return 1;
+        });
+    $orderService = Mockery::mock(OrderService::class);
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->once()->with([])->andReturn([['id' => 1]]);
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->once()->with(['id' => 1])
+        ->andReturnUsing(function () use (&$locked, &$recheckedUnderLock): array {
+            $recheckedUnderLock = $locked;
+
+            return [];
+        });
+
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 1;
+    $order->expires_at = date('Y-m-d H:i:s', strtotime('+1 month'));
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 4;
+    $di = container();
+    $di['dbal'] = $connection;
+    $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
+    $di['db']->shouldReceive('getExistingModelById')->andReturn($order);
+
+    $actions = [];
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('generateForOrder')->andReturnUsing(function () use (&$actions, $invoice): Model_Invoice {
+        $actions[] = 'generate';
+
+        return $invoice;
+    });
+    $service->shouldReceive('approveInvoice')->andReturnUsing(function () use (&$actions): bool {
+        $actions[] = 'approve';
+
+        return true;
+    });
+    $service->setDi($di);
+
+    expect($service->generateInvoicesForExpiringOrders())->toBeTrue()
+        ->and($recheckedUnderLock)->toBeTrue()
+        ->and($actions)->toBe([])
+        ->and($locked)->toBeFalse();
 });
 
 test('activates paid invoices in batch', function (): void {
@@ -4125,25 +4185,39 @@ test('gets unpaid invoices late for', function (): void {
     expect($result[0])->toBeInstanceOf(Model_Invoice::class);
 });
 
-test('finds unpaid invoices older than the given number of days', function (): void {
-    $service = new Service();
-    $invoiceModel = new Model_Invoice();
-    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+test('old unpaid invoice cleanup keeps live renewals and returns invoices without a live order', function (string $status): void {
+    $pdo = new PDO('sqlite::memory:');
+    $pdo->sqliteCreateFunction('NOW', fn (): string => '2026-10-31 00:00:00', 0);
+    $pdo->sqliteCreateFunction('DATEDIFF', fn (string $later, string $earlier): int => (int) floor((strtotime($later) - strtotime($earlier)) / 86400), 2);
+    $pdo->exec('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, due_at TEXT)');
+    $pdo->exec('CREATE TABLE client_order (id INTEGER PRIMARY KEY, unpaid_invoice_id INTEGER, status TEXT)');
+    $pdo->exec("INSERT INTO invoice VALUES (1, 'unpaid', '2026-09-01'), (2, 'unpaid', '2026-09-01'), (3, 'unpaid', '2026-09-01')");
+    $pdo->prepare('INSERT INTO client_order VALUES (1, 1, ?), (2, 3, ?)')->execute([$status, Model_ClientOrder::STATUS_CANCELED]);
 
-    $dbMock = Mockery::mock('ClientFence\Database');
-    $dbMock->shouldReceive('find')
-        ->once()
-        ->with('Invoice', Mockery::type('string'), [Model_Invoice::STATUS_UNPAID, 30])
-        ->andReturn([$invoiceModel]);
+    $models = [];
+    foreach ([1, 2, 3] as $id) {
+        $models[$id] = new Model_Invoice();
+        $models[$id]->loadBean(new Tests\Helpers\DummyBean());
+        $models[$id]->id = $id;
+    }
+    $dbMock = Mockery::mock(ClientFence\Database::class);
+    $dbMock->shouldReceive('find')->once()->andReturnUsing(function (string $model, string $conditions, array $bindings) use ($pdo, $models): array {
+        $query = $pdo->prepare('SELECT * FROM invoice WHERE ' . $conditions);
+        foreach ($bindings as $index => $value) {
+            $query->bindValue($index + 1, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $query->execute();
+
+        return array_map(fn (array $row): Model_Invoice => $models[(int) $row['id']], $query->fetchAll(PDO::FETCH_ASSOC));
+    });
 
     $di = container();
     $di['db'] = $dbMock;
+    $service = new Service();
     $service->setDi($di);
 
-    $result = $service->findUnpaidOlderThan(30);
-    expect($result)->toBeArray();
-    expect($result[0])->toBeInstanceOf(Model_Invoice::class);
-});
+    expect($service->findUnpaidOlderThan(30))->toBe([$models[2], $models[3]]);
+})->with([Model_ClientOrder::STATUS_ACTIVE, Model_ClientOrder::STATUS_SUSPENDED]);
 
 test('gets buyer', function (): void {
     $service = new Service();

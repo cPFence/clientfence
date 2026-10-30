@@ -2222,9 +2222,15 @@ class Service implements InjectionAwareInterface
 
         foreach ($orders as $order) {
             try {
-                $model = $this->di['db']->getExistingModelById('ClientOrder', $order['id'] ?? null);
-                $invoice = $this->generateForOrder($model);
-                $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
+                // ClientFence core patch: due-order selection can change before the renewal lock is acquired.
+                Tools::withLock($this->di, 'fb:renewal:order:' . (int) $order['id'], function () use ($order, $orderService): void {
+                    if ($orderService->getSoonExpiringActiveOrders(['id' => $order['id']]) === []) {
+                        return;
+                    }
+                    $model = $this->di['db']->getExistingModelById('ClientOrder', $order['id']);
+                    $invoice = $this->generateForOrder($model);
+                    $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
+                });
             } catch (\Exception $e) {
                 $this->di['logger']->warning($e->getMessage());
             }
@@ -2683,9 +2689,11 @@ class Service implements InjectionAwareInterface
      */
     public function findUnpaidOlderThan(int $days): array
     {
-        $conditions = 'status = ? and due_at is not null and DATEDIFF(NOW(), due_at) > ?';
+        // ClientFence core patch: live renewal invoices must survive overdue cleanup to avoid repeated billing emails.
+        $conditions = 'status = ? and due_at is not null and DATEDIFF(NOW(), due_at) > ?
+            AND NOT EXISTS (SELECT 1 FROM client_order co WHERE co.unpaid_invoice_id = invoice.id AND co.status IN (?, ?))';
 
-        return $this->di['db']->find('Invoice', $conditions, [\Model_Invoice::STATUS_UNPAID, $days]);
+        return $this->di['db']->find('Invoice', $conditions, [\Model_Invoice::STATUS_UNPAID, $days, \Model_ClientOrder::STATUS_ACTIVE, \Model_ClientOrder::STATUS_SUSPENDED]);
     }
 
     public function getUnpaidInvoicesLateFor($days_after_issue = 2)

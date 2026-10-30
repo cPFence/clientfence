@@ -51,6 +51,9 @@ test('batch generation passes the client limit to the existing due-order query',
     $orderService->shouldReceive('getSoonExpiringActiveOrdersQuery')->once()->with(['client_id' => 7])->andReturn(['SELECT id FROM client_order WHERE client_id = :client_id', ['client_id' => 7]]);
     $di['em']->shouldReceive('getConnection')->andReturn($di['dbal']);
     $di['dbal']->shouldReceive('fetchAllAssociative')->once()->with('SELECT id FROM client_order WHERE client_id = :client_id', ['client_id' => 7])->andReturn([['id' => 10]]);
+    // The order is selected again under its renewal lock before it is invoiced.
+    $orderService->shouldReceive('getSoonExpiringActiveOrdersQuery')->once()->with(['id' => 10])->andReturn(['SELECT id FROM client_order WHERE co.id = :id', ['id' => 10]]);
+    $di['dbal']->shouldReceive('fetchAllAssociative')->once()->with('SELECT id FROM client_order WHERE co.id = :id', ['id' => 10])->andReturn([['id' => 10]]);
     $di['db']->shouldReceive('getExistingModelById')->once()->with('ClientOrder', 10)->andReturn(order(['id' => 10, 'client_id' => 7]));
     $service = Mockery::mock(Service::class)->makePartial();
     $service->shouldReceive('generateForOrder')->once()->with(Mockery::on(static fn (Model_ClientOrder $order): bool => (int) $order->client_id === 7))->andReturn(model(Model_Invoice::class, ['id' => 11]));
