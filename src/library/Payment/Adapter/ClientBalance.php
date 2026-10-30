@@ -107,10 +107,7 @@ class Payment_Adapter_ClientBalance implements ClientFence\InjectionAwareInterfa
             throw new Payment_Exception('You are not authorized to pay this invoice with client balance.');
         }
 
-        if ((int) ($invoiceModel->gateway_id ?? 0) !== (int) $gateway_id) {
-            throw new Payment_Exception('Invoice is not configured to use this payment gateway.');
-        }
-
+        // ClientFence core patch: the invoice page can select balance without changing the saved gateway.
         $invoiceService = $this->di['mod_service']('Invoice');
         if ($invoiceService->isInvoiceTypeDeposit($invoiceModel)) {
             throw new Payment_Exception('You may not pay a deposit invoice with this payment gateway.', [], 303);

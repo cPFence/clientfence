@@ -1800,7 +1800,7 @@ describe('getOrCreatePriceId', function (): void {
         $invoiceModel->id = 60;
         $invoiceModel->currency = 'USD';
 
-        $cacheKey = hash('sha256', implode('|', ['Test Product', 'usd', 0, 'month', '1']));
+        $cacheKey = hash('sha256', implode('|', ['Test Product', 'usd', 0, 'month', 1, '1']));
         $cached = createEntity(PayGatewayProduct::class, ['external_price_id' => 'price_cached']);
         $productRepo = Mockery::mock(PayGatewayProductRepository::class);
         $productRepo->shouldReceive('findOneByGatewayAndCacheKey')->once()->with(1, $cacheKey)->andReturn($cached);
@@ -1829,7 +1829,7 @@ describe('getOrCreatePriceId', function (): void {
         $invoiceModel->id = 61;
         $invoiceModel->currency = 'USD';
 
-        $cacheKey = hash('sha256', implode('|', ['Test Product', 'usd', 0, 'month', '1']));
+        $cacheKey = hash('sha256', implode('|', ['Test Product', 'usd', 0, 'month', 1, '1']));
         $productRepo = Mockery::mock(PayGatewayProductRepository::class);
         $productRepo->shouldReceive('findOneByGatewayAndCacheKey')->once()->with(1, $cacheKey)->andReturn(null);
 
@@ -1875,7 +1875,7 @@ describe('getOrCreatePriceId', function (): void {
         $invoiceModel->id = 62;
         $invoiceModel->currency = 'USD';
 
-        $cacheKey = hash('sha256', implode('|', ['Test Product', 'usd', 0, 'month', '1']));
+        $cacheKey = hash('sha256', implode('|', ['Test Product', 'usd', 0, 'month', 1, '1']));
         $productRepo = Mockery::mock(PayGatewayProductRepository::class);
         $productRepo->shouldReceive('findOneByGatewayAndCacheKey')->once()->with(1, $cacheKey)->andReturn(null);
 
@@ -1914,6 +1914,56 @@ describe('getOrCreatePriceId', function (): void {
 
         expect($result)->toBe('price_other_request_won');
     });
+});
+
+test('creates a three-month price instead of reusing a monthly price', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 63;
+    $invoice->currency = 'USD';
+
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('getTotalWithTax')->once()->with($invoice)->andReturn(30);
+    $subscriptionService = Mockery::mock();
+    $subscriptionService->shouldReceive('getSubscriptionPeriod')->once()->with($invoice)->andReturn('3M');
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getAll')->once()->andReturn([['title' => 'Test Product']]);
+    $cacheKey = hash('sha256', implode('|', ['Test Product', 'usd', 3000, 'month', 3, '1']));
+    $productRepo = Mockery::mock(PayGatewayProductRepository::class);
+    $productRepo->shouldReceive('findOneByGatewayAndCacheKey')->once()->with(1, $cacheKey)->andReturn(null);
+
+    $stripeMock = Mockery::mock(StripeClient::class);
+    $stripeMock->products = Mockery::mock();
+    $stripeMock->products->shouldReceive('search')->once()->andReturn(Stripe\SearchResult::constructFrom([
+        'data' => [['id' => 'prod_1']],
+    ]));
+    $stripeMock->prices = Mockery::mock();
+    $stripeMock->prices->shouldReceive('all')->once()->with([
+        'product' => 'prod_1',
+        'recurring' => ['interval' => 'month'],
+        'currency' => 'usd',
+        'limit' => 100,
+    ])->andReturn(Stripe\Collection::constructFrom(['data' => [[
+        'id' => 'price_monthly',
+        'unit_amount' => 3000,
+        'recurring' => ['interval' => 'month', 'interval_count' => 1],
+    ]]]));
+    $stripeMock->prices->shouldReceive('create')->once()->with([
+        'product' => 'prod_1',
+        'unit_amount' => 3000,
+        'currency' => 'usd',
+        'recurring' => ['interval' => 'month', 'interval_count' => 3],
+    ])->andReturn(Stripe\Price::constructFrom(['id' => 'price_quarterly']));
+    setPrivateProperty($this->adapter, 'stripe', $stripeMock);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn ($name, $sub = '') => $sub === 'Subscription' ? $subscriptionService : $invoiceService);
+    $di['em']->shouldReceive('getRepository')->with(PayGatewayProduct::class)->andReturn($productRepo);
+    $this->adapter->setDi($di);
+
+    expect(invokePrivateMethod($this->adapter, 'getOrCreatePriceId', [$invoice]))->toBe('price_quarterly');
 });
 
 describe('newIsolatedEntityManager', function (): void {

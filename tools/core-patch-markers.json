@@ -3242,5 +3242,21 @@
     {
         "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
         "done": "ClientFence: the canned responses fit the reply card on phones."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: pending payments must remain retryable by a later Completed IPN"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: recurring prices must retain the invoice period count."
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: one-time discounts must not become the recurring payment amount."
+    },
+    {
+        "file": "library/Payment/Adapter/ClientBalance.php",
+        "done": "ClientFence core patch: the invoice page can select balance without changing the saved gateway."
     }
 ]

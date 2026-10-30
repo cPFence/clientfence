@@ -232,6 +232,31 @@ function signedPayPalGet(int $invoiceId, int $gatewayId = 1, array $extra = []):
     );
 }
 
+test('leaves a pending PayPal payment received with its error', function (): void {
+    $tx = [
+        'invoice_id' => 16, 'type' => 'web_accept', 'txn_id' => 'TXN-PENDING',
+        'txn_status' => 'Pending', 'amount' => '120.00', 'currency' => 'USD',
+    ];
+    $apiAdmin = Mockery::mock();
+    $apiAdmin->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn($tx);
+    $apiAdmin->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn([
+        'id' => 16, 'currency' => 'USD', 'client' => ['id' => 9],
+    ]);
+    $apiAdmin->shouldReceive('invoice_transaction_update')->once()->with(Mockery::on(function (array $update) use (&$tx): bool {
+        $tx = array_replace($tx, $update);
+
+        return true;
+    }));
+
+    paypalProcessAdapter(container())->processTransaction($apiAdmin, 42, [
+        'post' => ['txn_type' => 'web_accept', 'payment_status' => 'Pending'],
+        'get' => signedPayPalGet(16, 2),
+    ], 2);
+
+    expect($tx['status'])->toBe(Model_Transaction::STATUS_RECEIVED)
+        ->and($tx['error'])->toBe('PayPal payment not completed: Pending');
+});
+
 describe('PayPal callback invoice binding', function (): void {
     test('rejects a callback whose invoice id was swapped after signing', function (): void {
         $apiAdmin = Mockery::mock();

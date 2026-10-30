@@ -1615,8 +1615,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $productName = $this->getInvoiceProductName($invoice);
         $amount = $this->getAmountInCents($invoice);
         $currency = strtolower($invoice->currency);
-        $interval = $this->convertPeriodToStripe($this->getSubscriptionPeriodForInvoice($invoice));
-        $cacheKey = $this->buildProductCacheKey($productName, $currency, $amount, $interval, (bool) $this->config['test_mode']);
+        // ClientFence core patch: recurring prices must retain the invoice period count.
+        [$interval, $count] = $this->convertPeriodToStripe($this->getSubscriptionPeriodForInvoice($invoice));
+        $cacheKey = $this->buildProductCacheKey($productName, $currency, $amount, $interval, $count, (bool) $this->config['test_mode']);
 
         $cached = $this->di['em']->getRepository(PayGatewayProduct::class)
             ->findOneByGatewayAndCacheKey($gatewayId, $cacheKey);
@@ -1624,7 +1625,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             return $cached->getExternalPriceId();
         }
 
-        [$externalProductId, $externalPriceId] = $this->resolvePriceFromStripe($productName, $amount, $currency, $interval, $invoice);
+        [$externalProductId, $externalPriceId] = $this->resolvePriceFromStripe($productName, $amount, $currency, $interval, $count, $invoice);
 
         return $this->cacheGatewayProduct($gatewayId, $cacheKey, $productName, $externalProductId, $externalPriceId);
     }
@@ -1652,9 +1653,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
      * mode would look up - and try to charge - a price ID that only exists
      * in the other one.
      */
-    private function buildProductCacheKey(string $productName, string $currency, int $amount, string $interval, bool $testMode): string
+    private function buildProductCacheKey(string $productName, string $currency, int $amount, string $interval, int $count, bool $testMode): string
     {
-        return hash('sha256', implode('|', [$productName, $currency, $amount, $interval, $testMode ? '1' : '0']));
+        return hash('sha256', implode('|', [$productName, $currency, $amount, $interval, $count, $testMode ? '1' : '0']));
     }
 
     /**
@@ -1664,7 +1665,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
      *
      * @return array{0: string, 1: string} the external product ID and price ID
      */
-    private function resolvePriceFromStripe(string $productName, int $amount, string $currency, string $interval, Model_Invoice $invoice): array
+    private function resolvePriceFromStripe(string $productName, int $amount, string $currency, string $interval, int $count, Model_Invoice $invoice): array
     {
         $products = $this->stripe->products->search([
             'query' => "name:'" . $this->escapeStripeSearchValue($productName) . "'",
@@ -1686,7 +1687,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         ]);
 
         foreach ($prices->data as $existingPrice) {
-            if ($existingPrice->unit_amount === $amount) {
+            if ($existingPrice->unit_amount === $amount && $existingPrice->recurring->interval_count === $count) {
                 return [$product->id, $existingPrice->id];
             }
         }
@@ -1695,7 +1696,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             'product' => $product->id,
             'unit_amount' => $amount,
             'currency' => $currency,
-            'recurring' => ['interval' => $interval],
+            'recurring' => ['interval' => $interval, 'interval_count' => $count],
         ]);
 
         return [$product->id, $price->id];
@@ -1740,17 +1741,23 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return $period ?? '1M';
     }
 
-    private function convertPeriodToStripe(string $period): string
+    /**
+     * @return array{0: string, 1: int}
+     */
+    private function convertPeriodToStripe(string $period): array
     {
         $unit = preg_replace('/[^A-Za-z]/', '', $period);
+        $count = preg_replace('/[^0-9]/', '', $period);
 
-        return match (strtoupper((string) $unit)) {
+        $interval = match (strtoupper((string) $unit)) {
             'D' => 'day',
             'W' => 'week',
             'M' => 'month',
             'Y' => 'year',
             default => 'month',
         };
+
+        return [$interval, $count === '' ? 1 : (int) $count];
     }
 
     private function getClientFromTransaction(Model_Transaction $tx, Stripe\PaymentIntent $charge): Model_Client

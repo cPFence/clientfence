@@ -399,7 +399,12 @@ class ServiceSubscription implements InjectionAwareInterface
             $lineTotal = (float) ($item['price'] ?? 0) * (float) ($item['quantity'] ?? 0);
             $period = $item['period'] ?? null;
 
-            if ($lineTotal <= 0) {
+            // ClientFence core patch: one-time discounts must not become the recurring payment amount.
+            if ($lineTotal < 0) {
+                return null;
+            }
+
+            if ($lineTotal == 0) {
                 continue;
             }
 

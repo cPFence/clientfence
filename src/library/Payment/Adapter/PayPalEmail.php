@@ -154,6 +154,11 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
 
+                    // ClientFence core patch: pending payments must remain retryable by a later Completed IPN (a refund goes on to the refund below).
+                    if (($ipn['payment_status'] ?? '') !== 'Refunded') {
+                        return;
+                    }
+
                     break;
                 }
 
