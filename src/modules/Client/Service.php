@@ -91,10 +91,11 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 'display_name' => __trans('Manage Client API Keys'),
                 'description' => __trans('Allows the staff member to view and generate API keys for client accounts.'),
             ],
+            // ClientFence core patch: account access changes share the password permission.
             'change_password' => [
                 'type' => 'bool',
                 'display_name' => __trans('Change Client Passwords'),
-                'description' => __trans('Allows the staff member to set new passwords for client accounts.'),
+                'description' => __trans('Allows the staff member to change client passwords, sign-in emails, account users and two-factor settings.'),
             ],
             'manage_balance' => [
                 'type' => 'bool',

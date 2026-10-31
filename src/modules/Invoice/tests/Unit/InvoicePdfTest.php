@@ -97,7 +97,13 @@ test('admin invoice PDFs reject a language that is not installed', function (): 
     $app = Mockery::mock(ClientFence\App::class);
     $app->shouldReceive('getRequest')->once()->andReturn(Request::create('/invoice/pdf/' . str_repeat('a', 32), 'GET', ['lang' => 'zz_ZZ']));
     $controller = new Admin();
-    $controller->setDi(new Pimple\Container(['is_admin_logged' => true]));
+    $di = new Pimple\Container(['is_admin_logged' => true]);
+    $di['mod_service'] = $di->protect(fn () => new class {
+        public function checkPermissionsAndThrowException(string ...$args): void
+        {
+        }
+    });
+    $controller->setDi($di);
 
     expect(fn () => $controller->get_pdf($app, str_repeat('a', 32)))
         ->toThrow(ClientFence\InformationException::class, 'Language not found');

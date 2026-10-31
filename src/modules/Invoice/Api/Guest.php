@@ -187,7 +187,12 @@ class Guest extends \ClientFence\Api\AbstractApi
     private function quoteAnswer(array $data, bool $accept): void
     {
         $this->getDi()['rate_limiter']->consumeOrThrow('quote_ip', (string) $this->getIp());
-        $this->quoteByHash($data);
+        $quote = $this->quoteByHash($data);
+        // ClientFence core patch: signed-in account users need quote access to answer their account's quotes.
+        $context = \ClientFence\Mod\Client\Users::context($this->getDi());
+        if ($context !== null && $quote['client_id'] === $context['client_id'] && !\ClientFence\Mod\Client\Users::allows($context, 'quotes')) {
+            throw new \ClientFence\InformationException('You do not have permission to do this. Ask the account owner for access.', null, 403);
+        }
         \ClientFence\Mod\Invoice\Quotes::answer($this->getDi(), (string) $data['hash'], $accept, $this->signedInClient(), (string) $this->getIp());
     }
 

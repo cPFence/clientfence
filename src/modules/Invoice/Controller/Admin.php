@@ -221,6 +221,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
     public function get_pdf(\ClientFence\App $app, $hash): Response
     {
         $this->di['is_admin_logged'];
+        // ClientFence core patch: invoice PDF downloads require the same access as invoice details.
+        $this->di['mod_service']('staff')->checkPermissionsAndThrowException('invoice', 'view');
         // ClientFence: a query value must name an installed, enabled language before reaching the translator.
         $locale = $app->getRequest()->query->get('lang');
         if ($locale !== null && !in_array($locale, \ClientFence\i18n::getLocales(), true)) {

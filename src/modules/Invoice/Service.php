@@ -2888,7 +2888,8 @@ class Service implements InjectionAwareInterface
 
     public function checkInvoiceAuth(\Model_Invoice $invoice, InvoiceOperation $operation = InvoiceOperation::READ): void
     {
-        if ($this->di['auth']->isAdminLoggedIn() || Environment::isCLI()) {
+        // ClientFence core patch: guest invoice routes must respect the signed-in staff member's invoice access.
+        if (Environment::isCLI() || ($this->di['auth']->isAdminLoggedIn() && $this->di['mod_service']('staff')->hasPermission($this->di['loggedin_admin'], 'invoice', 'view'))) {
             return;
         }
 

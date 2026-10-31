@@ -1166,7 +1166,15 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('invoice', 'view');
 
-        return \ClientFence\Mod\Invoice\Reports::catalog();
+        // ClientFence core patch: reports also expose data governed by their group's module permission.
+        $catalog = \ClientFence\Mod\Invoice\Reports::catalog();
+        foreach (\ClientFence\Mod\Invoice\Reports::GROUP_MODULES as $group => $module) {
+            if ($module !== 'invoice' && !$this->getDi()['mod_service']('staff')->hasPermission($this->getIdentity(), $module, 'view')) {
+                unset($catalog[$group]);
+            }
+        }
+
+        return $catalog;
     }
 
     /**
@@ -1177,6 +1185,10 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('invoice', 'view');
         $key = (string) ($data['report'] ?? '');
+        $group = \ClientFence\Mod\Invoice\Reports::REPORTS[$key] ?? null;
+        if ($group !== null && \ClientFence\Mod\Invoice\Reports::GROUP_MODULES[$group] !== 'invoice') {
+            $this->checkPermissions(\ClientFence\Mod\Invoice\Reports::GROUP_MODULES[$group], 'view');
+        }
         unset($data['report']);
 
         return \ClientFence\Mod\Invoice\Reports::run($this->getDi(), $key, $data);

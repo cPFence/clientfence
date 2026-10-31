@@ -44,6 +44,8 @@ final class Reports
         'ticket_replies' => 'support',
     ];
 
+    public const GROUP_MODULES = ['billing' => 'invoice', 'clients' => 'client', 'support' => 'support'];
+
     /** Most rows a list report shows (the rest are left out, and the page says so). */
     public const MAX_ROWS = 5000;
 

@@ -331,6 +331,47 @@ test('converts an aggregated invoice row to an api summary', function (): void {
         ]);
 });
 
+test('guest invoice access requires staff invoice view when public hash access is off', function (bool $view, int $expected): void {
+    $script = '<?php $view = ' . var_export($view, true) . ';' . <<<'PHP'
+require 'src/vendor/autoload.php';
+require 'tests/Helpers/Container.php';
+require 'tests/Helpers/DummyBean.php';
+define('DEBUG', false);
+Mockery::mock('alias:ClientFence\Environment')->shouldReceive('isCLI')->andReturn(false);
+Mockery::mock('alias:ClientFence\Config')->shouldReceive('getProperty')->andReturn(false);
+$di = Tests\Helpers\container();
+$di['auth'] = Mockery::mock(ClientFence\Authorization::class)
+    ->shouldReceive('isAdminLoggedIn')->andReturn(true)
+    ->shouldReceive('isClientLoggedIn')->andReturn(false)->getMock();
+$admin = new Model_Admin();
+$di['loggedin_admin'] = $admin;
+$staff = Mockery::mock(ClientFence\Mod\Staff\Service::class)
+    ->shouldReceive('hasPermission')->with($admin, 'invoice', 'view')->andReturn($view)->getMock();
+$system = Mockery::mock(ClientFence\Mod\System\Service::class)
+    ->shouldReceive('getParamValue')->with('invoice_accessible_from_hash', '0')->andReturn('0')->getMock();
+$di['mod_service'] = $di->protect(static fn (string $name) => $name === 'staff' ? $staff : $system);
+$invoice = new Model_Invoice();
+$invoice->loadBean(new Tests\Helpers\DummyBean());
+$invoice->client_id = 5;
+$service = new ClientFence\Mod\Invoice\Service();
+$service->setDi($di);
+try {
+    $service->checkInvoiceAuth($invoice);
+    echo 200;
+} catch (ClientFence\InformationException $exception) {
+    echo $exception->getCode();
+}
+Mockery::close();
+PHP;
+    $process = new Symfony\Component\Process\PhpProcess($script, dirname(PATH_ROOT));
+    $process->mustRun();
+
+    expect((int) $process->getOutput())->toBe($expected);
+})->with([
+    'staff without invoice view' => [false, 403],
+    'staff with invoice view' => [true, 200],
+]);
+
 test('checkInvoiceAuth applies invoice permissions to authorized users for reads and payments', function (?array $context, string $hashAccess, bool $expired, array $expected, bool $revoke = false): void {
     $script = '<?php $case = ' . var_export(compact('context', 'hashAccess', 'expired', 'revoke'), true) . ';' . <<<'PHP'
 require 'src/vendor/autoload.php';

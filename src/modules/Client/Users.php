@@ -103,7 +103,7 @@ final class Users
             'get_list' => 'invoices', 'get' => 'invoices', 'renewal_invoice' => 'invoices', 'funds_invoice' => 'invoices',
             'transaction_get_list' => 'invoices', 'get_tax_rate' => '*',
             'payment_details' => 'invoices', 'receipt_send' => 'invoices', 'statement' => 'invoices', 'statement_pdf' => 'invoices',
-            'quote_get_list' => 'invoices',
+            'quote_get_list' => 'quotes',
         ],
         'order' => ['get_list' => 'products', 'get' => 'products', 'addons' => 'products', 'service' => 'products', 'upgradables' => 'products', 'upgrade_options' => 'products', 'upgrade' => 'orders', 'delete' => 'orders'],
         'profile' => ['get' => '*', 'logout' => '*', 'update' => 'profile'],
@@ -165,6 +165,8 @@ final class Users
         'order' => 'orders',
         'cart' => 'orders',
         'invoice' => 'invoices',
+        'invoice/quotes' => 'quotes',
+        'quote' => 'quotes',
         'client/balance' => 'invoices',
         'receipt' => 'invoices',
         'ticket-file' => 'tickets',
@@ -425,7 +427,7 @@ final class Users
 
     /**
      * API dispatcher (core patch): trims what a client call returns to the signed-in user's
-     * permissions (profile and dashboard), and names the users who wrote ticket messages (for
+     * permissions (profile, orders and dashboard), and names the users who wrote ticket messages (for
      * the owner too). Anything else is returned unchanged.
      */
     public static function filterResult(\Pimple\Container $di, object $identity, string $mod, string $method, mixed $result): mixed
@@ -435,7 +437,7 @@ final class Users
         if ($mod === 'support' && $method === 'ticket_get' && is_array($result)) {
             return TicketFiles::withFiles($di, self::withTicketAuthors($di, $result, false));
         }
-        if (!is_array($result) || !(($mod === 'profile' && $method === 'get') || ($mod === 'index' && $method === 'get_dashboard'))) {
+        if (!is_array($result) || !(($mod === 'profile' && $method === 'get') || ($mod === 'index' && $method === 'get_dashboard') || ($mod === 'order' && in_array($method, ['get', 'get_list', 'addons'], true)))) {
             return $result;
         }
         $context = self::context($di);
@@ -444,6 +446,21 @@ final class Users
         }
         if ($mod === 'profile') {
             return self::trimProfile($context, $result);
+        }
+        if ($mod === 'order') {
+            if ($method === 'get') {
+                $result['client'] = self::trimProfile($context, $result['client']);
+            } elseif ($method === 'addons') {
+                foreach ($result as $key => $order) {
+                    $result[$key]['client'] = self::trimProfile($context, $order['client']);
+                }
+            } else {
+                foreach ($result['list'] as $key => $order) {
+                    $result['list'][$key]['client'] = self::trimProfile($context, $order['client']);
+                }
+            }
+
+            return $result;
         }
         if (is_array($result['profile'] ?? null)) {
             $result['profile'] = self::trimProfile($context, $result['profile']);
@@ -458,6 +475,9 @@ final class Users
         if (!self::allows($context, 'products')) {
             $result['orders'] = null;
             $result['recent_orders'] = [];
+        }
+        foreach ($result['recent_orders'] as $key => $order) {
+            $result['recent_orders'][$key]['client'] = self::trimProfile($context, $order['client']);
         }
 
         return $result;

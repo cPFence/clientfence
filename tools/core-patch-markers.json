@@ -1,5 +1,29 @@
 [
     {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: sign-in email changes can redirect password resets."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: account access changes share the password permission."
+    },
+    {
+        "file": "modules/Invoice/Api/Guest.php",
+        "done": "ClientFence core patch: signed-in account users need quote access to answer their account's quotes."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: guest invoice routes must respect the signed-in staff member's invoice access."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence core patch: invoice PDF downloads require the same access as invoice details."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: reports also expose data governed by their group's module permission."
+    },
+    {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: cancellation must recheck payment changes under the paid-task lock."
     },

@@ -348,6 +348,11 @@ class Admin extends \ClientFence\Api\AbstractApi
         $service = $this->getDi()['mod_service']('client');
         $oldEmail = (string) $client->getEmail();
 
+        // ClientFence core patch: sign-in email changes can redirect password resets.
+        if (array_key_exists('email', $data) && strcasecmp((string) $data['email'], $oldEmail) !== 0) {
+            $this->checkPermissions('client', 'change_password');
+        }
+
         if (!is_null($data['email'] ?? null)) {
             $email = $data['email'];
             $email = $this->getDi()['tools']->validateAndSanitizeEmail($email);
@@ -921,6 +926,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     public function user_invite($data): bool
     {
         $this->staffChange();
+        $this->checkPermissions('client', 'change_password');
         Users::invite($this->getDi(), (int) ($data['client_id'] ?? 0), $data['email'] ?? '', $data['permissions'] ?? [], $this->adminId());
 
         return true;
@@ -956,6 +962,10 @@ class Admin extends \ClientFence\Api\AbstractApi
     public function user_update($data): bool
     {
         $this->staffChange();
+        // The access form always sends `owner`; only an actual owner change needs the password permission.
+        if (isset($data['owner']) && (int) !empty($data['owner']) !== (int) $this->getDi()['dbal']->fetchOne('SELECT owner FROM client_user_account WHERE user_id = ? AND client_id = ?', [(int) ($data['user_id'] ?? 0), (int) ($data['client_id'] ?? 0)])) {
+            $this->checkPermissions('client', 'change_password');
+        }
         $change = array_intersect_key(is_array($data) ? $data : [], array_flip(['permissions', 'owner', 'status']));
         Users::update($this->getDi(), (int) ($data['user_id'] ?? 0), (int) ($data['client_id'] ?? 0), $change, $this->adminId());
 
@@ -988,12 +998,13 @@ class Admin extends \ClientFence\Api\AbstractApi
     /**
      * Switches off two-factor sign-in of the account owner (`client_id`) or of a user of the
      * account (`client_id`, `user_id`), for someone who lost the phone and the backup code. Needs
-     * the client "edit profile" permission; works with ClientFence off too, as the code is
-     * still asked then.
+     * the client "edit profile" and "change password" permissions; works with ClientFence off too,
+     * as the code is still asked then.
      */
     public function twofactor_disable($data): bool
     {
         $this->checkPermissions('client', 'edit_profile');
+        $this->checkPermissions('client', 'change_password');
         $userId = isset($data['user_id']) && (string) $data['user_id'] !== '' ? (int) $data['user_id'] : null;
         TwoFactor::staffDisable($this->getDi(), (int) ($data['client_id'] ?? 0), $userId, (int) $this->adminId());
 

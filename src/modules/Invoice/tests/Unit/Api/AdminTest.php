@@ -20,6 +20,28 @@ use ClientFence\Mod\Invoice\ServiceTransaction;
 use function Tests\Helpers\container;
 use function Tests\Helpers\moduleService;
 
+test('invoice view does not grant support report access or list support reports', function (): void {
+    $di = container();
+    $staff = Mockery::mock(ClientFence\Mod\Staff\Service::class)->makePartial();
+    $staff->shouldReceive('hasPermission')->andReturnUsing(
+        static fn ($member, string $module): bool => $module !== 'support'
+    );
+    $di['mod_service'] = $di->protect(static fn () => $staff);
+    $api = new Admin();
+    $api->setDi($di);
+    $api->setIdentity(new Model_Admin());
+
+    foreach (['report', 'report_csv'] as $method) {
+        expect(fn () => $api->{$method}(['report' => 'ticket_replies']))->toThrow(
+            fn (ClientFence\InformationException $exception) => expect([$exception->getCode(), $exception->getMessage()])
+                ->toBe([403, 'You need the "support.view" permission to perform this action'])
+        );
+    }
+    $catalog = $api->report_catalog([]);
+    expect($catalog)->not->toHaveKey('support')
+        ->and($catalog['billing']['reports'])->toHaveKey('statement');
+});
+
 test('gets dependency injection container', function (): void {
     $api = apiEndpoint(new Admin());
     $di = container();

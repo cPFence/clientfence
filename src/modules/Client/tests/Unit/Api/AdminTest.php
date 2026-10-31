@@ -14,6 +14,66 @@ use function Tests\Helpers\container;
 use function Tests\Helpers\createEntity;
 use function Tests\Helpers\moduleService;
 
+test('profile editors need password permission for account access changes', function (string $method, array $data, bool $allowed): void {
+    $di = container();
+    $staff = Mockery::mock(ClientFence\Mod\Staff\Service::class)->makePartial();
+    $staff->shouldReceive('hasPermission')->andReturnUsing(
+        static fn ($member, string $module, ?string $key): bool => $module === 'client' && $key === 'edit_profile'
+    );
+    $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 1, 'email' => 'owner@example.com']);
+    $repository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
+    $repository->shouldReceive('find')->with(1)->andReturn($client);
+    $di['em']->shouldReceive('getRepository')->with(ClientFence\Mod\Client\Entity\Client::class)->andReturn($repository);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $clientService = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $di['mod_service'] = $di->protect(static fn (string $module) => strtolower($module) === 'staff' ? $staff : $clientService);
+    $api = new ClientFence\Mod\Client\Api\Admin();
+    $api->setDi($di);
+    $api->setIdentity(new Model_Admin());
+
+    if ($allowed) {
+        $di['em']->shouldReceive('persist')->once()->with($client);
+        $di['em']->shouldReceive('flush')->once();
+        expect($api->{$method}($data))->toBeTrue()
+            ->and($client->getFirstName())->toBe('Updated');
+    } else {
+        expect(fn () => $api->{$method}($data))->toThrow(
+            fn (ClientFence\InformationException $exception) => expect([$exception->getCode(), $exception->getMessage()])
+                ->toBe([403, 'You need the "client.change_password" permission to perform this action'])
+        );
+    }
+})->with([
+    'sign-in email' => ['update', ['id' => 1, 'email' => 'new@example.com'], false],
+    'invite a user' => ['user_invite', ['client_id' => 1, 'email' => 'new@example.com'], false],
+    'make a user an owner' => ['user_update', ['client_id' => 1, 'user_id' => 2, 'owner' => true], false],
+    'disable two-factor' => ['twofactor_disable', ['client_id' => 1], false],
+    'ordinary profile edit' => ['update', ['id' => 1, 'first_name' => 'Updated'], true],
+]);
+
+test('saving account user access with an unchanged owner flag needs no password permission', function (): void {
+    $di = container();
+    $asked = [];
+    $staff = Mockery::mock(ClientFence\Mod\Staff\Service::class)->makePartial();
+    $staff->shouldReceive('hasPermission')->andReturnUsing(static function ($member, string $module, ?string $key) use (&$asked): bool {
+        $asked[] = $key;
+
+        return $module === 'client' && $key === 'edit_profile';
+    });
+    $di['mod_service'] = $di->protect(static fn () => $staff);
+    $api = new ClientFence\Mod\Client\Api\Admin();
+    $api->setDi($di);
+    $api->setIdentity(new Model_Admin());
+
+    try {
+        // The access form always sends owner=0 next to the checkbox; the user is not an owner (no stored flag).
+        $api->user_update(['client_id' => 1, 'user_id' => 2, 'owner' => '0', 'permissions' => ['invoices']]);
+    } catch (Throwable) {
+        // Users::update() itself is not under test here.
+    }
+
+    expect($asked)->toContain('edit_profile')->not->toContain('change_password');
+});
+
 test('getDi returns dependency injection container', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
     $di = container();
