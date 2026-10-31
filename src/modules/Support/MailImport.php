@@ -45,6 +45,8 @@ use ClientFence\InformationException;
  */
 final class MailImport
 {
+    private static bool $creatingGuestTicket = false;
+
     public const MAILBOX_TABLE = 'support_helpdesk_mail';
     public const LOG_TABLE = 'support_mail_import';
     public const UNVERIFIED_TABLE = 'support_ticket_message_unverified';
@@ -319,6 +321,11 @@ final class MailImport
         return $decision;
     }
 
+    public static function isCreatingGuestTicket(): bool
+    {
+        return self::$creatingGuestTicket;
+    }
+
     /**
      * Adds the reply or opens the ticket.
      *
@@ -343,13 +350,18 @@ final class MailImport
                 $client = $di['db']->getExistingModelById('Client', $clientId, 'Client not found');
                 $ticketId = $support->ticketCreateForClient($client, $helpdesk, ['subject' => $subject, 'content' => $content]);
             } else {
-                $hash = $support->ticketCreateForGuest([
-                    'name' => mb_substr($message->from['name'] !== '' ? $message->from['name'] : explode('@', $message->from['email'])[0], 0, 255),
-                    'email' => $message->from['email'],
-                    'subject' => $subject,
-                    'content' => $content,
-                    'support_helpdesk_id' => (int) $helpdesk->getId(),
-                ]);
+                self::$creatingGuestTicket = true;
+                try {
+                    $hash = $support->ticketCreateForGuest([
+                        'name' => mb_substr($message->from['name'] !== '' ? $message->from['name'] : explode('@', $message->from['email'])[0], 0, 255),
+                        'email' => $message->from['email'],
+                        'subject' => $subject,
+                        'content' => $content,
+                        'support_helpdesk_id' => (int) $helpdesk->getId(),
+                    ]);
+                } finally {
+                    self::$creatingGuestTicket = false;
+                }
                 $ticketId = (int) self::db($di)->fetchOne('SELECT id FROM support_ticket WHERE access_hash = ?', [$hash]);
             }
             $messageId = (int) self::db($di)->fetchOne('SELECT MIN(id) FROM support_ticket_message WHERE support_ticket_id = ?', [$ticketId]);

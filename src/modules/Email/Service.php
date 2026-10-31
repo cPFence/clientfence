@@ -346,7 +346,18 @@ class Service implements \ClientFence\InjectionAwareInterface
         // ClientFence core patch: template previews must never retain sign-in credentials.
         $signInLink = in_array($data['code'], self::SIGN_IN_LINK_TEMPLATES, true);
         if (!$signInLink) {
-            $this->setVars($template, $vars);
+            // ClientFence core patch: domain transfer credentials must stay out of saved template previews.
+            $removeTransferCodes = static function (array $values) use (&$removeTransferCodes): array {
+                unset($values['transfer_code']);
+                foreach ($values as $key => $value) {
+                    if (is_array($value)) {
+                        $values[$key] = $removeTransferCodes($value);
+                    }
+                }
+
+                return $values;
+            };
+            $this->setVars($template, $removeTransferCodes($vars));
         }
 
         // do not send inactive template

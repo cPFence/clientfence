@@ -679,6 +679,83 @@ test('closes a ticket', function ($identity): void {
     expect($ticket->getStatus())->toBe(SupportTicket::STATUS_CLOSED);
 })->with('closeTicketIdentities');
 
+test('closing an already closed guest ticket has no side effects or feedback request', function (): void {
+    $em = Mockery::mock(EntityManagerInterface::class);
+    supportWireKbRepositories($em);
+    $em->shouldNotReceive('flush');
+    $em->shouldNotReceive('getConnection');
+    $events = Mockery::mock(ClientFence\EventManager::class);
+    $events->shouldNotReceive('fire');
+    $email = Mockery::mock(EmailService::class);
+    $email->shouldNotReceive('sendTemplate');
+    $di = container();
+    $di['em'] = $em;
+    $di['events_manager'] = $events;
+    $di['mod_service'] = $di->protect(fn () => $email);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = new Service();
+    $service->setDi($di);
+    $ticket = new SupportTicket();
+    setEntityId($ticket, 1);
+    $ticket->setAccessHash('guest-ticket-hash');
+    $ticket->close();
+
+    expect($service->closeTicket($ticket, new ClientFence\Identity\Guest()))->toBeTrue()
+        ->and($di['logger']->calls)->toBe([]);
+});
+
+test('imported guest tickets skip only CAPTCHA and subsequent guest submissions still require it', function (): void {
+    $helpdesk = helpdeskFixture();
+    $helpdeskRepo = Mockery::mock(HelpdeskRepository::class);
+    $helpdeskRepo->shouldReceive('find')->with(1)->twice()->andReturn($helpdesk);
+    $db = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $db->shouldReceive('fetchOne')->once()->with('SELECT id FROM support_ticket WHERE access_hash = ?', Mockery::type('array'))->andReturn(1);
+    $db->shouldReceive('fetchOne')->once()->with('SELECT MIN(id) FROM support_ticket_message WHERE support_ticket_id = ?', [1])->andReturn(2);
+    $em = Mockery::mock(EntityManagerInterface::class);
+    supportWireKbRepositories($em, helpdeskRepo: $helpdeskRepo);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $em->shouldReceive('wrapInTransaction')->once()->andReturnUsing(fn (callable $work) => $work());
+    $persisted = [];
+    $em->shouldReceive('persist')->twice()->andReturnUsing(function (object $entity) use (&$persisted): void {
+        $persisted[] = $entity;
+        setEntityId($entity, count($persisted));
+    });
+    $em->shouldReceive('flush')->twice();
+    $antispam = Mockery::mock(ClientFence\Mod\Antispam\Service::class)->makePartial();
+    $antispam->shouldReceive('isBlockedIp')->twice();
+    $antispam->shouldReceive('isSpam')->once();
+    $antispam->shouldReceive('isTemp')->once();
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_config'] = $di->protect(fn (): array => ['captcha_enabled' => true, 'captcha_recaptcha_privatekey' => 'secret']);
+    $di['mod_service'] = $di->protect(fn () => $antispam);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $antispam->setDi($di);
+    $events = Mockery::mock(ClientFence\EventManager::class);
+    $events->shouldReceive('fire')->times(3)->andReturnUsing(function (array $data) use ($di): void {
+        if ($data['event'] === 'onBeforeClientOpenTicket') {
+            $event = new ClientFence\Event(null, $data['event'], $data['params']);
+            $event->setDi($di);
+            ClientFence\Mod\Antispam\Service::onBeforeClientOpenTicket($event);
+        }
+    });
+    $di['events_manager'] = $events;
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('guestTicketsEnabled')->twice()->andReturn(true);
+    $service->setDi($di);
+    $message = ClientFence\Mod\Support\Mail\MimeMessage::parse("From: Guest <guest@example.test>\r\nSubject: Help\r\n\r\nPlease help");
+    $create = new ReflectionMethod(ClientFence\Mod\Support\MailImport::class, 'create');
+
+    expect($create->invoke(null, $di, $service, $message, ['status' => 'imported', 'helpdesk_id' => 1], 'Please help', 0))->toBe([1, 2])
+        ->and($persisted[0])->toBeInstanceOf(SupportTicket::class)
+        ->and($persisted[0]->getAuthorEmail())->toBe('guest@example.test')
+        ->and($persisted[1]->getContent())->toBe('Please help')
+        ->and(fn () => $service->ticketCreateForGuest([
+            'name' => 'Guest', 'email' => 'guest@example.test', 'subject' => 'Help', 'content' => 'Please help',
+            'support_helpdesk_id' => 1, 'creatingGuestTicket' => true,
+        ]))->toThrow(ClientFence\InformationException::class, 'You have to complete the CAPTCHA to continue');
+});
+
 test('auto closes a ticket', function (): void {
     $service = new Service();
     $emMock = Mockery::mock(EntityManagerInterface::class);

@@ -388,6 +388,11 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function closeTicket(SupportTicket $ticket, \Model_Admin|\Model_Client|\ClientFence\Identity\Guest $identity): bool
     {
+        // ClientFence core patch: repeat closes must not resend feedback requests.
+        if ($ticket->getStatus() === SupportTicket::STATUS_CLOSED) {
+            return true;
+        }
+
         $ticket->close();
         $this->di['em']->flush();
 

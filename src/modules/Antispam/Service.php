@@ -81,7 +81,10 @@ class Service implements InjectionAwareInterface
         $di = $event->getDi();
         $antispamService = $di['mod_service']('Antispam');
         $antispamService->isBlockedIp($event);
-        $antispamService->checkCaptcha($event->getParameters());
+        // ClientFence core patch: imported email cannot answer a browser CAPTCHA.
+        if (!\ClientFence\Mod\Support\MailImport::isCreatingGuestTicket()) {
+            $antispamService->checkCaptcha($event->getParameters());
+        }
         $antispamService->isSpam($event);
         $antispamService->isTemp($event);
     }

@@ -323,6 +323,47 @@ test('sendTemplate does not store staff password reset variables', function (): 
     expect($template->getVars())->toBeNull();
 });
 
+test('sendTemplate removes transfer codes from saved previews while rendering the full variables', function (): void {
+    $vars = [
+        'transfer_code' => 'top-secret',
+        'order' => ['config' => ['domain' => 'example.test', 'transfer_code' => 'domain-secret', 'require_transfer_code' => true]],
+        'items' => [3 => ['config' => ['transfer_code' => 'nested-secret', 'period' => '1Y']]],
+    ];
+    $template = emailTemplate('mod_staff_client_order', data: ['enabled' => true, 'is_custom' => true, 'subject' => 'Subject', 'content' => 'Body']);
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->once()->andReturn($template);
+    $em = emailBuildEm(templateRepo: $templateRepo);
+    $em->shouldReceive('flush')->once();
+    $savedVars = null;
+    $crypt = Mockery::mock(ClientFence\Crypt::class);
+    $crypt->shouldReceive('encrypt')->once()->andReturnUsing(function (string $json) use (&$savedVars): string {
+        $savedVars = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+        return 'encrypted';
+    });
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('renderEmailTplString')->once()->with('Body', $vars, null, null)->andReturn('Rendered body');
+    $system->shouldReceive('renderEmailSubjectString')->once()->with('Subject', $vars, null, null)->andReturn('Rendered subject');
+    $system->shouldReceive('getParamValue')->with('company_email')->andReturn('billing@example.test');
+    $system->shouldReceive('getParamValue')->with('company_name')->andReturn('Company');
+    $module = Mockery::mock(ClientFence\Module::class);
+    $module->shouldReceive('getConfig')->andReturn([]);
+    $di = container();
+    $di['em'] = $em;
+    $di['crypt'] = $crypt;
+    $di['mod'] = $di->protect(fn () => $module);
+    $di['mod_service'] = $di->protect(fn () => $system);
+    $service = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $service->shouldReceive('sendMail')->once()->andReturn(true);
+    $service->setDi($di);
+
+    expect($service->sendTemplate(['code' => 'mod_staff_client_order', 'to' => 'staff@example.test'] + $vars))->toBeTrue()
+        ->and($savedVars)->toBe([
+            'order' => ['config' => ['domain' => 'example.test', 'require_transfer_code' => true]],
+            'items' => [3 => ['config' => ['period' => '1Y']]],
+        ]);
+});
+
 test('sendTemplate sends sign-in emails immediately without keeping queue or history copies', function (string $mailer): void {
     $service = new ClientFence\Mod\Email\Service();
     $template = emailTemplate('mod_staff_password_reset_request', data: ['is_custom' => true]);
