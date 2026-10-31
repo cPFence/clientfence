@@ -102,16 +102,17 @@ test('exempt from automatic suspension: domains, and orders whose override is on
 
 test('batchSuspendExpired waits the configured days past the expiry and skips exempt orders', function (mixed $setting, int $days): void {
     $orders = [
-        createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting']),
-        createEntity(Order::class, ['id' => 2, 'serviceType' => 'domain']),
-        createEntity(Order::class, ['id' => 3, 'serviceType' => 'hosting']),
-        createEntity(Order::class, ['id' => 4, 'serviceType' => 'hosting']),
+        createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
+        createEntity(Order::class, ['id' => 2, 'serviceType' => 'domain', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
+        createEntity(Order::class, ['id' => 3, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
+        createEntity(Order::class, ['id' => 4, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
     ];
 
     $repository = Mockery::mock(OrderRepository::class);
     $repository->shouldReceive('getExpired')->once()
         ->with(Mockery::on(fn (DateTimeInterface $before): bool => abs($before->getTimestamp() - strtotime("-{$days} days")) < 60))
         ->andReturn($orders);
+    $repository->shouldReceive('find')->andReturnUsing(fn (int $id): Order => $orders[$id - 1]);
 
     $config = ['batch_suspend_reason' => 'Overdue'];
     if ($setting !== null) {
@@ -134,6 +135,99 @@ test('batchSuspendExpired waits the configured days past the expiry and skips ex
     'blank means the default' => ['', Service::BATCH_SUSPEND_AFTER_DAYS],
     'set' => ['9', 9],
     'on the due date' => ['0', 0],
+]);
+
+test('batchSuspendExpired rechecks renewed orders under the paid-task lock', function (string $status, string $expiry): void {
+    $order = createEntity(Order::class, ['id' => 1, 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]);
+    $repository = Mockery::mock(OrderRepository::class);
+    $repository->shouldReceive('getExpired')->once()->andReturn([$order]);
+    $repository->shouldReceive('find')->once()->with(1)->andReturn($order);
+
+    $locked = $refreshedUnderLock = false;
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
+    $connection->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(?, ?)', ['fb:order_task:1', 10])
+        ->andReturnUsing(function () use (&$locked): int {
+            $locked = true;
+
+            return 1;
+        });
+    $connection->shouldReceive('fetchOne')->once()->with('SELECT RELEASE_LOCK(?)', ['fb:order_task:1'])
+        ->andReturnUsing(function () use (&$locked): int {
+            $locked = false;
+
+            return 1;
+        });
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getRepository')->with(Order::class)->andReturn($repository);
+    $em->shouldReceive('refresh')->once()->with($order)->andReturnUsing(function () use ($order, $status, $expiry, &$locked, &$refreshedUnderLock): void {
+        $refreshedUnderLock = $locked;
+        $order->setStatus($status);
+        $order->setExpiresAt(new DateTime($expiry));
+    });
+    $di = container();
+    $di['em'] = $em;
+    $di['dbal'] = $connection;
+    $service = Mockery::mock(Service::class)->makePartial();
+    $suspended = [];
+    $service->shouldReceive('suspendFromOrder')->andReturnUsing(function (Order $order) use (&$suspended): bool {
+        $suspended[] = $order->getId();
+
+        return true;
+    });
+    $service->setDi($di);
+
+    expect($service->batchSuspendExpired())->toBeTrue()
+        ->and($refreshedUnderLock)->toBeTrue()
+        ->and($suspended)->toBe([])
+        ->and($locked)->toBeFalse();
+})->with([
+    'no longer active' => [Order::STATUS_SUSPENDED, '-1 year'],
+    'expiry extended' => [Order::STATUS_ACTIVE, '+1 month'],
+    'inside the suspension grace period' => [Order::STATUS_ACTIVE, '-1 day'],
+]);
+
+test('automatic order actions leave paid lines awaiting execution alone', function (string $batch, string $action, string $status): void {
+    $orders = [
+        1 => createEntity(Order::class, ['id' => 1, 'status' => $status, 'expiresAt' => new DateTime('-1 year')]),
+        2 => createEntity(Order::class, ['id' => 2, 'status' => $status, 'expiresAt' => new DateTime('-1 year')]),
+    ];
+    $repository = Mockery::mock(OrderRepository::class);
+    $repository->shouldReceive('find')->andReturnUsing(fn (int $id): Order => $orders[$id]);
+    $repository->shouldReceive('getExpired')->andReturn(array_values($orders));
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('fetchAllAssociative')->andReturn([['id' => 1], ['id' => 2]]);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getRepository')->with(Order::class)->andReturn($repository);
+    $em->shouldReceive('getConnection')->andReturn($connection);
+    $em->shouldReceive('refresh');
+
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT)');
+    $dbal->insert('invoice', ['id' => 40, 'status' => 'paid']);
+    $dbal->insert('invoice_item', ['invoice_id' => 40, 'type' => 'order', 'rel_id' => '1', 'task' => 'renew', 'status' => 'pending_setup']);
+    // A failed first activation never runs again and must not protect the service.
+    $dbal->insert('invoice_item', ['invoice_id' => 40, 'type' => 'order', 'rel_id' => '2', 'task' => 'activate', 'status' => 'failed']);
+    $di = container();
+    $di['em'] = $em;
+    $di['dbal'] = $dbal;
+    $di['mod_config'] = $di->protect(fn (): array => ['batch_cancel_suspended' => '1']);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('isExemptFromAutoSuspension')->andReturn(false);
+    $changed = [];
+    $service->shouldReceive($action)->andReturnUsing(function (Order $order) use (&$changed): bool {
+        $changed[] = $order->getId();
+
+        return true;
+    });
+    $service->setDi($di);
+
+    expect($service->{$batch}())->toBeTrue()
+        ->and($changed)->toBe([2]);
+})->with([
+    'cancellation' => ['batchCancelSuspended', 'cancelFromOrder', Order::STATUS_SUSPENDED],
+    'suspension' => ['batchSuspendExpired', 'suspendFromOrder', Order::STATUS_ACTIVE],
 ]);
 
 test('batchCancelSuspended cancels overdue suspended orders only, skipping domains and overridden orders', function (): void {

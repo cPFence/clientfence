@@ -2852,6 +2852,35 @@ test('deleteFromOrder cancels subscriptions before deletion and cancels open inv
     expect($serviceMock->deleteFromOrder($order))->toBeTrue();
 });
 
+test('cancelOpenInvoices cancels discounted renewals and preserves invoices shared with another order', function (): void {
+    $connection = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $connection->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, updated_at TEXT)');
+    $connection->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, unit TEXT)');
+    foreach ([40, 41] as $id) {
+        $connection->insert('invoice', ['id' => $id, 'status' => 'unpaid']);
+        $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'order', 'rel_id' => '1', 'task' => 'renew', 'unit' => 'service']);
+        $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'custom', 'rel_id' => '1', 'unit' => 'discount']);
+    }
+    $connection->insert('invoice_item', ['invoice_id' => 41, 'type' => 'order', 'rel_id' => '2', 'task' => 'renew', 'unit' => 'service']);
+
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchAllAssociative')->once()->andReturn([]);
+    $dbal->shouldReceive('executeStatement')->once()->andReturnUsing(function (string $sql, array $params) use ($connection): int {
+        // SQLite requires an explicit alias and unqualified assignment columns.
+        $sql = str_replace(['UPDATE invoice i SET i.status', 'i.updated_at ='], ['UPDATE invoice AS i SET status', 'updated_at ='], $sql);
+
+        return $connection->executeStatement($sql, $params);
+    });
+    $di = container();
+    $di['dbal'] = $dbal;
+    $service = new Service();
+    $service->setDi($di);
+
+    (new ReflectionMethod(Service::class, 'cancelOpenInvoices'))->invoke($service, 1, 'The order was cancelled.');
+
+    expect($connection->fetchFirstColumn('SELECT status FROM invoice ORDER BY id'))->toBe(['canceled', 'unpaid']);
+});
+
 test('cancelFromOrder cancels linked subscriptions before the service action', function (): void {
     $clientOrderModel = createEntity(Order::class);
     $clientOrderModel->id = 10;

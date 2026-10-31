@@ -2104,11 +2104,12 @@ class Service implements InjectionAwareInterface
     private function cancelOpenInvoices(int $orderId, string $why): void
     {
         Upgrades::cancelWaiting($this->di, $orderId, $why);
+        // ClientFence core patch: a renewal's recurring discount belongs to the same order.
         $this->di['dbal']->executeStatement(
             'UPDATE invoice i SET i.status = :canceled, i.updated_at = :now WHERE i.status = :unpaid
                 AND EXISTS (SELECT 1 FROM invoice_item ii WHERE ii.invoice_id = i.id AND ii.type = :type AND ii.rel_id = :order_id AND ii.task = :renew)
-                AND NOT EXISTS (SELECT 1 FROM invoice_item other WHERE other.invoice_id = i.id AND NOT (other.type = :type AND other.rel_id = :order_id))',
-            ['canceled' => \Model_Invoice::STATUS_CANCELED, 'now' => date('Y-m-d H:i:s'), 'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW],
+                AND NOT EXISTS (SELECT 1 FROM invoice_item other WHERE other.invoice_id = i.id AND NOT (other.rel_id = :order_id AND (other.type = :type OR other.unit = :discount)))',
+            ['canceled' => \Model_Invoice::STATUS_CANCELED, 'now' => date('Y-m-d H:i:s'), 'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'discount' => 'discount'],
         );
     }
 
@@ -2356,14 +2357,26 @@ class Service implements InjectionAwareInterface
         $reason = $c['batch_suspend_reason'] ?? null;
         $days = $this->resolveBatchAfterDays($c['batch_suspend_after_days'] ?? null, self::BATCH_SUSPEND_AFTER_DAYS);
 
-        $list = $this->getOrderRepository()->getExpired(new \DateTime("-{$days} days"));
+        $before = new \DateTime("-{$days} days");
+        $list = $this->getOrderRepository()->getExpired($before);
 
         foreach ($list as $order) {
-            if ($this->isExemptFromAutoSuspension($order)) {
-                continue;
-            }
             try {
-                $this->suspendFromOrder($order, $reason);
+                // ClientFence core patch: suspension must recheck renewal changes under the paid-task lock.
+                Tools::withLock($this->di, 'fb:order_task:' . $order->getId(), function () use ($order, $reason, $before): void {
+                    $order = $this->getOrderRepository()->find($order->getId());
+                    if (!$order instanceof Order) {
+                        throw new \ClientFence\Exception('Order not found');
+                    }
+                    $this->di['em']->refresh($order);
+                    if ($order->getStatus() !== Order::STATUS_ACTIVE || $order->getExpiresAt() === null || $order->getExpiresAt() > $before) {
+                        return;
+                    }
+                    if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId())) {
+                        return;
+                    }
+                    $this->suspendFromOrder($order, $reason);
+                });
             } catch (\Exception $e) {
                 $this->di['logger']->info($e->getMessage());
             }
@@ -2415,7 +2428,7 @@ class Service implements InjectionAwareInterface
                     if ($order->getStatus() !== Order::STATUS_SUSPENDED || $order->getExpiresAt() === null || $order->getExpiresAt() > new \DateTime()) {
                         return;
                     }
-                    if ($this->isExemptFromAutoSuspension($order)) {
+                    if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId())) {
                         return;
                     }
                     $this->cancelFromOrder($order, $reason);
@@ -2430,6 +2443,15 @@ class Service implements InjectionAwareInterface
         $this->di['logger']->info('Executed action to cancel suspended orders');
 
         return true;
+    }
+
+    // ClientFence core patch: a paid renewal waiting for its task protects the service (a failed or activation line does not).
+    private function hasUnexecutedPaidOrderItem(int $orderId): bool
+    {
+        return (bool) $this->di['dbal']->fetchOne(
+            'SELECT 1 FROM invoice_item ii JOIN invoice i ON i.id = ii.invoice_id WHERE ii.type = ? AND ii.rel_id = ? AND ii.task = ? AND ii.status = ? AND i.status = ? LIMIT 1',
+            [\Model_InvoiceItem::TYPE_ORDER, (string) $orderId, \Model_InvoiceItem::TASK_RENEW, \Model_InvoiceItem::STATUS_PENDING_SETUP, \Model_Invoice::STATUS_PAID],
+        );
     }
 
     public function batchCancelUnpaid(): bool

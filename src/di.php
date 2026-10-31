@@ -429,7 +429,8 @@ $di['is_cron'] = false;
  * @throws \ClientFence\Exception If the script is running in CLI or CGI mode and there is no cron admin available.
  */
 $di['loggedin_admin'] = function () use ($di) {
-    if (Environment::isCLI()) {
+    // ClientFence core patch: web cron listeners need the cron staff identity for notifications.
+    if (Environment::isCLI() || ($di->offsetExists('is_cron') && $di->offsetGet('is_cron') === true)) {
         return $di['mod_service']('staff')->getCronAdmin();
     }
 
