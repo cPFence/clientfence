@@ -203,23 +203,27 @@ class Service implements InjectionAwareInterface
         $currencyCode = $currency->getCode();
 
         $em = $this->di['em'];
+        $rate = $currency->getConversionRate();
+        $em->getConnection()->transactional(function (\Doctrine\DBAL\Connection $db) use ($em, $currencyCode, $rate): void {
+            // ClientFence core patch: all conversion rates must use the new default as their common base.
+            $db->executeStatement('UPDATE currency SET conversion_rate = ROUND(conversion_rate / ?, 6)', [$rate]);
+            $this->currencyRepository->clearDefaultFlags();
+            $em->clear(Currency::class);
+            $em->clear(Currency::class);
+            // ClientFence core patch: the repository keeps the currencies for the request; every change forgets them.
+            $this->currencyRepository->forgetCached();
 
-        $this->currencyRepository->clearDefaultFlags();
-        $em->clear(Currency::class);
-        $em->clear(Currency::class);
-        // ClientFence core patch: the repository keeps the currencies for the request; every change forgets them.
-        $this->currencyRepository->forgetCached();
+            $currency = $this->currencyRepository->findOneByCode($currencyCode);
+            if (!$currency instanceof Currency) {
+                throw new \ClientFence\Exception("Currency with code {$currencyCode} not found after clearing identity map.");
+            }
 
-        $currency = $this->currencyRepository->findOneByCode($currencyCode);
-        if (!$currency instanceof Currency) {
-            throw new \ClientFence\Exception("Currency with code {$currencyCode} not found after clearing identity map.");
-        }
-
-        $currency
-            ->setIsDefault(true)
-            ->setIsRateManual(false);
-        $em->persist($currency);
-        $em->flush();
+            $currency
+                ->setIsDefault(true)
+                ->setIsRateManual(false);
+            $em->persist($currency);
+            $em->flush();
+        });
         $this->currencyRepository->forgetCached();
         // ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php) re-read the rates.
         \ClientFence\Mod\Product\CurrencyPrices::reset();

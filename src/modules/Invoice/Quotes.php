@@ -324,6 +324,9 @@ final class Quotes
                     'type' => \Model_InvoiceItem::TYPE_CUSTOM,
                 ], $quote['items']),
             ]);
+            $invoice->taxname = $quote['taxname'];
+            $invoice->taxrate = $quote['taxrate'];
+            $di['db']->store($invoice);
             $db->update('invoice_quote', [
                 'client_id' => $clientId,
                 'stage' => 'accepted',

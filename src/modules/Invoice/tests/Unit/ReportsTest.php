@@ -174,8 +174,7 @@ test('sales tax lists the invoices paid in the period with their tax', function 
         ->toThrow(InformationException::class, 'Enter the dates as year-month-day.');
 });
 
-// ClientFence (QA r3 M-04): a downgrade's credit note gives its tax back in the report; a refunded invoice stays out.
-test('sales tax takes back the tax of account credit notes, not of refunded invoices', function (): void {
+test('sales tax includes refunded sales and takes back the tax of account credit notes', function (): void {
     $db = reportsDb();
     reportsInvoice($db, 1, ['paid_at' => '2026-03-01 10:00:00', 'taxname' => 'VAT', 'taxrate' => '14'], [100], true);
     reportsInvoice($db, 2, ['status' => 'refunded', 'serie' => 'CN-', 'paid_at' => '2026-04-01 10:00:00', 'taxname' => 'VAT', 'taxrate' => '14'], [], true);
@@ -184,13 +183,12 @@ test('sales tax takes back the tax of account credit notes, not of refunded invo
 
     $report = Reports::run(reportsContainer($db), 'sales_tax', ['from' => '2026-01-01', 'to' => '2026-12-31'], reportsNow());
 
-    expect(array_column(array_column($report['rows'], 0), 0))->toBe(['LNK-00001', 'CN-00002'])
+    expect(array_column(array_column($report['rows'], 0), 0))->toBe(['LNK-00001', 'CN-00002', 'LNK-00003'])
         ->and($report['rows'][1][4])->toBe(-40.0)
         ->and($report['rows'][1][5])->toBe(-5.6)
-        ->and($report['total'])->toBe(['Total', null, null, null, 60.0, 8.4, 68.4]);
+        ->and($report['total'])->toBe(['Total', null, null, null, 120.0, 16.8, 136.8]);
 });
 
-// ClientFence (QA r4 F-01): a credit note whose credit a refund took back leaves the report with the refunded invoice.
 test('sales tax leaves out a credit note whose credit was taken back', function (): void {
     $db = reportsDb();
     reportsInvoice($db, 1, ['status' => 'refunded', 'paid_at' => '2026-03-01 10:00:00', 'taxname' => 'VAT', 'taxrate' => '14'], [100], true);
@@ -202,9 +200,21 @@ test('sales tax leaves out a credit note whose credit was taken back', function 
 
     $report = Reports::run(reportsContainer($db), 'sales_tax', ['from' => '2026-01-01', 'to' => '2026-12-31'], reportsNow());
 
-    expect(array_column(array_column($report['rows'], 0), 0))->toBe(['LNK-00003', 'CN-00004'])
-        ->and($report['total'])->toBe(['Total', null, null, null, 40.0, 5.6, 45.6]);
+    expect(array_column(array_column($report['rows'], 0), 0))->toBe(['LNK-00001', 'LNK-00003', 'CN-00004'])
+        ->and($report['total'])->toBe(['Total', null, null, null, 140.0, 19.6, 159.6]);
 });
+
+test('a refund preserves sales tax in the paid month and reverses it in the refund month', function (string $serie): void {
+    $db = reportsDb();
+    reportsInvoice($db, 1, ['status' => 'refunded', 'paid_at' => '2026-01-15 10:00:00', 'taxname' => 'VAT', 'taxrate' => '20'], [100], true);
+    reportsInvoice($db, 2, ['status' => 'refunded', 'serie' => $serie, 'paid_at' => '2026-02-15 10:00:00', 'created_at' => '2026-02-15 10:00:00', 'taxname' => 'VAT', 'taxrate' => '20'], [-100], true);
+
+    $january = Reports::run(reportsContainer($db), 'sales_tax', ['from' => '2026-01-01', 'to' => '2026-01-31'], reportsNow());
+    $february = Reports::run(reportsContainer($db), 'sales_tax', ['from' => '2026-02-01', 'to' => '2026-02-28'], reportsNow());
+
+    expect($january['total'])->toBe(['Total', null, null, null, 100.0, 20.0, 120.0])
+        ->and($february['total'])->toBe(['Total', null, null, null, -100.0, -20.0, -120.0]);
+})->with(['credit note' => 'CN-', 'negative invoice' => 'LNK-']);
 
 test('top clients ranks clients by payments net of refunds', function (): void {
     $db = reportsDb();

@@ -757,7 +757,7 @@ test('a staff-created manual transaction pays the invoice and runs its renewal w
     $invoices = Mockery::mock(Service::class)->makePartial();
     $invoices->shouldReceive('countIncome')->once()->with($invoice);
     $items = Mockery::mock(ClientFence\Mod\Invoice\ServiceInvoiceItem::class)->makePartial();
-    $items->shouldReceive('creditInvoiceItem')->once()->with($item);
+    $items->shouldReceive('creditInvoiceItem')->once()->with($item, 62.0);
     $orders = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orders->shouldReceive('unsetUnpaidInvoice')->once()->with($order);
     $orders->shouldReceive('renewOrder')->once()->with($order)->andReturn(true);
@@ -782,6 +782,8 @@ test('a staff-created manual transaction pays the invoice and runs its renewal w
     $di['dbal'] = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $di['dbal']->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY)');
     $di['dbal']->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, status TEXT)');
+    $di['dbal']->executeStatement("CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, currency TEXT, status TEXT)");
+    $di['dbal']->executeStatement("INSERT INTO invoice VALUES (10, 5, 'USD', 'unpaid')");
     $di['api_system'] = (new ReflectionClass(ClientFence\Api\Proxy::class))->newInstanceWithoutConstructor();
     $di['mod_service'] = $di->protect(moduleService([
         'invoice' => $invoices, 'invoice:transaction' => $transactionService,

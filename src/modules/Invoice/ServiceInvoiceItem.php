@@ -299,9 +299,10 @@ class ServiceInvoiceItem implements InjectionAwareInterface
         $this->di['db']->store($pi);
     }
 
-    public function creditInvoiceItem(\Model_InvoiceItem $item): void
+    // ClientFence core patch: the invoice passes each line's share so the debits add up to the invoice total.
+    public function creditInvoiceItem(\Model_InvoiceItem $item, ?float $amount = null): void
     {
-        $total = $this->getTotalWithTax($item);
+        $total = $amount ?? $this->getTotalWithTax($item);
 
         $invoice = $this->di['db']->getExistingModelById('Invoice', $item->invoice_id, 'Invoice not found');
         $client = $this->di['db']->getExistingModelById('Client', $invoice->client_id, 'Client not found');

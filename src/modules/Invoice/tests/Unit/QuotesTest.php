@@ -21,7 +21,7 @@ function quotesDb(): Connection
         'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, email TEXT, country TEXT, currency TEXT, lang TEXT, email_approved INTEGER DEFAULT 0)',
         'CREATE TABLE tax (id INTEGER PRIMARY KEY, name TEXT, taxrate REAL, country TEXT, state TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, hash TEXT)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, hash TEXT, taxname TEXT, taxrate REAL)',
         'CREATE TABLE invoice_quote (id INTEGER PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL UNIQUE, client_id INTEGER, first_name TEXT NOT NULL DEFAULT \'\', last_name TEXT NOT NULL DEFAULT \'\', company TEXT NOT NULL DEFAULT \'\', email TEXT NOT NULL DEFAULT \'\', country TEXT NOT NULL DEFAULT \'\', currency TEXT NOT NULL, subject TEXT NOT NULL, stage TEXT NOT NULL DEFAULT \'draft\', valid_until TEXT, proposal TEXT NOT NULL, customer_notes TEXT NOT NULL, admin_notes TEXT NOT NULL, taxname TEXT NOT NULL DEFAULT \'\', taxrate REAL NOT NULL DEFAULT 0, invoice_id INTEGER, created_by INTEGER, sent_at TEXT, accepted_at TEXT, declined_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)',
         'CREATE TABLE invoice_quote_item (id INTEGER PRIMARY KEY AUTOINCREMENT, quote_id INTEGER NOT NULL, position INTEGER NOT NULL DEFAULT 0, description TEXT NOT NULL, quantity INTEGER NOT NULL DEFAULT 1, price REAL NOT NULL DEFAULT 0, discount REAL NOT NULL DEFAULT 0, taxed INTEGER NOT NULL DEFAULT 0)',
     ] as $sql) {
@@ -89,6 +89,11 @@ function quotesContainer(Connection $db, float $clientTax = 0.0): array
 
         public function store(object $model): void
         {
+            if ($model instanceof Model_Invoice) {
+                $this->db->update('invoice', ['taxname' => $model->taxname, 'taxrate' => $model->taxrate], ['id' => $model->id]);
+
+                return;
+            }
             $this->db->update('client', ['currency' => $model->currency], ['id' => $model->id]);
         }
     };
@@ -122,8 +127,8 @@ function quotesContainer(Connection $db, float $clientTax = 0.0): array
                 return number_format((float) $amount, 2) . ' ' . $code;
             }
         },
-        'invoice' => new class($db, $log) {
-            public function __construct(private Connection $db, private ArrayObject $log)
+        'invoice' => new class($db, $log, $clientTax) {
+            public function __construct(private Connection $db, private ArrayObject $log, private float $currentTax)
             {
             }
 
@@ -132,8 +137,10 @@ function quotesContainer(Connection $db, float $clientTax = 0.0): array
                 $invoice = new Model_Invoice();
                 $invoice->loadBean(new Tests\Helpers\DummyBean());
                 $invoice->id = 50 + count($this->log['invoices']);
-                $this->db->insert('invoice', ['id' => $invoice->id, 'hash' => 'inv' . $invoice->id]);
+                $this->db->insert('invoice', ['id' => $invoice->id, 'hash' => 'inv' . $invoice->id, 'taxname' => 'Current VAT', 'taxrate' => $this->currentTax]);
                 $invoice->client_id = $client->id;
+                $invoice->taxname = 'Current VAT';
+                $invoice->taxrate = $this->currentTax;
                 $this->log['invoices'] = [...$this->log['invoices'], ['client_id' => (int) $client->id, 'currency' => $client->currency] + $data];
 
                 return $invoice;
@@ -336,6 +343,40 @@ test('accepting makes the invoice with the discounted lines and emails it after'
 
     expect(fn () => Quotes::accept($di, $id, 'client'))->toThrow(InformationException::class, 'This quote is already accepted.')
         ->and($log['invoices'])->toHaveCount(1);
+});
+
+test('accepting a quote preserves its saved tax after the current rule changes', function (): void {
+    $db = quotesDb();
+    [$di] = quotesContainer($db, 20.0);
+    $id = Quotes::save($di, quotesForm());
+    $quote = Quotes::get($di, $id);
+    [$di, $log] = quotesContainer($db, 25.0);
+
+    $invoiceId = Quotes::accept($di, $id, 'staff');
+    $saved = $db->fetchAssociative('SELECT taxname, taxrate FROM invoice WHERE id = ?', [$invoiceId]);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = $invoiceId;
+    $invoice->taxrate = $saved['taxrate'];
+    $items = array_map(static function (array $line): Model_InvoiceItem {
+        $item = new Model_InvoiceItem();
+        $item->loadBean(new Tests\Helpers\DummyBean());
+        foreach ($line as $key => $value) {
+            $item->{$key} = $value;
+        }
+
+        return $item;
+    }, $log['invoices'][0]['items']);
+    $invoiceDi = Tests\Helpers\container();
+    $invoiceDi['db']->shouldReceive('find')->andReturn($items);
+    $itemService = new ClientFence\Mod\Invoice\ServiceInvoiceItem();
+    $invoiceDi['mod_service'] = $invoiceDi->protect(fn (): object => $itemService);
+    $invoiceService = new ClientFence\Mod\Invoice\Service();
+    $invoiceService->setDi($invoiceDi);
+
+    expect($saved['taxname'])->toBe('VAT')
+        ->and((float) $saved['taxrate'])->toBe(20.0)
+        ->and($invoiceService->getTotalWithTax($invoice))->toBe($quote['total']);
 });
 
 test('a prospect who accepts by the link gets an account with a confirmed email and the welcome email', function (): void {

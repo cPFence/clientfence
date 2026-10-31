@@ -1,5 +1,9 @@
 [
     {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: the invoice passes each line's share so the debits add up to the invoice total."
+    },
+    {
         "file": "modules/Servicedomain/Service.php",
         "done": "ClientFence core patch: cart domains must register or transfer before receiving registrar control."
     },
@@ -3422,5 +3426,29 @@
     {
         "file": "modules/Antispam/Service.php",
         "done": "ClientFence core patch: imported email cannot answer a browser CAPTCHA."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: settlement must see payments completed while it waited for the client's credit lock."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: line tax uses the extended price; the last debit reconciles subtotal rounding."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: Manage cannot record the payment that credits an Add Funds invoice."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: processed deposit transfers have already credited the client's balance."
+    },
+    {
+        "file": "modules/Currency/Service.php",
+        "done": "ClientFence core patch: all conversion rates must use the new default as their common base."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: refund documents share the invoice series and must reserve its next number."
     }
 ]

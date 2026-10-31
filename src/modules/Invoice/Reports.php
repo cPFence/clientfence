@@ -350,11 +350,10 @@ final class Reports
         $rows = $db->fetchAllAssociative(
             'SELECT i.id, i.serie, i.nr, i.client_id, i.buyer_first_name, i.buyer_last_name, i.buyer_company, i.paid_at, i.taxname, i.taxrate, '
             . self::invoiceSubtotal() . ' AS subtotal, ' . self::invoiceTax() . ' AS tax
-             FROM invoice i WHERE (i.status = ? OR (i.status = ? AND EXISTS (SELECT 1 FROM invoice_item ci WHERE ci.invoice_id = i.id AND ci.task = ?)))
+             FROM invoice i WHERE i.status IN (?, ?) AND NOT EXISTS (SELECT 1 FROM invoice_item ci WHERE ci.invoice_id = i.id AND ci.task = ?)
              AND i.currency = ? AND i.paid_at >= ? AND i.paid_at < ? ORDER BY i.paid_at, i.id',
-            // ClientFence: with the credit notes of account credit (a downgrade's unused time), which give the tax back;
-            // one whose credit a refund took back has another task and stays out with the refunded invoice.
-            ['paid', 'refunded', Service::CREDIT_NOTE_TASK, $report['currency'], $from . ' 00:00:00', self::dayAfter($to)]
+            // Sales keep their paid period; refund documents reverse tax in their own period, excluding taken-back credit notes.
+            ['paid', 'refunded', Service::CREDIT_NOTE_TAKEN_BACK_TASK, $report['currency'], $from . ' 00:00:00', self::dayAfter($to)]
         );
         $report['columns'] = [
             ['label' => __trans('Invoice'), 'type' => 'link'],

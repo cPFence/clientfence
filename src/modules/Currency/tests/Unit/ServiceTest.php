@@ -12,6 +12,34 @@ declare(strict_types=1);
 
 use function Tests\Helpers\container;
 
+test('changing the default currency rebases every conversion rate', function (): void {
+    $config = Doctrine\ORM\ORMSetup::createAttributeMetadataConfig([PATH_MODS . '/Currency/Entity'], true);
+    $config->setProxyDir(sys_get_temp_dir());
+    $config->setProxyNamespace('ClientFence\\Tests\\DoctrineProxies');
+    $config->setNamingStrategy(new Doctrine\ORM\Mapping\UnderscoreNamingStrategy(CASE_LOWER));
+    $em = new Doctrine\ORM\EntityManager(Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]), $config);
+    (new Doctrine\ORM\Tools\SchemaTool($em))->createSchema([$em->getClassMetadata(ClientFence\Mod\Currency\Entity\Currency::class)]);
+    $usd = (new ClientFence\Mod\Currency\Entity\Currency('USD'))->setIsDefault(true)->setConversionRate(1.0);
+    $egp = (new ClientFence\Mod\Currency\Entity\Currency('EGP'))->setConversionRate(0.5)->setIsRateManual(true);
+    $em->persist($usd);
+    $em->persist($egp);
+    $em->flush();
+    $di = container();
+    $di['em'] = $em;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = new ClientFence\Mod\Currency\Service();
+    $service->setDi($di);
+
+    expect($service->setAsDefault($egp))->toBeTrue();
+    $repository = $service->getCurrencyRepository();
+    expect($repository->findDefault()->getCode())->toBe('EGP')
+        ->and($repository->findOneByCode('EGP')->getConversionRate())->toBe(1.0)
+        ->and($repository->findOneByCode('USD')->getConversionRate())->toBe(2.0);
+    $em->clear();
+    expect($em->getRepository(ClientFence\Mod\Currency\Entity\Currency::class)->findOneBy(['code' => 'EGP'])->getConversionRate())->toBe(1.0)
+        ->and($em->getRepository(ClientFence\Mod\Currency\Entity\Currency::class)->findOneBy(['code' => 'USD'])->getConversionRate())->toBe(2.0);
+});
+
 test('di returns dependency injection container', function (): void {
     $service = new ClientFence\Mod\Currency\Service();
 
@@ -230,6 +258,7 @@ test('setAsDefault sets currency as default', function (string $modelType, strin
             ->andReturn(true);
     }
 
+    $model->shouldReceive('getConversionRate')->andReturn(1.0);
     $refetchedModel = Mockery::mock(ClientFence\Mod\Currency\Entity\Currency::class);
     $refetchedModel->shouldReceive('getCode')
         ->byDefault()
@@ -268,6 +297,10 @@ test('setAsDefault sets currency as default', function (string $modelType, strin
         ->atLeast()->once()
         ->andReturn($repositoryMock);
     if ($expects === 'atLeastOnce') {
+        $db = Mockery::mock(Doctrine\DBAL\Connection::class);
+        $db->shouldReceive('transactional')->once()->andReturnUsing(fn (callable $work) => $work($db));
+        $db->shouldReceive('executeStatement')->once()->with('UPDATE currency SET conversion_rate = ROUND(conversion_rate / ?, 6)', [1.0])->andReturn(1);
+        $emMock->shouldReceive('getConnection')->andReturn($db);
         $emMock->shouldReceive('persist')
             ->atLeast()->once();
         $emMock->shouldReceive('flush')

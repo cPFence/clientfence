@@ -736,14 +736,51 @@ class Service implements InjectionAwareInterface
     // ClientFence core patch: payment tasks run immediately unless the caller runs them after releasing its lock.
     public function markAsPaid(\Model_Invoice $invoice, $charge = true, $execute = true, bool $deferEvents = false): bool
     {
+        // ClientFence core patch: settlement must see payments completed while it waited for the client's credit lock.
+        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $charge, $execute, $deferEvents): bool {
+            $current = $this->di['dbal']->fetchAssociative('SELECT * FROM invoice WHERE id = ?', [$invoice->id]);
+            if ($current === false) {
+                throw new InformationException('Invoice not found');
+            }
+            foreach ($current as $column => $value) {
+                $invoice->{$column} = $value;
+            }
+
+            return $this->markAsPaidLocked($invoice, $charge, $execute, $deferEvents);
+        });
+    }
+
+    private function markAsPaidLocked(\Model_Invoice $invoice, $charge, $execute, bool $deferEvents): bool
+    {
         if ($invoice->status == \Model_Invoice::STATUS_PAID) {
             return true;
         }
 
         $invoiceItems = $this->di['db']->find('InvoiceItem', 'invoice_id = ?', [$invoice->id]);
         $invoiceItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
-        foreach ($invoiceItems as $item) {
-            $invoiceItemService->markAsPaid($item, $charge);
+        $amounts = [];
+        if ($charge) {
+            // ClientFence core patch: line tax uses the extended price; the last debit reconciles subtotal rounding.
+            $remainder = round($this->getTotalWithTax($invoice), 2);
+            $last = null;
+            foreach ($invoiceItems as $key => $item) {
+                $net = $invoiceItemService->getTotal($item);
+                $amounts[$key] = round($net + ($item->taxed && (float) $invoice->taxrate > 0 ? round($net * (float) $invoice->taxrate / 100, 2) : 0.0), 2);
+                $remainder = round($remainder - $amounts[$key], 2);
+                if (!$item->charged) {
+                    $last = $key;
+                }
+            }
+            if ($last !== null) {
+                $amounts[$last] = round($amounts[$last] + $remainder, 2);
+            }
+        }
+        foreach ($invoiceItems as $key => $item) {
+            if ($charge && !$item->charged) {
+                $invoiceItemService->creditInvoiceItem($item, $amounts[$key]);
+                $item->charged = true;
+            }
+            $invoiceItemService->markAsPaid($item, false);
         }
 
         $systemService = $this->di['mod_service']('system');
@@ -843,6 +880,13 @@ class Service implements InjectionAwareInterface
     {
         $payGateway = $this->validateAdminMarkAsPaidRequest($data, $invoice);
         $transactionId = isset($data['transactionId']) ? trim((string) $data['transactionId']) : null;
+        $invoiceTotal = $this->getTotalWithTax($invoice);
+        $isDeposit = $this->isInvoiceTypeDeposit($invoice);
+        // ClientFence core patch: processed deposit transfers have already credited the client's balance.
+        if ($isDeposit) {
+            $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [$invoice->id, \Model_Transaction::STATUS_PROCESSED]);
+            $invoiceTotal = max(0.0, round($invoiceTotal - $credited, 2));
+        }
 
         if ((int) $payGateway->id !== (int) $invoice->gateway_id) {
             $invoice->gateway_id = (int) $payGateway->id;
@@ -854,9 +898,8 @@ class Service implements InjectionAwareInterface
         // transaction their payments were missing from the transaction list and income by method.
         // getAdapterClassName loads the adapter file: CustomEgp is not autoloaded.
         $gatewayCode = (string) ($payGateway->gateway ?? '');
-        if ($gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class))) {
+        if ((!$isDeposit || $invoiceTotal > 0) && ($gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class)))) {
             $transactionService = $this->di['mod_service']('Invoice', 'Transaction');
-            $invoiceTotal = $this->getTotalWithTax($invoice);
             $newtx = $transactionService->create([
                 'invoice_id' => $invoice->id,
                 'gateway_id' => $invoice->gateway_id,
@@ -876,7 +919,9 @@ class Service implements InjectionAwareInterface
 
             $result = $this->markAsPaid($invoice, false);
             if ($result) {
-                $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId, $invoiceTotal);
+                if ($isDeposit) {
+                    $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId, $invoiceTotal);
+                }
                 $transaction->amount = $invoiceTotal;
                 $transaction->currency = $invoice->currency;
                 $transaction->status = \Model_Transaction::STATUS_PROCESSED;
@@ -891,8 +936,8 @@ class Service implements InjectionAwareInterface
         }
 
         $result = $this->markAsPaid($invoice, false);
-        if ($result) {
-            $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId);
+        if ($result && $isDeposit) {
+            $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId, $invoiceTotal);
         }
 
         return $result;
@@ -901,16 +946,16 @@ class Service implements InjectionAwareInterface
     /**
      * Credit the client balance for an Add Funds (deposit) invoice paid by an admin.
      *
-     * No-op for ordinary invoices. Must only be called when the payment
+     * Must only be called for a deposit invoice when the payment
      * happened in this call (i.e. markAsPaid() just returned true): the
      * admin flow marks items paid without charging them, so unlike gateway
      * payments nothing else credits the balance. Only deposit lines are
      * credited: a draft deposit invoice can gain non-deposit lines before
      * issuance, and those charges must not become spendable balance.
      */
-    private function creditDepositBalanceIfNeeded(\Model_Invoice $invoice, \Model_PayGateway $payGateway, ?string $transactionId, ?float $invoiceTotal = null): void
+    private function creditDepositBalanceIfNeeded(\Model_Invoice $invoice, \Model_PayGateway $payGateway, ?string $transactionId, float $invoiceTotal): void
     {
-        if (!$this->isInvoiceTypeDeposit($invoice)) {
+        if ($invoiceTotal <= 0) {
             return;
         }
 
@@ -933,8 +978,9 @@ class Service implements InjectionAwareInterface
                 }
             }
         } else {
-            $amount = $invoiceTotal ?? $this->getTotalWithTax($invoice);
+            $amount = $invoiceTotal;
         }
+        $amount = min($amount, $invoiceTotal);
 
         $client = $this->di['db']->getExistingModelById('Client', $invoice->client_id, 'Client not found');
 
@@ -1628,6 +1674,8 @@ class Service implements InjectionAwareInterface
 
                 if ($logic == 'negative_invoice') {
                     $new->serie = (string) $systemService->getParamValue('invoice_series_paid') ?: $invoice->serie;
+                    // ClientFence core patch: refund documents share the invoice series and must reserve its next number.
+                    $new->nr = $this->getNextInvoiceNumber();
                     $this->di['db']->store($new);
                 }
 
@@ -1787,6 +1835,10 @@ class Service implements InjectionAwareInterface
         // unpaid or canceled lost its locks); a refund goes through Refund, which makes the credit note.
         $newStatus = $data['status'] ?? $previousStatus;
         $markPaid = $newStatus === \Model_Invoice::STATUS_PAID && $previousStatus !== \Model_Invoice::STATUS_PAID;
+        // ClientFence core patch: Manage cannot record the payment that credits an Add Funds invoice.
+        if ($markPaid && $this->isInvoiceTypeDeposit($model)) {
+            throw new InformationException('Use Mark as Paid to record payment for an Add Funds invoice.');
+        }
         if ($newStatus !== $previousStatus && ($this->isBooked($model) || $newStatus === \Model_Invoice::STATUS_REFUNDED)) {
             throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
         }
