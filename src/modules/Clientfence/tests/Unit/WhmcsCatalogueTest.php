@@ -179,6 +179,18 @@ function whmcsProductByTitle(Connection $db, string $title, int $isAddon = 0): a
     return $db->fetchAssociative('SELECT p.*, pp.type AS payment_type, pp.m_price, pp.m_setup_price, pp.m_enabled, pp.a_price, pp.a_enabled, pp.q_enabled, pp.once_price, pp.once_setup_price FROM product p JOIN product_payment pp ON pp.id = p.product_payment_id WHERE p.title = ? AND p.is_addon = ? ORDER BY p.id', [$title, $isAddon]) ?: [];
 }
 
+test('long import map keys fit the source id column and can be read back', function (): void {
+    $target = whmcsCatalogueTarget();
+    $map = new Map($target);
+    $key = str_repeat('a', 100);
+    $map->put('customaddon', $key, 42);
+
+    expect($map->get('customaddon', $key))->toBe(42)
+        ->and((new Map($target))->get('customaddon', $key))->toBe(42)
+        ->and($map->has('customaddon', $key))->toBeTrue()
+        ->and(strlen((string) $target->fetchOne('SELECT source_id FROM ' . Map::TABLE . ' WHERE entity = ?', ['customaddon'])))->toBeLessThanOrEqual(64);
+});
+
 test('groups, servers (switched off, keys kept encrypted) and hosting products', function (): void {
     $target = whmcsCatalogueTarget();
     whmcsCatalogueAll(whmcsCatalogueSource(), $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));
@@ -317,7 +329,7 @@ function whmcsServicesSource(): Connection
 {
     $db = whmcsCatalogueSource();
     foreach ([
-        "CREATE TABLE tblhosting (id INTEGER PRIMARY KEY, userid INTEGER, orderid INTEGER DEFAULT 0, packageid INTEGER, server INTEGER DEFAULT 0, regdate TEXT, domain TEXT DEFAULT '', paymentmethod TEXT DEFAULT '', qty INTEGER DEFAULT 1, firstpaymentamount REAL DEFAULT 0, amount REAL DEFAULT 0, billingcycle TEXT, nextduedate TEXT, termination_date TEXT DEFAULT '0000-00-00', domainstatus TEXT, username TEXT DEFAULT '', password TEXT DEFAULT '', notes TEXT DEFAULT '', subscriptionid TEXT DEFAULT '', promoid INTEGER DEFAULT 0, suspendreason TEXT DEFAULT '', overideautosuspend TEXT DEFAULT '', dedicatedip TEXT DEFAULT '')",
+        "CREATE TABLE tblhosting (id INTEGER PRIMARY KEY, userid INTEGER, orderid INTEGER DEFAULT 0, packageid INTEGER, server INTEGER DEFAULT 0, regdate TEXT, domain TEXT DEFAULT '', paymentmethod TEXT DEFAULT '', qty INTEGER DEFAULT 1, firstpaymentamount REAL DEFAULT 0, amount REAL DEFAULT 0, billingcycle TEXT, nextduedate TEXT, termination_date TEXT DEFAULT '0000-00-00', domainstatus TEXT, username TEXT DEFAULT '', password TEXT DEFAULT '', notes TEXT DEFAULT '', subscriptionid TEXT DEFAULT '', promoid INTEGER DEFAULT 0, suspendreason TEXT DEFAULT '', overideautosuspend TEXT DEFAULT '', overidesuspenduntil TEXT DEFAULT '0000-00-00', dedicatedip TEXT DEFAULT '')",
         "CREATE TABLE tblhostingaddons (id INTEGER PRIMARY KEY, orderid INTEGER DEFAULT 0, hostingid INTEGER, addonid INTEGER, userid INTEGER, name TEXT DEFAULT '', qty INTEGER DEFAULT 1, recurring REAL DEFAULT 0, billingcycle TEXT, status TEXT, regdate TEXT, nextduedate TEXT, termination_date TEXT DEFAULT '0000-00-00', notes TEXT DEFAULT '', subscriptionid TEXT DEFAULT '')",
         "CREATE TABLE tbldomains (id INTEGER PRIMARY KEY, userid INTEGER, orderid INTEGER DEFAULT 0, type TEXT, registrationdate TEXT, domain TEXT, firstpaymentamount REAL DEFAULT 0, recurringamount REAL DEFAULT 0, registrar TEXT DEFAULT '', registrationperiod INTEGER DEFAULT 1, expirydate TEXT, subscriptionid TEXT DEFAULT '', promoid INTEGER DEFAULT 0, status TEXT, nextduedate TEXT, additionalnotes TEXT DEFAULT '', dnsmanagement INTEGER DEFAULT 0, emailforwarding INTEGER DEFAULT 0, idprotection INTEGER DEFAULT 0, donotrenew INTEGER DEFAULT 0)",
         'CREATE TABLE tblcancelrequests (id INTEGER PRIMARY KEY, date TEXT, relid INTEGER, reason TEXT, type TEXT)',
@@ -522,6 +534,24 @@ test('services become orders with their hosting account, licence or custom servi
         ->toContain('Service add-on #3 was not imported')
         ->toContain('Service #8: WHMCS billed 3 units for 10.00 in all');
 });
+
+test('service suspension overrides keep their flag and end date', function (string $until, string $expected): void {
+    $source = whmcsServicesSource();
+    $source->update('tblhosting', ['overideautosuspend' => 'on', 'overidesuspenduntil' => $until], ['id' => 2]);
+    $target = whmcsServicesTarget();
+    whmcsCatalogueAll($source, $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));
+    whmcsServicesAll($source, $target);
+    $order = whmcsOrderOf($target, 'service', 2);
+
+    expect($target->fetchAllKeyValue('SELECT name, value FROM client_order_meta WHERE client_order_id = ?', [$order['id']]))->toBe([
+        \ClientFence\Mod\Order\Service::META_AUTO_SUSPEND_OVERRIDE => '1',
+        \ClientFence\Mod\Order\Service::META_AUTO_SUSPEND_UNTIL => $expected,
+    ]);
+})->with([
+    'dated' => ['2027-01-10', '2027-01-10'],
+    'zero date' => ['0000-00-00', ''],
+    'empty date' => ['', ''],
+]);
 
 test('domains become domain orders that renew at the domain price', function (): void {
     $source = whmcsServicesSource();

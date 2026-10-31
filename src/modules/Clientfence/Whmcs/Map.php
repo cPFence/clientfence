@@ -25,9 +25,11 @@ final class Map
 
     public function get(string $entity, int|string $sourceId): ?int
     {
+        $sourceId = (string) $sourceId;
+        $sourceId = mb_strlen($sourceId) > 64 ? 'sha1:' . sha1($sourceId) : $sourceId;
         $this->load($entity);
 
-        return $this->cache[$entity][(string) $sourceId] ?? null;
+        return $this->cache[$entity][$sourceId] ?? null;
     }
 
     public function has(string $entity, int|string $sourceId): bool
@@ -37,15 +39,17 @@ final class Map
 
     public function put(string $entity, int|string $sourceId, int $targetId): void
     {
+        $sourceId = (string) $sourceId;
+        $sourceId = mb_strlen($sourceId) > 64 ? 'sha1:' . sha1($sourceId) : $sourceId;
         $this->load($entity);
         $this->db->insert(self::TABLE, [
             'source' => self::SOURCE,
             'entity' => $entity,
-            'source_id' => (string) $sourceId,
+            'source_id' => $sourceId,
             'target_id' => $targetId,
             'created_at' => date('Y-m-d H:i:s'),
         ]);
-        $this->cache[$entity][(string) $sourceId] = $targetId;
+        $this->cache[$entity][$sourceId] = $targetId;
     }
 
     public function count(string $entity): int

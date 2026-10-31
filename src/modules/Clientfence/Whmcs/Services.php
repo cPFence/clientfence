@@ -680,7 +680,9 @@ final class Services
             $this->warn(sprintf('%s has a cancellation request (%s): it gets no renewal invoice; cancel it when it ends.', $name, $request['type'] ?: 'no type'));
         }
         if ($status !== 'canceled' && ((string) ($row['overideautosuspend'] ?? '') === 'on' || (int) ($row['overideautosuspend'] ?? 0) === 1)) {
-            $this->warn(sprintf('%s was kept from automatic suspension in WHMCS: ClientFence has no such setting; it is suspended when overdue.', $name));
+            $until = Accounts::date($row['overidesuspenduntil'] ?? null);
+            $this->meta($orderId, \ClientFence\Mod\Order\Service::META_AUTO_SUSPEND_OVERRIDE, '1');
+            $this->meta($orderId, \ClientFence\Mod\Order\Service::META_AUTO_SUSPEND_UNTIL, $until === null ? '' : substr($until, 0, 10));
         }
         if ($renews && $status === 'active' && $next !== null && $next < $this->now) {
             $this->warn(sprintf('%s was due on %s: it is overdue.', $name, substr($next, 0, 10)));

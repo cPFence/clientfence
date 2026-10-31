@@ -8,6 +8,7 @@ declare(strict_types=1);
  * ClientFence database, both SQLite: WHMCS's column names only, no WHMCS code or data.
  */
 
+use ClientFence\InformationException;
 use ClientFence\Mod\Clientfence\Whmcs\Archive;
 use ClientFence\Mod\Clientfence\Whmcs\Inventory;
 use ClientFence\Mod\Clientfence\Whmcs\Licensing;
@@ -17,6 +18,15 @@ use ClientFence\Mod\Servicelicense\Bans;
 use ClientFence\Mod\Servicelicense\CheckLog;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Symfony\Component\Filesystem\Filesystem;
+
+beforeEach(function (): void {
+    $this->archiveBackupDir = getenv('CLIENTFENCE_BACKUP_DIR');
+});
+
+afterEach(function (): void {
+    putenv($this->archiveBackupDir === false ? 'CLIENTFENCE_BACKUP_DIR' : 'CLIENTFENCE_BACKUP_DIR=' . $this->archiveBackupDir);
+});
 
 function whmcsLicensingSource(string $logPrune = '30'): Connection
 {
@@ -97,6 +107,7 @@ function whmcsArchiveFile(): string
 {
     $dir = sys_get_temp_dir() . '/cf-whmcs-archive-' . bin2hex(random_bytes(4));
     mkdir($dir, 0700, true);
+    putenv('CLIENTFENCE_BACKUP_DIR=' . $dir);
     register_shutdown_function(static function () use ($dir): void {
         exec('rm -rf ' . escapeshellarg($dir));
     });
@@ -170,6 +181,24 @@ test('the archive takes every module without a mapper, PayPal billing agreements
         ->and(array_column(array_column($lines, 'row'), 'agreementID'))->toBe(['B-1AA', 'B-2BB', 'B-3CC'])
         ->and($lines[3]['row']['payload'])->toBe(['base64' => base64_encode("\xff\x00\xfe binary")])
         ->and($lines[4]['row'])->toBe(['id' => 2, 'invoice_id' => 11, 'payload' => 'plain']);
+});
+
+test('an existing archive folder inside the website is refused before a batch writes', function (): void {
+    $dir = PATH_ROOT . '/data/cache/cf-whmcs-archive-' . bin2hex(random_bytes(4));
+    $filesystem = new Filesystem();
+    try {
+        $filesystem->mkdir($dir, 0700);
+        putenv('CLIENTFENCE_BACKUP_DIR=' . $dir);
+        $source = whmcsLicensingSource();
+        $source->insert('ProductTrialManager_Logger', ['id' => 1, 'message' => 'Archived settings']);
+        $path = Archive::file($dir, '2026-10-19 12:00:00');
+        $archive = new Archive(new Source($source), new Map(whmcsLicensingTarget()), $path);
+
+        expect(fn () => $archive->batch('archive', 0, 2))->toThrow(InformationException::class, 'inside the website');
+        expect($filesystem->exists($path))->toBeFalse();
+    } finally {
+        $filesystem->remove($dir);
+    }
 });
 
 test('a batch that rolls back, or never committed, leaves nothing in the archive file', function (): void {

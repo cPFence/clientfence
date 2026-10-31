@@ -404,7 +404,7 @@ final class Support
         $this->db->insert('support_pr', [
             'support_pr_category_id' => $this->predefinedCategory((int) ($row['catid'] ?? 0)),
             'title' => self::cut($row['name'] ?? '', 100) ?: 'Reply ' . $id,
-            'content' => self::fits(Text::breaks((string) ($row['reply'] ?? ''))),
+            'content' => Text::breaks((string) ($row['reply'] ?? '')),
             'created_at' => $this->now,
             'updated_at' => $this->now,
         ]);
@@ -606,7 +606,7 @@ final class Support
             'support_ticket_id' => $ticketId,
             'client_id' => $clientId,
             'admin_id' => $staffId,
-            'content' => self::fits(Text::breaks($content)),
+            'content' => Text::breaks($content),
             'created_at' => $date,
             'updated_at' => $date,
         ]);
@@ -705,7 +705,7 @@ final class Support
         $this->db->insert('support_ticket_note', [
             'support_ticket_id' => $ticketId,
             'admin_id' => $this->staffNamed((string) ($row['admin'] ?? '')),
-            'note' => self::fits(Text::breaks((string) ($row['message'] ?? ''))),
+            'note' => Text::breaks((string) ($row['message'] ?? '')),
             'created_at' => $date,
             'updated_at' => $date,
         ]);
@@ -833,7 +833,7 @@ final class Support
             'kb_article_category_id' => $categoryId,
             'views' => max(0, (int) ($row['views'] ?? 0)),
             'title' => $title,
-            'content' => self::fits(Text::markdown((string) ($row['article'] ?? ''))),
+            'content' => Text::markdown((string) ($row['article'] ?? '')),
             'slug' => $this->slug('support_kb_article', $title, 'article'),
             'status' => $draft ? 'draft' : 'active',
             'created_at' => $this->now,
@@ -866,7 +866,7 @@ final class Support
             'admin_id' => null,
             'title' => $title,
             'description' => mb_strlen($summary) > 250 ? rtrim(mb_substr($summary, 0, 247)) . '...' : $summary,
-            'content' => self::fits(Text::markdown($content)),
+            'content' => Text::markdown($content),
             'slug' => $this->slug('post', $title, 'announcement'),
             'status' => $published ? 'active' : 'draft',
             'publish_at' => $date,

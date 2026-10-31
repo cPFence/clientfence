@@ -13,6 +13,7 @@ use ClientFence\Mod\Clientfence\Whmcs\Cipher;
 use ClientFence\Mod\Clientfence\Whmcs\Map;
 use ClientFence\Mod\Clientfence\Whmcs\Run;
 use ClientFence\Mod\Clientfence\Whmcs\Source;
+use ClientFence\Mod\Extension\Entity\ExtensionMeta;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 
@@ -247,6 +248,29 @@ test('a second run imports nothing twice, and the check compares WHMCS with the 
         ->and($check['fields'])->toMatchArray(['whmcs' => 2, 'imported' => 2])
         ->and($check['twofactor'])->toMatchArray(['whmcs' => 2, 'imported' => 1])
         ->and($check['google'])->toMatchArray(['whmcs' => 1, 'imported' => 1]);
+});
+
+test('import settings are saved and read back when an extension has no config row', function (): void {
+    $target = whmcsAccountsTarget();
+    $orm = Doctrine\ORM\ORMSetup::createAttributeMetadataConfig([dirname(__DIR__, 3) . '/Extension/Entity'], true);
+    $orm->setProxyDir(sys_get_temp_dir());
+    $orm->setProxyNamespace('ClientFence\\Tests\\DoctrineProxies');
+    $em = new Doctrine\ORM\EntityManager($target, $orm);
+    (new Doctrine\ORM\Tools\SchemaTool($em))->createSchema([$em->getClassMetadata(ExtensionMeta::class)]);
+
+    $di = new Pimple\Container();
+    $di['em'] = $em;
+    $di['crypt'] = new ClientFence\Crypt();
+    $di['cache'] = new Symfony\Component\Cache\Adapter\ArrayAdapter();
+    $service = new ClientFence\Mod\Extension\Service();
+    $service->setDi($di);
+    $di['mod_service'] = $di->protect(static fn (string $ext): ClientFence\Mod\Extension\Service => $service);
+    $changes = ['custom_fields' => ['custom_1' => ['title' => 'Passport', 'active' => 0, 'required' => 0]]];
+
+    (new ReflectionMethod(Run::class, 'mergeConfig'))->invoke(null, $di, 'mod_client', $changes);
+    $em->clear();
+
+    expect($service->getConfig('mod_client'))->toBe(['ext' => 'mod_client'] + $changes);
 });
 
 test('a new run counts what each step reads', function (): void {

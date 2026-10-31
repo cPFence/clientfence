@@ -407,20 +407,22 @@ test('predefined replies, the knowledge base, announcements, network issues and 
         ->toContain('WHMCS keeps only the names of email attachments');
 });
 
-test('text that grows past a TEXT column when converted is cut to fit', function (): void {
+test('converted ticket replies, notes and predefined replies keep their final line beyond 64 KB', function (): void {
     $source = whmcsSupportSource();
-    $long = str_repeat(str_repeat('é', 30) . "\n", 1050);
+    $long = str_repeat(str_repeat('é', 5) . "\n", 5500) . 'Final resolution.';
     expect(strlen($long))->toBeLessThan(65535)
-        ->and(strlen(Text::breaks($long)))->toBeGreaterThan(65535);
+        ->and(strlen(Text::breaks($long)))->toBeGreaterThan(70000);
+    $source->update('tblticketreplies', ['message' => $long], ['id' => 1]);
     $source->insert('tblticketnotes', ['id' => 2, 'ticketid' => 5, 'admin' => 'Sam Support', 'date' => '2026-01-10 10:06:00', 'message' => $long]);
     $source->insert('tblticketpredefinedreplies', ['id' => 3, 'catid' => 0, 'name' => 'Log', 'reply' => $long]);
     $target = whmcsSupportTarget();
     whmcsSupportAll($source, $target, '', whmcsSupportFolder('files'));
     $map = new Map($target);
 
-    foreach ([['support_ticket_note', 'note', 'ticketnote', 2], ['support_pr', 'content', 'predefined', 3]] as [$table, $column, $entity, $id]) {
+    foreach ([['support_ticket_message', 'content', 'reply', 1], ['support_ticket_note', 'note', 'ticketnote', 2], ['support_pr', 'content', 'predefined', 3]] as [$table, $column, $entity, $id]) {
         $text = (string) $target->fetchOne("SELECT {$column} FROM {$table} WHERE id = ?", [$map->get($entity, $id)]);
-        expect(strlen($text))->toBeLessThanOrEqual(65535)->toBeGreaterThan(65000)
+        expect($text)->toEndWith("\nFinal resolution.")
+            ->and(strlen($text))->toBeGreaterThan(70000)
             ->and(mb_check_encoding($text, 'UTF-8'))->toBeTrue();
     }
 });

@@ -129,9 +129,7 @@ final class Archive
             throw new \RuntimeException('No archive file was given.');
         }
         $dir = dirname($this->path);
-        if (!is_dir($dir)) {
-            \ClientFence\Mod\Clientfence\Backups::localFolder();
-        }
+        \ClientFence\Mod\Clientfence\Backups::localFolder();
         $expected = $this->size($after);
         clearstatcache(true, $this->path);
         if (!is_file($this->path)) {

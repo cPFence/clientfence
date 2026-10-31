@@ -65,22 +65,23 @@ final class Run
      */
     public static function apply(\Pimple\Container $di, float $seconds = 0.0, int $batch = self::BATCH): array
     {
-        $state = self::state($di);
-        if ($state === null) {
-            if (!Import::target($di)['fresh']) {
-                throw new InformationException('This install already has clients, orders, invoices or tickets. The WHMCS import needs a fresh install.');
-            }
-        } elseif (isset($state['finished_at'])) {
-            return $state;
-        }
-        $settings = Import::settings($di);
         $db = $di['em']->getConnection();
         \ClientFence\Mod\Clientfence\Service::ensureTables($di, true);
         if (!self::lock($db)) {
             throw new InformationException('The import is already running (another tab or the console). Wait for it to finish.');
         }
-        $source = Source::open($di, $settings);
+        $source = null;
         try {
+            $state = self::state($di);
+            if ($state === null) {
+                if (!Import::target($di)['fresh']) {
+                    throw new InformationException('This install already has clients, orders, invoices or tickets. The WHMCS import needs a fresh install.');
+                }
+            } elseif (isset($state['finished_at'])) {
+                return $state;
+            }
+            $settings = Import::settings($di);
+            $source = Source::open($di, $settings);
             if (!$source->isWhmcs()) {
                 throw new InformationException('This database has no WHMCS tables. Check the database name.');
             }
@@ -90,7 +91,7 @@ final class Run
             $state ??= self::start($source);
             $state = self::work($di, $db, $source, $state, $seconds, $batch);
         } finally {
-            $source->close();
+            $source?->close();
             self::unlock($db);
         }
 
@@ -425,7 +426,10 @@ final class Run
         }
         $meta = $service->getExtensionMetaRepository()->findOneByExtensionAndScope($ext, 'config');
         if ($meta === null) {
-            throw new \RuntimeException('The settings of ' . $ext . ' could not be found.');
+            $meta = new \ClientFence\Mod\Extension\Entity\ExtensionMeta();
+            $meta->setExtension($ext);
+            $meta->setMetaKey('config');
+            $di['em']->persist($meta);
         }
         $meta->setMetaValue($di['crypt']->encrypt((string) json_encode($config), Config::getProperty('info.salt')));
         $di['em']->flush();
