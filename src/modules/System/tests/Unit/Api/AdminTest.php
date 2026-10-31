@@ -90,6 +90,35 @@ test('update cache settings preserves a literal "0" redis password', function ()
     }
 });
 
+test('blank redis passwords are reused only for the saved endpoint', function (string $host, string $port, ?string $expectedPassword): void {
+    $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $originalConfig = Config::getConfig();
+
+    try {
+        $config = $originalConfig;
+        $config['cache'] = [
+            'driver' => 'filesystem',
+            'redis' => ['host' => 'redis.example.com', 'port' => 6379, 'password' => 'saved-secret'],
+        ];
+        Config::setConfig($config, false);
+
+        $api->update_cache_settings([
+            'driver' => 'filesystem',
+            'redis_host' => $host,
+            'redis_port' => $port,
+            'redis_password' => '',
+        ]);
+
+        expect(Config::getProperty('cache.redis.password'))->toBe($expectedPassword);
+    } finally {
+        Config::setConfig($originalConfig, false);
+    }
+})->with([
+    'same host and normalized port' => ['redis.example.com', '6379', 'saved-secret'],
+    'changed host' => ['other.example.com', '6379', null],
+    'changed port' => ['redis.example.com', '6380', null],
+]);
+
 test('update cache settings clears the previously configured backend, not just the new one', function (): void {
     if (hasRedisExtension()) {
         $this->markTestSkipped('This test requires an environment without the redis/relay extension.');

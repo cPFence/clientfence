@@ -302,36 +302,49 @@ test('getThemeSettings with empty presets returns empty array', function (): voi
     expect($result)->toBe([]);
 });
 
-test('updateSettings updates theme settings', function (): void {
+test('theme settings saves reserve injected javascript for super administrators', function (bool $isSuperAdministrator, ?string $savedJavascript, string $expectedJavascript, bool $submitJavascript): void {
     $service = new Service();
+    $preset = $savedJavascript === null ? 'NewPreset' : 'default';
+    $meta = $savedJavascript === null ? null : (new ExtensionMeta())->setMetaValue(json_encode(['inject_javascript' => $savedJavascript]));
     $repositoryMock = Mockery::mock(ClientFence\Mod\Extension\Repository\ExtensionMetaRepository::class);
     $repositoryMock->shouldReceive('findOneByExtensionAndScope')
-        ->atLeast()
-        ->once()
-        ->andReturn(null);
+        ->with('mod_theme', $preset, 'settings', 'palisade')
+        ->andReturn($meta);
     $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
     $emMock->shouldReceive('persist')
-        ->atLeast()
-        ->once()
-        ->with(Mockery::type(ExtensionMeta::class));
-    $emMock->shouldReceive('flush')
-        ->atLeast()
-        ->once();
+        ->times($meta === null ? 1 : 0)
+        ->with(Mockery::type(ExtensionMeta::class))
+        ->andReturnUsing(function (ExtensionMeta $created) use (&$meta): void {
+            $meta = $created;
+        });
+    $emMock->shouldReceive('flush')->once();
 
     $themeMock = Mockery::mock(Model\Theme::class);
-    $themeMock->shouldReceive('getName')
-        ->atLeast()
-        ->once()
-        ->andReturn('default');
+    $themeMock->shouldReceive('getName')->andReturn('palisade');
+    $themeMock->shouldReceive('getPresetFromSettingsDataFile')->with($preset)->andReturn([]);
 
     $di = themeContainerWithRepository($repositoryMock, $emMock);
+    $staffService = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffService->shouldReceive('checkPermissionsAndThrowException')->once()->with('theme', 'manage_settings');
+    $staffService->shouldReceive('isSuperAdministrator')->once()->andReturn($isSuperAdministrator);
+    $di['mod_service'] = $di->protect(fn () => $staffService);
 
     $service->setDi($di);
-    $params = [];
-    $result = $service->updateSettings($themeMock, 'default', $params);
-    expect($result)->toBeBool();
-    expect($result)->toBeTrue();
-});
+    $params = ['color' => 'blue'];
+    if ($submitJavascript) {
+        $params['inject_javascript'] = 'newScript();';
+    }
+    $service->updateSettings($themeMock, $preset, $params);
+
+    expect(json_decode($meta->getMetaValue(), true))
+        ->toBe(['color' => 'blue', 'inject_javascript' => $expectedJavascript]);
+})->with([
+    'staff current preset' => [false, 'savedScript();', 'savedScript();', true],
+    'staff omitted field' => [false, 'savedScript();', 'savedScript();', false],
+    'staff new preset' => [false, null, '', true],
+    'super administrator current preset' => [true, 'savedScript();', 'newScript();', true],
+    'super administrator new preset' => [true, null, 'newScript();', true],
+]);
 
 test('regenerateThemeSettingsDataFile regenerates settings file', function (): void {
     $service = new Service();

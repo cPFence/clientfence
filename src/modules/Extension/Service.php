@@ -682,6 +682,11 @@ class Service implements InjectionAwareInterface
         $this->hasManagePermission($data['ext']);
         $ext = $data['ext'];
         $stored = $this->getConfig($ext);
+        // ClientFence core patch: email settings permission must not grant server command execution through custom DSNs.
+        if ($ext === 'mod_email' && !$this->di['mod_service']('Staff')->isSuperAdministrator()) {
+            $transportKeys = array_flip(['mailer', 'custom_dsn', 'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'sendgrid_key']);
+            $data = array_diff_key($data, $transportKeys) + array_intersect_key($stored, $transportKeys);
+        }
         // ClientFence: settings a module's settings page saves with their own forms
         // (Clientfence\Service::SETTINGS, the hosting panels' switches, Google sign-in, ticket files,
         // email import and network status) are kept

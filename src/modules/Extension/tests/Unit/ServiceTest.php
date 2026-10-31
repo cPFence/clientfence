@@ -855,6 +855,63 @@ test('setConfig keeps the ClientFence settings a module page saves with their ow
     ],
 ]);
 
+test('setConfig reserves mail transport changes for super administrators', function (bool $isSuperAdministrator, array $stored, array $sentTransport, array $expectedTransport): void {
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('hasManagePermission')->once()->with('mod_email')->andReturnNull();
+    $service->shouldReceive('getConfig')->once()->with('mod_email')->andReturn($stored);
+
+    $staffService = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffService->shouldReceive('isSuperAdministrator')->once()->andReturn($isSuperAdministrator);
+
+    $saved = null;
+    $crypt = Mockery::mock(ClientFence\Crypt::class);
+    $crypt->shouldReceive('encrypt')->once()->andReturnUsing(function (string $config) use (&$saved): string {
+        $saved = json_decode($config, true);
+
+        return 'encryptedConfig';
+    });
+
+    $metaRepository = Mockery::mock(ExtensionMetaRepository::class);
+    $metaRepository->shouldReceive('findOneByExtensionAndScope')->with('mod_email', 'config')->andReturn(new ExtensionMeta());
+    $em = extensionBuildEm(null, $metaRepository);
+    $em->shouldReceive('flush')->once();
+
+    $di = container();
+    $di['em'] = $em;
+    $di['crypt'] = $crypt;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $staffService);
+    $di['cache'] = new Symfony\Component\Cache\Adapter\ArrayAdapter();
+    $service->setDi($di);
+
+    $fields = ['ext' => 'mod_email', 'from_name' => 'Updated sender'];
+    expect($service->setConfig($fields + $sentTransport))->toBeTrue();
+    expect($saved)->toBe($fields + $expectedTransport);
+})->with(function (): iterable {
+    $storedTransport = [
+        'mailer' => 'smtp',
+        'custom_dsn' => 'smtp://saved.test',
+        'smtp_host' => 'saved.test',
+        'smtp_port' => '587',
+        'smtp_username' => 'saved-user',
+        'smtp_password' => 'saved-password',
+        'sendgrid_key' => 'saved-key',
+    ];
+    $sentTransport = [
+        'mailer' => 'custom',
+        'custom_dsn' => 'smtp://changed.test',
+        'smtp_host' => 'changed.test',
+        'smtp_port' => '465',
+        'smtp_username' => 'changed-user',
+        'smtp_password' => 'changed-password',
+        'sendgrid_key' => 'changed-key',
+    ];
+
+    yield 'staff cannot replace stored transport settings' => [false, $storedTransport, $sentTransport, $storedTransport];
+    yield 'staff retain omitted transport settings' => [false, $storedTransport, [], $storedTransport];
+    yield 'staff cannot add transport settings' => [false, [], $sentTransport, []];
+    yield 'super administrators can change transport settings' => [true, $storedTransport, $sentTransport, $sentTransport];
+});
+
 test('hasManagePermission denies access when module does not declare manage_settings', function (): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldAllowMockingProtectedMethods();

@@ -3486,5 +3486,41 @@
     {
         "file": "modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig",
         "done": "ClientFence core patch: a Simple license length of 20 gives 16 random characters."
+    },
+    {
+        "file": "library/ClientFence/Mail.php",
+        "done": "ClientFence core patch: custom mail settings must not select a server command."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch: theme settings permission must not grant script execution in client sessions."
+    },
+    {
+        "file": "modules/System/Api/Admin.php",
+        "done": "ClientFence core patch: a saved Redis password belongs only to its configured host and port."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_settings.html.twig",
+        "done": "ClientFence core patch: unchecked switches save 0, so invoice hash access and auto approval can be turned off."
+    },
+    {
+        "file": "modules/Theme/templates/admin/mod_theme_preset.html.twig",
+        "done": "ClientFence core patch: staff who are not Super Administrators are told their footer JavaScript is not saved."
+    },
+    {
+        "file": "modules/Theme/Controller/Admin.php",
+        "done": "ClientFence core patch: the page tells other staff that only Super Administrators save the footer JavaScript."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: email settings permission must not grant server command execution through custom DSNs."
+    },
+    {
+        "file": "modules/Email/templates/admin/mod_email_settings.html.twig",
+        "done": "ClientFence core patch: only Super Administrators save the email transport settings, so the form says so."
+    },
+    {
+        "file": "library/ClientFence/Mail.php",
+        "done": "ClientFence core patch: encode the SendGrid key so DSN delimiters stay inside the credential."
     }
 ]

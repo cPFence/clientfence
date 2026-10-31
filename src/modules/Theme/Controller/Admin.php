@@ -130,6 +130,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
             'error' => $error,
             'theme_code' => $t->getName(),
             'settings_html' => new \Twig\Markup($html, 'UTF-8'),
+            // ClientFence core patch: the page tells other staff that only Super Administrators save the footer JavaScript.
+            'is_super_admin' => $this->di['mod_service']('Staff')->isSuperAdministrator(),
             'uploaded' => $t->getUploadedAssets(),
             'settings' => $settings,
             'current_preset' => $preset,

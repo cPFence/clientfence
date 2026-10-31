@@ -203,6 +203,11 @@ class Service implements InjectionAwareInterface
     {
         $this->di['mod_service']('Staff')->checkPermissionsAndThrowException('theme', 'manage_settings');
 
+        // ClientFence core patch: theme settings permission must not grant script execution in client sessions.
+        if (!$this->di['mod_service']('Staff')->isSuperAdministrator()) {
+            $params['inject_javascript'] = $this->getThemeSettings($theme, $preset)['inject_javascript'] ?? '';
+        }
+
         return $this->persistSettings($theme, $preset, $params);
     }
 

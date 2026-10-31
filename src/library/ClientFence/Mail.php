@@ -162,12 +162,18 @@ class Mail
                 if (empty($options['sendgrid_key'])) {
                     throw new InformationException('A SendGrid API key is required to send emails via SendGrid');
                 }
-                $dsn = 'sendgrid://' . $options['sendgrid_key'] . '@default';
+                // ClientFence core patch: encode the SendGrid key so DSN delimiters stay inside the credential.
+                $dsn = 'sendgrid://' . rawurlencode($options['sendgrid_key']) . '@default';
 
                 break;
             case 'custom':
                 if (empty($this->dsn)) {
                     throw new InformationException("Unable to send email: 'Custom' transport method was selected without a custom DSN");
+                }
+                // ClientFence core patch: custom mail settings must not select a server command.
+                // Symfony reads options with parse_str, which decodes once; failover() and roundrobin() hold several DSNs.
+                if (preg_match('/[?&]command[=\[]/i', rawurldecode($this->dsn)) === 1) {
+                    throw new InformationException('Custom mail DSNs cannot set a command option');
                 }
                 if (str_starts_with(strtolower(trim($this->dsn)), 'sendmail://')) {
                     self::assertSendmailFunctionsAvailable();

@@ -1,3 +1,4 @@
+{# ClientFence core patch: only Super Administrators save the email transport settings, so the form says so. #}
 {% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
 
 {% import 'macro_functions.html.twig' as mf %}
@@ -484,6 +485,7 @@
                             </label>
 
                             <label class="form-label d-block">{{ 'Email Transport'|trans }}</label>
+                            <p class="form-hint">{{ 'Only Super Administrators can change the email transport and its settings.'|trans }}</p>
                             <div class="d-flex flex-wrap gap-3" id="mailer">
                                     <div class="form-check">
                                         <input class="form-check-input" id="radioSendMail" type="radio" name="mailer" value="sendmail"{% if params.mailer|default('sendmail') == 'sendmail' %} checked{% endif %}>

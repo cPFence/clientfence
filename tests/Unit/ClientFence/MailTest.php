@@ -206,6 +206,22 @@ test('send with a custom transport and no DSN throws InformationException', func
     expect(fn () => $mail->send())->toThrow(ClientFence\InformationException::class);
 });
 
+test('custom mail DSNs reject command options before creating a transport', function (string $dsn, bool $hasCommand): void {
+    $mail = new Mail(['email' => 'sender@example.com'], ['email' => 'receiver@example.com'], 'Subject', '<p>Body</p>', 'custom', $dsn);
+
+    if ($hasCommand) {
+        expect(fn () => $mail->send())->toThrow(ClientFence\InformationException::class, 'Custom mail DSNs cannot set a command option');
+    } else {
+        expect(fn () => $mail->send())->not->toThrow(Throwable::class);
+    }
+})->with([
+    'sendmail command' => ['sendmail://default?command=touch%20/tmp/mail-command-test%20%23%20-t', true],
+    'encoded option name' => ['sendmail://default?%63ommand=custom', true],
+    'empty command' => ['sendmail://default?command=', true],
+    'command inside failover' => ['failover(smtp://mail.example.com:587 sendmail://default?command=custom)', true],
+    'null transport without command' => ['null://null', false],
+]);
+
 test('send failures surface as ClientFence Exception, not raw Error', function (): void {
     // Unsupported scheme fails inside Transport::fromDsn() with no DNS or
     // socket access, and throws outside TransportExceptionInterface so it

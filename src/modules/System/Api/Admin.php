@@ -123,19 +123,23 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\Exception('Unsupported cache driver: :driver', [':driver' => $driver], 5001);
         }
 
-        // Keep the existing password when the admin leaves the field blank, so re-saving the
-        // other Redis fields doesn't require re-entering it. The explicit "clear" checkbox is
-        // what lets an admin actually remove a previously-set password.
+        $redisHost = $data['redis_host'] ?? '127.0.0.1';
+        $redisPort = Tools::normalizePort($data['redis_port'] ?? null, 6379);
         $redisPassword = $data['redis_password'] ?? '';
-        if ($redisPassword === '' && !Tools::normalizeBoolean($data['redis_password_clear'] ?? false, false)) {
+        // ClientFence core patch: a saved Redis password belongs only to its configured host and port.
+        if (
+            $redisPassword === '' && !Tools::normalizeBoolean($data['redis_password_clear'] ?? false, false)
+            && $redisHost === Config::getProperty('cache.redis.host', '127.0.0.1')
+            && $redisPort === Tools::normalizePort(Config::getProperty('cache.redis.port'), 6379)
+        ) {
             $redisPassword = Config::getProperty('cache.redis.password');
         }
 
         $newCacheConfig = [
             'driver' => $driver,
             'redis' => [
-                'host' => $data['redis_host'] ?? '127.0.0.1',
-                'port' => Tools::normalizePort($data['redis_port'] ?? null, 6379),
+                'host' => $redisHost,
+                'port' => $redisPort,
                 'password' => $redisPassword !== '' ? $redisPassword : null,
                 'database' => (int) ($data['redis_database'] ?? 0),
                 'tls' => [

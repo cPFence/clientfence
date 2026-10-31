@@ -1,4 +1,5 @@
 {# ClientFence core patch (0.8.9 port): the direct settings form submits the session nonce. #}
+{# ClientFence core patch: staff who are not Super Administrators are told their footer JavaScript is not saved. #}
 {% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
 
 {% set active_menu = 'system' %}
@@ -91,6 +92,9 @@
                             <div id="theme-settings-section-nav" class="d-flex flex-wrap gap-2"></div>
                         </div>
                     </div>
+                    {% if not is_super_admin %}
+                        <div class="alert alert-info" role="alert">{{ 'Only Super Administrators can change the client area footer JavaScript.'|trans }}</div>
+                    {% endif %}
                     <div id="theme-settings" class="theme-settings-content">
                         {{ settings_html }}
                     </div>
