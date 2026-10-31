@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.0.16 (2026-11-01)
+
+### Changed
+
+- Settings: only Super Administrators can change how email is sent and the client area footer JavaScript.
+- Plan changes: a service paid by a PayPal subscription can change its plan once the subscription is cancelled in PayPal.
+- Domains: a domain whose registration price differs from its renewal price is paid by invoice instead of a subscription.
+
+### Removed
+
+- The Order Button extension.
+
+### Fixed
+
+- Invoices: settling an invoice no longer takes the client's credit twice, and paying debits exactly the invoice total.
+- Invoices: Mark as Paid after a partial transfer credits only the amount still due; an Add Funds invoice is paid only with Mark as Paid.
+- Invoices: refund invoices get their own number, an accepted quote's invoice keeps the quote's tax, and the sales tax report shows refunds in their own period.
+- Currencies: changing the default currency recalculates every exchange rate.
+- Payments: a second card payment for a paid invoice goes to the account balance, and a retried payment is credited once.
+- Payments: a renewal no longer starts a second gateway subscription, and a plan change or order deletion cancels the old one.
+- PayPal: a subscription stays active until PayPal reports it cancelled; partial or unknown refunds are left for staff.
+- Account balance: paying from the balance needs the page's security token.
+- Automation: a service paid while the daily suspension or cancellation runs is no longer suspended or cancelled.
+- Automation: cancelling a service cancels its unpaid renewal invoice also when it has a recurring discount.
+- Automation: the web cron URL sends the suspension, renewal and ticket reply emails.
+- Hosting: a Plesk plan change no longer changes the customer's password, and staff cannot change the plan of a suspended or expired service.
+- API keys and licenses: a paid renewal keeps the key working, a plan change applies the new license checks, and keys get at least 16 random characters.
+- Downloads: files with non-English names can be downloaded, and a file can be replaced while an order for it is pending.
+- Sign-in: sign-up answers the same for registered and new email addresses; a sign-in waiting for its PIN or two-factor code is refused after a password change; an email change cancels older password reset links.
+- Checkout: sign-up works with Turnstile and hCaptcha, and asks for the store's required client fields.
+- Settings: changing the Redis host or port no longer sends the saved password to the new server; the invoice hash access and auto approval switches can be turned off.
+- Support: a guest reply no longer reopens a closed ticket of a help desk that does not allow it.
+- WHMCS import: two imports at once no longer undo each other, long names and messages are imported in full, the auto-suspend override carries over, and a fresh install can import.
+- Translations: the plan change messages are translated.
+
 ## 1.0.15 (2026-11-01)
 
 ### Changed
