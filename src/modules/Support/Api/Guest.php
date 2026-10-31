@@ -118,6 +118,12 @@ class Guest extends \ClientFence\Api\AbstractApi
     public function ticket_reply(array $data): int
     {
         $guestTicket = $this->getService()->findOneByHash($data['hash']);
+
+        // ClientFence core patch: the help desk's reopen rule also applies to guest replies.
+        if (!$this->getService()->canBeReopened($guestTicket)) {
+            throw new \ClientFence\InformationException('Ticket cannot be reopened.');
+        }
+
         // Deprecated 0.9.0 The 'message' parameter will be dropped. Update your themes to use 'content' instead.
         $message = $data['content'] ?? $data['message'] ?? null;
 

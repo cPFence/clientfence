@@ -181,6 +181,25 @@ test('ticket reply', function (): void {
     expect($result)->toBeInt();
 });
 
+test('ticket reply refuses a closed ticket whose help desk forbids reopening', function (): void {
+    $guestApi = apiEndpoint(new ClientFence\Mod\Support\Api\Guest());
+    $ticket = (new ClientFence\Mod\Support\Entity\SupportTicket())
+        ->setStatus(ClientFence\Mod\Support\Entity\SupportTicket::STATUS_CLOSED)
+        ->setSupportHelpdesk((new ClientFence\Mod\Support\Entity\Helpdesk())->setCanReopen(false));
+
+    $serviceMock = guestSupportServiceMock();
+    $serviceMock->shouldReceive('findOneByHash')->once()
+        ->with('ticket-hash')
+        ->andReturn($ticket);
+    $serviceMock->shouldReceive('ticketReply')->never();
+    $guestApi->setService($serviceMock);
+
+    expect(fn (): int => $guestApi->ticket_reply([
+        'hash' => 'ticket-hash',
+        'content' => 'Message',
+    ]))->toThrow(ClientFence\InformationException::class, 'Ticket cannot be reopened.');
+});
+
 /*
 * Knowledge Base Tests.
 */
