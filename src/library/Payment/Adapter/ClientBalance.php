@@ -90,6 +90,17 @@ class Payment_Adapter_ClientBalance implements ClientFence\InjectionAwareInterfa
             throw new Payment_Exception('IPN is invalid');
         }
 
+        // ClientFence core patch: spending session credit requires a POST authenticated by the session CSRF token.
+        if (!$this->di['request']->isMethod('POST')) {
+            throw new ClientFence\InformationException('This action requires POST', null, 405);
+        }
+        $body = json_decode((string) ($data['http_raw_post_data'] ?? ''), true);
+        $token = $body['CSRFToken'] ?? $data['post']['CSRFToken'] ??$this->di['request']->headers->get('X-CSRF-TOKEN');
+        $sessionToken = $this->di['session']->get('csrf_token');
+        if (!is_string($token) || !is_string($sessionToken) || $sessionToken === '' || !hash_equals($sessionToken, $token)) {
+            throw new ClientFence\InformationException('CSRF token invalid', null, 403);
+        }
+
         $tx = $this->di['db']->load('Transaction', $id);
 
         if ($tx->invoice_id) {

@@ -201,6 +201,7 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
     $productService->shouldReceive('returnStock')->byDefault()->andReturnNull();
     $services = [
         'product' => $productService,
+        'invoice_subscription' => Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class),
         'invoice' => new class($db, $di, $fail['tax_rate'] ?? 14.0) {
             public function __construct(private readonly Connection $db, private readonly Pimple\Container $di, private readonly float $taxRate)
             {
@@ -318,6 +319,7 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
             }
         },
     ];
+    $services['invoice_subscription']->shouldReceive('cancelForOrder')->byDefault()->andReturn(0);
     $di['services'] = $services;
     $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => $services[strtolower($sub === '' ? $name : $name . '_' . $sub)]);
     $di['url'] = new class {
@@ -674,6 +676,20 @@ test('monthly to yearly upgrade: invoiced, then applied once when paid', functio
         ->and(count($di['status_notes']))->toBe(1)
         // The new yearly Pro can move on: to Business yearly, for the days left of the new year.
         ->and(array_keys(upgradesOptionTable($di, 1, '2026-10-17 09:00:00')))->toContain('3/1Y');
+});
+
+test('a paid plan change cancels the order subscription', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()
+        ->with(Mockery::on(fn (Model_ClientOrder $order): bool => (int) $order->id === 1))
+        ->andReturn(1);
+
+    $result = Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', UPGRADES_NOW);
+    upgradesPay($db, $result['id']);
+    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
+
+    expect($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))->toBe('applied');
 });
 
 test('yearly to monthly downgrade: applied at once, the difference goes to the account', function (): void {

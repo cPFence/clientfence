@@ -401,17 +401,10 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 return;
             }
 
-            // Already-paid guard — prevents double-crediting when the
-            // payment_intent.succeeded webhook processed the payment
-            // before the redirect flow runs.
             if ($invoice instanceof Model_Invoice) {
                 $fresh = $this->di['db']->findOne('Invoice', 'id = :id', [':id' => $invoice->id]);
-                if ($fresh instanceof Model_Invoice && $fresh->status === Model_Invoice::STATUS_PAID) {
-                    $tx->status = Model_Transaction::STATUS_PROCESSED;
-                    $tx->updated_at = date('Y-m-d H:i:s');
-                    $this->di['db']->store($tx);
-
-                    return;
+                if ($fresh instanceof Model_Invoice) {
+                    $invoice = $fresh;
                 }
             }
 
@@ -423,9 +416,11 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             $tx->status = Model_Transaction::STATUS_PROCESSING;
         }
 
+        // ClientFence core patch: a distinct payment for a paid invoice belongs in the client's balance.
+        $alreadyPaid = $invoice instanceof Model_Invoice && $invoice->status === Model_Invoice::STATUS_PAID;
         $bd = [
             'amount' => $tx->amount,
-            'description' => 'Stripe transaction ' . $charge->id,
+            'description' => 'Stripe transaction ' . $charge->id . ($alreadyPaid ? ' (invoice already paid)' : ''),
             'type' => 'transaction',
             'rel_id' => $tx->id,
         ];
@@ -451,17 +446,22 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 }
             }
 
-            $clientService->addFunds($client, $bd['amount'], $bd['description'], $bd);
+            // ClientFence core patch: transaction retries must reuse their existing balance credit.
+            if (!$this->di['dbal']->fetchOne('SELECT id FROM client_balance WHERE type = :type AND rel_id = :rel_id LIMIT 1', ['type' => $bd['type'], 'rel_id' => $bd['rel_id']])) {
+                $clientService->addFunds($client, $bd['amount'], $bd['description'], $bd);
+            }
 
-            if ($tx->invoice_id && $invoice instanceof Model_Invoice && !$invoiceService->isInvoiceTypeDeposit($invoice)) {
-                if (!$invoice->approved) {
-                    $invoiceService->approveInvoice($invoice, ['use_credits' => false]);
+            if (!$alreadyPaid) {
+                if ($tx->invoice_id && $invoice instanceof Model_Invoice && !$invoiceService->isInvoiceTypeDeposit($invoice)) {
+                    if (!$invoice->approved) {
+                        $invoiceService->approveInvoice($invoice, ['use_credits' => false]);
+                    }
+                    $invoiceService->payInvoiceWithCredits($invoice);
+                } elseif ($tx->invoice_id && $invoice instanceof Model_Invoice && $invoiceService->isInvoiceTypeDeposit($invoice)) {
+                    $invoiceService->markAsPaid($invoice);
+                } elseif (!$tx->invoice_id) {
+                    $invoiceService->doBatchPayWithCredits(['client_id' => $client->id]);
                 }
-                $invoiceService->payInvoiceWithCredits($invoice);
-            } elseif ($tx->invoice_id && $invoice instanceof Model_Invoice && $invoiceService->isInvoiceTypeDeposit($invoice)) {
-                $invoiceService->markAsPaid($invoice);
-            } elseif (!$tx->invoice_id) {
-                $invoiceService->doBatchPayWithCredits(['client_id' => $client->id]);
             }
         }
 
@@ -1301,12 +1301,6 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             }
         }
 
-        // Skip if the invoice is already paid — prevents double-crediting
-        // when the webhook arrives after the redirect flow.
-        if ($invoice instanceof Model_Invoice && $invoice->status === Model_Invoice::STATUS_PAID) {
-            return;
-        }
-
         $invoiceService = $this->di['mod_service']('Invoice');
 
         $transactionService = $this->di['mod_service']('Invoice', 'Transaction');
@@ -1336,24 +1330,29 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             }
         }
 
+        $alreadyPaid = $invoice instanceof Model_Invoice && $invoice->status === Model_Invoice::STATUS_PAID;
         $bd = [
             'amount' => $tx->amount,
-            'description' => 'Stripe transaction ' . $charge->id,
+            'description' => 'Stripe transaction ' . $charge->id . ($alreadyPaid ? ' (invoice already paid)' : ''),
             'type' => 'transaction',
             'rel_id' => $tx->id,
         ];
 
-        $clientService->addFunds($client, $bd['amount'], $bd['description'], $bd);
+        if (!$this->di['dbal']->fetchOne('SELECT id FROM client_balance WHERE type = :type AND rel_id = :rel_id LIMIT 1', ['type' => $bd['type'], 'rel_id' => $bd['rel_id']])) {
+            $clientService->addFunds($client, $bd['amount'], $bd['description'], $bd);
+        }
 
-        if ($tx->invoice_id && $invoice instanceof Model_Invoice && !$invoiceService->isInvoiceTypeDeposit($invoice)) {
-            if (!$invoice->approved) {
-                $invoiceService->approveInvoice($invoice, ['use_credits' => false]);
+        if (!$alreadyPaid) {
+            if ($tx->invoice_id && $invoice instanceof Model_Invoice && !$invoiceService->isInvoiceTypeDeposit($invoice)) {
+                if (!$invoice->approved) {
+                    $invoiceService->approveInvoice($invoice, ['use_credits' => false]);
+                }
+                $invoiceService->payInvoiceWithCredits($invoice);
+            } elseif ($tx->invoice_id && $invoice instanceof Model_Invoice && $invoiceService->isInvoiceTypeDeposit($invoice)) {
+                $invoiceService->markAsPaid($invoice);
+            } elseif (!$tx->invoice_id) {
+                $invoiceService->doBatchPayWithCredits(['client_id' => $client->id]);
             }
-            $invoiceService->payInvoiceWithCredits($invoice);
-        } elseif ($tx->invoice_id && $invoice instanceof Model_Invoice && $invoiceService->isInvoiceTypeDeposit($invoice)) {
-            $invoiceService->markAsPaid($invoice);
-        } elseif (!$tx->invoice_id) {
-            $invoiceService->doBatchPayWithCredits(['client_id' => $client->id]);
         }
 
         $tx->status = Model_Transaction::STATUS_PROCESSED;

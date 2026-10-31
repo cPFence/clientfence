@@ -250,9 +250,12 @@ class ServiceSubscription implements InjectionAwareInterface
 
         $adapter = $this->getGatewayAdapter($model);
 
-        if (method_exists($adapter, 'cancelSubscription')) {
-            $adapter->cancelSubscription($subscriptionId);
+        // ClientFence core patch: PayPal subscriptions remain active until the gateway confirms cancellation.
+        if (!method_exists($adapter, 'cancelSubscription')) {
+            throw new \ClientFence\InformationException('Cancel subscription :id in PayPal: ClientFence marks it canceled when PayPal reports it.', [':id' => $subscriptionId]);
         }
+
+        $adapter->cancelSubscription($subscriptionId);
     }
 
     private function getGatewayAdapter(\Model_Subscription $model): object
@@ -271,7 +274,13 @@ class ServiceSubscription implements InjectionAwareInterface
             if ($subscription->status === 'canceled') {
                 continue;
             }
-            $this->cancel($subscription);
+            try {
+                $this->cancel($subscription);
+            } catch (\ClientFence\InformationException $e) {
+                $this->di['logger']->warning(sprintf('Order #%s: subscription #%s (%s) remains active. %s', $order->id, $subscription->id, $subscription->sid, $e->getMessage()));
+
+                continue;
+            }
             ++$canceledSubscriptions;
         }
 
@@ -388,7 +397,7 @@ class ServiceSubscription implements InjectionAwareInterface
 
     private function getSubscriptionPeriodByInvoiceId(int $invoiceId): ?string
     {
-        $query = 'SELECT period, price, quantity
+        $query = 'SELECT period, price, quantity, type, rel_id
             FROM invoice_item
             WHERE invoice_id = :id
             ORDER BY id ASC';
@@ -400,6 +409,18 @@ class ServiceSubscription implements InjectionAwareInterface
 
         $subscriptionPeriod = null;
         foreach ($items as $item) {
+            // ClientFence core patch: renewal invoices must not create a second active subscription for an order.
+            if ($item['type'] === \Model_InvoiceItem::TYPE_ORDER) {
+                $order = $this->di['db']->load('ClientOrder', $item['rel_id']);
+                // The invoice's own subscription keeps its period: the gateway flows read it again after creating it.
+                $others = $order instanceof \Model_ClientOrder
+                    ? array_filter($this->getSubscriptionsForOrder($order, 'active'), static fn (\Model_Subscription $s): bool => (int) $s->rel_id !== $invoiceId)
+                    : [];
+                if ($others !== []) {
+                    return null;
+                }
+            }
+
             $lineTotal = (float) ($item['price'] ?? 0) * (float) ($item['quantity'] ?? 0);
             $period = $item['period'] ?? null;
 

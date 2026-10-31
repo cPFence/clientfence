@@ -1043,6 +1043,8 @@ describe('handlePaymentIntentSucceededWebhook', function (): void {
         $dbMock = Mockery::mock('ClientFence\Database');
         $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
         expectPaymentIntentLock($dbalMock, 'pi_new', 1);
+        $dbalMock->shouldReceive('fetchOne')->once()
+            ->with('SELECT id FROM client_balance WHERE type = :type AND rel_id = :rel_id LIMIT 1', ['type' => 'transaction', 'rel_id' => 201])->andReturnFalse();
         $dbMock->shouldReceive('findOne')
             ->andReturn(null);
         $dbMock->shouldReceive('store')->andReturn($tx->id);
@@ -2370,58 +2372,123 @@ describe('Stripe webhook gateway ownership', function (): void {
     });
 });
 
-describe('applyOneTimePayment already-paid guard', function (): void {
-    test('skips processing when invoice is already paid', function (): void {
-        $tx = buildTransaction();
-        $tx->id = 600;
-        $tx->amount = '50.00';
+test('credits a distinct payment for an already paid invoice once', function (string $method): void {
+    $tx = buildTransaction();
+    $tx->id = 600;
+    $tx->gateway_id = 1;
+    $tx->invoice_id = 42;
+    $tx->amount = 50.0;
+    $tx->status = Model_Transaction::STATUS_RECEIVED;
 
-        $invoice = new Model_Invoice();
-        $invoice->loadBean(new DummyBean());
-        $invoice->id = 42;
-        $invoice->status = Model_Invoice::STATUS_PAID;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 42;
+    $invoice->client_id = 7;
+    $invoice->status = Model_Invoice::STATUS_PAID;
+    $client = new Model_Client();
+    $client->loadBean(new DummyBean());
+    $client->id = 7;
+    $charge = (object) ['id' => 'pi_second', 'amount' => 5000, 'currency' => 'usd', 'status' => 'succeeded'];
 
-        $addFundsCalled = false;
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('findOne')->with('Invoice', 'id = :id', [':id' => 42])->andReturn($invoice);
+    $db->shouldReceive('findOne')->with('Transaction', Mockery::any(), Mockery::any())->andReturnNull();
+    $db->shouldReceive('getExistingModelById')->once()->with('Client', 7)->andReturn($client);
+    $db->shouldReceive('store')->with($tx)->andReturn(600);
 
-        $clientService = Mockery::mock();
-        $clientService->shouldReceive('addFunds')
-            ->andReturnUsing(function () use (&$addFundsCalled): void {
-                $addFundsCalled = true;
-            });
-
-        $invoiceService = Mockery::mock();
-        $transactionService = Mockery::mock();
-
-        $dbMock = Mockery::mock('ClientFence\Database');
-        $dbMock->shouldReceive('findOne')
-            ->with('Invoice', 'id = :id', Mockery::any())
-            ->andReturn($invoice);
-
-        $di = container();
-        $di['db'] = $dbMock;
-        $di['mod_service'] = $di->protect(function ($name, $sub = null) use ($clientService, $invoiceService, $transactionService) {
-            if ($name === 'client') {
-                return $clientService;
-            }
-            if ($name === 'Invoice' && $sub === 'Transaction') {
-                return $transactionService;
-            }
-            if ($name === 'Invoice') {
-                return $invoiceService;
-            }
-
-            return Mockery::mock();
-        });
-        $this->adapter->setDi($di);
-
-        $charge = new stdClass();
-        $charge->id = 'pi_test123';
-
-        invokePrivateMethod($this->adapter, 'applyOneTimePayment', [$tx, $invoice, $charge]);
-
-        expect($addFundsCalled)->toBeFalse();
+    $transactionService = Mockery::mock();
+    $transactionService->shouldReceive('claimForProcessing')->with(600)
+        ->times($method === 'applyOneTimePayment' ? 2 : 1)->andReturn(true, false);
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('getTotalWithTax')->once()->with($invoice)->andReturn(50.0);
+    $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(50.0, 50.0);
+    $invoiceService->shouldNotReceive('payInvoiceWithCredits', 'markAsPaid', 'approveInvoice');
+    $clientService = Mockery::mock();
+    $clientService->shouldReceive('addFunds')->once()->with($client, 50.0, 'Stripe transaction pi_second (invoice already paid)', [
+        'amount' => 50.0, 'description' => 'Stripe transaction pi_second (invoice already paid)', 'type' => 'transaction', 'rel_id' => 600,
+    ]);
+    $di = container();
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn ($module, $service = null) => match (true) {
+        $service === 'Transaction' => $transactionService,
+        $module === 'client' => $clientService,
+        default => $invoiceService,
     });
-});
+    $this->adapter->setDi($di);
+
+    invokePrivateMethod($this->adapter, $method, [$tx, $invoice, $charge]);
+    invokePrivateMethod($this->adapter, $method, [$tx, $invoice, $charge]);
+
+    expect($tx->status)->toBe(Model_Transaction::STATUS_PROCESSED);
+})->with(['processPaymentIntentUnderLock', 'applyOneTimePayment']);
+
+test('a transaction retried after paying its invoice reuses its balance credit', function (string $method, string $retryStatus): void {
+    $tx = buildTransaction();
+    $tx->id = 600;
+    $tx->gateway_id = 1;
+    $tx->invoice_id = 42;
+    $tx->amount = 50.0;
+    $tx->status = Model_Transaction::STATUS_RECEIVED;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 42;
+    $invoice->client_id = 7;
+    $invoice->approved = 1;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+    $client = new Model_Client();
+    $client->loadBean(new DummyBean());
+    $charge = (object) ['id' => 'pi_retry', 'amount' => 5000, 'currency' => 'usd', 'status' => 'succeeded'];
+
+    $balanceDb = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $balanceDb->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, type TEXT, rel_id TEXT, amount REAL)');
+    $clientService = Mockery::mock();
+    $clientService->shouldReceive('addFunds')->once()->with($client, 50.0, Mockery::any(), Mockery::any())
+        ->andReturnUsing(function ($client, $amount, $description, array $data) use ($balanceDb): void {
+            $balanceDb->insert('client_balance', ['type' => $data['type'], 'rel_id' => $data['rel_id'], 'amount' => $amount]);
+        });
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('getTotalWithTax')->twice()->with($invoice)->andReturn(50.0);
+    $invoiceService->shouldReceive('validatePaymentAmount')->twice()->with(50.0, 50.0);
+    $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->with($invoice)->andReturnFalse();
+    $invoiceService->shouldReceive('payInvoiceWithCredits')->once()->with($invoice)
+        ->andReturnUsing(function () use ($invoice): void {
+            $invoice->status = Model_Invoice::STATUS_PAID;
+        });
+    $transactionService = Mockery::mock();
+    $transactionService->shouldReceive('claimForProcessing')->twice()->with(600)->andReturnTrue();
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('findOne')->with('Invoice', 'id = :id', [':id' => 42])->andReturn($invoice);
+    $db->shouldReceive('findOne')->with('Transaction', Mockery::any(), Mockery::any())->andReturnNull();
+    $db->shouldReceive('getExistingModelById')->twice()->with('Client', 7)->andReturn($client);
+    $stores = 0;
+    $db->shouldReceive('store')->twice()->with($tx)->andReturnUsing(function () use (&$stores): int {
+        if (++$stores === 1) {
+            throw new RuntimeException('Transaction save interrupted');
+        }
+
+        return 600;
+    });
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = $balanceDb;
+    $di['mod_service'] = $di->protect(fn ($module, $service = null) => match (true) {
+        $service === 'Transaction' => $transactionService,
+        $module === 'client' => $clientService,
+        default => $invoiceService,
+    });
+    $this->adapter->setDi($di);
+
+    expect(fn () => invokePrivateMethod($this->adapter, $method, [$tx, $invoice, $charge]))
+        ->toThrow(RuntimeException::class, 'Transaction save interrupted');
+    $tx->status = $retryStatus;
+    $tx->error = 'Transaction save interrupted';
+    invokePrivateMethod($this->adapter, $method, [$tx, $invoice, $charge]);
+
+    expect((int) $balanceDb->fetchOne('SELECT COUNT(*) FROM client_balance'))->toBe(1)
+        ->and($invoice->status)->toBe(Model_Invoice::STATUS_PAID)
+        ->and($tx->status)->toBe(Model_Transaction::STATUS_PROCESSED);
+})->with(['processPaymentIntentUnderLock', 'applyOneTimePayment'])
+    ->with([Model_Transaction::STATUS_ERROR, Model_Transaction::STATUS_PROCESSING]);
 
 test('checkout buyer details are encoded as JS string literals', function (): void {
     // HTML entities are never decoded inside <script>, so HTML-escaping would

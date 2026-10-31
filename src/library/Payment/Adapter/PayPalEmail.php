@@ -267,7 +267,7 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
             case 'subscr_eot':
             case 'subscr_cancel':
                 $s = $api_admin->invoice_subscription_get(['sid' => $ipn['subscr_id']]);
-                $api_admin->invoice_subscription_update(['id' => $s['id'], 'status' => 'canceled']);
+                $this->di['mod_service']('Invoice', 'Subscription')->updateStatusFromGateway((int) $s['id'], 'canceled');
 
                 break;
 
@@ -277,21 +277,35 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 break;
         }
 
+        $refundError = '';
         if (
             isset($ipn['payment_status'], $ipn['txn_type'])
             && $ipn['payment_status'] == 'Refunded'
             && in_array($ipn['txn_type'], ['web_accept', 'subscr_payment'], true)
         ) {
-            $refd = [
-                'id' => $invoice['id'],
-                'note' => 'PayPal refund ' . ($ipn['parent_txn_id'] ?? ''),
-            ];
-            $api_admin->invoice_refund($refd);
+            // ClientFence core patch: only a full refund of the parent payment refunds its own invoice.
+            $payment = empty($ipn['parent_txn_id']) ? null : $this->di['db']->findOne(
+                'Transaction',
+                // ClientFence core patch: pending PayPal rows can still point to the subscription's original invoice.
+                'txn_id = :txn AND gateway_id = :gateway AND status = :status AND txn_status = :txn_status',
+                [':txn' => $ipn['parent_txn_id'], ':gateway' => $gateway_id, ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed']
+            );
+            $amount = abs((float) $ipn['mc_gross']);
+            if (!$payment instanceof Model_Transaction) {
+                $refundError = sprintf('PayPal refund of %s %s must be settled by hand: original payment not found.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
+            } elseif ($amount < (float) $payment->amount - 0.01 || $amount > (float) $payment->amount + 0.01) {
+                $refundError = sprintf('Partial PayPal refund of %s %s must be settled by hand.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
+            } else {
+                $api_admin->invoice_refund([
+                    'id' => $payment->invoice_id,
+                    'note' => 'PayPal refund ' . $ipn['parent_txn_id'],
+                ]);
+            }
         }
 
         $d = [
             'id' => $id,
-            'error' => '',
+            'error' => $refundError,
             'error_code' => null,
             'status' => Model_Transaction::STATUS_PROCESSED,
             'updated_at' => date('Y-m-d H:i:s'),

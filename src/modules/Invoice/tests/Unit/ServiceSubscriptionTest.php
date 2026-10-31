@@ -256,6 +256,74 @@ test('cancels subscriptions linked to an order and skips them on retry', functio
     expect($service->cancelForOrder($orderModel))->toBe(0);
 });
 
+test('keeps manual gateway subscriptions active until PayPal confirms cancellation', function (string $path): void {
+    $subscription = new Model_Subscription();
+    $subscription->loadBean(new Tests\Helpers\DummyBean());
+    $subscription->id = 7;
+    $subscription->sid = 'I-PAYPAL';
+    $subscription->status = 'active';
+    $subscription->pay_gateway_id = 2;
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 10;
+
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getExistingModelById')->with('Subscription', 7, 'Subscription not found')->andReturn($subscription);
+    $db->shouldReceive('getExistingModelById')->with('PayGateway', 2, 'Payment gateway not found')->andReturn($gateway);
+    $gatewayService = Mockery::mock(ServicePayGateway::class);
+    $gatewayService->shouldReceive('getPaymentAdapter')->with($gateway)
+        ->andReturn(new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com']));
+    $di = container();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['db'] = $db;
+    $di['dbal'] = createSubscriptionDbal();
+    $service = new ServiceSubscription();
+    $service->setDi($di);
+    $di['mod_service'] = $di->protect(fn ($module, $sub) => $sub === 'Subscription' ? $service : $gatewayService);
+
+    if ($path === 'notification') {
+        $db->shouldReceive('store')->once()->with($subscription)->andReturn(7);
+        $api = Mockery::mock();
+        $api->shouldReceive('invoice_transaction_get')->once()->andReturn([
+            'invoice_id' => 25, 'type' => 'subscr_cancel', 'txn_id' => 'CANCEL-1',
+            'txn_status' => null, 'amount' => null, 'currency' => null,
+        ]);
+        $api->shouldReceive('invoice_get')->once()->with(['id' => 25])->andReturn(['id' => 25, 'client' => ['id' => 9]]);
+        $api->shouldReceive('invoice_subscription_get')->once()->with(['sid' => 'I-PAYPAL'])->andReturn(['id' => 7]);
+        $api->shouldReceive('invoice_transaction_update')->once();
+        $adapter = new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com']);
+        $adapter->setDi($di);
+        $adapter->processTransaction($api, 42, [
+            'get' => ['invoice_id' => 25, 'sig' => ClientFence\Tools::signCallbackParams(2, 25)],
+            'post' => ['txn_type' => 'subscr_cancel', 'subscr_id' => 'I-PAYPAL'],
+        ], 2);
+        expect($subscription->status)->toBe('canceled');
+
+        return;
+    }
+
+    $db->shouldNotReceive('store');
+    if ($path === 'order') {
+        $other = new Model_Subscription();
+        $other->loadBean(new Tests\Helpers\DummyBean());
+        $other->status = 'active';
+        $di['dbal']->insert('subscription', ['id' => 8, 'rel_type' => 'invoice', 'rel_id' => 25, 'status' => 'active']);
+        $db->shouldReceive('getExistingModelById')->with('Subscription', 8, 'Subscription not found')->andReturn($other);
+        $service = Mockery::mock(ServiceSubscription::class)->makePartial();
+        $service->setDi($di);
+        $service->shouldReceive('cancel')->once()->with($other);
+        expect($service->cancelForOrder($order))->toBe(1)
+            ->and($di['logger']->calls[0]['method'])->toBe('warning')
+            ->and($di['logger']->calls[0]['params'][0])->toContain('Order #10', 'subscription #7', 'I-PAYPAL');
+    } else {
+        expect(fn () => $path === 'update' ? $service->update($subscription, ['status' => 'canceled']) : $service->cancel($subscription))
+            ->toThrow(ClientFence\InformationException::class, 'Cancel subscription I-PAYPAL in PayPal');
+    }
+    expect($subscription->status)->toBe('active');
+})->with(['cancel', 'update', 'order', 'notification']);
+
 test('finalizes a scheduled cancellation by canceling its order and service', function (): void {
     $subscription = new Model_Subscription();
     $subscription->loadBean(new Tests\Helpers\DummyBean());
@@ -508,7 +576,7 @@ test('checks if invoice is subscribable', function (): void {
     $dbMock = Mockery::mock('ClientFence\Database');
 
     $getAllResults = [
-        ['period' => '1W', 'price' => 10, 'quantity' => 1],
+        ['type' => 'custom', 'period' => '1W', 'price' => 10, 'quantity' => 1],
     ];
     $dbMock->shouldReceive('getAll')
         ->atLeast()->once()
@@ -523,6 +591,32 @@ test('checks if invoice is subscribable', function (): void {
     expect($result)->toBeBool()->toBeTrue();
 });
 
+test('a renewal invoice cannot subscribe an order that already has another active subscription', function (int $relId, bool $subscribable): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 10;
+    $subscription = new Model_Subscription();
+    $subscription->loadBean(new Tests\Helpers\DummyBean());
+    $subscription->rel_id = $relId;
+
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getAll')->once()->with(Mockery::any(), [':id' => 26])->andReturn([
+        ['type' => 'order', 'rel_id' => 10, 'period' => '1M', 'price' => 20, 'quantity' => 1],
+    ]);
+    $db->shouldReceive('load')->once()->with('ClientOrder', 10)->andReturn($order);
+    $db->shouldReceive('getExistingModelById')->once()->with('Subscription', 7, 'Subscription not found')->andReturn($subscription);
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = createSubscriptionDbal();
+    $service = new ServiceSubscription();
+    $service->setDi($di);
+
+    expect($service->isSubscribable(26))->toBe($subscribable);
+})->with([
+    'another invoice\'s subscription' => [25, false],
+    'the invoice\'s own subscription' => [26, true],
+]);
+
 test('gets subscription period', function (): void {
     $serviceMock = Mockery::mock(ServiceSubscription::class)->makePartial()->shouldAllowMockingProtectedMethods();
 
@@ -530,7 +624,7 @@ test('gets subscription period', function (): void {
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('getAll')
         ->atLeast()->once()
-        ->andReturn([['period' => $period, 'price' => 10, 'quantity' => 1]]);
+        ->andReturn([['type' => 'custom', 'period' => $period, 'price' => 10, 'quantity' => 1]]);
 
     $di = container();
     $di['db'] = $dbMock;
@@ -546,8 +640,8 @@ test('gets subscription period', function (): void {
 test('has no subscription period for an invoice with a discount line', function (): void {
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('getAll')->once()->andReturn([
-        ['period' => '1M', 'price' => 20, 'quantity' => 1],
-        ['period' => null, 'price' => -5, 'quantity' => 1],
+        ['type' => 'custom', 'period' => '1M', 'price' => 20, 'quantity' => 1],
+        ['type' => 'custom', 'period' => null, 'price' => -5, 'quantity' => 1],
     ]);
 
     $di = container();

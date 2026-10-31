@@ -44,6 +44,8 @@ test('pays the clients own invoice from balance when another gateway is saved', 
     $di['db'] = $dbMock;
     $di['auth']->shouldReceive('isClientLoggedIn')->once()->andReturnTrue();
     $di['loggedin_client'] = (object) ['id' => 9];
+    $di['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'POST', [], [], [], ['HTTP_X_CSRF_TOKEN' => 'balance-token']);
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('balance-token');
     $di['mod_service'] = $di->protect(fn () => $invoiceService);
     $adapter = new Payment_Adapter_ClientBalance();
     $adapter->setDi($di);
@@ -51,3 +53,24 @@ test('pays the clients own invoice from balance when another gateway is saved', 
     expect($adapter->processTransaction(Mockery::mock(), 42, [], 1))->toBeTrue()
         ->and($tx->status)->toBe(Model_Transaction::STATUS_PROCESSED);
 });
+
+test('refuses balance payments without a POST and a matching session token', function (string $method, mixed $token): void {
+    $di = container();
+    $di['auth']->shouldReceive('isClientLoggedIn')->once()->andReturnTrue();
+    $di['request'] = Symfony\Component\HttpFoundation\Request::create('/', $method);
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('balance-token');
+    $di['db']->shouldNotReceive('load', 'store');
+    $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
+    $invoiceService->shouldNotReceive('payInvoiceWithCredits', 'doBatchPayWithCredits');
+    $di['mod_service'] = $di->protect(fn () => $invoiceService);
+    $adapter = new Payment_Adapter_ClientBalance();
+    $adapter->setDi($di);
+
+    expect(fn () => $adapter->processTransaction(Mockery::mock(), 42, ['post' => ['CSRFToken' => $token]], 1))
+        ->toThrow(ClientFence\InformationException::class, $method === 'GET' ? 'This action requires POST' : 'CSRF token invalid');
+})->with([
+    'GET with token' => ['GET', 'balance-token'],
+    'POST without token' => ['POST', null],
+    'POST with wrong token' => ['POST', 'wrong-token'],
+    'POST with array token' => ['POST', ['balance-token']],
+]);

@@ -558,7 +558,12 @@ final class Upgrades
                 if (!$optionsOnly) {
                     $order->title = self::newTitle((string) $order->title, (string) $up['from_title'], (string) $up['to_title'], $fromProduct['title'] ?? '');
                 }
-                $order->price = round((float) $up['to_price'] / $quantity, 2);
+                $newPrice = round((float) $up['to_price'] / $quantity, 2);
+                // ClientFence core patch: a changed price or cycle must not keep charging the old gateway subscription.
+                if ((float) $order->price !== $newPrice || (string) $order->period !== (string) $up['to_period']) {
+                    $di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order);
+                }
+                $order->price = $newPrice;
                 $order->period = (string) $up['to_period'];
                 $order->expires_at = (string) $up['to_expires_at'];
                 $order->config = json_encode($config);

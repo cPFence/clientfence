@@ -257,6 +257,82 @@ test('leaves a pending PayPal payment received with its error', function (): voi
         ->and($tx['error'])->toBe('PayPal payment not completed: Pending');
 });
 
+test('settles only full PayPal refunds against the parent payment invoice', function (?float $paymentAmount, float $refundAmount, ?int $refundedInvoice): void {
+    $payment = $paymentAmount === null ? null : paypalBean(Model_Transaction::class, ['invoice_id' => 26, 'amount' => $paymentAmount]);
+    $tx = [
+        'invoice_id' => 16, 'type' => 'subscr_payment', 'txn_id' => 'REFUND-RENEWAL',
+        'txn_status' => 'Refunded', 'amount' => -$refundAmount, 'currency' => 'USD',
+    ];
+    $api = Mockery::mock();
+    $api->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn($tx);
+    $api->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn(['id' => 16, 'client' => ['id' => 9]]);
+    $api->shouldReceive('invoice_transaction_update')->twice()->andReturnUsing(function (array $update) use (&$tx): void {
+        $tx = array_replace($tx, $update);
+    });
+    if ($refundedInvoice === null) {
+        $api->shouldNotReceive('invoice_refund');
+    } else {
+        $api->shouldReceive('invoice_refund')->once()->with(['id' => $refundedInvoice, 'note' => 'PayPal refund TXN-RENEWAL']);
+    }
+    $db = paypalDbMocks();
+    $db->shouldReceive('findOne')->once()->with('Transaction', 'txn_id = :txn AND gateway_id = :gateway AND status = :status AND txn_status = :txn_status', [':txn' => 'TXN-RENEWAL', ':gateway' => 2, ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed'])->andReturn($payment);
+    $di = container();
+    $di['db'] = $db;
+
+    paypalProcessAdapter($di)->processTransaction($api, 42, [
+        'get' => signedPayPalGet(16, 2),
+        'post' => [
+            'txn_type' => 'subscr_payment', 'payment_status' => 'Refunded', 'txn_id' => 'REFUND-RENEWAL',
+            'parent_txn_id' => 'TXN-RENEWAL', 'mc_gross' => -$refundAmount, 'mc_currency' => 'USD',
+        ],
+    ], 2);
+
+    expect($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED);
+    if ($refundedInvoice === null) {
+        expect($tx['error'])->toBe($paymentAmount === null
+            ? 'PayPal refund of 120.00 USD must be settled by hand: original payment not found.'
+            : 'Partial PayPal refund of 20.00 USD must be settled by hand.');
+    } else {
+        expect($tx['error'])->toBe('');
+    }
+})->with([
+    'partial refund' => [120.0, 20.0, null],
+    'unknown original payment' => [null, 120.0, null],
+    'full renewal refund' => [120.0, 120.0, 26],
+    'full refund within amount tolerance' => [120.0, 119.99, 26],
+]);
+
+test('refunds the completed renewal payment rather than its earlier pending notification', function (): void {
+    $payments = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $payments->executeStatement('CREATE TABLE payment (id INTEGER PRIMARY KEY, txn_id TEXT, gateway_id INTEGER, status TEXT, txn_status TEXT, invoice_id INTEGER, amount REAL)');
+    $payments->insert('payment', ['id' => 40, 'txn_id' => 'TXN-RENEWAL', 'gateway_id' => 2, 'status' => 'received', 'txn_status' => 'Pending', 'invoice_id' => 16, 'amount' => 120]);
+    $payments->insert('payment', ['id' => 41, 'txn_id' => 'TXN-RENEWAL', 'gateway_id' => 2, 'status' => 'processed', 'txn_status' => 'Completed', 'invoice_id' => 26, 'amount' => 120]);
+    $db = paypalDbMocks(function (string $table, string $where, array $bindings) use ($payments): ?Model_Transaction {
+        // RedBean takes ':name' keys, DBAL takes 'name'.
+        $row = $payments->fetchAssociative('SELECT * FROM payment WHERE ' . $where . ' ORDER BY id ASC', array_combine(array_map(static fn (string $k): string => ltrim($k, ':'), array_keys($bindings)), $bindings));
+
+        return $row === false ? null : paypalBean(Model_Transaction::class, $row);
+    });
+    $api = Mockery::mock();
+    $api->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn([
+        'invoice_id' => 16, 'type' => 'subscr_payment', 'txn_id' => 'REFUND-RENEWAL',
+        'txn_status' => 'Refunded', 'amount' => -120, 'currency' => 'USD',
+    ]);
+    $api->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn(['id' => 16, 'client' => ['id' => 9]]);
+    $api->shouldReceive('invoice_transaction_update')->twice();
+    $api->shouldReceive('invoice_refund')->once()->with(['id' => 26, 'note' => 'PayPal refund TXN-RENEWAL']);
+    $di = container();
+    $di['db'] = $db;
+
+    paypalProcessAdapter($di)->processTransaction($api, 42, [
+        'get' => signedPayPalGet(16, 2),
+        'post' => [
+            'txn_type' => 'subscr_payment', 'payment_status' => 'Refunded', 'txn_id' => 'REFUND-RENEWAL',
+            'parent_txn_id' => 'TXN-RENEWAL', 'mc_gross' => -120, 'mc_currency' => 'USD',
+        ],
+    ], 2);
+});
+
 describe('PayPal callback invoice binding', function (): void {
     test('rejects a callback whose invoice id was swapped after signing', function (): void {
         $apiAdmin = Mockery::mock();
@@ -437,7 +513,7 @@ describe('PayPal callback invoice binding', function (): void {
 
     test('accepts an unsigned refund continuing a pre-upgrade payment', function (): void {
         $refunded = [];
-        $earlier = paypalBean(Model_Transaction::class, ['invoice_id' => 16]);
+        $earlier = paypalBean(Model_Transaction::class, ['invoice_id' => 16, 'amount' => 120]);
 
         $apiAdmin = Mockery::mock();
         $apiAdmin->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn([

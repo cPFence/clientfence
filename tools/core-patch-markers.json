@@ -3526,5 +3526,37 @@
     {
         "file": "modules/Theme/templates/admin/mod_theme_preset.html.twig",
         "done": "ClientFence core patch: populate optional theme choices from the permission-filtered controller data."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a distinct payment for a paid invoice belongs in the client's balance."
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: renewal invoices must not create a second active subscription for an order."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: a changed price or cycle must not keep charging the old gateway subscription."
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: PayPal subscriptions remain active until the gateway confirms cancellation."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: only a full refund of the parent payment refunds its own invoice."
+    },
+    {
+        "file": "library/Payment/Adapter/ClientBalance.php",
+        "done": "ClientFence core patch: spending session credit requires a POST authenticated by the session CSRF token."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: transaction retries must reuse their existing balance credit."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: pending PayPal rows can still point to the subscription's original invoice."
     }
 ]
