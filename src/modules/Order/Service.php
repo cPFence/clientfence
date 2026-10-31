@@ -1088,6 +1088,11 @@ class Service implements InjectionAwareInterface
             }
         }
 
+        // ClientFence core patch: staff domain orders take their billing period from the validated domain config.
+        if ($period === null && $this->getProductType($product) === \ClientFence\Mod\Product\Service::DOMAIN) {
+            $period = $config['period'] ?? null;
+        }
+
         if (method_exists($se, 'generateOrderTitle')) {
             $generatedOrderTitle = $se->generateOrderTitle($config);
         } else {
@@ -1127,7 +1132,7 @@ class Service implements InjectionAwareInterface
             $order->setInvoiceOption($invoiceOption);
 
             if ($period) {
-                $bp = $this->di['period']($data['period']);
+                $bp = $this->di['period']($period);
                 $order->setPeriod($bp->getCode());
             }
 

@@ -101,6 +101,11 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
 
         if ($action == 'owndomain') {
+            // ClientFence core patch: cart domains must register or transfer before receiving registrar control.
+            if ($product !== null) {
+                throw new \ClientFence\InformationException('Domain products must be registered or transferred.');
+            }
+
             $required = [
                 'owndomain_tld' => 'Domain TLD is required.',
                 'owndomain_sld' => 'Domain name is required.',
@@ -217,7 +222,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         $this->validateOrderData($c);
 
         [$sld, $tld] = $this->_getTuple($c);
-        $years = $c['register_years'] ?? 1;
+        // ClientFence core patch: the validated period keeps registrar duration aligned with renewal billing.
+        $years = (int) ($c['period'] ?? '1Y');
 
         // @todo ?
         $systemService = $this->di['mod_service']('system');
@@ -310,7 +316,28 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
-        $adapter->renewDomain($domain);
+        // ClientFence core patch: a lost renewal reply must not renew a domain twice on retry.
+        $expiry = null;
+        try {
+            $expiry = $this->formatRegistrarTimestamp($adapter->getDomainDetails($domain)->getExpirationTime());
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+        }
+        $metaOrder = $this->di['em']->getReference(\ClientFence\Mod\Order\Entity\Order::class, (int) $order->id);
+        $saved = $orderService->getOrderMetaRepository()
+            ->findOneByOrderIdAndName((int) $order->id, 'domain_renewal_expiry')?->getValue();
+        // The mark holds the order expiry of its renewal: a mark left by an earlier renewal is ignored.
+        [$previousExpiry, $forRenewal] = array_pad(explode('|', (string) $saved, 2), 2, null);
+        if ($forRenewal !== (string) $order->expires_at) {
+            $previousExpiry = null;
+        }
+        if (!$previousExpiry && $expiry) {
+            $orderService->updateOrderMeta($metaOrder, ['domain_renewal_expiry' => $expiry . '|' . $order->expires_at]);
+        }
+        if (!$previousExpiry || !$expiry || $expiry <= $previousExpiry) {
+            $adapter->renewDomain($domain);
+        }
+        $orderService->updateOrderMeta($metaOrder, ['domain_renewal_expiry' => null]);
 
         // ClientFence core patch: a failed WHOIS refresh must not retry a successful registrar renewal.
         try {
@@ -379,6 +406,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         [$domain, $adapter] = $this->_getD($model);
 
         // update whois
+        $domain->setNs1(null)->setNs2(null)->setNs3(null)->setNs4(null);
         $whois = $adapter->getDomainDetails($domain);
 
         $locked = $whois->getLocked();
@@ -389,6 +417,14 @@ class Service implements \ClientFence\InjectionAwareInterface
         $privacy = $whois->getPrivacyEnabled();
         if ($privacy !== null) {
             $model->privacy = $privacy;
+        }
+
+        // ClientFence core patch: registrar nameservers can differ after registration setup fails.
+        $nameservers = [$whois->getNs1(), $whois->getNs2(), $whois->getNs3(), $whois->getNs4()];
+        if (array_filter($nameservers)) {
+            foreach ($nameservers as $index => $nameserver) {
+                $model->{'ns' . ($index + 1)} = $nameserver ?? '';
+            }
         }
 
         // sync whois

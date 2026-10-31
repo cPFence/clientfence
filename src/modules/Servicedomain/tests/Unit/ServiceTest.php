@@ -84,6 +84,35 @@ test('throws exception for invalid order data action', function (): void {
         ->toThrow(ClientFence\Exception::class);
 });
 
+test('cart domain products refuse own domains while hosting accepts them', function (): void {
+    $domainService = new Service();
+    $hostingService = new ClientFence\Mod\Servicehosting\Service();
+    $productService = new ClientFence\Mod\Product\Service();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name): object => $domainService);
+    $validator = Mockery::mock(ClientFence\Validate::class)->shouldIgnoreMissing();
+    $validator->shouldReceive('isSldValid')->andReturn(true);
+    $validator->shouldReceive('isTldValid')->andReturn(true);
+    $di['validator'] = $validator;
+    $domainService->setDi($di);
+    $hostingService->setDi($di);
+    $productService->setDi($di);
+
+    $domainProduct = (new ClientFence\Mod\Product\Entity\Product())->setType('domain');
+    $domainConfig = ['action' => 'owndomain', 'owndomain_sld' => 'example', 'owndomain_tld' => '.com'];
+
+    expect(fn () => $productService->prepareCartProductConfig($domainProduct, $domainConfig))
+        ->toThrow(ClientFence\InformationException::class, 'Domain products must be registered or transferred.');
+
+    $hostingProduct = (new ClientFence\Mod\Product\Entity\Product())
+        ->setType('hosting')->setConfig('{"server_id":1,"hosting_plan_id":2}');
+    $hostingConfig = ['domain' => $domainConfig];
+
+    expect($hostingService->getDomainProductFromConfig($hostingProduct, $hostingConfig))->toBeFalse()
+        ->and($hostingConfig['sld'])->toBe('example')
+        ->and($hostingConfig['tld'])->toBe('.com');
+});
+
 test('throws exception for transfer order data with invalid tld', function (array $data, array $isSldValidArr, array $tldFindOneByTldArr, array $canBeTransferred): void {
     $service = new Service();
     $validatorMock = Mockery::mock(ClientFence\Validate::class);
@@ -366,17 +395,19 @@ test('rejects a crafted order for an inactive tld before contacting the registra
         ->toThrow(ClientFence\InformationException::class, 'TLD is not active');
 })->with(['register', 'transfer']);
 
-test('creates action', function (): void {
+test('creates a transfer service with one year despite client-supplied registration years', function (): void {
     $service = new Service();
     $tldModel = new Model_Tld();
     $tldModel->loadBean(new Tests\Helpers\DummyBean());
     $tldModel->tld_registrar_id = 1;
+    $tldModel->tld = '.com';
+    $tldModel->active = true;
 
     $data = [
-        'action' => 'register',
-        'register_sld' => 'example',
-        'register_tld' => '.com',
-        'register_years' => 2,
+        'action' => 'transfer',
+        'transfer_sld' => 'example',
+        'transfer_tld' => '.com',
+        'register_years' => 5,
     ];
 
     $orderServiceMock = Mockery::mock(OrderService::class);
@@ -399,7 +430,7 @@ test('creates action', function (): void {
     $serviceMock->shouldReceive('tldFindOneByTld')
         ->atLeast()->once()
         ->andReturn($tldModel);
-    $serviceMock->shouldReceive('validateOrderData');
+    $serviceMock->shouldReceive('canBeTransferred')->once()->andReturnTrue();
 
     $client = new Model_Client();
     $client->loadBean(new Tests\Helpers\DummyBean());
@@ -447,7 +478,8 @@ test('creates action', function (): void {
     $order->client_id = 1;
 
     $result = $serviceMock->action_create($order);
-    expect($result)->toBeInstanceOf(Model_ServiceDomain::class);
+    expect($result)->toBeInstanceOf(Model_ServiceDomain::class)
+        ->and($result->period)->toBe(1);
 });
 
 test('throws exception when creating action with missing nameservers', function (): void {
@@ -564,57 +596,128 @@ test('throws exception when activating without order service', function (): void
         ->toThrow(ClientFence\Exception::class);
 });
 
-test('renews action', function (): void {
-    $service = new Service();
+test('renewal retries recognize an advanced registrar expiry after a lost reply', function (bool $lostReply): void {
     $domainModel = new Model_ServiceDomain();
     $domainModel->loadBean(new Tests\Helpers\DummyBean());
-    $domainModel->tld_registrar_id = 1;
-    $domainModel->action = 'register';
-
-    $orderServiceMock = Mockery::mock(OrderService::class);
-    $orderServiceMock->shouldReceive('getOrderService')
-        ->atLeast()->once()
-        ->andReturn($domainModel);
-
-    $registrarAdapterMock = Mockery::mock('Registrar_Adapter_Custom');
-    $registrarAdapterMock->shouldReceive('renewDomain')
-        ->atLeast()->once();
-
-    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
-    $serviceMock->shouldReceive('_getD')
-        ->atLeast()->once()
-        ->andReturn([new Registrar_Domain(), $registrarAdapterMock]);
-    $serviceMock->shouldReceive('syncWhois')
-        ->atLeast()->once();
-
-    $di = container();
-    $di['mod_service'] = $di->protect(fn ($name) => $orderServiceMock);
-    $serviceMock->setDi($di);
-
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
-    $order->client_id = 1;
-    $result = $serviceMock->action_renew($order);
+    $order->id = 7;
+    $metaOrder = Tests\Helpers\createEntity(ClientFence\Mod\Order\Entity\Order::class, ['id' => 7]);
+    $expiry = strtotime('2030-06-15 00:00:00');
+    $storedMeta = null;
+    $repository = Mockery::mock(ClientFence\Mod\Order\Repository\OrderMetaRepository::class);
+    $repository->shouldReceive('findOneByOrderIdAndName')->times($lostReply ? 4 : 3)
+        ->with(7, 'domain_renewal_expiry')
+        ->andReturnUsing(function () use (&$storedMeta) {
+            return $storedMeta;
+        });
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getReference')->times($lostReply ? 2 : 1)
+        ->with(ClientFence\Mod\Order\Entity\Order::class, 7)->andReturn($metaOrder);
+    $em->shouldReceive('persist')->twice()->andReturnUsing(function ($entity) use (&$storedMeta): void {
+        $storedMeta = $entity;
+    });
+    $em->shouldReceive('flush')->twice();
+    $orderService = Mockery::mock(OrderService::class)->makePartial();
+    $orderService->shouldReceive('getOrderService')->andReturn($domainModel);
+    $orderService->shouldReceive('getOrderMetaRepository')->andReturn($repository);
 
-    expect($result)->toBeTrue();
+    $domain = new Registrar_Domain();
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive('getDomainDetails')->times($lostReply ? 2 : 1)->with($domain)
+        ->andReturnUsing(function () use (&$expiry): Registrar_Domain {
+            return (new Registrar_Domain())->setExpirationTime($expiry);
+        });
+    $adapter->shouldReceive('renewDomain')->once()->with($domain)
+        ->andReturnUsing(function () use (&$expiry, $lostReply): bool {
+            $expiry = strtotime('2031-06-15 00:00:00');
+            if ($lostReply) {
+                throw new RuntimeException('Renewal reply timed out');
+            }
+
+            return true;
+        });
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_getD')->andReturn([$domain, $adapter]);
+    $service->shouldReceive('syncWhois')->once()->with($domainModel, $order);
+
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
+    $orderService->setDi($di);
+    $service->setDi($di);
+
+    if ($lostReply) {
+        expect(fn () => $service->action_renew($order))->toThrow(RuntimeException::class, 'Renewal reply timed out');
+        expect($storedMeta->getValue())->toBe(date('Y-m-d H:i:s', strtotime('2030-06-15 00:00:00')) . '|');
+    }
+    expect($service->action_renew($order))->toBeTrue()
+        ->and($storedMeta->getValue())->toBeNull();
+})->with(['normal renewal' => [false], 'lost reply and retry' => [true]]);
+
+test('a renewal mark left by an earlier renewal does not skip the registrar renewal', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 7;
+    $order->expires_at = '2027-06-15 00:00:00';
+    $metaOrder = Tests\Helpers\createEntity(ClientFence\Mod\Order\Entity\Order::class, ['id' => 7]);
+    $domainModel = new Model_ServiceDomain();
+    $domainModel->loadBean(new Tests\Helpers\DummyBean());
+    // Last year's renewal failed and was settled by hand: its mark names last year's order expiry.
+    $mark = Mockery::mock(ClientFence\Mod\Order\Entity\OrderMeta::class);
+    $mark->shouldReceive('getValue')->andReturn('2026-06-15 00:00:00|2026-06-15 00:00:00');
+    $repository = Mockery::mock(ClientFence\Mod\Order\Repository\OrderMetaRepository::class);
+    $repository->shouldReceive('findOneByOrderIdAndName')->once()->with(7, 'domain_renewal_expiry')->andReturn($mark);
+    $orderService = Mockery::mock(OrderService::class);
+    $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($domainModel);
+    $orderService->shouldReceive('getOrderMetaRepository')->once()->andReturn($repository);
+    $orderService->shouldReceive('updateOrderMeta')->once()->with($metaOrder, ['domain_renewal_expiry' => '2027-06-15 00:00:00|2027-06-15 00:00:00'])->andReturn(1);
+    $orderService->shouldReceive('updateOrderMeta')->once()->with($metaOrder, ['domain_renewal_expiry' => null])->andReturn(1);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getReference')->once()->with(ClientFence\Mod\Order\Entity\Order::class, 7)->andReturn($metaOrder);
+
+    $domain = new Registrar_Domain();
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive('getDomainDetails')->with($domain)->andReturn((new Registrar_Domain())->setExpirationTime(strtotime('2027-06-15 00:00:00')));
+    $adapter->shouldReceive('renewDomain')->once()->with($domain)->andReturn(true);
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_getD')->andReturn([$domain, $adapter]);
+    $service->shouldReceive('syncWhois')->once();
+
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
+    $service->setDi($di);
+
+    expect($service->action_renew($order))->toBeTrue();
 });
 
 test('renewal succeeds when the registrar renews but the WHOIS refresh fails', function (): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 7;
+    $metaOrder = Tests\Helpers\createEntity(ClientFence\Mod\Order\Entity\Order::class, ['id' => 7]);
     $domainModel = new Model_ServiceDomain();
     $domainModel->loadBean(new Tests\Helpers\DummyBean());
     $orderService = Mockery::mock(OrderService::class);
     $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($domainModel);
+    $repository = Mockery::mock(ClientFence\Mod\Order\Repository\OrderMetaRepository::class);
+    $repository->shouldReceive('findOneByOrderIdAndName')->once()->with(7, 'domain_renewal_expiry')->andReturnNull();
+    $orderService->shouldReceive('getOrderMetaRepository')->once()->andReturn($repository);
+    $orderService->shouldReceive('updateOrderMeta')->once()->with($metaOrder, ['domain_renewal_expiry' => null])->andReturn(2);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getReference')->once()->with(ClientFence\Mod\Order\Entity\Order::class, 7)->andReturn($metaOrder);
 
     $domain = new Registrar_Domain();
     $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive('getDomainDetails')->once()->with($domain)->ordered()->andReturn(new Registrar_Domain());
     $adapter->shouldReceive('renewDomain')->once()->with($domain)->ordered()->andReturn(true);
     $adapter->shouldReceive('getDomainDetails')->once()->with($domain)->ordered()->andThrow(new RuntimeException('WHOIS refresh failed'));
     $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $service->shouldReceive('_getD')->twice()->with($domainModel)->andReturn([$domain, $adapter]);
 
     $di = container();
+    $di['em'] = $em;
     $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
     $service->setDi($di);
 
@@ -1198,6 +1301,38 @@ test('preserves the existing expiration date when the registrar has none', funct
     $service->syncExpirationDate($model);
 
     expect($model->expires_at)->toBe('2030-06-15 00:00:00');
+});
+
+test('syncWhois replaces stored nameservers with the registrar nameservers', function (): void {
+    $domain = new Registrar_Domain();
+    foreach (range(1, 4) as $index) {
+        $domain->{'setNs' . $index}('ns' . $index . '.stored.example');
+    }
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive('getDomainDetails')->once()->with($domain)
+        ->andReturnUsing(fn (Registrar_Domain $domain) => $domain
+            ->setNs1('ns1.registrar.example')->setNs2('ns2.registrar.example')
+            ->setContactRegistrar(new Registrar_Domain_Contact()));
+    $service = Mockery::mock(ServicedomainServiceSyncProbe::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_getD')->once()->andReturn([$domain, $adapter]);
+
+    $model = new Model_ServiceDomain();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    foreach (range(1, 4) as $index) {
+        $model->{'ns' . $index} = 'ns' . $index . '.stored.example';
+    }
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('store')->once()->with($model);
+    $di = container();
+    $di['db'] = $db;
+    $service->setDi($di);
+
+    $service->syncWhoisPublic($model, $order);
+
+    expect([$model->ns1, $model->ns2, $model->ns3, $model->ns4])
+        ->toBe(['ns1.registrar.example', 'ns2.registrar.example', '', '']);
 });
 
 test('syncWhois stores null dates when registrar dates are unavailable', function (): void {

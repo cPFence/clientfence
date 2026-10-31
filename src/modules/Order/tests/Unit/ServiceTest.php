@@ -1975,7 +1975,7 @@ test('createOrder returns success when invoice follow up fails', function (): vo
     expect($result)->toBe($newId);
 });
 
-test('createOrder uses product pricing service for domain orders', function (): void {
+test('createOrder keeps the validated staff domain period and uses domain pricing', function (): void {
     $modelClient = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['currency' => 'USD']);
 
     $modelProduct = orderServiceCreateProductEntity(10, ClientFence\Mod\Product\Service::DOMAIN);
@@ -2001,7 +2001,14 @@ test('createOrder uses product pricing service for domain orders', function (): 
     $eventMock = Mockery::mock(\ClientFence\EventManager::class);
     $eventMock->shouldReceive('fire')->atLeast()->once();
 
-    $domainServiceMock = Mockery::mock(ClientFence\Mod\Servicedomain\Service::class)->shouldIgnoreMissing();
+    $tld = new Model_Tld();
+    $tld->loadBean(new Tests\Helpers\DummyBean());
+    $tld->tld = '.com';
+    $tld->active = true;
+    $tld->min_years = 1;
+    $domainServiceMock = Mockery::mock(ClientFence\Mod\Servicedomain\Service::class)->makePartial();
+    $domainServiceMock->shouldReceive('tldFindOneByTld')->once()->with('.com')->andReturn($tld);
+    $domainServiceMock->shouldReceive('isDomainAvailable')->once()->with($tld, 'example')->andReturnTrue();
 
     $pricingServiceMock = Mockery::mock(ClientFence\Mod\Product\Service::class);
     $pricingServiceMock->shouldReceive('inCurrency')->andReturnSelf();
@@ -2017,11 +2024,15 @@ test('createOrder uses product pricing service for domain orders', function (): 
             'setup_price' => 0.0,
         ]);
 
+    $createdOrder = null;
     $persistedEntities = [];
     $nextOrderId = 1;
     $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
-    $emMock->shouldReceive('persist')->atLeast()->once()->andReturnUsing(function ($entity) use (&$persistedEntities): void {
+    $emMock->shouldReceive('persist')->atLeast()->once()->andReturnUsing(function ($entity) use (&$persistedEntities, &$createdOrder): void {
         $persistedEntities[] = $entity;
+        if ($entity instanceof Order) {
+            $createdOrder = $entity;
+        }
     });
     $emMock->shouldReceive('flush')->atLeast()->once()->andReturnUsing(function () use (&$persistedEntities, &$nextOrderId): void {
         foreach ($persistedEntities as $entity) {
@@ -2073,18 +2084,23 @@ test('createOrder uses product pricing service for domain orders', function (): 
     $di['events_manager'] = $eventMock;
     $di['em'] = $emMock;
     $di['logger'] = new \ClientFence\Log();
+    $di['period'] = $di->protect(fn (string $period): ClientFence\Period => new ClientFence\Period($period));
+    $domainServiceMock->setDi($di);
 
     $svc = new Service();
     $svc->setDi($di);
 
     $result = $svc->createOrder($modelClient, $modelProduct, [
-        'action' => 'register',
-        'register_tld' => '.com',
-        'register_sld' => 'example',
-        'register_years' => 2,
+        'config' => [
+            'action' => 'register',
+            'register_tld' => '.com',
+            'register_sld' => 'example',
+            'register_years' => 2,
+        ],
     ]);
 
-    expect($result)->toBe($newId);
+    expect($result)->toBe($newId)
+        ->and($createdOrder->getPeriod())->toBe('2Y');
 });
 
 test('createFromOrder activates the order after successful provisioning', function (): void {
