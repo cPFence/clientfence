@@ -3450,5 +3450,41 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: refund documents share the invoice series and must reserve its next number."
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch: paid API key renewals extend the order without replacing its key."
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch: API keys need at least 16 random characters even with legacy settings."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: license validation follows the target plan, including settings it disables."
+    },
+    {
+        "file": "modules/Servicedownloadable/Service.php",
+        "done": "ClientFence core patch: pending downloads need the new file config before their service exists."
+    },
+    {
+        "file": "modules/Servicedownloadable/Service.php",
+        "done": "ClientFence core patch: download headers require a printable ASCII fallback without percent or path separators."
+    },
+    {
+        "file": "modules/Servicelicense/Plugin/Simple.php",
+        "done": "ClientFence core patch: reserve 19 suffix positions for 16 random characters within the 255-character license key."
+    },
+    {
+        "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig",
+        "done": "name=\"config[length]\" min=\"16\" max=\"128\""
+    },
+    {
+        "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig",
+        "done": "name=\"config[length]\" min=\"16\" max=\"128\""
+    },
+    {
+        "file": "modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig",
+        "done": "ClientFence core patch: a Simple license length of 20 gives 16 random characters."
     }
 ]

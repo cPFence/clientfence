@@ -1,3 +1,4 @@
+{# ClientFence core patch: a Simple license length of 20 gives 16 random characters. #}
 {% import 'macro_functions.html.twig' as mf %}
 
 {% set config = product.config|default({}) %}
@@ -16,7 +17,7 @@
                 </div>
                 <div class="col-lg-4">
                     <label class="form-label">{{ 'Length'|trans }}</label>
-                    <input type="number" class="form-control" name="config[length]" value="{{ config.length|default('') }}">
+                    <input type="number" class="form-control" name="config[length]" min="20" max="255" value="{{ config.length|default('') }}">
                 </div>
                 <div class="col-lg-4">
                     <label class="form-label">{{ 'Plugin'|trans }}</label>

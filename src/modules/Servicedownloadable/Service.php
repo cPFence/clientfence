@@ -393,6 +393,13 @@ class Service implements InjectionAwareInterface
                 $oldconfig[self::STORED_FILENAME_CONFIG_KEY] = $storedFilename;
                 $ordermodel->config = json_encode($oldconfig);
 
+                // ClientFence core patch: pending downloads need the new file config before their service exists.
+                if ($serviceDownloadable === null) {
+                    $this->di['db']->store($ordermodel);
+
+                    continue;
+                }
+
                 // Pass the filename since the file was already uploaded and moved
                 $this->updateProductFile($serviceDownloadable, $ordermodel, $fileName, $storedFilename);
             }
@@ -497,6 +504,12 @@ class Service implements InjectionAwareInterface
         };
     }
 
+    private function getAsciiFilename(string $fileName): string
+    {
+        // ClientFence core patch: download headers require a printable ASCII fallback without percent or path separators.
+        return preg_replace('~[^\x20-\x7E]|[%/\\\\]~u', '_', $fileName);
+    }
+
     public function sendFile(\Model_ServiceDownloadable $serviceDownloadable): Response
     {
         $fileName = $serviceDownloadable->filename;
@@ -519,7 +532,8 @@ class Service implements InjectionAwareInterface
 
         $disposition = $response->headers->makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
-            $fileName
+            $fileName,
+            $this->getAsciiFilename($fileName)
         );
 
         $response->headers->set('Content-Type', 'application/octet-stream');
@@ -566,7 +580,8 @@ class Service implements InjectionAwareInterface
 
         $disposition = $response->headers->makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
-            $fileName
+            $fileName,
+            $this->getAsciiFilename($fileName)
         );
 
         $response->headers->set('Content-Type', 'application/octet-stream');

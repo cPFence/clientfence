@@ -257,6 +257,20 @@ test('a product configured in the admin form (numbers as strings) generates its 
         ->and($entity->getApiKey())->toMatch('/^[0-9A-F]{4}(-[0-9A-F]{4}){3}$/');
 });
 
+test('API key renewal succeeds without replacing the existing key', function (): void {
+    [$service, $entity] = apiKeyService();
+
+    expect($service->action_renew(new Model_ClientOrder()))->toBeTrue()
+        ->and($entity->getApiKey())->toBe('KEY-1');
+});
+
+test('a one-character API key setting still generates 16 random characters', function (): void {
+    [$service, $entity] = apiKeyService(config: ['length' => 1, 'split' => false]);
+
+    expect($service->resetApiKey($entity))->toBeTrue()
+        ->and($entity->getApiKey())->toMatch('/^[0-9A-F]{16}$/');
+});
+
 test('out-of-range generation settings produce a key that fits the column', function (array $config): void {
     [$service, $entity] = apiKeyService(config: $config);
 

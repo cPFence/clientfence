@@ -520,6 +520,16 @@ final class Upgrades
                         'stored_filename' => $config['stored_filename'],
                     ], ['id' => (int) $order->service_id]);
                 }
+                if ($productChanged && $order->service_type === 'license') {
+                    // ClientFence core patch: license validation follows the target plan, including settings it disables.
+                    $licenseConfig = [];
+                    foreach (['validate_ip', 'validate_host', 'validate_path', 'validate_version'] as $key) {
+                        $config[$key] = (bool) ($to['config'][$key] ?? false);
+                        $licenseConfig[$key] = (int) $config[$key];
+                    }
+                    $licenseConfig['plugin'] = $config['plugin'] = $to['config']['plugin'] ?? 'Simple';
+                    $db->update('service_license', $licenseConfig, ['id' => (int) $order->service_id]);
+                }
                 if ($opt !== null) {
                     $before = Options::summary(self::optionsOf($row['config'])['lines']);
                     $after = Options::summary($opt['lines']);

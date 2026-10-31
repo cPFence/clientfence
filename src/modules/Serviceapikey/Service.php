@@ -87,6 +87,12 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
+    public function action_renew(\Model_ClientOrder $order): bool
+    {
+        // ClientFence core patch: paid API key renewals extend the order without replacing its key.
+        return true;
+    }
+
     public function action_suspend(\Model_ClientOrder $order): bool
     {
         $this->_getService($order);
@@ -311,7 +317,8 @@ class Service implements InjectionAwareInterface
     {
         // ClientFence core patch (ext serviceapikey): the product form saves numbers as strings.
         // ClientFence core patch (ext serviceapikey): 128 characters with a dash between each fit the 255-character column.
-        $length = max(1, min(128, (int) ($config['length'] ?? 32)));
+        // ClientFence core patch: API keys need at least 16 random characters even with legacy settings.
+        $length = max(16, min(128, (int) ($config['length'] ?? 32)));
         $split = $config['split'] ?? true;
         $splitLength = max(1, (int) ($config['split_interval'] ?? 8));
         $case = $config['case'] ?? 'upper';

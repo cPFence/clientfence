@@ -400,6 +400,31 @@ test('a downloadable product change replaces the service file with the target fi
         ->and($db->fetchAssociative('SELECT filename, stored_filename FROM service_downloadable WHERE id = 101'))->toBe($newFile);
 });
 
+test('a license product change replaces validation settings in the service and order', function (array $targetConfig, array $expected): void {
+    $db = upgradesDb();
+    $db->executeStatement('CREATE TABLE service_license (id INTEGER PRIMARY KEY, validate_ip INTEGER, validate_host INTEGER, validate_path INTEGER, validate_version INTEGER, plugin TEXT)');
+    $oldConfig = ['validate_ip' => true, 'validate_host' => true, 'validate_path' => true, 'validate_version' => true, 'plugin' => 'Old'];
+    $db->insert('service_license', ['id' => 101, 'validate_ip' => 1, 'validate_host' => 1, 'validate_path' => 1, 'validate_version' => 1, 'plugin' => 'Old']);
+    $db->update('product', ['type' => 'license', 'config' => json_encode($oldConfig)], ['id' => 1]);
+    $db->update('product', ['type' => 'license', 'config' => json_encode($targetConfig)], ['id' => 8]);
+    $db->update('client_order', ['service_type' => 'license', 'config' => json_encode($oldConfig)], ['id' => 1]);
+    $di = upgradesContainer($db);
+
+    expect(Upgrades::request($di, upgradesOrder($di, 1), 8, '1M', UPGRADES_NOW)['status'])->toBe(Upgrades::STATUS_APPLIED)
+        ->and($db->fetchAssociative('SELECT validate_ip, validate_host, validate_path, validate_version, plugin FROM service_license WHERE id = 101'))
+        ->toBe(array_map(fn (bool|string $value): int|string => is_bool($value) ? (int) $value : $value, $expected))
+        ->and(json_decode($db->fetchOne('SELECT config FROM client_order WHERE id = 1'), true))->toMatchArray($expected);
+})->with([
+    'target settings' => [
+        ['validate_ip' => false, 'validate_host' => true, 'validate_path' => false, 'validate_version' => false, 'plugin' => 'Other'],
+        ['validate_ip' => false, 'validate_host' => true, 'validate_path' => false, 'validate_version' => false, 'plugin' => 'Other'],
+    ],
+    'target defaults' => [
+        [],
+        ['validate_ip' => false, 'validate_host' => false, 'validate_path' => false, 'validate_version' => false, 'plugin' => 'Simple'],
+    ],
+]);
+
 test('a yearly Business mid-period: every choice is a downgrade with account credit', function (): void {
     $di = upgradesContainer(upgradesDb());
     // 1 Mar 2026 to 1 Mar 2027: 365 days, 136 left; credit 600 × 136 / 365 = 223.56.

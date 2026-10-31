@@ -14,6 +14,7 @@ use ClientFence\Mod\Order\Entity\Order;
 use ClientFence\Mod\Order\Service as OrderService;
 use ClientFence\Mod\Product\Entity\Product;
 use ClientFence\Mod\Servicelicense\Entity\ServiceLicense;
+use ClientFence\Mod\Servicelicense\Plugin\Simple;
 use ClientFence\Mod\Servicelicense\Repository\ServiceLicenseRepository;
 use ClientFence\Mod\Servicelicense\Server;
 use ClientFence\Mod\Servicelicense\Service;
@@ -29,6 +30,22 @@ function serviceLicenseCreateProductEntity(string $config): Product
 
     return $product;
 }
+
+test('simple license keys retain 16 random characters and fit the column with their prefix', function (int $length, string $prefix): void {
+    $key = (new Simple())->generate(new ServiceLicense(), new Model_ClientOrder(), ['length' => $length, 'prefix' => $prefix]);
+    $savedPrefix = substr($prefix, 0, 236);
+    $randomCharacters = str_replace('-', '', substr($key, strlen($savedPrefix)));
+
+    expect($key)->toStartWith($savedPrefix)
+        ->and(strlen($key))->toBeLessThanOrEqual(255)
+        ->and(strlen($randomCharacters))->toBeGreaterThanOrEqual(16)
+        ->and($randomCharacters)->toMatch('/^[A-Z1-9]+$/');
+})->with([
+    'one character' => [1, 'LICENSE-'],
+    'zero characters' => [0, 'LICENSE-'],
+    'oversized key' => [1000, 'LICENSE-'],
+    'oversized prefix' => [1, str_repeat('P', 255)],
+]);
 
 test('attach order config empty product config', function (): void {
     $service = new Service();

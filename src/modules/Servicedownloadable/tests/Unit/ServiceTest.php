@@ -14,7 +14,10 @@ use ClientFence\Mod\Order\Service as OrderService;
 use ClientFence\Mod\Product\Entity\Product;
 use ClientFence\Mod\Servicedownloadable\Service;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Path;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 
 use function Tests\Helpers\container;
 use function Tests\Helpers\moduleService;
@@ -229,4 +232,107 @@ test('product file upload rejects a request without the expected file field', fu
 
     expect(fn (): bool => $service->uploadProductFile($productModel))
         ->toThrow(ClientFence\Exception::class, 'File upload failed: no files in request.');
+});
+
+test('download headers preserve the original name and supply an ASCII fallback', function (string $method, string $fileName, string $fallback): void {
+    $storedFilename = bin2hex(random_bytes(32));
+    $config = ['filename' => $fileName, 'stored_filename' => $storedFilename];
+    $di = container();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = new Service();
+    $service->setDi($di);
+    if ($method === 'sendFile') {
+        $model = new Model_ServiceDownloadable();
+        $model->loadBean(new Tests\Helpers\DummyBean());
+        $model->id = 1;
+        $model->filename = $fileName;
+        $model->stored_filename = $storedFilename;
+        $model->downloads = 0;
+        $di['db']->shouldReceive('store')->once()->with($model);
+    } else {
+        $model = serviceDownloadableCreateProductEntity(1, json_encode($config));
+    }
+    $path = Path::join(PATH_UPLOADS, $storedFilename);
+    $di['filesystem']->dumpFile($path, 'download content');
+
+    try {
+        $response = $service->$method($model);
+        $header = $response->headers->get('Content-Disposition');
+
+        expect($header)->toStartWith('attachment;')
+            ->and($header)->toContain('filename=' . $fallback)
+            ->and($header)->toContain("filename*=utf-8''" . rawurlencode($fileName));
+    } finally {
+        $di['filesystem']->remove($path);
+    }
+})->with([
+    'service Arabic name' => ['sendFile', 'دليل.pdf', '____.pdf'],
+    'product Arabic name' => ['sendProductFile', 'دليل.pdf', '____.pdf'],
+    'accented name' => ['sendFile', 'résumé.pdf', 'r_sum_.pdf'],
+    'percent sign' => ['sendProductFile', '100%.pdf', '100_.pdf'],
+]);
+
+test('replacing a product file updates active and pending orders and saves the product', function (): void {
+    $oldConfig = ['filename' => 'old.pdf', 'stored_filename' => str_repeat('a', 64)];
+    $product = serviceDownloadableCreateProductEntity(1, json_encode($oldConfig + ['update_orders' => true]));
+    $active = new Model_ClientOrder();
+    $active->loadBean(new Tests\Helpers\DummyBean());
+    $active->id = 1;
+    $active->status = Model_ClientOrder::STATUS_ACTIVE;
+    $active->config = json_encode($oldConfig);
+    $pending = new Model_ClientOrder();
+    $pending->loadBean(new Tests\Helpers\DummyBean());
+    $pending->id = 2;
+    $pending->status = Model_ClientOrder::STATUS_PENDING_SETUP;
+    $pending->config = json_encode($oldConfig);
+    $download = new Model_ServiceDownloadable();
+    $download->loadBean(new Tests\Helpers\DummyBean());
+    $download->filename = $oldConfig['filename'];
+    $download->stored_filename = $oldConfig['stored_filename'];
+
+    $file = Mockery::mock(UploadedFile::class);
+    $file->shouldReceive('getClientOriginalName')->andReturn('new.pdf');
+    $file->shouldReceive('getClientOriginalExtension')->andReturn('pdf');
+    $file->shouldReceive('getError')->andReturn(UPLOAD_ERR_OK);
+    $file->shouldReceive('getMimeType')->andReturn('application/pdf');
+    $file->shouldReceive('move')->once()->with(PATH_UPLOADS, Mockery::pattern('/^[a-f0-9]{64}$/'))->andReturn(new File(__FILE__));
+
+    $productService = Mockery::mock(ClientFence\Mod\Product\Service::class);
+    $productService->shouldReceive('getOrdersForProduct')->once()->with($product)->andReturn([
+        ['id' => 2, 'config' => $pending->config],
+        ['id' => 1, 'config' => $active->config],
+    ]);
+    $orderService = Mockery::mock(OrderService::class);
+    $orderService->shouldReceive('getOrderService')->once()->with($active)->andReturn($download);
+    $orderService->shouldReceive('getOrderService')->once()->with($pending)->andReturnNull();
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getExistingModelById')->once()->with('ClientOrder', 1)->andReturn($active);
+    $db->shouldReceive('getExistingModelById')->once()->with('ClientOrder', 2)->andReturn($pending);
+    $db->shouldReceive('store')->once()->with($active);
+    $db->shouldReceive('store')->once()->with($pending);
+    $db->shouldReceive('store')->once()->with($download);
+    $db->shouldReceive('getCell')->andReturn(1);
+    $em = Mockery::mock(EntityManagerInterface::class);
+    $em->shouldReceive('flush')->once();
+
+    $di = container();
+    $di['db'] = $db;
+    $di['em'] = $em;
+    $di['request'] = new Request(files: ['file_data' => $file]);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(fn (string $name) => $name === 'product' ? $productService : $orderService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->uploadProductFile($product))->toBeTrue();
+
+    $newConfig = json_decode($product->getConfig(), true);
+    $expected = ['filename' => 'new.pdf', 'stored_filename' => $newConfig['stored_filename']];
+    expect($newConfig)->toMatchArray($expected)
+        ->and($newConfig['stored_filename'])->toMatch('/^[a-f0-9]{64}$/')
+        ->and($newConfig['stored_filename'])->not->toBe($oldConfig['stored_filename'])
+        ->and(json_decode($active->config, true))->toBe($expected)
+        ->and(json_decode($pending->config, true))->toBe($expected)
+        ->and($download->filename)->toBe('new.pdf')
+        ->and($download->stored_filename)->toBe($newConfig['stored_filename']);
 });

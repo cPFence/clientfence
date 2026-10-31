@@ -32,8 +32,9 @@ class Simple
      */
     public function generate(ServiceLicense $service, \Model_ClientOrder $order, array $config): string
     {
-        $length = $config['length'] ?? 25;
-        $prefix = $config['prefix'] ?? null;
+        // ClientFence core patch: reserve 19 suffix positions for 16 random characters within the 255-character license key.
+        $prefix = substr((string) ($config['prefix'] ?? ''), 0, 236);
+        $length = max(20, min(256 - strlen($prefix), (int) ($config['length'] ?? 25)));
 
         $character_array = [...range('A', 'Z'), ...range(1, 9)];
         $size = count($character_array) - 1;
