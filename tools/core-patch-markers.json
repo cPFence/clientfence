@@ -3582,5 +3582,13 @@
     {
         "file": "library/Payment/Adapter/PayPalEmail.php",
         "done": "ClientFence core patch: pending PayPal rows can still point to the subscription's original invoice."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: a plan change cannot replace a subscription the gateway cannot cancel."
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: domain subscriptions must charge the renewal price rather than a different registration price."
     }
 ]

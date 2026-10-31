@@ -45,6 +45,7 @@ function upgradesDb(): Connection
             . ' discount REAL, currency TEXT, expires_at TEXT, unpaid_invoice_id INTEGER, config TEXT, updated_at TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, hash TEXT, serie TEXT, nr TEXT, updated_at TEXT, taxrate REAL, paid_at TEXT, created_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, task TEXT, rel_id TEXT, title TEXT, price REAL, quantity INTEGER, unit TEXT, period TEXT, taxed INTEGER)',
+        'CREATE TABLE subscription (id INTEGER PRIMARY KEY, rel_type TEXT, rel_id INTEGER, status TEXT, sid TEXT, pay_gateway_id INTEGER)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, amount REAL, description TEXT, type TEXT, rel_id TEXT)',
         'CREATE TABLE ' . ActionFailures::TABLE . ' (id INTEGER PRIMARY KEY, client_order_id INTEGER NOT NULL, action TEXT NOT NULL, message TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 1,'
             . ' status TEXT NOT NULL DEFAULT \'open\', first_failed_at TEXT NOT NULL, last_failed_at TEXT NOT NULL, resolved_at TEXT, resolved_by INTEGER)',
@@ -690,6 +691,29 @@ test('a paid plan change cancels the order subscription', function (): void {
     Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
 
     expect($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))->toBe('applied');
+});
+
+test('a plan change requires a PayPal subscription to be canceled in PayPal first', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $order = upgradesOrder($di, 1);
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $gatewayService = Mockery::mock(ClientFence\Mod\Invoice\ServicePayGateway::class);
+    $gatewayService->shouldReceive('getPaymentAdapter')->once()->with($gateway)
+        ->andReturn(new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com']));
+    $models = Mockery::mock(ClientFence\Database::class);
+    $models->shouldReceive('getExistingModelById')->once()->with('PayGateway', 2, 'Payment gateway not found')->andReturn($gateway);
+    $di['db'] = $models;
+    $di['mod_service'] = $di->protect(fn () => $gatewayService);
+
+    expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBeNull();
+
+    $db->insert('subscription', ['id' => 7, 'rel_type' => 'invoice', 'rel_id' => 9001, 'status' => 'active', 'sid' => 'I-PAYPAL', 'pay_gateway_id' => 2]);
+    expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBe('This service is paid by a PayPal subscription: cancel it in PayPal first, then change the plan.');
+
+    $db->update('subscription', ['sid' => ''], ['id' => 7]);
+    expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBeNull();
 });
 
 test('yearly to monthly downgrade: applied at once, the difference goes to the account', function (): void {

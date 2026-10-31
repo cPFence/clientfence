@@ -419,6 +419,22 @@ class ServiceSubscription implements InjectionAwareInterface
                 if ($others !== []) {
                     return null;
                 }
+                // ClientFence core patch: domain subscriptions must charge the renewal price rather than a different registration price.
+                if ($order instanceof \Model_ClientOrder && $order->service_type === 'domain') {
+                    $productService = $this->di['mod_service']('Product');
+                    $config = json_decode($order->config ?? '', true) ?? [];
+                    // A domain whose product or TLD price is missing cannot renew by subscription; the invoice lists must still load.
+                    try {
+                        $product = $productService->findProductById((int) $order->product_id);
+                        $renewalLine = $productService->inCurrency((string) $order->currency)->getProductRenewalLineConfig($product, $config);
+                    } catch (\ClientFence\Exception) {
+                        return null;
+                    }
+                    $rate = $this->di['mod_service']('Currency')->getCurrencyRepository()->getRateByCode($order->currency);
+                    if ($rate === null || round((float) $item['price'] * (float) $item['quantity'], 2) !== round($renewalLine['price'] * $rate * $renewalLine['quantity'], 2)) {
+                        return null;
+                    }
+                }
             }
 
             $lineTotal = (float) ($item['price'] ?? 0) * (float) ($item['quantity'] ?? 0);

@@ -11,8 +11,12 @@
 declare(strict_types=1);
 
 use ClientFence\Mod\Client\Service as ClientService;
+use ClientFence\Mod\Currency\Repository\CurrencyRepository;
+use ClientFence\Mod\Currency\Service as CurrencyService;
 use ClientFence\Mod\Invoice\ServicePayGateway;
 use ClientFence\Mod\Invoice\ServiceSubscription;
+use ClientFence\Mod\Product\Entity\Product;
+use ClientFence\Mod\Product\Service as ProductService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 
@@ -615,6 +619,52 @@ test('a renewal invoice cannot subscribe an order that already has another activ
 })->with([
     'another invoice\'s subscription' => [25, false],
     'the invoice\'s own subscription' => [26, true],
+]);
+
+test('a domain invoice can subscribe only at its renewal price in the order currency', function (float $price, bool $subscribable, bool $priced = true): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 10;
+    $order->product_id = 5;
+    $order->service_type = 'domain';
+    $order->status = Model_ClientOrder::STATUS_PENDING_SETUP;
+    $order->currency = 'EUR';
+    $config = ['action' => 'register', 'tld' => '.com', 'period' => '1Y'];
+    $order->config = json_encode($config);
+    $subscription = new Model_Subscription();
+    $subscription->loadBean(new Tests\Helpers\DummyBean());
+    $subscription->rel_id = 26;
+
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getAll')->once()->with(Mockery::any(), [':id' => 26])->andReturn([
+        ['type' => 'order', 'rel_id' => 10, 'period' => '1Y', 'price' => $price, 'quantity' => 1],
+    ]);
+    $db->shouldReceive('load')->once()->with('ClientOrder', 10)->andReturn($order);
+    $db->shouldReceive('getExistingModelById')->once()->with('Subscription', 7, 'Subscription not found')->andReturn($subscription);
+    $product = (new Product())->setType(ProductService::DOMAIN);
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->once()->with(5)->andReturn($product);
+    $productService->shouldReceive('inCurrency')->once()->with('EUR')->andReturnSelf();
+    $renewal = $productService->shouldReceive('getProductRenewalLineConfig')->once()->with($product, $config);
+    $priced ? $renewal->andReturn(['price' => 10.0, 'quantity' => 1]) : $renewal->andThrow(new ClientFence\Exception('Unknown TLD. Could not determine registration price'));
+    $currencies = Mockery::mock(CurrencyRepository::class);
+    $currencies->shouldReceive('getRateByCode')->atMost()->once()->with('EUR')->andReturn(2.0);
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->atMost()->once()->andReturn($currencies);
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = createSubscriptionDbal();
+    $di['dbal']->update('subscription', ['rel_id' => 26], ['id' => 7]);
+    $di['dbal']->update('invoice_item', ['invoice_id' => 26], ['invoice_id' => 25]);
+    $di['mod_service'] = $di->protect(fn (string $module) => $module === 'Product' ? $productService : $currencyService);
+    $service = new ServiceSubscription();
+    $service->setDi($di);
+
+    expect($service->isSubscribable(26))->toBe($subscribable);
+})->with([
+    'registration 10, renewal 20' => [10.0, false],
+    'registration 20, renewal 20' => [20.0, true],
+    'TLD no longer priced' => [20.0, false, false],
 ]);
 
 test('gets subscription period', function (): void {

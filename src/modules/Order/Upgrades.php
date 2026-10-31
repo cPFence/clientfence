@@ -745,18 +745,18 @@ final class Upgrades
     public static function blocker(\Pimple\Container $di, \Model_ClientOrder $order, ?string $now = null): ?string
     {
         if ($order->status !== \Model_ClientOrder::STATUS_ACTIVE) {
-            return 'Only active services can be changed.';
+            return __trans('Only active services can be changed.');
         }
         if (!in_array((string) $order->service_type, self::KINDS, true)) {
-            return 'This kind of service cannot be changed here.';
+            return __trans('This kind of service cannot be changed here.');
         }
         if ((string) $order->period === '' || (string) $order->expires_at === '') {
-            return 'Only services billed by period can be changed.';
+            return __trans('Only services billed by period can be changed.');
         }
         // ClientFence core patch: paid ahead (more than one period left, such as a renewal paid early), a change credits
         // days of several invoices, which a later refund of one of them cannot tell apart.
         if (strtotime((string) $order->expires_at) - strtotime($now ?? date('Y-m-d H:i:s')) > (self::periodDays((string) $order->period) + 1) * 86400) {
-            return 'This service is paid ahead, so it is changed by our staff. Please contact us.';
+            return __trans('This service is paid ahead, so it is changed by our staff. Please contact us.');
         }
         // ClientFence (QA r10 D-01): more days left than its period has would credit more than was paid.
         try {
@@ -765,19 +765,35 @@ final class Upgrades
             $over = false;
         }
         if ($over) {
-            return 'This service is paid ahead, so it is changed by our staff. Please contact us.';
+            return __trans('This service is paid ahead, so it is changed by our staff. Please contact us.');
         }
         if ((float) ($order->discount ?? 0) > 0) {
-            return 'This service has a discount, so it is changed by our staff. Please contact us.';
+            return __trans('This service has a discount, so it is changed by our staff. Please contact us.');
         }
         $db = self::db($di);
         if ($order->unpaid_invoice_id !== null && $db->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $order->unpaid_invoice_id]) === \Model_Invoice::STATUS_UNPAID) {
-            return 'Pay the open invoice of this service first.';
+            return __trans('Pay the open invoice of this service first.');
+        }
+        // ClientFence core patch: a plan change cannot replace a subscription the gateway cannot cancel.
+        $subscriptions = $db->fetchAllAssociative(
+            'SELECT DISTINCT s.pay_gateway_id, s.sid FROM subscription s JOIN invoice_item ii ON ii.invoice_id = s.rel_id
+             WHERE s.rel_type = ? AND s.status = ? AND ii.type = ? AND ii.rel_id = ?',
+            ['invoice', 'active', \Model_InvoiceItem::TYPE_ORDER, (int) $order->id],
+        );
+        foreach ($subscriptions as $subscription) {
+            if (trim((string) $subscription['sid']) === '') {
+                continue;
+            }
+            $gateway = $di['db']->getExistingModelById('PayGateway', (int) $subscription['pay_gateway_id'], 'Payment gateway not found');
+            $adapter = $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway);
+            if (!method_exists($adapter, 'cancelSubscription')) {
+                return __trans('This service is paid by a PayPal subscription: cancel it in PayPal first, then change the plan.');
+            }
         }
         // ClientFence core patch: a refunded invoice of this service makes the unused time unknown (a downgrade
         // credited time that was already paid back).
         if (self::refunded($db, (int) $order->id)) {
-            return 'An invoice of this service was refunded, so it is changed by our staff. Please contact us.';
+            return __trans('An invoice of this service was refunded, so it is changed by our staff. Please contact us.');
         }
         // ClientFence core patch: a priced service no invoice paid for (staff activated it without one) has no paid
         // time to credit; a downgrade credited days never paid.
@@ -787,18 +803,18 @@ final class Upgrades
              UNION SELECT 1 FROM ' . self::TABLE . ' u JOIN invoice i ON i.id = u.invoice_id WHERE u.order_id = ? AND u.status = ? AND i.status = ? LIMIT 1',
             [\Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, (string) $order->id, (int) $order->id, self::STATUS_APPLIED, \Model_Invoice::STATUS_PAID],
         ) === false) {
-            return 'No paid invoice of this service is on record, so it is changed by our staff. Please contact us.';
+            return __trans('No paid invoice of this service is on record, so it is changed by our staff. Please contact us.');
         }
         // ClientFence core patch (QA r6, owner: "Strict rule"): the client changes a plan only when what was paid for the
         // days left is certain. A service last paid in the system it was imported from (setup fees, prorata first
         // payments, promotions) or given time by staff without a payment since is changed by staff.
         $lastPaid = self::lastPaid($db, $order);
         if ($lastPaid !== null && $lastPaid['imported']) {
-            return 'This service was last paid before it moved here, so it is changed by our staff until it renews. Please contact us.';
+            return __trans('This service was last paid before it moved here, so it is changed by our staff until it renews. Please contact us.');
         }
         $added = $db->fetchOne('SELECT MAX(value) FROM client_order_meta WHERE client_order_id = ? AND name = ?', [(int) $order->id, self::UNPAID_TIME_META]);
         if (is_string($added) && $added !== '' && ($lastPaid === null || $added >= $lastPaid['at'])) {
-            return 'Our staff added time to this service without a payment, so it is changed by our staff. Please contact us.';
+            return __trans('Our staff added time to this service without a payment, so it is changed by our staff. Please contact us.');
         }
         // ClientFence core patch (QA r9 P-01): staff option edits leave the paid options unknown until an invoice issued after the edit is paid.
         // QA r10 C-1: so does any staff edit of the service's money or of an invoice that bills it (MONEY_META).
@@ -811,11 +827,11 @@ final class Upgrades
         $ambiguous = false;
         self::paidTotal($db, $order, $ambiguous);
         if ($ambiguous) {
-            return 'This service was last paid on an imported invoice with a promotion, so it is changed by our staff. Please contact us.';
+            return __trans('This service was last paid on an imported invoice with a promotion, so it is changed by our staff. Please contact us.');
         }
         $client = $db->fetchOne('SELECT currency FROM client WHERE id = ?', [(int) $order->client_id]);
         if ($client === false || $client === null || $client === '' || strtoupper((string) $client) !== strtoupper((string) $order->currency)) {
-            return 'This service is billed in another currency. Please contact us.';
+            return __trans('This service is billed in another currency. Please contact us.');
         }
         try {
             $waiting = $db->fetchOne('SELECT u.id FROM ' . self::TABLE . ' u LEFT JOIN invoice i ON i.id = u.invoice_id WHERE u.order_id = ? AND (u.status = ? OR (u.status = ? AND i.status = ?)) LIMIT 1', [(int) $order->id, self::STATUS_APPLYING, self::STATUS_PENDING, \Model_Invoice::STATUS_UNPAID]);
