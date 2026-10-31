@@ -2260,9 +2260,10 @@ class UpdatePatcher implements InjectionAwareInterface
         // manage_settings key made a deliberate choice to leave it unchecked, not a legacy gap.
         // Restrict the backfill to groups untouched since before that date so we don't clobber
         // an intentional choice, including the default groups patch79 just created above.
+        // ClientFence core patch: backfill settings access only for modules still shipped.
         $modules = [
             'activity', 'antispam', 'cookieconsent', 'cron', 'formbuilder',
-            'invoice', 'massmailer', 'order', 'orderbutton', 'seo', 'support', 'theme',
+            'invoice', 'massmailer', 'order', 'seo', 'support', 'theme',
         ];
 
         $groups = $this->fetchAll('SELECT id, permissions FROM admin_group WHERE permissions IS NOT NULL AND updated_at < :cutoff', [

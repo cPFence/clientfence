@@ -40,7 +40,6 @@ LOWER = [
     ('__fossbilling_cache_connection_test__', '__clientfence_cache_connection_test__'),
     ("'fossbilling_' . $policyName", "'clientfence_' . $policyName"),
     ('fossbilling-rate-limiter', 'clientfence-rate-limiter'),
-    ('fossbilling-orderbutton-iframe', 'clientfence-orderbutton-iframe'),
     ('fossbilling_test_data', 'clientfence_test_data'),
     ('fossbilling_test_cache_', 'clientfence_test_cache_'),
     ('fossbilling_e2e_cookies', 'clientfence_e2e_cookies'),

@@ -101,32 +101,6 @@ function edgeCaseCartCurrency(): array
     ];
 }
 
-test('orderbutton product configuration renders a domain product', function (): void {
-    $html = (new StrictTemplateRenderer())->renderTemplate(
-        PATH_MODS . '/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig',
-        [
-            'app_area' => 'client',
-            'request' => edgeCaseRequest(),
-            'guest' => edgeCaseGuest(),
-            'cart_currency' => edgeCaseCartCurrency(),
-            'product' => [
-                'id' => 1,
-                'type' => 'domain',
-                'title' => 'Domain Registration',
-                'description' => 'Register a domain name',
-                'pricing' => [
-                    '.com' => ['price' => 10.0, 'enabled' => true, 'setup' => '0.00'],
-                    '.net' => ['price' => 12.0, 'enabled' => true, 'setup' => '0.00'],
-                ],
-                'allow_quantity_select' => false,
-                'form_id' => null,
-            ],
-        ],
-    );
-
-    expect($html)->toBeString();
-});
-
 test('hosting order form collects a required domain transfer code', function (): void {
     $html = (new StrictTemplateRenderer())->renderTemplate(
         PATH_MODS . '/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig',
@@ -233,66 +207,9 @@ test('email template variable macro renders nested variables inside an embed', f
         ->toContain('client@example.com');
 });
 
-test('orderbutton product configuration renders a hosting product', function (): void {
+test('order addons renders a product without addons key', function (): void {
     $html = (new StrictTemplateRenderer())->renderTemplate(
-        PATH_MODS . '/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig',
-        [
-            'app_area' => 'client',
-            'request' => edgeCaseRequest(),
-            'guest' => edgeCaseGuest(),
-            'cart_currency' => edgeCaseCartCurrency(),
-            'product' => [
-                'id' => 5,
-                'type' => 'hosting',
-                'title' => 'Test Hosting',
-                'description' => 'A hosting product',
-                'pricing' => [
-                    'type' => 'recurrent',
-                    'recurrent' => [
-                        '1M' => ['price' => 9.99, 'enabled' => true, 'setup' => '0.00'],
-                        '1Y' => ['price' => 99.99, 'enabled' => true, 'setup' => '0.00'],
-                    ],
-                ],
-                'allow_quantity_select' => true,
-                'quantity_in_stock' => 10,
-                'stock_control' => true,
-                'form_id' => null,
-            ],
-        ],
-    );
-
-    expect($html)->toBeString();
-});
-
-test('orderbutton product configuration renders a one-time payment product', function (): void {
-    $html = (new StrictTemplateRenderer())->renderTemplate(
-        PATH_MODS . '/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig',
-        [
-            'app_area' => 'client',
-            'request' => edgeCaseRequest(),
-            'guest' => edgeCaseGuest(),
-            'cart_currency' => edgeCaseCartCurrency(),
-            'product' => [
-                'id' => 2,
-                'type' => 'custom',
-                'title' => 'Security Suite',
-                'description' => null,
-                'pricing' => [
-                    'type' => 'once',
-                    'once' => ['price' => 49.99, 'setup' => '0.00'],
-                ],
-                'allow_quantity_select' => false,
-                'form_id' => null,
-            ],
-        ],
-    );
-
-    expect($html)->toBeString();
-});
-
-test('orderbutton addons renders a product without addons key', function (): void {
-    $html = (new StrictTemplateRenderer())->renderTemplate(
-        PATH_MODS . '/Orderbutton/templates/client/mod_orderbutton_addons.html.twig',
+        PATH_MODS . '/Order/templates/client/mod_order_addons.html.twig',
         [
             'app_area' => 'client',
             'request' => edgeCaseRequest(),

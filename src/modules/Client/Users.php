@@ -174,7 +174,6 @@ final class Users
         'email' => 'emails',
         'hosting' => 'products',
         'servicedownloadable' => 'products',
-        'orderbutton' => 'orders',
         'users' => 'owner',
         'contacts' => 'contacts',
     ];

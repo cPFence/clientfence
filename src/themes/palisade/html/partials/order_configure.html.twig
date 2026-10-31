@@ -1,7 +1,6 @@
 {# ClientFence: the configure step for plans with their own order form (hosting, domains), in place
    of FOSSBilling's order steps: the plan, its billing cycle and options, the product's order form
-   (domain choice) and add-ons, then Add to cart, which opens the cart page. The order button
-   embed (Orderbutton module) keeps FOSSBilling's steps. #}
+   (domain choice) and add-ons, then Add to cart, which opens the cart page. #}
 {% set cart_currency = guest.cart_get_currency %}
 {% set product_details %}
     <div class="bf-configure-plan">
@@ -41,7 +40,7 @@
     {{ fb_api_form({ message: 'Added to your cart'|trans, redirect: 'cart'|url }) }}>
     {% set tpl = 'mod_service' ~ product.type ~ '_order_form.html.twig' %}
     {{ include(tpl, product) }}
-    {{ include('mod_orderbutton_addons.html.twig', product) }}
+    {{ include('mod_order_addons.html.twig', product) }}
     <input type="hidden" name="multiple" value="1">
     <input type="hidden" name="id" value="{{ product.id }}">
     <div class="bf-configure-actions">

@@ -36,7 +36,7 @@ class SentryHelper
      */
     private const string SENTRY_RELEASE_PACKAGE = 'clientfence';
 
-    // A full list of our own modules which we want to receive error reports for
+    // ClientFence core patch: only shipped modules belong to the error-report allowlist.
     private const array ALLOWED_MODULES = [
         'activity',
         'api',
@@ -57,7 +57,6 @@ class SentryHelper
         'news',
         'notification',
         'order',
-        'orderbutton',
         'page',
         'product',
         'profile',

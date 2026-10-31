@@ -494,8 +494,11 @@ export default function initCheckout(root) {
           // ClientFence: the country decides the order's tax.
           country: fields.country,
         };
-        if (fields['g-recaptcha-response'] !== undefined) {
-          account['g-recaptcha-response'] = fields['g-recaptcha-response'];
+        // ClientFence: each CAPTCHA provider posts its own answer field.
+        for (const name of ['g-recaptcha-response', 'cf-turnstile-response', 'h-captcha-response']) {
+          if (fields[name] !== undefined) {
+            account[name] = fields[name];
+          }
         }
         await api('guest', 'client/create', account);
         // With "auto login after sign-up" on (Settings → Clients), the sign-up signed in too, with

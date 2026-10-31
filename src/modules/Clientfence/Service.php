@@ -29,8 +29,8 @@ declare(strict_types=1);
  *      - testers: only signed-in clients in the client group store_testers_group;
  *      - public: everyone, as stock FOSSBilling.
  *    The API dispatcher asks storeGate() before every
- *    guest and client store call listed in STORE_CALLS, so the theme pages, the order button
- *    and the HTTP API are all covered. The cart and checkout listeners repeat the check.
+ *    guest and client store call listed in STORE_CALLS, so the theme pages and the HTTP API
+ *    are all covered. The cart and checkout listeners repeat the check.
  *    Staff change it on the Orders settings page (admin API clientfence_store_update).
  *
  * 6. Store page and preview link. The store's title and subtitle are settings (store_title,

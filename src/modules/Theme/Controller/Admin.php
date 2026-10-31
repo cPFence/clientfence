@@ -100,7 +100,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
     public function get_theme(\ClientFence\App $app, $theme): string
     {
         $this->di['is_admin_logged'];
-        $this->di['mod_service']('Staff')->checkPermissionsAndThrowException('theme', 'view');
+        $staffService = $this->di['mod_service']('Staff');
+        $staffService->checkPermissionsAndThrowException('theme', 'view');
 
         $mod = $this->di['mod']('theme');
         $service = $mod->getService();
@@ -131,7 +132,10 @@ class Admin implements \ClientFence\InjectionAwareInterface
             'theme_code' => $t->getName(),
             'settings_html' => new \Twig\Markup($html, 'UTF-8'),
             // ClientFence core patch: the page tells other staff that only Super Administrators save the footer JavaScript.
-            'is_super_admin' => $this->di['mod_service']('Staff')->isSuperAdministrator(),
+            'is_super_admin' => $staffService->isSuperAdministrator(),
+            // ClientFence core patch: optional theme choices must respect the staff member's page and product permissions.
+            'page_pairs' => $staffService->hasPermission(null, 'page') ? $this->di['api_admin']->page_get_pairs() : [],
+            'product_pairs' => $staffService->hasPermission(null, 'product', 'view') ? $this->di['api_admin']->product_get_pairs() : [],
             'uploaded' => $t->getUploadedAssets(),
             'settings' => $settings,
             'current_preset' => $preset,

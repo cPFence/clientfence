@@ -25,13 +25,14 @@ class Module implements InjectionAwareInterface
     public const CONTROLLER_CLIENT_SUFFIX = '\\Controller\\Client';
     public const CONTROLLER_ADMIN_SUFFIX = '\\Controller\\Admin';
 
+    // ClientFence core patch: only shipped modules are always active.
     public const CORE_MODULES = ['api', 'activity', 'antispam', 'cart', 'client',
         'cron', 'currency', 'email', 'extension',
         'hook', 'index', 'invoice', 'order',
         'page', 'product', 'profile', 'security',
         'servicecustom', 'servicedomain', 'servicedownloadable',
         'servicehosting', 'servicelicense', 'staff', 'stats',
-        'support', 'system', 'theme', 'orderbutton', 'formbuilder',
+        'support', 'system', 'theme', 'formbuilder',
         'widgets',
         // ClientFence: built in, always on, never an extension.
         'clientfence'];

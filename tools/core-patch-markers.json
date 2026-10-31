@@ -1544,10 +1544,6 @@
         "done": "ClientFence core patch: configurable options (Product/Options.php). The options an active product"
     },
     {
-        "file": "modules/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig",
-        "done": "{# ClientFence core patch: configurable options (Product/Options.php). #}"
-    },
-    {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: configurable options (Product/Options.php) change on the order's"
     },
@@ -2044,10 +2040,6 @@
         "done": "ClientFence core patch: for periods in days or weeks, at most half"
     },
     {
-        "file": "modules/Orderbutton/templates/client/mod_orderbutton_product_configuration.html.twig",
-        "done": "ClientFence core patch: back to this product's page, where the cart"
-    },
-    {
         "file": "modules/Product/Entity/ProductPayment.php",
         "done": "ClientFence core patch: billing periods start switched off, so a"
     },
@@ -2186,10 +2178,6 @@
     {
         "file": "modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig",
         "done": "ClientFence core patch: in the page's language, as the store"
-    },
-    {
-        "file": "modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig",
-        "done": "ClientFence core patch: the balance is in the client's currency: compare"
     },
     {
         "file": "modules/Support/Service.php",
@@ -3052,14 +3040,6 @@
         "done": "ClientFence core patch (0.8.9 port): gateway URLs carry invoice destinations without session credentials."
     },
     {
-        "file": "modules/Orderbutton/templates/client/mod_orderbutton_checkout.html.twig",
-        "done": "ClientFence core patch (0.8.9 port): cart mutations use POST with the API wrapper's session token."
-    },
-    {
-        "file": "modules/Orderbutton/templates/client/mod_orderbutton_client.html.twig",
-        "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
-    },
-    {
         "file": "modules/Page/templates/client/mod_page_login.html.twig",
         "done": "ClientFence core patch (0.8.9 port): bind guest authentication to this browser session."
     },
@@ -3230,10 +3210,6 @@
     {
         "file": "modules/Order/templates/client/mod_order_list.html.twig",
         "done": "ClientFence core patch (0.8.9 port): pagination stays on the service list."
-    },
-    {
-        "file": "modules/Orderbutton/templates/client/mod_orderbutton_js.html.twig",
-        "done": "ClientFence core patch (0.8.9 port): cart removal must use POST with the API wrapper's session nonce."
     },
     {
         "file": "modules/Product/Api/Admin.php",
@@ -3522,5 +3498,29 @@
     {
         "file": "library/ClientFence/Mail.php",
         "done": "ClientFence core patch: encode the SendGrid key so DSN delimiters stay inside the credential."
+    },
+    {
+        "file": "library/ClientFence/Module.php",
+        "done": "ClientFence core patch: only shipped modules are always active."
+    },
+    {
+        "file": "library/ClientFence/SentryHelper.php",
+        "done": "ClientFence core patch: only shipped modules belong to the error-report allowlist."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: backfill settings access only for modules still shipped."
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_addons.html.twig",
+        "done": "ClientFence core patch: product add-ons belong to the standard order forms."
+    },
+    {
+        "file": "modules/Theme/Controller/Admin.php",
+        "done": "ClientFence core patch: optional theme choices must respect the staff member's page and product permissions."
+    },
+    {
+        "file": "modules/Theme/templates/admin/mod_theme_preset.html.twig",
+        "done": "ClientFence core patch: populate optional theme choices from the permission-filtered controller data."
     }
 ]

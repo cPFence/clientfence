@@ -23,6 +23,7 @@ $paths = [
     'library/Server/PackageExistsException.php',
     'clientfence-security-headers.php',
     'modules/Clientfence',
+    'modules/Order/templates/client/mod_order_addons.html.twig',
     // Moved from the ClientFence module into its home module.
     'modules/Invoice/Receipts.php',
     'modules/Invoice/templates/admin/mod_invoice_settings_receipts.html.twig',

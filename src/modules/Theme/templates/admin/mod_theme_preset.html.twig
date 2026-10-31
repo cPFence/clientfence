@@ -121,6 +121,7 @@
     {% endif %}
 {% endblock %}
 {% block js %}
+    {# ClientFence core patch: populate optional theme choices from the permission-filtered controller data. #}
     <script nonce="{{ csp_nonce }}">
         document.getElementById('theme-preset-select')?.addEventListener('change', () => onSelectedPresetChange());
         function onSelectedPresetChange() {
@@ -190,7 +191,7 @@
             //special class "page"
             document.querySelectorAll('#theme-settings select.page').forEach((el) => {
                 el.append(createOptionElement('', "{{ 'None'|trans }}"));
-                Object.entries({{ admin.page_get_pairs|json_encode|raw }}).forEach(([key, value]) => {
+                Object.entries({{ page_pairs|json_encode|raw }}).forEach(([key, value]) => {
                     el.append(createOptionElement(key, value));
                 })
             });
@@ -206,7 +207,7 @@
             //special class "product"
             document.querySelectorAll('#theme-settings select.product').forEach((el) => {
                 el.append(createOptionElement('', "{{ 'None'|trans }}"));
-                Object.entries({{ admin.product_get_pairs|json_encode|raw }}).forEach(([key, value]) => {
+                Object.entries({{ product_pairs|json_encode|raw }}).forEach(([key, value]) => {
                     el.append(createOptionElement(key, value));
                 })
             });

@@ -85,14 +85,14 @@ test('register configures routes', function (): void {
     $controller->register($boxAppMock);
 });
 
-test('getTheme renders theme preset', function (): void {
+test('getTheme gives theme-only staff empty page and product choices', function (): void {
     $controller = new ClientFence\Mod\Theme\Controller\Admin();
     $di = container();
 
     $boxAppMock = Mockery::mock('ClientFence\App');
     $boxAppMock->shouldReceive('render')
-        ->atLeast()
         ->once()
+        ->with('mod_theme_preset', Mockery::on(fn (array $data): bool => $data['page_pairs'] === [] && $data['product_pairs'] === []))
         ->andReturn('Rendering ...');
 
     // Create theme mock first
@@ -147,9 +147,21 @@ test('getTheme renders theme preset', function (): void {
         ->once()
         ->andReturn($themeServiceMock);
 
+    $staffServiceMock = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffServiceMock->shouldReceive('checkPermissionsAndThrowException')->once()->with('theme', 'view');
+    $staffServiceMock->shouldReceive('isSuperAdministrator')->andReturn(false);
+    $staffServiceMock->shouldReceive('hasPermission')->once()->with(null, 'page')->andReturn(false);
+    $staffServiceMock->shouldReceive('hasPermission')->once()->with(null, 'product', 'view')->andReturn(false);
+
+    $apiAdminMock = Mockery::mock();
+    $apiAdminMock->shouldNotReceive('page_get_pairs');
+    $apiAdminMock->shouldNotReceive('product_get_pairs');
+
     $di['db'] = $this->createStub('ClientFence\Database');
     $di['is_admin_logged'] = true;
     $di['mod'] = $di->protect(fn () => $modMock);
+    $di['mod_service'] = $di->protect(fn () => $staffServiceMock);
+    $di['api_admin'] = $apiAdminMock;
     $controller->setDi($di);
 
     $boxAppMock->shouldReceive('getRequest')->andReturn(Symfony\Component\HttpFoundation\Request::create('/theme/palisade'));
