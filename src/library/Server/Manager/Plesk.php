@@ -617,7 +617,7 @@ class Server_Manager_Plesk extends Server_Manager
 
     /**
      * Creates an array of properties for a client account.
-     * The properties include the client's company name, full name, username, password, telephone number, fax number, email address, address, city, and state.
+     * The properties include the client's company name, full name, username, telephone number, fax number, email address, address, city, and state.
      *
      * @param Server_Account $account the account for which the properties should be created
      *
@@ -627,11 +627,11 @@ class Server_Manager_Plesk extends Server_Manager
     {
         $client = $account->getClient();
 
+        // ClientFence core patch: plan changes must not send the stored password placeholder to Plesk.
         return [
             'cname' => $client->getCompany(),
             'pname' => $client->getFullname(),
             'login' => $account->getUsername(),
-            'passwd' => $account->getPassword(),
             'phone' => $client->getTelephone(),
             'fax' => $client->getFax(),
             'email' => $client->getEmail(),

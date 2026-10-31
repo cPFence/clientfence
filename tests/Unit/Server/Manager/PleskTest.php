@@ -26,6 +26,23 @@ beforeEach(function (): void {
         ->setPackage((new Server_Package())->setName('Business Hosting'));
 });
 
+test('changeAccountPackage sends customer properties without a password', function (): void {
+    $this->account->setPassword('********');
+    $customer = Mockery::mock(PleskX\Api\Operator\Customer::class);
+    $customer->shouldReceive('setProperties')->once()
+        ->with('login', 'example', Mockery::on(fn (array $props): bool => !array_key_exists('passwd', $props)))
+        ->andReturn(true);
+    $webspace = Mockery::mock(PleskX\Api\Operator\Webspace::class);
+    $webspace->shouldReceive('request')->once()->andReturn(new PleskX\Api\XmlResponse('<result/>'));
+    $client = Mockery::mock(PleskX\Api\Client::class);
+    $client->shouldReceive('customer')->once()->andReturn($customer);
+    $client->shouldReceive('webspace')->once()->andReturn($webspace);
+    (new ReflectionProperty(Server_Manager_Plesk::class, '_client'))->setValue($this->manager, $client);
+    $this->manager->setLog(new ClientFence\Log());
+
+    expect($this->manager->changeAccountPackage($this->account, (new Server_Package())->setName('New Plan')))->toBeTrue();
+});
+
 test('createSubscriptionProps sends the settings directly under <add>, in schema order', function (): void {
     $props = invokePleskCreateSubscriptionProps($this->manager, $this->account, 'add');
 

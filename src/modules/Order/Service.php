@@ -2220,6 +2220,9 @@ class Service implements InjectionAwareInterface
         }
 
         try {
+            // ClientFence core patch: deleting a service must stop its gateway subscription first.
+            $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
+            $subscriptionService->cancelForOrder($order instanceof Order ? $this->getLegacyOrder($order) : $order);
             $this->_callOnService($order, Order::ACTION_DELETE);
         } catch (\Exception $e) {
             if (!$forceDelete) {

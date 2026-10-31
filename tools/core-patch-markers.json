@@ -3590,5 +3590,17 @@
     {
         "file": "modules/Invoice/ServiceSubscription.php",
         "done": "ClientFence core patch: domain subscriptions must charge the renewal price rather than a different registration price."
+    },
+    {
+        "file": "library/Server/Manager/Plesk.php",
+        "done": "ClientFence core patch: plan changes must not send the stored password placeholder to Plesk."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: deleting a service must stop its gateway subscription first."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: saved plans reach the panel at setup, but inactive accounts cannot apply them later."
     }
 ]

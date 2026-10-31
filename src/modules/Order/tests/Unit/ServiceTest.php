@@ -2823,7 +2823,7 @@ test('suspendFromOrder suspends the active addons and unsuspendFromOrder brings 
 });
 
 // ClientFence: deleting an order cancels its open renewal and waiting upgrade invoices.
-test('deleteFromOrder cancels the open invoices of an active order', function (): void {
+test('deleteFromOrder cancels subscriptions before deletion and cancels open invoices', function (): void {
     $order = orderServiceCreateLegacyOrderModel(10);
     $order->status = Order::STATUS_ACTIVE;
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
@@ -2831,17 +2831,21 @@ test('deleteFromOrder cancels the open invoices of an active order', function ()
     $dbal->shouldReceive('update')->once()->with('invoice', Mockery::on(fn (array $v): bool => $v['status'] === Model_Invoice::STATUS_CANCELED), ['id' => 40, 'status' => Model_Invoice::STATUS_UNPAID]);
     $dbal->shouldReceive('update')->once()->with('client_order_upgrade', Mockery::on(fn (array $v): bool => $v['error'] === 'The order was deleted.'), Mockery::any());
     $dbal->shouldReceive('executeStatement')->once()->with(Mockery::pattern('/^UPDATE invoice i SET i.status = :canceled/'), Mockery::on(fn (array $p): bool => $p['order_id'] === '10'));
+    $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
+    $subscriptionService->shouldReceive('cancelForOrder')->once()->with($order)->globally()->ordered()->andReturn(1);
     $di = container();
     $di['dbal'] = $dbal;
     $di['events_manager'] = Mockery::mock(\ClientFence\EventManager::class)->shouldIgnoreMissing();
     $di['logger'] = new \ClientFence\Log();
-    $di['mod_service'] = $di->protect(fn () => Mockery::mock(ClientFence\Mod\Product\Service::class)->shouldIgnoreMissing());
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = '') => $module === 'Invoice' && $sub === 'Subscription'
+        ? $subscriptionService
+        : Mockery::mock(ClientFence\Mod\Product\Service::class)->shouldIgnoreMissing());
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldAllowMockingProtectedMethods();
-    $serviceMock->shouldReceive('_callOnService');
+    $serviceMock->shouldReceive('_callOnService')->once()->with($order, Order::ACTION_DELETE)->globally()->ordered();
     $serviceMock->shouldReceive('rmClientOrderStatusByOrder');
-    $serviceMock->shouldReceive('rmOrder');
+    $serviceMock->shouldReceive('rmOrder')->once()->with($order)->globally()->ordered();
     $serviceMock->shouldNotReceive('rmInvoiceItemByOrder');
     $serviceMock->setDi($di);
 

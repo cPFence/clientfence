@@ -54,9 +54,6 @@ final class Upgrades
     public const STATUS_FAILED = 'failed';
     public const STATUS_CANCELLED = 'cancelled';
 
-    /** Why a service with a change waiting for payment (or being applied) cannot change again. */
-    public const WAITING = 'A change of this service is waiting for payment. Pay its invoice, or ask us to cancel it.';
-
     public const SCOPE_PRODUCT = 'product';
     public const SCOPE_ORDER = 'order';
 
@@ -64,6 +61,12 @@ final class Upgrades
     public const PERIODS = ['w' => '1W', 'm' => '1M', 'q' => '3M', 'b' => '6M', 'a' => '1Y', 'bia' => '2Y', 'tria' => '3Y'];
     /** Service kinds that can move between products (domains renew by registrar rules). */
     private const KINDS = ['hosting', 'license', 'custom', 'membership', 'downloadable'];
+
+    /** Why a service with a change waiting for payment (or being applied) cannot change again. */
+    public static function waitingMessage(): string
+    {
+        return __trans('A change of this service is waiting for payment. Pay its invoice, or ask us to cancel it.');
+    }
 
     /**
      * Orders settings: are upgrades and downgrades on at all (default on).
@@ -155,7 +158,7 @@ final class Upgrades
         // A change waiting for payment is shown to the client with its invoice, whatever the settings.
         $waiting = self::waiting($di, (int) $order->id);
         if ($waiting !== null) {
-            return $none(self::WAITING, $waiting);
+            return $none(self::waitingMessage(), $waiting);
         }
         if (!$settings['upgrades'] && !$settings['downgrades']) {
             return $none('Upgrades and downgrades are not available.');
@@ -506,6 +509,12 @@ final class Upgrades
                 // A renewal invoice issued at the old price and cycle must not renew the new one.
                 $renewalNote = self::cancelRenewalInvoice($db, $order);
 
+                $newPrice = round((float) $up['to_price'] / $quantity, 2);
+                // ClientFence core patch: a changed price or cycle must not keep charging the old gateway subscription.
+                if ((float) $order->price !== $newPrice || (string) $order->period !== (string) $up['to_period']) {
+                    $di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order);
+                }
+
                 if ($order->service_type === 'hosting' && !$optionsOnly) {
                     self::moveHosting($di, $order, $to);
                 }
@@ -557,11 +566,6 @@ final class Upgrades
                 $order->product_id = (int) $up['to_product_id'];
                 if (!$optionsOnly) {
                     $order->title = self::newTitle((string) $order->title, (string) $up['from_title'], (string) $up['to_title'], $fromProduct['title'] ?? '');
-                }
-                $newPrice = round((float) $up['to_price'] / $quantity, 2);
-                // ClientFence core patch: a changed price or cycle must not keep charging the old gateway subscription.
-                if ((float) $order->price !== $newPrice || (string) $order->period !== (string) $up['to_period']) {
-                    $di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order);
                 }
                 $order->price = $newPrice;
                 $order->period = (string) $up['to_period'];
@@ -839,7 +843,7 @@ final class Upgrades
             $waiting = false;
         }
         if ($waiting !== false) {
-            return self::WAITING;
+            return self::waitingMessage();
         }
 
         return null;
@@ -923,7 +927,7 @@ final class Upgrades
     {
         $now ??= date('Y-m-d H:i:s');
         if (self::waiting($di, (int) $order->id) !== null) {
-            throw new InformationException(self::WAITING);
+            throw new InformationException(self::waitingMessage());
         }
         $settings = self::settings($di);
         if (!$settings['upgrades'] && !$settings['downgrades']) {

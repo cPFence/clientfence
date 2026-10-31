@@ -562,6 +562,37 @@ test('change account plan', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('change account plan refuses suspended accounts but saves pending setup plans', function (string $status, bool $allowed): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->status = $status;
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->service_hosting_hp_id = 7;
+    $hp = new Model_ServiceHostingHp();
+    $hp->loadBean(new Tests\Helpers\DummyBean());
+    $hp->id = 8;
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('store')->times($allowed ? 1 : 0)->with($model);
+    $di = container();
+    $di['db'] = $db;
+    $di['logger'] = new ClientFence\Log();
+    $service = new Service();
+    $service->setDi($di);
+
+    if ($allowed) {
+        expect($service->changeAccountPlan($order, $model, $hp))->toBeTrue()
+            ->and($model->service_hosting_hp_id)->toBe(8);
+    } else {
+        expect(fn () => $service->changeAccountPlan($order, $model, $hp))
+            ->toThrow(ClientFence\InformationException::class, 'Unsuspend or renew this service first, then change its plan.')
+            ->and($model->service_hosting_hp_id)->toBe(7);
+    }
+})->with([
+    'suspended' => [Model_ClientOrder::STATUS_SUSPENDED, false],
+    'pending setup' => [Model_ClientOrder::STATUS_PENDING_SETUP, true],
+]);
+
 test('change account username', function (): void {
     $service = new Service();
     $data = [

@@ -1001,6 +1001,22 @@ test('a hosting upgrade paid at expiry fails for staff without changing the plan
         ->and($db->fetchAssociative('SELECT client_order_id, action, status FROM ' . ActionFailures::TABLE))->toBe(['client_order_id' => 5, 'action' => 'upgrade', 'status' => 'open']);
 });
 
+test('a failed subscription cancellation leaves the hosting panel plan unchanged', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()
+        ->with(Mockery::on(fn (Model_ClientOrder $order): bool => (int) $order->id === 5))
+        ->andThrow(new RuntimeException('Gateway unavailable'));
+    $result = Upgrades::request($di, upgradesOrder($di, 5), 21, '1Y', UPGRADES_NOW);
+    upgradesPay($db, $result['id']);
+
+    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
+
+    expect($di['db']->planChanges)->toBe([])
+        ->and($db->fetchAssociative('SELECT status, error FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))
+        ->toBe(['status' => 'failed', 'error' => 'Gateway unavailable']);
+});
+
 test('a hosting upgrade moves the panel plan; a panel failure is retried by staff', function (): void {
     $db = upgradesDb();
     $di = upgradesContainer($db, [], ['panel' => 'Panel offline']);
@@ -1155,7 +1171,7 @@ test('a change waiting for payment is shown with its invoice, even with upgrades
     $hash = (string) $db->fetchOne('SELECT hash FROM invoice WHERE id < 9000');
     $want = ['kind' => 'upgrade', 'title' => 'Pro', 'period' => '1Y', 'amount' => 297.42, 'currency' => 'USD', 'invoice_number' => 'LNK-421', 'invoice_hash' => $hash];
 
-    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => Upgrades::WAITING, 'waiting' => $want])
+    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => Upgrades::waitingMessage(), 'waiting' => $want])
         ->and(Upgrades::options(upgradesContainer($db, ['upgrades_enabled' => '0', 'downgrades_enabled' => '0']), upgradesOrder($di, 1), UPGRADES_NOW)['waiting'])->toBe($want)
         // Other services of the client are not affected.
         ->and(Upgrades::options($di, upgradesOrder($di, 3), UPGRADES_NOW)['waiting'])->toBeNull();
