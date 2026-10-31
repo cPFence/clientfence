@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.0.15 (2026-11-01)
+
+### Changed
+
+- Staff permissions: changing a client's sign-in email, inviting an account user, making a user an owner or turning off a client's two-factor now needs "Change client passwords" as well as "Edit client profiles".
+
+### Fixed
+
+- Domains: a domain product can no longer be ordered as "use my own domain"; a client could take registrar control of another client's domain.
+- Domains: a transfer renews at the registrar for the years it is billed for.
+- Domains: a renewal is no longer sent to the registrar again when its first reply was lost.
+- Domains: domain orders created by staff get a billing period, so they renew.
+- Domains: nameservers are synced from the registrar.
+- Staff permissions: staff without invoice access can no longer open invoices or invoice PDFs through invoice links, and each report needs the view permission of its group (billing, clients or support).
+- Account users: quotes need the quotes permission, and order data no longer shows the owner's email, phone or address.
+- Support: closing a ticket that is already closed no longer sends the feedback email again.
+- Support: guest tickets from imported email are no longer refused by the CAPTCHA.
+- Email: saved template previews no longer keep domain transfer codes.
+
 ## 1.0.14 (2026-10-31)
 
 ### Fixed
