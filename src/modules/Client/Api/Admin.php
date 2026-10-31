@@ -483,6 +483,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         if (strcasecmp($oldEmail, (string) $client->getEmail()) !== 0) {
             $this->getDi()['dbal']->executeStatement('UPDATE client SET email_approved = 0 WHERE id = ?', [$client->getId()]);
             $service->revokeEmailConfirmations((int) $client->getId());
+            // ClientFence core patch: client email edits revoke reset links sent to the old address.
+            $this->getDi()['em']->getRepository(ClientPasswordReset::class)->deleteResetsForClient((int) $client->getId());
             $client->setEmailApproved(false);
         }
 

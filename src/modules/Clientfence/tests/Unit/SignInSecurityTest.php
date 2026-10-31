@@ -306,6 +306,43 @@ test('a trusted browser skips the PIN until the password changes', function (): 
     expect(SignInSecurity::trusted($world->di, 'client', 'client', 7))->toBeFalse();
 });
 
+test('a pending sign-in expires when its password changes', function (string $factor, string $kind, int $id): void {
+    $world = new SignInSecurityTestWorld();
+    $world->db->insert('client_user', ['id' => 8, 'pass' => 'hash-user', 'email' => 'user@example.test']);
+    $area = $kind === 'staff' ? 'staff' : 'client';
+    $user = $kind === 'user' ? ['user_id' => $id, 'client_id' => 7, 'version' => 1] : null;
+    if ($factor === 'pin') {
+        $world->save(['pin' => 'both']);
+        $world->save(['pin' => 'both', 'confirm_pin' => $world->lastPin()]);
+        SignInSecurity::challenge($world->di, $area, ['kind' => $kind, 'id' => $id, 'email' => 'login@example.test'], [], '192.0.2.5');
+        $key = SignInSecurity::PENDING;
+        $complete = fn () => SignInSecurity::verify($world->di, $area, $world->lastPin(), true, '192.0.2.5');
+    } else {
+        $world->db->executeStatement('CREATE TABLE client_twofactor (kind TEXT, subject_id INTEGER)');
+        $world->db->insert('client_twofactor', ['kind' => $kind, 'subject_id' => $id]);
+        ClientFence\Mod\Client\TwoFactor::challenge($world->di, 7, $user);
+        $key = ClientFence\Mod\Client\TwoFactor::PENDING;
+        // Disabling the factor meanwhile must not bypass the password check.
+        $world->db->delete('client_twofactor', ['kind' => $kind, 'subject_id' => $id]);
+        $complete = fn () => ClientFence\Mod\Client\TwoFactor::verify($world->di, '123456', '192.0.2.5');
+    }
+    $table = ['staff' => 'admin', 'client' => 'client', 'user' => 'client_user'][$kind];
+    expect($world->session[$key]['password_fingerprint'])->toBe(hash('sha256', (string) $world->db->fetchOne("SELECT pass FROM {$table} WHERE id = ?", [$id])));
+    $world->db->update($table, ['pass' => 'changed-password-hash'], ['id' => $id]);
+
+    expect($complete)->toThrow(InformationException::class, 'Your sign-in has expired. Please sign in again.')
+        ->and($world->session)->not->toHaveKey($key)
+        ->and($world->session)->not->toHaveKey('client_id')
+        ->and($world->session)->not->toHaveKey('admin')
+        ->and($world->queued)->toBe([]);
+})->with([
+    'staff email PIN' => ['pin', 'staff', 1],
+    'client email PIN' => ['pin', 'client', 7],
+    'user email PIN' => ['pin', 'user', 8],
+    'client authenticator' => ['totp', 'client', 7],
+    'user authenticator' => ['totp', 'user', 8],
+]);
+
 test('the console command turns sign-in security off', function (): void {
     $world = new SignInSecurityTestWorld();
     $world->save(['pin' => 'clients', 'countries_on' => '1', 'countries' => ['DE']]);

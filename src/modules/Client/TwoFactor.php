@@ -165,6 +165,7 @@ final class TwoFactor
             'id' => $id,
             'client_id' => $clientId,
             'user' => $user,
+            'password_fingerprint' => hash('sha256', (string) \ClientFence\Mod\Clientfence\SignInSecurity::passwordHash($di, $kind, $id)),
             'expires' => time() + self::PENDING_SECONDS,
             'tries' => 0,
         ]);
@@ -190,7 +191,8 @@ final class TwoFactor
     {
         $session = $di['session'];
         $pending = $session->get(self::PENDING);
-        if (!is_array($pending) || (int) ($pending['expires'] ?? 0) < time()) {
+        if (!is_array($pending) || (int) ($pending['expires'] ?? 0) < time()
+            || !hash_equals((string) ($pending['password_fingerprint'] ?? ''), hash('sha256', (string) \ClientFence\Mod\Clientfence\SignInSecurity::passwordHash($di, (string) $pending['kind'], (int) $pending['id'])))) {
             $session->delete(self::PENDING);
 
             throw new InformationException('Your sign-in has expired. Please sign in again.', null, 401);

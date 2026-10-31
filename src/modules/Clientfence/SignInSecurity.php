@@ -243,6 +243,7 @@ final class SignInSecurity
             'name' => (string) ($login['name'] ?? ''),
             'timezone' => (string) ($login['timezone'] ?? ''),
             'payload' => $payload,
+            'password_fingerprint' => hash('sha256', (string) self::passwordHash($di, (string) $login['kind'], (int) $login['id'])),
             'hash' => self::hashPin($pin),
             'expires' => time() + self::PIN_SECONDS,
             'sent_at' => time(),
@@ -322,7 +323,7 @@ final class SignInSecurity
     {
         $session = $di['session'];
         $pending = self::pending($di, $area);
-        if ($pending === null) {
+        if ($pending === null || !hash_equals((string) ($pending['password_fingerprint'] ?? ''), hash('sha256', (string) self::passwordHash($di, (string) $pending['kind'], (int) $pending['id'])))) {
             $session->delete(self::PENDING);
 
             throw new InformationException('Your sign-in has expired. Please sign in again.', null, 401);
@@ -389,7 +390,7 @@ final class SignInSecurity
         return hash_hmac('sha256', $body . '|' . $passwordHash, 'clientfence-trusted-browser|' . (string) Config::getProperty('info.salt', ''));
     }
 
-    private static function passwordHash(\Pimple\Container $di, string $kind, int $id): ?string
+    public static function passwordHash(\Pimple\Container $di, string $kind, int $id): ?string
     {
         $table = match ($kind) {
             'staff' => 'admin',

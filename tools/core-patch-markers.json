@@ -1,5 +1,29 @@
 [
     {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: prepare every sign-up before the email existence branch can disclose validation differences."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: existing addresses must fail the same pre-storage sign-up checks."
+    },
+    {
+        "file": "modules/Client/Repository/ClientPasswordResetRepository.php",
+        "done": "ClientFence core patch: email changes revoke the same reset records as password changes."
+    },
+    {
+        "file": "modules/Profile/Service.php",
+        "done": "ClientFence core patch: reset links sent to a previous sign-in email must stop working."
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: staff email edits revoke reset links sent to the old address."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: client email edits revoke reset links sent to the old address."
+    },
+    {
         "file": "modules/Support/Api/Guest.php",
         "done": "ClientFence core patch: the help desk's reopen rule also applies to guest replies."
     },

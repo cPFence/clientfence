@@ -49,6 +49,7 @@ test('create returns true and creates the account for a new email', function ():
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('prepareGuestClient')->andReturn(new ClientFence\Mod\Client\Entity\Client());
     $serviceMock
     ->shouldReceive('clientAlreadyExists')
     ->atLeast()->once()
@@ -100,6 +101,7 @@ test('create returns true without creating a duplicate account or disclosing tha
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('prepareGuestClient')->andReturn(new ClientFence\Mod\Client\Entity\Client());
     $serviceMock
     ->shouldReceive('clientAlreadyExists')
     ->atLeast()->once()
@@ -146,6 +148,7 @@ test('create returns true without creating an account when the per-email signup 
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('prepareGuestClient')->andReturn(new ClientFence\Mod\Client\Entity\Client());
     // Never reached: the email limiter short-circuits before the existence
     // check, so a fresh (not-yet-registered) email can't burn through this
     // path repeatedly to have its true existence state observed.
@@ -191,51 +194,28 @@ test('create returns true without creating an account when the per-email signup 
     expect($result)->toBeTrue();
 });
 
-test('create does not consume the per-email signup quota when client validation fails', function (): void {
-    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
-    $data = [
-        'email' => 'test@email.com',
-        'first_name' => 'John',
-        'password' => 'testpassword',
-        'password_confirm' => 'testpassword',
-        'country' => 'ZZ',
-    ];
-
-    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
-    $serviceMock->shouldReceive('clientAlreadyExists')->once()->andReturn(false);
-    $serviceMock->shouldReceive('checkExtraRequiredFields')->once();
-    $serviceMock->shouldReceive('checkCustomFields')->once();
-    $serviceMock->shouldReceive('guestCreateClient')->once()->andThrow(new ClientFence\InformationException('Invalid country code: ZZ'));
-
-    $validatorMock = Mockery::mock(ClientFence\Validate::class);
-    $validatorMock->shouldReceive('isPasswordStrong')->once();
-    $validatorMock->shouldReceive('passwordsMatch')->once();
-
-    $rateLimiterMock = Mockery::mock(ClientFence\Security\RateLimiter::class);
-    $rateLimiterMock->shouldReceive('consumeOrThrow')
-        ->once()
-        ->with('client_signup', Mockery::type('string'))
-        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup', false, 5, 4));
-    $rateLimiterMock->shouldReceive('consume')
-        ->once()
-        ->with('client_signup_email', $data['email'], 0)
-        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup_email', false, 5, 5));
-
-    $toolsMock = Mockery::mock(ClientFence\Tools::class);
-    $toolsMock->shouldReceive('validateAndSanitizeEmail')->once()->andReturn($data['email']);
-
+test('sign-up rejects an invalid country for existing and new emails alike', function (bool $exists): void {
     $di = container();
-    $di['mod_config'] = $di->protect(fn ($name): array => ['disable_signup' => false]);
-    $di['validator'] = $validatorMock;
-    $di['rate_limiter'] = $rateLimiterMock;
-    $di['tools'] = $toolsMock;
+    $di['mod_config'] = $di->protect(fn (string $name): array => ['auto_login_after_signup' => false]);
+    $di['rate_limiter'] = Mockery::mock(ClientFence\Security\RateLimiter::class);
+    $di['rate_limiter']->shouldReceive('consumeOrThrow')->once()
+        ->andReturn(new ClientFence\Security\RateLimitResult('client_signup', false, null, null));
+    $di['rate_limiter']->shouldNotReceive('consume');
+    $di['password'] = Mockery::mock(ClientFence\PasswordManager::class);
+    $di['password']->shouldReceive('hashIt')->andReturn('password-hash');
+    $di['em']->shouldNotReceive('persist');
+    $service = Mockery::mock(ClientFence\Mod\Client\Service::class)->makePartial();
+    $service->shouldReceive('clientAlreadyExists')->andReturn($exists);
+    $service->setDi($di);
+    $api = new ClientFence\Mod\Client\Api\Guest();
+    $api->setDi($di);
+    $api->setService($service);
 
-    $guestClient->setDi($di);
-    $guestClient->setService($serviceMock);
-
-    expect(fn (): bool => $guestClient->create($data))
-        ->toThrow(ClientFence\InformationException::class, 'Invalid country code: ZZ');
-});
+    expect(fn () => $api->create([
+        'email' => 'owner@example.com', 'first_name' => 'Owner', 'country' => 'XX',
+        'password' => 'Strong-password-123!', 'password_confirm' => 'Strong-password-123!',
+    ]))->toThrow(ClientFence\InformationException::class, 'Invalid country code: XX');
+})->with(['existing email' => [true], 'new email' => [false]]);
 
 test('create returns generic success when a concurrent signup wins the email race', function (): void {
     $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
@@ -249,6 +229,7 @@ test('create returns generic success when a concurrent signup wins the email rac
     $duplicateKeyException = guestClientDuplicateKeyViolation();
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('prepareGuestClient')->andReturn(new ClientFence\Mod\Client\Entity\Client());
     $serviceMock->shouldReceive('checkExtraRequiredFields')->once();
     $serviceMock->shouldReceive('checkCustomFields')->once();
     // Both requests pass the pre-check; the re-check after the constraint
@@ -303,6 +284,7 @@ test('create rethrows the constraint violation when the email is still free afte
     $duplicateKeyException = guestClientDuplicateKeyViolation();
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('prepareGuestClient')->andReturn(new ClientFence\Mod\Client\Entity\Client());
     $serviceMock->shouldReceive('checkExtraRequiredFields')->once();
     $serviceMock->shouldReceive('checkCustomFields')->once();
     $serviceMock->shouldReceive('clientAlreadyExists')->twice()->andReturn(false, false);

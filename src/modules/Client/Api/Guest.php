@@ -108,6 +108,9 @@ class Guest extends \ClientFence\Api\AbstractApi
             // (auto login after sign-up) does not ask for it again (modules/Clientfence/Service.php).
             \ClientFence\Mod\Clientfence\Service::$signupCaptchaChecked = true;
 
+            // ClientFence core patch: existing addresses must fail the same pre-storage sign-up checks.
+            $preparedClient = $service->prepareGuestClient($data);
+
             // Keyed independently of the IP limiter above so that spreading
             // probes across IPs doesn't help an attacker hammer one address.
             // Check the quota without consuming it. A token is recorded only
@@ -126,7 +129,7 @@ class Guest extends \ClientFence\Api\AbstractApi
             }
 
             try {
-                $client = $service->guestCreateClient($data);
+                $client = $service->guestCreateClient($preparedClient);
             } catch (UniqueConstraintViolationException $exception) {
                 $this->resetEntityManagerAfterViolation($service);
 

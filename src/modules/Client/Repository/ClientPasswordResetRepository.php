@@ -39,7 +39,7 @@ class ClientPasswordResetRepository extends EntityRepository
                 }
             }
 
-            $connection->delete('client_password_reset', ['client_id' => $clientId]);
+            $this->deleteResetsForClient($clientId);
             $client->setPass($passwordHash);
             $em->persist($client);
         });
@@ -51,7 +51,7 @@ class ClientPasswordResetRepository extends EntityRepository
         $em->wrapInTransaction(function () use ($em, $client, $hash, $ip): void {
             $clientId = (int) $client->getId();
             $this->lockClient($clientId);
-            $em->getConnection()->delete('client_password_reset', ['client_id' => $clientId]);
+            $this->deleteResetsForClient($clientId);
 
             $reset = (new ClientPasswordReset())
                 ->setClientId($clientId)
@@ -59,6 +59,12 @@ class ClientPasswordResetRepository extends EntityRepository
                 ->setIp($ip);
             $em->persist($reset);
         });
+    }
+
+    // ClientFence core patch: email changes revoke the same reset records as password changes.
+    public function deleteResetsForClient(int $clientId): int
+    {
+        return (int) $this->getEntityManager()->getConnection()->delete('client_password_reset', ['client_id' => $clientId]);
     }
 
     private function lockClient(int $clientId): mixed

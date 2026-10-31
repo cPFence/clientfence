@@ -866,9 +866,6 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             $client->setCreatedAt(new \DateTime((string) $createdAt));
         }
 
-        $this->di['em']->persist($client);
-        $this->di['em']->flush();
-
         return $client;
     }
 
@@ -878,6 +875,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         unset($eventParams['password'], $eventParams['password_confirm']);
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminCreateClient', 'params' => $eventParams]);
         $client = $this->createClient($data);
+        $this->di['em']->persist($client);
+        $this->di['em']->flush();
         if (Tools::normalizeBoolean($data['send_welcome_email'] ?? true, true)) {
             $this->sendAdminCreatedWelcomeEmailForClient($client);
         }
@@ -887,7 +886,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         return (int) $client->getId();
     }
 
-    public function guestCreateClient(array $data)
+    // ClientFence core patch: prepare every sign-up before the email existence branch can disclose validation differences.
+    public function prepareGuestClient(array $data): Client
     {
         $event_params = $data;
         $event_params['ip'] = $this->di['request']->getClientIp();
@@ -916,14 +916,21 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             }
         }
 
-        $client = $this->createClient($safeData);
+        return $this->createClient($safeData);
+    }
+
+    public function guestCreateClient(array|Client $data)
+    {
+        $client = $data instanceof Client ? $data : $this->prepareGuestClient($data);
+        $this->di['em']->persist($client);
+        $this->di['em']->flush();
 
         $event_params = [
             'id' => $client->getId(),
             'email' => $client->getEmail(),
             'first_name' => $client->getFirstName(),
             'last_name' => $client->getLastName(),
-            'ip' => $safeData['ip'],
+            'ip' => $client->getIp(),
         ];
         $this->di['events_manager']->fire(['event' => 'onAfterClientSignUp', 'params' => $event_params]);
         $this->di['logger']->info('Client #%s signed up', $client->getId());

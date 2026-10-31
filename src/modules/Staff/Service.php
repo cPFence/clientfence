@@ -543,7 +543,8 @@ class Service implements InjectionAwareInterface
             $this->assertCanRemoveActiveSuperAdministrator($model);
         }
 
-        $model->email = $data['email'] ?? $model->email;
+        $oldEmail = $model->email;
+        $model->email = $data['email'] ?? $oldEmail;
         $model->name = $data['name'] ?? $model->name;
         $model->status = $newStatus;
         if ($model->status === \Model_Admin::STATUS_INACTIVE) {
@@ -555,6 +556,11 @@ class Service implements InjectionAwareInterface
         }
         $model->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($model);
+
+        // ClientFence core patch: staff email edits revoke reset links sent to the old address.
+        if ($model->email !== $oldEmail) {
+            $this->di['em']->getRepository(AdminPasswordReset::class)->deleteResetsForAdmin((int) $model->id);
+        }
 
         if ($model->status !== \Model_Admin::STATUS_ACTIVE && $previousStatus === \Model_Admin::STATUS_ACTIVE) {
             $profileService = $this->di['mod_service']('profile');

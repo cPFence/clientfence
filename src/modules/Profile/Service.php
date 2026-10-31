@@ -86,7 +86,8 @@ class Service implements InjectionAwareInterface
         $event_params['id'] = $admin->getId();
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminStaffProfileUpdate', 'params' => $event_params]);
 
-        $admin->setEmail($data['email'] ?? $admin->getEmail());
+        $oldEmail = $admin->getEmail();
+        $admin->setEmail($data['email'] ?? $oldEmail);
         $admin->setName($data['name'] ?? $admin->getName());
         $admin->setSignature($data['signature'] ?? $admin->getSignature());
         if (array_key_exists('timezone', $data)) {
@@ -94,6 +95,11 @@ class Service implements InjectionAwareInterface
         }
         $this->di['em']->persist($admin);
         $this->di['em']->flush();
+
+        // ClientFence core patch: reset links sent to a previous sign-in email must stop working.
+        if ($admin->getEmail() !== $oldEmail) {
+            $this->di['em']->getRepository(AdminPasswordReset::class)->deleteResetsForAdmin((int) $admin->getId());
+        }
 
         $event_params = [];
         $event_params['id'] = $admin->getId();
@@ -157,6 +163,7 @@ class Service implements InjectionAwareInterface
             if ($client->getEmail() !== $email) {
                 $this->di['dbal']->executeStatement('UPDATE client SET email_approved = 0 WHERE id = ?', [$client->getId()]);
                 $clientService->revokeEmailConfirmations((int) $client->getId());
+                $this->di['em']->getRepository(ClientPasswordReset::class)->deleteResetsForClient((int) $client->getId());
                 $client->setEmail($email);
                 $client->setEmailApproved(false);
 
