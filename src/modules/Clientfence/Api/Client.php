@@ -73,21 +73,25 @@ class Client extends \ClientFence\Api\AbstractApi
 
     /**
      * The tax the client's invoices get (name and rate; rate 0 when tax is off or the client is
-     * exempt), so the checkout shows the amount the invoice will ask for.
+     * exempt), so the checkout shows the amount the invoice will ask for. With prices that include
+     * tax (`inclusive`) the invoice asks for the price itself, or for an exempt client the price less
+     * `deduct`, the rate of their location (Invoice\Service::applyInclusiveTax()).
      *
-     * @return array{name: string, rate: float}
+     * @return array{name: string, rate: float, inclusive: bool, deduct: float}
      */
     public function tax(): array
     {
         $di = $this->getDi();
         $client = $di['db']->load('Client', $this->clientId());
         if (!$client instanceof \Model_Client || !$client->id) {
-            return ['name' => '', 'rate' => 0.0];
+            return ['name' => '', 'rate' => 0.0, 'inclusive' => false, 'deduct' => 0.0];
         }
         $name = '';
         $rate = (float) $di['mod_service']('Invoice', 'Tax')->getTaxRateForClient($client, $name);
+        $inclusive = $di['mod_service']('invoice')->pricesIncludeTax();
+        $deduct = $inclusive && $rate <= 0 ? (float) $di['mod_service']('Invoice', 'Tax')->getLocationTaxRate($client) : 0.0;
 
-        return ['name' => (string) $name, 'rate' => max(0.0, $rate)];
+        return ['name' => (string) $name, 'rate' => max(0.0, $rate), 'inclusive' => $inclusive, 'deduct' => max(0.0, $deduct)];
     }
 
     private function clientId(): int

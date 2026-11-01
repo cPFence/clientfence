@@ -390,6 +390,16 @@ final class Upgrades
             $client = $di['db']->getExistingModelById('Client', (int) $order->client_id, 'Client not found');
             $rate = (float) $di['mod_service']('Invoice', 'Tax')->getTaxRateForClient($client);
         }
+        // ClientFence core patch: with prices that include tax the proration holds the tax, so the stored amount is its
+        // net; a client exempt from tax gets the net, as on their invoices (Invoice\Service::applyInclusiveTax()).
+        if ($quote['amount'] != 0 && $di['mod_service']('invoice')->pricesIncludeTax()) {
+            $client = $di['db']->getExistingModelById('Client', (int) $order->client_id, 'Client not found');
+            $deduct = $rate > 0 ? $rate : (float) $di['mod_service']('Invoice', 'Tax')->getLocationTaxRate($client);
+            // The credit and charge too: apply() rechecks the amount against them (repriced()).
+            foreach (['amount', 'credit', 'charge'] as $key) {
+                $quote[$key] = round((float) $quote[$key] * 100 / (100 + max(0.0, $deduct)), 2);
+            }
+        }
 
         return $quote + ['total' => self::creditWithTax($quote['amount'], $rate), 'tax_rate' => max(0.0, $rate)];
     }

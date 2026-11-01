@@ -34,9 +34,12 @@ export default function initCheckout(root) {
   };
 
   const recurrent = product.type === 'recurrent';
-  // The tax the invoice adds for a signed-in client (rounded once, as the invoice does).
-  const taxRate = Number(data.tax?.rate) || 0;
-  const withTax = (amount) => amount + (taxRate > 0 ? Math.round(amount * taxRate) / 100 : 0);
+  // The tax the invoice adds for a signed-in client (rounded once, as the invoice does). With prices that include
+  // tax, the invoice asks for the price, less the tax for an exempt client (deduct).
+  const inclusive = !!data.tax?.inclusive;
+  const taxRate = inclusive ? 0 : Number(data.tax?.rate) || 0;
+  const deduct = inclusive ? Number(data.tax?.deduct) || 0 : 0;
+  const withTax = (amount) => (deduct > 0 ? Math.round(amount * 10000 / (100 + deduct)) / 100 : amount + (taxRate > 0 ? Math.round(amount * taxRate) / 100 : 0));
   const addonPrice = (addon, cycle) => {
     if (addon.type === 'recurrent') {
       return addon.prices?.[cycle] ?? null;

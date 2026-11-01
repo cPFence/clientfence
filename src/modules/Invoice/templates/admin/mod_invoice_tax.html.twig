@@ -126,6 +126,13 @@
                                             <input class="form-check-input" id="tax_enabled" type="checkbox" name="tax_enabled" value="1"{% if params.tax_enabled|default(false) %} checked{% endif %}>
                                             <span class="form-check-label">{{ 'Enable Tax Support'|trans }}</span>
                                         </label>
+                                        {# ClientFence core patch: prices that include tax, as WHMCS Inclusive Tax (Invoice\Service::applyInclusiveTax()). #}
+                                        <input type="hidden" name="tax_inclusive" value="0">
+                                        <label class="form-check form-switch form-switch-2 mt-3">
+                                            <input class="form-check-input" id="tax_inclusive" type="checkbox" name="tax_inclusive" value="1"{% if params.tax_inclusive|default(false) %} checked{% endif %}>
+                                            <span class="form-check-label">{{ 'Prices include tax'|trans }}</span>
+                                        </label>
+                                        <div class="form-hint">{{ 'Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net).'|trans }}</div>
                                     {% endblock %}
 
                                     {% block form_actions %}

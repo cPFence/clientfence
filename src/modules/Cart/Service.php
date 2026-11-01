@@ -1052,7 +1052,8 @@ class Service implements InjectionAwareInterface
 
                 if ($ca['total'] > 0) { // crete invoice if order total > 0
                     $invoiceService = $this->di['mod_service']('Invoice');
-                    $invoiceModel = $invoiceService->prepareInvoice($legacyClient, ['client_id' => $this->clientId($client), 'items' => $invoice_items, 'gateway_id' => $gateway_id]);
+                    // ClientFence core patch: catalog prices may include tax (Invoice\Service::applyInclusiveTax()).
+                    $invoiceModel = $invoiceService->prepareInvoice($legacyClient, ['client_id' => $this->clientId($client), 'items' => $invoice_items, 'gateway_id' => $gateway_id, 'prices_include_tax' => true]);
 
                     // ClientFence core patch: tryPayWithCredits() compares the balance with the invoice total in the client's currency (the cart total is in the default one).
                     $invoiceService->approveInvoice($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true]);

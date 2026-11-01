@@ -1163,6 +1163,10 @@ class Service implements InjectionAwareInterface
                 $invoiceItemService->addNew($model, $d);
             }
         }
+        // ClientFence core patch: catalog prices that include tax (the cart's lines; WHMCS Inclusive Tax).
+        if (!empty($data['prices_include_tax'])) {
+            $this->applyInclusiveTax($model);
+        }
 
         $this->di['logger']->info("Prepared new invoice {$invoiceId}.");
 
@@ -2140,6 +2144,57 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
+    /** ClientFence: whether catalog prices include tax ("Prices include tax" in the Tax settings, WHMCS Inclusive Tax). */
+    public function pricesIncludeTax(): bool
+    {
+        return (int) $this->di['dbal']->fetchOne("SELECT COUNT(*) FROM setting WHERE param IN ('tax_enabled', 'tax_inclusive') AND value = '1'") === 2;
+    }
+
+    /**
+     * ClientFence: with prices that include tax, the lines of a new invoice priced from the catalog (orders, renewals)
+     * hold the net price, so its total is the price the client was shown. A client exempt from tax pays the net price,
+     * at the rate of their location (WHMCS "deduct tax amount for exempt clients"). A deposit line is left alone.
+     * Lines keep 2 decimals, so a cent of rounding goes on one line to make the total the shown price.
+     * shortcut: a few prices have no 2-decimal net (9.99 at 20%) and stay a cent off; store more decimals if that matters.
+     */
+    public function applyInclusiveTax(\Model_Invoice $invoice): void
+    {
+        if (!$this->pricesIncludeTax()) {
+            return;
+        }
+        $rate = (float) $invoice->taxrate;
+        if ($rate <= 0) {
+            $client = $this->di['db']->load('Client', (int) $invoice->client_id);
+            $rate = $client instanceof \Model_Client ? (float) $this->di['mod_service']('Invoice', 'Tax')->getLocationTaxRate($client) : 0.0;
+        }
+        if ($rate <= 0) {
+            return;
+        }
+        $db = $this->di['dbal'];
+        $taxedSql = 'SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND type <> ? AND taxed = 1';
+        $args = [(int) $invoice->id, \Model_InvoiceItem::TYPE_DEPOSIT];
+        $gross = round((float) $db->fetchOne($taxedSql, $args), 2);
+        $db->executeStatement('UPDATE invoice_item SET price = ROUND(price * 100 / (100 + ?), 2) WHERE invoice_id = ? AND type <> ?', [$rate, ...$args]);
+        // The taxed net whose tax (rounded once on the invoice, as getTax()) makes the gross; its cent goes on one line.
+        $taxRate = (float) $invoice->taxrate;
+        if ($taxRate <= 0 || $gross == 0) {
+            return;
+        }
+        $net = round($gross * 100 / (100 + $taxRate), 2);
+        foreach ([0.0, 0.01, -0.01] as $step) {
+            if (round($net + $step + round(($net + $step) * $taxRate / 100, 2), 2) === $gross) {
+                $net = round($net + $step, 2);
+
+                break;
+            }
+        }
+        $diff = round($net - (float) $db->fetchOne($taxedSql, $args), 2);
+        $line = $diff == 0 ? false : $db->fetchOne('SELECT id FROM invoice_item WHERE invoice_id = ? AND type <> ? AND taxed = 1 AND quantity = 1 ORDER BY ABS(price) DESC, id LIMIT 1', $args);
+        if ($line !== false && $line !== null) {
+            $db->executeStatement('UPDATE invoice_item SET price = ROUND(price + ?, 2) WHERE id = ?', [$diff, (int) $line]);
+        }
+    }
+
     /** ClientFence: a paid or refunded invoice has its payment and income booked, so its amount is fixed. */
     public function isBooked(\Model_Invoice $model): bool
     {
@@ -2384,6 +2439,8 @@ class Service implements InjectionAwareInterface
             ? \Model_InvoiceItem::TASK_ACTIVATE
             : \Model_InvoiceItem::TASK_RENEW;
         $invoiceItemService->generateFromOrder($proforma, $order, $task, $price, $line);
+        // ClientFence core patch: catalog prices that include tax (WHMCS Inclusive Tax).
+        $this->applyInclusiveTax($proforma);
 
         // invoice due date
         if ($due_days > 0) {

@@ -3830,5 +3830,33 @@
     {
         "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
         "done": "ClientFence core patch: move the service to another product, as WHMCS (Order/Upgrades.php staffMove())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: catalog prices that include tax (the cart's lines; WHMCS Inclusive Tax)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: catalog prices that include tax (WHMCS Inclusive Tax)."
+    },
+    {
+        "file": "modules/Invoice/ServiceTax.php",
+        "done": "ClientFence: the rate of the client's location, also for a client exempt from tax"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: catalog prices may include tax (Invoice\\Service::applyInclusiveTax())."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: with prices that include tax the proration holds the tax"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_tax.html.twig",
+        "done": "ClientFence core patch: prices that include tax, as WHMCS Inclusive Tax (Invoice\\Service::applyInclusiveTax())."
+    },
+    {
+        "file": "themes/palisade/html/mod_cart_index.html.twig",
+        "done": "ClientFence core patch: prices that include tax are what the invoice asks for (less the tax for an exempt client)."
     }
 ]

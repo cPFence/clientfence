@@ -804,8 +804,7 @@ test('WHMCS invoice numbers split into series and number', function (): void {
         ->and(Money::number('DRAFT'))->toBe(['', null]);
 });
 
-// ClientFence (QA r4 W-08): WHMCS's tax rules come over (first level), and its tax switch with them unless prices
-// included tax.
+// ClientFence (QA r4 W-08): WHMCS's tax rules come over (first level), with its tax switch and Inclusive Tax.
 test('tax rules and the tax switch', function (string $taxType, string $taxDomains, ?string $switch, string $warning, int $productTax = 1): void {
     $source = whmcsCatalogueSource();
     $source->executeStatement('ALTER TABLE tblproducts ADD COLUMN tax INTEGER DEFAULT 1');
@@ -825,10 +824,11 @@ test('tax rules and the tax switch', function (string $taxType, string $taxDomai
         ['level' => 1, 'name' => 'Sales tax', 'country' => 'US', 'state' => 'Texas', 'taxrate' => '6.25'],
     ])
         ->and($target->fetchOne("SELECT value FROM setting WHERE param = 'tax_enabled'"))->toBe($switch ?? false)
+        ->and($target->fetchOne("SELECT value FROM setting WHERE param = 'tax_inclusive'"))->toBe($switch === null ? false : ($taxType === 'Inclusive' ? '1' : '0'))
         ->and(implode("\n", $catalogue->warnings()))->toContain('Tax rule "Extra" is a second-level tax')->toContain($warning);
 })->with([
     'exclusive, everything taxed' => ['Exclusive', 'on', '1', ''],
-    'inclusive' => ['Inclusive', 'on', null, 'WHMCS prices included tax'],
+    'inclusive' => ['Inclusive', 'on', '1', ''],
     // QA r4 review: ClientFence taxes every item, so untaxed domains keep tax off.
     'domains untaxed' => ['Exclusive', '', null, 'WHMCS did not tax some items (domains)'],
     'a product untaxed' => ['Exclusive', 'on', null, 'WHMCS did not tax some items (1 products)', 0],

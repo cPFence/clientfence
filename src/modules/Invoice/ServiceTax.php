@@ -34,6 +34,15 @@ class ServiceTax implements InjectionAwareInterface
             return 0;
         }
 
+        return $this->getLocationTaxRate($model, $title);
+    }
+
+    /**
+     * ClientFence: the rate of the client's location, also for a client exempt from tax (prices that include tax are
+     * reduced by it for them, Invoice\Service::applyInclusiveTax()).
+     */
+    public function getLocationTaxRate(\Model_Client $model, &$title = null)
+    {
         $tax = $this->di['db']->findOne('Tax', 'state = ? and country = ?', [$model->state, $model->country]);
         // find rate which matches clients country and state
 

@@ -33,8 +33,10 @@
     {# ClientFence core patch (kept from the old cart step): the balance is in the client's currency, so the cart's total, tax included, is compared in that currency. #}
     {% set tax = client ? client.clientfence_tax : { name: '', rate: 0 } %}
     {% set total = cart.total * rate %}
-    {% set tax_amount = tax.rate > 0 ? ((total * tax.rate)|round) / 100 : 0 %}
-    {% set due = total + tax_amount %}
+    {# ClientFence core patch: prices that include tax are what the invoice asks for (less the tax for an exempt client). #}
+    {% set inclusive = tax.inclusive|default(false) %}
+    {% set tax_amount = not inclusive and tax.rate > 0 ? ((total * tax.rate)|round) / 100 : 0 %}
+    {% set due = inclusive ? (tax.deduct > 0 ? (total * 100 / (100 + tax.deduct))|round(2) : total) : total + tax_amount %}
     {% set from_balance = client and due > 0 and client.profile_get.currency|default(cur.code) == cur.code and client.client_balance_get_total >= due %}
     {% set methods = client and due > 0 and not from_balance ? guest.invoice_payment_methods({ amount: due, currency: cur.code }) : [] %}
     {% set back = 'cart' %}

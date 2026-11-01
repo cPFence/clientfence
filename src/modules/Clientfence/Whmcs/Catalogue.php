@@ -1042,13 +1042,16 @@ final class Catalogue
                 if ($this->source->hasTable('tbldomainpricing') && $this->source->count('tbldomainpricing') > 0 && !in_array($setting('TaxDomains'), ['on', '1', 'yes'], true)) {
                     $untaxed[] = 'domains';
                 }
-                if ($setting('TaxType') === 'inclusive') {
-                    $this->warn('WHMCS prices included tax, and ClientFence adds tax on top of prices: tax was left switched off (renewals charge the WHMCS prices). Make the prices net before switching tax on under Settings > Invoices.');
-                } elseif ($untaxed !== []) {
+                if ($untaxed !== []) {
                     $this->warn(sprintf('WHMCS did not tax some items (%s), and ClientFence taxes every item of a taxable client: tax was left switched off, so renewals charge no tax. Decide before switching it on under Settings > Invoices.', implode(', ', $untaxed)));
-                } elseif ($this->db->update('setting', ['value' => '1', 'updated_at' => $this->now], ['param' => 'tax_enabled']) === 0
-                    && $this->db->fetchOne('SELECT 1 FROM setting WHERE param = ?', ['tax_enabled']) === false) {
-                    $this->db->insert('setting', ['param' => 'tax_enabled', 'value' => '1', 'public' => 0, 'created_at' => $this->now, 'updated_at' => $this->now]);
+                } else {
+                    // WHMCS Inclusive Tax maps to "Prices include tax".
+                    foreach (['tax_enabled' => '1', 'tax_inclusive' => $setting('TaxType') === 'inclusive' ? '1' : '0'] as $param => $value) {
+                        if ($this->db->update('setting', ['value' => $value, 'updated_at' => $this->now], ['param' => $param]) === 0
+                            && $this->db->fetchOne('SELECT 1 FROM setting WHERE param = ?', [$param]) === false) {
+                            $this->db->insert('setting', ['param' => $param, 'value' => $value, 'public' => 0, 'created_at' => $this->now, 'updated_at' => $this->now]);
+                        }
+                    }
                 }
             }
         }

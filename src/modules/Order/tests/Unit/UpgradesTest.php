@@ -168,7 +168,7 @@ final class UpgradesTestDb
 
 /**
  * @param array<string, string> $orderConfig Orders settings (upgrades_enabled, downgrades_enabled)
- * @param array{panel?: ?string, funds?: ?string} $fail errors the panel or the credit throw
+ * @param array{panel?: ?string, funds?: ?string, tax_rate?: ?float, inclusive?: bool} $fail errors the panel or the credit throw, the client's tax rate, prices that include tax
  */
 function upgradesContainer(Connection $db, array $orderConfig = [], array $fail = []): Pimple\Container
 {
@@ -203,9 +203,14 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
     $services = [
         'product' => $productService,
         'invoice_subscription' => Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class),
-        'invoice' => new class($db, $di, $fail['tax_rate'] ?? 14.0) {
-            public function __construct(private readonly Connection $db, private readonly Pimple\Container $di, private readonly float $taxRate)
+        'invoice' => new class($db, $di, $fail['tax_rate'] ?? 14.0, $fail['inclusive'] ?? false) {
+            public function __construct(private readonly Connection $db, private readonly Pimple\Container $di, private readonly float $taxRate, private readonly bool $inclusive)
             {
+            }
+
+            public function pricesIncludeTax(): bool
+            {
+                return $this->inclusive;
             }
 
             public function prepareInvoice(Model_Client $client, array $data): Model_Invoice
@@ -271,6 +276,11 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
             public function getTaxRateForClient(Model_Client $client): float
             {
                 return (float) $this->rate;
+            }
+
+            public function getLocationTaxRate(Model_Client $client): float
+            {
+                return 20.0;
             }
         },
         'order' => new class($di['status_notes']) {
@@ -613,6 +623,25 @@ test('plan change quotes include the tax on the upgrade invoice and keep net pri
         ->and((float) $db->fetchOne('SELECT price FROM invoice_item WHERE invoice_id = ?', [$invoiceId]))->toBe($net)
         ->and((float) $db->fetchOne('SELECT amount FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))->toBe($net);
 })->with([null, 0.0, 19.0, 8.875])->with(['1M', '1Y']);
+
+test('with prices that include tax the quote total is the proration; a client exempt from tax pays its net', function (?float $rate): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db, [], ['tax_rate' => $rate, 'inclusive' => true]);
+    $gross = 20.65;
+    $net = round($gross * 100 / 120, 2);
+
+    $result = Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', UPGRADES_NOW);
+    $invoiceId = (int) $db->fetchOne('SELECT invoice_id FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]);
+
+    expect((float) $db->fetchOne('SELECT amount FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))->toBe($net)
+        ->and((float) $db->fetchOne('SELECT price FROM invoice_item WHERE invoice_id = ?', [$invoiceId]))->toBe($net)
+        ->and(round($di['mod_service']('invoice')->getTotalWithTax($di['db']->load('Invoice', $invoiceId)), 2))->toBe($rate === null ? $net : $gross);
+
+    // Paid the next day: the recheck compares net with net, so the change is made.
+    upgradesPay($db, $result['id']);
+    Upgrades::onPaid($di, $result['id'], '2026-10-17 09:00:00');
+    expect($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))->toBe('applied');
+})->with(['taxed at 20%' => [20.0], 'exempt, location rate 20%' => [null]]);
 
 test('monthly to yearly upgrade: invoiced, then applied once when paid', function (): void {
     $db = upgradesDb();
