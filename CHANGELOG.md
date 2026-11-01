@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.0.17 (2026-11-01)
+
+### Changed
+
+- Page loading: one modern, centered loading indicator in the admin and client areas.
+- System Health: bz2 is no longer a suggested PHP extension.
+- Network issues: staff with ticket management can post and remove them.
+
+### Fixed
+
+- Orders: marking a new order's invoice paid needs the invoice management permission.
+- Orders: account users no longer see the hosting password set on the staff order form.
+- Support: downloading ticket attachments and receipts needs the ticket view permission.
+- Account users: saving an API key's allowed IPs and the options-change quote work again.
+- Email: saved template previews hide API keys, licence keys, passwords and access links.
+- Email: guest and staff emails can be resent from the email history.
+- Domains: a registration, transfer or renewal the registrar refuses no longer activates or renews the order.
+- Domains: a renewal retry no longer renews twice when the expiry lookup fails.
+- Namecheap: errors are detected, unlocking works, and HTTP errors no longer log the API key.
+- Internet.bs: renewals use the paid number of years, and pending transfers are accepted.
+- Invoices: Mark as Paid is refused when a transfer is already recorded; record the rest as a transaction.
+- PayPal: a refunded duplicate payment is left for staff instead of refunding the paid invoice.
+- Account users: paying from the account balance needs the invoices permission.
+- Licences: the licence check accepts only text for host, path and version.
+- Downloads: replacing a file keeps the old one while a shopping cart still holds it.
+- System Health: the checks fit on phone screens.
+
 ## 1.0.16 (2026-11-01)
 
 ### Changed
