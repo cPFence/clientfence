@@ -648,6 +648,30 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence: the products staff can move a service to (Order\Upgrades::moveTargets()), id => title.
+     */
+    #[RequiredParams(['id' => 'Order ID was not passed'])]
+    public function move_targets($data): array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\Upgrades::moveTargets($this->getDi(), $this->getDi()['db']->getExistingModelById('ClientOrder', (int) $data['id'], 'Order not found'));
+    }
+
+    /**
+     * ClientFence: staff move a service to another product, as WHMCS (Order\Upgrades::staffMove()); with
+     * `recalculate`, the price is the new product's; with `change_package`, a hosting account moves to its plan.
+     */
+    #[RequiredParams(['id' => 'Order ID was not passed', 'product_id' => 'Product ID was not passed'])]
+    public function move_product($data): bool
+    {
+        $this->checkPermissions('order', 'manage');
+        \ClientFence\Mod\Order\Upgrades::staffMove($this->getDi(), (int) $data['id'], (int) $data['product_id'], !empty($data['recalculate']), !empty($data['change_package']));
+
+        return true;
+    }
+
+    /**
      * ClientFence: what Orders > Bulk price update offers (Order\BulkPrices): products, billing
      * periods in use, statuses and currencies.
      */

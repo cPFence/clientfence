@@ -29,6 +29,8 @@
 {% if order.status == 'active' or order.status == 'failed_renew' %}
     {% set can_cancel_at_period_end = admin.order_can_cancel_at_period_end({ 'id': order.id }) %}
 {% endif %}
+{# ClientFence core patch: the products staff can move the service to (Order/Upgrades.php moveTargets()). #}
+{% set move_targets = order.status != 'canceled' ? admin.order_move_targets({ 'id': order.id }) : [] %}
 
 {% block content %}
 {# ClientFence core patch: the order's open failed actions. #}
@@ -252,6 +254,16 @@
                     </a>
                     {% endif %}
 
+                    {# ClientFence core patch: move the service to another product, as WHMCS (Order/Upgrades.php staffMove()). #}
+                    {% if move_targets is not empty %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#moveProductModal">
+                        <svg class="icon" width="24" height="24">
+                            <use href="#refresh" />
+                        </svg>
+                        <span>{{ 'Change Product'|trans }}</span>
+                    </button>
+                    {% endif %}
+
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <svg class="icon" width="24" height="24">
                             <use href="#trash" />
@@ -298,6 +310,42 @@
                 </div>
             </div>
         </div>
+        {% if move_targets is not empty %}
+            <div class="modal modal-blur fade" id="moveProductModal" tabindex="-1" aria-labelledby="moveProductModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{{ 'order/move_product'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="moveProductModalLabel">{{ 'Change Product'|trans }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="id" value="{{ order.id }}">
+                                <label class="form-label" for="moveProductId">{{ 'New Product'|trans }}</label>
+                                <select class="form-select mb-3" id="moveProductId" name="product_id" required>
+                                    {% for id, title in move_targets %}<option value="{{ id }}">{{ title }}</option>{% endfor %}
+                                </select>
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="recalculate" value="1" checked>
+                                    <span class="form-check-label">{{ 'Recalculate the price from the new product'|trans }}</span>
+                                </label>
+                                {% if order.service_type == 'hosting' %}
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="change_package" value="1" checked>
+                                    <span class="form-check-label">{{ 'Change Package: move the hosting account to the new product\'s plan on the server'|trans }}</span>
+                                </label>
+                                {% endif %}
+                                <p class="text-muted mb-0">{{ 'No invoice is made. The service keeps its billing cycle and expiry date.'|trans }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
+                                <button type="submit" class="btn btn-primary">{{ 'Change Product'|trans }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         {% if order.status == 'active' or order.status == 'failed_renew' %}
             <div class="modal modal-blur fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">

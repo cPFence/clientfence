@@ -1470,3 +1470,50 @@ test('a change takes the client money lock that refunds take (D-09)', function (
     expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', UPGRADES_NOW)['status'])->toBe($status)
         ->and($db->fetchOne('SELECT COUNT(*) FROM client_balance'))->toBe($got);
 })->with(['free' => [1, 'applied'], 'busy' => [0, 'failed']]);
+
+test('staff move a service to a compatible product, as WHMCS', function (bool $recalculate, bool $changePackage, float $price, array $planChanges): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->times($recalculate ? 1 : 0)->andReturn(0);
+
+    expect(Upgrades::moveTargets($di, upgradesOrder($di, 5)))->toBe([21 => 'Host M']);
+    Upgrades::staffMove($di, 5, 21, $recalculate, $changePackage);
+
+    $row = $db->fetchAssociative('SELECT product_id, title, price, period, expires_at, config FROM client_order WHERE id = 5');
+    expect($row)->toMatchArray(['product_id' => 21, 'title' => 'Host M example.com', 'price' => $price, 'period' => '1Y', 'expires_at' => '2027-01-01 00:00:00'])
+        ->and(json_decode((string) $row['config'], true))->toMatchArray(['product_id' => 21, 'hosting_plan_id' => 8, 'domain' => 'example.com'])
+        ->and($di['db']->planChanges)->toBe($planChanges)
+        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM invoice WHERE id < 9000'))->toBe(0);
+})->with([
+    'recalculated, Change Package' => [true, true, 200.0, [[5, 8]]],
+    'price kept, no Change Package' => [false, false, 100.0, []],
+]);
+
+test('staff cannot move a service to a product on another server or of another reseller kind', function (int $productId): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+
+    expect(fn () => Upgrades::staffMove($di, 5, $productId, true, true))->toThrow(InformationException::class)
+        ->and((int) $db->fetchOne('SELECT product_id FROM client_order WHERE id = 5'))->toBe(20)
+        ->and($di['db']->planChanges)->toBe([]);
+})->with(['other server' => [22], 'reseller' => [23], 'same product' => [20]]);
+
+test('a product out of stock refuses the move before the panel changes', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['product']->shouldReceive('reduceStock')->once()->with(21, 1)->andThrow(new InformationException('Product 21 is out of stock.'));
+
+    expect(fn () => Upgrades::staffMove($di, 5, 21, true, true))->toThrow(InformationException::class, 'out of stock')
+        ->and($di['db']->planChanges)->toBe([])
+        ->and((int) $db->fetchOne('SELECT product_id FROM client_order WHERE id = 5'))->toBe(20);
+});
+
+test('a Change Package the panel refuses moves nothing and gives the stock back', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db, [], ['panel' => 'Panel down']);
+    $di['services']['product']->shouldReceive('reduceStock')->once()->with(21, 1)->andReturn(true);
+    $di['services']['product']->shouldReceive('returnStock')->once()->with(21, 1);
+
+    expect(fn () => Upgrades::staffMove($di, 5, 21, true, true))->toThrow(RuntimeException::class, 'Panel down')
+        ->and($db->fetchAssociative('SELECT product_id, price FROM client_order WHERE id = 5'))->toBe(['product_id' => 20, 'price' => 100.0]);
+});

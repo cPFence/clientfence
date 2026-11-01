@@ -517,23 +517,8 @@ final class Upgrades
 
                 $config = json_decode((string) $order->config, true);
                 $config = is_array($config) ? $config : [];
-                if ($productChanged && $order->service_type === 'downloadable') {
-                    $config['filename'] = $to['config']['filename'];
-                    $config['stored_filename'] = $to['config']['stored_filename'];
-                    $db->update('service_downloadable', [
-                        'filename' => $config['filename'],
-                        'stored_filename' => $config['stored_filename'],
-                    ], ['id' => (int) $order->service_id]);
-                }
-                if ($productChanged && $order->service_type === 'license') {
-                    // ClientFence core patch: license validation follows the target plan, including settings it disables.
-                    $licenseConfig = [];
-                    foreach (['validate_ip', 'validate_host', 'validate_path', 'validate_version'] as $key) {
-                        $config[$key] = (bool) ($to['config'][$key] ?? false);
-                        $licenseConfig[$key] = (int) $config[$key];
-                    }
-                    $licenseConfig['plugin'] = $config['plugin'] = $to['config']['plugin'] ?? 'Simple';
-                    $db->update('service_license', $licenseConfig, ['id' => (int) $order->service_id]);
+                if ($productChanged) {
+                    $config = self::productConfig($db, $order, $to, $config);
                 }
                 if ($opt !== null) {
                     $before = Options::summary(self::optionsOf($row['config'])['lines']);
@@ -551,13 +536,7 @@ final class Upgrades
                 $config['product_id'] = (int) $up['to_product_id'];
                 $config['period'] = (string) $up['to_period'];
                 $config['title'] = (string) $up['to_title'];
-                if ($order->service_type === 'hosting') {
-                    foreach (['server_id', 'hosting_plan_id', 'reseller'] as $key) {
-                        if (array_key_exists($key, $to['config'])) {
-                            $config[$key] = $to['config'][$key];
-                        }
-                    }
-                }
+                $config = self::hostingConfig($order, $to, $config);
                 $fromProduct = self::catalog($db, (int) $up['from_product_id'], false);
                 $order->product_id = (int) $up['to_product_id'];
                 if (!$optionsOnly) {
@@ -1226,6 +1205,152 @@ final class Upgrades
     }
 
     /** The hosting account moves to the new product's plan on its panel. */
+    /**
+     * The service config and records a new product sets: a download's file, a license's validation.
+     *
+     * @param array<string, mixed> $to     a catalog() entry
+     * @param array<string, mixed> $config
+     *
+     * @return array<string, mixed>
+     */
+    private static function productConfig(Connection $db, \Model_ClientOrder $order, array $to, array $config): array
+    {
+        if ($order->service_type === 'downloadable') {
+            $config['filename'] = $to['config']['filename'];
+            $config['stored_filename'] = $to['config']['stored_filename'];
+            $db->update('service_downloadable', [
+                'filename' => $config['filename'],
+                'stored_filename' => $config['stored_filename'],
+            ], ['id' => (int) $order->service_id]);
+        }
+        if ($order->service_type === 'license') {
+            // ClientFence core patch: license validation follows the target plan, including settings it disables.
+            $licenseConfig = [];
+            foreach (['validate_ip', 'validate_host', 'validate_path', 'validate_version'] as $key) {
+                $config[$key] = (bool) ($to['config'][$key] ?? false);
+                $licenseConfig[$key] = (int) $config[$key];
+            }
+            $licenseConfig['plugin'] = $config['plugin'] = $to['config']['plugin'] ?? 'Simple';
+            $db->update('service_license', $licenseConfig, ['id' => (int) $order->service_id]);
+        }
+
+        return $config;
+    }
+
+    /**
+     * @param array<string, mixed> $to     a catalog() entry
+     * @param array<string, mixed> $config
+     *
+     * @return array<string, mixed>
+     */
+    private static function hostingConfig(\Model_ClientOrder $order, array $to, array $config): array
+    {
+        if ($order->service_type === 'hosting') {
+            foreach (['server_id', 'hosting_plan_id', 'reseller'] as $key) {
+                if (array_key_exists($key, $to['config'])) {
+                    $config[$key] = $to['config'][$key];
+                }
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * The products staff can move a service to (staffMove()): the other recurring products it is compatible with.
+     *
+     * @return array<int, string> id => title
+     */
+    public static function moveTargets(\Pimple\Container $di, \Model_ClientOrder $order): array
+    {
+        $db = self::db($di);
+        $from = self::catalog($db, (int) $order->product_id, false);
+        if ($from === null) {
+            return [];
+        }
+        $targets = [];
+        foreach ($db->fetchFirstColumn('SELECT id FROM product WHERE type = ? AND id <> ? ORDER BY title', [$from['type'], (int) $order->product_id]) as $id) {
+            $to = self::catalog($db, (int) $id, false);
+            if ($to !== null && self::compatible($from, $to)) {
+                $targets[(int) $id] = $to['title'];
+            }
+        }
+
+        return $targets;
+    }
+
+    /**
+     * ClientFence: staff move a service to another product, as WHMCS (Products/Services tab: a new Product/Service,
+     * "Auto Recalculate on Save", then the Change Package module command). No invoice is made. Its options stay where
+     * the new product has them. With $reprice the recurring price is the new product's for the service's cycle (with
+     * its options) at today's rate; with $changePackage a hosting account moves to the new product's plan on the
+     * panel first, so a panel failure changes nothing. The history gets the change.
+     */
+    public static function staffMove(\Pimple\Container $di, int $orderId, int $productId, bool $reprice, bool $changePackage): void
+    {
+        $db = self::db($di);
+        $order = $di['db']->getExistingModelById('ClientOrder', $orderId, 'Order not found');
+        if (!isset(self::moveTargets($di, $order)[$productId])) {
+            throw new InformationException('The service can move only to another recurring product of the same type (hosting: on the same server, and reseller or not as now).');
+        }
+        $from = self::catalog($db, (int) $order->product_id, false, (string) $order->currency);
+        $to = self::catalog($db, $productId, false, (string) $order->currency);
+        $period = (string) $order->period;
+        $options = self::optionsFor($di, $productId, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once');
+        if ($options === null) {
+            throw new InformationException('The options of this service do not fit the new product. Change them first.');
+        }
+        $old = round((float) $order->price, 2);
+        $price = $old;
+        if ($reprice) {
+            $rate = self::rate($db, (string) $order->currency);
+            if ($rate === null || !isset($to['prices'][$period])) {
+                throw new InformationException('The new product has no price for the billing cycle of this service, so the price cannot be recalculated.');
+            }
+            $price = round(($to['prices'][$period] + $options['price']) * $rate, 2);
+        }
+        // The stock first: out of stock refuses before the panel changes; a panel failure gives it back.
+        $quantity = max(1, (int) ($order->quantity ?? 1));
+        $productService = $di['mod_service']('product');
+        $productService->reduceStock($productId, $quantity);
+        if ($changePackage && $order->service_type === 'hosting') {
+            try {
+                self::moveHosting($di, $order, $to);
+            } catch (\Throwable $e) {
+                $productService->returnStock($productId, $quantity);
+
+                throw $e;
+            }
+        }
+        $productService->returnStock((int) $order->product_id, $quantity);
+        // A changed price must not keep charging the old gateway subscription.
+        if ($price !== $old) {
+            $di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order);
+        }
+
+        $config = json_decode((string) $order->config, true);
+        $config = self::productConfig($db, $order, $to, is_array($config) ? $config : []);
+        if ($options['choice'] === []) {
+            unset($config['options'], $config['option_lines']);
+        } else {
+            $config['options'] = $options['choice'];
+            $config['option_lines'] = $options['lines'];
+        }
+        $config['product_id'] = $productId;
+        $config['title'] = $to['title'];
+        $config = self::hostingConfig($order, $to, $config);
+        $order->product_id = $productId;
+        $order->title = self::newTitle((string) $order->title, $from['title'], $to['title'], $from['title']);
+        $order->price = $price;
+        $order->config = json_encode($config);
+        $order->updated_at = date('Y-m-d H:i:s');
+        $di['db']->store($order);
+        $note = sprintf('Moved by staff from %s to %s', $from['title'], $to['title']) . ($price !== $old ? sprintf('; price %s to %s %s', number_format($old, 2, '.', ''), number_format($price, 2, '.', ''), $order->currency) : '')
+            . ($changePackage && $order->service_type === 'hosting' ? '; hosting plan changed on the panel' : '');
+        $di['mod_service']('order')->saveStatusChange($order, $note);
+        self::log($di, sprintf('Order #%d: %s', $orderId, $note));
+    }
+
     private static function moveHosting(\Pimple\Container $di, \Model_ClientOrder $order, array $to): void
     {
         $hp = $di['db']->getExistingModelById('ServiceHostingHp', (int) ($to['config']['hosting_plan_id'] ?? 0), 'The hosting plan of the new product was not found');
