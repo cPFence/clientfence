@@ -323,8 +323,9 @@ test('sendTemplate does not store staff password reset variables', function (): 
     expect($template->getVars())->toBeNull();
 });
 
-test('sendTemplate removes secrets from saved previews while rendering the full variables', function (): void {
+test('sendTemplate masks secrets in saved previews while rendering the full variables', function (): void {
     $secrets = array_fill_keys(['transfer_code', 'api_key', 'license_key', 'password', 'pass', 'hash', 'access_hash'], 'secret');
+    $masked = array_fill_keys(array_keys($secrets), '********');
     $vars = $secrets + [
         'order' => ['config' => $secrets + ['domain' => 'example.test', 'require_transfer_code' => true]],
         'items' => [3 => ['config' => $secrets + ['period' => '1Y']]],
@@ -358,9 +359,9 @@ test('sendTemplate removes secrets from saved previews while rendering the full 
     $service->setDi($di);
 
     expect($service->sendTemplate(['code' => 'mod_staff_client_order', 'to' => 'staff@example.test'] + $vars))->toBeTrue()
-        ->and($savedVars)->toBe([
-            'order' => ['config' => ['domain' => 'example.test', 'require_transfer_code' => true]],
-            'items' => [3 => ['config' => ['period' => '1Y']]],
+        ->and($savedVars)->toBe($masked + [
+            'order' => ['config' => $masked + ['domain' => 'example.test', 'require_transfer_code' => true]],
+            'items' => [3 => ['config' => $masked + ['period' => '1Y']]],
         ]);
 });
 

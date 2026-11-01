@@ -556,6 +556,11 @@ button.bf-health-count:hover { filter: brightness(.97); }
   .bf-health-actions { justify-content: flex-start; }
   .bf-health-counts { gap: 8px; }
   .bf-health-count { padding: 10px; }
+  /* Phones: the text gets the whole row; the group chip and Open go under it. */
+  .bf-health .bf-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 12px; }
+  .bf-health .bf-row > .bf-tile { grid-row: 1 / span 2; }
+  .bf-health .bf-row-main { grid-column: 2 / -1; padding-bottom: 4px; }
+  .bf-health .bf-row .bf-chip { justify-self: start; }
 }
 .bf-bars { display: flex; flex-direction: column; gap: 14px; padding: 4px 20px 20px; }
 .bf-bar { display: flex; flex-direction: column; gap: 6px; }

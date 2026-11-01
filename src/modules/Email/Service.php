@@ -347,17 +347,19 @@ class Service implements \ClientFence\InjectionAwareInterface
         $signInLink = in_array($data['code'], self::SIGN_IN_LINK_TEMPLATES, true);
         if (!$signInLink) {
             // ClientFence core patch: credentials and access links must stay out of saved template previews.
-            $removeTransferCodes = static function (array $values) use (&$removeTransferCodes): array {
-                unset($values['transfer_code'], $values['api_key'], $values['license_key'], $values['password'], $values['pass'], $values['hash'], $values['access_hash']);
+            // They are masked, not removed: previews and template checks render in strict mode.
+            $maskSecrets = static function (array $values) use (&$maskSecrets): array {
                 foreach ($values as $key => $value) {
                     if (is_array($value)) {
-                        $values[$key] = $removeTransferCodes($value);
+                        $values[$key] = $maskSecrets($value);
+                    } elseif (in_array($key, ['transfer_code', 'api_key', 'license_key', 'password', 'pass', 'hash', 'access_hash'], true)) {
+                        $values[$key] = '********';
                     }
                 }
 
                 return $values;
             };
-            $this->setVars($template, $removeTransferCodes($vars));
+            $this->setVars($template, $maskSecrets($vars));
         }
 
         // do not send inactive template
