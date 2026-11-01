@@ -1323,6 +1323,10 @@ class Service implements InjectionAwareInterface
         $orderId = $this->orderId($order);
         if ($order instanceof Order) {
             $order = $this->getOrderRepository()->find($orderId);
+            // ClientFence core patch: an invoice paid from credit may have just activated it through RedBean.
+            if ($order instanceof Order) {
+                $this->di['em']->refresh($order);
+            }
         } else {
             $order = $this->di['db']->load('ClientOrder', $orderId);
         }

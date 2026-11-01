@@ -2445,6 +2445,32 @@ test('activateOrder is a no-op when order was already activated by a stale refer
     expect($result)->toBeTrue();
 });
 
+test('activateOrder reads the current status of a cached order before provisioning', function (): void {
+    $cachedOrder = new Order();
+    (new ReflectionProperty($cachedOrder, 'id'))->setValue($cachedOrder, 1);
+    $status = new ReflectionProperty($cachedOrder, 'status');
+    $status->setValue($cachedOrder, Order::STATUS_PENDING_SETUP);
+
+    $orderRepoMock = Mockery::mock(OrderRepository::class)->shouldIgnoreMissing();
+    $orderRepoMock->shouldReceive('find')->with(1)->andReturn($cachedOrder);
+
+    $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $emMock->shouldReceive('getRepository')->with(Order::class)->andReturn($orderRepoMock);
+    // The paid invoice activated the order in the database; the cached entity still says pending setup.
+    $emMock->shouldReceive('refresh')->once()->with($cachedOrder)->andReturnUsing(fn (Order $o) => $status->setValue($o, Order::STATUS_ACTIVE));
+    $emMock->shouldIgnoreMissing();
+
+    $di = container();
+    $di['em'] = $emMock;
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('createFromOrder')->never();
+    $serviceMock->setDi($di);
+
+    expect($serviceMock->activateOrder($cachedOrder))->toBeTrue();
+});
+
 test('activateOrder force re-activates an already active order', function (): void {
     $activeOrderModel = createEntity(Order::class, [
         'status' => Order::STATUS_ACTIVE,
