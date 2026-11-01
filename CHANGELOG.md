@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.18 (2026-11-01)
+
+### Changed
+
+- Settings: only Super Administrators can change the cache settings and call hooks by hand.
+- Email settings: staff who are not Super Administrators no longer see the SMTP password, SendGrid key or custom DSN.
+
+### Fixed
+
+- Email: password reset and sign-in emails are no longer copied to the Bcc address.
+- Staff: "Allow Staff Reset Passwords" can be turned off.
+- Checkout: the account balance pays the order whenever it covers the invoice in the client's currency.
+- Support: a guest can reply to a closed ticket when its help desk allows reopening.
+
 ## 1.0.17 (2026-11-01)
 
 ### Changed
