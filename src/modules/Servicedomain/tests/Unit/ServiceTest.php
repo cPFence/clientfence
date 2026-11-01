@@ -94,6 +94,9 @@ test('cart domain products refuse own domains while hosting accepts them', funct
     $validator->shouldReceive('isSldValid')->andReturn(true);
     $validator->shouldReceive('isTldValid')->andReturn(true);
     $di['validator'] = $validator;
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+    $di['db']->shouldReceive('getExistingModelById')->with('ServiceHostingServer', 1, Mockery::any())->andReturn($server);
     $domainService->setDi($di);
     $hostingService->setDi($di);
     $productService->setDi($di);

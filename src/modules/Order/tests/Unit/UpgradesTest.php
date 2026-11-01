@@ -716,6 +716,17 @@ test('a plan change requires a PayPal subscription to be canceled in PayPal firs
     expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBeNull();
 });
 
+test('a service set to be cancelled at the end of its period cannot change plan', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-01 09:00:00']);
+    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '2', 'title' => 'Pro', 'price' => 600, 'quantity' => 1, 'period' => '1Y', 'taxed' => 0]);
+    expect(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBeNull();
+
+    $db->insert('client_order_meta', ['client_order_id' => 2, 'name' => ClientFence\Mod\Order\Service::META_CANCEL_AT_PERIOD_END, 'value' => '1']);
+    expect(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBe('This service is set to be cancelled at the end of its period, so it cannot be changed.');
+});
+
 test('yearly to monthly downgrade: applied at once, the difference goes to the account', function (): void {
     $db = upgradesDb();
     $di = upgradesContainer($db);

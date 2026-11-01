@@ -213,7 +213,11 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $reason = $data['reason'] ?? null;
 
-        return $this->getService()->suspendFromOrder($order, $reason, $skip_event);
+        $suspended = $this->getService()->suspendFromOrder($order, $reason, $skip_event);
+        // ClientFence core patch: a suspension staff made is lifted by staff, never by the client paying a renewal.
+        $this->getService()->updateOrderMeta($order, [\ClientFence\Mod\Order\Service::META_SUSPENDED_BY_STAFF => '1']);
+
+        return $suspended;
     }
 
     /**
@@ -230,7 +234,10 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new InformationException('Only suspended orders can be unsuspended');
         }
 
-        // ClientFence core patch: a waiting paid renewal line is applied instead (Service::applyPaidRenewal).
+        // ClientFence core patch: a waiting paid renewal line is applied instead (Service::applyPaidRenewal), which
+        // the staff suspension mark would hold back.
+        $this->getDi()['dbal']->delete('client_order_meta', ['client_order_id' => (int) $order->getId(), 'name' => \ClientFence\Mod\Order\Service::META_SUSPENDED_BY_STAFF]);
+
         return $this->getService()->applyPaidRenewal((int) $order->getId()) || $this->getService()->unsuspendFromOrder($order);
     }
 

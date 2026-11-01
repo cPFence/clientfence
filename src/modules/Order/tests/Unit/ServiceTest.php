@@ -3071,6 +3071,11 @@ test('scheduleCancellationFromOrder keeps the service active', function (): void
     $di['db'] = $dbMock;
     $di['logger'] = new \ClientFence\Log();
     $di['mod_service'] = $di->protect(fn () => $subscriptionService);
+    // The open renewal invoice is cancelled: paid now, it would be lost when the service ends.
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchAllAssociative')->once()->andReturn([]);
+    $dbal->shouldReceive('executeStatement')->once()->with(Mockery::pattern('/^UPDATE invoice i SET i.status = :canceled/'), Mockery::on(fn (array $p): bool => $p['order_id'] === '10' && $p['renew'] === 'renew'));
+    $di['dbal'] = $dbal;
 
     $service = Mockery::mock(Service::class)->makePartial();
     $service->shouldAllowMockingProtectedMethods();

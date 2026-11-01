@@ -757,6 +757,10 @@ final class Upgrades
         if ((string) $order->period === '' || (string) $order->expires_at === '') {
             return __trans('Only services billed by period can be changed.');
         }
+        // ClientFence core patch: a change cancels the gateway subscription that ends the service at the period end.
+        if (self::db($di)->fetchOne('SELECT value FROM client_order_meta WHERE client_order_id = ? AND name = ?', [(int) $order->id, Service::META_CANCEL_AT_PERIOD_END]) === '1') {
+            return __trans('This service is set to be cancelled at the end of its period, so it cannot be changed.');
+        }
         // ClientFence core patch: paid ahead (more than one period left, such as a renewal paid early), a change credits
         // days of several invoices, which a later refund of one of them cannot tell apart.
         if (strtotime((string) $order->expires_at) - strtotime($now ?? date('Y-m-d H:i:s')) > (self::periodDays((string) $order->period) + 1) * 86400) {

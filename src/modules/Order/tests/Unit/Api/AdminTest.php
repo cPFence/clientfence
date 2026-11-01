@@ -364,6 +364,7 @@ test('suspends an order', function (): void {
 
     $serviceMock = Mockery::mock(Service::class);
     $serviceMock->shouldReceive('suspendFromOrder')->atLeast()->once()->andReturn(true);
+    $serviceMock->shouldReceive('updateOrderMeta')->once()->with($order, [Service::META_SUSPENDED_BY_STAFF => '1']);
 
     $di = container();
     $apiMock->setDi($di);
@@ -385,6 +386,11 @@ test('unsuspends a suspended order', function (): void {
     $serviceMock = Mockery::mock(Service::class);
     $serviceMock->shouldReceive('applyPaidRenewal')->once()->andReturn(false);
     $serviceMock->shouldReceive('unsuspendFromOrder')->atLeast()->once()->andReturn(true);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('delete')->once()->with('client_order_meta', ['client_order_id' => (int) $order->getId(), 'name' => Service::META_SUSPENDED_BY_STAFF]);
+    $di = container();
+    $di['dbal'] = $dbal;
+    $apiMock->setDi($di);
 
     $apiMock->setService($serviceMock);
 

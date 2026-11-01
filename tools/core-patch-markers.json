@@ -2457,7 +2457,7 @@
     },
     {
         "file": "modules/Order/Service.php",
-        "done": "$db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name = ?', [$orderId, self::META_SUSPENDED_WITH]);"
+        "done": "$db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name IN (?, ?)', [$orderId, self::META_SUSPENDED_WITH, self::META_SUSPENDED_BY_STAFF]);"
     },
     {
         "file": "modules/Invoice/Api/Client.php",
@@ -3778,5 +3778,25 @@
     {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: an invoice paid from credit may have just activated it through RedBean."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: refused when it is added to the cart, not after the client has paid."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a renewal invoice paid now would be lost when the service ends at the period end."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch: a suspension staff made is lifted by staff, never by the client paying a renewal."
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: a suspension staff made is not lifted by a payment; Unsuspend applies it."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: a suspension staff made is lifted by staff, not by paying a renewal."
     }
 ]

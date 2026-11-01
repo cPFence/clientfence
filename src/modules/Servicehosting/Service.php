@@ -124,6 +124,18 @@ class Service implements InjectionAwareInterface
 
         if ($product instanceof Product) {
             $this->assertAdminControlledValuesMatch($data, $product);
+            // ClientFence core patch: refused when it is added to the cart, not after the client has paid.
+            $this->assertServerTakesAccounts($this->di['db']->getExistingModelById('ServiceHostingServer', (int) $data['server_id'], 'Server from order configuration was not found'));
+        }
+    }
+
+    // ClientFence core patch: a disabled or full server takes no new accounts (cancelled ones do not count; an unset flag is active).
+    private function assertServerTakesAccounts(\Model_ServiceHostingServer $server): void
+    {
+        if ((string) $server->active === '0'
+            || ((int) $server->max_accounts > 0 && (int) $this->di['dbal']->fetchOne("SELECT COUNT(*) FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id WHERE sh.service_hosting_server_id = ? AND co.status <> 'canceled'", [$server->id]) >= (int) $server->max_accounts)
+        ) {
+            throw new InformationException('This hosting plan cannot be ordered right now. Please contact us.');
         }
     }
 
@@ -187,12 +199,7 @@ class Service implements InjectionAwareInterface
 
         $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $c['server_id'], 'Server from order configuration was not found');
 
-        // ClientFence core patch: a disabled or full server takes no new accounts (cancelled ones do not count; an unset flag is active).
-        if ((string) $server->active === '0'
-            || ((int) $server->max_accounts > 0 && (int) $this->di['dbal']->fetchOne("SELECT COUNT(*) FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id WHERE sh.service_hosting_server_id = ? AND co.status <> 'canceled'", [$server->id]) >= (int) $server->max_accounts)
-        ) {
-            throw new InformationException('This hosting plan cannot be ordered right now. Please contact us.');
-        }
+        $this->assertServerTakesAccounts($server);
 
         $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $c['hosting_plan_id'], 'Hosting plan from order configuration was not found');
 

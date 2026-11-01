@@ -51,6 +51,8 @@ class Service implements InjectionAwareInterface
     public const META_CANCEL_AT_PERIOD_END = 'cancel_at_period_end';
     /** ClientFence: on an addon suspended with its service, that service's order id (unsuspended with it). */
     public const META_SUSPENDED_WITH = 'suspended_with_order';
+    /** ClientFence: '1' on an order staff suspended by hand; a payment does not lift it (ServiceInvoiceItem renew task). */
+    public const META_SUSPENDED_BY_STAFF = 'suspended_by_staff';
 
     // ClientFence: automatic suspension (batchSuspendExpired(), isExemptFromAutoSuspension()).
     public const int BATCH_SUSPEND_AFTER_DAYS = 5;
@@ -1955,7 +1957,7 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: the addons suspended with this service come back with it (not those suspended for
         // their own unpaid invoice). An unsuspended order drops its mark, so a later suspension is never taken for it.
         $db = $this->di['dbal'];
-        $db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name = ?', [$orderId, self::META_SUSPENDED_WITH]);
+        $db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name IN (?, ?)', [$orderId, self::META_SUSPENDED_WITH, self::META_SUSPENDED_BY_STAFF]);
         if ($this->orderIsGroupMaster($order)) {
             foreach ($this->getOrderAddonsList($order) as $addon) {
                 $addonId = $this->orderId($addon);
@@ -2034,6 +2036,8 @@ class Service implements InjectionAwareInterface
             throw new InformationException('No active gateway subscription is linked to this order.');
         }
         $this->updateOrderMeta($order, [self::META_CANCEL_AT_PERIOD_END => '1']);
+        // ClientFence core patch: a renewal invoice paid now would be lost when the service ends at the period end.
+        $this->cancelOpenInvoices($orderId, 'Cancellation was scheduled at the end of the period.');
 
         if ($order instanceof Order) {
             $order->setReason($reason);
