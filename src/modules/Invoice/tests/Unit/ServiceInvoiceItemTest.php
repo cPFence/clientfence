@@ -189,6 +189,8 @@ test('a paid renewal does not lift a suspension staff made', function (): void {
     $serviceMock->setDi($di);
 
     $serviceMock->executeTask($invoiceItemModel);
+    // The cron runs it again: no second note, and the line still waits (it keeps the service from being cancelled).
+    $serviceMock->executeTask($invoiceItemModel);
 
     expect($invoiceItemModel->attempts)->toBe(1)
         ->and($invoiceItemModel->status)->toBe(Model_InvoiceItem::STATUS_PENDING_SETUP);

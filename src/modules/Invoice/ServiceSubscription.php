@@ -325,6 +325,13 @@ class ServiceSubscription implements InjectionAwareInterface
                 if (in_array($order->status, [\Model_ClientOrder::STATUS_CANCELED, \Model_ClientOrder::STATUS_PENDING_SETUP, \Model_ClientOrder::STATUS_FAILED_SETUP], true)) {
                     continue;
                 }
+                // ClientFence core patch: a renewal paid outside the gateway runs past its end; the service keeps that
+                // time, and the expired-orders cron cancels it after the paid date (no renewal invoice is made).
+                if ($order->expires_at !== null && strtotime((string) $order->expires_at) > time() + 86400) {
+                    $orderService->saveStatusChange($order, 'The gateway subscription ended, but the service is paid until ' . $order->expires_at . ': it stays active until then.');
+
+                    continue;
+                }
 
                 $orderService->finalizeCancellationFromGateway($order, 'Subscription ended at the payment gateway');
             }

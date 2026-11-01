@@ -137,6 +137,21 @@ test('batchSuspendExpired waits the configured days past the expiry and skips ex
     'on the due date' => ['0', 0],
 ]);
 
+test('batchSuspendExpired cancels an expired order whose cancellation staff scheduled, instead of suspending it', function (): void {
+    $orders = [
+        createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
+        createEntity(Order::class, ['id' => 2, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
+    ];
+    $repository = Mockery::mock(OrderRepository::class);
+    $repository->shouldReceive('getExpired')->once()->andReturn($orders);
+    $repository->shouldReceive('find')->andReturnUsing(fn (int $id): Order => $orders[$id - 1]);
+    $service = autoSuspendService(['batch_suspend_reason' => 'Overdue'], $repository, [1 => [Service::META_CANCEL_AT_PERIOD_END => '1']]);
+    $service->shouldReceive('cancelFromOrder')->once()->with($orders[0], 'Cancellation scheduled at the end of the period')->andReturn(true);
+    $service->shouldReceive('suspendFromOrder')->once()->with($orders[1], 'Overdue')->andReturn(true);
+
+    expect($service->batchSuspendExpired())->toBeTrue();
+});
+
 test('batchSuspendExpired rechecks renewed orders under the paid-task lock', function (string $status, string $expiry): void {
     $order = createEntity(Order::class, ['id' => 1, 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]);
     $repository = Mockery::mock(OrderRepository::class);
@@ -199,6 +214,7 @@ test('automatic order actions leave paid lines awaiting execution alone', functi
     $connection->shouldReceive('fetchAllAssociative')->andReturn([['id' => 1], ['id' => 2]]);
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getRepository')->with(Order::class)->andReturn($repository);
+    $em->shouldReceive('getRepository')->with(OrderMeta::class)->andReturn(autoSuspendMetaRepository([]));
     $em->shouldReceive('getConnection')->andReturn($connection);
     $em->shouldReceive('refresh');
 

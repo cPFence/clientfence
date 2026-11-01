@@ -328,7 +328,7 @@ test('keeps manual gateway subscriptions active until PayPal confirms cancellati
     expect($subscription->status)->toBe('active');
 })->with(['cancel', 'update', 'order', 'notification']);
 
-test('finalizes a scheduled cancellation by canceling its order and service', function (): void {
+test('finalizes a scheduled cancellation by canceling its order and service, unless it is paid past the gateway end', function (?string $expiresAt, bool $cancels): void {
     $subscription = new Model_Subscription();
     $subscription->loadBean(new Tests\Helpers\DummyBean());
     $subscription->status = ServiceSubscription::STATUS_PENDING_CANCELLATION;
@@ -338,6 +338,7 @@ test('finalizes a scheduled cancellation by canceling its order and service', fu
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $order->expires_at = $expiresAt;
 
     $dbal = createSubscriptionDbal();
     $dbal->insert('client_order_meta', [
@@ -353,9 +354,10 @@ test('finalizes a scheduled cancellation by canceling its order and service', fu
 
     $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orderService->shouldReceive('finalizeCancellationFromGateway')
-        ->once()
+        ->times($cancels ? 1 : 0)
         ->with($order, 'Subscription ended at the payment gateway')
         ->andReturn(true);
+    $orderService->shouldReceive('saveStatusChange')->times($cancels ? 0 : 1)->with($order, Mockery::pattern('/stays active until then/'));
 
     $di = container();
     $di['db'] = $db;
@@ -368,7 +370,12 @@ test('finalizes a scheduled cancellation by canceling its order and service', fu
 
     expect($service->finalizeCancellationFromGateway(7))->toBeTrue()
         ->and($subscription->status)->toBe('canceled');
-});
+})->with([
+    'no expiry' => [null, true],
+    'ends with the gateway period' => [date('Y-m-d H:i:s', time() + 3600), true],
+    // A renewal paid outside the gateway (credit or by hand) keeps its paid month.
+    'paid a month past the gateway end' => [date('Y-m-d H:i:s', time() + 30 * 86400), false],
+]);
 
 test('reports end-of-period cancellation support for active gateway subscriptions', function (): void {
     $order = new Model_ClientOrder();

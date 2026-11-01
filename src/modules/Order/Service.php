@@ -2390,6 +2390,13 @@ class Service implements InjectionAwareInterface
                     if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId())) {
                         return;
                     }
+                    // ClientFence core patch: a cancellation staff scheduled ends the service once its paid time is over
+                    // (kept past the gateway's end by ServiceSubscription::finalizeCancellationFromGateway()).
+                    if ((string) ($this->getOrderMetaRepository()->getPairsForOrder((int) $order->getId())[self::META_CANCEL_AT_PERIOD_END] ?? '') === '1') {
+                        $this->cancelFromOrder($order, 'Cancellation scheduled at the end of the period');
+
+                        return;
+                    }
                     $this->suspendFromOrder($order, $reason);
                 });
             } catch (\Exception $e) {
