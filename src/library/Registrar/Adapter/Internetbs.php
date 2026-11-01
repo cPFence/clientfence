@@ -148,7 +148,8 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract
 
         $result = $this->_process('/Domain/Transfer/Initiate', $params);
 
-        return $result['status'] == 'SUCCESS';
+        // ClientFence core patch: an accepted transfer may await registry approval.
+        return ($result['status'] == 'PENDING') || ($result['status'] == 'SUCCESS');
     }
 
     public function getDomainDetails(Registrar_Domain $domain)
@@ -254,8 +255,10 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract
 
     public function renewDomain(Registrar_Domain $domain): bool
     {
+        // ClientFence core patch: Internet.bs otherwise defaults paid renewals to one year.
         $params = [
             'domain' => $domain->getName(),
+            'period' => $domain->getRegistrationPeriod() . 'Y',
         ];
 
         $result = $this->_process('/Domain/Renew', $params);

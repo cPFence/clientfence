@@ -54,6 +54,20 @@ function createInternetbsAdapter(HttpClientInterface $httpClient): Registrar_Ada
     };
 }
 
+test('Internetbs renews a domain for its paid registration period', function (): void {
+    $httpClient = new MockHttpClient(function (string $method, string $url, array $options): MockResponse {
+        parse_str($options['body'], $params);
+        expect(parse_url($url, PHP_URL_PATH))->toBe('/Domain/Renew')
+            ->and($params['period'])->toBe('2Y');
+
+        return new MockResponse("status=SUCCESS\nproduct_0_status=SUCCESS");
+    });
+    $domain = (new Registrar_Domain())->setSld('example')->setTld('.com')->setRegistrationPeriod(2);
+
+    expect(createInternetbsAdapter($httpClient)->renewDomain($domain))->toBeTrue()
+        ->and($httpClient->getRequestsCount())->toBe(1);
+});
+
 test('Internetbs reads expiration dates when registrant fields are missing', function (array $contactFields): void {
     $response = "status=SUCCESS\nexpirationdate=2030-10-06\nnameserver_0=ns1.example.com";
     foreach ($contactFields as $field => $value) {

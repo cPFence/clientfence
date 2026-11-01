@@ -286,12 +286,13 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
-        if ($model->action == 'register') {
-            $adapter->registerDomain($domain);
+        // ClientFence core patch: rejected registrar requests must remain retryable.
+        if ($model->action == 'register' && $adapter->registerDomain($domain) === false) {
+            throw new \Registrar_Exception('The registrar did not accept the domain request.');
         }
 
-        if ($model->action == 'transfer') {
-            $adapter->transferDomain($domain);
+        if ($model->action == 'transfer' && $adapter->transferDomain($domain) === false) {
+            throw new \Registrar_Exception('The registrar did not accept the domain request.');
         }
 
         // reset action
@@ -331,11 +332,14 @@ class Service implements \ClientFence\InjectionAwareInterface
         if ($forRenewal !== (string) $order->expires_at) {
             $previousExpiry = null;
         }
+        if ($previousExpiry && !$expiry) {
+            throw new \Registrar_Exception('Could not verify the previous domain renewal. Please try again later.');
+        }
         if (!$previousExpiry && $expiry) {
             $orderService->updateOrderMeta($metaOrder, ['domain_renewal_expiry' => $expiry . '|' . $order->expires_at]);
         }
-        if (!$previousExpiry || !$expiry || $expiry <= $previousExpiry) {
-            $adapter->renewDomain($domain);
+        if ((!$previousExpiry || $expiry <= $previousExpiry) && $adapter->renewDomain($domain) === false) {
+            throw new \Registrar_Exception('The registrar did not accept the domain request.');
         }
         $orderService->updateOrderMeta($metaOrder, ['domain_renewal_expiry' => null]);
 

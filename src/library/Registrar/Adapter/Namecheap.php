@@ -3,6 +3,7 @@
 declare(strict_types=1);
 use GeoIp2\Model\Domain;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
 {
@@ -128,38 +129,39 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
 
         $callUrl = $this->_getApiUrl();
 
+        // ClientFence core patch: request URLs and transport errors contain registrar credentials.
         try {
             if ($method == 'POST') {
                 $response = $client->request('POST', $callUrl, [
                     'body' => $this->_formatParams($params),
                 ]);
-                $this->getLog()->debug('API REQUEST: ' . $callUrl . '?' . $this->_formatParams($params));
+                $this->getLog()->debug('API REQUEST: ' . $params['Command']);
             } else {
                 $response = $client->request('GET', $callUrl . '?' . $this->_formatParams($params));
-                $this->getLog()->debug('API REQUEST: ' . $callUrl . '?' . $this->_formatParams($params));
+                $this->getLog()->debug('API REQUEST: ' . $params['Command']);
             }
-        } catch (HttpExceptionInterface $error) {
-            $e = new Registrar_Exception("HttpClientException: {$error->getMessage()}.");
+            $data = $response->getContent();
+        } catch (HttpExceptionInterface|TransportExceptionInterface $error) {
+            $status = $error instanceof HttpExceptionInterface ? $error->getResponse()->getStatusCode() : 0;
+            $e = new Registrar_Exception('Namecheap command :command failed with HTTP status :status.', [':command' => $params['Command'], ':status' => $status]);
             $this->getLog()->error($e->getMessage());
 
             throw $e;
         }
 
-        $data = $response->getContent();
-
         $this->getLog()->info('API RESULT: ' . $data);
 
         $result = simplexml_load_string($data);
 
-        if (isset($result['status']) && strtolower((string) $result['status']) == 'error') {
-            error_log('Namecheap error: ' . PHP_EOL . $result['error']);
+        if (isset($result['Status']) && strtolower((string) $result['Status']) == 'error') {
+            error_log('Namecheap error: ' . PHP_EOL . $result->Errors->Error);
             $placeholders = [':action:' => $params['Command'], ':type:' => 'Namecheap'];
 
             throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
         }
 
-        if (isset($result['status']) && strtolower((string) $result['status']) == 'failed') {
-            error_log('Namecheap error: ' . PHP_EOL . $result['actionstatusdesc']);
+        if (isset($result['Status']) && strtolower((string) $result['Status']) == 'failed') {
+            error_log('Namecheap error: ' . PHP_EOL . $result->Errors->Error);
             $placeholders = [':action:' => $params['Command'], ':type:' => 'Namecheap'];
 
             throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
@@ -646,7 +648,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
 
             throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
         }
-        if ($result->CommandResponse->DomainGetRegistrarLockResult['IsSuccess'] == 'true') {
+        if ($result->CommandResponse->DomainSetRegistrarLockResult['IsSuccess'] == 'true') {
             $domain->setLocked('true');
 
             return true;
@@ -660,7 +662,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
      */
     public function unlock(Registrar_Domain $domain): bool
     {
-        if ($this->getLock($domain) == 'false') {
+        if (!$this->getLock($domain)) {
             return true;
         }
 
@@ -676,7 +678,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
 
             throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
         }
-        if ($result->CommandResponse->DomainGetRegistrarLockResult['IsSuccess'] == 'true') {
+        if ($result->CommandResponse->DomainSetRegistrarLockResult['IsSuccess'] == 'true') {
             $domain->setLocked('false');
 
             return true;

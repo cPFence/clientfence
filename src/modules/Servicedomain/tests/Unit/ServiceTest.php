@@ -545,9 +545,9 @@ test('activates action', function (string $action, string $registerDomainCalled,
 
     $registrarAdapterMock = Mockery::mock('Registrar_Adapter_Custom');
     $registrarAdapterMock->shouldReceive('registerDomain')
-        ->{$registerDomainCalled}();
+        ->{$registerDomainCalled}()->andReturn(true);
     $registrarAdapterMock->shouldReceive('transferDomain')
-        ->{$transferDomainCalled}();
+        ->{$transferDomainCalled}()->andReturn(true);
 
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('_getD')
@@ -576,6 +576,30 @@ test('activates action', function (string $action, string $registerDomainCalled,
     ['register', 'atLeast', 'never'],
     ['transfer', 'never', 'atLeast'],
 ]);
+
+test('rejected domain activation keeps its registrar action for retry', function (string $action): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $domainModel = new Model_ServiceDomain();
+    $domainModel->loadBean(new Tests\Helpers\DummyBean());
+    $domainModel->action = $action;
+    $orderService = Mockery::mock(OrderService::class);
+    $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($domainModel);
+    $domain = new Registrar_Domain();
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive($action . 'Domain')->once()->with($domain)->andReturn(false);
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_getD')->once()->with($domainModel)->andReturn([$domain, $adapter]);
+    $service->shouldNotReceive('syncWhois');
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
+    $di['db']->shouldNotReceive('store');
+    $service->setDi($di);
+
+    expect(fn () => $service->action_activate($order))->toThrow(Registrar_Exception::class)
+        ->and($domainModel->action)->toBe($action);
+})->with(['register', 'transfer']);
 
 test('throws exception when activating without order service', function (): void {
     $service = new Service();
@@ -654,6 +678,49 @@ test('renewal retries recognize an advanced registrar expiry after a lost reply'
     expect($service->action_renew($order))->toBeTrue()
         ->and($storedMeta->getValue())->toBeNull();
 })->with(['normal renewal' => [false], 'lost reply and retry' => [true]]);
+
+test('failed renewal attempts retain the saved expiry mark', function (bool $lookupFails): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 7;
+    $order->expires_at = '2030-06-15 00:00:00';
+    $metaOrder = Tests\Helpers\createEntity(ClientFence\Mod\Order\Entity\Order::class, ['id' => 7]);
+    $domainModel = new Model_ServiceDomain();
+    $domainModel->loadBean(new Tests\Helpers\DummyBean());
+    $saved = '2030-06-15 00:00:00|' . $order->expires_at;
+    $mark = new ClientFence\Mod\Order\Entity\OrderMeta();
+    $mark->setValue($saved);
+    $repository = Mockery::mock(ClientFence\Mod\Order\Repository\OrderMetaRepository::class);
+    $repository->shouldReceive('findOneByOrderIdAndName')->once()->with(7, 'domain_renewal_expiry')->andReturn($mark);
+    $orderService = Mockery::mock(OrderService::class);
+    $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($domainModel);
+    $orderService->shouldReceive('getOrderMetaRepository')->once()->andReturn($repository);
+    $orderService->shouldNotReceive('updateOrderMeta');
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getReference')->once()->with(ClientFence\Mod\Order\Entity\Order::class, 7)->andReturn($metaOrder);
+
+    $domain = (new Registrar_Domain())->setExpirationTime(strtotime('2030-06-15 00:00:00'));
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $lookup = $adapter->shouldReceive('getDomainDetails')->once()->with($domain);
+    if ($lookupFails) {
+        $lookup->andThrow(new RuntimeException('Expiry lookup failed'));
+        $adapter->shouldNotReceive('renewDomain');
+    } else {
+        $lookup->andReturn($domain);
+        $adapter->shouldReceive('renewDomain')->once()->with($domain)->andReturn(false);
+    }
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_getD')->once()->with($domainModel)->andReturn([$domain, $adapter]);
+    $service->shouldNotReceive('syncWhois');
+
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
+    $service->setDi($di);
+
+    expect(fn () => $service->action_renew($order))->toThrow(Registrar_Exception::class)
+        ->and($mark->getValue())->toBe($saved);
+})->with(['expiry lookup fails' => [true], 'registrar rejects renewal' => [false]]);
 
 test('a renewal mark left by an earlier renewal does not skip the registrar renewal', function (): void {
     $order = new Model_ClientOrder();
