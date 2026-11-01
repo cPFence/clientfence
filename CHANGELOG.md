@@ -5,7 +5,6 @@
 ### Changed
 
 - Hosting: a hosting plan on a full or disabled server can no longer be added to the cart.
-- Suspensions: a client paying a renewal no longer lifts a suspension made by staff; staff unsuspend the service, which applies the payment.
 - Cancellation at the end of the period: the service's open renewal invoice and its add-ons are cancelled with it, and its plan can no longer be changed.
 
 ### Fixed

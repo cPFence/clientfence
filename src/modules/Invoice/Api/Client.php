@@ -96,10 +96,6 @@ class Client extends \ClientFence\Api\AbstractApi
             if ($this->getDi()['dbal']->fetchOne('SELECT 1 FROM client_order_meta WHERE client_order_id = ? AND name = ? AND value = ?', [$model->id, \ClientFence\Mod\Order\Service::META_CANCEL_AT_PERIOD_END, '1'])) {
                 throw new \ClientFence\InformationException('This service is set to be cancelled at the end of its period, so it cannot be renewed.');
             }
-            // ClientFence core patch: a suspension staff made is lifted by staff, not by paying a renewal.
-            if ($model->status === \Model_ClientOrder::STATUS_SUSPENDED && $this->getDi()['dbal']->fetchOne('SELECT 1 FROM client_order_meta WHERE client_order_id = ? AND name = ? AND value = ?', [$model->id, \ClientFence\Mod\Order\Service::META_SUSPENDED_BY_STAFF, '1'])) {
-                throw new \ClientFence\InformationException('This service was suspended by our staff, so it cannot be renewed here. Please contact us.');
-            }
             if ($model->expires_at !== null && $model->expires_at !== $seenExpiry) {
                 throw new \ClientFence\InformationException('This order was renewed a moment ago. Reload the page to see it.');
             }

@@ -232,14 +232,7 @@ class Admin extends \ClientFence\Api\AbstractApi
             if ($this->getService()->isBooked($invoice)) {
                 throw new \ClientFence\InformationException('The lines and tax rate of a paid invoice cannot be changed. Refund it and make a new invoice.');
             }
-            // ClientFence core patch (QA r10 C-1): a line removed from an invoice that bills a service (before the line goes).
-            $orders = $this->getService()->ordersOf((int) $invoice->id);
-            $removed = $invoiceItemService->remove($model);
-            foreach ($orders as $orderId) {
-                \ClientFence\Mod\Order\Upgrades::markMoneyTouched($this->getDi(), $orderId);
-            }
-
-            return $removed;
+            return $invoiceItemService->remove($model);
         });
     }
 

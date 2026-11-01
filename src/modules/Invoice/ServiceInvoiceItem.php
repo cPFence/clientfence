@@ -110,19 +110,6 @@ class ServiceInvoiceItem implements InjectionAwareInterface
 
                             break;
                         }
-                        // ClientFence core patch: a suspension staff made is not lifted by a payment; Unsuspend applies it.
-                        if ($order->status == \Model_ClientOrder::STATUS_SUSPENDED
-                            && $this->di['dbal']->fetchOne('SELECT 1 FROM client_order_meta WHERE client_order_id = ? AND name = ? AND value = ?', [$order->id, \ClientFence\Mod\Order\Service::META_SUSPENDED_BY_STAFF, '1'])) {
-                            // The line waits, never failed: a waiting paid renewal keeps the cron from cancelling the service.
-                            if ((int) $item->attempts === 0) {
-                                $orderService->saveStatusChange($order, 'A paid renewal invoice was not applied: staff suspended this service. Unsuspend it to apply the renewal.');
-                                $item->attempts = 1;
-                                $item->updated_at = date('Y-m-d H:i:s');
-                                $this->di['db']->store($item);
-                            }
-
-                            return;
-                        }
                         try {
                             // Unsuspend order if suspended before renew
                             if ($order->status == \Model_ClientOrder::STATUS_SUSPENDED) {

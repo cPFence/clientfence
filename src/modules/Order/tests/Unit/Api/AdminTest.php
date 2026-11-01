@@ -277,30 +277,6 @@ test('activates an order', function (): void {
     expect($result)->toBeTrue();
 });
 
-test('activating a service that has an expiry marks a staff money edit', function (?string $expires, string $status, array $data, bool $marked): void {
-    // QA r10 D-06: Activate on a service set back to Pending setup adds a period from its expiry that no invoice paid for.
-    $order = createEntity(ClientFence\Mod\Order\Entity\Order::class, ['id' => 7, 'status' => $status, 'expiresAt' => $expires === null ? null : new DateTime($expires)]);
-    $apiMock = apiEndpoint(Mockery::mock(Admin::class)->makePartial());
-    $apiMock->shouldAllowMockingProtectedMethods();
-    $apiMock->shouldReceive('_getOrder')->andReturn($order);
-    $serviceMock = Mockery::mock(Service::class);
-    $serviceMock->shouldReceive('activateOrder')->once()->with($order, $data)->andReturn(true);
-    $apiMock->setService($serviceMock);
-    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $dbal->executeStatement('CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY, client_order_id INTEGER, name TEXT, value TEXT, created_at TEXT, updated_at TEXT)');
-    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
-    $em->shouldReceive('getConnection')->andReturn($dbal);
-    $apiMock->getDi()['em'] = $em;
-
-    expect($apiMock->activate($data))->toBeTrue()
-        ->and($dbal->fetchFirstColumn('SELECT name FROM client_order_meta WHERE client_order_id = 7'))->toBe($marked ? [ClientFence\Mod\Order\Upgrades::MONEY_META] : []);
-})->with([
-    'pending setup with an expiry' => ['2026-12-01 00:00:00', ClientFence\Mod\Order\Entity\Order::STATUS_PENDING_SETUP, [], true],
-    'first activation' => [null, ClientFence\Mod\Order\Entity\Order::STATUS_PENDING_SETUP, [], false],
-    'active without force' => ['2026-12-01 00:00:00', ClientFence\Mod\Order\Entity\Order::STATUS_ACTIVE, [], false],
-    'active with force' => ['2026-12-01 00:00:00', ClientFence\Mod\Order\Entity\Order::STATUS_ACTIVE, ['force' => 1], true],
-]);
-
 test('renew applies a waiting paid renewal line instead of renewing again', function (): void {
     $order = createEntity(ClientFence\Mod\Order\Entity\Order::class, ['id' => 7, 'status' => 'failed_renew']);
 
@@ -338,7 +314,7 @@ test('renews an order', function (): void {
     $result = $apiMock->renew($data);
 
     expect($result)->toBeTrue()
-        ->and($dbal->fetchOne('SELECT name FROM client_order_meta'))->toBe(ClientFence\Mod\Order\Upgrades::UNPAID_TIME_META);
+        ->and($dbal->fetchOne('SELECT name FROM client_order_meta'))->toBeFalse();
 });
 
 test('renewing a pending setup order delegates to activate', function (): void {
@@ -364,7 +340,6 @@ test('suspends an order', function (): void {
 
     $serviceMock = Mockery::mock(Service::class);
     $serviceMock->shouldReceive('suspendFromOrder')->atLeast()->once()->andReturn(true);
-    $serviceMock->shouldReceive('updateOrderMeta')->once()->with($order, [Service::META_SUSPENDED_BY_STAFF => '1']);
 
     $di = container();
     $apiMock->setDi($di);
@@ -386,11 +361,6 @@ test('unsuspends a suspended order', function (): void {
     $serviceMock = Mockery::mock(Service::class);
     $serviceMock->shouldReceive('applyPaidRenewal')->once()->andReturn(false);
     $serviceMock->shouldReceive('unsuspendFromOrder')->atLeast()->once()->andReturn(true);
-    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $dbal->shouldReceive('delete')->once()->with('client_order_meta', ['client_order_id' => (int) $order->getId(), 'name' => Service::META_SUSPENDED_BY_STAFF]);
-    $di = container();
-    $di['dbal'] = $dbal;
-    $apiMock->setDi($di);
 
     $apiMock->setService($serviceMock);
 
@@ -505,7 +475,7 @@ test('uncancels a canceled order', function (): void {
     $result = $apiMock->uncancel($data);
 
     expect($result)->toBeTrue()
-        ->and($dbal->fetchFirstColumn('SELECT name FROM client_order_meta WHERE client_order_id = 7'))->toBe([ClientFence\Mod\Order\Upgrades::MONEY_META]);
+        ->and($dbal->fetchFirstColumn('SELECT name FROM client_order_meta WHERE client_order_id = 7'))->toBe([]);
 });
 
 test('throws exception when uncanceling non-canceled order', function (): void {

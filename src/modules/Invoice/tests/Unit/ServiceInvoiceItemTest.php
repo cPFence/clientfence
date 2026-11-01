@@ -157,43 +157,32 @@ test('a paid renewal never renews a cancelled order', function (): void {
         ->and($invoiceItemModel->status)->toBe(Model_InvoiceItem::STATUS_PENDING_SETUP);
 });
 
-test('a paid renewal does not lift a suspension staff made', function (): void {
+test('a paid renewal lifts the suspension and renews the order', function (): void {
     $invoiceItemModel = new Model_InvoiceItem();
     $invoiceItemModel->loadBean(new Tests\Helpers\DummyBean());
     $invoiceItemModel->type = Model_InvoiceItem::TYPE_ORDER;
     $invoiceItemModel->task = Model_InvoiceItem::TASK_RENEW;
     $invoiceItemModel->status = Model_InvoiceItem::STATUS_PENDING_SETUP;
-    $invoiceItemModel->attempts = 0;
 
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $order->status = Model_ClientOrder::STATUS_SUSPENDED;
-    $order->id = 22;
 
     $serviceMock = Mockery::mock(ServiceInvoiceItem::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('getOrderId')->andReturn(22);
+    $serviceMock->shouldReceive('markAsExecuted')->once();
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('load')->with('ClientOrder', 22)->andReturn($order);
-    $dbMock->shouldReceive('store')->once();
     $orderService = Mockery::mock();
-    $orderService->shouldReceive('saveStatusChange')->once()->with($order, Mockery::pattern('/staff suspended this service/'));
-    $orderService->shouldNotReceive('renewOrder');
-    $orderService->shouldNotReceive('unsuspendFromOrder');
+    $orderService->shouldReceive('unsuspendFromOrder')->once()->with($order);
+    $orderService->shouldReceive('renewOrder')->once()->with($order);
 
     $di = container();
     $di['db'] = $dbMock;
-    $di['dbal'] = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $di['dbal']->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
-    $di['dbal']->insert('client_order_meta', ['client_order_id' => 22, 'name' => ClientFence\Mod\Order\Service::META_SUSPENDED_BY_STAFF, 'value' => '1']);
     $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderService);
     $serviceMock->setDi($di);
 
     $serviceMock->executeTask($invoiceItemModel);
-    // The cron runs it again: no second note, and the line still waits (it keeps the service from being cancelled).
-    $serviceMock->executeTask($invoiceItemModel);
-
-    expect($invoiceItemModel->attempts)->toBe(1)
-        ->and($invoiceItemModel->status)->toBe(Model_InvoiceItem::STATUS_PENDING_SETUP);
 });
 
 test('executes task for hook call type', function (): void {

@@ -256,36 +256,12 @@
         "done": "ClientFence core patch (QA r11 R-01): the due day uses the server's time zone because saves parse it there."
     },
     {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch (QA r11 PK-01): MySQL also matches marker names with different case, accents or trailing spaces."
-    },
-    {
-        "file": "modules/Order/Api/Admin.php",
-        "done": "ClientFence core patch (QA r10 D-06): activating a service that has an expiry (Pending setup set by hand, or"
-    },
-    {
-        "file": "modules/Order/Api/Admin.php",
-        "done": "ClientFence core patch (QA r10 C-1): uncancel gives a new period from today that no invoice paid for."
-    },
-    {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch (QA r10 D-10): the markers of staff money edits (Upgrades::MONEY_MARKERS) are kept: del"
-    },
-    {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch (QA r10 C-1): staff changed the price, cycle, expiry or status: what was paid for the d"
-    },
-    {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch (QA r10 D-04): with no payment date the period it paid is unknown, so a downgrade"
     },
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch (QA r10 D-03): a credit is funded only by payments made before it (a renewal"
-    },
-    {
-        "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch (QA r10 C-1, D-02, D-04): an edit of the lines, tax, status or dates of an invoice that"
     },
     {
         "file": "modules/Invoice/Service.php",
@@ -302,14 +278,6 @@
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
         "done": "ClientFence core patch (QA r10 P-01): the issue and paid days in the server's time zone, as saved (a staff time zone moved them a day). #}"
-    },
-    {
-        "file": "modules/Invoice/Api/Admin.php",
-        "done": "ClientFence core patch (QA r10 C-1): a line removed from an invoice that bills a service (before the line goes"
-    },
-    {
-        "file": "modules/Order/Upgrades.php",
-        "done": "ClientFence core patch (QA r9 P-01): staff option edits leave the paid options unknown until an invoice issued after the edit is paid."
     },
     {
         "file": "modules/Invoice/Service.php",
@@ -2457,7 +2425,7 @@
     },
     {
         "file": "modules/Order/Service.php",
-        "done": "$db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name IN (?, ?)', [$orderId, self::META_SUSPENDED_WITH, self::META_SUSPENDED_BY_STAFF]);"
+        "done": "$db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name = ?', [$orderId, self::META_SUSPENDED_WITH]);"
     },
     {
         "file": "modules/Invoice/Api/Client.php",
@@ -2724,10 +2692,6 @@
         "done": "one spelling per domain"
     },
     {
-        "file": "modules/Order/Upgrades.php",
-        "done": "a refunded invoice of this service makes the unused time unknown"
-    },
-    {
         "file": "modules/Massmailer/templates/admin/mod_massmailer_message.html.twig",
         "done": "the message in a sandboxed frame without scripts (its HTML ran"
     },
@@ -2776,10 +2740,6 @@
         "done": "ClientFence core patch (ext news): the latest visible posts, pinned first"
     },
     {
-        "file": "modules/Order/Upgrades.php",
-        "done": "paid ahead (more than one period left, such as a renewal paid early)"
-    },
-    {
         "file": "modules/Cart/Service.php",
         "done": "ClientFence core patch: only for a line the promo discounts"
     },
@@ -2798,10 +2758,6 @@
     {
         "file": "modules/System/templates/admin/mod_system_update.html.twig",
         "done": "ClientFence core patch: a finished update says so and waits for Continue"
-    },
-    {
-        "file": "modules/Order/Upgrades.php",
-        "done": "ClientFence core patch: what the client paid for the current period"
     },
     {
         "file": "modules/Invoice/Quotes.php",
@@ -2824,20 +2780,12 @@
         "done": "ClientFence core patch: the SFTP server's key (MD5, the one fingerprint both libcurl SSH backends check)"
     },
     {
-        "file": "modules/Order/Upgrades.php",
-        "done": "ClientFence core patch: a priced service no invoice paid for (staff activated it without one) has no paid"
-    },
-    {
         "file": "themes/palisade/html/layout_default.html.twig",
         "done": "ClientFence core patch: a signed-in page names what to say when its session ends"
     },
     {
         "file": "themes/admin_default/html_custom/layout_default.html.twig",
         "done": "data-cf-signed-out="
-    },
-    {
-        "file": "modules/Order/Upgrades.php",
-        "done": "ClientFence core patch (QA r6 R-01): an imported WHMCS invoice that billed other items too"
     },
     {
         "file": "library/PdoSessionHandler.php",
@@ -2864,22 +2812,6 @@
         "done": "ClientFence core patch (QA r6 M-08): only these columns; storing the whole order"
     },
     {
-        "file": "modules/Order/Upgrades.php",
-        "done": "ClientFence core patch (QA r6, owner: \"Strict rule\")"
-    },
-    {
-        "file": "modules/Order/Upgrades.php",
-        "done": "QA r6 U-01: the days left are worth what was paid"
-    },
-    {
-        "file": "modules/Order/Api/Admin.php",
-        "done": "ClientFence core patch (QA r6 U-04): a renewal with no paid invoice"
-    },
-    {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch (QA r6 U-04): an expiry moved to a later day by hand"
-    },
-    {
         "file": "modules/Invoice/Service.php",
         "done": "A paid upgrade invoice also ends the period (QA r6 U-02)"
     },
@@ -2888,32 +2820,12 @@
         "done": "ClientFence core patch (QA r8 P-02): taking back only part of a credit note cannot safely settle it."
     },
     {
-        "file": "modules/Order/Upgrades.php",
-        "done": "paid only the options' difference on top of what was paid before it"
-    },
-    {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch (QA r6 U-04-R1): uncancelling starts a new period"
-    },
-    {
-        "file": "modules/Order/Upgrades.php",
-        "done": "QA r6 U-01-R2: a price (or payment) below what the removed options cost"
-    },
-    {
         "file": "themes/palisade/html/layout_default.html.twig",
         "done": "read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans"
     },
     {
         "file": "themes/admin_default/html_custom/layout_default.html.twig",
         "done": "read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans"
-    },
-    {
-        "file": "modules/Order/Upgrades.php",
-        "done": "QA r7 P-01: the difference is in the change's cycle"
-    },
-    {
-        "file": "modules/Order/Upgrades.php",
-        "done": "QA r7 P-02: an invoice refunded after the change was priced"
     },
     {
         "file": "library/Payment/Adapter/Custom.php",
@@ -3477,7 +3389,7 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: processed deposit transfers have already credited the client's balance."
+        "done": "ClientFence core patch: processed transfers have already credited the client's balance (imported WHMCS payments did not:"
     },
     {
         "file": "modules/Currency/Service.php",
@@ -3633,7 +3545,7 @@
     },
     {
         "file": "modules/Servicehosting/Service.php",
-        "done": "ClientFence core patch: saved plans reach the panel at setup, but inactive accounts cannot apply them later."
+        "done": "ClientFence core patch: a suspended or expired account takes the new plan on the panel too (as WHMCS Change Package)."
     },
     {
         "file": "themes/admin_default/html/layout_default.html.twig",
@@ -3673,7 +3585,7 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: recorded transfers remain spendable until the invoice is paid from balance."
+        "done": "ClientFence core patch: a partly paid invoice is paid with what was recorded plus the rest received now."
     },
     {
         "file": "library/Payment/Adapter/PayPalEmail.php",
@@ -3753,7 +3665,7 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: Manage must not leave recorded payments as spendable balance on a paid invoice."
+        "done": "ClientFence core patch: Manage uses the recorded payments of a partly paid invoice it sets to Paid (the rest is written off)."
     },
     {
         "file": "library/Payment/Adapter/Stripe.php",
@@ -3780,24 +3692,8 @@
         "done": "ClientFence core patch: an invoice paid from credit may have just activated it through RedBean."
     },
     {
-        "file": "modules/Servicehosting/Service.php",
-        "done": "ClientFence core patch: refused when it is added to the cart, not after the client has paid."
-    },
-    {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: a renewal invoice paid now would be lost when the service ends at the period end."
-    },
-    {
-        "file": "modules/Order/Api/Admin.php",
-        "done": "ClientFence core patch: a suspension staff made is lifted by staff, never by the client paying a renewal."
-    },
-    {
-        "file": "modules/Invoice/ServiceInvoiceItem.php",
-        "done": "ClientFence core patch: a suspension staff made is not lifted by a payment; Unsuspend applies it."
-    },
-    {
-        "file": "modules/Invoice/Api/Client.php",
-        "done": "ClientFence core patch: a suspension staff made is lifted by staff, not by paying a renewal."
     },
     {
         "file": "modules/Invoice/ServiceSubscription.php",
@@ -3810,5 +3706,9 @@
     {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: its addons end with it, so the cron neither renews them nor takes credit for them."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: payments recorded on an unpaid invoice wait in the client's balance; an invoice"
     }
 ]

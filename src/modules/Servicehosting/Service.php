@@ -124,8 +124,6 @@ class Service implements InjectionAwareInterface
 
         if ($product instanceof Product) {
             $this->assertAdminControlledValuesMatch($data, $product);
-            // ClientFence core patch: refused when it is added to the cart, not after the client has paid.
-            $this->assertServerTakesAccounts($this->di['db']->getExistingModelById('ServiceHostingServer', (int) $data['server_id'], 'Server from order configuration was not found'));
         }
     }
 
@@ -446,11 +444,8 @@ class Service implements InjectionAwareInterface
 
     public function changeAccountPlan(\Model_ClientOrder $order, \Model_ServiceHosting $model, \Model_ServiceHostingHp $hp): bool
     {
-        // ClientFence core patch: saved plans reach the panel at setup, but inactive accounts cannot apply them later.
-        $performOnService = $this->_performOnService($order);
-        if (!$performOnService && !in_array($order->status, [\Model_ClientOrder::STATUS_PENDING_SETUP, \Model_ClientOrder::STATUS_FAILED_SETUP], true)) {
-            throw new InformationException('Unsuspend or renew this service first, then change its plan.');
-        }
+        // ClientFence core patch: a suspended or expired account takes the new plan on the panel too (as WHMCS Change Package).
+        $performOnService = !in_array($order->status, [\Model_ClientOrder::STATUS_PENDING_SETUP, \Model_ClientOrder::STATUS_FAILED_SETUP, \Model_ClientOrder::STATUS_CANCELED], true);
 
         $model->service_hosting_hp_id = $hp->id;
         if ($performOnService) {

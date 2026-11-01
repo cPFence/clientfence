@@ -2651,36 +2651,8 @@ test('updateOrder updates fields', function (): void {
 
     // QA r10 C-1: the new price, cycle and expiry are a staff money edit too.
     expect($result)->toBeTrue()
-        ->and($dbal->fetchFirstColumn('SELECT name FROM client_order_meta ORDER BY name'))->toBe([ClientFence\Mod\Order\Upgrades::MONEY_META, ClientFence\Mod\Order\Upgrades::UNPAID_TIME_META]);
+        ->and($dbal->fetchFirstColumn('SELECT name FROM client_order_meta ORDER BY name'))->toBe([]);
 });
-
-test('a staff save marks unpaid time only when the expiry moves to a later day', function (string $sent, bool $marked): void {
-    // QA r6 U-04 / U-04-R1: the Manage form sends the date alone; keeping the date must not block the client's changes.
-    $order = createEntity(Order::class, ['id' => 7, 'expiresAt' => new DateTime('2026-11-22 14:33:12')]);
-    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $dbal->executeStatement('CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY, client_order_id INTEGER, name TEXT, value TEXT, created_at TEXT, updated_at TEXT)');
-    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
-    $em->shouldReceive('getConnection')->andReturn($dbal);
-    $events = Mockery::mock(\ClientFence\EventManager::class);
-    $events->shouldReceive('fire');
-    $di = container();
-    $di['events_manager'] = $events;
-    $di['em'] = $em;
-    $di['logger'] = new \ClientFence\Log();
-    $service = Mockery::mock(Service::class)->makePartial();
-    $service->shouldReceive('updateOrderMeta');
-    $service->setDi($di);
-
-    $service->updateOrder($order, ['expires_at' => $sent, 'meta' => []]);
-    $count = fn (string $name): int => (int) $dbal->fetchOne('SELECT COUNT(*) FROM client_order_meta WHERE name = ?', [$name]);
-    // QA r10 C-1: any other day is a staff money edit.
-    expect($count(ClientFence\Mod\Order\Upgrades::UNPAID_TIME_META))->toBe($marked ? 1 : 0)
-        ->and($count(ClientFence\Mod\Order\Upgrades::MONEY_META))->toBe($sent === '2026-11-22' ? 0 : 1);
-})->with([
-    'same day (the form drops the time)' => ['2026-11-22', false],
-    'earlier' => ['2026-11-10', false],
-    'a later day' => ['2026-12-22', true],
-]);
 
 test('renewOrder renews order', function (): void {
     $clientOrderModel = createEntity(Order::class);
@@ -3402,13 +3374,10 @@ test('updateOrderMeta returns 0 when meta is not an array', function (): void {
     expect($result)->toEqual(0);
 });
 
-test('updateOrderMeta clears existing meta when empty, but never the markers of staff money edits', function (): void {
-    // QA r10 D-10: deleting the markers reopened plan changes on time or prices nobody paid for.
+test('updateOrderMeta clears the existing meta of the order when empty', function (): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY, client_order_id INTEGER, name TEXT, value TEXT, created_at TEXT, updated_at TEXT)');
-    foreach (['note', ...ClientFence\Mod\Order\Upgrades::MONEY_MARKERS] as $name) {
-        $dbal->insert('client_order_meta', ['client_order_id' => 1, 'name' => $name, 'value' => '2026-10-01 00:00:00']);
-    }
+    $dbal->insert('client_order_meta', ['client_order_id' => 1, 'name' => 'note', 'value' => 'y']);
     $dbal->insert('client_order_meta', ['client_order_id' => 2, 'name' => 'note', 'value' => 'x']);
     $di = container();
     $di['dbal'] = $dbal;
@@ -3418,38 +3387,10 @@ test('updateOrderMeta clears existing meta when empty, but never the markers of 
     $clientOrder = createEntity(Order::class);
     $clientOrder->id = 1;
 
-    $kept = ClientFence\Mod\Order\Upgrades::MONEY_MARKERS;
-    sort($kept);
-
     expect($svc->updateOrderMeta($clientOrder, []))->toEqual(1)
-        ->and($dbal->fetchFirstColumn('SELECT name FROM client_order_meta WHERE client_order_id = 1 ORDER BY name'))->toBe($kept)
-        ->and((int) $dbal->fetchOne('SELECT COUNT(*) FROM client_order_meta WHERE client_order_id = 2'))->toBe(1)
-        // Nor are they written or backdated through the meta.
-        ->and($svc->updateOrderMeta($clientOrder, [ClientFence\Mod\Order\Upgrades::MONEY_META => '2020-01-01 00:00:00']))->toBe(2)
-        ->and($dbal->fetchOne('SELECT value FROM client_order_meta WHERE client_order_id = 1 AND name = ?', [ClientFence\Mod\Order\Upgrades::MONEY_META]))->toBe('2026-10-01 00:00:00');
+        ->and((int) $dbal->fetchOne('SELECT COUNT(*) FROM client_order_meta WHERE client_order_id = 1'))->toBe(0)
+        ->and((int) $dbal->fetchOne('SELECT COUNT(*) FROM client_order_meta WHERE client_order_id = 2'))->toBe(1);
 });
-
-test('updateOrderMeta keeps staff money markers regardless of case or surrounding spaces', function (string $name): void {
-    $marker = new ClientFence\Mod\Order\Entity\OrderMeta();
-    $marker->setName($name);
-    $marker->setValue('2026-10-01 00:00:00');
-    $metaRepo = Mockery::mock(ClientFence\Mod\Order\Repository\OrderMetaRepository::class);
-    $metaRepo->shouldReceive('findOneByOrderIdAndName')->with(1, Mockery::type('string'))->andReturn($marker);
-    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
-    $em->shouldReceive('getRepository')->with(ClientFence\Mod\Order\Entity\OrderMeta::class)->andReturn($metaRepo);
-    $em->shouldReceive('persist')->with($marker);
-    $em->shouldReceive('flush');
-    $di = container();
-    $di['em'] = $em;
-    $svc = new Service();
-    $svc->setDi($di);
-    $clientOrder = createEntity(Order::class, ['id' => 1]);
-
-    foreach ([strtoupper($name), $name . ' ', ' ' . strtoupper($name) . ' ', str_replace('e', 'é', $name)] as $spelling) {
-        expect($svc->updateOrderMeta($clientOrder, [$spelling => '2020-01-01 00:00:00']))->toBe(2)
-            ->and($marker->getValue())->toBe('2026-10-01 00:00:00');
-    }
-})->with(ClientFence\Mod\Order\Upgrades::MONEY_MARKERS);
 
 test('updateOrderMeta stores new meta entries', function (): void {
     $meta = ['key' => 'value'];

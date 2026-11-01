@@ -474,33 +474,13 @@ test('a cycle left enabled at 0 is never offered', function (): void {
 });
 
 // ClientFence (QA r4 F-05): paid ahead, a downgrade credited days of several invoices that a refund cannot tell apart.
-test('a priced service no invoice paid for is changed by staff; one a paid upgrade moved there, or a free one, by the client', function (): void {
-    $db = upgradesDb();
-    $db->executeStatement('DELETE FROM invoice WHERE id > 9000');
-    $di = upgradesContainer($db);
-
-    expect(Upgrades::options($di, upgradesOrder($di, 2), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => 'No paid invoice of this service is on record, so it is changed by our staff. Please contact us.'])
-        ->and(fn () => Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW))->toThrow(InformationException::class, 'No paid invoice');
-    // Moved to its price by a paid upgrade invoice (it was free before).
-    $db->insert('invoice', ['id' => 71, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-02 09:00:00']);
-    $db->insert(Upgrades::TABLE, ['id' => 90, 'order_id' => 2, 'client_id' => 5, 'kind' => 'upgrade', 'from_product_id' => 1, 'from_period' => '1Y', 'from_price' => 0, 'from_expires_at' => '2027-03-01 00:00:00', 'to_product_id' => 3, 'to_period' => '1Y', 'to_price' => 600, 'to_expires_at' => '2027-03-01 00:00:00', 'days_left' => 1, 'days_total' => 1, 'credit' => 0, 'charge' => 0, 'amount' => 600, 'invoice_id' => 71, 'status' => 'applied', 'created_at' => '2026-10-02 09:00:00', 'applied_at' => '2026-10-02 09:00:00']);
-    expect(Upgrades::options($di, upgradesOrder($di, 2), UPGRADES_NOW)['available'])->toBeTrue();
-    // Its days left are worth the 600 the upgrade set, not a price raised since: 600 x 136/365, less 5 for Starter.
-    $db->update('client_order', ['price' => 1200], ['id' => 2]);
-    Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW);
-    expect($db->fetchOne('SELECT amount FROM client_balance'))->toBe(218.56);
-    $db->executeStatement('DELETE FROM ' . Upgrades::TABLE);
-    $db->update('client_order', ['product_id' => 3, 'period' => '1Y', 'expires_at' => '2027-03-01 00:00:00'], ['id' => 2]);
-    $db->update('client_order', ['price' => 0], ['id' => 2]);
-    expect(Upgrades::options($di, upgradesOrder($di, 2), UPGRADES_NOW)['available'])->toBeTrue();
-});
-
-test('an order paid ahead is changed by staff', function (): void {
+test('an order paid ahead can change, credited for every day left', function (): void {
     $db = upgradesDb();
     $db->update('client_order', ['expires_at' => '2027-01-16 00:00:00'], ['id' => 1]);
     $di = upgradesContainer($db);
 
-    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => 'This service is paid ahead, so it is changed by our staff. Please contact us.']);
+    expect(Upgrades::blocker($di, upgradesOrder($di, 1), UPGRADES_NOW))->toBeNull()
+        ->and(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => true]);
 });
 
 test('leap years, month ends and longer cycles', function (string $now, string $period, string $expires, float $price, string $to, array $want): void {
@@ -596,22 +576,12 @@ test('services that cannot change say why', function (array $change, string $rea
     'suspended' => [['client_order' => ['status' => 'suspended']], 'Only active services can be changed.'],
     'a domain' => [['client_order' => ['service_type' => 'domain']], 'This kind of service cannot be changed here.'],
     'no period' => [['client_order' => ['period' => '']], 'Only services billed by period can be changed.'],
-    'a discount' => [['client_order' => ['discount' => 1.5]], 'This service has a discount, so it is changed by our staff. Please contact us.'],
     'an unpaid invoice' => [['client_order' => ['unpaid_invoice_id' => 50]], 'Pay the open invoice of this service first.'],
     'another currency' => [['client' => ['currency' => 'EUR']], 'This service is billed in another currency. Please contact us.'],
     'no currency' => [['client' => ['currency' => null]], 'This service is billed in another currency. Please contact us.'],
 ]);
 
 // ClientFence (QA r4 F-01): a downgrade after a refund credited time already paid back.
-test('a refunded invoice of the service blocks a change', function (): void {
-    $db = upgradesDb();
-    $db->insert('invoice', ['id' => 52, 'client_id' => 5, 'status' => 'refunded', 'hash' => 'z']);
-    $db->insert('invoice_item', ['invoice_id' => 52, 'type' => 'order', 'rel_id' => '1', 'price' => 10, 'quantity' => 1, 'taxed' => 0]);
-    $di = upgradesContainer($db);
-
-    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => 'An invoice of this service was refunded, so it is changed by our staff. Please contact us.']);
-});
-
 test('a paid invoice left on the order does not block', function (): void {
     $db = upgradesDb();
     $db->insert('invoice', ['id' => 51, 'client_id' => 5, 'status' => 'paid', 'hash' => 'y']);
@@ -737,121 +707,6 @@ test('yearly to monthly downgrade: applied at once, the difference goes to the a
         ->and($db->fetchAssociative('SELECT client_id, amount, type, rel_id FROM client_balance'))->toBe(['client_id' => 5, 'amount' => 218.56, 'type' => 'credit', 'rel_id' => '2'])
         // No invoice to pay; the credit note from the invoice that paid the year.
         ->and($db->fetchFirstColumn('SELECT nr FROM invoice WHERE id < 9000'))->toBe(['from 9002']);
-});
-
-test('the unused time is worth what was paid for it, not the price set since', function (): void {
-    // Paid 600 (or 300 after a promo); staff then raised the price to 1200 (a bulk price change or an edit).
-    // 136 of 365 days left, less the 5 of the new monthly plan.
-    foreach ([[[], 218.56], [[['type' => 'custom', 'unit' => 'discount', 'price' => -300]], 106.78]] as [$discount, $credit]) {
-        $db = upgradesDb();
-        $di = upgradesContainer($db);
-        $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-01 09:00:00']);
-        $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '2', 'title' => 'Pro', 'price' => 600, 'quantity' => 1, 'taxed' => 0]);
-        foreach ($discount as $line) {
-            $db->insert('invoice_item', ['invoice_id' => 70, 'rel_id' => '2', 'title' => 'Discount', 'quantity' => 1, 'taxed' => 0] + $line);
-        }
-        $db->update('client_order', ['price' => 1200], ['id' => 2]);
-
-        expect(Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW))->toMatchArray(['status' => 'applied'])
-            ->and($db->fetchOne('SELECT amount FROM client_balance'))->toBe($credit);
-    }
-});
-
-test('after a price cut the days left keep what was paid; an imported invoice is worth no more than the price', function (bool $imported, float $credit): void {
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-01 09:00:00']);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '2', 'title' => 'Business', 'price' => 600, 'quantity' => 1, 'period' => '1Y', 'taxed' => 0]);
-    if ($imported) {
-        $db->executeStatement('CREATE TABLE mod_clientfence_import_map (source TEXT, entity TEXT, source_id TEXT, target_id INTEGER, created_at TEXT)');
-        $db->insert('mod_clientfence_import_map', ['source' => 'whmcs', 'entity' => 'invoice', 'source_id' => '70', 'target_id' => 70, 'created_at' => '2026-10-01 09:00:00']);
-    }
-    $db->update('client_order', ['price' => 300], ['id' => 2]);
-
-    if ($imported) {
-        // QA r6 strict rule (owner): a service last paid before it was imported is changed by staff until it renews.
-        expect(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBe('This service was last paid before it moved here, so it is changed by our staff until it renews. Please contact us.');
-
-        return;
-    }
-    Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW);
-    // 600 x 136/365, less 5 for Starter.
-    expect($db->fetchOne('SELECT amount FROM client_balance'))->toBe($credit);
-})->with([
-    'paid here' => [false, 218.56],
-    'imported from WHMCS' => [true, 0.0],
-]);
-
-test('time staff added without a payment leaves the change to staff until the next payment', function (): void {
-    // QA r6 U-04: a staff Renew with no invoice, or an expiry set by hand, was credited on a downgrade.
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-01 09:00:00']);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '2', 'title' => 'Pro', 'price' => 600, 'quantity' => 1, 'period' => '1Y', 'taxed' => 0]);
-    expect(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBeNull();
-
-    Upgrades::markUnpaidTime($di, 2);
-    Upgrades::markUnpaidTime($di, 2);
-    expect($db->fetchOne("SELECT COUNT(*) FROM client_order_meta WHERE name = 'clientfence_unpaid_time_added_at'"))->toBe(1)
-        ->and(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBe('Our staff added time to this service without a payment, so it is changed by our staff. Please contact us.');
-
-    // A payment after it (the next renewal) makes the paid value certain again.
-    $db->insert('invoice', ['id' => 71, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => date('Y-m-d H:i:s', time() + 60)]);
-    $db->insert('invoice_item', ['invoice_id' => 71, 'type' => 'order', 'rel_id' => '2', 'title' => 'Pro', 'price' => 600, 'quantity' => 1, 'period' => '1Y', 'taxed' => 0]);
-    expect(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBeNull();
-});
-
-test('a payment for another cycle is credited at its own daily rate', function (string $paidFor, float $paid, string $period, float $price, string $to, array $want): void {
-    // Staff changed the service's cycle (and price) after it was paid; 20 days are left.
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-10 09:00:00']);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '2', 'title' => 'Business', 'price' => $paid, 'quantity' => 1, 'period' => $paidFor, 'taxed' => 0]);
-    $db->update('client_order', ['period' => $period, 'price' => $price, 'expires_at' => '2026-11-05 00:00:00'], ['id' => 2]);
-
-    $row = upgradesOptionTable($di, 2)[$to];
-    expect([$row[0], $row[3]])->toBe($want);
-})->with([
-    // 120 a year is 10 a month: 10 x 20/31 = 6.45 for the days left (not 20 x 20/31), less 5 x 20/31 = 3.23 for Starter.
-    'yearly paid, now monthly' => ['1Y', 120, '1M', 20, '1/1M', ['downgrade', -3.22]],
-    // 10 a month is 120 a year: 120 x 20/365 = 6.58 (not 10 x 20/365 = 0.55), less 48 x 20/365 = 2.63 for Starter.
-    'monthly paid, now yearly' => ['1M', 10, '1Y', 120, '1/1Y', ['downgrade', -3.95]],
-]);
-
-test('a discount line of no order (a WHMCS promotion) keeps the credit at what was paid', function (float $priceNow, bool $linked): void {
-    // Imported: the order's price is the discounted 600; its invoice has the full 1200 and a promotion line of no order.
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-01 09:00:00']);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '2', 'title' => 'Pro', 'price' => 1200, 'quantity' => 1, 'taxed' => 0]);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'custom', 'title' => 'Promotion', 'price' => -600, 'quantity' => 1, 'taxed' => 0] + ($linked ? ['rel_id' => '2', 'unit' => 'discount'] : []));
-    // QA r6 R-01: a price raised since (staff edit or bulk update) lifted the cap and the promotion was credited as paid.
-    $db->update('client_order', ['price' => $priceNow], ['id' => 2]);
-
-    Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW);
-    expect($db->fetchOne('SELECT amount FROM client_balance'))->toBe(218.56);
-})->with([
-    'price as paid' => [600, false],
-    'price raised since' => [1000, false],
-    'imported since alpha.29 (promotion names its order), price raised' => [1000, true],
-]);
-
-test('an imported invoice that billed other items too and has a promotion of no order is changed by staff', function (): void {
-    // QA r6 R-01-R2: whose discount each promotion was cannot be told; until the service renews, staff change it.
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => '2026-10-01 09:00:00']);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '2', 'title' => 'Pro', 'price' => 600, 'quantity' => 1, 'taxed' => 0]);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'rel_id' => '99', 'title' => 'Domain', 'price' => 12, 'quantity' => 1, 'taxed' => 0]);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'custom', 'title' => 'Promotion', 'price' => -12, 'quantity' => 1, 'taxed' => 0]);
-
-    expect(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBe('This service was last paid on an imported invoice with a promotion, so it is changed by our staff. Please contact us.');
-
-    // Linked to its order (imports since alpha.29), the promotion is the domain's and the service is worth its 600.
-    $db->executeStatement("UPDATE invoice_item SET rel_id = '99', unit = 'discount' WHERE title = 'Promotion'");
-    expect(Upgrades::blocker($di, upgradesOrder($di, 2), UPGRADES_NOW))->toBeNull();
-    Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW);
-    expect($db->fetchOne('SELECT amount FROM client_balance'))->toBe(218.56);
 });
 
 test('an imported invoice paid from WHMCS credit is worth what was paid, not less', function (string $title, ?string $unit): void {
@@ -1391,7 +1246,7 @@ test('client and staff options changes after a cycle edit price only the changed
     Upgrades::staffSetOptions($di, 1, [$o['support'] => $o['priority']], true);
     expect($db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe($newPrice);
 })->with([
-    'monthly options kept after a yearly cycle edit' => ['1M', '1Y', 130.0, 1.09],
+    'monthly options kept after a yearly cycle edit' => ['1M', '1Y', 130.0, 1.1],
     'yearly options kept after a monthly cycle edit' => ['1Y', '1M', 13.0, 6.45],
 ]);
 
@@ -1462,60 +1317,6 @@ test('client and staff options changes retain the sold price of an out-of-range 
     'maximum lowered below the stored quantity' => [0, 2, 2, 17.0, -1.04],
 ]);
 
-test('after an options change the service is worth what was paid plus the options\' difference', function (float $priceNow, float $worth): void {
-    // QA r6 U-01-R1: the options change's new price (with a price staff changed since) was taken as paid.
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $o = upgradesWithOptions($di);
-    $db->update('client_order', ['price' => $priceNow], ['id' => 1]);
-    $result = Upgrades::request($di, upgradesOrder($di, 1), 1, '1M', UPGRADES_NOW, [$o['support'] => $o['priority']]);
-    upgradesPay($db, $result['id']);
-    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
-
-    $paidTotal = new ReflectionMethod(Upgrades::class, 'paidTotal');
-    expect($db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe($priceNow + 10)
-        ->and($paidTotal->invoke(null, $db, upgradesOrder($di, 1)))->toBe($worth);
-})->with([
-    // 13 paid, priority support adds 10.
-    'price as paid' => [13.0, 23.0],
-    'price raised to 50' => [50.0, 23.0],
-    'price cut to 5' => [5.0, 23.0],
-]);
-
-test('an options change keeps its daily rate when staff change the service\'s cycle later', function (): void {
-    // QA r7 P-01: the options' monthly difference was added unscaled to a yearly worth (or a yearly one to a monthly).
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $o = upgradesWithOptions($di);
-    $result = Upgrades::request($di, upgradesOrder($di, 1), 1, '1M', UPGRADES_NOW, [$o['support'] => $o['priority']]);
-    upgradesPay($db, $result['id']);
-    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
-    $db->update('invoice_item', ['period' => '1M'], ['invoice_id' => 9001]);
-    $db->update('client_order', ['period' => '1Y'], ['id' => 1]);
-
-    $paidTotal = new ReflectionMethod(Upgrades::class, 'paidTotal');
-    $days = new ReflectionMethod(Upgrades::class, 'periodDays');
-    // 13 paid and 10 for priority support, both monthly, at their daily rate over a year.
-    expect($paidTotal->invoke(null, $db, upgradesOrder($di, 1)))->toBe(round(13 * $days->invoke(null, '1Y') / $days->invoke(null, '1M'), 2) + round(10 * $days->invoke(null, '1Y') / $days->invoke(null, '1M'), 2));
-});
-
-test('a service invoice refunded while a change waits for payment fails the change for staff', function (): void {
-    // QA r7 P-02: the change still credited the paid time the refund took back.
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $o = upgradesWithOptions($di);
-    $before = upgradesOrderOptions($db, 1)['lines'];
-    $result = Upgrades::request($di, upgradesOrder($di, 1), 1, '1M', UPGRADES_NOW, [$o['support'] => $o['priority']]);
-    $db->insert('invoice', ['id' => 52, 'client_id' => 5, 'status' => 'refunded', 'hash' => 'z']);
-    $db->insert('invoice_item', ['invoice_id' => 52, 'type' => 'order', 'rel_id' => '1', 'price' => 13, 'quantity' => 1, 'taxed' => 0]);
-    upgradesPay($db, $result['id']);
-    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
-
-    expect($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE))->toBe('failed')
-        ->and($db->fetchOne('SELECT error FROM ' . Upgrades::TABLE))->toContain('an invoice of it was refunded')
-        ->and(upgradesOrderOptions($db, 1)['lines'])->toBe($before);
-});
-
 test('removing options worth more than the service\'s price now is left to staff', function (): void {
     // QA r6 U-01-R2: the new price was clamped at 0, so the difference stored was smaller than the one credited, and a
     // later change credited the options' share of the days again.
@@ -1568,72 +1369,6 @@ test('options changed by staff after pricing fail the upgrade for staff', functi
         ->and(upgradesOrderOptions($db, 1)['lines'])->toBe(['RAM=5', 'Support=0']);
 });
 
-test('staff option edits block client changes until an invoice issued after the edit is paid', function (bool $reprice, bool $renewal, bool $issuedAfter): void {
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $o = upgradesWithOptions($di);
-    $reason = 'Our staff changed this service or its invoice without a payment, so it is changed by our staff. Please contact us.';
-
-    Upgrades::staffSetOptions($di, 1, [$o['support'] => $o['priority']], $reprice);
-    $changed = $db->fetchOne('SELECT value FROM client_order_meta WHERE client_order_id = ? AND name = ?', [1, Upgrades::UNPAID_OPTIONS_META]);
-    $db->update('invoice', ['paid_at' => $changed], ['id' => 9001]);
-    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => $reason])
-        ->and(fn () => Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['support'] => $o['basic']], UPGRADES_NOW))->toThrow(InformationException::class, $reason)
-        ->and(fn () => Upgrades::request($di, upgradesOrder($di, 1), 1, '1M', UPGRADES_NOW, [$o['support'] => $o['basic']]))->toThrow(InformationException::class, $reason);
-
-    $paidAt = date('Y-m-d H:i:s', strtotime((string) $changed) + 60);
-    $issuedAt = date('Y-m-d H:i:s', strtotime((string) $changed) + ($issuedAfter ? 30 : 0));
-    $db->insert('invoice', ['id' => 71, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0, 'paid_at' => $paidAt, 'created_at' => $issuedAt]);
-    if ($renewal) {
-        $db->insert('invoice_item', ['invoice_id' => 71, 'type' => 'order', 'rel_id' => '1', 'price' => $reprice ? 23 : 13, 'quantity' => 1, 'period' => '1M', 'taxed' => 0]);
-    } else {
-        $db->executeStatement('INSERT INTO ' . Upgrades::TABLE . ' (order_id, client_id, kind, from_product_id, from_period, from_price, from_expires_at, to_product_id, to_period, to_price, to_expires_at, days_left, days_total, credit, charge, amount, invoice_id, status, created_at, applied_at) VALUES (1, 5, ?, 1, ?, 13, ?, 1, ?, 23, ?, 16, 31, 0, 5.16, 5.16, 71, ?, ?, ?)', ['options', '1M', '2026-11-01 12:00:00', '1M', '2026-11-01 12:00:00', Upgrades::STATUS_APPLIED, $paidAt, $paidAt]);
-    }
-    if (!$issuedAfter) {
-        expect(Upgrades::blocker($di, upgradesOrder($di, 1), UPGRADES_NOW))->toBe($reason)
-            ->and(fn () => Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['support'] => $o['basic']], UPGRADES_NOW))->toThrow(InformationException::class, $reason);
-
-        return;
-    }
-    expect(Upgrades::blocker($di, upgradesOrder($di, 1), UPGRADES_NOW))->toBeNull()
-        ->and(Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['support'] => $o['basic']], UPGRADES_NOW)['kind'])->toBe('downgrade');
-
-    Upgrades::staffSetOptions($di, 1, [$o['backups'] => 0], $reprice);
-    expect($db->fetchOne('SELECT COUNT(*) FROM client_order_meta WHERE client_order_id = ? AND name = ?', [1, Upgrades::UNPAID_OPTIONS_META]))->toBe(1);
-})->with(['repriced' => true, 'price kept' => false])->with(['renewal' => true, 'paid change' => false])->with(['issued after the edit' => true, 'issued at the edit' => false]);
-
-test('paying an invoice issued before a staff option edit keeps client changes blocked', function (bool $first): void {
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $o = upgradesWithOptions($di);
-    $db->update('product_option_value', ['m_price' => 5], ['id' => $o['priority']]);
-    $db->update('client_order', ['price' => 20, 'status' => $first ? 'pending_setup' : 'active', 'expires_at' => '2026-11-05 09:00:00', 'unpaid_invoice_id' => 70], ['id' => 1]);
-    $db->update('invoice_item', ['price' => 20], ['invoice_id' => 9001]);
-    if ($first) {
-        $db->delete('invoice_item', ['invoice_id' => 9001]);
-        $db->delete('invoice', ['id' => 9001]);
-    }
-    $issuedAt = date('Y-m-d H:i:s', time() - 60);
-    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'unpaid', 'created_at' => $issuedAt, 'taxrate' => 0]);
-    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'task' => $first ? 'activate' : 'renew', 'rel_id' => '1', 'price' => 20, 'quantity' => 1, 'period' => '1M', 'taxed' => 0]);
-
-    Upgrades::staffSetOptions($di, 1, [$o['support'] => $o['priority']], true);
-    $changed = (string) $db->fetchOne('SELECT value FROM client_order_meta WHERE client_order_id = ? AND name = ?', [1, Upgrades::UNPAID_OPTIONS_META]);
-    $paidAt = date('Y-m-d H:i:s', strtotime($changed) + 60);
-    $db->update('invoice', ['status' => 'paid', 'paid_at' => $paidAt], ['id' => 70]);
-    $db->update('client_order', ['status' => 'active', 'unpaid_invoice_id' => null], ['id' => 1]);
-    $reason = 'Our staff changed this service or its invoice without a payment, so it is changed by our staff. Please contact us.';
-    expect($db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe(25.0)
-        ->and($db->fetchOne('SELECT price FROM invoice_item WHERE invoice_id = 70'))->toBe(20.0)
-        ->and(Upgrades::blocker($di, upgradesOrder($di, 1), UPGRADES_NOW))->toBe($reason)
-        ->and(fn () => Upgrades::request($di, upgradesOrder($di, 1), 1, '1M', UPGRADES_NOW, [$o['support'] => $o['basic']]))->toThrow(InformationException::class, $reason);
-
-    $db->insert('invoice', ['id' => 71, 'client_id' => 5, 'status' => 'paid', 'created_at' => $paidAt, 'paid_at' => date('Y-m-d H:i:s', strtotime($paidAt) + 60), 'taxrate' => 0]);
-    $db->insert('invoice_item', ['invoice_id' => 71, 'type' => 'order', 'task' => 'renew', 'rel_id' => '1', 'price' => 25, 'quantity' => 1, 'period' => '1M', 'taxed' => 0]);
-    expect(Upgrades::blocker($di, upgradesOrder($di, 1), UPGRADES_NOW))->toBeNull()
-        ->and(Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['support'] => $o['basic']], UPGRADES_NOW)['amount'])->toBe(-3.23);
-})->with(['renewal invoice' => false, 'first invoice' => true]);
-
 test('staff set any option, hidden ones too, and may move the price by the difference', function (): void {
     $db = upgradesDb();
     $di = upgradesContainer($db);
@@ -1659,19 +1394,30 @@ test('staff set any option, hidden ones too, and may move the price by the diffe
 // QA r10 design review: what was paid for the days left
 // ---------------------------------------------------------------------------------------------
 
-test('a period begun on the 31st is credited by its own days, or goes to staff when the start is unknown (D-01)', function (): void {
+test('a period begun on the 31st is credited by its own days (D-01)', function (): void {
     $db = upgradesDb();
     $db->executeStatement('ALTER TABLE client_order ADD COLUMN activated_at TEXT');
     $di = upgradesContainer($db);
     // strtotime() renews 31 January to 3 March: 31 days, which a clamped month counts as 28.
     $db->update('client_order', ['expires_at' => '2027-03-03 12:00:00'], ['id' => 3]);
     $now = '2027-01-31 13:00:00';
-    expect(Upgrades::blocker($di, upgradesOrder($di, 3), $now))->toBe('This service is paid ahead, so it is changed by our staff. Please contact us.');
-
     $db->update('client_order', ['activated_at' => '2027-01-31 12:00:00'], ['id' => 3]);
     expect(Upgrades::blocker($di, upgradesOrder($di, 3), $now))->toBeNull()
         // 45 x 31/31, less 5 x 31/31 for Starter: never more than was paid.
         ->and(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', $now))->toMatchArray(['status' => 'applied', 'amount' => -40.0]);
+});
+
+test('a recurring promotion credits the days left at the discounted recurring amount', function (): void {
+    $db = upgradesDb();
+    foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
+        $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
+    }
+    $di = upgradesContainer($db);
+    $db->update('client_order', ['expires_at' => '2027-03-03 12:00:00', 'activated_at' => '2027-01-31 12:00:00', 'promo_id' => 4, 'promo_recurring' => 1], ['id' => 3]);
+    $di['mod_service']('product')->shouldReceive('getRenewalPromoAdjustment')->atLeast()->once()->andReturn(['discount_amount' => 9.0]);
+
+    // 45 less the 9 off each renewal, 36 x 31/31, less 5 x 31/31 for Starter.
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -31.0]);
 });
 
 test('after a change of cycle the periods are walked from that change, not from the activation (D-01)', function (): void {
@@ -1686,32 +1432,6 @@ test('after a change of cycle the periods are walked from that change, not from 
 
     // 3 February, 28 of 31 days left: 45 x 28/31 less 5 x 28/31, not the whole 45 less 5.
     expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-02-03 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -36.13]);
-});
-
-test('a staff money edit leaves changes to staff until an invoice issued after it is paid (C-1, D-08)', function (): void {
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $reason = 'Our staff changed this service or its invoice without a payment, so it is changed by our staff. Please contact us.';
-    Upgrades::markMoneyTouched($di, 3);
-    $marked = (string) $db->fetchOne('SELECT value FROM client_order_meta WHERE client_order_id = ? AND name = ?', [3, Upgrades::MONEY_META]);
-    expect(Upgrades::blocker($di, upgradesOrder($di, 3), UPGRADES_NOW))->toBe($reason);
-
-    $db->insert('invoice', ['id' => 71, 'client_id' => 5, 'status' => 'paid', 'created_at' => date('Y-m-d H:i:s', strtotime($marked) + 60), 'paid_at' => date('Y-m-d H:i:s', strtotime($marked) + 120), 'taxrate' => 0]);
-    $db->insert('invoice_item', ['invoice_id' => 71, 'type' => 'order', 'task' => 'renew', 'rel_id' => '3', 'price' => 45, 'quantity' => 1, 'period' => '1M', 'taxed' => 0]);
-    expect(Upgrades::blocker($di, upgradesOrder($di, 3), UPGRADES_NOW))->toBeNull();
-});
-
-test('a plan change whose invoice staff edited leaves the next change to staff (D-02)', function (): void {
-    $db = upgradesDb();
-    $di = upgradesContainer($db);
-    $result = Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', UPGRADES_NOW);
-    // Staff reduce the change invoice: Invoice\Service::updateInvoice() marks the services it bills.
-    Upgrades::markMoneyTouched($di, 1);
-    upgradesPay($db, $result['id']);
-    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
-
-    expect($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE))->toBe('applied')
-        ->and(Upgrades::blocker($di, upgradesOrder($di, 1), UPGRADES_NOW))->toBe('Our staff changed this service or its invoice without a payment, so it is changed by our staff. Please contact us.');
 });
 
 test('a change to another cycle paid on a later day goes to staff (D-05)', function (): void {

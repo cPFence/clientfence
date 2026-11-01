@@ -51,8 +51,6 @@ class Service implements InjectionAwareInterface
     public const META_CANCEL_AT_PERIOD_END = 'cancel_at_period_end';
     /** ClientFence: on an addon suspended with its service, that service's order id (unsuspended with it). */
     public const META_SUSPENDED_WITH = 'suspended_with_order';
-    /** ClientFence: '1' on an order staff suspended by hand; a payment does not lift it (ServiceInvoiceItem renew task). */
-    public const META_SUSPENDED_BY_STAFF = 'suspended_by_staff';
 
     // ClientFence: automatic suspension (batchSuspendExpired(), isExemptFromAutoSuspension()).
     public const int BATCH_SUSPEND_AFTER_DAYS = 5;
@@ -178,15 +176,6 @@ class Service implements InjectionAwareInterface
     private function orderStatus(Order|\Model_ClientOrder $order): ?string
     {
         return $order instanceof Order ? $order->getStatus() : $order->status;
-    }
-
-    /** QA r10 C-1: what a staff edit of the order can change of its money (the expiry by day, as the Manage form sends it). */
-    private function moneyState(Order|\Model_ClientOrder $order): string
-    {
-        $period = $order instanceof Order ? $order->getPeriod() : $order->period;
-        $expires = $order instanceof Order ? $order->getExpiresAt()?->format('Y-m-d') : substr((string) $order->expires_at, 0, 10);
-
-        return implode('|', [number_format((float) $this->orderPrice($order), 2, '.', ''), (string) $period, (string) $expires, (string) $this->orderStatus($order)]);
     }
 
     private function orderCurrency(Order|\Model_ClientOrder $order): ?string
@@ -1588,28 +1577,15 @@ class Service implements InjectionAwareInterface
 
         $orderId = $this->orderId($order);
 
-        // ClientFence core patch (QA r10 D-10): the markers of staff money edits (Upgrades::MONEY_MARKERS) are kept: deleting
-        // or backdating them reopened plan changes on time or prices nobody paid for.
-        $kept = \ClientFence\Mod\Order\Upgrades::MONEY_MARKERS;
         if (empty($meta)) {
-            $this->di['dbal']->executeStatement(
-                'DELETE FROM client_order_meta WHERE client_order_id = ? AND name NOT IN (' . implode(', ', array_fill(0, count($kept), '?')) . ')',
-                array_merge([$orderId], $kept),
-            );
+            $this->di['dbal']->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ?', [$orderId]);
 
             return 1;
         }
         foreach ($meta as $k => $v) {
-            // ClientFence core patch (QA r11 PK-01): MySQL also matches marker names with different case, accents or trailing spaces.
-            if (in_array(strtolower(trim((string) $k)), $kept, true)) {
-                continue;
-            }
             $mm = $order instanceof Order
                 ? $this->getOrderMetaRepository()->findOneByOrderIdAndName($orderId, $k)
                 : $this->di['db']->findOne('ClientOrderMeta', 'client_order_id = :id AND name = :name', [':id' => $orderId, ':name' => $k]);
-            if ($mm && in_array(strtolower((string) ($mm instanceof OrderMeta ? $mm->getName() : $mm->name)), $kept, true)) {
-                continue;
-            }
             if (!$mm instanceof OrderMeta) {
                 if ($order instanceof Order) {
                     $mm = new OrderMeta();
@@ -1646,7 +1622,6 @@ class Service implements InjectionAwareInterface
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminOrderUpdate', 'params' => $data]);
         // ClientFence: checked before anything changes (a wrong date saves nothing).
         $this->refuseOverrideInMeta($data);
-        $moneyBefore = $this->moneyState($order);
         $overrideMeta = array_key_exists(self::META_AUTO_SUSPEND_OVERRIDE, $data) ? $this->autoSuspendOverrideMeta($data) : null;
         $this->updatePeriod($order, $data['period'] ?? null);
 
@@ -1673,12 +1648,6 @@ class Service implements InjectionAwareInterface
         $expires_at = $data['expires_at'] ?? null;
         if (!empty($expires_at)) {
             $expiresAtDate = date('Y-m-d H:i:s', strtotime((string) $expires_at));
-            // ClientFence core patch (QA r6 U-04): an expiry moved to a later day by hand is time no invoice paid for. The
-            // Manage form sends the date alone, so only the day counts (a save that keeps the date adds nothing).
-            $oldExpiry = $order instanceof Order ? $order->getExpiresAt()?->format('Y-m-d H:i:s') : $order->expires_at;
-            if ($oldExpiry === null || $oldExpiry === '' || substr($expiresAtDate, 0, 10) > date('Y-m-d', (int) strtotime((string) $oldExpiry))) {
-                \ClientFence\Mod\Order\Upgrades::markUnpaidTime($this->di, (int) ($order instanceof Order ? $order->getId() : $order->id));
-            }
             if ($order instanceof Order) {
                 $order->setExpiresAt(new \DateTime($expiresAtDate));
             } else {
@@ -1736,11 +1705,6 @@ class Service implements InjectionAwareInterface
         $this->updateOrderMeta($order, $data['meta'] ?? null);
         if ($overrideMeta !== null) {
             $this->updateOrderMeta($order, $overrideMeta);
-        }
-        // ClientFence core patch (QA r10 C-1): staff changed the price, cycle, expiry or status: what was paid for the days
-        // left is no longer certain, so plan changes go to staff until an invoice issued after this is paid.
-        if ($this->moneyState($order) !== $moneyBefore) {
-            \ClientFence\Mod\Order\Upgrades::markMoneyTouched($this->di, $orderId);
         }
 
         if ($order instanceof Order) {
@@ -1957,7 +1921,7 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: the addons suspended with this service come back with it (not those suspended for
         // their own unpaid invoice). An unsuspended order drops its mark, so a later suspension is never taken for it.
         $db = $this->di['dbal'];
-        $db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name IN (?, ?)', [$orderId, self::META_SUSPENDED_WITH, self::META_SUSPENDED_BY_STAFF]);
+        $db->executeStatement('DELETE FROM client_order_meta WHERE client_order_id = ? AND name = ?', [$orderId, self::META_SUSPENDED_WITH]);
         if ($this->orderIsGroupMaster($order)) {
             foreach ($this->getOrderAddonsList($order) as $addon) {
                 $addonId = $this->orderId($addon);
@@ -2146,8 +2110,6 @@ class Service implements InjectionAwareInterface
 
     public function uncancelFromOrder(Order|\Model_ClientOrder $order): bool
     {
-        // ClientFence core patch (QA r6 U-04-R1): uncancelling starts a new period from today that no invoice paid for.
-        \ClientFence\Mod\Order\Upgrades::markUnpaidTime($this->di, (int) ($order instanceof Order ? $order->getId() : $order->id));
         $orderId = $this->orderId($order);
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminOrderUncancel', 'params' => ['id' => $orderId]]);
 

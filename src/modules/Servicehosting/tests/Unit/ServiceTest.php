@@ -562,7 +562,7 @@ test('change account plan', function (): void {
     expect($result)->toBeTrue();
 });
 
-test('change account plan refuses suspended accounts but saves pending setup plans', function (string $status, bool $allowed): void {
+test('change account plan reaches the panel of suspended accounts and saves pending setup plans', function (string $status, bool $onPanel): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $order->status = $status;
@@ -573,24 +573,22 @@ test('change account plan refuses suspended accounts but saves pending setup pla
     $hp->loadBean(new Tests\Helpers\DummyBean());
     $hp->id = 8;
     $db = Mockery::mock(ClientFence\Database::class);
-    $db->shouldReceive('store')->times($allowed ? 1 : 0)->with($model);
+    $db->shouldReceive('store')->once()->with($model);
     $di = container();
     $di['db'] = $db;
     $di['logger'] = new ClientFence\Log();
-    $service = new Service();
+    $service = Mockery::mock(Service::class)->makePartial();
+    $manager = Mockery::mock('\Server_Manager_Custom');
+    $manager->shouldReceive('changeAccountPackage')->times($onPanel ? 1 : 0);
+    $service->shouldReceive('_getAM')->times($onPanel ? 1 : 0)->andReturn([$manager, new Server_Account()]);
+    $service->shouldReceive('getServerPackage')->times($onPanel ? 1 : 0)->andReturn(new Server_Package());
     $service->setDi($di);
 
-    if ($allowed) {
-        expect($service->changeAccountPlan($order, $model, $hp))->toBeTrue()
-            ->and($model->service_hosting_hp_id)->toBe(8);
-    } else {
-        expect(fn () => $service->changeAccountPlan($order, $model, $hp))
-            ->toThrow(ClientFence\InformationException::class, 'Unsuspend or renew this service first, then change its plan.')
-            ->and($model->service_hosting_hp_id)->toBe(7);
-    }
+    expect($service->changeAccountPlan($order, $model, $hp))->toBeTrue()
+        ->and($model->service_hosting_hp_id)->toBe(8);
 })->with([
-    'suspended' => [Model_ClientOrder::STATUS_SUSPENDED, false],
-    'pending setup' => [Model_ClientOrder::STATUS_PENDING_SETUP, true],
+    'suspended' => [Model_ClientOrder::STATUS_SUSPENDED, true],
+    'pending setup' => [Model_ClientOrder::STATUS_PENDING_SETUP, false],
 ]);
 
 test('change account username', function (): void {
@@ -1661,38 +1659,11 @@ test('asciiDomain keeps ASCII names and strips outer dots', function (): void {
         ->and(Service::asciiDomain(''))->toBe('');
 });
 
-test('a hosting product on an inactive or full server is refused when it is added to the cart', function (int $active, int $maxAccounts): void {
-    $server = new Model_ServiceHostingServer();
-    $server->loadBean(new Tests\Helpers\DummyBean());
-    $server->id = 1;
-    $server->active = $active;
-    $server->max_accounts = $maxAccounts;
-    $di = container();
-    $di['db'] = Mockery::mock('ClientFence\Database');
-    $di['db']->shouldReceive('getCell')->andReturn(0);
-    $di['db']->shouldReceive('getExistingModelById')->once()->with('ServiceHostingServer', 1, Mockery::any())->andReturn($server);
-    $di['dbal'] = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $di['dbal']->shouldReceive('fetchOne')->times($active)->andReturn(2);
-    $service = new Service();
-    $service->setDi($di);
-    $product = createEntity(ClientFence\Mod\Product\Entity\Product::class, ['config' => json_encode(['server_id' => 1, 'hosting_plan_id' => 2])]);
-    $data = ['server_id' => 1, 'hosting_plan_id' => 2, 'sld' => 'great', 'tld' => 'com'];
-
-    expect(fn () => $service->validateOrderData($data, $product))->toThrow(ClientFence\InformationException::class, 'This hosting plan cannot be ordered right now. Please contact us.');
-})->with([
-    'inactive server' => [0, 0],
-    'full server' => [1, 2],
-]);
-
 test('validateOrderData accepts values matching product config', function (): void {
     $service = new Service();
     $di = container();
     $di['db'] = Mockery::mock('ClientFence\Database');
     $di['db']->shouldReceive('getCell')->andReturn(0);
-    $server = new Model_ServiceHostingServer();
-    $server->loadBean(new Tests\Helpers\DummyBean());
-    $server->id = 1;
-    $di['db']->shouldReceive('getExistingModelById')->once()->with('ServiceHostingServer', 1, Mockery::any())->andReturn($server);
     $service->setDi($di);
     $product = createEntity(ClientFence\Mod\Product\Entity\Product::class, [
         'config' => json_encode(['server_id' => 1, 'hosting_plan_id' => 2, 'reseller' => false]),

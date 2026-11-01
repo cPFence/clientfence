@@ -177,7 +177,7 @@ final class Upgrades
         // The client may change the configurable options alone (optionsQuote()): the options offered
         // now, for the service page's form (also for a product no longer on sale).
         $offered = Options::forProduct($di, (int) $order->product_id);
-        $paid = self::paidTotal($db, $order);
+        $paid = self::recurringTotal($di, $order);
         $productRule = self::rule($di, self::SCOPE_PRODUCT, (int) $order->product_id);
         $orderRule = self::rule($di, self::SCOPE_ORDER, (int) $order->id);
         $anchor = self::periodAnchor($db, $order);
@@ -478,10 +478,6 @@ final class Upgrades
                 }
                 // Only the options change: same product and cycle.
                 $optionsOnly = $opt !== null && (int) $up['to_product_id'] === (int) $up['from_product_id'] && (string) $up['to_period'] === (string) $up['from_period'];
-                // QA r7 P-02: an invoice refunded after the change was priced takes back the paid time it credited.
-                if ($changed === null && self::refunded($db, $orderId)) {
-                    $changed = 'an invoice of it was refunded';
-                }
                 $now ??= date('Y-m-d H:i:s');
                 if ($changed === null && (string) $row['expires_at'] !== '' && strtotime((string) $row['expires_at']) <= strtotime($now)) {
                     $changed = 'it has expired';
@@ -761,23 +757,6 @@ final class Upgrades
         if (self::db($di)->fetchOne('SELECT value FROM client_order_meta WHERE client_order_id = ? AND name = ?', [(int) $order->id, Service::META_CANCEL_AT_PERIOD_END]) === '1') {
             return __trans('This service is set to be cancelled at the end of its period, so it cannot be changed.');
         }
-        // ClientFence core patch: paid ahead (more than one period left, such as a renewal paid early), a change credits
-        // days of several invoices, which a later refund of one of them cannot tell apart.
-        if (strtotime((string) $order->expires_at) - strtotime($now ?? date('Y-m-d H:i:s')) > (self::periodDays((string) $order->period) + 1) * 86400) {
-            return __trans('This service is paid ahead, so it is changed by our staff. Please contact us.');
-        }
-        // ClientFence (QA r10 D-01): more days left than its period has would credit more than was paid.
-        try {
-            $over = Proration::daysLeft((string) $order->expires_at, $now ?? date('Y-m-d H:i:s')) > Proration::daysTotal((string) $order->period, (string) $order->expires_at, self::periodAnchor(self::db($di), $order));
-        } catch (InformationException) {
-            $over = false;
-        }
-        if ($over) {
-            return __trans('This service is paid ahead, so it is changed by our staff. Please contact us.');
-        }
-        if ((float) ($order->discount ?? 0) > 0) {
-            return __trans('This service has a discount, so it is changed by our staff. Please contact us.');
-        }
         $db = self::db($di);
         if ($order->unpaid_invoice_id !== null && $db->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $order->unpaid_invoice_id]) === \Model_Invoice::STATUS_UNPAID) {
             return __trans('Pay the open invoice of this service first.');
@@ -797,45 +776,6 @@ final class Upgrades
             if (!method_exists($adapter, 'cancelSubscription')) {
                 return __trans('This service is paid by a PayPal subscription: cancel it in PayPal first, then change the plan.');
             }
-        }
-        // ClientFence core patch: a refunded invoice of this service makes the unused time unknown (a downgrade
-        // credited time that was already paid back).
-        if (self::refunded($db, (int) $order->id)) {
-            return __trans('An invoice of this service was refunded, so it is changed by our staff. Please contact us.');
-        }
-        // ClientFence core patch: a priced service no invoice paid for (staff activated it without one) has no paid
-        // time to credit; a downgrade credited days never paid.
-        // A paid upgrade invoice counts too (a free service moved to a paid plan).
-        if (self::orderTotal($order) > 0 && $db->fetchOne(
-            'SELECT 1 FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.rel_id = ?
-             UNION SELECT 1 FROM ' . self::TABLE . ' u JOIN invoice i ON i.id = u.invoice_id WHERE u.order_id = ? AND u.status = ? AND i.status = ? LIMIT 1',
-            [\Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, (string) $order->id, (int) $order->id, self::STATUS_APPLIED, \Model_Invoice::STATUS_PAID],
-        ) === false) {
-            return __trans('No paid invoice of this service is on record, so it is changed by our staff. Please contact us.');
-        }
-        // ClientFence core patch (QA r6, owner: "Strict rule"): the client changes a plan only when what was paid for the
-        // days left is certain. A service last paid in the system it was imported from (setup fees, prorata first
-        // payments, promotions) or given time by staff without a payment since is changed by staff.
-        $lastPaid = self::lastPaid($db, $order);
-        if ($lastPaid !== null && $lastPaid['imported']) {
-            return __trans('This service was last paid before it moved here, so it is changed by our staff until it renews. Please contact us.');
-        }
-        $added = $db->fetchOne('SELECT MAX(value) FROM client_order_meta WHERE client_order_id = ? AND name = ?', [(int) $order->id, self::UNPAID_TIME_META]);
-        if (is_string($added) && $added !== '' && ($lastPaid === null || $added >= $lastPaid['at'])) {
-            return __trans('Our staff added time to this service without a payment, so it is changed by our staff. Please contact us.');
-        }
-        // ClientFence core patch (QA r9 P-01): staff option edits leave the paid options unknown until an invoice issued after the edit is paid.
-        // QA r10 C-1: so does any staff edit of the service's money or of an invoice that bills it (MONEY_META).
-        $changed = $db->fetchOne('SELECT MAX(value) FROM client_order_meta WHERE client_order_id = ? AND name IN (?, ?)', [(int) $order->id, self::UNPAID_OPTIONS_META, self::MONEY_META]);
-        if (is_string($changed) && $changed !== '' && ($lastPaid === null || $changed >= $lastPaid['created_at'])) {
-            return __trans('Our staff changed this service or its invoice without a payment, so it is changed by our staff. Please contact us.');
-        }
-        // ClientFence core patch (QA r6 R-01): an imported WHMCS invoice that billed other items too and has promotions
-        // of no order cannot tell whose discount each was, so what this service was paid is unknown until it renews.
-        $ambiguous = false;
-        self::paidTotal($db, $order, $ambiguous);
-        if ($ambiguous) {
-            return __trans('This service was last paid on an imported invoice with a promotion, so it is changed by our staff. Please contact us.');
         }
         $client = $db->fetchOne('SELECT currency FROM client WHERE id = ?', [(int) $order->client_id]);
         if ($client === false || $client === null || $client === '' || strtoupper((string) $client) !== strtoupper((string) $order->currency)) {
@@ -957,11 +897,8 @@ final class Upgrades
         $current = self::currentOptionsPrice($di, (int) $order->product_id, $own, (string) $order->period);
         $delta = ($new['price'] - $current) * $rate * $quantity;
         $newTotal = round(self::orderTotal($order) + $delta, 2);
-        // QA r6 U-01: the days left are worth what was paid, so only the options' difference is charged or credited for
-        // them; a price staff changed since applies from the next renewal (the service's new price above).
-        $paid = self::paidTotal($db, $order);
-        // QA r6 U-01-R2: a price (or payment) below what the removed options cost would make the service's new price
-        // differ from the difference charged, which paidTotal() reads back later: staff change it.
+        // Only the options' difference is charged or credited for the days left.
+        $paid = self::recurringTotal($di, $order);
         if ($newTotal < 0 || round($paid + $delta, 2) < 0) {
             throw new InformationException('The price of this service is lower than its options, so it is changed by our staff. Please contact us.');
         }
@@ -1037,7 +974,6 @@ final class Upgrades
         $order->config = json_encode($config);
         $order->updated_at = date('Y-m-d H:i:s');
         $di['db']->store($order);
-        self::mark($di, $orderId, self::UNPAID_OPTIONS_META);
         $di['mod_service']('order')->saveStatusChange($order, $note);
         self::log($di, sprintf('Order #%d: %s', $orderId, $note));
     }
@@ -1192,16 +1128,6 @@ final class Upgrades
      * @param array<string, mixed> $order
      * @param array<string, mixed> $up
      */
-    /** Whether an invoice of the order, or of a change of it, was refunded. */
-    private static function refunded(Connection $db, int $orderId): bool
-    {
-        return $db->fetchOne(
-            'SELECT 1 FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.rel_id = ?
-             UNION SELECT 1 FROM ' . self::TABLE . ' u JOIN invoice i ON i.id = u.invoice_id WHERE u.order_id = ? AND i.status = ? LIMIT 1',
-            [\Model_Invoice::STATUS_REFUNDED, \Model_InvoiceItem::TYPE_ORDER, (string) $orderId, $orderId, \Model_Invoice::STATUS_REFUNDED],
-        ) !== false;
-    }
-
     private static function changedSince(array $order, array $up): ?string
     {
         if ($order['status'] !== \Model_ClientOrder::STATUS_ACTIVE) {
@@ -1316,157 +1242,16 @@ final class Upgrades
     }
 
     /**
-     * ClientFence core patch: what the client paid for the current period, which the credit for the days left is
-     * worth. The order's price now was used: after a bulk price change or a staff edit, a downgrade credited days at
-     * a price never paid. The newest paid order or renewal line with its discount, or the price of a change applied
-     * since (blocker() keeps a priced service no invoice paid for to staff), at its daily rate over the order's cycle when it
-     * paid for another one (staff changed the cycle). An imported invoice, one with a discount line of no order (a WHMCS
-     * promotion) or a period that cannot be read is worth no more than the order's price.
+     * ClientFence core patch: the days left are credited at the service's recurring amount (its price less a recurring
+     * promotion), per day of its cycle, as WHMCS does.
      */
-    private static function paidTotal(Connection $db, \Model_ClientOrder $order, bool &$ambiguous = false): float
+    private static function recurringTotal(\Pimple\Container $di, \Model_ClientOrder $order): float
     {
-        $orderId = (string) $order->id;
-        $invoice = $db->fetchAssociative(
-            "SELECT i.id, i.paid_at FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
-             WHERE ii.type = ? AND ii.rel_id = ? AND i.status = ? ORDER BY i.paid_at DESC, i.id DESC LIMIT 1",
-            [\Model_InvoiceItem::TYPE_ORDER, $orderId, \Model_Invoice::STATUS_PAID]
-        );
-        // Also with no paid order invoice: a free service moved to a paid plan is worth what its upgrade set. An options
-        // change (same product and cycle) paid only the options' difference on top of what was paid before it (QA r6
-        // U-01-R1: its new price, which carries a price staff changed since, was taken as paid).
-        $paid = false;
-        $optionsDelta = 0.0;
-        $changes = $db->fetchAllAssociative(
-            'SELECT from_product_id, from_period, from_price, to_product_id, to_period, to_price FROM ' . self::TABLE . ' WHERE order_id = ? AND status = ? AND applied_at >= ? ORDER BY id DESC',
-            [(int) $order->id, self::STATUS_APPLIED, $invoice === false ? '1970-01-01 00:00:00' : (string) $invoice['paid_at']]
-        );
-        foreach ($changes as $change) {
-            if ((int) $change['from_product_id'] === (int) $change['to_product_id'] && (string) $change['from_period'] === (string) $change['to_period']) {
-                // QA r7 P-01: the difference is in the change's cycle; staff may have changed the order's cycle since.
-                $delta = (float) $change['to_price'] - (float) $change['from_price'];
-                $cycle = strtoupper(trim((string) $change['to_period']));
-                if ($cycle !== '' && $cycle !== strtoupper(trim((string) $order->period))) {
-                    $delta = $delta * self::periodDays((string) $order->period) / self::periodDays($cycle);
-                }
-                $optionsDelta += $delta;
+        $promo = $order->promo_recurring && $order->promo_id
+            ? $di['mod_service']('Product')->getRenewalPromoAdjustment($order, (float) $order->price, (float) max(1, (int) ($order->quantity ?? 1)))
+            : null;
 
-                continue;
-            }
-            $paid = ['amount' => $change['to_price'], 'period' => $change['to_period']];
-
-            break;
-        }
-        if ($invoice === false && $paid === false) {
-            return $changes === [] ? self::orderTotal($order) : max(0.0, round($optionsDelta, 2));
-        }
-        $trusted = $paid !== false;
-        if ($paid === false) {
-            $paid = $db->fetchAssociative(
-                "SELECT SUM(price * quantity) AS amount, MAX(CASE WHEN type = ? THEN period END) AS period FROM invoice_item
-                 WHERE invoice_id = ? AND rel_id = ? AND (type = ? OR unit = 'discount')",
-                [\Model_InvoiceItem::TYPE_ORDER, (int) $invoice['id'], $orderId, \Model_InvoiceItem::TYPE_ORDER]
-            );
-            // A WHMCS import stamps every line with the order's cycle; before alpha.29 its promotion lines belonged to no
-            // order. They come off what was paid, so a price raised since does not lift it. Its credit applied, payments
-            // received and rounding lines are how the invoice was paid, not discounts.
-            $discount = "price < 0 AND (rel_id IS NULL OR rel_id = '') AND IFNULL(title, '') NOT IN (?, ?) AND IFNULL(unit, '') <> ?";
-            $loose = $db->fetchAssociative(
-                "SELECT COUNT(CASE WHEN price < 0 AND (rel_id IS NULL OR rel_id = '') THEN 1 END) AS n,
-                        SUM(CASE WHEN {$discount} THEN price * quantity ELSE 0 END) AS amount,
-                        SUM(CASE WHEN price > 0 THEN price * quantity ELSE 0 END) AS positive,
-                        SUM(CASE WHEN price > 0 AND type = ? AND rel_id = ? THEN price * quantity ELSE 0 END) AS own
-                 FROM invoice_item WHERE invoice_id = ?",
-                [Money::CREDIT_TITLE, Money::ROUNDING_TITLE, Money::RECEIVED_UNIT, \Model_InvoiceItem::TYPE_ORDER, $orderId, (int) $invoice['id']]
-            );
-            // Only when the invoice billed this order alone is each such promotion surely this order's; otherwise
-            // blocker() leaves the change to staff and the cap below stands.
-            if ((float) $loose['amount'] < 0) {
-                if (round((float) $loose['own'], 2) === round((float) $loose['positive'], 2)) {
-                    $paid['amount'] = (float) $paid['amount'] + (float) $loose['amount'];
-                } else {
-                    $ambiguous = true;
-                }
-            }
-            try {
-                $imported = $db->fetchOne('SELECT 1 FROM mod_clientfence_import_map WHERE entity = ? AND target_id = ? LIMIT 1', ['invoice', (int) $invoice['id']]);
-            } catch (\Doctrine\DBAL\Exception\TableNotFoundException) {
-                $imported = false;
-            }
-            $trusted = (int) $loose['n'] === 0 && $imported === false;
-        }
-        $amount = max(0.0, (float) $paid['amount']);
-        // Paid for another cycle (staff changed the service's cycle since): the same daily rate over the order's cycle.
-        $period = strtoupper(trim((string) $paid['period']));
-        if ($period !== '' && $period !== strtoupper(trim((string) $order->period))) {
-            try {
-                $amount = $amount * self::periodDays((string) $order->period) / self::periodDays($period);
-            } catch (InformationException) {
-                $trusted = false;
-            }
-        }
-        $amount = round($amount, 2);
-
-        // What cannot be told apart is worth no more than the order's price; what was paid stays worth it after a price cut.
-        return max(0.0, round(($trusted ? $amount : min($amount, self::orderTotal($order))) + $optionsDelta, 2));
-    }
-
-    /** QA r6: staff added time to the order without a payment (a renewal with no invoice, an expiry edit) at this time. */
-    public const UNPAID_TIME_META = 'clientfence_unpaid_time_added_at';
-    public const UNPAID_OPTIONS_META = 'clientfence_unpaid_options_changed_at';
-    /** QA r10 C-1: staff changed the service's money (price, cycle, expiry, status, activation) or an invoice that bills it. */
-    public const MONEY_META = 'clientfence_money_touched_at';
-    /** The markers only staff money edits write; order/update's meta may not delete or rewrite them (QA r10 D-10). */
-    public const MONEY_MARKERS = [self::UNPAID_TIME_META, self::UNPAID_OPTIONS_META, self::MONEY_META];
-
-    public static function markUnpaidTime(\Pimple\Container $di, int $orderId): void
-    {
-        self::mark($di, $orderId, self::UNPAID_TIME_META);
-    }
-
-    public static function markMoneyTouched(\Pimple\Container $di, int $orderId): void
-    {
-        self::mark($di, $orderId, self::MONEY_META);
-    }
-
-    private static function mark(\Pimple\Container $di, int $orderId, string $name): void
-    {
-        $db = self::db($di);
-        $now = date('Y-m-d H:i:s');
-        if ($db->executeStatement('UPDATE client_order_meta SET value = ?, updated_at = ? WHERE client_order_id = ? AND name = ?', [$now, $now, $orderId, $name]) === 0) {
-            $db->insert('client_order_meta', ['client_order_id' => $orderId, 'name' => $name, 'value' => $now, 'created_at' => $now, 'updated_at' => $now]);
-        }
-    }
-
-    /**
-     * The newest payment for the order: its paid order or renewal invoice (whether it was imported), or a paid change
-     * applied since.
-     *
-     * @return array{at: string, created_at: string, imported: bool}|null
-     */
-    private static function lastPaid(Connection $db, \Model_ClientOrder $order): ?array
-    {
-        $invoice = $db->fetchAssociative(
-            "SELECT i.id, i.paid_at, i.created_at FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
-             WHERE ii.type = ? AND ii.rel_id = ? AND i.status = ? ORDER BY i.paid_at DESC, i.id DESC LIMIT 1",
-            [\Model_InvoiceItem::TYPE_ORDER, (string) $order->id, \Model_Invoice::STATUS_PAID]
-        );
-        $change = $db->fetchAssociative(
-            'SELECT u.applied_at, i.created_at FROM ' . self::TABLE . " u JOIN invoice i ON i.id = u.invoice_id WHERE u.order_id = ? AND u.status = ? AND i.status = ? AND u.applied_at IS NOT NULL AND u.applied_at <> '' ORDER BY u.applied_at DESC, u.id DESC LIMIT 1",
-            [(int) $order->id, self::STATUS_APPLIED, \Model_Invoice::STATUS_PAID]
-        );
-        if ($invoice === false) {
-            return $change === false ? null : ['at' => (string) $change['applied_at'], 'created_at' => (string) $change['created_at'], 'imported' => false];
-        }
-        if ($change !== false && (string) $change['applied_at'] >= (string) $invoice['paid_at']) {
-            return ['at' => (string) $change['applied_at'], 'created_at' => (string) $change['created_at'], 'imported' => false];
-        }
-        try {
-            $imported = $db->fetchOne('SELECT 1 FROM mod_clientfence_import_map WHERE entity = ? AND target_id = ? LIMIT 1', ['invoice', (int) $invoice['id']]) !== false;
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException) {
-            $imported = false;
-        }
-
-        return ['at' => (string) $invoice['paid_at'], 'created_at' => (string) $invoice['created_at'], 'imported' => $imported];
+        return max(0.0, round(self::orderTotal($order) - (float) ($promo['discount_amount'] ?? 0), 2));
     }
 
     private static function rate(Connection $db, string $currency): ?float

@@ -882,13 +882,14 @@ class Service implements InjectionAwareInterface
         $transactionId = isset($data['transactionId']) ? trim((string) $data['transactionId']) : null;
         $invoiceTotal = $this->getTotalWithTax($invoice);
         $isDeposit = $this->isInvoiceTypeDeposit($invoice);
-        $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [$invoice->id, \Model_Transaction::STATUS_PROCESSED]);
-        // ClientFence core patch: processed deposit transfers have already credited the client's balance.
+        $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ? AND COALESCE(txn_status, \'\') <> ?', [$invoice->id, \Model_Transaction::STATUS_PROCESSED, 'imported']);
+        // ClientFence core patch: processed transfers have already credited the client's balance (imported WHMCS payments did not:
+        // the import subtracts them on the invoice itself).
         if ($isDeposit) {
             $invoiceTotal = max(0.0, round($invoiceTotal - $credited, 2));
         } elseif ($credited > 0) {
-            // ClientFence core patch: recorded transfers remain spendable until the invoice is paid from balance.
-            throw new InformationException('This invoice already has recorded payments. Record the remaining transfer as a transaction instead.');
+            // ClientFence core patch: a partly paid invoice is paid with what was recorded plus the rest received now.
+            $invoiceTotal = max(0.0, round($invoiceTotal - $credited, 2));
         }
 
         if ((int) $payGateway->id !== (int) $invoice->gateway_id) {
@@ -920,6 +921,9 @@ class Service implements InjectionAwareInterface
                 throw new InformationException('Transaction ID is already associated with another invoice.');
             }
 
+            if (!$isDeposit) {
+                $this->useRecordedPayments($invoice, $credited);
+            }
             $result = $this->markAsPaid($invoice, false);
             if ($result) {
                 if ($isDeposit) {
@@ -938,12 +942,36 @@ class Service implements InjectionAwareInterface
             return $result;
         }
 
+        if (!$isDeposit) {
+            $this->useRecordedPayments($invoice, $credited);
+        }
         $result = $this->markAsPaid($invoice, false);
         if ($result && $isDeposit) {
             $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId, $invoiceTotal);
         }
 
         return $result;
+    }
+
+    /**
+     * ClientFence core patch: payments recorded on an unpaid invoice wait in the client's balance; an invoice
+     * marked paid by staff takes them from there, so they are not left spendable as well.
+     */
+    private function useRecordedPayments(\Model_Invoice $invoice, float $credited): void
+    {
+        if ($credited <= 0) {
+            return;
+        }
+        $now = date('Y-m-d H:i:s');
+        $this->di['dbal']->insert('client_balance', [
+            'client_id' => (int) $invoice->client_id,
+            'type' => 'invoice',
+            'rel_id' => (string) $invoice->id,
+            'description' => 'Payments recorded on the invoice, applied to it',
+            'amount' => -$credited,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
     }
 
     /**
@@ -1772,18 +1800,7 @@ class Service implements InjectionAwareInterface
         // charged again later), or showed a payment it never had.
         return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $model->client_id, function () use ($model, $data): bool {
             $this->refreshStatus($model);
-            // ClientFence core patch (QA r10 C-1, D-02, D-04): an edit of the lines, tax, status or dates of an invoice that
-            // bills a service leaves what was paid for it uncertain: its plan changes go to staff until a later invoice is paid.
-            $touched = $this->changesAmount($model, $data);
-            $before = $this->moneyDates($model);
-            $result = $this->updateInvoiceLocked($model, $data);
-            if ($touched || $this->moneyDates($model) !== $before) {
-                foreach ($this->ordersOf((int) $model->id) as $orderId) {
-                    \ClientFence\Mod\Order\Upgrades::markMoneyTouched($this->di, $orderId);
-                }
-            }
-
-            return $result;
+            return $this->updateInvoiceLocked($model, $data);
         });
     }
 
@@ -1796,35 +1813,6 @@ class Service implements InjectionAwareInterface
         $at = date('Y-m-d H:i:s', (int) strtotime($posted));
 
         return strlen(trim($posted)) === 10 && $stored !== null && substr($stored, 0, 10) === substr($at, 0, 10) ? $stored : $at;
-    }
-
-    /** QA r10 C-1: whether an invoice is paid, and the days (not the time a form sends) it was issued and paid. */
-    private function moneyDates(\Model_Invoice $model): string
-    {
-        return implode('|', [$model->status === \Model_Invoice::STATUS_PAID ? 'paid' : '', substr((string) $model->paid_at, 0, 10), substr((string) $model->created_at, 0, 10)]);
-    }
-
-    /**
-     * QA r10 C-1: the services an invoice bills: its order lines and its plan-change lines.
-     *
-     * @return list<int>
-     */
-    public function ordersOf(int $invoiceId): array
-    {
-        $ids = [];
-        $items = $this->di['db']->getAll('SELECT type, rel_id FROM invoice_item WHERE invoice_id = ? AND type IN (?, ?)', [$invoiceId, \Model_InvoiceItem::TYPE_ORDER, \Model_InvoiceItem::TYPE_HOOK_CALL]);
-        foreach ($items as $item) {
-            if ($item['type'] === \Model_InvoiceItem::TYPE_ORDER) {
-                $ids[] = (int) $item['rel_id'];
-                continue;
-            }
-            $change = json_decode((string) $item['rel_id'], true);
-            if (is_array($change) && !empty($change['upgrade_id'])) {
-                $ids[] = (int) $this->di['db']->getCell('SELECT order_id FROM ' . \ClientFence\Mod\Order\Upgrades::TABLE . ' WHERE id = ?', [(int) $change['upgrade_id']]);
-            }
-        }
-
-        return array_values(array_unique(array_filter($ids)));
     }
 
     private function updateInvoiceLocked(\Model_Invoice $model, array $data): bool
@@ -1842,13 +1830,8 @@ class Service implements InjectionAwareInterface
         if ($markPaid && $this->isInvoiceTypeDeposit($model)) {
             throw new InformationException('Use Mark as Paid to record payment for an Add Funds invoice.');
         }
-        // ClientFence core patch: Manage must not leave recorded payments as spendable balance on a paid invoice.
-        if ($markPaid) {
-            $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [$model->id, \Model_Transaction::STATUS_PROCESSED]);
-            if ($credited > 0) {
-                throw new InformationException('This invoice already has recorded payments. Record the remaining transfer as a transaction instead.');
-            }
-        }
+        // ClientFence core patch: Manage uses the recorded payments of a partly paid invoice it sets to Paid (the rest is written off).
+        $credited = $markPaid ? (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ? AND COALESCE(txn_status, \'\') <> ?', [$model->id, \Model_Transaction::STATUS_PROCESSED, 'imported']) : 0.0;
         if ($newStatus !== $previousStatus && ($this->isBooked($model) || $newStatus === \Model_Invoice::STATUS_REFUNDED)) {
             throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
         }
@@ -1945,6 +1928,7 @@ class Service implements InjectionAwareInterface
 
         // ClientFence core patch: a paid status saved on Manage needs the same payment event and tasks.
         if ($markPaid) {
+            $this->useRecordedPayments($model, $credited);
             $this->markAsPaid($model, false);
         }
 

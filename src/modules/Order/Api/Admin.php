@@ -162,12 +162,6 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('order', 'manage');
 
         $order = $this->_getOrder($data);
-        // ClientFence core patch (QA r10 D-06): activating a service that has an expiry (Pending setup set by hand, or
-        // force) adds a period from it that no invoice paid for. QA r11 PK-02: an active order without force adds nothing.
-        if ($order->getExpiresAt() !== null && ($order->getStatus() !== Order::STATUS_ACTIVE || !empty($data['force']))) {
-            \ClientFence\Mod\Order\Upgrades::markMoneyTouched($this->getDi(), (int) $order->getId());
-        }
-
         return $this->getService()->activateOrder($order, $data);
     }
 
@@ -190,9 +184,6 @@ class Admin extends \ClientFence\Api\AbstractApi
         if ($this->getService()->applyPaidRenewal((int) $order->getId())) {
             return true;
         }
-        // ClientFence core patch (QA r6 U-04): a renewal with no paid invoice adds time nobody paid for.
-        \ClientFence\Mod\Order\Upgrades::markUnpaidTime($this->getDi(), (int) $order->getId());
-
         return $this->getService()->renewOrder($order, $data);
     }
 
@@ -213,11 +204,7 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $reason = $data['reason'] ?? null;
 
-        $suspended = $this->getService()->suspendFromOrder($order, $reason, $skip_event);
-        // ClientFence core patch: a suspension staff made is lifted by staff, never by the client paying a renewal.
-        $this->getService()->updateOrderMeta($order, [\ClientFence\Mod\Order\Service::META_SUSPENDED_BY_STAFF => '1']);
-
-        return $suspended;
+        return $this->getService()->suspendFromOrder($order, $reason, $skip_event);
     }
 
     /**
@@ -234,10 +221,7 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new InformationException('Only suspended orders can be unsuspended');
         }
 
-        // ClientFence core patch: a waiting paid renewal line is applied instead (Service::applyPaidRenewal), which
-        // the staff suspension mark would hold back.
-        $this->getDi()['dbal']->delete('client_order_meta', ['client_order_id' => (int) $order->getId(), 'name' => \ClientFence\Mod\Order\Service::META_SUSPENDED_BY_STAFF]);
-
+        // ClientFence core patch: a waiting paid renewal line is applied instead (Service::applyPaidRenewal).
         return $this->getService()->applyPaidRenewal((int) $order->getId()) || $this->getService()->unsuspendFromOrder($order);
     }
 
@@ -292,9 +276,6 @@ class Admin extends \ClientFence\Api\AbstractApi
         if ($order->getStatus() != Order::STATUS_CANCELED) {
             throw new InformationException('Only canceled orders can be uncanceled');
         }
-        // ClientFence core patch (QA r10 C-1): uncancel gives a new period from today that no invoice paid for.
-        \ClientFence\Mod\Order\Upgrades::markMoneyTouched($this->getDi(), (int) $order->getId());
-
         return $this->getService()->uncancelFromOrder($order);
     }
 

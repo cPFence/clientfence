@@ -157,7 +157,7 @@ test('Manage requires Mark as Paid for Add Funds invoices', function (bool $depo
 test('Mark as Paid records and credits only the unpaid deposit remainder', function (float $before, float $remaining): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
-    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT)');
     $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid']);
     $dbal->insert('"transaction"', ['id' => 1, 'invoice_id' => 10, 'amount' => $before, 'status' => 'processed']);
     $dbal->insert('"transaction"', ['id' => 2, 'invoice_id' => 10, 'amount' => 80, 'status' => 'received']);
@@ -222,33 +222,33 @@ test('Mark as Paid records and credits only the unpaid deposit remainder', funct
     }
 })->with(['partly paid' => [40.0, 60.0], 'fully credited' => [100.0, 0.0]]);
 
-test('Manage refuses to mark an invoice paid when it has a recorded transfer', function (): void {
+test('Manage marks a partly paid invoice paid with its recorded payments', function (): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT)');
-    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, description TEXT, amount REAL, created_at TEXT, updated_at TEXT)');
     $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid']);
     $dbal->insert('"transaction"', ['id' => 1, 'invoice_id' => 10, 'amount' => 20, 'status' => 'processed']);
+    // A payment imported from WHMCS never reached the balance (the import subtracts it on the invoice).
+    $dbal->insert('"transaction"', ['id' => 2, 'invoice_id' => 10, 'amount' => 30, 'status' => 'processed', 'txn_status' => 'imported']);
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());
     $invoice->id = 10;
+    $invoice->client_id = 7;
     $invoice->status = Model_Invoice::STATUS_UNPAID;
-    $item = new Model_InvoiceItem();
-    $item->loadBean(new Tests\Helpers\DummyBean());
-    $item->type = Model_InvoiceItem::TYPE_CUSTOM;
-    $item->price = 60;
-    $item->quantity = 1;
 
     $di = container();
     $di['dbal'] = $dbal;
-    $di['db']->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ?', [10])->andReturn([$item]);
-    $di['db']->shouldNotReceive('store');
-    $service = new Service();
+    $di['db']->shouldReceive('find')->andReturn([]);
+    $di['db']->shouldReceive('store');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('markAsPaid')->once()->with($invoice, false)->andReturn(true);
     $service->setDi($di);
 
-    expect(fn () => $service->updateInvoice($invoice, ['status' => 'paid']))
-        ->toThrow(ClientFence\InformationException::class, 'This invoice already has recorded payments. Record the remaining transfer as a transaction instead.')
-        ->and($invoice->status)->toBe(Model_Invoice::STATUS_UNPAID)
-        ->and($dbal->fetchOne('SELECT status FROM invoice WHERE id = 10'))->toBe('unpaid');
+    $service->updateInvoice($invoice, ['status' => 'paid']);
+
+    expect($dbal->fetchAssociative('SELECT client_id, type, rel_id, amount FROM client_balance'))
+        ->toBe(['client_id' => 7, 'type' => 'invoice', 'rel_id' => '10', 'amount' => -20.0]);
 });
 
 test('gets dependency injection container', function (): void {
@@ -1568,8 +1568,8 @@ test('marks invoice as paid', function (): void {
     expect($result)->toBeBool()->toBeTrue();
 });
 
-test('admin mark as paid requires a transaction to finish an ordinary invoice with recorded payments', function (float $credited): void {
-    $calls = $credited > 0 ? 0 : 1;
+test('admin mark as paid uses the recorded payments and records only the rest', function (float $credited): void {
+    $calls = 1;
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('markAsPaid')
         ->times($calls)
@@ -1631,21 +1631,19 @@ test('admin mark as paid requires a transaction to finish an ordinary invoice wi
     $di = container();
     $di['db'] = $dbMock;
     $di['dbal']->shouldReceive('fetchOne')->once()
-        ->with('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [10, Model_Transaction::STATUS_PROCESSED])
+        ->with("SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ? AND COALESCE(txn_status, '') <> ?", [10, Model_Transaction::STATUS_PROCESSED, 'imported'])
         ->andReturn($credited);
+    if ($credited > 0) {
+        $di['dbal']->shouldReceive('insert')->once()
+            ->with('client_balance', Mockery::on(fn (array $row): bool => $row['amount'] === -$credited && $row['rel_id'] === '10' && $row['type'] === 'invoice'));
+    } else {
+        $di['dbal']->shouldNotReceive('insert');
+    }
     $di['mod_service'] = $di->protect(moduleService([
         'invoice:transaction' => $transactionServiceMock,
     ]));
 
     $serviceMock->setDi($di);
-
-    if ($credited > 0) {
-        expect(fn () => $serviceMock->markAsPaidByAdmin($invoiceModel, ['transactionId' => 'manual-reference-1']))
-            ->toThrow(ClientFence\InformationException::class, 'This invoice already has recorded payments. Record the remaining transfer as a transaction instead.')
-            ->and($invoiceModel->status)->toBe(Model_Invoice::STATUS_UNPAID);
-
-        return;
-    }
 
     $result = $serviceMock->markAsPaidByAdmin($invoiceModel, [
         'execute' => false,
@@ -1653,7 +1651,7 @@ test('admin mark as paid requires a transaction to finish an ordinary invoice wi
     ]);
 
     expect($result)->toBeTrue()
-        ->and($transactionModel->amount)->toBe(42.50)
+        ->and($transactionModel->amount)->toBe(round(42.50 - $credited, 2))
         ->and($transactionModel->currency)->toBe('USD')
         ->and($transactionModel->status)->toBe(Model_Transaction::STATUS_PROCESSED)
         ->and($transactionModel->note)->toBe('Manual payment transaction No: manual-reference-1');
@@ -3165,27 +3163,7 @@ test('updates an invoice', function (): void {
 
     $result = $serviceMock->updateInvoice($invoiceModel, $data);
     expect($result)->toBeTrue()
-        ->and($dbal->fetchAllAssociative('SELECT client_order_id, name FROM client_order_meta'))->toBe([['client_order_id' => 4, 'name' => ClientFence\Mod\Order\Upgrades::MONEY_META]]);
-});
-
-test('ordersOf lists the services an invoice bills: its order lines and its plan-change lines', function (): void {
-    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $db->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT)');
-    $db->executeStatement('CREATE TABLE ' . ClientFence\Mod\Order\Upgrades::TABLE . ' (id INTEGER PRIMARY KEY, order_id INTEGER)');
-    $db->insert(ClientFence\Mod\Order\Upgrades::TABLE, ['id' => 1, 'order_id' => 3]);
-    foreach ([['order', '2'], ['hook_call', json_encode(['upgrade_id' => 1])], ['custom', '9'], ['order', '2']] as [$type, $rel]) {
-        $db->insert('invoice_item', ['invoice_id' => 5, 'type' => $type, 'rel_id' => $rel]);
-    }
-    $db->insert('invoice_item', ['invoice_id' => 6, 'type' => 'order', 'rel_id' => '8']);
-    $dbMock = Mockery::mock(ClientFence\Database::class);
-    $dbMock->shouldReceive('getAll')->andReturnUsing(fn (string $sql, array $params): array => $db->fetchAllAssociative($sql, $params));
-    $dbMock->shouldReceive('getCell')->andReturnUsing(fn (string $sql, array $params): mixed => $db->fetchOne($sql, $params));
-    $di = container();
-    $di['db'] = $dbMock;
-    $service = new Service();
-    $service->setDi($di);
-
-    expect($service->ordersOf(5))->toBe([2, 3]);
+        ->and($dbal->fetchAllAssociative('SELECT client_order_id, name FROM client_order_meta'))->toBe([]);
 });
 
 test('removes an invoice', function (): void {
