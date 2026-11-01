@@ -185,7 +185,7 @@ test('performUpdate refuses a concurrent update before checking finalization', f
     $di['update_finalization'] = $finalization;
     $update = new Update();
     $update->setDi($di);
-    $lock = fopen(PATH_ROOT . '/data/cache/update.flock', 'c');
+    $lock = fopen(PATH_ROOT . '/data/update.flock', 'c');
     try {
         expect(flock($lock, LOCK_EX | LOCK_NB))->toBeTrue();
 

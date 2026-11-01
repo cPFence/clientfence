@@ -1052,7 +1052,9 @@ test('a failed credit undoes the whole change', function (): void {
 test('the cron applies paid upgrades, closes dropped invoices and frees stuck claims', function (): void {
     $db = upgradesDb();
     $di = upgradesContainer($db);
-    $paid = Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', UPGRADES_NOW)['id'];
+    // The sweep and the listener apply with the real clock: order 1 must not have expired by then.
+    $db->update('client_order', ['expires_at' => date('Y-m-d H:i:s', time() + 20 * 86400)], ['id' => 1]);
+    $paid = Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', date('Y-m-d H:i:s'))['id'];
     $dropped = Upgrades::request($di, upgradesOrder($di, 3), 3, '1M', UPGRADES_NOW)['id'];
     $removed = Upgrades::request($di, upgradesOrder($di, 4), 2, '1M', UPGRADES_NOW)['id'];
     upgradesPay($db, $paid);
@@ -1098,7 +1100,9 @@ test('the test tables have the columns of the real tables', function (): void {
 test('the paid invoice line applies the upgrade through the ClientFence listener', function (): void {
     $db = upgradesDb();
     $di = upgradesContainer($db);
-    $id = Upgrades::request($di, upgradesOrder($di, 1), 3, '1M', UPGRADES_NOW)['id'];
+    // The sweep and the listener apply with the real clock: order 1 must not have expired by then.
+    $db->update('client_order', ['expires_at' => date('Y-m-d H:i:s', time() + 20 * 86400)], ['id' => 1]);
+    $id = Upgrades::request($di, upgradesOrder($di, 1), 3, '1M', date('Y-m-d H:i:s'))['id'];
     upgradesPay($db, $id);
     // As Invoice\ServiceInvoiceItem::executeTask() fires it: the line's rel_id, json_decode()d.
     $event = new \ClientFence\Event(null, Upgrades::EVENT, json_decode((string) $db->fetchOne('SELECT rel_id FROM invoice_item WHERE invoice_id < 9000')));

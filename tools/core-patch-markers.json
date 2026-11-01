@@ -3730,5 +3730,13 @@
     {
         "file": "modules/Support/templates/client/mod_support_ticket.html.twig",
         "done": "ClientFence core patch: a closed ticket takes a reply when its help desk allows reopening, also from a guest"
+    },
+    {
+        "file": "library/ClientFence/Update.php",
+        "done": "ClientFence core patch: the lock lives outside the cache folder, which Clear cache and the update itself delete."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: one patch run at a time; a second run waits, then reads the new patch level."
     }
 ]

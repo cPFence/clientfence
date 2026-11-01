@@ -188,15 +188,26 @@ class UpdatePatcher implements InjectionAwareInterface
             return;
         }
 
-        $patchLevel = $this->getPatchLevel();
-        $patches = $this->getPatches($patchLevel);
-        foreach ($patches as $patchLevel => $patch) {
-            call_user_func($patch);
-            $this->setPatchLevel($patchLevel);
+        // ClientFence core patch: one patch run at a time; a second run waits, then reads the new patch level.
+        $lock = fopen(Path::join(PATH_DATA, 'patcher.lock'), 'c');
+        if ($lock === false) {
+            throw new Exception('Unable to lock the update patcher.');
         }
+        flock($lock, LOCK_EX);
+        try {
+            $patchLevel = $this->getPatchLevel();
+            $patches = $this->getPatches($patchLevel);
+            foreach ($patches as $patchLevel => $patch) {
+                call_user_func($patch);
+                $this->setPatchLevel($patchLevel);
+            }
 
-        // ClientFence core patch: then ClientFence's own migrations (Mod\Clientfence\Migrations).
-        \ClientFence\Mod\Clientfence\Migrations::apply($this->di);
+            // ClientFence core patch: then ClientFence's own migrations (Mod\Clientfence\Migrations).
+            \ClientFence\Mod\Clientfence\Migrations::apply($this->di);
+        } finally {
+            flock($lock, LOCK_UN);
+            fclose($lock);
+        }
         // ClientFence core patch (0.8.9 port): invoice history cannot safely determine an unused replacement counter.
         $counter = $this->fetchOne('SELECT value FROM setting WHERE param = :param', ['param' => 'invoice_starting_number']);
         if (filter_var($counter, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => PHP_INT_MAX - 1]]) === false) {

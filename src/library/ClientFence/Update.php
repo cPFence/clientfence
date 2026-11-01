@@ -268,7 +268,8 @@ class Update implements InjectionAwareInterface
     public function performUpdate(): void
     {
         // ClientFence core patch: concurrent updates must not prune each other's rollback backup.
-        $this->updateLock = @fopen(Path::join(PATH_ROOT, 'data', 'cache', 'update.flock'), 'c');
+        // ClientFence core patch: the lock lives outside the cache folder, which Clear cache and the update itself delete.
+        $this->updateLock = @fopen(Path::join(PATH_ROOT, 'data', 'update.flock'), 'c');
         if ($this->updateLock === false || !flock($this->updateLock, LOCK_EX | LOCK_NB)) {
             throw new InformationException('Another update appears to already be in progress. Please wait for it to finish before trying again.');
         }
