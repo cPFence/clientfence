@@ -3718,5 +3718,17 @@
     {
         "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
         "done": "ClientFence core patch: an unchecked switch saves 0, so staff password recovery can be turned off."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: tryPayWithCredits() compares the balance with the invoice total in the client's currency"
+    },
+    {
+        "file": "themes/palisade/html/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a closed ticket takes a reply when its help desk allows reopening, also from a guest"
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a closed ticket takes a reply when its help desk allows reopening, also from a guest"
     }
 ]

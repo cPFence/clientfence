@@ -1079,10 +1079,9 @@ test('createFromCart normalizes legacy invoice id before setting it on the order
 
     $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
     $invoiceService->shouldReceive('prepareInvoice')->once()->andReturn($invoiceModel);
-    $invoiceService->shouldReceive('approveInvoice')->once()->with($invoiceModel, Mockery::type('array'))->andReturn(true);
+    // The credit check belongs to tryPayWithCredits(): the cart total (default currency) is not compared with the balance.
+    $invoiceService->shouldReceive('approveInvoice')->once()->with($invoiceModel, Mockery::on(fn (array $data): bool => $data['use_credits'] === true))->andReturn(true);
 
-    $clientBalanceService = Mockery::mock(ClientFence\Mod\Client\ServiceBalance::class);
-    $clientBalanceService->shouldReceive('getClientBalance')->once()->andReturn(0.0);
 
     $dbMock = Mockery::mock(\ClientFence\Database::class)->shouldIgnoreMissing();
     $dbMock->shouldReceive('getExistingModelById')->atLeast()->once()->andReturn(cartServiceCreateLegacyClient());
@@ -1124,7 +1123,6 @@ test('createFromCart normalizes legacy invoice id before setting it on the order
         $serviceName === 'Product' => $productService,
         $serviceName === 'order' || $serviceName === 'Order' => $orderService,
         $serviceName === 'Invoice' => $invoiceService,
-        $serviceName === 'Client' && $sub === 'Balance' => $clientBalanceService,
         default => null,
     });
 
@@ -1162,8 +1160,6 @@ test('createFromCart links the setup fee invoice line to its order', function ()
         fn (array $data): bool => $data['items'][1]['price'] === 10.0 && ($data['items'][1]['rel_id'] ?? null) === 99
     ))->andReturn($invoice);
     $invoiceService->shouldReceive('approveInvoice')->once()->andReturn(true);
-    $balanceService = Mockery::mock(ClientFence\Mod\Client\ServiceBalance::class);
-    $balanceService->shouldReceive('getClientBalance')->once()->andReturn(0.0);
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('wrapInTransaction')->once()->andReturnUsing(fn (Closure $work) => $work());
     $em->shouldReceive('persist')->with(Mockery::type(Order::class))->andReturnUsing(function (Order $order): void {
@@ -1189,7 +1185,6 @@ test('createFromCart links the setup fee invoice line to its order', function ()
         'Product' => $productService,
         'order', 'Order' => $orderService,
         'Invoice' => $invoiceService,
-        'Client' => $balanceService,
     });
     $service->setDi($di);
 

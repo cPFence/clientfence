@@ -6,7 +6,8 @@
 
 {% import "macro_functions.html.twig" as mf %}
 {% set is_guest_ticket = ticket.author.role|default('') == 'guest' %}
-{% set can_reply = ticket.status != 'closed' or (not is_guest_ticket and ticket.helpdesk.can_reopen) %}
+{# ClientFence core patch: a closed ticket takes a reply when its help desk allows reopening, also from a guest (as Guest::ticket_reply()). #}
+{% set can_reply = ticket.status != 'closed' or ticket.helpdesk.can_reopen %}
 
 {% block meta_title %}{{ ticket.subject }}{% endblock %}
 

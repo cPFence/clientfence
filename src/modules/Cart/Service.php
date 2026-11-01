@@ -1054,11 +1054,8 @@ class Service implements InjectionAwareInterface
                     $invoiceService = $this->di['mod_service']('Invoice');
                     $invoiceModel = $invoiceService->prepareInvoice($legacyClient, ['client_id' => $this->clientId($client), 'items' => $invoice_items, 'gateway_id' => $gateway_id]);
 
-                    $clientBalanceService = $this->di['mod_service']('Client', 'Balance');
-                    $balanceAmount = $clientBalanceService->getClientBalance($legacyClient);
-                    $useCredits = $balanceAmount >= $ca['total'];
-
-                    $invoiceService->approveInvoice($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => $useCredits]);
+                    // ClientFence core patch: tryPayWithCredits() compares the balance with the invoice total in the client's currency (the cart total is in the default one).
+                    $invoiceService->approveInvoice($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true]);
 
                     $isUnpaid = $invoiceModel instanceof \Model_Invoice
                         && $invoiceModel->status === \Model_Invoice::STATUS_UNPAID;
