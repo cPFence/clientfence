@@ -2608,6 +2608,43 @@ class Service implements InjectionAwareInterface
         return $item;
     }
 
+    /**
+     * ClientFence: whether a domain order renews free (WHMCS free domain renewal): it was ordered with a hosting
+     * order (same order group) whose product gives it free with "Free Domain Renewals" on, by the same rules as
+     * at checkout, and that hosting is still active or suspended.
+     */
+    public function hasFreeDomainRenewal(int $orderId): bool
+    {
+        $order = $this->di['dbal']->fetchAssociative('SELECT client_id, group_id, config FROM client_order WHERE id = ?', [$orderId]);
+        $config = $order === false ? null : json_decode((string) $order['config'], true);
+        $action = is_array($config) ? ($config['action'] ?? null) : null;
+        if (!in_array($action, ['register', 'transfer'], true) || (string) $order['group_id'] === '') {
+            return false;
+        }
+        $sld = strtolower((string) ($config[$action . '_sld'] ?? ''));
+        $tld = strtolower((string) ($config[$action . '_tld'] ?? ''));
+        $hostings = $this->di['dbal']->fetchAllAssociative(
+            "SELECT co.period, co.config, p.config AS product_config FROM client_order co JOIN product p ON p.id = co.product_id
+             WHERE co.group_id = ? AND co.client_id = ? AND co.id <> ? AND p.type = ? AND co.status IN ('active', 'suspended')",
+            [(string) $order['group_id'], (int) $order['client_id'], $orderId, self::HOSTING],
+        );
+        foreach ($hostings as $hosting) {
+            $settings = json_decode((string) $hosting['product_config'], true);
+            $domain = json_decode((string) $hosting['config'], true)['domain'] ?? null;
+            if (!is_array($settings) || empty($settings['free_domain_renewals']) || !is_array($domain) || ($domain['action'] ?? null) !== $action
+                || strtolower((string) ($domain[$action . '_sld'] ?? '')) !== $sld || strtolower((string) ($domain[$action . '_tld'] ?? '')) !== $tld) {
+                continue;
+            }
+            if ($action === 'transfer' ? !empty($settings['free_transfer'])
+                : !empty($settings['free_domain']) && (empty($settings['free_tlds']) || in_array($tld, (array) $settings['free_tlds'], true))
+                    && in_array($hosting['period'], (array) ($settings['free_domain_periods'] ?? []), true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function hasFreeDomainPeriod(array $addon): bool
     {
         $freeDomainPeriods = $addon['config']['free_domain_periods'] ?? [];

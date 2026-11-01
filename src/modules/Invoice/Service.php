@@ -2343,6 +2343,10 @@ class Service implements InjectionAwareInterface
                 // ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php).
                 $renewalLine = $productService->inCurrency((string) $order->currency)->getProductRenewalLineConfig($product, $config);
                 $price = $renewalLine['price'] * $rate;
+                // ClientFence core patch: a free domain renews free while its hosting lasts (WHMCS free domain renewal).
+                if ($productService->hasFreeDomainRenewal((int) $order->id)) {
+                    $price = 0.0;
+                }
                 $line = [
                     'price' => $price,
                     'quantity' => $renewalLine['quantity'],

@@ -340,9 +340,9 @@ final class Catalogue
                     $periods[] = $period;
                 }
             }
-            $config += ['free_domain' => true, 'free_transfer' => true, 'free_tlds' => $tlds, 'free_domain_periods' => array_values(array_unique($periods))];
+            $config += ['free_domain' => true, 'free_transfer' => true, 'free_tlds' => $tlds, 'free_domain_periods' => array_values(array_unique($periods)), 'free_domain_renewals' => $free === 'on'];
             if ($free === 'on') {
-                $this->warn(sprintf('Product "%s": WHMCS renews its free domain free while the hosting lasts; ClientFence makes the first registration free only.', $title));
+                $this->warn(sprintf('Product "%s": its new orders renew their free domain free while the hosting lasts, as in WHMCS. Its domains imported from WHMCS are not linked to their hosting, so they renew at the TLD price.', $title));
             }
         }
 

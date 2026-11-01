@@ -196,7 +196,7 @@ class Admin extends \ClientFence\Api\AbstractApi
                     // As Invoice\Service::generateForOrder: the TLD's renewal price in the order's currency
                     // (with its fixed prices, Product/CurrencyPrices.php).
                     $line = $productService->inCurrency((string) $order->currency)->getProductRenewalLineConfig($product, json_decode($order->config ?? '', true) ?? []);
-                    $price = (float) $line['price'] * (float) $currencyService->getCurrencyRepository()->getRateByCode($order->currency);
+                    $price = $productService->hasFreeDomainRenewal((int) $order->id) ? 0.0 : (float) $line['price'] * (float) $currencyService->getCurrencyRepository()->getRateByCode($order->currency);
                     $quantity = (float) $line['quantity'];
                 }
                 $amount = $price * $quantity - (float) ($productService->getRenewalPromoAdjustment($order, $price, $quantity)['discount_amount'] ?? 0);

@@ -677,6 +677,10 @@ final class Reports
             $product = $productService->findProductById((int) $order['product_id']);
             // Fixed currency prices (Product/CurrencyPrices.php) of the order's currency.
             if ($productService instanceof \ClientFence\Mod\Product\Service) {
+                // A free domain renews free while its hosting lasts.
+                if ($productService->hasFreeDomainRenewal((int) $order['id'])) {
+                    return 0.0;
+                }
                 $productService = $productService->inCurrency((string) $order['currency']);
             }
             $line = $productService->getProductRenewalLineConfig($product, json_decode((string) $order['config'], true) ?: []);

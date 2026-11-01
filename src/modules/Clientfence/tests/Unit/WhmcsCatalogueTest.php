@@ -213,7 +213,7 @@ test('groups, servers (switched off, keys kept encrypted) and hosting products',
         ->and($plan['name'])->toBe('starter_pkg')
         // WHM's own name for the plan would be "<server user>_starter_pkg": the plan names it exactly.
         ->and(json_decode((string) $plan['config'], true))->toBe(['package' => 'starter_pkg'])
-        ->and($config)->toMatchArray(['server_id' => (int) $servers[0]['id'], 'hosting_plan_id' => (int) $plan['id'], 'reseller' => false, 'free_domain' => true, 'free_tlds' => ['.com', '.net'], 'free_domain_periods' => ['1Y']])
+        ->and($config)->toMatchArray(['server_id' => (int) $servers[0]['id'], 'hosting_plan_id' => (int) $plan['id'], 'reseller' => false, 'free_domain' => true, 'free_tlds' => ['.com', '.net'], 'free_domain_periods' => ['1Y'], 'free_domain_renewals' => false])
         // EGP prices become fixed prices.
         ->and(CurrencyPrices::forItem($target, 'product', (int) $starter['id'], 'EGP'))->toBe(['1M' => ['price' => 500.0, 'setup_price' => 250.0], '1Y' => ['price' => 5000.0, 'setup_price' => 0.0]]);
 

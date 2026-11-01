@@ -3525,6 +3525,61 @@ test('generates invoice for active order using the order price, not the product 
     expect($result)->toBeInstanceOf(Model_Invoice::class);
 });
 
+test('a domain renewal is billed at the TLD price, or free while its hosting gives it free', function (bool $free, float $price): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('setInvoiceDefaults')->once();
+
+    $orderModel = new Model_ClientOrder();
+    $orderModel->loadBean(new Tests\Helpers\DummyBean());
+    $orderModel->id = 20;
+    $orderModel->status = Model_ClientOrder::STATUS_ACTIVE;
+    $orderModel->product_id = 2;
+    $orderModel->currency = 'EUR';
+    $orderModel->price = 8;
+    $orderModel->quantity = 1;
+    $orderModel->config = json_encode(['action' => 'register', 'register_sld' => 'example', 'register_tld' => '.com']);
+
+    $clientModel = new Model_Client();
+    $clientModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+
+    $product = (new Product())->setType(ProductService::DOMAIN);
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->once()->with(2)->andReturn($product);
+    $productService->shouldReceive('inCurrency')->once()->with('EUR')->andReturnSelf();
+    $productService->shouldReceive('getProductRenewalLineConfig')->once()->andReturn(['price' => 12.0, 'quantity' => 1]);
+    $productService->shouldReceive('hasFreeDomainRenewal')->once()->with(20)->andReturn($free);
+    $currencies = Mockery::mock(CurrencyRepository::class);
+    $currencies->shouldReceive('getRateByCode')->once()->with('EUR')->andReturn(2.0);
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->once()->andReturn($currencies);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->atLeast()->once()->andReturn($clientModel);
+    $dbMock->shouldReceive('dispense')->atLeast()->once()->andReturn($invoiceModel);
+    $dbMock->shouldReceive('store')->atLeast()->once();
+
+    $invoiceItemServiceMock = Mockery::mock(ServiceInvoiceItem::class);
+    $invoiceItemServiceMock->shouldReceive('generateFromOrder')
+        ->with($invoiceModel, $orderModel, Model_InvoiceItem::TASK_RENEW, $price, Mockery::on(fn ($line): bool => $line['price'] === $price && $line['quantity'] === 1))
+        ->once();
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn (string $module): Mockery\MockInterface => match ($module) {
+        'Product' => $productService,
+        'Currency' => $currencyService,
+        default => $invoiceItemServiceMock,
+    });
+
+    $serviceMock->setDi($di);
+    expect($serviceMock->generateForOrder($orderModel))->toBeInstanceOf(Model_Invoice::class);
+})->with([
+    'billed' => [false, 24.0],
+    'free' => [true, 0.0],
+]);
+
 test('generates invoice for zero amount order', function (): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('setInvoiceDefaults')
