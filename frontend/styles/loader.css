@@ -1,0 +1,55 @@
+/* The page loader of api.js (_createLoader): one centered card for the admin and client areas. It never blocks
+   clicks, and it shows only for requests that take longer than 250 ms. Colors follow each theme and its dark mode. */
+.cf-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2060;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cf-loader.is-visible {
+  opacity: 1;
+}
+
+.cf-loader__card {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 1.25rem;
+  background: var(--tblr-bg-surface, var(--bs-body-bg, #fff));
+  border: 1px solid var(--tblr-border-color-translucent, var(--bs-border-color-translucent, rgba(0, 0, 0, 0.08)));
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.08);
+  transform: scale(0.92);
+  transition: transform 0.2s ease;
+}
+
+.cf-loader.is-visible .cf-loader__card {
+  transform: scale(1);
+}
+
+.cf-loader__ring {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 12%, var(--tblr-primary, var(--bs-primary, #2563eb)));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  animation: cf-loader-spin 0.8s linear infinite;
+}
+
+@keyframes cf-loader-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-loader__ring {
+    animation-duration: 2s;
+  }
+}

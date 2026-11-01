@@ -246,7 +246,7 @@ const API = {
    * @param {object|string} [params] The parameters to send.
    * @param {function} [successHandler] The function to call if the request is successful.
    * @param {function} [errorHandler] The function to call if the request is unsuccessful.
-   * @param {boolean} [enableLoader=true] Enable or disable the usage of a loader. Custom themes simply need to provide one with the spinner-border class.
+   * @param {boolean} [enableLoader=true] Enable or disable the usage of the page loader (css/loader.css).
    * @param {number} [timeoutMs=30000] Timeout duration in milliseconds.
    * @param {string|null} [timeoutMessage=null] Message to show when the request times out.
    * @documentation https://docs.fossbilling.org/extensions-and-development/javascript/
@@ -404,20 +404,18 @@ const API = {
    * @returns {HTMLElement} The created loader element.
    */
   _createLoader: function() {
+    // ClientFence: a centered card styled by css/loader.css, the same in the admin and client areas.
     const loader = document.createElement('div');
-    loader.classList.add('spinner-border');
+    loader.className = 'cf-loader';
     loader.setAttribute('role', 'status');
-    Object.assign(loader.style, {
-      width: '4rem',
-      height: '4rem',
-      left: '50%',
-      top: '50%',
-      position: 'fixed',
-      opacity: '0',
-      transition: 'opacity 250ms'
-    });
+    const card = document.createElement('div');
+    card.className = 'cf-loader__card';
+    const ring = document.createElement('span');
+    ring.className = 'cf-loader__ring';
+    card.appendChild(ring);
+    loader.appendChild(card);
     document.body.appendChild(loader);
-    loader._fadeInTimeout = setTimeout(() => { loader.style.opacity = '1'; }, 250);
+    loader._fadeInTimeout = setTimeout(() => { loader.classList.add('is-visible'); }, 250);
     return loader;
   },
 

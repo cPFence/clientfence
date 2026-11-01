@@ -30,6 +30,7 @@
     {% set brand_css = guest.clientfence_brand.css_url|default(null) %}
     {% if brand_css %}<link rel="stylesheet" href="{{ brand_css }}">{% endif %}
     {{ 'js/clientfence.js' | public_asset_url | script_tag }}
+    {{ 'css/loader.css' | public_asset_url | stylesheet_tag }}
     {{ 'js/api.js' | public_asset_url | script_tag }}
     <script nonce="{{ csp_nonce }}" type="module" src="{{ 'build/js/clientfence.js' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}"></script>
     <script nonce="{{ csp_nonce }}" type="module" src="{{ 'clientfence/clientfence-admin.js' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}"></script>

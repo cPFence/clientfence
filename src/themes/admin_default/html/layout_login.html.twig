@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{{ 'build/css/vendor.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'build/css/clientfence.css' | asset_url }}">
     {{ 'js/clientfence.js' | public_asset_url | script_tag }}
+    {# ClientFence core patch: the shared page loader style (css/loader.css). #}
+    {{ 'css/loader.css' | public_asset_url | stylesheet_tag }}
     {{ 'js/api.js' | public_asset_url | script_tag }}
     <script nonce="{{ csp_nonce }}" type="module" src="{{ 'build/js/clientfence.js' | asset_url }}"></script>
 </head>

@@ -145,7 +145,7 @@ test('the client area head carries the verification tags, escaped, only while th
         new ArrayLoader(['partials/asset_version.html.twig' => '1', 'partials/theme_init.html.twig' => '', 'partials/i18n.html.twig' => '']),
         new FilesystemLoader(PATH_THEMES . '/palisade/html'),
     ]), ['autoescape' => 'html']);
-    foreach (['asset_url', 'public_asset_url', 'script_tag', 'url'] as $filter) {
+    foreach (['asset_url', 'public_asset_url', 'script_tag', 'stylesheet_tag', 'url'] as $filter) {
         $twig->addFilter(new TwigFilter($filter, static fn (string $value): string => $value));
     }
 
