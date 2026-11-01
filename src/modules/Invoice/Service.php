@@ -1842,6 +1842,13 @@ class Service implements InjectionAwareInterface
         if ($markPaid && $this->isInvoiceTypeDeposit($model)) {
             throw new InformationException('Use Mark as Paid to record payment for an Add Funds invoice.');
         }
+        // ClientFence core patch: Manage must not leave recorded payments as spendable balance on a paid invoice.
+        if ($markPaid) {
+            $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [$model->id, \Model_Transaction::STATUS_PROCESSED]);
+            if ($credited > 0) {
+                throw new InformationException('This invoice already has recorded payments. Record the remaining transfer as a transaction instead.');
+            }
+        }
         if ($newStatus !== $previousStatus && ($this->isBooked($model) || $newStatus === \Model_Invoice::STATUS_REFUNDED)) {
             throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
         }

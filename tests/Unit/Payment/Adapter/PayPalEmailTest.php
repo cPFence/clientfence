@@ -258,7 +258,7 @@ test('leaves a pending PayPal payment received with its error', function (): voi
 });
 
 test('settles only full PayPal refunds against the parent payment invoice', function (?float $paymentAmount, float $refundAmount, ?int $refundedInvoice, bool $otherPayment): void {
-    $payment = $paymentAmount === null ? null : paypalBean(Model_Transaction::class, ['invoice_id' => 26, 'amount' => $paymentAmount]);
+    $payment = $paymentAmount === null ? null : paypalBean(Model_Transaction::class, ['id' => 41, 'invoice_id' => 26, 'amount' => $paymentAmount]);
     $tx = [
         'invoice_id' => 16, 'type' => 'subscr_payment', 'txn_id' => 'REFUND-RENEWAL',
         'txn_status' => 'Refunded', 'amount' => -$refundAmount, 'currency' => 'USD',
@@ -279,12 +279,16 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     if ($refundedInvoice !== null || $otherPayment) {
         $db->shouldReceive('findOne')->once()->with(
             'Transaction',
-            'invoice_id = :invoice AND gateway_id = :gateway AND txn_id != :parent AND status = :status AND txn_status = :txn_status',
-            [':invoice' => 26, ':gateway' => 2, ':parent' => 'TXN-RENEWAL', ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed']
+            'invoice_id = :invoice AND id != :payment AND status = :status AND (gateway_id != :gateway OR txn_status = :txn_status)',
+            [':invoice' => 26, ':payment' => 41, ':status' => Model_Transaction::STATUS_PROCESSED, ':gateway' => 2, ':txn_status' => 'Completed']
         )->andReturn($otherPayment ? paypalBean(Model_Transaction::class, ['txn_id' => 'TXN-FIRST', 'invoice_id' => 26, 'amount' => 120]) : null);
     }
     $di = container();
     $di['db'] = $db;
+    $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26]));
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.0);
+    $di['mod_service'] = $di->protect(fn () => $invoiceService);
 
     paypalProcessAdapter($di)->processTransaction($api, 42, [
         'get' => signedPayPalGet(16, 2),
@@ -312,6 +316,52 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     'full duplicate payment refund' => [120.0, 120.0, null, true],
 ]);
 
+test('leaves PayPal duplicate and overpayment refunds for manual settlement', function (bool $stripePayment, float $invoiceTotal, string $reason): void {
+    $payments = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $payments->executeStatement('CREATE TABLE payment (id INTEGER PRIMARY KEY, txn_id TEXT, gateway_id INTEGER, status TEXT, txn_status TEXT, invoice_id INTEGER, amount REAL)');
+    $payments->insert('payment', ['id' => 41, 'txn_id' => 'TXN-RENEWAL', 'gateway_id' => 2, 'status' => 'processed', 'txn_status' => 'Completed', 'invoice_id' => 26, 'amount' => 120]);
+    if ($stripePayment) {
+        $payments->insert('payment', ['id' => 40, 'txn_id' => 'pi_first', 'gateway_id' => 3, 'status' => 'processed', 'txn_status' => 'succeeded', 'invoice_id' => 26, 'amount' => 120]);
+    }
+    $db = paypalDbMocks(function (string $table, string $where, array $bindings) use ($payments): ?Model_Transaction {
+        $row = $payments->fetchAssociative('SELECT * FROM payment WHERE ' . $where, array_combine(array_map(static fn (string $key): string => ltrim($key, ':'), array_keys($bindings)), $bindings));
+
+        return $row === false ? null : paypalBean(Model_Transaction::class, $row);
+    });
+    $invoice = paypalBean(Model_Invoice::class, ['id' => 26]);
+    $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn($invoice);
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('getTotalWithTax')->with($invoice)->andReturn($invoiceTotal);
+    $di = container();
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn () => $invoiceService);
+    $tx = [
+        'invoice_id' => 16, 'type' => 'subscr_payment', 'txn_id' => 'REFUND-RENEWAL',
+        'txn_status' => 'Refunded', 'amount' => -120, 'currency' => 'USD',
+    ];
+    $api = Mockery::mock();
+    $api->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn($tx);
+    $api->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn(['id' => 16, 'client' => ['id' => 9]]);
+    $api->shouldReceive('invoice_transaction_update')->twice()->andReturnUsing(function (array $update) use (&$tx): void {
+        $tx = array_replace($tx, $update);
+    });
+    $api->shouldNotReceive('invoice_refund');
+
+    paypalProcessAdapter($di)->processTransaction($api, 42, [
+        'get' => signedPayPalGet(16, 2),
+        'post' => [
+            'txn_type' => 'subscr_payment', 'payment_status' => 'Refunded', 'txn_id' => 'REFUND-RENEWAL',
+            'parent_txn_id' => 'TXN-RENEWAL', 'mc_gross' => -120, 'mc_currency' => 'USD',
+        ],
+    ], 2);
+
+    expect($tx['error'])->toBe('PayPal refund of 120.00 USD must be settled by hand: ' . $reason . '.')
+        ->and($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED);
+})->with([
+    'Stripe duplicate' => [true, 120.0, 'invoice has multiple payments'],
+    'overpayment' => [false, 60.0, 'the payment was larger than the invoice'],
+]);
+
 test('refunds the completed renewal payment rather than its earlier pending notification', function (): void {
     $payments = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $payments->executeStatement('CREATE TABLE payment (id INTEGER PRIMARY KEY, txn_id TEXT, gateway_id INTEGER, status TEXT, txn_status TEXT, invoice_id INTEGER, amount REAL)');
@@ -333,6 +383,10 @@ test('refunds the completed renewal payment rather than its earlier pending noti
     $api->shouldReceive('invoice_refund')->once()->with(['id' => 26, 'note' => 'PayPal refund TXN-RENEWAL']);
     $di = container();
     $di['db'] = $db;
+    $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26]));
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.0);
+    $di['mod_service'] = $di->protect(fn () => $invoiceService);
 
     paypalProcessAdapter($di)->processTransaction($api, 42, [
         'get' => signedPayPalGet(16, 2),
@@ -542,6 +596,10 @@ describe('PayPal callback invoice binding', function (): void {
 
         $di = container();
         $di['db'] = paypalDbMocks(static fn (string $table, string $where, array $bindings): mixed => $table === 'Transaction' && ($bindings[':txn'] ?? null) === 'TXN-ORIG' ? $earlier : null);
+        $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 16)->andReturn(paypalBean(Model_Invoice::class, ['id' => 16]));
+        $invoiceService = Mockery::mock();
+        $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.0);
+        $di['mod_service'] = $di->protect(fn () => $invoiceService);
         $di['logger'] = new Tests\Helpers\TestLogger();
 
         // Refund IPN for a pre-upgrade payment: new txn id, unsigned URL,

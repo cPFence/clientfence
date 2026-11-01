@@ -222,6 +222,35 @@ test('Mark as Paid records and credits only the unpaid deposit remainder', funct
     }
 })->with(['partly paid' => [40.0, 60.0], 'fully credited' => [100.0, 0.0]]);
 
+test('Manage refuses to mark an invoice paid when it has a recorded transfer', function (): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT)');
+    $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid']);
+    $dbal->insert('"transaction"', ['id' => 1, 'invoice_id' => 10, 'amount' => 20, 'status' => 'processed']);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+    $item = new Model_InvoiceItem();
+    $item->loadBean(new Tests\Helpers\DummyBean());
+    $item->type = Model_InvoiceItem::TYPE_CUSTOM;
+    $item->price = 60;
+    $item->quantity = 1;
+
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['db']->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ?', [10])->andReturn([$item]);
+    $di['db']->shouldNotReceive('store');
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->updateInvoice($invoice, ['status' => 'paid']))
+        ->toThrow(ClientFence\InformationException::class, 'This invoice already has recorded payments. Record the remaining transfer as a transaction instead.')
+        ->and($invoice->status)->toBe(Model_Invoice::STATUS_UNPAID)
+        ->and($dbal->fetchOne('SELECT status FROM invoice WHERE id = 10'))->toBe('unpaid');
+});
+
 test('gets dependency injection container', function (): void {
     $service = new Service();
     $di = container();

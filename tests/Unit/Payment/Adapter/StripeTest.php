@@ -367,6 +367,41 @@ describe('handleSubscriptionCreated', function (): void {
     });
 });
 
+test('keeps a subscription active after an invoice payment failure', function (): void {
+    $subscription = new Model_Subscription();
+    $subscription->loadBean(new DummyBean());
+    $subscription->status = 'active';
+
+    $apiAdmin = Mockery::mock();
+    $apiAdmin->shouldReceive('invoice_subscription_get')->with(['sid' => 'sub_retry'])->andReturn(['id' => 42]);
+    $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
+    $subscriptionService->shouldReceive('updateStatusFromGateway')->with(42, Mockery::type('string'))
+        ->andReturnUsing(function (int $id, string $status) use ($subscription): bool {
+            $subscription->status = $status;
+
+            return true;
+        });
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn () => $subscriptionService);
+    $this->adapter->setDi($di);
+    $rawBody = json_encode([
+        'id' => 'evt_failed_renewal',
+        'type' => 'invoice.payment_failed',
+        'data' => ['object' => [
+            'id' => 'in_retry', 'object' => 'invoice', 'subscription' => 'sub_retry',
+            'metadata' => ['gateway_id' => '1'],
+        ]],
+    ]);
+
+    invokePrivateMethod($this->adapter, 'processWebhookEvent', [$apiAdmin, buildTransaction(), [
+        'http_raw_post_data' => $rawBody,
+        'server' => ['HTTP_STRIPE_SIGNATURE' => signStripeWebhookPayload($rawBody)],
+    ], 1]);
+
+    expect($subscription->status)->toBe('active');
+});
+
 test('syncs subscription webhook status through the internal service path', function (): void {
     $stripeSubscription = (object) [
         'id' => 'sub_123',
@@ -1408,6 +1443,54 @@ describe('handleSetupIntentSucceededWebhook', function (): void {
 });
 
 describe('processSetupIntent', function (): void {
+    test('does not create a subscription when the invoice was paid during checkout', function (bool $webhook): void {
+        $invoice = new Model_Invoice();
+        $invoice->loadBean(new DummyBean());
+        $invoice->id = 96;
+        $invoice->status = Model_Invoice::STATUS_UNPAID;
+
+        $setupIntent = Stripe\SetupIntent::constructFrom([
+            'id' => 'seti_paid',
+            'status' => 'succeeded',
+            'payment_method' => 'pm_paid',
+            'customer' => 'cus_paid',
+            'metadata' => ['invoice_id' => '96', 'gateway_id' => '1', 'price_id' => 'price_paid'],
+        ]);
+        $stripeMock = Mockery::mock(StripeClient::class);
+        $stripeMock->setupIntents = Mockery::mock();
+        if (!$webhook) {
+            $stripeMock->setupIntents->shouldReceive('retrieve')->once()->with('seti_paid', [])->andReturn($setupIntent);
+        }
+        $stripeMock->subscriptions = Mockery::mock();
+        $stripeMock->subscriptions->shouldNotReceive('create');
+        setPrivateProperty($this->adapter, 'stripe', $stripeMock);
+
+        $tx = buildTransaction();
+        $tx->id = 708;
+        $tx->status = Model_Transaction::STATUS_RECEIVED;
+        $di = container();
+        $di['db']->shouldReceive('findOne')->once()
+            ->with('Transaction', 'txn_id = :txn_id AND status IN (:s1, :s2)', Mockery::any())->andReturn(null);
+        $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 96)->andReturn($invoice);
+        $di['dbal']->shouldReceive('fetchOne')->once()->with('SELECT status FROM invoice WHERE id = ?', [96])->andReturn(Model_Invoice::STATUS_PAID);
+        $di['db']->shouldReceive('store')->times($webhook ? 2 : 1)->with($tx)->andReturn(708);
+        $this->adapter->setDi($di);
+        $apiAdmin = Mockery::mock();
+        $apiAdmin->shouldNotReceive('client_balance_add_funds', 'invoice_subscription_create');
+
+        if ($webhook) {
+            $result = invokePrivateMethod($this->adapter, 'handleSetupIntentSucceededWebhook', [
+                $apiAdmin, $tx, (object) ['data' => (object) ['object' => $setupIntent]], 1,
+            ]);
+        } else {
+            $result = invokePrivateMethod($this->adapter, 'processSetupIntent', [$apiAdmin, $tx, $invoice, ['get' => ['setup_intent' => 'seti_paid']], 1]);
+        }
+
+        expect($result)->toBe($webhook ? true : null)
+            ->and($tx->status)->toBe(Model_Transaction::STATUS_PROCESSED)
+            ->and($tx->error)->toBe('The invoice was already paid; no subscription was started.');
+    })->with(['redirect' => false, 'webhook' => true]);
+
     test('does not create a subscription or credit an already processed setup intent', function (): void {
         $invoice = new Model_Invoice();
         $invoice->loadBean(new DummyBean());

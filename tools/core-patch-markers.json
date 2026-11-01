@@ -3738,5 +3738,21 @@
     {
         "file": "library/ClientFence/UpdatePatcher.php",
         "done": "ClientFence core patch: one patch run at a time; a second run waits, then reads the new patch level."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: subscription creation charges immediately, so recheck the invoice first."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: failed invoices may be retried; subscription events report the actual status."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: an overpayment refund must also reverse its excess balance credit."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: Manage must not leave recorded payments as spendable balance on a paid invoice."
     }
 ]

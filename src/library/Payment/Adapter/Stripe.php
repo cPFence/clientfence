@@ -515,6 +515,16 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             $customerId = $this->resolveSubscriptionCustomerId($setupIntent, $invoice);
             $priceId = $this->resolveSubscriptionPriceId($setupIntent, $invoice);
 
+            // ClientFence core patch: subscription creation charges immediately, so recheck the invoice first.
+            if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === Model_Invoice::STATUS_PAID) {
+                $tx->status = Model_Transaction::STATUS_PROCESSED;
+                $tx->error = 'The invoice was already paid; no subscription was started.';
+                $tx->updated_at = date('Y-m-d H:i:s');
+                $this->di['db']->store($tx);
+
+                return;
+            }
+
             try {
                 $subscription = $this->createStripeSubscription($customerId, $priceId, $setupIntent, $invoice);
             } catch (Stripe\Exception\ApiErrorException $e) {
@@ -1007,22 +1017,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
 
     private function handleInvoicePaymentFailed($api_admin, Model_Transaction $tx, object $event): bool
     {
-        $stripeInvoice = $this->resolveStripeInvoice($event->data->object);
-
-        $subscriptionId = $this->extractSubscriptionId($stripeInvoice);
-
-        if ($stripeInvoice === null || $subscriptionId === null) {
-            return false;
-        }
-
-        try {
-            $this->updateSubscriptionStatusFromGateway($api_admin, $subscriptionId, 'canceled');
-        } catch (Exception $e) {
-            if (DEBUG) {
-                error_log('Stripe invoice payment failed webhook: ' . $e->getMessage());
-            }
-        }
-
+        // ClientFence core patch: failed invoices may be retried; subscription events report the actual status.
         return false;
     }
 
@@ -1199,6 +1194,15 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $invoice = $this->di['db']->getExistingModelById('Invoice', (int) $invoiceId);
         $customerId = $this->resolveSubscriptionCustomerId($setupIntent, $invoice);
         $priceId = $this->resolveSubscriptionPriceId($setupIntent, $invoice);
+
+        if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === Model_Invoice::STATUS_PAID) {
+            $tx->status = Model_Transaction::STATUS_PROCESSED;
+            $tx->error = 'The invoice was already paid; no subscription was started.';
+            $tx->updated_at = date('Y-m-d H:i:s');
+            $this->di['db']->store($tx);
+
+            return true;
+        }
 
         // createStripeSubscription uses an idempotency key based on the
         // invoice ID, so this is safe even if the redirect flow races.

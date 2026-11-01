@@ -297,11 +297,14 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 $refundError = sprintf('Partial PayPal refund of %s %s must be settled by hand.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
             } elseif ($this->di['db']->findOne(
                 'Transaction',
-                'invoice_id = :invoice AND gateway_id = :gateway AND txn_id != :parent AND status = :status AND txn_status = :txn_status',
-                [':invoice' => $payment->invoice_id, ':gateway' => $gateway_id, ':parent' => $ipn['parent_txn_id'], ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed']
+                'invoice_id = :invoice AND id != :payment AND status = :status AND (gateway_id != :gateway OR txn_status = :txn_status)',
+                [':invoice' => $payment->invoice_id, ':payment' => $payment->id, ':status' => Model_Transaction::STATUS_PROCESSED, ':gateway' => $gateway_id, ':txn_status' => 'Completed']
             ) instanceof Model_Transaction) {
                 // ClientFence core patch: refunding duplicate payment credit must not refund the settled invoice.
                 $refundError = sprintf('PayPal refund of %s %s must be settled by hand: invoice has multiple payments.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
+            } elseif ((float) $payment->amount > $this->di['mod_service']('Invoice')->getTotalWithTax($this->di['db']->getExistingModelById('Invoice', $payment->invoice_id)) + 0.01) {
+                // ClientFence core patch: an overpayment refund must also reverse its excess balance credit.
+                $refundError = sprintf('PayPal refund of %s %s must be settled by hand: the payment was larger than the invoice.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
             } else {
                 $api_admin->invoice_refund([
                     'id' => $payment->invoice_id,
