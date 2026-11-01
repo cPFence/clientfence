@@ -15,7 +15,7 @@ final class Version
 {
     public const string VERSION = '0.0.1';
     /** The ClientFence release; VERSION stays the FOSSBilling release it is based on (update patches use it). */
-    public const string CLIENTFENCE = '1.0.18';
+    public const string CLIENTFENCE = '1.0.19';
     public const int PATCH = 0;
     public const int MINOR = 1;
     public const int MAJOR = 2;

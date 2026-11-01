@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.0.19 (2026-11-01)
+
+### Changed
+
+- Hosting: a hosting plan on a full or disabled server can no longer be added to the cart.
+- Suspensions: a client paying a renewal no longer lifts a suspension made by staff; staff unsuspend the service, which applies the payment.
+- Cancellation at the end of the period: the service's open renewal invoice and its add-ons are cancelled with it, and its plan can no longer be changed.
+
+### Fixed
+
+- Updates: clearing the cache no longer lets a second update start, and two patch runs no longer overlap.
+- Stripe: subscription checkout no longer charges an invoice that was already paid; a first charge that arrives late goes to the account balance.
+- Stripe and PayPal: a failed renewal payment no longer marks the subscription cancelled while the gateway retries it.
+- PayPal: refunds of duplicate payments and overpayments are left for staff, also when another gateway or account credit paid the invoice.
+- Invoices: an invoice with a recorded transfer can no longer be set to Paid on its Manage tab.
+- Renew Now is refused for a service whose cancellation at the end of its period is scheduled.
+- Cancellation at the end of the period: a service paid beyond the gateway's end keeps its paid time.
+- Sign-up: the verify link in the welcome email works.
+- Sign-in: email PINs typed with Arabic or Persian digits are accepted.
+- Orders: a staff-created order paid from the client's credit is activated once.
+
 ## 1.0.18 (2026-11-01)
 
 ### Changed
