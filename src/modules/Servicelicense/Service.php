@@ -294,7 +294,8 @@ class Service implements InjectionAwareInterface
             return true;
         }
 
-        return in_array($value, $defined);
+        // ClientFence core patch: licence bindings must match without type coercion.
+        return in_array($value, $defined, true);
     }
 
     public function isValidPath(ServiceLicense $model, $value)
@@ -312,7 +313,7 @@ class Service implements InjectionAwareInterface
             return true;
         }
 
-        return in_array($value, $defined);
+        return in_array($value, $defined, true);
     }
 
     public function isValidHost(ServiceLicense $model, $value)
@@ -330,7 +331,7 @@ class Service implements InjectionAwareInterface
             return true;
         }
 
-        return in_array($value, $defined);
+        return in_array($value, $defined, true);
     }
 
     public function getAdditionalParams(ServiceLicense $model, $data = []): array

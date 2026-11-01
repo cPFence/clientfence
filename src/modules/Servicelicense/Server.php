@@ -77,15 +77,16 @@ class Server implements \ClientFence\InjectionAwareInterface
      */
     private function validate(object $service, ServiceLicense $model, array $data, string $ip): array
     {
-        if (!isset($data['host']) || empty($data['host'])) {
+        // ClientFence core patch: JSON booleans must not become licence bindings.
+        if (empty($data['host']) || !is_string($data['host'])) {
             throw new \LogicException('Host key is not present in call', 1002);
         }
 
-        if (!isset($data['version']) || empty($data['version'])) {
+        if (empty($data['version']) || !is_string($data['version'])) {
             throw new \LogicException('Version key is not present in call', 1003);
         }
 
-        if (!isset($data['path']) || empty($data['path'])) {
+        if (empty($data['path']) || !is_string($data['path'])) {
             throw new \LogicException('Path key is not present in call', 1004);
         }
 
@@ -93,7 +94,7 @@ class Server implements \ClientFence\InjectionAwareInterface
         $version = $data['version'];
         $path = $data['path'];
 
-        $banned = Bans::match($this->di, is_scalar($host) ? (string) $host : '', $ip);
+        $banned = Bans::match($this->di, $host, $ip);
         if ($banned !== null) {
             throw new \LogicException(sprintf('"%s" is banned from licence checks', $banned), 1011);
         }

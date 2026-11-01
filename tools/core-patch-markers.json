@@ -3682,5 +3682,17 @@
     {
         "file": "library/Payment/Adapter/ClientBalance.php",
         "done": "ClientFence core patch: the balance callback bypasses the client API's account-user permission gate."
+    },
+    {
+        "file": "modules/Servicelicense/Server.php",
+        "done": "ClientFence core patch: JSON booleans must not become licence bindings."
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: licence bindings must match without type coercion."
+    },
+    {
+        "file": "modules/Servicedownloadable/Service.php",
+        "done": "ClientFence core patch: checkout copies the cart's download filename into its order."
     }
 ]

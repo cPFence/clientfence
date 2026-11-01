@@ -141,6 +141,22 @@ test('every check of a known key is logged with its answer; unknown keys are not
         ->and(CheckLog::recent($di, (int) $licence->getId())[2])->toMatchArray(['host' => 'example.com', 'ip' => '203.0.113.5', 'path' => '/home/site', 'version' => '2.0']);
 });
 
+test('licence checks reject boolean bindings and accept matching strings', function (string $field, string $method, string $message, int $code): void {
+    [$em, $di, $server] = licenceCheckFixture();
+    $licence = $em->getRepository(ServiceLicense::class)->findByLicenseKey('KEY-1');
+    $licence->setHosts('["example.com"]')->setPaths('["/home/site"]')->setVersions('["2.0"]')->setValidatePath(true)->setValidateVersion(true);
+    $data = ['license' => 'KEY-1', 'host' => 'example.com', 'version' => '2.0', 'path' => '/home/site'];
+
+    expect(fn () => $server->process(json_encode(array_replace($data, [$field => true]), JSON_THROW_ON_ERROR)))
+        ->toThrow(new LogicException($message, $code));
+    expect($di['mod_service']('servicelicense')->$method($licence, true))->toBeFalse()
+        ->and($server->process(json_encode($data, JSON_THROW_ON_ERROR))['valid'])->toBeTrue();
+})->with([
+    'host' => ['host', 'isValidHost', 'Host key is not present in call', 1002],
+    'version' => ['version', 'isValidVersion', 'Version key is not present in call', 1003],
+    'path' => ['path', 'isValidPath', 'Path key is not present in call', 1004],
+]);
+
 test('a banned domain or IP address never passes and binds nothing to the licence', function (): void {
     [$em, $di, $server] = licenceCheckFixture('198.51.100.7');
     Bans::add($di, 'banned.test');

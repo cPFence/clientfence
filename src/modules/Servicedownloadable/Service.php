@@ -333,6 +333,15 @@ class Service implements InjectionAwareInterface
             'SELECT COUNT(*) FROM client_order WHERE config LIKE :pattern',
             [':pattern' => '%' . $storedFilename . '%']
         );
+        if ($count > 0) {
+            return true;
+        }
+
+        // ClientFence core patch: checkout copies the cart's download filename into its order.
+        $count = (int) $this->di['db']->getCell(
+            'SELECT COUNT(*) FROM cart_product WHERE config LIKE :pattern',
+            [':pattern' => '%' . $storedFilename . '%']
+        );
 
         return $count > 0;
     }
