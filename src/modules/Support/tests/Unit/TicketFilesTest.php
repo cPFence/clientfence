@@ -72,3 +72,26 @@ test('authorized users with tickets may attach files', function (): void {
         ->and(Users::CALLS['support']['ticket_file_discard'])->toBe('tickets')
         ->and(Users::CALLS['client'])->not->toHaveKey('ticket_file_upload');
 });
+
+test('staff with support access cannot download files without ticket viewing permission', function (string $controllerClass, string $method): void {
+    $staff = Mockery::mock(ClientFence\Mod\Staff\Service::class)->makePartial();
+    $staff->shouldReceive('hasPermission')->byDefault()->andReturn(true);
+    $staff->shouldReceive('hasPermission')->with(Mockery::any(), 'support', 'view', null)->andReturn(false);
+    $auth = Mockery::mock(ClientFence\Authorization::class);
+    $auth->shouldReceive('isClientLoggedIn')->andReturn(false);
+    $auth->shouldReceive('isAdminLoggedIn')->andReturn(true);
+
+    $di = container();
+    $di['is_admin_logged'] = true;
+    $di['auth'] = $auth;
+    $di['mod_service'] = $di->protect(fn (string $name) => $staff);
+    $controller = new $controllerClass();
+    $controller->setDi($di);
+
+    expect(fn () => $controller->$method(Mockery::mock(ClientFence\App::class), 'invalid'))
+        ->toThrow(ClientFence\InformationException::class, 'support.view');
+})->with([
+    'admin ticket attachment' => [ClientFence\Mod\Support\Controller\Admin::class, 'get_ticket_file'],
+    'client ticket attachment' => [ClientFence\Mod\Support\Controller\Client::class, 'get_ticket_file'],
+    'payment receipt' => [ClientFence\Mod\Invoice\Controller\Client::class, 'get_receipt'],
+]);

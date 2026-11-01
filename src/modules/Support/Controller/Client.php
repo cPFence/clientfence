@@ -169,7 +169,8 @@ class Client implements \ClientFence\InjectionAwareInterface
             return \ClientFence\Mod\Support\TicketFiles::response($file);
         }
         if ($auth->isAdminLoggedIn()) {
-            $this->di['mod_service']('staff')->checkPermissionsAndThrowException('support');
+            // ClientFence core patch: staff ticket downloads through the client area require ticket viewing permission.
+            $this->di['mod_service']('staff')->checkPermissionsAndThrowException('support', 'view');
             if ($file !== null) {
                 return \ClientFence\Mod\Support\TicketFiles::response($file);
             }

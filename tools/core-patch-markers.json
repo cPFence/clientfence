@@ -3626,5 +3626,25 @@
     {
         "file": "themes/admin_default/html/layout_login.html.twig",
         "done": "ClientFence core patch: the shared page loader style (css/loader.css)."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch: paying an invoice during order creation requires invoice management permission."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: order responses must not expose provisioning passwords to clients."
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence core patch: admin ticket downloads require permission to view tickets."
+    },
+    {
+        "file": "modules/Support/Controller/Client.php",
+        "done": "ClientFence core patch: staff ticket downloads through the client area require ticket viewing permission."
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence core patch: staff receipt downloads require permission to view their support tickets."
     }
 ]

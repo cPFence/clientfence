@@ -146,6 +146,55 @@ test('batch order serialization does not expose admin-only client details', func
     }
 });
 
+test('order serialization exposes provisioning passwords only to staff', function (string $who): void {
+    $config = ['password' => 'hosting-secret', 'domain' => 'example.test'];
+    $row = [
+        'id' => 11, 'client_id' => 7, 'product_id' => 3, 'title' => 'Hosting',
+        'config' => json_encode($config), 'price' => 10, 'quantity' => 1,
+    ];
+    $order = createEntity(Order::class, $row);
+    $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 7]);
+    $identity = match ($who) {
+        'client' => $client,
+        'admin entity' => createEntity(ClientFence\Mod\Staff\Entity\Admin::class),
+        'staff session' => new Model_Admin(),
+    };
+
+    $di = container();
+    $clientRepository = $di['em']->getRepository(ClientFence\Mod\Client\Entity\Client::class);
+    $clientRepository->shouldReceive('findBy')->with(['id' => [7]])->andReturn([$client]);
+    $metaRepository = Mockery::mock(ClientFence\Mod\Order\Repository\OrderMetaRepository::class);
+    $metaRepository->shouldReceive('getPairsForOrder')->with(11)->andReturn([]);
+    $di['em']->shouldReceive('getRepository')->with(ClientFence\Mod\Order\Entity\OrderMeta::class)->andReturn($metaRepository);
+
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('fetchAllAssociative')->with('SELECT * FROM client_order WHERE id IN (?)', [11])->andReturn([$row]);
+    $connection->shouldReceive('fetchAllAssociative')->with(Mockery::type('string'), [11])->andReturn([]);
+    $di['em']->shouldReceive('getConnection')->andReturn($connection);
+
+    $clientService = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientService->shouldReceive('toApiArray')->andReturn([]);
+    $ticketRepository = Mockery::mock(ClientFence\Mod\Support\Repository\SupportTicketRepository::class);
+    $ticketRepository->shouldReceive('countActiveTicketsForOrder')->with(11)->andReturn(0);
+    $supportService = Mockery::mock(ClientFence\Mod\Support\Service::class);
+    $supportService->shouldReceive('getSupportTicketRepository')->andReturn($ticketRepository);
+    $productService = Mockery::mock(ClientFence\Mod\Product\Service::class);
+    $productService->shouldReceive('getProductPluginById')->andReturn(null);
+    $productService->shouldReceive('getProductPluginMap')->andReturn([]);
+    $di['mod_service'] = $di->protect(fn (string $name) => match ($name) {
+        'client' => $clientService,
+        'support' => $supportService,
+        'product' => $productService,
+    });
+
+    $service = new Service();
+    $service->setDi($di);
+    $expected = $who === 'client' ? ['domain' => 'example.test'] : $config;
+
+    expect($service->toApiArray($order, true, $identity)['config'])->toBe($expected)
+        ->and($service->getBatchForApi([11], $identity)[0]['config'])->toBe($expected);
+})->with(['client', 'admin entity', 'staff session']);
+
 test('batch client serialization excludes admin-only fields on the real path', function (): void {
     $client = createEntity(ClientFence\Mod\Client\Entity\Client::class);
     $client->setEmail('jane@example.com');

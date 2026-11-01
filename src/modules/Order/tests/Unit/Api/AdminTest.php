@@ -98,21 +98,17 @@ test('creates an order', function (): void {
     expect($result)->toBe(1);
 });
 
-test('rejects order create with mark invoice paid when invoice permission is missing', function (): void {
+test('rejects marking an order invoice paid when staff have invoice access without management permission', function (): void {
     $api = apiEndpoint(new Admin());
 
     $serviceMock = Mockery::mock(Service::class);
     $serviceMock->shouldReceive('createOrder')->never();
 
-    $staffServiceMock = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffServiceMock = Mockery::mock(ClientFence\Mod\Staff\Service::class)->makePartial();
     $staffServiceMock->shouldReceive('hasPermission')->byDefault()->andReturn(true);
-    $staffServiceMock->shouldReceive('checkPermissionsAndThrowException')
-        ->byDefault()
-        ->andReturn(true);
-    $staffServiceMock->shouldReceive('checkPermissionsAndThrowException')
-        ->once()
-        ->with('invoice', null, null, Mockery::any())
-        ->andThrow(new ClientFence\InformationException('Denied', [], 403));
+    $staffServiceMock->shouldReceive('hasPermission')
+        ->with(Mockery::any(), 'invoice', 'manage_invoices', null)
+        ->andReturn(false);
 
     $di = container();
     $di['mod_service'] = $di->protect(fn (string $name): Mockery\MockInterface => match (strtolower($name)) {
@@ -129,7 +125,7 @@ test('rejects order create with mark invoice paid when invoice permission is mis
         'invoice_option' => 'issue-invoice',
         'mark_invoice_paid' => 1,
         'gateway_id' => 5,
-    ]))->toThrow(ClientFence\InformationException::class);
+    ]))->toThrow(ClientFence\InformationException::class, 'invoice.manage_invoices');
 });
 
 test('uses invoice service to validate mark paid request when permission granted', function (): void {
@@ -154,7 +150,7 @@ test('uses invoice service to validate mark paid request when permission granted
         ->andReturn(true);
     $staffServiceMock->shouldReceive('checkPermissionsAndThrowException')
         ->once()
-        ->with('invoice', null, null, Mockery::any());
+        ->with('invoice', 'manage_invoices', null, Mockery::any());
 
     $payGateway = new Model_PayGateway();
     $payGateway->loadBean(new Tests\Helpers\DummyBean());
@@ -219,7 +215,7 @@ test('rejects invalid invoice payment payload before order creation', function (
         ->andReturn(true);
     $staffServiceMock->shouldReceive('checkPermissionsAndThrowException')
         ->once()
-        ->with('invoice', null, null, Mockery::any());
+        ->with('invoice', 'manage_invoices', null, Mockery::any());
 
     $invoiceServiceMock = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
     $invoiceServiceMock->shouldReceive('validateAdminMarkAsPaidRequest')

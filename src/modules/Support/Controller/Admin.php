@@ -277,7 +277,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
     public function get_ticket_file(\ClientFence\App $app, $id): \Symfony\Component\HttpFoundation\Response
     {
         $this->di['is_admin_logged'];
-        $this->di['mod_service']('staff')->checkPermissionsAndThrowException('support');
+        // ClientFence core patch: admin ticket downloads require permission to view tickets.
+        $this->di['mod_service']('staff')->checkPermissionsAndThrowException('support', 'view');
 
         $file = \ClientFence\Mod\Support\TicketFiles::find($this->di, (string) $id);
         if ($file === null) {

@@ -105,9 +105,9 @@ final class Users
             'payment_details' => 'invoices', 'receipt_send' => 'invoices', 'statement' => 'invoices', 'statement_pdf' => 'invoices',
             'quote_get_list' => 'quotes',
         ],
-        'order' => ['get_list' => 'products', 'get' => 'products', 'addons' => 'products', 'service' => 'products', 'upgradables' => 'products', 'upgrade_options' => 'products', 'upgrade' => 'orders', 'delete' => 'orders'],
+        'order' => ['get_list' => 'products', 'get' => 'products', 'addons' => 'products', 'service' => 'products', 'upgradables' => 'products', 'upgrade_options' => 'products', 'upgrade_options_quote' => 'products', 'upgrade' => 'orders', 'delete' => 'orders'],
         'profile' => ['get' => '*', 'logout' => '*', 'update' => 'profile'],
-        'serviceapikey' => ['reset' => 'manageproducts'],
+        'serviceapikey' => ['reset' => 'manageproducts', 'update_ips' => 'manageproducts'],
         'servicecustom' => ['call' => 'manageproducts'],
         'servicedomain' => [
             'sync' => 'domains', 'update_nameservers' => 'managedomains', 'update_contacts' => 'managedomains',

@@ -107,7 +107,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         $data['mark_invoice_paid'] = $markInvoicePaid;
 
         if ($markInvoicePaid) {
-            $this->checkPermissions('invoice');
+            // ClientFence core patch: paying an invoice during order creation requires invoice management permission.
+            $this->checkPermissions('invoice', 'manage_invoices');
 
             if (($data['invoice_option'] ?? 'no-invoice') !== 'issue-invoice') {
                 throw new InformationException('Marking an invoice as paid requires the order to issue an invoice.');

@@ -17,7 +17,7 @@ beforeEach(function (): void {
     $this->di['session']->shouldReceive('get')->with(Users::SESSION)->andReturn(['user_id' => 7, 'client_id' => 5, 'version' => 1]);
     $this->di['session']->shouldReceive('get')->with('client_id')->andReturn(5);
     $this->db = Mockery::mock(Connection::class);
-    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, Model_Client::ACTIVE, 7])->andReturn([
+    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, Model_Client::ACTIVE, 7])->byDefault()->andReturn([
         'email' => 'user@example.com', 'first_name' => 'Test', 'last_name' => 'User',
         'status' => 'active', 'session_version' => 1, 'owner' => 0, 'permissions' => 'products,invoices',
     ]);
@@ -25,6 +25,18 @@ beforeEach(function (): void {
 });
 
 afterEach(fn () => Users::forget());
+
+test('authorized users can call product actions with their assigned permission', function (string $module, string $method, string $permission): void {
+    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, Model_Client::ACTIVE, 7])->andReturn([
+        'email' => 'user@example.com', 'first_name' => 'Test', 'last_name' => 'User',
+        'status' => 'active', 'session_version' => 1, 'owner' => 0, 'permissions' => $permission,
+    ]);
+
+    expect(Users::checkCall($this->di, $this->client, $module, $method))->toBeNull();
+})->with([
+    'API key allowed IPs' => ['serviceapikey', 'update_ips', 'manageproducts'],
+    'order options quote' => ['order', 'upgrade_options_quote', 'products'],
+]);
 
 test('invoice access does not allow a sub-user to list or accept quotes', function (): void {
     expect(fn () => Users::checkCall($this->di, $this->client, 'invoice', 'quote_get_list'))

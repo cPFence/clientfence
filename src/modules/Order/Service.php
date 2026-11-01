@@ -734,6 +734,10 @@ class Service implements InjectionAwareInterface
         ];
 
         $data['config'] = json_decode($this->orderConfig($model) ?? '', true) ?? [];
+        // ClientFence core patch: order responses must not expose provisioning passwords to clients.
+        if (!$identity instanceof Admin && !$identity instanceof \Model_Admin) {
+            unset($data['config']['password']);
+        }
         $data['total'] = $this->getTotal($model);
         $data['discount'] ??= 0;
         if ($model instanceof Order) {
@@ -765,8 +769,8 @@ class Service implements InjectionAwareInterface
     /**
      * Get multiple orders in a batch for API response.
      *
-     * @param array                   $ids      Array of order IDs to fetch
-     * @param Admin|ClientEntity|null $identity The requesting identity
+     * @param array                                $ids      Array of order IDs to fetch
+     * @param Admin|\Model_Admin|ClientEntity|null $identity The requesting identity
      *
      * @return array Array of order API arrays. Missing IDs are silently skipped.
      */
@@ -836,6 +840,9 @@ class Service implements InjectionAwareInterface
             $clientId = $order['client_id'];
             $data = $order;
             $data['config'] = json_decode($order['config'] ?? '', true) ?? [];
+            if (!$identity instanceof Admin && !$identity instanceof \Model_Admin) {
+                unset($data['config']['password']);
+            }
             $data['total'] = $this->calculateTotal($order['price'], $order['quantity']);
             $data['title'] = $order['title'];
             $data['meta'] = $meta[$order['id']] ?? [];

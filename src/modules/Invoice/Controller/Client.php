@@ -184,7 +184,8 @@ class Client implements \ClientFence\InjectionAwareInterface
             return \ClientFence\Mod\Invoice\Receipts::response($receipt);
         }
         if ($auth->isAdminLoggedIn()) {
-            $this->di['mod_service']('staff')->checkPermissionsAndThrowException('support');
+            // ClientFence core patch: staff receipt downloads require permission to view their support tickets.
+            $this->di['mod_service']('staff')->checkPermissionsAndThrowException('support', 'view');
             if ($receipt !== null) {
                 return \ClientFence\Mod\Invoice\Receipts::response($receipt);
             }
