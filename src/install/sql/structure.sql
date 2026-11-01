@@ -630,6 +630,24 @@ CREATE TABLE `invoice` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `invoice_credit`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `invoice_credit` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `invoice_id` bigint(20) NOT NULL,
+  `client_id` bigint(20) NOT NULL,
+  `amount` decimal(18,2) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `invoice_credit_invoice_id_idx` (`invoice_id`),
+  KEY `invoice_credit_client_id_idx` (`client_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `invoice_item`
 --
 

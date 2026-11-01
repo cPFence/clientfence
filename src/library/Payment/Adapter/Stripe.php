@@ -215,18 +215,16 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $this->stripe->subscriptions->update($subscriptionId, ['cancel_at_period_end' => true]);
     }
 
+    // The subscription price: the full invoice total.
     public function getAmountInCents(Model_Invoice $invoice): int
     {
-        return $this->getAmountInMinorUnits($invoice);
+        return (int) round($this->di['mod_service']('Invoice')->getTotalWithTax($invoice) * 10 ** $this->getCurrencyFractionDigits($invoice->currency));
     }
 
+    // ClientFence core patch: a one-time payment charges the balance due (part payments are already on the invoice).
     public function getAmountInMinorUnits(Model_Invoice $invoice): int
     {
-        $invoiceService = $this->di['mod_service']('Invoice');
-        $amount = $invoiceService->getTotalWithTax($invoice);
-        $multiplier = 10 ** $this->getCurrencyFractionDigits($invoice->currency);
-
-        return (int) round($amount * $multiplier);
+        return (int) round($this->di['mod_service']('Invoice')->getBalanceDue($invoice) * 10 ** $this->getCurrencyFractionDigits($invoice->currency));
     }
 
     private function getAmountFromMinorUnits(int $amount, string $currency): float
@@ -432,7 +430,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 : $this->getClientFromTransaction($tx, $charge);
 
             if ($invoice) {
-                $expected = $invoiceService->getTotalWithTax($invoice);
+                $expected = $invoiceService->getBalanceDue($invoice);
 
                 try {
                     $invoiceService->validatePaymentAmount((float) $tx->amount, $expected);
@@ -554,7 +552,6 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
 
             $tx->s_id = $subscription->id;
             $tx->s_period = $this->getSubscriptionPeriodForInvoice($invoice);
-            $tx->amount = $this->getAmountFromMinorUnits($this->getAmountInCents($invoice), $invoice->currency);
             $tx->currency = $invoice->currency;
             $tx->type = Payment_Transaction::TXTYPE_PAYMENT;
 
@@ -635,14 +632,14 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             // ClientFence core patch: the redirect and invoice webhook must claim the same first charge.
             $tx->txn_id = $latestInvoice->id;
             $tx->status = Model_Transaction::STATUS_PROCESSING;
+            // ClientFence core patch: the transaction records the first charge, so an unpaid first charge records
+            // nothing (the invoice counts processed transactions as payments).
+            $tx->amount = $this->getAmountFromMinorUnits((int) ($latestInvoice->amount_paid ?? 0), (string) ($latestInvoice->currency ?? ''));
             $this->di['db']->store($tx);
 
             $bd = [
                 'id' => $invoice->client_id,
-                'amount' => $this->getAmountFromMinorUnits(
-                    (int) ($latestInvoice->amount_paid ?? 0),
-                    (string) ($latestInvoice->currency ?? '')
-                ),
+                'amount' => $tx->amount,
                 'description' => 'Stripe subscription initial payment ' . $latestInvoice->id,
                 'type' => 'transaction',
                 'rel_id' => $tx->id,
@@ -1224,7 +1221,6 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
 
         $tx->s_id = $subscription->id;
         $tx->s_period = $this->getSubscriptionPeriodForInvoice($invoice);
-        $tx->amount = $this->getAmountFromMinorUnits($this->getAmountInCents($invoice), $invoice->currency);
         $tx->currency = $invoice->currency;
         $tx->type = Payment_Transaction::TXTYPE_PAYMENT;
         $tx->updated_at = date('Y-m-d H:i:s');
@@ -1317,7 +1313,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             : $this->getClientFromTransaction($tx, $charge);
 
         if ($invoice) {
-            $expected = $invoiceService->getTotalWithTax($invoice);
+            $expected = $invoiceService->getBalanceDue($invoice);
 
             try {
                 $invoiceService->validatePaymentAmount((float) $tx->amount, $expected);

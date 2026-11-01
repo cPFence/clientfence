@@ -18998,3 +18998,89 @@ msgstr "Залишити замовлення й послугу активним
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Наприкінці періоду можна скасувати лише послугу з періодичною оплатою."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "Кредит-нота фіксує повернення. Поверніть гроші самі тим самим способом оплати, якщо вони не зараховуються на баланс."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Пониження тарифу додало кошти на рахунок за цю послугу. Поверніть гроші за цим рахунком вручну."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Додати суму до коштів клієнта"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Сплачена сума"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Повернення за «Поповнити баланс» забирає свою суму з коштів клієнта, а клієнт їх уже витратив. Поверніть гроші за цим рахунком вручну."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Використати кошти"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Використати кошти"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "До сплати"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Кошти можна використати лише для несплаченого рахунку."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Кошти можна прибрати лише з несплаченого рахунку."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Введіть суму більше нуля."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "Повернення виконуються вручну (Налаштування рахунків), тому часткове повернення записати не можна."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Прибрати кошти"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Прибрати кошти, використані для цього рахунку?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "У клієнта :amount на балансі."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Кошти у валюті :currency і не можуть оплатити рахунок в іншій валюті."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Можна використати не більше :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Можна повернути не більше :amount."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "У вас :amount на балансі. Використайте їх повністю або частково для цього рахунку."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "кошти :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "Повернення виконуються вручну (Налаштування рахунків), тому це повернення записати не можна."

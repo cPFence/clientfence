@@ -18510,3 +18510,89 @@ msgstr "Păstrează comanda și serviciul active până la sfârșitul perioadei
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Doar un serviciu facturat pe perioade poate fi anulat la sfârșitul perioadei sale."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "O notă de credit înregistrează rambursarea. Returnați banii singur prin metoda de plată, dacă nu merg în credit."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "O retrogradare a dat credit în cont pentru acest serviciu. Rambursați manual această factură."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Adaugă suma la creditul clientului"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Suma plătită"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Rambursarea unei operațiuni Adaugă fonduri scade suma din creditul clientului, iar clientul l-a cheltuit. Rambursați manual această factură."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Aplică credit"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Aplică credit"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Sold de plată"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Creditul poate fi aplicat doar unei facturi neplătite."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Creditul poate fi eliminat doar dintr-o factură neplătită."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Introduceți o sumă mai mare decât zero."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "Rambursările se fac manual (Setări factură), deci o rambursare parțială nu poate fi înregistrată."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Elimină creditul"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Eliminați creditul aplicat acestei facturi?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Clientul are credit de :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Creditul este în :currency și nu poate plăti o factură în altă monedă."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Puteți aplica cel mult :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Puteți rambursa cel mult :amount."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "Aveți credit de :amount. Aplicați-l în totalitate sau parțial acestei facturi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "credit :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "Rambursările se fac manual (Setări factură), deci această rambursare nu poate fi înregistrată."

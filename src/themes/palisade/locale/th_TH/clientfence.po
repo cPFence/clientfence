@@ -16806,3 +16806,89 @@ msgstr "คงคำสั่งซื้อและบริการให้
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "เฉพาะบริการที่เรียกเก็บเงินเป็นรอบเท่านั้นที่ยกเลิกได้เมื่อสิ้นสุดรอบ"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "ใบลดหนี้บันทึกการคืนเงิน ให้คืนเงินเองผ่านช่องทางการชำระเงิน เว้นแต่เงินจะเข้าเป็นเครดิต"
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "การลดแพ็กเกจให้เครดิตในบัญชีสำหรับบริการนี้ โปรดคืนเงินใบแจ้งหนี้นี้ด้วยตนเอง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "เพิ่มจำนวนเงินเข้าเครดิตของลูกค้า"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "จำนวนที่ชำระแล้ว"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "การคืนเงินของรายการเติมเงินจะหักจำนวนนั้นออกจากเครดิตของลูกค้า แต่ลูกค้าใช้ไปแล้ว โปรดคืนเงินใบแจ้งหนี้นี้ด้วยตนเอง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "ใช้เครดิต"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "ใช้เครดิต"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "ยอดค้างชำระ"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "ใช้เครดิตได้เฉพาะกับใบแจ้งหนี้ที่ยังไม่ได้ชำระ"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "ลบเครดิตได้เฉพาะจากใบแจ้งหนี้ที่ยังไม่ได้ชำระ"
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "ใส่จำนวนเงินที่มากกว่าศูนย์"
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "การคืนเงินทำด้วยตนเอง (การตั้งค่าใบแจ้งหนี้) จึงไม่สามารถบันทึกการคืนเงินบางส่วนได้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "ลบเครดิต"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "ลบเครดิตที่ใช้กับใบแจ้งหนี้นี้หรือไม่"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "ลูกค้ามีเครดิต :amount"
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "เครดิตเป็นสกุล :currency และไม่สามารถชำระใบแจ้งหนี้สกุลเงินอื่นได้"
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "คุณใช้ได้สูงสุด :amount"
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "คุณคืนเงินได้สูงสุด :amount"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "คุณมีเครดิต :amount ใช้ทั้งหมดหรือบางส่วนกับใบแจ้งหนี้นี้ได้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "เครดิต :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "การคืนเงินทำด้วยตนเอง (การตั้งค่าใบแจ้งหนี้) จึงไม่สามารถบันทึกการคืนเงินนี้ได้"

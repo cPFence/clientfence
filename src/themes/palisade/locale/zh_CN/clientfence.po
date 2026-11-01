@@ -18500,3 +18500,89 @@ msgstr "订单和服务保持有效至已付费周期结束，然后取消。"
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "只有按周期计费的服务才能在周期结束时取消。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "贷项通知单记录退款。请自行通过付款方式退还资金，除非退入账户余额。"
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "降级已为此服务给予账户余额。请手动退款此发票。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "将金额加入客户的账户余额"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "已付金额"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "“充值”的退款会从客户的账户余额中扣回其金额，而客户已经花掉了。请手动退款此发票。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "使用余额"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "使用余额"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "待付余额"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "账户余额只能用于未付款的发票。"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "账户余额只能从未付款的发票中移除。"
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "请输入大于零的金额。"
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "退款需手动处理（发票设置），因此无法记录部分退款。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "移除余额"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "移除已用于此发票的余额？"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "客户有 :amount 账户余额。"
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "该余额的币种为 :currency，无法支付其他币种的发票。"
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "您最多可使用 :amount。"
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "您最多可退款 :amount。"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "您有 :amount 账户余额。可全部或部分用于此发票。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "余额 :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "退款需手动处理（发票设置），因此无法记录此退款。"

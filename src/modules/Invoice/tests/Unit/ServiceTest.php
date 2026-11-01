@@ -158,6 +158,7 @@ test('Mark as Paid records and credits only the unpaid deposit remainder', funct
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
     $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)');
     $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid']);
     $dbal->insert('"transaction"', ['id' => 1, 'invoice_id' => 10, 'amount' => $before, 'status' => 'processed']);
     $dbal->insert('"transaction"', ['id' => 2, 'invoice_id' => 10, 'amount' => 80, 'status' => 'received']);
@@ -222,15 +223,18 @@ test('Mark as Paid records and credits only the unpaid deposit remainder', funct
     }
 })->with(['partly paid' => [40.0, 60.0], 'fully credited' => [100.0, 0.0]]);
 
-test('Manage marks a partly paid invoice paid with its recorded payments', function (): void {
+test('Manage marks a partly paid invoice paid with its recorded payments', function (float $totalAfterSave, float $debit): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT)');
     $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)');
     $dbal->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, description TEXT, amount REAL, created_at TEXT, updated_at TEXT)');
     $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid']);
     $dbal->insert('"transaction"', ['id' => 1, 'invoice_id' => 10, 'amount' => 20, 'status' => 'processed']);
     // A payment imported from WHMCS never reached the balance (the import subtracts it on the invoice).
     $dbal->insert('"transaction"', ['id' => 2, 'invoice_id' => 10, 'amount' => 30, 'status' => 'processed', 'txn_status' => 'imported']);
+    // Account credit applied to the invoice is used too.
+    $dbal->insert('invoice_credit', ['invoice_id' => 10, 'client_id' => 7, 'amount' => 5]);
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());
     $invoice->id = 10;
@@ -243,13 +247,18 @@ test('Manage marks a partly paid invoice paid with its recorded payments', funct
     $di['db']->shouldReceive('store');
     $service = Mockery::mock(Service::class)->makePartial();
     $service->shouldReceive('markAsPaid')->once()->with($invoice, false)->andReturn(true);
+    $service->shouldReceive('getTotalWithTax')->andReturn($totalAfterSave);
     $service->setDi($di);
 
     $service->updateInvoice($invoice, ['status' => 'paid']);
 
     expect($dbal->fetchAssociative('SELECT client_id, type, rel_id, amount FROM client_balance'))
-        ->toBe(['client_id' => 7, 'type' => 'invoice', 'rel_id' => '10', 'amount' => -20.0]);
-});
+        ->toBe(['client_id' => 7, 'type' => 'invoice', 'rel_id' => '10', 'amount' => $debit]);
+})->with([
+    'recorded 25.00 of 100.00' => [100.0, -25.0],
+    // The same save lowered the total below what was recorded: the rest stays on the balance.
+    'total lowered to 20.00 in the save' => [20.0, -20.0],
+]);
 
 test('gets dependency injection container', function (): void {
     $service = new Service();
@@ -1631,7 +1640,7 @@ test('admin mark as paid uses the recorded payments and records only the rest', 
     $di = container();
     $di['db'] = $dbMock;
     $di['dbal']->shouldReceive('fetchOne')->once()
-        ->with("SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ? AND COALESCE(txn_status, '') <> ?", [10, Model_Transaction::STATUS_PROCESSED, 'imported'])
+        ->with(Mockery::on(fn (string $sql): bool => str_contains($sql, 'invoice_credit')), [10])
         ->andReturn($credited);
     if ($credited > 0) {
         $di['dbal']->shouldReceive('insert')->once()
@@ -2197,6 +2206,11 @@ function expectCreditPaymentLock(Mockery\MockInterface $dbalMock, int $clientId,
         ->andReturn(false);
     // The debit and the paid status are written in one transaction.
     $dbalMock->shouldReceive('transactional')->byDefault()->andReturnUsing(fn (callable $work) => $work($dbalMock));
+    // Nothing is set aside for the client's other unpaid invoices.
+    $dbalMock->shouldReceive('fetchOne')
+        ->with(Mockery::on(fn (mixed $sql): bool => is_string($sql) && str_contains($sql, 'LEAST(paid, total)')), Mockery::on(fn (mixed $params): bool => is_array($params) && $params[0] === $clientId))
+        ->byDefault()
+        ->andReturn(0);
 }
 
 test('pays a zero-total invoice without recording a balance transaction', function (): void {
@@ -5085,4 +5099,148 @@ test('wallet top-up limits are converted to the client currency', function (): v
 
     expect($service->fundsLimits('EGP'))->toBe(['min' => 518.0, 'max' => 10360.0])
         ->and($service->fundsLimits())->toBe(['min' => 10.0, 'max' => 200.0]);
+});
+
+test('credit set aside for another unpaid invoice does not pay this one', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $invoice->client_id = 20;
+    $invoice->approved = 1;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 20;
+    $balanceService = Mockery::mock(ClientFence\Mod\Client\ServiceBalance::class);
+    $balanceService->shouldReceive('getClientBalance')->once()->with($client)->andReturn(4.0);
+    $dbalMock = Mockery::mock();
+    expectCreditPaymentLock($dbalMock, 20, Model_Invoice::STATUS_UNPAID);
+    $db = Mockery::mock(\ClientFence\Database::class);
+    $db->shouldReceive('load')->once()->with('Client', 20)->andReturn($client);
+    $db->shouldNotReceive('dispense', 'store');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->once()->with($invoice)->andReturn(3.0);
+    // A 4.00 part payment of another invoice waits for it (tester item 11b).
+    $service->shouldReceive('getReservedCredit')->once()->with(20, 10)->andReturn(4.0);
+    $service->shouldNotReceive('markAsPaid');
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = $dbalMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $balanceService);
+    $service->setDi($di);
+
+    expect($service->tryPayWithCredits($invoice))->toBeFalse();
+});
+
+test('apply credit takes up to the free credit and the balance due, and pays a covered invoice', function (float $amount, float $due, ?string $error, bool $pays): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $invoice->client_id = 20;
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 20;
+    $client->currency = 'USD';
+    $di = container();
+    $di['dbal']->shouldReceive('fetchAssociative')->with('SELECT * FROM invoice WHERE id = ?', [10])->andReturn(['id' => 10, 'client_id' => 20, 'status' => 'unpaid', 'currency' => 'USD']);
+    $di['db']->shouldReceive('getExistingModelById')->with('Client', 20, Mockery::any())->andReturn($client);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturn(false);
+    $service->shouldReceive('getBalanceDue')->andReturn($due);
+    $service->shouldReceive('getFreeCredit')->with(20)->andReturn(5.0);
+    if ($error !== null) {
+        $di['dbal']->shouldNotReceive('insert');
+    } else {
+        $di['dbal']->shouldReceive('insert')->once()->with('invoice_credit', Mockery::on(fn (array $row): bool => $row['invoice_id'] === 10 && $row['amount'] === $amount));
+    }
+    $service->shouldReceive('tryPayWithCredits')->times($pays ? 1 : 0);
+    $service->setDi($di);
+
+    if ($error !== null) {
+        expect(fn () => $service->applyCredit($invoice, $amount))->toThrow(ClientFence\InformationException::class, $error);
+    } else {
+        expect($service->applyCredit($invoice, $amount))->toBeTrue();
+    }
+})->with([
+    'part of the credit' => [3.0, 15.0, null, false],
+    'more than the free credit' => [6.0, 15.0, 'You can apply at most', false],
+    'more than the balance due' => [5.0, 4.0, 'You can apply at most', false],
+    'the whole balance due' => [4.0, 4.0, null, true],
+]);
+
+test('a part refund keeps the invoice paid, can go to credit, and the last part marks it refunded', function (float $refunded, ?float $amount, bool $toCredit, ?string $error, string $status): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 20, 'status' => 'paid', 'currency' => 'USD', 'serie' => 'CF', 'nr' => 7, 'taxrate' => '0', 'paid_at' => '2026-10-01 00:00:00'] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $di = container();
+    $di['dbal']->shouldReceive('fetchOne')->with('SELECT status FROM invoice WHERE id = ?', [10])->andReturn('paid');
+    $di['dbal']->shouldReceive('fetchOne')->with('SELECT refund FROM invoice WHERE id = ?', [10])->andReturn($refunded);
+    $di['db']->shouldReceive('getCell')->andReturn(false);
+    $system = Mockery::mock(SystemService::class);
+    $system->shouldReceive('getParamValue')->with('invoice_refund_logic', 'manual')->andReturn('credit_note');
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system]));
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->andReturn(15.0);
+    $service->shouldReceive('getTax')->andReturn(0.0);
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturn(false);
+    $service->shouldReceive('countIncome', 'addNote');
+    if ($error !== null) {
+        $service->shouldNotReceive('creditNote');
+    } else {
+        $service->shouldReceive('creditNote')->once()->with(10, 'Refund of invoice CF7', $amount ?? 15.0 - $refunded, false, Mockery::any())->andReturn(99);
+    }
+    if ($toCredit && $error === null) {
+        $di['dbal']->shouldReceive('insert')->once()->with('client_balance', Mockery::on(fn (array $row): bool => $row['amount'] === $amount && $row['rel_id'] === '99' && $row['client_id'] === 20));
+    } else {
+        $di['dbal']->shouldNotReceive('insert');
+    }
+    $service->setDi($di);
+
+    if ($error !== null) {
+        expect(fn () => $service->refundInvoice($invoice, null, $amount, $toCredit))->toThrow(ClientFence\InformationException::class, $error);
+    } else {
+        expect($service->refundInvoice($invoice, null, $amount, $toCredit))->toBe(99)
+            ->and($invoice->refund)->toBe(round($refunded + ($amount ?? 15.0 - $refunded), 2));
+    }
+    expect($invoice->status)->toBe($status);
+})->with([
+    'part to credit' => [0.0, 5.0, true, null, 'paid'],
+    'more than is left' => [10.0, 6.0, false, 'You can refund at most 5.00 USD', 'paid'],
+    'the rest' => [10.0, null, false, null, 'refunded'],
+]);
+
+test('a full Add funds refund the client has spent is refused before anything is written', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 7, 'status' => 'paid', 'currency' => 'USD'] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $item = new Model_InvoiceItem();
+    $item->loadBean(new Tests\Helpers\DummyBean());
+    $item->type = Model_InvoiceItem::TYPE_DEPOSIT;
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('getTotalWithTax')->andReturn(10.0);
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturn(true);
+    // 6.00 of the 10.00 it added is spent or applied to another invoice.
+    $service->shouldReceive('getFreeCredit')->with(7)->andReturn(4.0);
+    $service->shouldReceive('toApiArray')->andReturn([]);
+    $itemService = Mockery::mock(ServiceInvoiceItem::class);
+    $itemService->shouldReceive('getTotalWithTax')->andReturn(10.0);
+    $system = Mockery::mock(SystemService::class);
+    $system->shouldReceive('getParamValue')->andReturn('credit_note');
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('find')->andReturn([$item]);
+    $db->shouldReceive('getAll')->andReturn([]);
+    $db->shouldNotReceive('dispense', 'store');
+    $di = container();
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = ''): Mockery\MockInterface => $sub === 'InvoiceItem' ? $itemService : $system);
+    $events = Mockery::mock(ClientFence\EventManager::class);
+    $events->shouldReceive('fire');
+    $di['events_manager'] = $events;
+    $service->setDi($di);
+
+    expect(fn () => $service->refundInvoice($invoice))->toThrow(ClientFence\InformationException::class, 'the client has spent it');
 });

@@ -18035,3 +18035,89 @@ msgstr "Mantieni attivi l'ordine e il servizio fino alla fine del periodo pagato
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Solo un servizio fatturato a periodi può essere annullato alla fine del suo periodo."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "Una nota di credito registra il rimborso. Restituisci tu il denaro tramite il metodo di pagamento, a meno che non vada a credito."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Un downgrade ha dato credito sul conto per questo servizio. Rimborsa questa fattura a mano."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Aggiungi l'importo al credito del cliente"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Importo pagato"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Il rimborso di un'operazione Aggiungi fondi toglie il suo importo dal credito del cliente, e il cliente lo ha speso. Rimborsa questa fattura a mano."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Applica credito"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Applica credito"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Saldo dovuto"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Il credito può essere applicato solo a una fattura non pagata."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Il credito può essere rimosso solo da una fattura non pagata."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Inserisci un importo maggiore di zero."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "I rimborsi si gestiscono a mano (Impostazioni della fattura), quindi non è possibile registrare un rimborso parziale."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Rimuovi credito"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Rimuovere il credito applicato a questa fattura?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Il cliente ha :amount di credito."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Il credito è in :currency e non può pagare una fattura in un'altra valuta."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Puoi applicare al massimo :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Puoi rimborsare al massimo :amount."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "Hai :amount di credito. Applicalo in tutto o in parte a questa fattura."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "credito :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "I rimborsi si gestiscono a mano (Impostazioni della fattura), quindi questo rimborso non può essere registrato."

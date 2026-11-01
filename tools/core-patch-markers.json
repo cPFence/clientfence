@@ -3714,5 +3714,77 @@
     {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: a service without a gateway subscription ends at its period end too (WHMCS); the"
+    },
+    {
+        "file": "library/Payment/Adapter/ClientBalance.php",
+        "done": "ClientFence core patch: what other unpaid invoices have received is not spendable."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: a part-paid invoice asks for its balance due."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a one-time payment charges the balance due (part payments are already on the invoice)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the credit the client can spend (WHMCS); part payments wait on their invoices."
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "ClientFence core patch: the spendable credit, without what is set aside for unpaid invoices."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: apply part or all of the client's credit to an unpaid invoice (WHMCS \"Apply Credit\")."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: apply part or all of the account credit to an unpaid invoice (WHMCS client area)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: what other unpaid invoices have received waits for them (WHMCS keeps it on the invoice)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: what an unpaid invoice has received and its balance due (WHMCS)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: WHMCS \"Apply Credit\": any part of the client's free credit, up to the balance due."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: WHMCS refunds: an amount (default: what is left to refund) and, optionally, to the"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: WHMCS \"Apply Credit\": part or all of the client's credit."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: WHMCS refunds: an amount (all or part) and, optionally, to the client's credit."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: account credit applied to an unpaid invoice (part payments from credit)."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: the client's free credit, for Apply Credit on the invoice page."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: cancelling an invoice gave its applied credit back; a reopened one starts without it."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the credit an Add funds invoice added may be spent or set aside for unpaid invoices."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: the transaction records the first charge, so an unpaid first charge records"
     }
 ]

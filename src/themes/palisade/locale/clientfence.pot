@@ -618,6 +618,10 @@ msgstr ""
 msgid "A conversion rate is required when manual override is enabled."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr ""
+
 #: src/modules/Product/Service.php
 msgid "A discount is from 0 to 100 percent, or a positive amount."
 msgstr ""
@@ -640,6 +644,10 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "A downgrade already gave :amount of this invoice back as account credit, and the client has spent it. Refund this invoice by hand."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -1288,6 +1296,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Add staff group"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
@@ -2286,6 +2298,14 @@ msgstr ""
 msgid "Amount out"
 msgstr ""
 
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr ""
+
 #: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig
 msgid "An Error Occurred While Rendering This Widget."
 msgstr ""
@@ -2474,6 +2494,10 @@ msgstr ""
 msgid "Apply Changes"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr ""
+
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
 msgid "Apply Filters"
 msgstr ""
@@ -2484,6 +2508,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Apply Patches & Update Configuration"
+msgstr ""
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -2880,6 +2908,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/Reports.php …
 msgid "Balance"
+msgstr ""
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
 msgstr ""
 
 #: src/modules/Client/Api/Admin.php
@@ -5238,6 +5270,14 @@ msgstr ""
 msgid "Credit and debit notes"
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Credit log"
 msgstr ""
@@ -7024,6 +7064,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "Enter an amount from :min to :max."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
 msgstr ""
 
 #: src/modules/Order/BulkPrices.php
@@ -14870,6 +14914,10 @@ msgstr ""
 msgid "Refunds Settings"
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Refused: clients only"
 msgstr ""
@@ -15070,6 +15118,10 @@ msgstr ""
 msgid "Remove Unpaid Orders"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr ""
+
 #: src/modules/Order/templates/client/mod_order_addons.html.twig
 msgid "Remove from cart"
 msgstr ""
@@ -15084,6 +15136,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Remove the automatic reply"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
@@ -18058,6 +18114,10 @@ msgstr ""
 msgid "The client group that can order was not found."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "The client picks one value. The first one offered is chosen until they change it."
 msgstr ""
@@ -18112,6 +18172,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "The counts match."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
 msgstr ""
 
 #: src/modules/Staff/Service.php
@@ -21703,6 +21767,10 @@ msgstr ""
 msgid "You can add at most 20 IP addresses or ranges."
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "You can create your own license generation plugins for ClientFence. Follow these steps to add a new one:"
 msgstr ""
@@ -21717,6 +21785,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
 msgid "You can print this invoice or export it to a PDF file by clicking on the corresponding button."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -21835,6 +21907,10 @@ msgstr ""
 msgid "You go to :method to pay :amount, then come back here. The invoice is marked paid as soon as :method confirms."
 msgstr ""
 
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "You have :count products already."
 msgstr ""
@@ -21875,7 +21951,7 @@ msgstr ""
 msgid "You have to complete the CAPTCHA to continue"
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php src/modules/Invoice/Api/Admin.php
+#: src/library/Payment/Adapter/ClientBalance.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
 msgid "You may not pay a deposit invoice with this payment gateway."
 msgstr ""
 
@@ -22313,6 +22389,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "created"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
 msgstr ""
 
 #: src/library/ClientFence/Twig/Extension/ClientFenceExtension.php

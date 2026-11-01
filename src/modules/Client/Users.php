@@ -100,7 +100,7 @@ final class Users
         'email' => ['get_list' => 'emails', 'get' => 'emails', 'resend' => 'emails', 'delete' => 'emails'],
         'index' => ['get_dashboard' => '*'],
         'invoice' => [
-            'get_list' => 'invoices', 'get' => 'invoices', 'renewal_invoice' => 'invoices', 'funds_invoice' => 'invoices',
+            'get_list' => 'invoices', 'get' => 'invoices', 'renewal_invoice' => 'invoices', 'funds_invoice' => 'invoices', 'apply_credit' => 'invoices',
             'transaction_get_list' => 'invoices', 'get_tax_rate' => '*',
             'payment_details' => 'invoices', 'receipt_send' => 'invoices', 'statement' => 'invoices', 'statement_pdf' => 'invoices',
             'quote_get_list' => 'quotes',

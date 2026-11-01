@@ -2,7 +2,7 @@
    wallet pages): an online method opens its payment page (invoice/banklink), a manual method
    (Custom and adapters built on it) shows the steps, its instructions from the method's
    settings and a receipt upload that opens a support ticket (Invoice module receipt_send).
-   EGP methods show the total converted at today's rate. The summary beside it lists the lines;
+   EGP methods show the amount due converted at today's rate. The summary beside it lists the lines;
    the details card under it has the seller, the client and the invoice notes.
    Theme setting "Allow Clients to Choose Between One-Time and Subscription Payments": an online
    method that takes both for a subscribable invoice shows both buttons; otherwise one button, and
@@ -28,8 +28,12 @@
 {% set buyer = invoice.buyer %}
 {% set currency = invoice.currency ?? default_currency %}
 {% set unpaid = invoice.status == 'unpaid' %}
-{% set methods = unpaid ? guest.invoice_payment_methods({ amount: invoice.total, currency: currency, subscribable: invoice.subscribable ? 1 : 0 }) : [] %}
+{# ClientFence: a part-paid invoice asks for its balance due (WHMCS). #}
+{% set due = unpaid ? invoice.balance_due : invoice.total %}
+{% set methods = unpaid ? guest.invoice_payment_methods({ amount: due, currency: currency, subscribable: invoice.subscribable ? 1 : 0 }) : [] %}
 {% set profile = client ? client.profile_get : null %}
+{# The client applies part or all of the account credit (WHMCS "Apply credit"); never to an Add funds invoice. #}
+{% set credit = profile and unpaid and due > 0 and profile.balance|default(0) > 0 and (profile.currency ?: currency) == currency and 'deposit' not in invoice.lines|map(l => l.type) ? min(profile.balance, due) : 0 %}
 {# The method the client chose before (the wallet link's ?gateway=, or the one saved on the invoice
    at checkout) is selected first; otherwise the first card. #}
 {% set method_ids = methods|map(m => m.id ~ '') %}
@@ -39,7 +43,7 @@
 {% set status_chip = { unpaid: ['bf-chip-warn', 'Unpaid'|trans], paid: ['bf-chip-ok', 'Paid'|trans], refunded: ['bf-chip-muted', 'Refunded'|trans], canceled: ['bf-chip-muted', 'Canceled'|trans] }[invoice.status]|default(['bf-chip-muted', invoice.status|capitalize]) %}
 
 <div class="bf-pay-page" data-bf-invoice
-     data-hash="{{ invoice.hash }}" data-total="{{ invoice.total }}" data-currency="{{ currency }}"
+     data-hash="{{ invoice.hash }}" data-total="{{ due }}" data-currency="{{ currency }}"
      data-banklink="{{ ('invoice/banklink/' ~ invoice.hash)|url }}">
     <script nonce="{{ csp_nonce }}" type="application/json" data-bf-invoice-texts>{{ {
         egpLine: 'Pay :amount by :method.'|trans,
@@ -61,15 +65,28 @@
 
     <div class="bf-checkout-grid">
         <div class="bf-checkout-main">
+            {% if credit > 0 %}
+                <section class="card bf-card bf-section" aria-labelledby="bf-h-credit">
+                    <h2 id="bf-h-credit">{{ 'Apply credit'|trans }}</h2>
+                    <p class="mb-0">{{ 'You have :amount of credit. Apply all or part of it to this invoice.'|trans({ ':amount': sm.money(profile.balance, currency) }) }}</p>
+                    <form method="post" action="{{ 'invoice/apply_credit'|api_url }}" class="d-flex flex-wrap gap-2 align-items-end" {{ fb_api_form({ redirect: ('invoice/' ~ invoice.hash)|url }) }}>
+                        <input type="hidden" name="hash" value="{{ invoice.hash }}">
+                        <label class="bf-label bf-stack" for="bf-credit-amount">{{ 'Amount'|trans }}
+                            <input class="form-control" id="bf-credit-amount" type="number" name="amount" min="0.01" step="0.01" max="{{ credit }}" value="{{ credit }}" required dir="ltr">
+                        </label>
+                        <button type="submit" class="btn btn-primary">{{ 'Apply credit'|trans }}</button>
+                    </form>
+                </section>
+            {% endif %}
             {% if unpaid %}
                 <div data-bf-pay-choose>
                     <section class="card bf-card bf-section" aria-labelledby="bf-h-how">
                         <h2 id="bf-h-how">{{ 'How would you like to pay?'|trans }}</h2>
-                        {{ include('partials/pay_methods.html.twig', { methods: methods, context: 'invoice', amount: invoice.total, currency: currency, selected: picked }) }}
+                        {{ include('partials/pay_methods.html.twig', { methods: methods, context: 'invoice', amount: due, currency: currency, selected: picked }) }}
                     </section>
 
                     {% for m in methods %}
-                        {% set amount_text = m.quote ? m.quote.currency ~ ' ' ~ m.quote.total : sm.money(invoice.total, currency) %}
+                        {% set amount_text = m.quote ? m.quote.currency ~ ' ' ~ m.quote.total : sm.money(due, currency) %}
                         {% if not m.manual %}
                             {% set banklink = ('invoice/banklink/' ~ invoice.hash ~ '/' ~ m.id)|url %}
                             <section class="card bf-card bf-section" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
@@ -95,7 +112,7 @@
                             <section class="card bf-card bf-section" aria-labelledby="bf-h-steps-{{ m.id }}" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
                                 <h2 id="bf-h-steps-{{ m.id }}">{{ 'Pay by :method'|trans({ ':method': m.title|trans }) }}</h2>
                                 <ol class="bf-steps-list">
-                                    <li>{{ 'Send exactly :amount'|trans({ ':amount': '<strong>' ~ (amount_text|e) ~ '</strong>' })|raw }}{% if m.quote %} ({{ 'that is :amount at today’s rate, rounded up'|trans({ ':amount': sm.money(invoice.total, currency) }) }}){% endif %}.</li>
+                                    <li>{{ 'Send exactly :amount'|trans({ ':amount': '<strong>' ~ (amount_text|e) ~ '</strong>' })|raw }}{% if m.quote %} ({{ 'that is :amount at today’s rate, rounded up'|trans({ ':amount': sm.money(due, currency) }) }}){% endif %}.</li>
                                     <li>{{ 'Use the details below and write :ref as the reference.'|trans({ ':ref': '<strong class="bf-mono" dir="ltr">' ~ (nr|e) ~ '</strong>' })|raw }}</li>
                                     <li>{{ 'Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid.'|trans }}</li>
                                 </ol>
@@ -179,6 +196,13 @@
                     <span>{{ 'Total'|trans }}</span>
                     <strong>{{ sm.money(invoice.total, currency) }}</strong>
                 </div>
+                {% if unpaid and invoice.amount_paid > 0 %}
+                    <div class="bf-line"><span>{{ 'Amount paid'|trans }}</span><span class="bf-line-amount">−{{ sm.money(invoice.amount_paid, currency) }}</span></div>
+                    <div class="bf-total">
+                        <span>{{ 'Balance due'|trans }}</span>
+                        <strong>{{ sm.money(due, currency) }}</strong>
+                    </div>
+                {% endif %}
                 <span class="bf-hint" data-bf-egp-line hidden></span>
                 <dl class="bf-kv bf-kv-row">
                     <dt>{{ 'Billed to'|trans }}</dt><dd>{{ buyer.first_name }} {{ buyer.last_name }}</dd>

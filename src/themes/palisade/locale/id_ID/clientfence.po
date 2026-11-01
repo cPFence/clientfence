@@ -19144,3 +19144,89 @@ msgstr "Biarkan pesanan dan layanan tetap aktif hingga akhir periode yang dibaya
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Hanya layanan yang ditagih per periode yang dapat dibatalkan di akhir periodenya."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "Nota kredit mencatat pengembalian dana. Kembalikan uang sendiri melalui metode pembayaran, kecuali dikembalikan ke kredit."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Penurunan paket memberi kredit akun untuk layanan ini. Kembalikan dana faktur ini secara manual."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Tambahkan jumlah ke kredit klien"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Jumlah dibayar"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Pengembalian dana Tambah Dana mengambil kembali jumlahnya dari kredit klien, dan klien sudah memakainya. Kembalikan dana faktur ini secara manual."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Terapkan Kredit"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Terapkan kredit"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Sisa tagihan"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Kredit hanya dapat diterapkan pada faktur yang belum dibayar."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Kredit hanya dapat dihapus dari faktur yang belum dibayar."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Masukkan jumlah yang lebih besar dari nol."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "Pengembalian dana dilakukan secara manual (Pengaturan Faktur), sehingga pengembalian sebagian tidak dapat dicatat."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Hapus kredit"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Hapus kredit yang diterapkan pada faktur ini?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Klien memiliki kredit :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Kredit dalam :currency dan tidak dapat membayar faktur dalam mata uang lain."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Anda dapat menerapkan paling banyak :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Anda dapat mengembalikan dana paling banyak :amount."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "Anda memiliki kredit :amount. Terapkan seluruhnya atau sebagian ke faktur ini."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "kredit :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "Pengembalian dana dilakukan secara manual (Pengaturan Faktur), sehingga pengembalian dana ini tidak dapat dicatat."

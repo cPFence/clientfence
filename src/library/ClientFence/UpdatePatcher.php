@@ -568,6 +568,7 @@ class UpdatePatcher implements InjectionAwareInterface
             // HTML-escaped values before storing them.
             118 => 'patch118',
             119 => 'patch119',
+            120 => 'patch120',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2600,6 +2601,23 @@ class UpdatePatcher implements InjectionAwareInterface
         }
         if (!$this->tableHasColumn('service_hosting', 'panel_subscription_id')) {
             $this->executeSql('ALTER TABLE `service_hosting` ADD COLUMN `panel_subscription_id` bigint(20) DEFAULT NULL AFTER `panel_org_id`');
+        }
+    }
+
+    private function patch120(): void
+    {
+        // ClientFence core patch: account credit applied to an unpaid invoice (part payments from credit).
+        if (!$this->tableExists('invoice_credit')) {
+            $this->executeSql('CREATE TABLE `invoice_credit` (
+                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `invoice_id` bigint(20) NOT NULL,
+                `client_id` bigint(20) NOT NULL,
+                `amount` decimal(18,2) NOT NULL,
+                `created_at` datetime DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                KEY `invoice_credit_invoice_id_idx` (`invoice_id`),
+                KEY `invoice_credit_client_id_idx` (`client_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;');
         }
     }
 

@@ -283,6 +283,7 @@ describe('handleSubscriptionCreated', function (): void {
 
         $invoiceService = Mockery::mock();
         $invoiceService->shouldReceive('getTotalWithTax')->andReturn(10.00);
+        $invoiceService->shouldReceive('getBalanceDue')->andReturn(10.00);
 
         $subscriptionService = Mockery::mock();
         $subscriptionService->shouldReceive('getSubscriptionPeriod')->andReturn('1M');
@@ -569,6 +570,27 @@ test('skips subscription update webhooks without a local subscription', function
     ]))->toBeFalse();
 });
 
+test('an unpaid first subscription charge records no payment on the setup transaction', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 96;
+    $invoice->client_id = 5;
+    $tx = buildTransaction();
+    $tx->id = 800;
+    $tx->txn_id = 'seti_first';
+    $di = container();
+    $di['db']->shouldNotReceive('store');
+    $this->adapter->setDi($di);
+    $api = Mockery::mock();
+    $api->shouldNotReceive('client_balance_add_funds');
+    // A declined or 3DS first charge leaves the subscription incomplete with an open Stripe invoice.
+    $subscription = Stripe\Subscription::constructFrom(['id' => 'sub_first', 'latest_invoice' => ['id' => 'in_open', 'status' => 'open', 'amount_paid' => 0, 'currency' => 'usd']]);
+
+    invokePrivateMethod($this->adapter, 'processInitialSubscriptionPayment', [$api, $tx, $invoice, $subscription]);
+
+    expect($tx->amount)->toBeNull();
+});
+
 test('credits a subscription first charge once without repaying a settled invoice', function (bool $redirect, bool $alreadyPaid, string $billingReason): void {
     $invoice = new Model_Invoice();
     $invoice->loadBean(new DummyBean());
@@ -641,7 +663,8 @@ test('credits a subscription first charge once without repaying a settled invoic
 
         invokePrivateMethod($this->adapter, 'processInitialSubscriptionPayment', [$api, $tx, $invoice, $subscription]);
 
-        expect($payments->fetchOne('SELECT txn_id FROM payment WHERE id = 800'))->toBe('in_first');
+        expect($payments->fetchOne('SELECT txn_id FROM payment WHERE id = 800'))->toBe('in_first')
+            ->and($tx->amount)->toBe(10.0);
     }
     foreach ([801, 802] as $id) {
         $tx = buildTransaction();
@@ -1186,6 +1209,7 @@ describe('handlePaymentIntentSucceededWebhook', function (): void {
 
         $invoiceService = Mockery::mock();
         $invoiceService->shouldReceive('getTotalWithTax')->andReturn(29.99);
+        $invoiceService->shouldReceive('getBalanceDue')->andReturn(29.99);
         $invoiceService->shouldReceive('validatePaymentAmount')
             ->once()
             ->with(Mockery::on(fn (mixed $amount): bool => is_float($amount) && $amount === 29.99), 29.99)
@@ -2431,7 +2455,8 @@ describe('Stripe webhook gateway ownership', function (): void {
         $dbMock->shouldReceive('getAll')->once()->andReturn([['title' => 'Hosting']]);
 
         $invoiceService = Mockery::mock();
-        $invoiceService->shouldReceive('getTotalWithTax')->once()->andReturn(15.00);
+        $invoiceService->shouldReceive('getTotalWithTax')->andReturn(15.00);
+        $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(15.00);
 
         $di = container();
         $di['db'] = $dbMock;
@@ -2576,7 +2601,8 @@ test('credits a distinct payment for an already paid invoice once', function (st
     $transactionService->shouldReceive('claimForProcessing')->with(600)
         ->times($method === 'applyOneTimePayment' ? 2 : 1)->andReturn(true, false);
     $invoiceService = Mockery::mock();
-    $invoiceService->shouldReceive('getTotalWithTax')->once()->with($invoice)->andReturn(50.0);
+    $invoiceService->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(50.0);
+    $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(50.0);
     $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(50.0, 50.0);
     $invoiceService->shouldNotReceive('payInvoiceWithCredits', 'markAsPaid', 'approveInvoice');
     $clientService = Mockery::mock();
@@ -2623,7 +2649,8 @@ test('a transaction retried after paying its invoice reuses its balance credit',
             $balanceDb->insert('client_balance', ['type' => $data['type'], 'rel_id' => $data['rel_id'], 'amount' => $amount]);
         });
     $invoiceService = Mockery::mock();
-    $invoiceService->shouldReceive('getTotalWithTax')->twice()->with($invoice)->andReturn(50.0);
+    $invoiceService->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(50.0);
+    $invoiceService->shouldReceive('getBalanceDue')->twice()->andReturn(50.0);
     $invoiceService->shouldReceive('validatePaymentAmount')->twice()->with(50.0, 50.0);
     $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->with($invoice)->andReturnFalse();
     $invoiceService->shouldReceive('payInvoiceWithCredits')->once()->with($invoice)

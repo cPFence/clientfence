@@ -206,7 +206,7 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 }
 
                 if ($invoiceDbModel instanceof Model_Invoice) {
-                    $expected = $invoiceService->getTotalWithTax($invoiceDbModel);
+                    $expected = $invoiceService->getBalanceDue($invoiceDbModel);
                     $invoiceService->validatePaymentAmount((float) $ipn['mc_gross'], $expected);
                 }
 
@@ -674,6 +674,11 @@ document.addEventListener('DOMContentLoaded', function() {
         $data['cmd'] = '_xclick';
         $data['amount'] = $this->moneyFormat($invoice['subtotal'], $invoice['currency']);
         $data['tax'] = $this->moneyFormat($invoice['tax'], $invoice['currency']);
+        // ClientFence core patch: a part-paid invoice asks for its balance due.
+        if (($invoice['amount_paid'] ?? 0) > 0 && $invoice['status'] === Model_Invoice::STATUS_UNPAID) {
+            $data['amount'] = $this->moneyFormat($invoice['balance_due'], $invoice['currency']);
+            $data['tax'] = $this->moneyFormat(0, $invoice['currency']);
+        }
         $data['bn'] = 'ClientFence_SP';
         $data['charset'] = 'utf-8';
 

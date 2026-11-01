@@ -18977,3 +18977,89 @@ msgstr "A megrendelés és a szolgáltatás a kifizetett időszak végéig aktí
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Csak az időszakonként számlázott szolgáltatás mondható le az időszaka végén."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "A jóváíró számla rögzíti a visszatérítést. A pénzt a fizetési módon keresztül Ön küldje vissza, hacsak nem az egyenlegre kerül."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "A visszaváltás egyenleget írt jóvá ehhez a szolgáltatáshoz. Térítse vissza ezt a számlát kézzel."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Az összeg hozzáadása az ügyfél egyenlegéhez"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Befizetett összeg"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Az Egyenleg feltöltése visszatérítése levonja az összegét az ügyfél egyenlegéből, az ügyfél pedig elköltötte. Térítse vissza ezt a számlát kézzel."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Egyenleg felhasználása"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Egyenleg felhasználása"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Fennmaradó összeg"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Az egyenleg csak kifizetetlen számlára használható fel."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Az egyenleg csak kifizetetlen számláról vonható vissza."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Nullánál nagyobb összeget adjon meg."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "A visszatérítéseket kézzel kell intézni (Számlabeállítások), ezért részleges visszatérítés nem rögzíthető."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Egyenleg visszavonása"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Visszavonja a számlára felhasznált egyenleget?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Az ügyfél egyenlege :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Az egyenleg :currency pénznemben van, és nem fizethet ki más pénznemű számlát."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Legfeljebb :amount használható fel."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Legfeljebb :amount téríthető vissza."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "Az egyenlege :amount. Használja fel egészben vagy részben erre a számlára."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "egyenleg :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "A visszatérítéseket kézzel kell intézni (Számlabeállítások), ezért ez a visszatérítés nem rögzíthető."

@@ -556,7 +556,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         }
 
         if ($deep) {
-            $details['balance'] = $this->getClientBalanceFromEntity($client);
+            // ClientFence core patch: the credit the client can spend (WHMCS); part payments wait on their invoices.
+            $details['balance'] = round($this->getClientBalanceFromEntity($client) - $this->di['mod_service']('Invoice')->getReservedCredit((int) $client->getId()), 2);
         }
 
         if ($isAdmin) {
@@ -662,7 +663,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         }
 
         if ($deep) {
-            $details['balance'] = $this->getClientBalance($client);
+            $details['balance'] = round($this->getClientBalance($client) - $this->di['mod_service']('Invoice')->getReservedCredit((int) $client->id), 2);
         }
 
         if ($isAdmin) {
@@ -1032,7 +1033,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             'currency' => $client['currency'],
             'invoices' => $invoices,
             'gross_revenue' => $invoices['paid']['total'],
-            'credit_balance' => (float) $db->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM client_balance WHERE client_id = ?', [$clientId]),
+            'credit_balance' => $this->di['mod_service']('Invoice')->getFreeCredit($clientId),
             'services' => array_column(array_map(static fn (array $row): array => ['type' => $row['type'], 'active' => (int) $row['active'], 'total' => (int) $row['total']], $services), null, 'type'),
             'addon_count' => (int) array_sum(array_column($services, 'addons')),
             'open_quotes' => (int) $db->fetchOne('SELECT COUNT(*) FROM invoice_quote WHERE client_id = ? AND stage IN (?, ?, ?)', [$clientId, ...\ClientFence\Mod\Invoice\Quotes::OPEN_STAGES]),

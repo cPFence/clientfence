@@ -57,7 +57,7 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         foreach ($pager['list'] as $key => $clientArr) {
             $clientContext = $context[(int) $clientArr['id']] ?? ['balance' => 0.0, 'group' => null];
-            $pager['list'][$key]['balance'] = $clientContext['balance'];
+            $pager['list'][$key]['balance'] = round($clientContext['balance'] - $this->getDi()['mod_service']('Invoice')->getReservedCredit((int) $clientArr['id']), 2);
             $pager['list'][$key]['group'] = $clientContext['group'];
         }
 

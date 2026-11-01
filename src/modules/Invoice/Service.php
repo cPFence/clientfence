@@ -359,6 +359,11 @@ class Service implements InjectionAwareInterface
         $result['subtotal'] = $total;
         $result['total'] = $total + $tax;
         $result['status'] = $row['status'];
+        // ClientFence core patch: what an unpaid invoice has received and its balance due (WHMCS).
+        $unpaid = $row['status'] === \Model_Invoice::STATUS_UNPAID;
+        $result['amount_paid'] = $unpaid ? min($this->getAmountPaid($invoice), round($result['total'], 2)) : (in_array($row['status'], [\Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED], true) ? $result['total'] : 0.0);
+        $result['balance_due'] = $unpaid ? max(0.0, round($result['total'] - $result['amount_paid'], 2)) : 0.0;
+        $result['credit_applied'] = $unpaid ? round((float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM invoice_credit WHERE invoice_id = ?', [$invoice->id]), 2) : 0.0;
         $result['notes'] = $row['notes'] ?? null;
         $result['text_1'] = $row['text_1'] ?? null;
         $result['text_2'] = $row['text_2'] ?? null;
@@ -882,7 +887,8 @@ class Service implements InjectionAwareInterface
         $transactionId = isset($data['transactionId']) ? trim((string) $data['transactionId']) : null;
         $invoiceTotal = $this->getTotalWithTax($invoice);
         $isDeposit = $this->isInvoiceTypeDeposit($invoice);
-        $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ? AND COALESCE(txn_status, \'\') <> ?', [$invoice->id, \Model_Transaction::STATUS_PROCESSED, 'imported']);
+        // What is above the total (staff lowered it) stays on the balance as credit.
+        $credited = min($this->getAmountPaid($invoice), round($invoiceTotal, 2));
         // ClientFence core patch: processed transfers have already credited the client's balance (imported WHMCS payments did not:
         // the import subtracts them on the invoice itself).
         if ($isDeposit) {
@@ -1321,7 +1327,8 @@ class Service implements InjectionAwareInterface
                 return false;
             }
             $cbrepo = $this->di['mod_service']('Client', 'Balance');
-            $balance = $cbrepo->getClientBalance($client);
+            // ClientFence core patch: what other unpaid invoices have received waits for them (WHMCS keeps it on the invoice).
+            $balance = $cbrepo->getClientBalance($client) - $this->getReservedCredit($clientId, (int) $invoice->id);
             $required = $this->getTotalWithTax($invoice);
             // Compare at two-decimal monetary scale: balances are DECIMAL(18,2) sums while the
             // total is float arithmetic, so e.g. 0.30 and 0.1 * 3 differ as raw floats.
@@ -1371,6 +1378,92 @@ class Service implements InjectionAwareInterface
         $this->executeInvoiceItemTasks($invoice);
 
         return true;
+    }
+
+    /** The payments and applied credit of an invoice (imported WHMCS payments are netted on the invoice itself). */
+    private const PAID_SQL = "((SELECT COALESCE(SUM(tx.amount), 0) FROM `transaction` tx WHERE tx.invoice_id = m.id AND tx.status = 'processed' AND COALESCE(tx.txn_status, '') <> 'imported')
+            + (SELECT COALESCE(SUM(ic.amount), 0) FROM invoice_credit ic WHERE ic.invoice_id = m.id))";
+
+    /**
+     * ClientFence core patch: what an invoice has received (WHMCS "amount paid"). Payments and applied credit wait in
+     * the client's balance, set aside for the invoice, until it is paid.
+     */
+    public function getAmountPaid(\Model_Invoice $invoice): float
+    {
+        return round((float) $this->di['dbal']->fetchOne('SELECT ' . self::PAID_SQL . ' FROM invoice m WHERE m.id = ?', [$invoice->id]), 2);
+    }
+
+    public function getBalanceDue(\Model_Invoice $invoice): float
+    {
+        return max(0.0, round($this->getTotalWithTax($invoice) - $this->getAmountPaid($invoice), 2));
+    }
+
+    /** The part of the client's balance set aside for their unpaid invoices (other than $exceptInvoiceId). */
+    public function getReservedCredit(int $clientId, int $exceptInvoiceId = 0): float
+    {
+        return round((float) $this->di['dbal']->fetchOne(
+            'SELECT COALESCE(SUM(LEAST(paid, total)), 0) FROM (SELECT ' . self::PAID_SQL . ' AS paid, ' . self::TOTAL_WITH_TAX_SQL . ' AS total
+             FROM invoice m WHERE m.client_id = ? AND m.status = ? AND m.id <> ?
+             AND NOT EXISTS (SELECT 1 FROM invoice_item d WHERE d.invoice_id = m.id AND d.type = ?)) x',
+            [$clientId, \Model_Invoice::STATUS_UNPAID, $exceptInvoiceId, \Model_InvoiceItem::TYPE_DEPOSIT],
+        ), 2);
+    }
+
+    /** WHMCS "credit balance": the balance less what is set aside for unpaid invoices. */
+    public function getFreeCredit(int $clientId): float
+    {
+        return round((float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM client_balance WHERE client_id = ?', [$clientId]) - $this->getReservedCredit($clientId), 2);
+    }
+
+    /** ClientFence core patch: WHMCS "Apply Credit": any part of the client's free credit, up to the balance due. */
+    public function applyCredit(\Model_Invoice $invoice, float $amount): bool
+    {
+        $amount = round($amount, 2);
+        if ($amount <= 0) {
+            throw new InformationException('Enter an amount greater than zero.');
+        }
+        $covered = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $amount): bool {
+            $current = $this->di['dbal']->fetchAssociative('SELECT * FROM invoice WHERE id = ?', [$invoice->id]);
+            if ($current === false || $current['status'] !== \Model_Invoice::STATUS_UNPAID) {
+                throw new InformationException('Credit can only be applied to an unpaid invoice.');
+            }
+            foreach ($current as $column => $value) {
+                $invoice->{$column} = $value;
+            }
+            if ($this->isInvoiceTypeDeposit($invoice)) {
+                throw new InformationException('You may not pay a deposit invoice with this payment gateway.');
+            }
+            $client = $this->di['db']->getExistingModelById('Client', (int) $invoice->client_id, 'Client not found');
+            if (strtoupper((string) $client->currency) !== strtoupper((string) $invoice->currency)) {
+                throw new InformationException('The credit is in :currency and cannot pay an invoice in another currency.', [':currency' => $client->currency]);
+            }
+            $due = $this->getBalanceDue($invoice);
+            $max = min($due, $this->getFreeCredit((int) $client->id));
+            if ($amount > $max) {
+                throw new InformationException('You can apply at most :amount.', [':amount' => number_format(max(0.0, $max), 2) . ' ' . $invoice->currency]);
+            }
+            $this->di['dbal']->insert('invoice_credit', ['invoice_id' => $invoice->id, 'client_id' => $client->id, 'amount' => $amount, 'created_at' => date('Y-m-d H:i:s')]);
+
+            return $amount >= $due;
+        });
+        if ($covered) {
+            $this->tryPayWithCredits($invoice);
+        }
+
+        return true;
+    }
+
+    /** Staff take the credit applied to an unpaid invoice back to the client's free credit. */
+    public function removeCredit(\Model_Invoice $invoice): bool
+    {
+        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice): bool {
+            if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) !== \Model_Invoice::STATUS_UNPAID) {
+                throw new InformationException('Credit can only be removed from an unpaid invoice.');
+            }
+            $this->di['dbal']->delete('invoice_credit', ['invoice_id' => $invoice->id]);
+
+            return true;
+        });
     }
 
     public function getTotalWithTax(\Model_Invoice $invoice): float
@@ -1449,17 +1542,88 @@ class Service implements InjectionAwareInterface
         return $total + ($rate > 0 ? round($taxable * $rate / 100, 2) : 0.0);
     }
 
-    public function refundInvoice(\Model_Invoice $invoice, $note = null): ?int
+    /**
+     * ClientFence core patch: WHMCS refunds: an amount (default: what is left to refund) and, optionally, to the
+     * client's credit. A part refund keeps the invoice paid until its refunds reach the total.
+     */
+    public function refundInvoice(\Model_Invoice $invoice, $note = null, ?float $amount = null, bool $toCredit = false): ?int
     {
         // ClientFence core patch: under the client's credit lock, and the status is read again there: a
         // refund sent twice made two credit notes and debited a refunded Add funds twice.
-        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $note): ?int {
+        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $note, $amount, $toCredit): ?int {
             if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === \Model_Invoice::STATUS_REFUNDED) {
                 throw new InformationException('Only a paid invoice can be refunded, and only once.');
             }
+            $refunded = round((float) $this->di['dbal']->fetchOne('SELECT refund FROM invoice WHERE id = ?', [$invoice->id]), 2);
+            if (($toCredit || $refunded > 0 || ($amount !== null && round($amount, 2) !== round($this->getTotalWithTax($invoice), 2))) && $this->di['mod_service']('system')->getParamValue('invoice_refund_logic', 'manual') === 'manual') {
+                throw new InformationException('Refunds are handled by hand (Invoice settings), so this refund cannot be recorded.');
+            }
+            if ($refunded <= 0 && ($amount === null || round($amount, 2) === round($this->getTotalWithTax($invoice), 2))) {
+                $result = $this->refundInvoiceLocked($invoice, $note);
+                if ($toCredit && $result !== null) {
+                    $this->refundToCredit($invoice, round($this->getTotalWithTax($invoice), 2), $result);
+                }
 
-            return $this->refundInvoiceLocked($invoice, $note);
+                return $result;
+            }
+
+            return $this->refundPartLocked($invoice, $amount ?? round($this->getTotalWithTax($invoice) - $refunded, 2), $refunded, (string) $note, $toCredit);
         });
+    }
+
+    private function refundPartLocked(\Model_Invoice $invoice, float $amount, float $refunded, string $note, bool $toCredit): int
+    {
+        if ($invoice->status !== \Model_Invoice::STATUS_PAID) {
+            throw new InformationException('Only a paid invoice can be refunded, and only once.');
+        }
+        $total = round($this->getTotalWithTax($invoice), 2);
+        $amount = round($amount, 2);
+        if ($amount <= 0 || $amount > round($total - $refunded, 2)) {
+            throw new InformationException('You can refund at most :amount.', [':amount' => number_format(max(0.0, $total - $refunded), 2) . ' ' . $invoice->currency]);
+        }
+        // A downgrade credit of the service is settled by the full refund (or by hand), not by a part refund.
+        if ($this->di['db']->getCell(
+            "SELECT 1 FROM invoice cn JOIN invoice_item ci ON ci.invoice_id = cn.id JOIN invoice_item ii ON ii.rel_id = ci.rel_id AND ii.type = 'order'
+             WHERE ii.invoice_id = ? AND ci.task = ? AND cn.created_at >= ? LIMIT 1",
+            [$invoice->id, self::CREDIT_NOTE_TASK, (string) ($invoice->paid_at ?: $invoice->created_at)],
+        )) {
+            throw new InformationException('A downgrade gave account credit for this service. Refund this invoice by hand.');
+        }
+        $deposit = $this->isInvoiceTypeDeposit($invoice);
+        if ($deposit && ($toCredit || $this->getFreeCredit((int) $invoice->client_id) < $amount)) {
+            throw new InformationException('An Add funds refund takes its amount back from the client\'s credit, and the client has spent it. Refund this invoice by hand.');
+        }
+
+        $label = $invoice->serie . $invoice->nr;
+        $rate = (float) $invoice->taxrate;
+        // shortcut: the refund is taxed as a whole when the invoice has tax; mixed taxed and untaxed lines need a refund by hand.
+        $taxed = $rate > 0 && $this->getTax($invoice) > 0;
+        $creditNote = $this->creditNote((int) $invoice->id, 'Refund of invoice ' . $label, $taxed ? $amount / (1 + $rate / 100) : $amount, $taxed, $note !== '' ? $note : "Refund for #{$invoice->id} invoice.");
+        if ($deposit) {
+            $now = date('Y-m-d H:i:s');
+            $this->di['dbal']->insert('client_balance', ['client_id' => (int) $invoice->client_id, 'type' => 'invoice', 'rel_id' => (string) $creditNote, 'description' => 'Refund of invoice ' . $label, 'amount' => -$amount, 'created_at' => $now, 'updated_at' => $now]);
+        } elseif ($toCredit) {
+            $this->refundToCredit($invoice, $amount, $creditNote);
+        }
+
+        $invoice->refund = round($refunded + $amount, 2);
+        if ($invoice->refund >= $total) {
+            $invoice->status = \Model_Invoice::STATUS_REFUNDED;
+        }
+        $invoice->updated_at = date('Y-m-d H:i:s');
+        $this->countIncome($invoice);
+        $this->addNote($invoice, 'Refunded ' . number_format($amount, 2) . ' ' . $invoice->currency . ($toCredit ? ' to account credit' : '') . ", credit note #{$creditNote}.");
+
+        return $creditNote;
+    }
+
+    private function refundToCredit(\Model_Invoice $invoice, float $amount, int $creditNote): void
+    {
+        if ($this->isInvoiceTypeDeposit($invoice)) {
+            return;
+        }
+        $now = date('Y-m-d H:i:s');
+        $this->di['dbal']->insert('client_balance', ['client_id' => (int) $invoice->client_id, 'type' => 'invoice', 'rel_id' => (string) $creditNote, 'description' => 'Refund of invoice ' . $invoice->serie . $invoice->nr . ' to account credit', 'amount' => $amount, 'created_at' => $now, 'updated_at' => $now]);
     }
 
     private function refundInvoiceLocked(\Model_Invoice $invoice, $note = null): ?int
@@ -1598,8 +1762,22 @@ class Service implements InjectionAwareInterface
                 }
                 if ($takeBack > 0) {
                     $client = $this->di['db']->getExistingModelById('Client', (int) $invoice->client_id, 'Client not found');
-                    if (round($this->di['mod_service']('Client', 'Balance')->getClientBalance($client), 2) < $takeBack) {
+                    if (round($this->di['mod_service']('Client', 'Balance')->getClientBalance($client) - $this->getReservedCredit((int) $invoice->client_id), 2) < $takeBack) {
                         throw new InformationException('A downgrade already gave :amount of this invoice back as account credit, and the client has spent it. Refund this invoice by hand.', [':amount' => number_format($takeBack, 2) . ' ' . $invoice->currency]);
+                    }
+                }
+
+                // ClientFence core patch: the credit an Add funds invoice added may be spent or set aside for unpaid invoices.
+                $deposit = 0.0;
+                if ($this->isInvoiceTypeDeposit($invoice)) {
+                    $depositItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
+                    foreach ($this->di['db']->find('InvoiceItem', 'invoice_id = ?', [$invoice->id]) as $item) {
+                        if ($item->type == \Model_InvoiceItem::TYPE_DEPOSIT) {
+                            $deposit += $depositItemService->getTotalWithTax($item);
+                        }
+                    }
+                    if ($deposit > 0 && $this->getFreeCredit((int) $invoice->client_id) < round($deposit, 2)) {
+                        throw new InformationException('An Add funds refund takes its amount back from the client\'s credit, and the client has spent it. Refund this invoice by hand.');
                     }
                 }
 
@@ -1658,25 +1836,16 @@ class Service implements InjectionAwareInterface
 
                 // ClientFence core patch: refunding a paid wallet top-up (Add funds) left its amount on the
                 // client's balance, so the client could still spend money that was paid back.
-                if ($this->isInvoiceTypeDeposit($invoice)) {
-                    $depositItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
-                    $deposit = 0.0;
-                    foreach ($invoiceItems as $item) {
-                        if ($item->type == \Model_InvoiceItem::TYPE_DEPOSIT) {
-                            $deposit += $depositItemService->getTotalWithTax($item);
-                        }
-                    }
-                    if ($deposit > 0) {
-                        $refundBalance = $this->di['db']->dispense('ClientBalance');
-                        $refundBalance->client_id = $invoice->client_id;
-                        $refundBalance->type = 'invoice';
-                        $refundBalance->rel_id = $new->id;
-                        $refundBalance->description = 'Refund of invoice ' . $invoice->serie . $invoice->nr;
-                        $refundBalance->amount = -round($deposit, 2);
-                        $refundBalance->created_at = date('Y-m-d H:i:s');
-                        $refundBalance->updated_at = date('Y-m-d H:i:s');
-                        $this->di['db']->store($refundBalance);
-                    }
+                if ($deposit > 0) {
+                    $refundBalance = $this->di['db']->dispense('ClientBalance');
+                    $refundBalance->client_id = $invoice->client_id;
+                    $refundBalance->type = 'invoice';
+                    $refundBalance->rel_id = $new->id;
+                    $refundBalance->description = 'Refund of invoice ' . $invoice->serie . $invoice->nr;
+                    $refundBalance->amount = -round($deposit, 2);
+                    $refundBalance->created_at = date('Y-m-d H:i:s');
+                    $refundBalance->updated_at = date('Y-m-d H:i:s');
+                    $this->di['db']->store($refundBalance);
                 }
 
                 if ($takeBack > 0) {
@@ -1831,7 +2000,7 @@ class Service implements InjectionAwareInterface
             throw new InformationException('Use Mark as Paid to record payment for an Add Funds invoice.');
         }
         // ClientFence core patch: Manage uses the recorded payments of a partly paid invoice it sets to Paid (the rest is written off).
-        $credited = $markPaid ? (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ? AND COALESCE(txn_status, \'\') <> ?', [$model->id, \Model_Transaction::STATUS_PROCESSED, 'imported']) : 0.0;
+        $credited = $markPaid ? $this->getAmountPaid($model) : 0.0;
         if ($newStatus !== $previousStatus && ($this->isBooked($model) || $newStatus === \Model_Invoice::STATUS_REFUNDED)) {
             throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
         }
@@ -1928,8 +2097,14 @@ class Service implements InjectionAwareInterface
 
         // ClientFence core patch: a paid status saved on Manage needs the same payment event and tasks.
         if ($markPaid) {
-            $this->useRecordedPayments($model, $credited);
+            // Capped at the total this save leaves (it can change the lines and the tax rate).
+            $this->useRecordedPayments($model, min($credited, round($this->getTotalWithTax($model), 2)));
             $this->markAsPaid($model, false);
+        }
+
+        // ClientFence core patch: cancelling an invoice gave its applied credit back; a reopened one starts without it.
+        if ($previousStatus === \Model_Invoice::STATUS_CANCELED && $model->status === \Model_Invoice::STATUS_UNPAID) {
+            $this->di['dbal']->delete('invoice_credit', ['invoice_id' => $model->id]);
         }
 
         if ($previousStatus === \Model_Invoice::STATUS_UNPAID && $model->status === \Model_Invoice::STATUS_CANCELED) {

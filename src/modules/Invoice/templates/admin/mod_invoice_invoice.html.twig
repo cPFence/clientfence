@@ -91,6 +91,28 @@
                                     <td class="text-end">{{ 'Total'|trans }}</td>
                                     <td>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</td>
                                 </tr>
+                                {% if invoice.refund|default(0) > 0 %}
+                                <tr>
+                                    <td class="text-end">{{ 'Refunded'|trans }}</td>
+                                    <td>{{ invoice.refund|format_currency(invoice.currency ?? default_currency) }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if invoice.status == 'unpaid' and invoice.amount_paid > 0 %}
+                                <tr>
+                                    <td class="text-end">{{ 'Amount paid'|trans }}</td>
+                                    <td>
+                                        {{ invoice.amount_paid|format_currency(invoice.currency ?? default_currency) }}
+                                        {% if invoice.credit_applied > 0 %}
+                                            ({{ 'credit :amount'|trans({ ':amount': invoice.credit_applied|format_currency(invoice.currency ?? default_currency) }) }},
+                                            <a href="#" {{ fb_api_link({href: 'invoice/remove_credit'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Remove the credit applied to this invoice?'|trans}, reload: true}) }}>{{ 'Remove credit'|trans }}</a>)
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">{{ 'Balance due'|trans }}</td>
+                                    <td><strong>{{ invoice.balance_due|format_currency(invoice.currency ?? default_currency) }}</strong></td>
+                                </tr>
+                                {% endif %}
                                 <tr>
                                     <td class="text-end">{{ 'Currency'|trans }}</td>
                                     <td>{{ invoice.currency|currency_name }}</td>
@@ -151,6 +173,36 @@
                             </svg>
                             <span>{{ 'Mark as Paid'|trans }}</span>
                         </a>
+                        {# ClientFence core patch: WHMCS "Apply Credit": part or all of the client's credit. #}
+                        {% set client_credit = invoice.client_credit|default(0) %}
+                        {% if client_credit > 0 and invoice.balance_due > 0 and 'deposit' not in invoice.lines|map(l => l.type) %}
+                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#creditModal">
+                            <svg class="icon" width="24" height="24">
+                                <use href="#currency-dollar" />
+                            </svg>
+                            <span>{{ 'Apply Credit'|trans }}</span>
+                        </a>
+                        <div class="modal fade" id="creditModal" tabindex="-1" aria-labelledby="creditModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form class="modal-content" method="post" action="{{ 'invoice/apply_credit'|api_url }}" {{ fb_api_form({reload: true}) }}>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="creditModalLabel">{{ 'Apply Credit'|trans }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="id" value="{{ invoice.id }}">
+                                <label class="form-label" for="credit-amount">{{ 'Amount'|trans }}</label>
+                                <input class="form-control" type="number" name="amount" id="credit-amount" min="0.01" step="0.01" max="{{ min(client_credit, invoice.balance_due) }}" value="{{ min(client_credit, invoice.balance_due) }}" required>
+                                <p class="text-secondary mb-0 mt-2">{{ 'The client has :amount of credit.'|trans({ ':amount': client_credit|format_currency(invoice.currency ?? default_currency) }) }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</a>
+                                <input type="submit" class="btn btn-primary" value="{{ 'Apply Credit'|trans }}">
+                            </div>
+                            </form>
+                        </div>
+                        </div>
+                        {% endif %}
                         <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <form class="modal-content" method="post" action="{{ 'invoice/mark_as_paid'|api_url(query: { 'id': invoice.id, 'execute': 1 }) }}" name="transactionForm" {{ fb_api_form({action: 'invoice/mark_as_paid'|api_url(query: {id: invoice.id, execute: 1}), reload: true}) }}>
@@ -191,13 +243,42 @@
                         {% endif %}
 
                         {% if invoice.status == 'paid' %}
-                        <a class="btn btn-primary"
-                            {{ fb_api_link({href: 'invoice/refund'|api_url(query: {'id': invoice.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'invoice'|url}) }}>
+                        {# ClientFence core patch: WHMCS refunds: an amount (all or part) and, optionally, to the client's credit. #}
+                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#refundModal">
                             <svg class="icon" width="24" height="24">
                                 <use href="#receipt-refund" />
                             </svg>
                             <span>{{ 'Refund'|trans }}</span>
                         </a>
+                        <div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form class="modal-content" method="post" action="{{ 'invoice/refund'|api_url }}" {{ fb_api_form({reload: true}) }}>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="refundModalLabel">{{ 'Refund'|trans }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body d-flex flex-column gap-3">
+                                <input type="hidden" name="id" value="{{ invoice.id }}">
+                                {% set refundable = invoice.total - invoice.refund|default(0) %}
+                                <div>
+                                    <label class="form-label" for="refund-amount">{{ 'Amount'|trans }}</label>
+                                    <input class="form-control" type="number" name="amount" id="refund-amount" min="0.01" step="0.01" max="{{ refundable|round(2) }}" value="{{ refundable|round(2) }}" required>
+                                </div>
+                                {% if 'deposit' not in invoice.lines|map(l => l.type) %}
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="to_credit" value="1">
+                                    <span class="form-check-label">{{ 'Add the amount to the client\'s credit'|trans }}</span>
+                                </label>
+                                {% endif %}
+                                <p class="text-secondary mb-0">{{ 'A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit.'|trans }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</a>
+                                <input type="submit" class="btn btn-primary" value="{{ 'Refund'|trans }}">
+                            </div>
+                            </form>
+                        </div>
+                        </div>
                         {% endif %}
                         {# ClientFence: PDF language links keep the admin's current interface language. #}
                         <div class="btn-group">

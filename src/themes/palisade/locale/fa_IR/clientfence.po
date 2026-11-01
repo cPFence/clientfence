@@ -18498,3 +18498,89 @@ msgstr "سفارش و سرویس تا پایان دوره پرداخت‌شده 
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "فقط سرویسی که به‌صورت دوره‌ای صورتحساب می‌شود را می‌توان در پایان دوره‌اش لغو کرد."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "اعلامیه بستانکار، بازپرداخت را ثبت می‌کند. پول را خودتان از طریق روش پرداخت برگردانید، مگر اینکه به اعتبار برود."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "تنزل بسته برای این سرویس اعتبار حساب داد. این فاکتور را دستی بازپرداخت کنید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "افزودن مبلغ به اعتبار مشتری"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "مبلغ پرداخت‌شده"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "بازپرداخت «افزودن اعتبار»، مبلغ آن را از اعتبار مشتری کم می‌کند و مشتری آن را خرج کرده است. این فاکتور را دستی بازپرداخت کنید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "اعمال اعتبار"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "اعمال اعتبار"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "مانده قابل پرداخت"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "اعتبار فقط روی فاکتور پرداخت‌نشده قابل اعمال است."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "اعتبار فقط از فاکتور پرداخت‌نشده قابل حذف است."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "مبلغی بزرگ‌تر از صفر وارد کنید."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "بازپرداخت‌ها دستی انجام می‌شوند (تنظیمات فاکتور)، پس بازپرداخت جزئی قابل ثبت نیست."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "حذف اعتبار"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "اعتبار اعمال‌شده روی این فاکتور حذف شود؟"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "مشتری :amount اعتبار دارد."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "اعتبار به :currency است و نمی‌تواند فاکتوری با ارز دیگر را پرداخت کند."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "حداکثر می‌توانید :amount اعمال کنید."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "حداکثر می‌توانید :amount بازپرداخت کنید."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "شما :amount اعتبار دارید. همه یا بخشی از آن را روی این فاکتور اعمال کنید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "اعتبار :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "بازپرداخت‌ها دستی انجام می‌شوند (تنظیمات فاکتور)، پس این بازپرداخت قابل ثبت نیست."

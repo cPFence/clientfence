@@ -19064,3 +19064,89 @@ msgstr "Η παραγγελία και η υπηρεσία παραμένουν 
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Μόνο μια υπηρεσία με χρέωση ανά περίοδο μπορεί να ακυρωθεί στο τέλος της περιόδου της."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "Το πιστωτικό τιμολόγιο καταγράφει την επιστροφή. Επιστρέψτε μόνοι σας τα χρήματα μέσω της μεθόδου πληρωμής, εκτός αν πηγαίνουν στην πίστωση."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Η υποβάθμιση έδωσε πίστωση λογαριασμού για αυτή την υπηρεσία. Επιστρέψτε αυτό το παραστατικό χειροκίνητα."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Προσθήκη του ποσού στην πίστωση του πελάτη"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Ποσό που πληρώθηκε"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Η επιστροφή μιας Προσθήκης χρημάτων αφαιρεί το ποσό της από την πίστωση του πελάτη, και ο πελάτης την έχει ξοδέψει. Επιστρέψτε αυτό το παραστατικό χειροκίνητα."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Εφαρμογή πίστωσης"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Εφαρμογή πίστωσης"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Υπόλοιπο πληρωμής"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Η πίστωση μπορεί να εφαρμοστεί μόνο σε απλήρωτο παραστατικό."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Η πίστωση μπορεί να αφαιρεθεί μόνο από απλήρωτο παραστατικό."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Εισαγάγετε ποσό μεγαλύτερο από το μηδέν."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "Οι επιστροφές χρημάτων γίνονται χειροκίνητα (Ρυθμίσεις παραστατικών), επομένως δεν μπορεί να καταγραφεί μερική επιστροφή."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Αφαίρεση πίστωσης"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Να αφαιρεθεί η πίστωση που εφαρμόστηκε σε αυτό το παραστατικό;"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Ο πελάτης έχει πίστωση :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Η πίστωση είναι σε :currency και δεν μπορεί να πληρώσει παραστατικό σε άλλο νόμισμα."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Μπορείτε να εφαρμόσετε το πολύ :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Μπορείτε να επιστρέψετε το πολύ :amount."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "Έχετε πίστωση :amount. Εφαρμόστε την εξ ολοκλήρου ή εν μέρει σε αυτό το παραστατικό."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "πίστωση :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "Οι επιστροφές χρημάτων γίνονται χειροκίνητα (Ρυθμίσεις παραστατικών), επομένως αυτή η επιστροφή δεν μπορεί να καταγραφεί."

@@ -92,7 +92,11 @@ final class InvoicePdf
         if (($invoice['discount'] ?? 0) > 0) {
             $html .= $total(__trans('Discount'), $invoice['discount']);
         }
-        $html .= $total(__trans('Total'), $invoice['total']) . '</table>';
+        $html .= $total(__trans('Total'), $invoice['total']);
+        if ($invoice['status'] === \Model_Invoice::STATUS_UNPAID && ($invoice['amount_paid'] ?? 0) > 0) {
+            $html .= $total(__trans('Amount paid'), -$invoice['amount_paid']) . $total(__trans('Balance due'), $invoice['balance_due']);
+        }
+        $html .= '</table>';
         if ($invoice['text_2']) {
             $html .= '<br>' . $note($invoice['text_2']);
         }

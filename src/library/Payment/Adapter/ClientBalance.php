@@ -43,9 +43,10 @@ class Payment_Adapter_ClientBalance implements ClientFence\InjectionAwareInterfa
     {
         $clientModel = $this->di['db']->load('Client', $invoice->client_id);
         $clientBalanceService = $this->di['mod_service']('Client', 'Balance');
-        $sumInBalance = $clientBalanceService->getClientBalance($clientModel);
-
         $invoiceService = $this->di['mod_service']('Invoice');
+        // ClientFence core patch: what other unpaid invoices have received is not spendable.
+        $sumInBalance = $clientBalanceService->getClientBalance($clientModel) - $invoiceService->getReservedCredit((int) $invoice->client_id, (int) $invoice->id);
+
         $totalSumWithTaxes = $invoiceService->getTotalWithTax($invoice);
         if ($totalSumWithTaxes > $sumInBalance) {
             return false;

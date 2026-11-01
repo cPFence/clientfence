@@ -18437,3 +18437,89 @@ msgstr "Bestellung und Dienst bis zum Ende des bezahlten Zeitraums aktiv lassen 
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Nur ein periodisch abgerechneter Dienst kann zum Ende seines Zeitraums storniert werden."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "Eine Gutschrift hält die Erstattung fest. Zahlen Sie das Geld selbst über die Zahlungsart zurück, außer es geht aufs Guthaben."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Ein Downgrade hat für diesen Dienst Guthaben gutgeschrieben. Erstatten Sie diese Rechnung von Hand."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Betrag dem Guthaben des Kunden hinzufügen"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Bezahlter Betrag"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Eine Erstattung von „Guthaben aufladen“ zieht ihren Betrag vom Guthaben des Kunden ab, und der Kunde hat es ausgegeben. Erstatten Sie diese Rechnung von Hand."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Guthaben anwenden"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Guthaben anwenden"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Offener Betrag"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Guthaben kann nur auf eine unbezahlte Rechnung angewendet werden."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Guthaben kann nur von einer unbezahlten Rechnung entfernt werden."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Geben Sie einen Betrag größer als null ein."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "Erstattungen werden von Hand vorgenommen (Rechnungseinstellungen), daher kann keine Teilerstattung erfasst werden."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Guthaben entfernen"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Das auf diese Rechnung angewendete Guthaben entfernen?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Der Kunde hat :amount Guthaben."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Das Guthaben ist in :currency und kann keine Rechnung in einer anderen Währung bezahlen."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Sie können höchstens :amount anwenden."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Sie können höchstens :amount erstatten."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "Sie haben :amount Guthaben. Wenden Sie es ganz oder teilweise auf diese Rechnung an."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "Guthaben :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "Erstattungen werden von Hand vorgenommen (Rechnungseinstellungen), daher kann diese Erstattung nicht erfasst werden."

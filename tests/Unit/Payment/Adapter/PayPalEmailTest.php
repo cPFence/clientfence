@@ -288,6 +288,7 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26, 'paid_at' => $paidBeforePayment ? '2026-11-01 10:00:00' : null]));
     $invoiceService = Mockery::mock();
     $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.0);
+    $invoiceService->shouldReceive('getBalanceDue')->andReturn(120.0);
     $di['mod_service'] = $di->protect(fn () => $invoiceService);
 
     paypalProcessAdapter($di)->processTransaction($api, 42, [
@@ -358,6 +359,7 @@ test('leaves PayPal duplicate and overpayment refunds for manual settlement', fu
     $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn($invoice);
     $invoiceService = Mockery::mock();
     $invoiceService->shouldReceive('getTotalWithTax')->with($invoice)->andReturn($invoiceTotal);
+    $invoiceService->shouldReceive('getBalanceDue')->andReturn($invoiceTotal);
     $di = container();
     $di['db'] = $db;
     $di['mod_service'] = $di->protect(fn () => $invoiceService);
@@ -412,6 +414,7 @@ test('refunds the completed renewal payment rather than its earlier pending noti
     $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26]));
     $invoiceService = Mockery::mock();
     $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.0);
+    $invoiceService->shouldReceive('getBalanceDue')->andReturn(120.0);
     $di['mod_service'] = $di->protect(fn () => $invoiceService);
 
     paypalProcessAdapter($di)->processTransaction($api, 42, [
@@ -625,6 +628,7 @@ describe('PayPal callback invoice binding', function (): void {
         $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 16)->andReturn(paypalBean(Model_Invoice::class, ['id' => 16]));
         $invoiceService = Mockery::mock();
         $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.0);
+        $invoiceService->shouldReceive('getBalanceDue')->andReturn(120.0);
         $di['mod_service'] = $di->protect(fn () => $invoiceService);
         $di['logger'] = new Tests\Helpers\TestLogger();
 
@@ -675,7 +679,8 @@ describe('PayPal callback invoice binding', function (): void {
         ]);
 
         $invoiceService = Mockery::mock();
-        $invoiceService->shouldReceive('getTotalWithTax')->once()->andReturn(120.00);
+        $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.00);
+        $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(120.00);
         $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(120.00, 120.00)->andReturnNull();
         $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->andReturn(false);
 
@@ -762,7 +767,8 @@ describe('PayPal callback invoice binding', function (): void {
         ]);
 
         $invoiceService = Mockery::mock();
-        $invoiceService->shouldReceive('getTotalWithTax')->once()->andReturn(120.00);
+        $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.00);
+        $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(120.00);
         $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(120.00, 120.00)->andReturnNull();
         $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->andReturn(false);
 
@@ -815,7 +821,8 @@ describe('PayPal callback invoice binding', function (): void {
         ]);
 
         $invoiceService = Mockery::mock();
-        $invoiceService->shouldReceive('getTotalWithTax')->once()->andReturn(120.00);
+        $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.00);
+        $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(120.00);
         $invoiceService->shouldReceive('validatePaymentAmount')->once()->andReturnNull();
         $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->andReturn(false);
 

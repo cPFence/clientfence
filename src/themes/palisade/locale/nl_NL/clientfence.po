@@ -18475,3 +18475,89 @@ msgstr "Houd de bestelling en dienst actief tot het einde van de betaalde period
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Alleen een dienst die per periode wordt gefactureerd, kan aan het einde van zijn periode worden geannuleerd."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "Een creditnota legt de terugbetaling vast. Betaal het geld zelf terug via de betaalmethode, tenzij het naar tegoed gaat."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Een downgrade gaf accounttegoed voor deze dienst. Betaal deze factuur handmatig terug."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Het bedrag toevoegen aan het tegoed van de klant"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Betaald bedrag"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Een terugbetaling van Tegoed toevoegen neemt het bedrag terug van het tegoed van de klant, en de klant heeft het uitgegeven. Betaal deze factuur handmatig terug."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Tegoed toepassen"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Tegoed toepassen"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Openstaand bedrag"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Tegoed kan alleen op een onbetaalde factuur worden toegepast."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Tegoed kan alleen van een onbetaalde factuur worden verwijderd."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Voer een bedrag groter dan nul in."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "Terugbetalingen worden handmatig afgehandeld (Factuurinstellingen), dus een gedeeltelijke terugbetaling kan niet worden vastgelegd."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Tegoed verwijderen"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Het op deze factuur toegepaste tegoed verwijderen?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "De klant heeft :amount tegoed."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Het tegoed is in :currency en kan geen factuur in een andere valuta betalen."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "U kunt maximaal :amount toepassen."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "U kunt maximaal :amount terugbetalen."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "U hebt :amount tegoed. Pas het geheel of gedeeltelijk toe op deze factuur."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "tegoed :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "Terugbetalingen worden handmatig afgehandeld (Factuurinstellingen), dus deze terugbetaling kan niet worden vastgelegd."

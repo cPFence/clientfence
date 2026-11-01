@@ -63,6 +63,22 @@ class Client extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: apply part or all of the account credit to an unpaid invoice (WHMCS client area).
+     *
+     * @return bool
+     */
+    #[RequiredParams(['hash' => 'Invoice hash was not passed', 'amount' => 'Amount is missing'])]
+    public function apply_credit($data)
+    {
+        $model = $this->getDi()['db']->findOne('Invoice', 'hash = :hash AND client_id = :client_id AND approved = 1', ['hash' => $data['hash'], 'client_id' => $this->getIdentity()->id]);
+        if (!$model instanceof \Model_Invoice) {
+            throw new \ClientFence\InformationException('Invoice was not found');
+        }
+
+        return $this->getService()->applyCredit($model, (float) $data['amount']);
+    }
+
+    /**
      * Generates new invoice for selected order. If unpaid invoice for selected order
      * already exists, new invoice will not be generated, and old invoice hash
      * is returned.

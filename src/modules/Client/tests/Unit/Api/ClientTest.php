@@ -74,14 +74,15 @@ test('balanceGetTotal returns float', function (): void {
     $balanceAmount = 0.00;
     $model = createEntity(ClientFence\Mod\Client\Entity\Client::class);
 
-    $serviceMock = Mockery::mock(ClientFence\Mod\Client\ServiceBalance::class);
+    // The spendable credit: the Invoice module leaves out what is set aside for unpaid invoices.
+    $serviceMock = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
     $serviceMock
-    ->shouldReceive('getClientBalance')
-    ->atLeast()->once()
+    ->shouldReceive('getFreeCredit')
+    ->once()
     ->andReturn($balanceAmount);
 
     $di = container();
-    $di['mod_service'] = $di->protect(moduleService(['client:balance' => $serviceMock]));
+    $di['mod_service'] = $di->protect(moduleService(['invoice' => $serviceMock]));
 
     $api->setDi($di);
     $api->setIdentity($model);

@@ -16766,3 +16766,89 @@ msgstr "Siparişi ve hizmeti ödenen dönemin sonuna kadar etkin tut, ardından 
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Yalnızca döneme göre faturalanan bir hizmet, dönem sonunda iptal edilebilir."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "İade faturası geri ödemeyi kaydeder. Para krediye geçmiyorsa, onu ödeme yöntemi üzerinden kendiniz geri gönderin."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Paket düşürme bu hizmet için hesap kredisi verdi. Bu faturayı elle iade edin."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Tutarı müşterinin kredisine ekle"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "Ödenen tutar"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Bakiye Ekle iadesi tutarını müşterinin kredisinden geri alır ve müşteri onu harcamıştır. Bu faturayı elle iade edin."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Krediyi Uygula"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Krediyi uygula"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "Kalan borç"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Kredi yalnızca ödenmemiş bir faturaya uygulanabilir."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Kredi yalnızca ödenmemiş bir faturadan kaldırılabilir."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Sıfırdan büyük bir tutar girin."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "İadeler elle yapılır (Fatura Ayarları), bu yüzden kısmi iade kaydedilemez."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Krediyi kaldır"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Bu faturaya uygulanan kredi kaldırılsın mı?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Müşterinin :amount kredisi var."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Kredi :currency cinsindendir ve başka para birimindeki bir faturayı ödeyemez."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "En fazla :amount uygulayabilirsiniz."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "En fazla :amount iade edebilirsiniz."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr ":amount krediniz var. Tamamını veya bir kısmını bu faturaya uygulayın."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "kredi :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "İadeler elle yapılır (Fatura Ayarları), bu yüzden bu iade kaydedilemez."

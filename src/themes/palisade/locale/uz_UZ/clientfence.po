@@ -17098,3 +17098,89 @@ msgstr "Buyurtma va xizmat to'langan davr oxirigacha faol qoladi, so'ng bekor qi
 #: src/modules/Order/Service.php
 msgid "Only a service billed by period can be cancelled at the end of its period."
 msgstr "Faqat davr bo'yicha hisoblanadigan xizmatni davr oxirida bekor qilish mumkin."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr "Kredit-nota qaytarishni qayd etadi. Pul kreditga o'tmasa, uni to'lov usuli orqali o'zingiz qaytaring."
+
+#: src/modules/Invoice/Service.php
+msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
+msgstr "Tarifni pasaytirish bu xizmat uchun hisobga kredit berdi. Ushbu hisob-fakturani qo'lda qaytaring."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Add the amount to the client's credit"
+msgstr "Summani mijoz kreditiga qo'shish"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Amount paid"
+msgstr "To'langan summa"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
+msgstr "Mablag' qo'shish qaytarilishi o'z summasini mijoz kreditidan oladi, mijoz esa uni sarflab bo'lgan. Ushbu hisob-fakturani qo'lda qaytaring."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Apply Credit"
+msgstr "Kreditni qo'llash"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
+msgstr "Kreditni qo'llash"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "Balance due"
+msgstr "To'lanishi kerak"
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be applied to an unpaid invoice."
+msgstr "Kreditni faqat to'lanmagan hisob-fakturaga qo'llash mumkin."
+
+#: src/modules/Invoice/Service.php
+msgid "Credit can only be removed from an unpaid invoice."
+msgstr "Kreditni faqat to'lanmagan hisob-fakturadan olib tashlash mumkin."
+
+#: src/modules/Invoice/Service.php
+msgid "Enter an amount greater than zero."
+msgstr "Noldan katta summa kiriting."
+
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so a part refund cannot be recorded."
+msgstr "Qaytarishlar qo'lda amalga oshiriladi (Hisob-faktura sozlamalari), shuning uchun qisman qaytarishni qayd etib bo'lmaydi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove credit"
+msgstr "Kreditni olib tashlash"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Remove the credit applied to this invoice?"
+msgstr "Ushbu hisob-fakturaga qo'llangan kredit olib tashlansinmi?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The client has :amount of credit."
+msgstr "Mijozning krediti :amount."
+
+#: src/modules/Invoice/Service.php
+msgid "The credit is in :currency and cannot pay an invoice in another currency."
+msgstr "Kredit :currency valyutasida va boshqa valyutadagi hisob-fakturani to'lay olmaydi."
+
+#: src/modules/Invoice/Service.php
+msgid "You can apply at most :amount."
+msgstr "Ko'pi bilan :amount qo'llashingiz mumkin."
+
+#: src/modules/Invoice/Service.php
+msgid "You can refund at most :amount."
+msgstr "Ko'pi bilan :amount qaytarishingiz mumkin."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "You have :amount of credit. Apply all or part of it to this invoice."
+msgstr "Kreditingiz :amount. Uni to'liq yoki qisman ushbu hisob-fakturaga qo'llang."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "credit :amount"
+msgstr "kredit :amount"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr "Qaytarishlar qo'lda amalga oshiriladi (Hisob-faktura sozlamalari), shuning uchun bu qaytarishni qayd etib bo'lmaydi."

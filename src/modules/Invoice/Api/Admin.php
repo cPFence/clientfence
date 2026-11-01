@@ -65,8 +65,11 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('invoice', 'view');
 
         $model = $this->_getInvoice($data);
+        $invoice = $this->getService()->toApiArray($model, true, $this->getIdentity());
+        // ClientFence core patch: the client's free credit, for Apply Credit on the invoice page.
+        $invoice['client_credit'] = $model->client_id ? $this->getService()->getFreeCredit((int) $model->client_id) : 0.0;
 
-        return $this->getService()->toApiArray($model, true, $this->getIdentity());
+        return $invoice;
     }
 
     /**
@@ -150,8 +153,9 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $model = $this->_getInvoice($data);
         $note = $data['note'] ?? null;
+        $amount = isset($data['amount']) && $data['amount'] !== '' ? (float) $data['amount'] : null;
 
-        return $this->getService()->refundInvoice($model, $note);
+        return $this->getService()->refundInvoice($model, $note, $amount, !empty($data['to_credit']));
     }
 
     /**
@@ -333,6 +337,32 @@ class Admin extends \ClientFence\Api\AbstractApi
         }
 
         return $this->getService()->payInvoiceWithCredits($invoice);
+    }
+
+    /**
+     * ClientFence core patch: apply part or all of the client's credit to an unpaid invoice (WHMCS "Apply Credit").
+     *
+     * @return bool
+     */
+    #[RequiredParams(['id' => 'Invoice ID is missing', 'amount' => 'Amount is missing'])]
+    public function apply_credit($data)
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+
+        return $this->getService()->applyCredit($this->_getInvoice($data), (float) $data['amount']);
+    }
+
+    /**
+     * Take the credit applied to an unpaid invoice back to the client's credit.
+     *
+     * @return bool
+     */
+    #[RequiredParams(['id' => 'Invoice ID is missing'])]
+    public function remove_credit($data)
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+
+        return $this->getService()->removeCredit($this->_getInvoice($data));
     }
 
     /**

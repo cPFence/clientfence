@@ -72,6 +72,10 @@ test('summary groups invoices once with tax, draft approval, services and open w
     $db->insert('invoice_quote', ['client_id' => 7, 'stage' => 'accepted']);
     $db->insert('support_ticket', ['client_id' => 7, 'status' => 'on_hold']);
     $db->insert('support_ticket', ['client_id' => 7, 'status' => 'closed']);
+    // The credit shown is what the client can spend (the Invoice module sets aside part payments).
+    $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
+    $invoiceService->shouldReceive('getFreeCredit')->once()->with(7)->andReturn(7.0);
+    $di['mod_service'] = $di->protect(moduleService(['invoice' => $invoiceService]));
     $service = new Service();
     $service->setDi($di);
     $api = clientSummaryApi($di);
