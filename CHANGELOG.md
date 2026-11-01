@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.20 (2026-11-01)
+
+### Changed
+
+- Plan changes: clients can change the plan of any active service; the days left are credited at its recurring price, also when it is paid ahead or has a discount.
+- Invoices: Mark as Paid works on a partly paid invoice: the payments already recorded count, and only the rest is recorded.
+- Hosting: staff can change the plan of a suspended or expired service.
+- Hosting: a hosting plan on a full or disabled server can be ordered; its account waits in Failed actions for staff.
+
+### Fixed
+
+- Renewals: paying a renewal invoice always lifts the service's suspension.
+
 ## 1.0.19 (2026-11-01)
 
 ### Changed
