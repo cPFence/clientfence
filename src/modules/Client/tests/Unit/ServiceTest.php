@@ -163,7 +163,7 @@ test('onAfterClientSignUp returns true', function (): void {
     expect($result)->toBeTrue();
 });
 
-test('onAfterClientSignUp with email confirmation required returns true', function (): void {
+test('onAfterClientSignUp with email confirmation required sends no confirmation link', function (): void {
     $service = new ClientFence\Mod\Client\Service();
     $eventMock = Mockery::mock('ClientFence\Event');
     $eventParams = [
@@ -178,13 +178,12 @@ test('onAfterClientSignUp with email confirmation required returns true', functi
 
     $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class);
     $emailService->shouldReceive('sendTemplate')
-        ->atLeast()->once()
+        ->once()
+        ->with(Mockery::on(fn (array $email): bool => $email['require_email_confirmation'] === false && !isset($email['email_confirmation_link'])))
         ->andReturn(true);
 
     $clientServiceMock = Mockery::mock(ClientFence\Mod\Client\Service::class)->makePartial();
-    $clientServiceMock->shouldReceive('generateEmailConfirmationLink')
-        ->atLeast()->once()
-        ->andReturn('Link_string');
+    $clientServiceMock->shouldReceive('generateEmailConfirmationLink')->never();
 
     $di = container();
     $di['mod_service'] = $di->protect(function ($serviceName) use ($emailService, $clientServiceMock) {

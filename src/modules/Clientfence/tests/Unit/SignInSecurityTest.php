@@ -252,6 +252,15 @@ test('a sign-in waits for its PIN, which works once and stops after five wrong o
         ->and(SignInSecurity::pending($world->di, 'client'))->toBeNull();
 });
 
+test('a PIN typed with Arabic or Persian digits works', function (string $zero): void {
+    $world = new SignInSecurityTestWorld();
+    $world->save(['pin' => 'clients']);
+    SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'client@example.test', 'name' => 'Client'], ['client_id' => 7], '192.0.2.5');
+    $local = preg_replace_callback('/\\d/', fn (array $m): string => mb_chr(mb_ord($zero) + (int) $m[0]), $world->lastPin());
+
+    expect(SignInSecurity::verify($world->di, 'client', $local, false, '192.0.2.5')['payload'])->toBe(['client_id' => 7]);
+})->with(['Arabic' => ["\u{0660}"], 'Persian' => ["\u{06F0}"]]);
+
 test('only the account a sign-up just made signs in without a PIN', function (): void {
     $world = new SignInSecurityTestWorld();
     $world->save(['pin' => 'clients']);

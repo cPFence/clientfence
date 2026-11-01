@@ -122,7 +122,7 @@ final class SignInSecurity
         $staffNow = in_array($pin, ['staff', 'both'], true);
         if ($staffNow && !$staffWas) {
             $confirm = $di['session']->get(self::CONFIRM);
-            $code = preg_replace('/\D/', '', (string) ($data['confirm_pin'] ?? ''));
+            $code = preg_replace('/\D/', '', \ClientFence\Tools::latinDigits((string) ($data['confirm_pin'] ?? '')));
             if ($code === '' || !is_array($confirm) || (int) ($confirm['expires'] ?? 0) < time() || (int) ($confirm['admin_id'] ?? 0) !== (int) $admin['id']) {
                 $pinCode = self::newPin();
                 $di['session']->set(self::CONFIRM, ['admin_id' => (int) $admin['id'], 'hash' => self::hashPin($pinCode), 'expires' => time() + self::PIN_SECONDS, 'tries' => 0]);
@@ -333,7 +333,7 @@ final class SignInSecurity
         if ($di['rate_limiter']->getStatus('profile_password_change_account', $limitKey)->isLimited()) {
             throw new InformationException('Too many wrong PINs. Please try again later.', null, 429);
         }
-        $code = is_scalar($pin) ? preg_replace('/\D/', '', (string) $pin) : '';
+        $code = is_scalar($pin) ? preg_replace('/\D/', '', \ClientFence\Tools::latinDigits((string) $pin)) : '';
         if (strlen((string) $code) !== 6 || !hash_equals((string) $pending['hash'], self::hashPin((string) $code))) {
             $di['rate_limiter']->consume('profile_password_change_account', $limitKey);
             $pending['tries'] = (int) $pending['tries'] + 1;

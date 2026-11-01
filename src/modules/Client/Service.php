@@ -237,12 +237,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             $email['code'] = 'mod_client_signup';
             // ClientFence core patch: Google sign-up, the welcome email knows an account made with Google (ClientFence).
             $email['clientfence_google'] = \ClientFence\Mod\Client\Google::welcome($di);
+            // ClientFence core patch: no confirmation link here; the sign-up sends its own, and a second link revokes this one.
             $email['require_email_confirmation'] = false;
-            if (isset($config['require_email_confirmation']) && $config['require_email_confirmation']) {
-                $clientService = $di['mod_service']('client');
-                $email['require_email_confirmation'] = true;
-                $email['email_confirmation_link'] = $clientService->generateEmailConfirmationLink($params['id']);
-            }
 
             $emailService->sendTemplate($email);
         } catch (\Exception $exc) {
