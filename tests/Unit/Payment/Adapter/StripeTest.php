@@ -569,6 +569,99 @@ test('skips subscription update webhooks without a local subscription', function
     ]))->toBeFalse();
 });
 
+test('credits a subscription first charge once without repaying a settled invoice', function (bool $redirect, bool $alreadyPaid, string $billingReason): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 96;
+    $invoice->client_id = 5;
+    $invoice->approved = 0;
+    $invoice->status = $alreadyPaid ? Model_Invoice::STATUS_PAID : Model_Invoice::STATUS_UNPAID;
+    $stripeInvoice = [
+        'id' => 'in_first', 'object' => 'invoice', 'subscription' => 'sub_first',
+        'billing_reason' => $billingReason, 'status' => 'paid', 'amount_paid' => 1000,
+        'currency' => 'usd', 'metadata' => ['gateway_id' => '1'],
+    ];
+    $stripe = Mockery::mock(StripeClient::class);
+    $stripe->subscriptions = Mockery::mock();
+    $stripe->subscriptions->shouldReceive('retrieve')->times($redirect ? 0 : 1)->with('sub_first', [])->andReturn((object) [
+        'id' => 'sub_first', 'metadata' => (object) ['invoice_id' => '96', 'client_id' => '5'],
+    ]);
+    setPrivateProperty($this->adapter, 'stripe', $stripe);
+
+    $payments = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $payments->executeStatement('CREATE TABLE payment (id INTEGER PRIMARY KEY, txn_id TEXT, status TEXT)');
+    $di = container();
+    $di['db']->shouldReceive('findOne')->with('Transaction', Mockery::any(), Mockery::any())->andReturnUsing(function ($table, string $where, array $bindings) use ($payments): ?Model_Transaction {
+        $row = $payments->fetchAssociative('SELECT * FROM payment WHERE ' . $where, array_combine(array_map(static fn (string $key): string => ltrim($key, ':'), array_keys($bindings)), $bindings));
+        if ($row === false) {
+            return null;
+        }
+        $tx = buildTransaction();
+        foreach ($row as $key => $value) {
+            $tx->$key = $value;
+        }
+
+        return $tx;
+    });
+    $di['db']->shouldReceive('findOne')->with('Invoice', 'id = :id', [':id' => 96])->andReturn($invoice);
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 96)->andReturn($invoice);
+    $di['db']->shouldReceive('store')->andReturnUsing(function (Model_Transaction $tx) use ($payments): int {
+        $payments->executeStatement('INSERT OR REPLACE INTO payment (id, txn_id, status) VALUES (?, ?, ?)', [$tx->id, $tx->txn_id, $tx->status]);
+
+        return $tx->id;
+    });
+    $di['db']->shouldReceive('trash')->andReturnUsing(fn (Model_Transaction $tx) => $payments->delete('payment', ['id' => $tx->id]));
+    $transactionService = Mockery::mock();
+    $transactionService->shouldReceive('claimForProcessing')->times($redirect ? 0 : 1)->andReturnTrue();
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
+    $invoiceService->shouldReceive('approveInvoice')->times($alreadyPaid ? 0 : 1)->with($invoice, ['use_credits' => false]);
+    $invoiceService->shouldReceive('payInvoiceWithCredits')->times($alreadyPaid ? 0 : 1)->with($invoice)->andReturnUsing(function () use ($invoice): void {
+        $invoice->status = Model_Invoice::STATUS_PAID;
+    });
+    $invoiceService->shouldNotReceive('generateRenewalInvoiceForSubscriptionPayment');
+    $di['mod_service'] = $di->protect(fn ($module, $service = null) => $service === 'Transaction' ? $transactionService : $invoiceService);
+    $this->adapter->setDi($di);
+    $api = Mockery::mock();
+    $api->shouldReceive('client_balance_add_funds')->once()->with([
+        'id' => $redirect ? 5 : '5', 'amount' => 10.0,
+        'description' => 'Stripe subscription initial payment in_first',
+        'type' => 'transaction', 'rel_id' => $redirect ? 800 : 801,
+    ]);
+    $api->shouldNotReceive('invoice_batch_pay_with_credits');
+
+    if ($redirect) {
+        $tx = buildTransaction();
+        $tx->id = 800;
+        $tx->gateway_id = 1;
+        $tx->txn_id = 'seti_first';
+        $tx->status = Model_Transaction::STATUS_RECEIVED;
+        $subscription = Stripe\Subscription::constructFrom(['id' => 'sub_first', 'latest_invoice' => $stripeInvoice]);
+        expectPaymentIntentLock($di['dbal'], 'in_first', 1);
+
+        invokePrivateMethod($this->adapter, 'processInitialSubscriptionPayment', [$api, $tx, $invoice, $subscription]);
+
+        expect($payments->fetchOne('SELECT txn_id FROM payment WHERE id = 800'))->toBe('in_first');
+    }
+    foreach ([801, 802] as $id) {
+        $tx = buildTransaction();
+        $tx->id = $id;
+        $tx->status = Model_Transaction::STATUS_RECEIVED;
+        $rawBody = json_encode(['id' => 'evt_first_' . $id, 'type' => 'invoice.paid', 'data' => ['object' => $stripeInvoice]]);
+        expectPaymentIntentLock($di['dbal'], 'in_first', 1);
+
+        invokePrivateMethod($this->adapter, 'processWebhookEvent', [$api, $tx, [
+            'http_raw_post_data' => $rawBody,
+            'server' => ['HTTP_STRIPE_SIGNATURE' => signStripeWebhookPayload($rawBody)],
+        ], 1]);
+    }
+})->with([
+    'redirect before webhook' => [true, false, 'subscription_create'],
+    'another payment before redirect' => [true, true, 'subscription_create'],
+    'another payment before webhook' => [false, true, 'subscription_create'],
+    'another payment before webhook without billing reason' => [false, true, ''],
+]);
+
 describe('handleInvoicePaymentSucceeded invoice linking', function (): void {
     test('does not credit an initial invoice payment after a local refund', function (): void {
         $tx = buildTransaction();

@@ -257,8 +257,8 @@ test('leaves a pending PayPal payment received with its error', function (): voi
         ->and($tx['error'])->toBe('PayPal payment not completed: Pending');
 });
 
-test('settles only full PayPal refunds against the parent payment invoice', function (?float $paymentAmount, float $refundAmount, ?int $refundedInvoice, bool $otherPayment): void {
-    $payment = $paymentAmount === null ? null : paypalBean(Model_Transaction::class, ['id' => 41, 'invoice_id' => 26, 'amount' => $paymentAmount]);
+test('settles only full PayPal refunds against the parent payment invoice', function (?float $paymentAmount, float $refundAmount, ?int $refundedInvoice, bool $otherPayment, bool $paidBeforePayment = false): void {
+    $payment = $paymentAmount === null ? null : paypalBean(Model_Transaction::class, ['id' => 41, 'invoice_id' => 26, 'amount' => $paymentAmount, 'created_at' => '2026-11-01 10:05:00']);
     $tx = [
         'invoice_id' => 16, 'type' => 'subscr_payment', 'txn_id' => 'REFUND-RENEWAL',
         'txn_status' => 'Refunded', 'amount' => -$refundAmount, 'currency' => 'USD',
@@ -285,7 +285,7 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     }
     $di = container();
     $di['db'] = $db;
-    $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26]));
+    $db->shouldReceive('getExistingModelById')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26, 'paid_at' => $paidBeforePayment ? '2026-11-01 10:00:00' : null]));
     $invoiceService = Mockery::mock();
     $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.0);
     $di['mod_service'] = $di->protect(fn () => $invoiceService);
@@ -299,7 +299,7 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     ], 2);
 
     expect($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED);
-    if ($otherPayment) {
+    if ($otherPayment || $paidBeforePayment) {
         expect($tx['error'])->toBe('PayPal refund of 120.00 USD must be settled by hand: invoice has multiple payments.');
     } elseif ($refundedInvoice === null) {
         expect($tx['error'])->toBe($paymentAmount === null
@@ -314,7 +314,33 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     'full renewal refund' => [120.0, 120.0, 26, false],
     'full refund within amount tolerance' => [120.0, 119.99, 26, false],
     'full duplicate payment refund' => [120.0, 120.0, null, true],
+    'invoice settled from account credit before payment' => [120.0, 120.0, null, false, true],
 ]);
+
+test('keeps a PayPal subscription active while a failed renewal is retried', function (): void {
+    $tx = [
+        'invoice_id' => 16, 'type' => 'subscr_failed', 'txn_id' => null,
+        'txn_status' => null, 'amount' => null, 'currency' => null,
+    ];
+    $api = Mockery::mock();
+    $api->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn($tx);
+    $api->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn(['id' => 16, 'client' => ['id' => 9]]);
+    $api->shouldReceive('invoice_transaction_update')->once()->andReturnUsing(function (array $update) use (&$tx): void {
+        $tx = array_replace($tx, $update);
+    });
+    $api->shouldNotReceive('invoice_subscription_get');
+    $subscriptionService = Mockery::mock();
+    $subscriptionService->shouldNotReceive('updateStatusFromGateway');
+    $di = container();
+    $di['mod_service'] = $di->protect(fn () => $subscriptionService);
+
+    paypalProcessAdapter($di)->processTransaction($api, 42, [
+        'get' => signedPayPalGet(16, 2),
+        'post' => ['txn_type' => 'subscr_failed', 'subscr_id' => 'I-ACTIVE'],
+    ], 2);
+
+    expect($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED);
+});
 
 test('leaves PayPal duplicate and overpayment refunds for manual settlement', function (bool $stripePayment, float $invoiceTotal, string $reason): void {
     $payments = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);

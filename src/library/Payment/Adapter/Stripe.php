@@ -605,13 +605,6 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
      */
     private function processInitialSubscriptionPayment($api_admin, Model_Transaction $tx, Model_Invoice $invoice, Stripe\Subscription $subscription): void
     {
-        // Already-paid guard — reload from DB to narrow the TOCTOU window when
-        // the redirect flow and webhook handler race on the same subscription.
-        $fresh = $this->di['db']->findOne('Invoice', 'id = :id', [':id' => $invoice->id]);
-        if ($fresh instanceof Model_Invoice && $fresh->status === Model_Invoice::STATUS_PAID) {
-            return;
-        }
-
         $latestInvoiceId = $subscription->latest_invoice ?? null;
         if (empty($latestInvoiceId)) {
             return;
@@ -636,6 +629,11 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 return;
             }
 
+            $fresh = $this->di['db']->findOne('Invoice', 'id = :id', [':id' => $invoice->id]);
+            $alreadyPaid = $fresh instanceof Model_Invoice && $fresh->status === Model_Invoice::STATUS_PAID;
+
+            // ClientFence core patch: the redirect and invoice webhook must claim the same first charge.
+            $tx->txn_id = $latestInvoice->id;
             $tx->status = Model_Transaction::STATUS_PROCESSING;
             $this->di['db']->store($tx);
 
@@ -653,7 +651,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             $api_admin->client_balance_add_funds($bd);
 
             $invoiceService = $this->di['mod_service']('Invoice');
-            if (!$invoiceService->isInvoiceTypeDeposit($invoice)) {
+            if (!$alreadyPaid && !$invoiceService->isInvoiceTypeDeposit($invoice)) {
                 if (!$invoice->approved) {
                     $invoiceService->approveInvoice($invoice, ['use_credits' => false]);
                 }
@@ -942,13 +940,12 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $billingReason = (string) ($stripeInvoice->billing_reason ?? '');
         $isInitialPayment = $billingReason === 'subscription_create';
 
-        // Single DB fetch covers: (a) skip if already paid, (b) billing_reason fallback.
         if ($invoiceId) {
             $existingInvoice = $this->di['db']->findOne('Invoice', 'id = :id', [':id' => (int) $invoiceId]);
             if ($existingInvoice instanceof Model_Invoice) {
                 // ClientFence core patch (0.8.9 port): renewal metadata still names the paid first invoice.
                 if ($existingInvoice->status === Model_Invoice::STATUS_PAID && ($isInitialPayment || $billingReason === '')) {
-                    return false;
+                    $isInitialPayment = true;
                 }
                 // ClientFence core patch (security S-3): the initial payment was credited before its invoice was refunded.
                 if ($isInitialPayment && $existingInvoice->status === Model_Invoice::STATUS_REFUNDED) {
@@ -990,7 +987,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         if ($isInitialPayment && $invoiceId) {
             $invoiceModel = $this->di['db']->getExistingModelById('Invoice', (int) $invoiceId);
 
-            if (!$invoiceService->isInvoiceTypeDeposit($invoiceModel)) {
+            if ($invoiceModel->status !== Model_Invoice::STATUS_PAID && !$invoiceService->isInvoiceTypeDeposit($invoiceModel)) {
                 if (!$invoiceModel->approved) {
                     $invoiceService->approveInvoice($invoiceModel, ['use_credits' => false]);
                 }

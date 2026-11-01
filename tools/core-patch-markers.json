@@ -3754,5 +3754,21 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: Manage must not leave recorded payments as spendable balance on a paid invoice."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: the redirect and invoice webhook must claim the same first charge."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: account credit can settle an invoice before its PayPal payment arrives."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: PayPal retries failed renewals before cancelling the subscription."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: a scheduled gateway cancellation still ends the service at its original expiry."
     }
 ]

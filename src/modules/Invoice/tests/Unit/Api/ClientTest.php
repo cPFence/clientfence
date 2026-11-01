@@ -249,6 +249,35 @@ test('refuses to renew a cancelled order', function (): void {
         ->toThrow(ClientFence\InformationException::class, 'Only an active or suspended service can be renewed.');
 });
 
+test('refuses to renew a service scheduled for cancellation at period end', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 1;
+    $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $order->period = '1M';
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('findOne')->twice()->with('ClientOrder', 'client_id = ? and id = ?', [3, 1])->andReturn($order);
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
+    $dbal->insert('client_order_meta', ['client_order_id' => 1, 'name' => ClientFence\Mod\Order\Service::META_CANCEL_AT_PERIOD_END, 'value' => '1']);
+    $service = Mockery::mock(Service::class);
+    $service->shouldNotReceive('generateForOrder');
+    $service->shouldNotReceive('approveInvoice');
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = $dbal;
+    $api = apiEndpoint(new Client());
+    $api->setDi($di);
+    $api->setService($service);
+    $identity = new Model_Client();
+    $identity->loadBean(new Tests\Helpers\DummyBean());
+    $identity->id = 3;
+    $api->setIdentity($identity);
+
+    expect(fn () => $api->renewal_invoice(['order_id' => 1]))
+        ->toThrow(ClientFence\InformationException::class, 'This service is set to be cancelled at the end of its period, so it cannot be renewed.');
+});
+
 test('refuses to renew a one-time order', function (): void {
     $api = apiEndpoint(new Client());
     $serviceMock = Mockery::mock(Service::class);
