@@ -57,6 +57,27 @@ test('configGet gets extension config', function (): void {
     expect($result)->toBe(['key' => 'value']);
 });
 
+test('email config exposes transport secrets only to Super Administrators', function (bool $superAdministrator): void {
+    $api = apiEndpoint(new ClientFence\Mod\Extension\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn($superAdministrator);
+    $config = [
+        'ext' => 'mod_email',
+        'from_email' => 'billing@example.com',
+        'smtp_password' => 'smtp-secret',
+        'sendgrid_key' => 'sendgrid-secret',
+        'custom_dsn' => 'smtp://user:secret@mail.example.com',
+    ];
+    $service = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $service->shouldReceive('hasManagePermission')->with('mod_email')->andReturnNull();
+    $service->shouldReceive('getConfig')->with('mod_email')->andReturn($config);
+    $api->setService($service);
+
+    expect($api->config_get(['ext' => 'mod_email']))->toBe($superAdministrator ? $config : [
+        'ext' => 'mod_email',
+        'from_email' => 'billing@example.com',
+    ]);
+})->with(['limited staff' => [false], 'Super Administrator' => [true]]);
+
 test('configSave saves extension config', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\Extension\Api\Admin());
     $serviceMock = Mockery::mock(ClientFence\Mod\Extension\Service::class)->makePartial();

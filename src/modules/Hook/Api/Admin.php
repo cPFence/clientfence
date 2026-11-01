@@ -45,6 +45,11 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('hook', 'trigger_hooks');
 
+        // ClientFence core patch: manual hooks can bypass the permissions of their listeners.
+        if (!$this->getDi()['mod_service']('Staff')->isSuperAdministrator()) {
+            throw new \ClientFence\InformationException('Only Super Administrators can call hooks.', null, 403);
+        }
+
         if (!isset($data['event']) || empty($data['event'])) {
             $this->getDi()['logger']->warning('Invoked event call without providing event name');
 

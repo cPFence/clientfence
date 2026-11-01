@@ -2179,6 +2179,38 @@ test('parseBccAddresses returns an empty array for a blank setting', function ()
     expect($result)->toBe([]);
 });
 
+// A sensitive email (sign-in links) never reads the Bcc setting; an invalid address shows whether it was read.
+test('_sendFromQueue skips the configured Bcc for sensitive emails', function (bool $sensitive, int $warnings): void {
+    $queue = new ClientFence\Mod\Email\Entity\QueuedEmail();
+    \Tests\Helpers\setEntityId($queue, 1);
+    $queue->setSubject('subject');
+    $queue->setSender('sender@example.com');
+    $queue->setRecipient('receiver@example.com');
+    $queue->setContent('content');
+
+    $em = emailBuildEm();
+    $em->shouldReceive('flush');
+    $modMock = Mockery::mock(ClientFence\Module::class);
+    $modMock->shouldReceive('getConfig')->andReturn(['mailer' => 'sendmail', 'bcc_email' => 'not-an-email']);
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->shouldReceive('isExtensionActive')->andReturn(false);
+
+    $di = container();
+    $di['em'] = $em;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(fn ($name) => $name == 'extension' ? $extension : null);
+    $di['mod'] = $di->protect(fn () => $modMock);
+    $service = new ClientFence\Mod\Email\Service();
+    $service->setDi($di);
+
+    (new ReflectionMethod($service, '_sendFromQueue'))->invoke($service, $queue, false, $sensitive);
+
+    expect(array_filter(
+        $di['logger']->calls,
+        static fn (array $call): bool => $call['method'] === 'warning' && str_contains((string) $call['params'][0], 'Skipping invalid Bcc address')
+    ))->toHaveCount($warnings);
+})->with(['sensitive' => [true, 0], 'normal' => [false, 1]]);
+
 test('_sendFromQueue only logs an invalid Bcc address once per service instance', function (): void {
     $service = new ClientFence\Mod\Email\Service();
 

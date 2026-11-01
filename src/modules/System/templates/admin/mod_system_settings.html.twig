@@ -293,6 +293,8 @@
                     <div class="card-body">
                         <h4 class="card-title mb-2">{{ 'Cache Backend'|trans }}</h4>
                         <p class="text-secondary">{{ 'Choose the backend used for the application cache, rate limiter, and Doctrine ORM cache. Redis and Memcached require the corresponding PHP extension to be installed on the server.'|trans }}</p>
+                        {# ClientFence core patch: only Super Administrators change the cache backend (cached settings hold decrypted secrets). #}
+                        <p class="form-hint">{{ 'Only Super Administrators can change the cache settings.'|trans }}</p>
                         <form method="post" action="{{ 'system/update_cache_settings'|api_url }}" {{ fb_api_form({ message: 'Cache settings updated'|trans }) }}>
                             <div class="d-flex flex-wrap gap-3 mb-3" id="cache-driver">
                                 <div class="form-check">

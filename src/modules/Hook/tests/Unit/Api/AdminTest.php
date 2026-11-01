@@ -55,6 +55,7 @@ test('call fires event', function (): void {
     $expectation->andReturn(1);
 
     $di = container();
+    $di['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $di['logger'] = new Tests\Helpers\TestLogger();
     $di['events_manager'] = $eventManager;
 
@@ -65,11 +66,24 @@ test('call fires event', function (): void {
 
 test('call returns false when event param is missing', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\Hook\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $data['event'] = null;
 
     $result = $api->call($data);
     expect($result)->toBeBool();
     expect($result)->toBeFalse();
+});
+
+test('call refuses staff with hook permission who are not Super Administrators', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Hook\Api\Admin());
+    $di = $api->getDi();
+    $di['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(false);
+    $events = Mockery::mock(ClientFence\EventManager::class);
+    $events->shouldNotReceive('fire');
+    $di['events_manager'] = $events;
+
+    expect(fn () => $api->call(['event' => 'onAfterAdminClientDelete', 'params' => ['id' => 7]]))
+        ->toThrow(new ClientFence\InformationException('Only Super Administrators can call hooks.', null, 403));
 });
 
 test('batchConnect returns result', function (): void {

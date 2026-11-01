@@ -1327,7 +1327,8 @@ class Service implements \ClientFence\InjectionAwareInterface
                 $mail->addListUnsubscribe($unsubscribe);
             }
 
-            if (!empty($settings['bcc_email'])) {
+            // ClientFence core patch: sign-in links must never be copied to the configured Bcc recipients.
+            if (!$sensitive && !empty($settings['bcc_email'])) {
                 $this->validatedBccAddresses ??= $this->parseBccAddresses((string) $settings['bcc_email']);
                 $bccAddresses = $this->validatedBccAddresses;
                 if ($bccAddresses !== []) {

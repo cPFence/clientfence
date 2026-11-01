@@ -118,6 +118,11 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('system', 'update_params');
 
+        // ClientFence core patch: remote caches receive decrypted extension settings.
+        if (!$this->getDi()['mod_service']('Staff')->isSuperAdministrator()) {
+            throw new \ClientFence\InformationException('Only Super Administrators can change the cache settings.', null, 403);
+        }
+
         $driver = $data['driver'] ?? 'filesystem';
         if (!in_array($driver, CacheFactory::SUPPORTED_DRIVERS, true)) {
             throw new \ClientFence\Exception('Unsupported cache driver: :driver', [':driver' => $driver], 5001);

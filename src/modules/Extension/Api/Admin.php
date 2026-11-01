@@ -256,7 +256,13 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $service->hasManagePermission($ext);
 
-        return $service->getConfig($ext);
+        $config = $service->getConfig($ext);
+        // ClientFence core patch: email settings access must not expose transport credentials.
+        if ($ext === 'mod_email' && !$this->getDi()['mod_service']('Staff')->isSuperAdministrator()) {
+            unset($config['smtp_password'], $config['sendgrid_key'], $config['custom_dsn']);
+        }
+
+        return $config;
     }
 
     /**

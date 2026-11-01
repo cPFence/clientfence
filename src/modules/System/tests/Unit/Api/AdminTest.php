@@ -57,6 +57,7 @@ test('update params', function (): void {
 
 test('update cache settings clears the saved redis password only when explicitly requested', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $originalConfig = Config::getConfig();
 
     try {
@@ -80,6 +81,7 @@ test('update cache settings preserves a literal "0" redis password', function ()
     // "0" is falsy in PHP, so a naive ?: fallback would silently drop it as if the field was left
     // blank.
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $originalConfig = Config::getConfig();
 
     try {
@@ -92,6 +94,7 @@ test('update cache settings preserves a literal "0" redis password', function ()
 
 test('blank redis passwords are reused only for the saved endpoint', function (string $host, string $port, ?string $expectedPassword): void {
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $originalConfig = Config::getConfig();
 
     try {
@@ -125,6 +128,7 @@ test('update cache settings clears the previously configured backend, not just t
     }
 
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $originalConfig = Config::getConfig();
 
     try {
@@ -145,6 +149,7 @@ test('update cache settings clears the previously configured backend, not just t
 
 test('update cache settings rejects a remote driver when no installation identifier is configured', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $originalConfig = Config::getConfig();
 
     try {
@@ -161,6 +166,7 @@ test('update cache settings rejects a remote driver when no installation identif
 
 test('update cache settings saves and reads back the redis TLS options', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $originalConfig = Config::getConfig();
 
     try {
@@ -205,6 +211,7 @@ test('update cache settings saves and reads back the redis TLS options', functio
 
 test('update cache settings rejects a redis password on a non-loopback host with TLS disabled', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(true);
     $originalConfig = Config::getConfig();
 
     try {
@@ -217,6 +224,20 @@ test('update cache settings rejects a redis password on a non-loopback host with
         Config::setConfig($originalConfig, false);
     }
 });
+
+test('cache settings refuse non-Super-Administrators before validation or saving', function (string $driver): void {
+    $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $api->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn(false);
+    $originalConfig = Config::getConfig();
+
+    try {
+        expect(fn (): bool => $api->update_cache_settings(['driver' => $driver, 'redis_host' => 'untrusted.example.com']))
+            ->toThrow(new ClientFence\InformationException('Only Super Administrators can change the cache settings.', null, 403));
+        expect(Config::getConfig())->toBe($originalConfig);
+    } finally {
+        Config::setConfig($originalConfig, false);
+    }
+})->with(['valid driver' => ['filesystem'], 'invalid driver' => ['invalid']]);
 
 test('messages', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());

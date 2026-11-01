@@ -3694,5 +3694,29 @@
     {
         "file": "modules/Servicedownloadable/Service.php",
         "done": "ClientFence core patch: checkout copies the cart's download filename into its order."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: sign-in links must never be copied to the configured Bcc recipients."
+    },
+    {
+        "file": "modules/Hook/Api/Admin.php",
+        "done": "ClientFence core patch: manual hooks can bypass the permissions of their listeners."
+    },
+    {
+        "file": "modules/System/Api/Admin.php",
+        "done": "ClientFence core patch: remote caches receive decrypted extension settings."
+    },
+    {
+        "file": "modules/Extension/Api/Admin.php",
+        "done": "ClientFence core patch: email settings access must not expose transport credentials."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch: only Super Administrators change the cache backend (cached settings hold decrypted secrets)."
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
+        "done": "ClientFence core patch: an unchecked switch saves 0, so staff password recovery can be turned off."
     }
 ]
