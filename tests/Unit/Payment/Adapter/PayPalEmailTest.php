@@ -257,7 +257,7 @@ test('leaves a pending PayPal payment received with its error', function (): voi
         ->and($tx['error'])->toBe('PayPal payment not completed: Pending');
 });
 
-test('settles only full PayPal refunds against the parent payment invoice', function (?float $paymentAmount, float $refundAmount, ?int $refundedInvoice): void {
+test('settles only full PayPal refunds against the parent payment invoice', function (?float $paymentAmount, float $refundAmount, ?int $refundedInvoice, bool $otherPayment): void {
     $payment = $paymentAmount === null ? null : paypalBean(Model_Transaction::class, ['invoice_id' => 26, 'amount' => $paymentAmount]);
     $tx = [
         'invoice_id' => 16, 'type' => 'subscr_payment', 'txn_id' => 'REFUND-RENEWAL',
@@ -276,6 +276,13 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     }
     $db = paypalDbMocks();
     $db->shouldReceive('findOne')->once()->with('Transaction', 'txn_id = :txn AND gateway_id = :gateway AND status = :status AND txn_status = :txn_status', [':txn' => 'TXN-RENEWAL', ':gateway' => 2, ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed'])->andReturn($payment);
+    if ($refundedInvoice !== null || $otherPayment) {
+        $db->shouldReceive('findOne')->once()->with(
+            'Transaction',
+            'invoice_id = :invoice AND gateway_id = :gateway AND txn_id != :parent AND status = :status AND txn_status = :txn_status',
+            [':invoice' => 26, ':gateway' => 2, ':parent' => 'TXN-RENEWAL', ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed']
+        )->andReturn($otherPayment ? paypalBean(Model_Transaction::class, ['txn_id' => 'TXN-FIRST', 'invoice_id' => 26, 'amount' => 120]) : null);
+    }
     $di = container();
     $di['db'] = $db;
 
@@ -288,7 +295,9 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     ], 2);
 
     expect($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED);
-    if ($refundedInvoice === null) {
+    if ($otherPayment) {
+        expect($tx['error'])->toBe('PayPal refund of 120.00 USD must be settled by hand: invoice has multiple payments.');
+    } elseif ($refundedInvoice === null) {
         expect($tx['error'])->toBe($paymentAmount === null
             ? 'PayPal refund of 120.00 USD must be settled by hand: original payment not found.'
             : 'Partial PayPal refund of 20.00 USD must be settled by hand.');
@@ -296,10 +305,11 @@ test('settles only full PayPal refunds against the parent payment invoice', func
         expect($tx['error'])->toBe('');
     }
 })->with([
-    'partial refund' => [120.0, 20.0, null],
-    'unknown original payment' => [null, 120.0, null],
-    'full renewal refund' => [120.0, 120.0, 26],
-    'full refund within amount tolerance' => [120.0, 119.99, 26],
+    'partial refund' => [120.0, 20.0, null, false],
+    'unknown original payment' => [null, 120.0, null, false],
+    'full renewal refund' => [120.0, 120.0, 26, false],
+    'full refund within amount tolerance' => [120.0, 119.99, 26, false],
+    'full duplicate payment refund' => [120.0, 120.0, null, true],
 ]);
 
 test('refunds the completed renewal payment rather than its earlier pending notification', function (): void {

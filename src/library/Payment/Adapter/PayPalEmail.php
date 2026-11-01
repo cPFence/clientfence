@@ -295,6 +295,13 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 $refundError = sprintf('PayPal refund of %s %s must be settled by hand: original payment not found.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
             } elseif ($amount < (float) $payment->amount - 0.01 || $amount > (float) $payment->amount + 0.01) {
                 $refundError = sprintf('Partial PayPal refund of %s %s must be settled by hand.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
+            } elseif ($this->di['db']->findOne(
+                'Transaction',
+                'invoice_id = :invoice AND gateway_id = :gateway AND txn_id != :parent AND status = :status AND txn_status = :txn_status',
+                [':invoice' => $payment->invoice_id, ':gateway' => $gateway_id, ':parent' => $ipn['parent_txn_id'], ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed']
+            ) instanceof Model_Transaction) {
+                // ClientFence core patch: refunding duplicate payment credit must not refund the settled invoice.
+                $refundError = sprintf('PayPal refund of %s %s must be settled by hand: invoice has multiple payments.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
             } else {
                 $api_admin->invoice_refund([
                     'id' => $payment->invoice_id,

@@ -3670,5 +3670,17 @@
     {
         "file": "modules/Email/Service.php",
         "done": "ClientFence core patch: guest and staff emails have no client for a recipient name."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: recorded transfers remain spendable until the invoice is paid from balance."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: refunding duplicate payment credit must not refund the settled invoice."
+    },
+    {
+        "file": "library/Payment/Adapter/ClientBalance.php",
+        "done": "ClientFence core patch: the balance callback bypasses the client API's account-user permission gate."
     }
 ]

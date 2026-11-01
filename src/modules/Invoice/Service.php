@@ -882,10 +882,13 @@ class Service implements InjectionAwareInterface
         $transactionId = isset($data['transactionId']) ? trim((string) $data['transactionId']) : null;
         $invoiceTotal = $this->getTotalWithTax($invoice);
         $isDeposit = $this->isInvoiceTypeDeposit($invoice);
+        $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [$invoice->id, \Model_Transaction::STATUS_PROCESSED]);
         // ClientFence core patch: processed deposit transfers have already credited the client's balance.
         if ($isDeposit) {
-            $credited = (float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [$invoice->id, \Model_Transaction::STATUS_PROCESSED]);
             $invoiceTotal = max(0.0, round($invoiceTotal - $credited, 2));
+        } elseif ($credited > 0) {
+            // ClientFence core patch: recorded transfers remain spendable until the invoice is paid from balance.
+            throw new InformationException('This invoice already has recorded payments. Record the remaining transfer as a transaction instead.');
         }
 
         if ((int) $payGateway->id !== (int) $invoice->gateway_id) {

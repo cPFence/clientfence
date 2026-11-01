@@ -1539,10 +1539,11 @@ test('marks invoice as paid', function (): void {
     expect($result)->toBeBool()->toBeTrue();
 });
 
-test('admin mark as paid with custom gateway records transaction and marks invoice paid', function (): void {
+test('admin mark as paid requires a transaction to finish an ordinary invoice with recorded payments', function (float $credited): void {
+    $calls = $credited > 0 ? 0 : 1;
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('markAsPaid')
-        ->once()
+        ->times($calls)
         ->with(Mockery::type(Model_Invoice::class), false)
         ->andReturn(true);
     $serviceMock->shouldReceive('getTotalWithTax')
@@ -1574,7 +1575,7 @@ test('admin mark as paid with custom gateway records transaction and marks invoi
 
     $transactionServiceMock = Mockery::mock(ClientFence\Mod\Invoice\ServiceTransaction::class);
     $transactionServiceMock->shouldReceive('create')
-        ->once()
+        ->times($calls)
         ->with(Mockery::on(fn (array $data): bool => $data['invoice_id'] === 10
             && $data['gateway_id'] === 5
             && $data['currency'] === 'USD'
@@ -1590,21 +1591,32 @@ test('admin mark as paid with custom gateway records transaction and marks invoi
         ->with('PayGateway', 5, 'Payment gateway not found')
         ->andReturn($gatewayModel);
     $dbMock->shouldReceive('getExistingModelById')
-        ->once()
+        ->times($calls)
         ->with('Transaction', 20, 'Transaction not found')
         ->andReturn($transactionModel);
     $dbMock->shouldReceive('store')
-        ->once()
+        ->times($calls)
         ->with($transactionModel)
         ->andReturn(20);
 
     $di = container();
     $di['db'] = $dbMock;
+    $di['dbal']->shouldReceive('fetchOne')->once()
+        ->with('SELECT COALESCE(SUM(amount), 0) FROM `transaction` WHERE invoice_id = ? AND status = ?', [10, Model_Transaction::STATUS_PROCESSED])
+        ->andReturn($credited);
     $di['mod_service'] = $di->protect(moduleService([
         'invoice:transaction' => $transactionServiceMock,
     ]));
 
     $serviceMock->setDi($di);
+
+    if ($credited > 0) {
+        expect(fn () => $serviceMock->markAsPaidByAdmin($invoiceModel, ['transactionId' => 'manual-reference-1']))
+            ->toThrow(ClientFence\InformationException::class, 'This invoice already has recorded payments. Record the remaining transfer as a transaction instead.')
+            ->and($invoiceModel->status)->toBe(Model_Invoice::STATUS_UNPAID);
+
+        return;
+    }
 
     $result = $serviceMock->markAsPaidByAdmin($invoiceModel, [
         'execute' => false,
@@ -1616,7 +1628,7 @@ test('admin mark as paid with custom gateway records transaction and marks invoi
         ->and($transactionModel->currency)->toBe('USD')
         ->and($transactionModel->status)->toBe(Model_Transaction::STATUS_PROCESSED)
         ->and($transactionModel->note)->toBe('Manual payment transaction No: manual-reference-1');
-});
+})->with(['no recorded payments' => 0.0, 'processed partial payment' => 20.0]);
 
 test('admin mark as paid credits client balance for a deposit invoice', function (): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();

@@ -118,6 +118,12 @@ class Payment_Adapter_ClientBalance implements ClientFence\InjectionAwareInterfa
             throw new Payment_Exception('You are not authorized to pay this invoice with client balance.');
         }
 
+        // ClientFence core patch: the balance callback bypasses the client API's account-user permission gate.
+        $context = ClientFence\Mod\Client\Users::context($this->di);
+        if ($context !== null && !ClientFence\Mod\Client\Users::allows($context, 'invoices')) {
+            throw new ClientFence\InformationException('You do not have permission to do this. Ask the account owner for access.', null, 403);
+        }
+
         // ClientFence core patch: the invoice page can select balance without changing the saved gateway.
         $invoiceService = $this->di['mod_service']('Invoice');
         if ($invoiceService->isInvoiceTypeDeposit($invoiceModel)) {
