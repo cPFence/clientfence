@@ -1996,14 +1996,20 @@ class Service implements InjectionAwareInterface
         $orderId = $this->orderId($order);
         $this->assertOrderCanBeCanceled($order);
 
-        $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
         $legacyOrder = $order instanceof Order ? $this->getLegacyOrder($order) : $order;
-        if (!$subscriptionService->canCancelAtPeriodEndForOrder($legacyOrder)) {
-            throw new InformationException('No active gateway subscription that supports cancellation at period end is linked to this order.');
+        if ((string) $legacyOrder->expires_at === '') {
+            throw new InformationException('Only a service billed by period can be cancelled at the end of its period.');
         }
-
-        if ($subscriptionService->scheduleCancellationForOrder($legacyOrder) === 0) {
-            throw new InformationException('No active gateway subscription is linked to this order.');
+        // ClientFence core patch: a service without a gateway subscription ends at its period end too (WHMCS); the
+        // expired-orders cron cancels it on its expiry date.
+        $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
+        if ($subscriptionService->hasGatewaySubscriptionForOrder($legacyOrder)) {
+            if (!$subscriptionService->canCancelAtPeriodEndForOrder($legacyOrder)) {
+                throw new InformationException('No active gateway subscription that supports cancellation at period end is linked to this order.');
+            }
+            if ($subscriptionService->scheduleCancellationForOrder($legacyOrder) === 0) {
+                throw new InformationException('No active gateway subscription is linked to this order.');
+            }
         }
         $this->updateOrderMeta($order, [self::META_CANCEL_AT_PERIOD_END => '1']);
         // ClientFence core patch: a renewal invoice paid now would be lost when the service ends at the period end.
@@ -2350,6 +2356,32 @@ class Service implements InjectionAwareInterface
         $reason = $c['batch_suspend_reason'] ?? null;
         $days = $this->resolveBatchAfterDays($c['batch_suspend_after_days'] ?? null, self::BATCH_SUSPEND_AFTER_DAYS);
 
+        // ClientFence core patch: a cancellation scheduled at the period end ends the service on its expiry date, not
+        // after the suspension delay, and also when auto-suspend is overridden (staff scheduled it).
+        $scheduled = $this->di['dbal']->fetchFirstColumn(
+            "SELECT co.id FROM client_order co JOIN client_order_meta m ON m.client_order_id = co.id AND m.name = ? AND m.value = '1'
+             WHERE co.status IN (?, ?) AND co.expires_at IS NOT NULL AND co.expires_at <= ?",
+            [self::META_CANCEL_AT_PERIOD_END, Order::STATUS_ACTIVE, Order::STATUS_SUSPENDED, date('Y-m-d H:i:s')],
+        );
+        foreach ($scheduled as $id) {
+            try {
+                Tools::withLock($this->di, 'fb:order_task:' . $id, function () use ($id): void {
+                    $order = $this->getOrderRepository()->find((int) $id);
+                    if (!$order instanceof Order) {
+                        return;
+                    }
+                    $this->di['em']->refresh($order);
+                    if (!in_array($order->getStatus(), [Order::STATUS_ACTIVE, Order::STATUS_SUSPENDED], true) || $order->getExpiresAt() === null || $order->getExpiresAt() > new \DateTime()
+                        || $this->hasUnexecutedPaidOrderItem((int) $order->getId())) {
+                        return;
+                    }
+                    $this->cancelFromOrder($order, 'Cancellation scheduled at the end of the period');
+                });
+            } catch (\Exception $e) {
+                $this->di['logger']->info($e->getMessage());
+            }
+        }
+
         $before = new \DateTime("-{$days} days");
         $list = $this->getOrderRepository()->getExpired($before);
 
@@ -2366,13 +2398,6 @@ class Service implements InjectionAwareInterface
                         return;
                     }
                     if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId())) {
-                        return;
-                    }
-                    // ClientFence core patch: a cancellation staff scheduled ends the service once its paid time is over
-                    // (kept past the gateway's end by ServiceSubscription::finalizeCancellationFromGateway()).
-                    if ((string) ($this->getOrderMetaRepository()->getPairsForOrder((int) $order->getId())[self::META_CANCEL_AT_PERIOD_END] ?? '') === '1') {
-                        $this->cancelFromOrder($order, 'Cancellation scheduled at the end of the period');
-
                         return;
                     }
                     $this->suspendFromOrder($order, $reason);

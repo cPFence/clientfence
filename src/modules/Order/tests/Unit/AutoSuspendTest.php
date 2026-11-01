@@ -137,16 +137,29 @@ test('batchSuspendExpired waits the configured days past the expiry and skips ex
     'on the due date' => ['0', 0],
 ]);
 
-test('batchSuspendExpired cancels an expired order whose cancellation staff scheduled, instead of suspending it', function (): void {
+test('a cancellation scheduled at the period end ends the service on its expiry date, also with auto-suspend overridden', function (): void {
     $orders = [
-        createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
+        createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 hour')]),
         createEntity(Order::class, ['id' => 2, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]),
     ];
     $repository = Mockery::mock(OrderRepository::class);
-    $repository->shouldReceive('getExpired')->once()->andReturn($orders);
+    $repository->shouldReceive('getExpired')->once()->andReturn([$orders[1]]);
     $repository->shouldReceive('find')->andReturnUsing(fn (int $id): Order => $orders[$id - 1]);
-    $service = autoSuspendService(['batch_suspend_reason' => 'Overdue'], $repository, [1 => [Service::META_CANCEL_AT_PERIOD_END => '1']]);
-    $service->shouldReceive('cancelFromOrder')->once()->with($orders[0], 'Cancellation scheduled at the end of the period')->andReturn(true);
+    $service = autoSuspendService(['batch_suspend_reason' => 'Overdue'], $repository, [1 => [Service::META_CANCEL_AT_PERIOD_END => '1', ...autoSuspendOverride()]]);
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT, expires_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT)');
+    $dbal->insert('client_order', ['id' => 1, 'status' => 'active', 'expires_at' => date('Y-m-d H:i:s', strtotime('-1 hour'))]);
+    $dbal->insert('client_order', ['id' => 2, 'status' => 'active', 'expires_at' => date('Y-m-d H:i:s', strtotime('-1 year'))]);
+    $dbal->insert('client_order_meta', ['client_order_id' => 1, 'name' => Service::META_CANCEL_AT_PERIOD_END, 'value' => '1']);
+    $service->getDi()['dbal'] = $dbal;
+    $service->shouldReceive('cancelFromOrder')->once()->with($orders[0], 'Cancellation scheduled at the end of the period')->andReturnUsing(function (Order $order): bool {
+        $order->setStatus(Order::STATUS_CANCELED);
+
+        return true;
+    });
     $service->shouldReceive('suspendFromOrder')->once()->with($orders[1], 'Overdue')->andReturn(true);
 
     expect($service->batchSuspendExpired())->toBeTrue();
@@ -161,6 +174,7 @@ test('batchSuspendExpired rechecks renewed orders under the paid-task lock', fun
     $locked = $refreshedUnderLock = false;
     $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
     $connection->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
+    $connection->shouldReceive('fetchFirstColumn')->andReturn([]);
     $connection->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(?, ?)', ['fb:order_task:1', 10])
         ->andReturnUsing(function () use (&$locked): int {
             $locked = true;
@@ -221,6 +235,8 @@ test('automatic order actions leave paid lines awaiting execution alone', functi
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
     $dbal->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT, expires_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
     $dbal->insert('invoice', ['id' => 40, 'status' => 'paid']);
     $dbal->insert('invoice_item', ['invoice_id' => 40, 'type' => 'order', 'rel_id' => '1', 'task' => 'renew', 'status' => 'pending_setup']);
     // A failed first activation never runs again and must not protect the service.

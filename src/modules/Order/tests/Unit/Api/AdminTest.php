@@ -438,8 +438,10 @@ test('checks whether an order supports cancellation at period end', function ():
     $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
     $legacyOrder = new Model_ClientOrder();
     $legacyOrder->loadBean(new Tests\Helpers\DummyBean(['id' => 1]));
+    $legacyOrder->expires_at = '2027-01-01 00:00:00';
     $service = Mockery::mock(Service::class);
     $service->shouldReceive('getLegacyOrder')->once()->with($order)->andReturn($legacyOrder);
+    $subscriptionService->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($legacyOrder)->andReturn(true);
     $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->once()->with($legacyOrder)->andReturn(true);
 
     $staffService = Mockery::mock(ClientFence\Mod\Staff\Service::class);

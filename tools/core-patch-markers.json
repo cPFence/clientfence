@@ -3701,7 +3701,7 @@
     },
     {
         "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch: a cancellation staff scheduled ends the service once its paid time is over"
+        "done": "ClientFence core patch: a cancellation scheduled at the period end ends the service on its expiry date, not"
     },
     {
         "file": "modules/Order/Service.php",
@@ -3710,5 +3710,9 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: payments recorded on an unpaid invoice wait in the client's balance; an invoice"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a service without a gateway subscription ends at its period end too (WHMCS); the"
     }
 ]

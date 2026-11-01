@@ -2878,7 +2878,9 @@ test('a cancellation scheduled at the period end covers the active addons, and t
     $gone = orderServiceCreateLegacyOrderModel(12);
     $gone->status = Order::STATUS_CANCELED;
 
+    $master->expires_at = '2027-01-01 00:00:00';
     $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
+    $subscriptionService->shouldReceive('hasGatewaySubscriptionForOrder')->andReturn(true);
     $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->andReturn(true);
     $subscriptionService->shouldReceive('scheduleCancellationForOrder')->andReturn(1);
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
@@ -3072,16 +3074,18 @@ test('cancelFromOrder cancels the addons of a RedBean order too (staff Retry)', 
         ->and($master->status)->toBe(Order::STATUS_CANCELED);
 });
 
-test('scheduleCancellationFromOrder keeps the service active', function (): void {
+test('scheduleCancellationFromOrder keeps the service active, with or without a gateway subscription', function (bool $withSubscription): void {
     $order = createEntity(Order::class, [
         'id' => 10,
         'status' => Order::STATUS_ACTIVE,
     ]);
     $legacyOrder = orderServiceCreateLegacyOrderModel(10);
+    $legacyOrder->expires_at = '2027-01-01 00:00:00';
 
     $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
-    $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->once()->with($legacyOrder)->andReturn(true);
-    $subscriptionService->shouldReceive('scheduleCancellationForOrder')->once()->with($legacyOrder)->andReturn(1);
+    $subscriptionService->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($legacyOrder)->andReturn($withSubscription);
+    $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->times($withSubscription ? 1 : 0)->with($legacyOrder)->andReturn(true);
+    $subscriptionService->shouldReceive('scheduleCancellationForOrder')->times($withSubscription ? 1 : 0)->with($legacyOrder)->andReturn(1);
 
     $di = container();
     $dbMock = Mockery::mock(\ClientFence\Database::class);
@@ -3110,15 +3114,17 @@ test('scheduleCancellationFromOrder keeps the service active', function (): void
     expect($service->scheduleCancellationFromOrder($order, 'Customer request'))->toBeTrue()
         ->and($order->status)->toBe(Order::STATUS_ACTIVE)
         ->and($order->reason)->toBe('Customer request');
-});
+})->with(['gateway subscription' => [true], 'no subscription (bank transfer)' => [false]]);
 
 test('scheduleCancellationFromOrder does not mark the order when no subscription was scheduled', function (): void {
     $order = createEntity(Order::class, [
         'status' => Order::STATUS_ACTIVE,
     ]);
     $legacyOrder = orderServiceCreateLegacyOrderModel(0);
+    $legacyOrder->expires_at = '2027-01-01 00:00:00';
 
     $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
+    $subscriptionService->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($legacyOrder)->andReturn(true);
     $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->once()->with($legacyOrder)->andReturn(true);
     $subscriptionService->shouldReceive('scheduleCancellationForOrder')->once()->with($legacyOrder)->andReturn(0);
 

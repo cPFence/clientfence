@@ -340,6 +340,12 @@ class ServiceSubscription implements InjectionAwareInterface
         return $this->persistUpdate($subscription, ['status' => 'canceled']);
     }
 
+    /** ClientFence: whether a gateway subscription bills the order (a service without one ends at its period end here). */
+    public function hasGatewaySubscriptionForOrder(\Model_ClientOrder $order): bool
+    {
+        return array_filter($this->getSubscriptionsForOrder($order, 'active'), static fn (\Model_Subscription $s): bool => trim((string) $s->sid) !== '') !== [];
+    }
+
     public function canCancelAtPeriodEndForOrder(\Model_ClientOrder $order): bool
     {
         $subscriptions = $this->getSubscriptionsForOrder($order, 'active');

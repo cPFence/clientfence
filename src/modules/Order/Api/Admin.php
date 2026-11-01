@@ -229,7 +229,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * Cancel order.
      *
      * @optional bool $skip_event - Skip calling event hooks
-     * @optional bool $cancel_at_period_end - Keep the order active until its gateway subscription ends
+     * @optional bool $cancel_at_period_end - Keep the order active until the end of its paid period
      *
      * @return bool
      */
@@ -251,16 +251,18 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Check whether an order's active gateway subscription supports cancellation at period end.
+     * Check whether an order can be cancelled at the end of its period: it has an expiry, and any gateway
+     * subscription billing it supports cancellation at period end.
      */
     public function can_cancel_at_period_end($data): bool
     {
         $this->checkPermissions('order', 'view');
 
-        $order = $this->_getOrder($data);
+        $order = $this->getService()->getLegacyOrder($this->_getOrder($data));
         $subscriptionService = $this->getDi()['mod_service']('Invoice', 'Subscription');
 
-        return $subscriptionService->canCancelAtPeriodEndForOrder($this->getService()->getLegacyOrder($order));
+        return (string) $order->expires_at !== ''
+            && (!$subscriptionService->hasGatewaySubscriptionForOrder($order) || $subscriptionService->canCancelAtPeriodEndForOrder($order));
     }
 
     /**
