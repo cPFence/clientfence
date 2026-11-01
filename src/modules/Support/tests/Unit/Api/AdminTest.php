@@ -94,6 +94,24 @@ function adminSupportCannedCategoryWithResponsesFixture(): CannedResponseCategor
     return $category;
 }
 
+test('network issue save accepts staff with ticket management permission', function (): void {
+    $identity = new Model_Admin();
+    $staff = Mockery::mock(ClientFence\Mod\Staff\Service::class)->makePartial();
+    $staff->shouldReceive('hasPermission')->once()
+        ->with($identity, 'support', 'manage_tickets', null)->andReturn(true);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->once()->andThrow(new RuntimeException('Network issue storage reached'));
+
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn () => $staff);
+    $api = new ClientFence\Mod\Support\Api\Admin();
+    $api->setDi($di);
+    $api->setIdentity($identity);
+
+    expect(fn () => $api->network_issue_save([]))->toThrow(RuntimeException::class, 'Network issue storage reached');
+});
+
 test('ticket get list', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\Support\Api\Admin());
     $simpleResultArr = [

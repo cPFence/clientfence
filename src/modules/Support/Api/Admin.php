@@ -152,7 +152,8 @@ class Admin extends \ClientFence\Api\AbstractApi
      */
     public function network_issue_save($data): array
     {
-        $this->checkPermissions('support', 'manage');
+        // ClientFence core patch: network issues use Support's declared ticket management permission.
+        $this->checkPermissions('support', 'manage_tickets');
         \ClientFence\Mod\Support\NetworkIssues::ensure($this->getDi());
 
         return \ClientFence\Mod\Support\NetworkIssues::save($this->getDi(), is_array($data) ? $data : [], (int) $this->getIdentity()->id);
@@ -161,7 +162,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     /** ClientFence: deletes a network issue. `id`. */
     public function network_issue_delete($data): bool
     {
-        $this->checkPermissions('support', 'manage');
+        $this->checkPermissions('support', 'manage_tickets');
         \ClientFence\Mod\Support\NetworkIssues::ensure($this->getDi());
         \ClientFence\Mod\Support\NetworkIssues::delete($this->getDi(), (int) ($data['id'] ?? 0));
 

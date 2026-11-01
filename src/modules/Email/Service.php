@@ -346,9 +346,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         // ClientFence core patch: template previews must never retain sign-in credentials.
         $signInLink = in_array($data['code'], self::SIGN_IN_LINK_TEMPLATES, true);
         if (!$signInLink) {
-            // ClientFence core patch: domain transfer credentials must stay out of saved template previews.
+            // ClientFence core patch: credentials and access links must stay out of saved template previews.
             $removeTransferCodes = static function (array $values) use (&$removeTransferCodes): array {
-                unset($values['transfer_code']);
+                unset($values['transfer_code'], $values['api_key'], $values['license_key'], $values['password'], $values['pass'], $values['hash'], $values['access_hash']);
                 foreach ($values as $key => $value) {
                     if (is_array($value)) {
                         $values[$key] = $removeTransferCodes($value);
@@ -798,14 +798,19 @@ class Service implements \ClientFence\InjectionAwareInterface
             return true;
         }
 
-        $clientService = $this->di['mod_service']('client');
-        $customer = $clientService->get(['id' => $email->getClientId()]);
-        $customer = $clientService->toApiArray($customer);
+        // ClientFence core patch: guest and staff emails have no client for a recipient name.
+        $to_name = '';
+        if ($email->getClientId() !== null) {
+            $clientService = $this->di['mod_service']('client');
+            $customer = $clientService->get(['id' => $email->getClientId()]);
+            $customer = $clientService->toApiArray($customer);
+            $to_name = $customer['first_name'] . ' ' . $customer['last_name'];
+        }
 
         $systemService = $this->di['mod_service']('system');
         $from_name = $systemService->getParamValue('company_name');
 
-        $this->sendMail($email->getRecipients(), $email->getSender(), $email->getSubject(), $email->getContentHtml(), $customer['first_name'] . ' ' . $customer['last_name'], $from_name, $email->getClientId(), null, false, false, $this->loggedAttachmentToArray($email));
+        $this->sendMail($email->getRecipients(), $email->getSender(), $email->getSubject(), $email->getContentHtml(), $to_name, $from_name, $email->getClientId(), null, false, false, $this->loggedAttachmentToArray($email));
 
         $this->di['logger']->info('Resent email #%s', $email->getId());
 

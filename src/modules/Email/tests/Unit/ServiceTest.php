@@ -323,11 +323,11 @@ test('sendTemplate does not store staff password reset variables', function (): 
     expect($template->getVars())->toBeNull();
 });
 
-test('sendTemplate removes transfer codes from saved previews while rendering the full variables', function (): void {
-    $vars = [
-        'transfer_code' => 'top-secret',
-        'order' => ['config' => ['domain' => 'example.test', 'transfer_code' => 'domain-secret', 'require_transfer_code' => true]],
-        'items' => [3 => ['config' => ['transfer_code' => 'nested-secret', 'period' => '1Y']]],
+test('sendTemplate removes secrets from saved previews while rendering the full variables', function (): void {
+    $secrets = array_fill_keys(['transfer_code', 'api_key', 'license_key', 'password', 'pass', 'hash', 'access_hash'], 'secret');
+    $vars = $secrets + [
+        'order' => ['config' => $secrets + ['domain' => 'example.test', 'require_transfer_code' => true]],
+        'items' => [3 => ['config' => $secrets + ['period' => '1Y']]],
     ];
     $template = emailTemplate('mod_staff_client_order', data: ['enabled' => true, 'is_custom' => true, 'subject' => 'Subject', 'content' => 'Body']);
     $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
@@ -1404,6 +1404,33 @@ test('resend resends email', function (): void {
     $result = $service->resend($model);
 
     expect($result)->toBeTrue();
+});
+
+test('resend sends logged email without a client to its stored recipients', function (): void {
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->shouldReceive('isExtensionActive')->once()->with('mod', 'demo')->andReturn(false);
+    $client = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $client->shouldNotReceive('get');
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->once()->with('company_name')->andReturn('Company');
+
+    $di = container();
+    $di['mod_service'] = $di->protect(moduleService(['extension' => $extension, 'client' => $client, 'system' => $system]));
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $service->shouldReceive('sendMail')->once()
+        ->with('guest@example.test', 'sender@example.test', 'Subject', '<p>Body</p>', '', 'Company', null, null, false, false, null)
+        ->andReturn(true);
+    $service->setDi($di);
+
+    $email = new ClientFence\Mod\Email\Entity\ActivityClientEmail();
+    \Tests\Helpers\setEntityId($email, 1);
+    $email->setSender('sender@example.test');
+    $email->setRecipients('guest@example.test');
+    $email->setSubject('Subject');
+    $email->setContentHtml('<p>Body</p>');
+
+    expect(withAppEnv('prod', fn (): bool => $service->resend($email)))->toBeTrue();
 });
 
 test('templateToApiArray returns API array for template', function (): void {

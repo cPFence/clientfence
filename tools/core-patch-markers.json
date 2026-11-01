@@ -3437,7 +3437,7 @@
     },
     {
         "file": "modules/Email/Service.php",
-        "done": "ClientFence core patch: domain transfer credentials must stay out of saved template previews."
+        "done": "ClientFence core patch: credentials and access links must stay out of saved template previews."
     },
     {
         "file": "modules/Support/Service.php",
@@ -3646,5 +3646,13 @@
     {
         "file": "modules/Invoice/Controller/Client.php",
         "done": "ClientFence core patch: staff receipt downloads require permission to view their support tickets."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: network issues use Support's declared ticket management permission."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: guest and staff emails have no client for a recipient name."
     }
 ]
