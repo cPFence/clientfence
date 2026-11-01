@@ -18523,3 +18523,88 @@ msgstr "Guthaben :amount"
 #: src/modules/Invoice/Service.php
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
 msgstr "Erstattungen werden von Hand vorgenommen (Rechnungseinstellungen), daher kann diese Erstattung nicht erfasst werden."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept Cancellation"
+msgstr "Kündigung annehmen"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept the cancellation request?"
+msgstr "Die Kündigungsanfrage annehmen?"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Any"
+msgstr "Beliebig"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: at its next run, the cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period."
+msgstr "Automatisch: Beim nächsten Lauf kündigt der Cron einen Service mit der Anfrage „Sofort“ und plant einen Service mit der Anfrage „Zum Ende des Abrechnungszeitraums“ so ein, dass er am Ende seines bezahlten Zeitraums gekündigt wird."
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Cancellation Requests"
+msgstr "Kündigungsanfragen"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Cancellation Type"
+msgstr "Kündigungsart"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny Cancellation"
+msgstr "Kündigung ablehnen"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny the cancellation request?"
+msgstr "Die Kündigungsanfrage ablehnen?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "End of billing period"
+msgstr "Zum Ende des Abrechnungszeitraums"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Immediate"
+msgstr "Sofort"
+
+#: src/modules/Support/CancelRequests.php
+msgid "Invalid cancellation type."
+msgstr "Ungültige Kündigungsart."
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Pending Request"
+msgstr "Offene Anfrage"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed automatically"
+msgstr "Automatisch verarbeitet"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed by staff"
+msgstr "Durch Mitarbeiter bearbeitet"
+
+#: src/modules/Support/CancelRequests.php
+msgid "The order of this cancellation request no longer exists."
+msgstr "Die Bestellung dieser Kündigungsanfrage existiert nicht mehr."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled at the end of its paid period."
+msgstr "Der Service wird am Ende seines bezahlten Zeitraums gekündigt."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled now."
+msgstr "Der Service wird jetzt gekündigt."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is not cancelled. Reply to the ticket to tell the client."
+msgstr "Der Service wird nicht gekündigt. Antworten Sie auf das Ticket, um den Kunden zu informieren."
+
+#: src/modules/Support/CancelRequests.php
+msgid "This service cannot be cancelled at the end of its period. Choose Immediate, or open a ticket."
+msgstr "Dieser Service kann nicht zum Ende seines Zeitraums gekündigt werden. Wählen Sie „Sofort“ oder eröffnen Sie ein Ticket."
+
+#: src/modules/Support/CancelRequests.php
+msgid "This ticket has no pending cancellation request."
+msgstr "Dieses Ticket hat keine offene Kündigungsanfrage."
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Upgrade requests"
+msgstr "Upgrade-Anfragen"

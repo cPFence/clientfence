@@ -88,6 +88,14 @@ class SupportTicketRepository extends EntityRepository
             }
         }
 
+        // ClientFence core patch: tickets with a pending task (cancellation or upgrade request).
+        if (!empty($data['task'])) {
+            $qb->andWhere('t.relTask = :rel_task')
+                ->andWhere('t.relStatus = :rel_status')
+                ->setParameter('rel_task', (string) $data['task'])
+                ->setParameter('rel_status', SupportTicket::REL_STATUS_PENDING);
+        }
+
         if (!empty($data['client_id'])) {
             $qb->andWhere('t.clientId = :client_id')
                 ->setParameter('client_id', (int) $data['client_id']);

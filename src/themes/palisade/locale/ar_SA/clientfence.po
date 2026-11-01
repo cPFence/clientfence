@@ -18575,3 +18575,88 @@ msgstr "رصيد :amount"
 #: src/modules/Invoice/Service.php
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
 msgstr "تتم عمليات الاسترداد يدويًا (إعدادات الفواتير)، لذا لا يمكن تسجيل هذا الاسترداد."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept Cancellation"
+msgstr "قبول الإلغاء"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept the cancellation request?"
+msgstr "هل تريد قبول طلب الإلغاء؟"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Any"
+msgstr "الكل"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: at its next run, the cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period."
+msgstr "تلقائيًا: عند التشغيل التالي، تلغي المهمة المجدولة (cron) الخدمة التي طُلب إلغاؤها «فورًا»، وتجدول إلغاء الخدمة التي طُلب إلغاؤها «في نهاية فترة الفوترة» عند نهاية فترتها المدفوعة."
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Cancellation Requests"
+msgstr "طلبات الإلغاء"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Cancellation Type"
+msgstr "نوع الإلغاء"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny Cancellation"
+msgstr "رفض الإلغاء"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny the cancellation request?"
+msgstr "هل تريد رفض طلب الإلغاء؟"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "End of billing period"
+msgstr "نهاية فترة الفوترة"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Immediate"
+msgstr "فوري"
+
+#: src/modules/Support/CancelRequests.php
+msgid "Invalid cancellation type."
+msgstr "نوع الإلغاء غير صالح."
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Pending Request"
+msgstr "طلب قيد الانتظار"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed automatically"
+msgstr "تتم المعالجة تلقائيًا"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed by staff"
+msgstr "يعالجها الموظفون"
+
+#: src/modules/Support/CancelRequests.php
+msgid "The order of this cancellation request no longer exists."
+msgstr "لم يعد الطلب الخاص بطلب الإلغاء هذا موجودًا."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled at the end of its paid period."
+msgstr "تُلغى الخدمة في نهاية فترتها المدفوعة."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled now."
+msgstr "تُلغى الخدمة الآن."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is not cancelled. Reply to the ticket to tell the client."
+msgstr "لم تُلغَ الخدمة. قم بالرد على التذكرة لإبلاغ العميل."
+
+#: src/modules/Support/CancelRequests.php
+msgid "This service cannot be cancelled at the end of its period. Choose Immediate, or open a ticket."
+msgstr "لا يمكن إلغاء هذه الخدمة في نهاية فترتها. اختر «فوري» أو افتح تذكرة."
+
+#: src/modules/Support/CancelRequests.php
+msgid "This ticket has no pending cancellation request."
+msgstr "لا يوجد طلب إلغاء قيد الانتظار في هذه التذكرة."
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Upgrade requests"
+msgstr "طلبات الترقية"

@@ -92,6 +92,8 @@
                                     {% endif %}
                                     {% if task.task %}<tr><td>{{ 'Task'|trans }}</td><td>{{ mf.status_name(task.task) }}</td></tr>{% endif %}
                                     {% if task.type == 'order' %}<tr><td>{{ 'Related To'|trans }}</td><td><a href='{{ "order/manage/#{task.id}"|url }}'>Order #{{ task.id }}</a></td></tr>{% endif %}
+                                    {# ClientFence core patch: when a cancellation request ends the service (Support/CancelRequests.php). #}
+                                    {% if task.task == 'cancel' and task.new_value %}<tr><td>{{ 'Cancellation Type'|trans }}</td><td>{{ task.new_value == 'end_of_period' ? 'End of billing period'|trans : 'Immediate'|trans }}</td></tr>{% endif %}
                                     {% if task.task == 'upgrade' %}<tr><td>{{ 'Upgrade To'|trans }}</td><td><a href='{{ "product/manage/#{task.new_value}"|url }}'>{{ admin.product_get_pairs[task.new_value] }}</a></td></tr>{% endif %}
                                 </tbody>
                             </table>
@@ -111,7 +113,18 @@
                             <svg class="icon"><use href="#trash" /></svg>
                             {{ 'Delete'|trans }}
                         </a>
-                        {% if task.status == 'pending' %}
+                        {% if task.status == 'pending' and task.task == 'cancel' and task.new_value %}
+                        <a class="btn btn-primary" href="{{ 'support/cancel_request_accept'|api_url(query: { 'id': ticket.id }) }}"
+                            {{ fb_api_link({ modal: {type: 'confirm', title: 'Accept the cancellation request?'|trans, content: (task.new_value == 'end_of_period' ? 'The service is cancelled at the end of its paid period.'|trans : 'The service is cancelled now.'|trans)}, reload: true }) }}>
+                            <svg class="icon"><use href="#check" /></svg>
+                            {{ 'Accept Cancellation'|trans }}
+                        </a>
+                        <a class="btn btn-secondary" href="{{ 'support/task_complete'|api_url(query: { 'id': ticket.id }) }}"
+                            {{ fb_api_link({ modal: {type: 'confirm', title: 'Deny the cancellation request?'|trans, content: 'The service is not cancelled. Reply to the ticket to tell the client.'|trans}, reload: true }) }}>
+                            <svg class="icon"><use href="#x" /></svg>
+                            {{ 'Deny Cancellation'|trans }}
+                        </a>
+                        {% elseif task.status == 'pending' %}
                         <a class="btn btn-primary" href="{{ 'support/task_complete'|api_url(query: { 'id': ticket.id }) }}" {{ fb_api_link({ reload: true }) }}>
                             <svg class="icon"><use href="#check" /></svg>
                             {{ 'Set Task Complete'|trans }}

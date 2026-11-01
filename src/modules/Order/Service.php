@@ -2038,6 +2038,18 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
+    /**
+     * Whether the order can be cancelled at the end of its period: it has an expiry, and any gateway subscription
+     * billing it supports cancellation at period end.
+     */
+    public function canCancelAtPeriodEnd(\Model_ClientOrder $order): bool
+    {
+        $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
+
+        return (string) $order->expires_at !== ''
+            && (!$subscriptionService->hasGatewaySubscriptionForOrder($order) || $subscriptionService->canCancelAtPeriodEndForOrder($order));
+    }
+
     public function finalizeCancellationFromGateway(Order|\Model_ClientOrder $order, $reason = null): bool
     {
         $this->assertOrderCanBeCanceled($order);

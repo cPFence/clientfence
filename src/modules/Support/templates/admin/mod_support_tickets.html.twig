@@ -191,6 +191,17 @@
                         </div>
                         <div class="col-md-6 col-xl-3">
                             <div>
+                                {# ClientFence core patch: tickets with a pending request (Support/CancelRequests.php). #}
+                                <label class="form-label text-muted small mb-1" for="filter-ticket-task">{{ 'Pending Request'|trans }}</label>
+                                <select class="form-select" id="filter-ticket-task" name="task">
+                                    <option value="">{{ 'Any'|trans }}</option>
+                                    <option value="cancel"{% if request.task|default('') == 'cancel' %} selected{% endif %}>{{ 'Cancellation requests'|trans }}</option>
+                                    <option value="upgrade"{% if request.task|default('') == 'upgrade' %} selected{% endif %}>{{ 'Upgrade requests'|trans }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3">
+                            <div>
                                 <label class="form-label text-muted small mb-1" for="status">{{ 'Status'|trans }}</label>
                                 {{ mf.selectbox('status', admin.support_ticket_get_statuses({ 'titles': true }), request.status, 0, 'All Statuses'|trans) }}
                             </div>

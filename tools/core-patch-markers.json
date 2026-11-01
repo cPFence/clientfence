@@ -3786,5 +3786,29 @@
     {
         "file": "library/Payment/Adapter/Stripe.php",
         "done": "ClientFence core patch: the transaction records the first charge, so an unpaid first charge records"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: a cancellation request says when the service ends (CancelRequests)."
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketRepository.php",
+        "done": "ClientFence core patch: tickets with a pending task (cancellation or upgrade request)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: when a cancellation request ends the service (Support/CancelRequests.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: tickets with a pending request (Support/CancelRequests.php)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_settings.html.twig",
+        "done": "ClientFence core patch: cancellation requests accepted by the cron (Support/CancelRequests.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: when the service ends, as WHMCS (Support/CancelRequests.php)."
     }
 ]

@@ -258,11 +258,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('order', 'view');
 
-        $order = $this->getService()->getLegacyOrder($this->_getOrder($data));
-        $subscriptionService = $this->getDi()['mod_service']('Invoice', 'Subscription');
-
-        return (string) $order->expires_at !== ''
-            && (!$subscriptionService->hasGatewaySubscriptionForOrder($order) || $subscriptionService->canCancelAtPeriodEndForOrder($order));
+        return $this->getService()->canCancelAtPeriodEnd($this->getService()->getLegacyOrder($this->_getOrder($data)));
     }
 
     /**

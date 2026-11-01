@@ -19514,3 +19514,88 @@ msgstr "saldo :amount"
 #: src/modules/Invoice/Service.php
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
 msgstr "Hyvitykset tehdään käsin (Laskuasetukset), joten tätä hyvitystä ei voi kirjata."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept Cancellation"
+msgstr "Hyväksy peruutus"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept the cancellation request?"
+msgstr "Hyväksytäänkö peruutuspyyntö?"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Any"
+msgstr "Mikä tahansa"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: at its next run, the cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period."
+msgstr "Automaattisesti: seuraavalla ajokerralla cron peruu palvelun, jonka pyyntö on „Heti“, ja ajoittaa palvelun, jonka pyyntö on „Laskutusjakson lopussa“, peruttavaksi maksetun jakson lopussa."
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Cancellation Requests"
+msgstr "Peruutuspyynnöt"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Cancellation Type"
+msgstr "Peruutuksen tyyppi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny Cancellation"
+msgstr "Hylkää peruutus"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny the cancellation request?"
+msgstr "Hylätäänkö peruutuspyyntö?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "End of billing period"
+msgstr "Laskutusjakson lopussa"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Immediate"
+msgstr "Heti"
+
+#: src/modules/Support/CancelRequests.php
+msgid "Invalid cancellation type."
+msgstr "Virheellinen peruutuksen tyyppi."
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Pending Request"
+msgstr "Odottava pyyntö"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed automatically"
+msgstr "Käsitellään automaattisesti"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed by staff"
+msgstr "Henkilöstö käsittelee"
+
+#: src/modules/Support/CancelRequests.php
+msgid "The order of this cancellation request no longer exists."
+msgstr "Tämän peruutuspyynnön tilausta ei enää ole."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled at the end of its paid period."
+msgstr "Palvelu perutaan maksetun jakson lopussa."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled now."
+msgstr "Palvelu perutaan nyt."
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is not cancelled. Reply to the ticket to tell the client."
+msgstr "Palvelua ei peruta. Vastaa tukipyyntöön ilmoittaaksesi asiakkaalle."
+
+#: src/modules/Support/CancelRequests.php
+msgid "This service cannot be cancelled at the end of its period. Choose Immediate, or open a ticket."
+msgstr "Tätä palvelua ei voi perua jakson lopussa. Valitse „Heti“ tai avaa tukipyyntö."
+
+#: src/modules/Support/CancelRequests.php
+msgid "This ticket has no pending cancellation request."
+msgstr "Tällä tukipyynnöllä ei ole odottavaa peruutuspyyntöä."
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Upgrade requests"
+msgstr "Päivityspyynnöt"

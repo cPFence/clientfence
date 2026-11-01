@@ -16892,3 +16892,88 @@ msgstr "เครดิต :amount"
 #: src/modules/Invoice/Service.php
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
 msgstr "การคืนเงินทำด้วยตนเอง (การตั้งค่าใบแจ้งหนี้) จึงไม่สามารถบันทึกการคืนเงินนี้ได้"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept Cancellation"
+msgstr "ยอมรับการยกเลิก"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept the cancellation request?"
+msgstr "ยอมรับคำขอยกเลิกหรือไม่?"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Any"
+msgstr "ทั้งหมด"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: at its next run, the cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period."
+msgstr "อัตโนมัติ: ในการทำงานครั้งถัดไป cron จะยกเลิกบริการที่มีคำขอแบบ “ทันที” และกำหนดเวลายกเลิกบริการที่มีคำขอแบบ “สิ้นสุดรอบการเรียกเก็บเงิน” เมื่อสิ้นสุดรอบที่ชำระแล้ว"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Cancellation Requests"
+msgstr "คำขอยกเลิก"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Cancellation Type"
+msgstr "ประเภทการยกเลิก"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny Cancellation"
+msgstr "ปฏิเสธการยกเลิก"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny the cancellation request?"
+msgstr "ปฏิเสธคำขอยกเลิกหรือไม่?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "End of billing period"
+msgstr "สิ้นสุดรอบการเรียกเก็บเงิน"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Immediate"
+msgstr "ทันที"
+
+#: src/modules/Support/CancelRequests.php
+msgid "Invalid cancellation type."
+msgstr "ประเภทการยกเลิกไม่ถูกต้อง"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Pending Request"
+msgstr "คำขอที่รอดำเนินการ"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed automatically"
+msgstr "ประมวลผลอัตโนมัติ"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed by staff"
+msgstr "ประมวลผลโดยพนักงาน"
+
+#: src/modules/Support/CancelRequests.php
+msgid "The order of this cancellation request no longer exists."
+msgstr "ไม่มีคำสั่งซื้อของคำขอยกเลิกนี้อีกแล้ว"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled at the end of its paid period."
+msgstr "บริการจะถูกยกเลิกเมื่อสิ้นสุดรอบที่ชำระแล้ว"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled now."
+msgstr "บริการถูกยกเลิกทันที"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is not cancelled. Reply to the ticket to tell the client."
+msgstr "บริการไม่ถูกยกเลิก ตอบกลับคำขอสนับสนุนเพื่อแจ้งลูกค้า"
+
+#: src/modules/Support/CancelRequests.php
+msgid "This service cannot be cancelled at the end of its period. Choose Immediate, or open a ticket."
+msgstr "บริการนี้ไม่สามารถยกเลิกเมื่อสิ้นสุดรอบได้ เลือก “ทันที” หรือเปิดคำขอสนับสนุน"
+
+#: src/modules/Support/CancelRequests.php
+msgid "This ticket has no pending cancellation request."
+msgstr "คำขอสนับสนุนนี้ไม่มีคำขอยกเลิกที่รอดำเนินการ"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Upgrade requests"
+msgstr "คำขออัปเกรด"

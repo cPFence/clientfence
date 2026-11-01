@@ -18586,3 +18586,88 @@ msgstr "余额 :amount"
 #: src/modules/Invoice/Service.php
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
 msgstr "退款需手动处理（发票设置），因此无法记录此退款。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept Cancellation"
+msgstr "接受取消"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Accept the cancellation request?"
+msgstr "接受该取消请求？"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Any"
+msgstr "任意"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: at its next run, the cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period."
+msgstr "自动：下次运行时，计划任务会取消提出“立即”请求的服务，并将提出“计费周期结束时”请求的服务安排在其已付费周期结束时取消。"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Cancellation Requests"
+msgstr "取消请求"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Cancellation Type"
+msgstr "取消类型"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny Cancellation"
+msgstr "拒绝取消"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "Deny the cancellation request?"
+msgstr "拒绝该取消请求？"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "End of billing period"
+msgstr "计费周期结束时"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Immediate"
+msgstr "立即"
+
+#: src/modules/Support/CancelRequests.php
+msgid "Invalid cancellation type."
+msgstr "取消类型无效。"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Pending Request"
+msgstr "待处理请求"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed automatically"
+msgstr "自动处理"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Processed by staff"
+msgstr "由工作人员处理"
+
+#: src/modules/Support/CancelRequests.php
+msgid "The order of this cancellation request no longer exists."
+msgstr "此取消请求对应的订单已不存在。"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled at the end of its paid period."
+msgstr "服务将在其已付费周期结束时取消。"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is cancelled now."
+msgstr "服务将立即取消。"
+
+#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+msgid "The service is not cancelled. Reply to the ticket to tell the client."
+msgstr "服务未被取消。请回复工单以告知客户。"
+
+#: src/modules/Support/CancelRequests.php
+msgid "This service cannot be cancelled at the end of its period. Choose Immediate, or open a ticket."
+msgstr "此服务无法在周期结束时取消。请选择“立即”，或提交工单。"
+
+#: src/modules/Support/CancelRequests.php
+msgid "This ticket has no pending cancellation request."
+msgstr "此工单没有待处理的取消请求。"
+
+#: src/modules/Support/templates/admin/mod_support_tickets.html.twig
+msgid "Upgrade requests"
+msgstr "升级请求"

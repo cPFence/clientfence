@@ -212,6 +212,14 @@
                                 <input type="hidden" name="rel_type" value="order">
                                 <input type="hidden" name="rel_id" value="{{ order.id }}">
                                 <input type="hidden" name="rel_task" value="cancel">
+                                {# ClientFence core patch: when the service ends, as WHMCS (Support/CancelRequests.php). #}
+                                <div class="mb-3">
+                                    <label for="cancel-type" class="form-label">{{ 'Cancellation Type'|trans }}</label>
+                                    <select class="form-select" id="cancel-type" name="rel_new_value">
+                                        <option value="immediate">{{ 'Immediate'|trans }}</option>
+                                        {% if order.expires_at %}<option value="end_of_period">{{ 'End of billing period'|trans }} ({{ order.expires_at|format_date }})</option>{% endif %}
+                                    </select>
+                                </div>
                                 <div class="mb-3">
                                     <label for="support-helpdesk-id" class="form-label">{{ 'Help Desk'|trans }}</label>
                                     {{ mf.selectbox('support_helpdesk_id', client.support_helpdesk_get_pairs, request.support_helpdesk_id, 1) }}

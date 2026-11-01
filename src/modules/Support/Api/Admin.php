@@ -766,6 +766,21 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * Accept the ticket's cancellation request: the order is cancelled now or at the end of its period, as the
+     * client asked, and the task is set complete (CancelRequests).
+     */
+    #[RequiredParams(['id' => 'Ticket ID is missing'])]
+    public function cancel_request_accept(array $data): bool
+    {
+        $this->checkPermissions('support', 'manage_tickets');
+        $this->checkPermissions('order', 'manage');
+
+        \ClientFence\Mod\Support\CancelRequests::accept($this->getDi(), $this->getService()->getTicketById((int) $data['id']));
+
+        return true;
+    }
+
+    /**
      * Deletes tickets with given IDs.
      */
     #[RequiredParams(['ids' => 'IDs were not passed'])]

@@ -161,6 +161,7 @@ class Service implements \ClientFence\InjectionAwareInterface
      * (TicketFiles::prune()), the help desk mailboxes are read (MailImport::run()) and anything
      * saved for a merged ticket moves to the ticket it went into (TicketMerge::sweep()) and the
      * escalation rules run (TicketEscalation::run()); a problem never breaks the cron run.
+     * When set, cancellation requests are accepted too (CancelRequests::run()).
      */
     public static function onAfterAdminCronRun(\ClientFence\Event $event): void
     {
@@ -175,6 +176,12 @@ class Service implements \ClientFence\InjectionAwareInterface
         TicketAssign::sweep($di);
         TicketFeedback::sweep($di);
         // Escalation rules, as WHMCS (TicketEscalation).
+        // Cancellation requests processed automatically, when set (CancelRequests).
+        try {
+            CancelRequests::run($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('Support: cancellation requests failed: %s', $e->getMessage());
+        }
         try {
             TicketEscalation::run($di);
         } catch (\Throwable $e) {
@@ -1324,6 +1331,10 @@ class Service implements \ClientFence\InjectionAwareInterface
 
             $productService = $this->di['mod_service']('product');
             $productService->assertUpgradeAllowedByIds((int) $order->product_id, (int) $rel_new_value);
+        }
+        // ClientFence core patch: a cancellation request says when the service ends (CancelRequests).
+        if ($rel_task === SupportTicket::REL_TASK_CANCEL && $rel_new_value !== null && $rel_new_value !== '') {
+            CancelRequests::assertType($this->di, $order, (string) $rel_new_value);
         }
 
         if ($rel_id && $rel_type && $rel_task && $this->checkIfTaskAlreadyExists($client, $rel_id, $rel_type, $rel_task)) {
