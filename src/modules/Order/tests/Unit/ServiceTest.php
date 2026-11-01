@@ -2897,6 +2897,52 @@ test('suspendFromOrder suspends the active addons and unsuspendFromOrder brings 
         ->and($master->status)->toBe(Order::STATUS_ACTIVE);
 });
 
+test('a cancellation scheduled at the period end covers the active addons, and the gateway end cancels them', function (): void {
+    $master = orderServiceCreateLegacyOrderModel(10);
+    $master->status = Order::STATUS_ACTIVE;
+    $master->group_master = 1;
+    $addon = orderServiceCreateLegacyOrderModel(11);
+    $addon->status = Order::STATUS_ACTIVE;
+    $gone = orderServiceCreateLegacyOrderModel(12);
+    $gone->status = Order::STATUS_CANCELED;
+
+    $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
+    $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->andReturn(true);
+    $subscriptionService->shouldReceive('scheduleCancellationForOrder')->andReturn(1);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $dbal->shouldReceive('fetchAllAssociative')->andReturn([]);
+    // The open renewal invoices of the service and of its active addon are cancelled.
+    $cancelled = [];
+    $dbal->shouldReceive('executeStatement')->with(Mockery::pattern('/^UPDATE invoice i SET i.status = :canceled/'), Mockery::any())
+        ->andReturnUsing(function (string $sql, array $p) use (&$cancelled): int {
+            $cancelled[] = $p['order_id'];
+
+            return 1;
+        });
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['db'] = Mockery::mock(\ClientFence\Database::class)->shouldIgnoreMissing();
+    $di['events_manager'] = Mockery::mock(\ClientFence\EventManager::class)->shouldIgnoreMissing();
+    $di['logger'] = new \ClientFence\Log();
+    $di['mod_service'] = $di->protect(fn () => $subscriptionService);
+
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_callOnService');
+    $service->shouldReceive('saveStatusChange');
+    $service->shouldReceive('getOrderAddonsList')->with($master)->andReturn([$addon, $gone]);
+    $service->shouldReceive('updateOrderMeta')->once()->with($master, [Service::META_CANCEL_AT_PERIOD_END => '1']);
+    $service->shouldReceive('updateOrderMeta')->once()->with($addon, [Service::META_CANCEL_AT_PERIOD_END => '1']);
+    $service->shouldReceive('cancelFromOrder')->once()->with($addon, 'Subscription ended at the payment gateway', false)->andReturn(true);
+    $service->shouldNotReceive('cancelFromOrder')->with($gone, Mockery::any(), Mockery::any());
+    $service->setDi($di);
+
+    expect($service->scheduleCancellationFromOrder($master))->toBeTrue()
+        ->and($cancelled)->toBe(['10', '11'])
+        ->and($service->finalizeCancellationFromGateway($master, 'Subscription ended at the payment gateway'))->toBeTrue()
+        ->and($master->status)->toBe(Order::STATUS_CANCELED);
+});
+
 // ClientFence: deleting an order cancels its open renewal and waiting upgrade invoices.
 test('deleteFromOrder cancels subscriptions before deletion and cancels open invoices', function (): void {
     $order = orderServiceCreateLegacyOrderModel(10);

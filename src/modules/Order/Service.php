@@ -2002,23 +2002,29 @@ class Service implements InjectionAwareInterface
             $this->di['events_manager']->fire(['event' => 'onAfterAdminOrderCancel', 'params' => ['id' => $orderId]]);
         }
 
-        // ClientFence core patch: the addons go with their service. They stayed active, and the cron kept
-        // invoicing them and paying them from the client's credit.
-        if ($this->orderIsGroupMaster($order)) {
-            foreach ($this->getOrderAddonsList($order) as $addon) {
-                if (in_array($this->orderStatus($addon), [Order::STATUS_ACTIVE, Order::STATUS_SUSPENDED, Order::STATUS_FAILED_RENEW], true)) {
-                    try {
-                        $this->cancelFromOrder($addon, $reason, $skipEvent);
-                    } catch (\Throwable $e) {
-                        $this->di['logger']->warning('Could not cancel addon order #%s of #%s: %s', $this->orderId($addon), $orderId, $e->getMessage());
-                    }
-                }
-            }
-        }
+        $this->cancelAddons($order, $reason, $skipEvent);
 
         $this->di['logger']->info('Canceled order #%s', $orderId);
 
         return true;
+    }
+
+    // ClientFence core patch: the addons go with their service. They stayed active, and the cron kept
+    // invoicing them and paying them from the client's credit.
+    private function cancelAddons(Order|\Model_ClientOrder $order, $reason, bool $skipEvent): void
+    {
+        if (!$this->orderIsGroupMaster($order)) {
+            return;
+        }
+        foreach ($this->getOrderAddonsList($order) as $addon) {
+            if (in_array($this->orderStatus($addon), [Order::STATUS_ACTIVE, Order::STATUS_SUSPENDED, Order::STATUS_FAILED_RENEW], true)) {
+                try {
+                    $this->cancelFromOrder($addon, $reason, $skipEvent);
+                } catch (\Throwable $e) {
+                    $this->di['logger']->warning('Could not cancel addon order #%s of #%s: %s', $this->orderId($addon), $this->orderId($order), $e->getMessage());
+                }
+            }
+        }
     }
 
     public function scheduleCancellationFromOrder(Order|\Model_ClientOrder $order, $reason = null): bool
@@ -2038,6 +2044,15 @@ class Service implements InjectionAwareInterface
         $this->updateOrderMeta($order, [self::META_CANCEL_AT_PERIOD_END => '1']);
         // ClientFence core patch: a renewal invoice paid now would be lost when the service ends at the period end.
         $this->cancelOpenInvoices($orderId, 'Cancellation was scheduled at the end of the period.');
+        // ClientFence core patch: its addons end with it, so the cron neither renews them nor takes credit for them.
+        if ($this->orderIsGroupMaster($order)) {
+            foreach ($this->getOrderAddonsList($order) as $addon) {
+                if (in_array($this->orderStatus($addon), [Order::STATUS_ACTIVE, Order::STATUS_SUSPENDED, Order::STATUS_FAILED_RENEW], true)) {
+                    $this->updateOrderMeta($addon, [self::META_CANCEL_AT_PERIOD_END => '1']);
+                    $this->cancelOpenInvoices($this->orderId($addon), 'Cancellation was scheduled at the end of the period.');
+                }
+            }
+        }
 
         if ($order instanceof Order) {
             $order->setReason($reason);
@@ -2059,6 +2074,7 @@ class Service implements InjectionAwareInterface
         $this->beginCancellation($order, false);
 
         $this->completeCancellation($order, $reason, false);
+        $this->cancelAddons($order, $reason, false);
 
         return true;
     }
