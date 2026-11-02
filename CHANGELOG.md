@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.26 (2026-11-02)
+
+### Fixed
+
+- Invoices: a signed-in client can open, print and download their own invoices as often as needed; the invoice page no longer stops after 10 views an hour for everyone behind one address.
+- Hosting: a retry of a failed Enhance setup reuses the panel login the first try made, so the order can be set up without first confirming the client's email.
+- Sign-up: a used or expired email confirmation link shows its reason instead of an error page.
+- Checkout: the renewal shown after a recurring promo code includes the discount.
+- Language: the account owner's language choice is saved on the account.
+- Invoices: the print view reads right to left in Arabic and fits a phone screen.
+- Downloads: another client's download link shows the not-found page.
+- Client area: confirmation dialogs show their question; tickets answered by staff show "Answered", also in the emails; a discount without a code is labelled "Discount"; US phone numbers show the United States; an empty gender stays empty; an authorized user without invoice access no longer sees the balance; no notifications bell before the email is confirmed.
+
 ## 1.0.25 (2026-11-02)
 
 ### Fixed
