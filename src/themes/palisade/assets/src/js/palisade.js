@@ -102,7 +102,8 @@ function initMenuCollapse() {
 
 /**
  * Language switch. English is the default; picking a language stores it in
- * FOSSBilling's locale cookie for a year, so the choice is kept next time.
+ * FOSSBilling's locale cookie for a year, so the choice is kept next time, and
+ * on a signed-in owner's account (data-save).
  */
 function initLanguageSwitch() {
   document.querySelectorAll('.js-locale-switch').forEach((el) => {
@@ -110,7 +111,12 @@ function initLanguageSwitch() {
       event.preventDefault();
       const cookie = ClientFence.cookieNames?.locale || 'clientfence_locale';
       ClientFence.cookieCreate(cookie, el.dataset.locale, 365);
-      window.location.reload();
+      // A signed-in owner's emails use the account's language (as in WHMCS); reload whatever the answer.
+      if (el.dataset.save) {
+        ClientFence.api.client.post('profile/update', { lang: el.dataset.locale }, () => window.location.reload(), () => window.location.reload());
+      } else {
+        window.location.reload();
+      }
     });
   });
 }

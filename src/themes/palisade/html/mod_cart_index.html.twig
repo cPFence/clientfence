@@ -110,7 +110,7 @@
                 <div class="bf-lines">
                     <div class="bf-line"><span>{{ 'Subtotal'|trans }}</span><span>{{ (cart.subtotal * rate)|format_currency(cur.code) }}</span></div>
                     {% if cart.discount > 0 %}
-                        <div class="bf-line bf-line-promo"><span>{{ 'Promo code :code'|trans({ ':code': cart.promocode }) }}</span><span>− {{ (cart.discount * rate)|format_currency(cur.code) }}</span></div>
+                        <div class="bf-line bf-line-promo"><span>{{ cart.promocode ? 'Promo code :code'|trans({ ':code': cart.promocode }) : 'Discount'|trans }}</span><span>− {{ (cart.discount * rate)|format_currency(cur.code) }}</span></div>
                     {% endif %}
                     {% if tax_amount > 0 %}
                         <div class="bf-line"><span>{{ tax.name ?: 'Tax'|trans }} ({{ tax.rate }}%)</span><span>{{ tax_amount|format_currency(cur.code) }}</span></div>

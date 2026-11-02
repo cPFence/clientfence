@@ -718,12 +718,16 @@ class Service implements InjectionAwareInterface
         if ($promoId) {
             $promo = $this->getProductService()->findPromoById($promoId);
             $promocode = $promo->getCode();
+            $promoRecurring = $promo->isRecurring();
         } else {
             $promocode = null;
+            $promoRecurring = false;
         }
 
         return [
             'promocode' => $promocode,
+            // ClientFence core patch: the checkout shows the renewal after a recurring promo (the orders keep its discount_price).
+            'promo_recurring' => $promoRecurring,
             'discount' => $items_discount,
             'subtotal' => $total,
             'total' => $total - $items_discount,

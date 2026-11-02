@@ -1925,6 +1925,7 @@ test('toApiArray returns expected structure', function (): void {
 
     $expected = [
         'promocode' => null,
+        'promo_recurring' => false,
         'discount' => 0,
         'total' => 1,
         'items' => [$cartProductApiArray],

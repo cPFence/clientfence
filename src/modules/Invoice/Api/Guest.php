@@ -35,8 +35,7 @@ class Guest extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\InformationException('Invalid invoice hash', null, 404);
         }
 
-        $this->getDi()['rate_limiter']->consumeOrThrow('invoice_get_ip', (string) $this->getIp());
-        $this->getDi()['rate_limiter']->consumeOrThrow('invoice_get_hash', (string) $data['hash']);
+        $this->limitUnlessOwner('invoice_get', (string) $data['hash']);
 
         $model = $this->getDi()['db']->findOne('Invoice', 'hash = :hash', ['hash' => $data['hash']]);
         if (!$model) {
@@ -90,8 +89,7 @@ class Guest extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\InformationException('Payment method not found. Missing param gateway_id', null, 811);
         }
 
-        $this->getDi()['rate_limiter']->consumeOrThrow('invoice_payment_ip', (string) $this->getIp());
-        $this->getDi()['rate_limiter']->consumeOrThrow('invoice_payment_hash', (string) $data['hash']);
+        $this->limitUnlessOwner('invoice_payment', (string) $data['hash']);
 
         return $this->getService()->processInvoice($data);
     }
@@ -116,8 +114,7 @@ class Guest extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\Exception('Invalid invoice hash', null, 4001);
         }
 
-        $this->getDi()['rate_limiter']->consumeOrThrow('invoice_pdf_ip', (string) $this->getIp());
-        $this->getDi()['rate_limiter']->consumeOrThrow('invoice_pdf_hash', (string) $data['hash']);
+        $this->limitUnlessOwner('invoice_pdf', (string) $data['hash']);
 
         return $this->getService()->generatePDF($data['hash'], $this->getIdentity());
     }
@@ -213,5 +210,20 @@ class Guest extends \ClientFence\Api\AbstractApi
         $clientId = (int) ($this->getDi()['session']->get('client_id') ?? 0);
 
         return $clientId > 0 ? $clientId : null;
+    }
+
+    /**
+     * ClientFence core patch: the limits slow the guessing of invoice links. The signed-in client's own invoices are
+     * not limited (as in WHMCS): the client area opens them through these guest routes, and 10 views an hour per
+     * address broke the invoice page for everyone behind that address.
+     */
+    private function limitUnlessOwner(string $limit, string $hash): void
+    {
+        $di = $this->getDi();
+        if ($di['auth']->isClientLoggedIn() && (int) $di['dbal']->fetchOne('SELECT client_id FROM invoice WHERE hash = ?', [$hash]) === (int) $di['loggedin_client']->id) {
+            return;
+        }
+        $di['rate_limiter']->consumeOrThrow($limit . '_ip', (string) $this->getIp());
+        $di['rate_limiter']->consumeOrThrow($limit . '_hash', $hash);
     }
 }

@@ -175,6 +175,11 @@ h2, h3, h4, h5, h6,
   }
 }
 
+// Bootstrap's reboot clears only the left margin of dd: in RTL the browser's 40px start margin stayed.
+dd {
+  margin-inline-start: 0;
+}
+
 .icon {
   width: 20px;
   height: 20px;

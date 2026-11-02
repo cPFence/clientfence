@@ -137,6 +137,9 @@
     {% set status_label = 'Unpaid'|trans %}
 {% elseif status_title == 'Refunded' %}
     {% set status_label = 'Refunded'|trans %}
+{# A ticket staff replied to (ClientFence): "Answered", as in WHMCS. #}
+{% elseif type == 'ticket' and status == 'on_hold' %}
+    {% set status_label = 'Answered'|trans %}
 {% else %}
     {% set status_label = status_title|trans %}
 {% endif %}

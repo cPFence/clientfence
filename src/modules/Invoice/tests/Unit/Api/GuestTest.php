@@ -163,3 +163,28 @@ test('generates PDF', function (): void {
 
     $api->pdf($data);
 });
+
+// Track 5 F2: the client area opens the signed-in client's own invoices through the guest routes; only other links are limited.
+test('invoice links are rate limited except for the signed-in owner', function (int $ownerId, int $limited): void {
+    $api = apiEndpoint(new Guest());
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('generatePDF')->once();
+    $auth = Mockery::mock();
+    $auth->shouldReceive('isClientLoggedIn')->andReturn(true);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->with('SELECT client_id FROM invoice WHERE hash = ?', [str_repeat('a', 32)])->andReturn($ownerId);
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 5;
+    $limiter = Mockery::mock();
+    $limiter->shouldReceive('consumeOrThrow')->times($limited);
+    $di = container();
+    $di['auth'] = $auth;
+    $di['dbal'] = $dbal;
+    $di['loggedin_client'] = $client;
+    $di['rate_limiter'] = $limiter;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $api->pdf(['hash' => str_repeat('a', 32)]);
+})->with(['own invoice' => [5, 0], 'another client' => [6, 2]]);

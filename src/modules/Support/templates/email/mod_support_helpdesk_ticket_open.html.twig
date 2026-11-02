@@ -44,7 +44,7 @@
     <ul>
         <li><strong>Ticket ID:</strong> #{{ticket.id|default('')}}</li>
         <li><strong>Department:</strong> {{ticket.helpdesk|default({}).name|default('')}}</li>
-        <li><strong>Status:</strong> {{ticket.status|default('')|title}}</li>
+        <li><strong>Status:</strong> {{ ticket.status|default('') == 'on_hold' ? 'Answered' : ticket.status|default('')|title }}</li>
     </ul>
 
     <a href='{{ "support/ticket/#{ticket.id|default('')}"|url(area: 'admin') }}' target="_blank">Reply</a>

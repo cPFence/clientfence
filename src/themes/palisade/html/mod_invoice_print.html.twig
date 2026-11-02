@@ -5,9 +5,10 @@
 {% set seller = invoice.seller %}
 {% set buyer = invoice.buyer %}
 {% set company = guest.system_company %}
+{% set locale = guest.system_locale|default('en_US') %}
 
 <!DOCTYPE html>
-<html>
+<html lang="{{ locale|replace({'_': '-'}) }}" dir="{{ locale starts with 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="{{ 'build/css/palisade.css' | asset_url }}">
@@ -74,11 +75,11 @@
                                 {% endif %}
                                 {% if seller.phone %}
                                     <dt class="col-sm-6">{{ 'Phone'|trans }}:</dt>
-                                    <dd class="col-sm-6">{{ seller.phone }}</dd>
+                                    <dd class="col-sm-6"><bdi dir="ltr">{{ seller.phone }}</bdi></dd>
                                 {% endif %}
                                 {% if seller.email %}
                                     <dt class="col-sm-6">{{ 'Email'|trans }}:</dt>
-                                    <dd class="col-sm-6">{{ seller.email }}</dd>
+                                    <dd class="col-sm-6"><bdi dir="ltr">{{ seller.email }}</bdi></dd>
                                 {% endif %}
                                 {% if seller.bank_name %}
                                     <dt class="col-sm-6">{{ 'Bank Name'|trans }}:</dt>
@@ -141,7 +142,7 @@
                                 {% endif %}
                                 {% if buyer.phone %}
                                     <dt class="col-sm-6">{{ 'Phone'|trans }}:</dt>
-                                    <dd class="col-sm-6">{{ buyer.phone }}</dd>
+                                    <dd class="col-sm-6"><bdi dir="ltr">{{ buyer.phone }}</bdi></dd>
                                 {% endif %}
                             </dl>
                         </div>
@@ -157,7 +158,8 @@
                 </div>
             {% endif %}
 
-            <table class="table mt-3">
+            <div class="table-responsive mt-3">
+            <table class="table">
                 <thead>
                 <tr>
                     <th>{{ '#'|trans }}</th>
@@ -182,9 +184,11 @@
                 {% endfor %}
                 </tbody>
             </table>
+            </div>
 
             <div class="row">
                 <div class="col-md-4 offset-md-8">
+                    <div class="table-responsive">
                     <table class="table">
                         {% if invoice.tax > 0 %}
                             <tr class="text-end">
@@ -213,6 +217,7 @@
                             </tr>
                         {% endif %}
                     </table>
+                    </div>
                 </div>
             </div>
 

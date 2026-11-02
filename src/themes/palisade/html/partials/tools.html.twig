@@ -7,13 +7,15 @@
 {% set languages = guest.extension_languages(true) %}
 {% set current_locale = guest.system_locale %}
 {% set other_languages = languages|filter(lang => lang.locale != current_locale) %}
+{# The account owner's choice is also saved on the account, for the emails (not for an authorized user). #}
+{% set save_locale = client and not client.client_user_session ? ' data-save="1"' : '' %}
 {# Each language by its own name (src/locale/locales.php); one Arabic name for all Arabic locales. #}
 {% macro language_name(lang) %}{{ lang.locale starts with 'ar' ? 'العربية' : lang.title }}{% endmacro %}
 {% set compact = compact|default(false) %}
 {% set label_class = icon_only|default(false) ? ' class="visually-hidden"' : '' %}
 {% if other_languages|length == 1 and not compact %}
     {% for lang in other_languages %}
-        <a class="{{ tool_class }} js-locale-switch" href="#" data-locale="{{ lang.locale }}" lang="{{ lang.locale|replace({'_': '-'}) }}" title="{{ 'Language'|trans }}">
+        <a class="{{ tool_class }} js-locale-switch" href="#" data-locale="{{ lang.locale }}"{{ save_locale|raw }} lang="{{ lang.locale|replace({'_': '-'}) }}" title="{{ 'Language'|trans }}">
             <svg class="icon icon-sm" aria-hidden="true"><use href="#language"/></svg>
             <span{{ label_class|raw }}>{{ _self.language_name(lang) }}</span>
         </a>
@@ -39,7 +41,7 @@
                         {# A button, not a span: the menu's arrow keys move through focusable items only. #}
                         <button type="button" class="dropdown-item active" aria-current="true" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ _self.language_name(lang) }}</button>
                     {% else %}
-                        <a class="dropdown-item js-locale-switch" href="#" data-locale="{{ lang.locale }}" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ _self.language_name(lang) }}</a>
+                        <a class="dropdown-item js-locale-switch" href="#" data-locale="{{ lang.locale }}"{{ save_locale|raw }} lang="{{ lang.locale|replace({'_': '-'}) }}">{{ _self.language_name(lang) }}</a>
                     {% endif %}
                 </li>
             {% endfor %}

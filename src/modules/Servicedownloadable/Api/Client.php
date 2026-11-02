@@ -33,7 +33,8 @@ class Client extends \ClientFence\Api\AbstractApi
         $identity = $this->getIdentity();
         $order = $this->getDi()['db']->findOne('ClientOrder', 'id = :id AND client_id = :client_id', [':id' => $data['order_id'], ':client_id' => $identity->id]);
         if (!$order instanceof \Model_ClientOrder) {
-            throw new \ClientFence\InformationException('Order not found');
+            // ClientFence core patch: 404, the theme's not-found page (another client's link showed the developer error page).
+            throw new \ClientFence\InformationException('Order not found', null, 404);
         }
 
         $orderService = $this->getDi()['mod_service']('order');

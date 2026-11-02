@@ -54,7 +54,8 @@
                         {{ include('partial_menu.html.twig') }}
                     </ul>
                 </nav>
-                {% if client and settings.sidebar_balance_enabled|default('1') and profile and profile.currency is not null %}
+                {# An authorized user without the invoices permission cannot see the balance (ClientFence). #}
+                {% if client and settings.sidebar_balance_enabled|default('1') and profile and profile.currency is not null and (not clientfence_user or clientfence_user.owner or 'invoices' in clientfence_user.permissions) %}
                     <div class="sidebar-balance">
                         <span>{{ 'Account Balance'|trans }}</span>
                         <div class="sidebar-balance-row">
@@ -126,8 +127,9 @@
                         {% if cart_count %}<span class="topbar-bell-count">{{ cart_count }}</span>{% endif %}
                     </a>
                 {% endif %}
-                {% if client %}
-                    {# The bell: the account's notifications (palisade.js fills the list). #}
+                {# The bell: the account's notifications (palisade.js fills the list). Not before the email is confirmed:
+                   the client API answers only profile calls until then. #}
+                {% if client and not (guest.client_is_email_validation_required and not (profile.email_approved is defined ? profile.email_approved : true)) %}
                     <div class="topbar-bell dropdown" data-cf-bell data-text="{{ {empty: 'No notifications yet'|trans, error: 'Notifications could not be loaded'|trans, now: 'just now'|trans, read: 'Mark as read'|trans, dismiss: 'Dismiss'|trans}|json_encode }}">
                         <button class="topbar-bell-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="{{ 'Notifications'|trans }}" aria-label="{{ 'Notifications'|trans }}">
                             <svg class="icon" aria-hidden="true"><use href="#bell"/></svg>

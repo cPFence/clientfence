@@ -189,11 +189,12 @@ export default function initCheckout(root) {
     }
     $$('[data-bf-due]').forEach((el) => { el.textContent = money(total); });
     const then = $('[data-bf-then]');
-    if (recurrent && now.renew > 0) {
+    const renew = now.renew - (state.promo ? state.promo.renewDiscount * rate : 0);
+    if (recurrent && renew > 0) {
       const renewAt = new Date();
       renewAt.setDate(renewAt.getDate() + Math.round(MONTHS[state.cycle] * 30.4375));
       then.textContent = fill(t.then, {
-        amount: money(withTax(now.renew)),
+        amount: money(withTax(renew)),
         per: cycles[state.cycle]?.per ?? '',
         date: renewAt.toLocaleDateString(document.documentElement.lang || undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
       });
@@ -391,7 +392,9 @@ export default function initCheckout(root) {
         throw new Error(t.promoInvalid);
       }
       // The cart's totals are in the default currency, like the product prices.
-      state.promo = { code, discount: Number(cart.discount), total: Number(cart.total) };
+      // A recurring promo also comes off each renewal: the order keeps the price part of the discount.
+      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).reduce((sum, item) => sum + Number(item.discount_price ?? 0), 0) : 0;
+      state.promo = { code, discount: Number(cart.discount), total: Number(cart.total), renewDiscount };
     } catch (error) {
       state.promo = null;
       promoMessage(errorText(error));

@@ -29,7 +29,10 @@ export default async function initPhoneInput() {
     const initialCode = countryCodeInput.value.trim();
     const countrySelect = form.querySelector('select[name="country"], select[name$="[country]"]');
     const selectedCountry = (countrySelect?.value || input.dataset.initialCountry || '').toLowerCase();
-    const initialCountry = countries.find((country) => country.dialCode === initialCode)?.iso2
+    // Several countries share a dial code (+1): the client's country first, then the code's main country (priority 0).
+    const sharing = countries.filter((country) => country.dialCode === initialCode);
+    const initialCountry = sharing.find((country) => country.iso2 === selectedCountry)?.iso2
+      || sharing.find((country) => country.priority === 0)?.iso2
       || (supported.has(selectedCountry) ? selectedCountry : '');
 
     const iti = intlTelInput(input, {

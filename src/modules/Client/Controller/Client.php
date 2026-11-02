@@ -73,14 +73,18 @@ class Client implements \ClientFence\InjectionAwareInterface
         $startedAt = microtime(true);
         $service = $this->di['mod_service']('client');
 
+        $systemService = $this->di['mod_service']('System');
+
         try {
             $service->approveClientEmailByHash($hash);
+            $systemService->setPendingMessage(__trans('Email address was confirmed'));
+        } catch (\ClientFence\InformationException $e) {
+            // ClientFence core patch: a used, replaced or expired link shows its reason on the home page (it showed
+            // the developer error page).
+            $systemService->setPendingMessage($e->getMessage());
         } finally {
             RandomizedTimeFloor::apply($startedAt);
         }
-
-        $systemService = $this->di['mod_service']('System');
-        $systemService->setPendingMessage(__trans('Email address was confirmed'));
 
         return $app->redirect('/');
     }

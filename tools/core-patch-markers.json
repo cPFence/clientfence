@@ -2352,6 +2352,10 @@
         "done": "ClientFence core patch: 404 (was 4001"
     },
     {
+        "file": "modules/Invoice/Api/Guest.php",
+        "done": "ClientFence core patch: the limits slow the guessing of invoice links."
+    },
+    {
         "file": "modules/Servicelicense/Service.php",
         "done": "ClientFence core patch: the check's own errors reach the caller"
     },
@@ -2654,6 +2658,10 @@
     {
         "file": "modules/Client/Controller/Client.php",
         "done": "<script nonce=\\\"\" . \\ClientFence\\Csp::nonce() . \"\\\">location.replace"
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "ClientFence core patch: a used, replaced or expired link shows its reason on the home page"
     },
     {
         "file": "themes/palisade/html/partials/page_end.html.twig",
@@ -3022,6 +3030,10 @@
     {
         "file": "modules/Profile/Service.php",
         "done": "ClientFence core patch (0.8.9 port): confirmation cannot approve an address while it is being replaced."
+    },
+    {
+        "file": "modules/Profile/Service.php",
+        "done": "ClientFence core patch: an update without an email (the language menu sends only `lang`) changes no email."
     },
     {
         "file": "modules/Servicedomain/Service.php",
@@ -3844,6 +3856,10 @@
         "done": "ClientFence core patch: catalog prices may include tax (Invoice\\Service::applyInclusiveTax())."
     },
     {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the checkout shows the renewal after a recurring promo"
+    },
+    {
         "file": "modules/Order/Upgrades.php",
         "done": "ClientFence core patch: with prices that include tax the proration holds the tax"
     },
@@ -3930,5 +3946,9 @@
     {
         "file": "library/Payment/Adapter/PayPalEmail.php",
         "done": "ClientFence core patch: account credit paid the rest of the invoice, so a full refund would refund more than PayPal returned."
+    },
+    {
+        "file": "modules/Servicedownloadable/Api/Client.php",
+        "done": "ClientFence core patch: 404, the theme's not-found page (another client's link showed the developer error page)."
     }
 ]

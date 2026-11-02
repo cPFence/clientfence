@@ -144,8 +144,10 @@ class Service implements InjectionAwareInterface
         $mod = $this->di['mod']('client');
         $config = $mod->getConfig();
         $email = $data['email'] ?? '';
+        // ClientFence core patch: an update without an email (the language menu sends only `lang`) changes no email.
         if (
-            $client->getEmail() != $email
+            $email !== ''
+            && $client->getEmail() != $email
             && isset($config['disable_change_email'])
             && $config['disable_change_email']
         ) {

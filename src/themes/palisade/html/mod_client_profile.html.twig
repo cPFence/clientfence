@@ -97,6 +97,8 @@
                                 <div class="mb-3 col-md-5">
                                     <label class="form-label" for="gender">{{ 'Gender'|trans }}</label>
                                     <select class="form-select" name="gender" id="gender" {% if "gender" in required %} required {% endif %}>
+                                        {# No gender stays none (it saved "Other"), as on the sign-up form. #}
+                                        <option value="">{{ '-- Select --'|trans }}</option>
                                         <option value="male" {{ profile.gender == 'male' ? 'selected' : '' }}>{{ 'Male'|trans }}
                                         </option>
                                         <option value="female" {{ profile.gender == 'female' ? 'selected' : '' }}>
@@ -107,7 +109,7 @@
                                             {{ 'Non-binary'|trans }}
                                         </option>
                                         <option
-                                            value="other" {% if profile.gender not in ['male', 'female', 'nonbinary'] %} selected {% endif %}>
+                                            value="other" {{ profile.gender == 'other' ? 'selected' : '' }}>
                                             {{ 'Other'|trans }}
                                         </option>
                                     </select>

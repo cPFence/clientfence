@@ -31,7 +31,7 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
       if (value) {
         onRequest('GET', rawHref, { [modal.key]: value });
       }
-    } else if (window.confirm(modal.content || modal.title || 'Are you sure?')) {
+    } else if (window.confirm([modal.title, modal.content].filter(Boolean).join('\n\n') || 'Are you sure?')) {
       onRequest('GET', rawHref);
     }
   } else if (modal.type === 'prompt') {
