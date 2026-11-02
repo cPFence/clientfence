@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.24 (2026-11-02)
+
+### Fixed
+
+- Tax: with "Prices include tax", an invoice totals exactly the price the client was shown; the tax is the total less the net, as in WHMCS. Some prices were a cent off.
+- Refunds: the credit note of a part refund totals exactly the amount refunded.
+
 ## 1.0.23 (2026-11-02)
 
 ### Changed
