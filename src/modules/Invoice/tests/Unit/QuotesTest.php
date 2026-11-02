@@ -21,7 +21,7 @@ function quotesDb(): Connection
         'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, email TEXT, country TEXT, currency TEXT, lang TEXT, email_approved INTEGER DEFAULT 0)',
         'CREATE TABLE tax (id INTEGER PRIMARY KEY, name TEXT, taxrate REAL, country TEXT, state TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, hash TEXT, taxname TEXT, taxrate REAL)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, hash TEXT, taxname TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0)',
         'CREATE TABLE invoice_quote (id INTEGER PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL UNIQUE, client_id INTEGER, first_name TEXT NOT NULL DEFAULT \'\', last_name TEXT NOT NULL DEFAULT \'\', company TEXT NOT NULL DEFAULT \'\', email TEXT NOT NULL DEFAULT \'\', country TEXT NOT NULL DEFAULT \'\', currency TEXT NOT NULL, subject TEXT NOT NULL, stage TEXT NOT NULL DEFAULT \'draft\', valid_until TEXT, proposal TEXT NOT NULL, customer_notes TEXT NOT NULL, admin_notes TEXT NOT NULL, taxname TEXT NOT NULL DEFAULT \'\', taxrate REAL NOT NULL DEFAULT 0, invoice_id INTEGER, created_by INTEGER, sent_at TEXT, accepted_at TEXT, declined_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)',
         'CREATE TABLE invoice_quote_item (id INTEGER PRIMARY KEY AUTOINCREMENT, quote_id INTEGER NOT NULL, position INTEGER NOT NULL DEFAULT 0, description TEXT NOT NULL, quantity INTEGER NOT NULL DEFAULT 1, price REAL NOT NULL DEFAULT 0, discount REAL NOT NULL DEFAULT 0, taxed INTEGER NOT NULL DEFAULT 0)',
     ] as $sql) {

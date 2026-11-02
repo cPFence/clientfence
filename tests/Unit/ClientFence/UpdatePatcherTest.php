@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(8)
+    expect($patches)->toHaveCount(9)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -42,7 +42,8 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches)->toHaveKey(119)
         ->and($patches[119][1])->toBe('patch119')
         ->and($patches[120][1])->toBe('patch120')
-        ->and($patches[121][1])->toBe('patch121');
+        ->and($patches[121][1])->toBe('patch121')
+        ->and($patches[122][1])->toBe('patch122');
 });
 
 test('hosting subscription patch adds both panel identifiers for existing installs', function (): void {

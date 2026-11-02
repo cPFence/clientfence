@@ -252,7 +252,7 @@ class Service implements InjectionAwareInterface
         $subtotal = (float) ($row['list_subtotal'] ?? 0);
         $taxableSubtotal = (float) ($row['list_taxable_subtotal'] ?? 0);
         $taxRate = (float) ($row['taxrate'] ?? 0);
-        $tax = $taxRate > 0 && $taxableSubtotal !== 0.0 ? round($taxableSubtotal * $taxRate / 100, 2) : 0;
+        $tax = self::taxOf($taxableSubtotal, $taxRate, (float) ($row['tax_adjust'] ?? 0));
         $invoiceNumber = is_numeric($row['nr'] ?? null) ? (int) $row['nr'] : (int) $row['id'];
         $clientId = $row['client_id'] ?? null;
 
@@ -333,11 +333,7 @@ class Service implements InjectionAwareInterface
 
         // taxrate is a varchar column that can hold any admin-supplied value - see getTax().
         $current_invoice_tax_rate = (float) ($row['taxrate'] ?? 0);
-        if ($current_invoice_tax_rate > 0 && $taxable_subtotal != 0) {
-            $tax = round($taxable_subtotal * $current_invoice_tax_rate / 100, 2);
-        } else {
-            $tax = 0;
-        }
+        $tax = self::taxOf((float) $taxable_subtotal, $current_invoice_tax_rate, (float) ($row['tax_adjust'] ?? 0));
 
         $result = [];
         $result['id'] = $row['id'];
@@ -1475,6 +1471,12 @@ class Service implements InjectionAwareInterface
         return $this->getTotal($invoice) + $this->getTax($invoice);
     }
 
+    /** ClientFence core patch: tax once on the taxed subtotal, plus the cents that make a tax-inclusive total the shown price (applyInclusiveTax()). */
+    public static function taxOf(float $taxable, float $rate, float $adjust): float
+    {
+        return $rate > 0 && $taxable != 0 ? round(round($taxable * $rate / 100, 2) + $adjust, 2) : 0.0;
+    }
+
     public function getTax(\Model_Invoice $invoice): float
     {
         // taxrate is a varchar column that can hold any admin-supplied value,
@@ -1497,11 +1499,7 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        if ($taxable_subtotal == 0) {
-            return 0.0;
-        }
-
-        return round($taxable_subtotal * $taxRate / 100, 2);
+        return self::taxOf($taxable_subtotal, $taxRate, (float) $invoice->tax_adjust);
     }
 
     public function getTotal(\Model_Invoice $invoice): float
@@ -1602,7 +1600,7 @@ class Service implements InjectionAwareInterface
         $rate = (float) $invoice->taxrate;
         // shortcut: the refund is taxed as a whole when the invoice has tax; mixed taxed and untaxed lines need a refund by hand.
         $taxed = $rate > 0 && $this->getTax($invoice) > 0;
-        $creditNote = $this->creditNote((int) $invoice->id, 'Refund of invoice ' . $label, $taxed ? $amount / (1 + $rate / 100) : $amount, $taxed, $note !== '' ? $note : "Refund for #{$invoice->id} invoice.");
+        $creditNote = $this->creditNote((int) $invoice->id, 'Refund of invoice ' . $label, $taxed ? $amount / (1 + $rate / 100) : $amount, $taxed, $note !== '' ? $note : "Refund for #{$invoice->id} invoice.", null, $amount);
         if ($deposit) {
             $now = date('Y-m-d H:i:s');
             $this->di['dbal']->insert('client_balance', ['client_id' => (int) $invoice->client_id, 'type' => 'invoice', 'rel_id' => (string) $creditNote, 'description' => 'Refund of invoice ' . $label, 'amount' => -$amount, 'created_at' => $now, 'updated_at' => $now]);
@@ -1794,6 +1792,7 @@ class Service implements InjectionAwareInterface
                 $new->approved = true;
                 $new->taxname = $invoice->taxname;
                 $new->taxrate = $invoice->taxrate;
+                $new->tax_adjust = -(float) $invoice->tax_adjust;
 
                 $new->seller_company = $invoice->seller_company;
                 $new->seller_address = $invoice->seller_address;
@@ -1931,7 +1930,7 @@ class Service implements InjectionAwareInterface
      * buyer and tax of the paid invoice it reverses, so the sales tax report shows the tax given back. No income is
      * counted: the money stays as account credit.
      */
-    public function creditNote(int $sourceId, string $title, float $net, bool $taxed, string $note, ?int $orderId = null): int
+    public function creditNote(int $sourceId, string $title, float $net, bool $taxed, string $note, ?int $orderId = null, ?float $total = null): int
     {
         $source = $this->di['db']->getExistingModelById('Invoice', $sourceId, 'Invoice not found');
         $new = $this->di['db']->dispense('Invoice');
@@ -1959,6 +1958,11 @@ class Service implements InjectionAwareInterface
         $item->taxed = $taxed;
         $item->created_at = $item->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($item);
+        // ClientFence core patch: a refund's credit note totals the amount refunded (its tax is that amount less the net).
+        if ($total !== null && $taxed && (float) $new->taxrate > 0) {
+            $tax = round(-$total - (float) $item->price, 2);
+            $this->di['dbal']->update('invoice', ['tax_adjust' => round($tax - round((float) $item->price * (float) $new->taxrate / 100, 2), 2)], ['id' => (int) $new->id]);
+        }
 
         $this->numberCreditNote($new);
         $this->addNote($new, $note);
@@ -1992,7 +1996,8 @@ class Service implements InjectionAwareInterface
     {
         $invoiceItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
         $previousStatus = $model->status;
-        if ($this->isBooked($model) && $this->changesAmount($model, $data)) {
+        $amountChanged = $this->changesAmount($model, $data);
+        if ($this->isBooked($model) && $amountChanged) {
             throw new InformationException('The lines and tax rate of a paid invoice cannot be changed. Refund it and make a new invoice.');
         }
         // ClientFence core patch: the status cannot undo a payment or fake a refund (a paid invoice set to
@@ -2073,6 +2078,12 @@ class Service implements InjectionAwareInterface
         }
         $model->taxrate = $data['taxrate'] ?? (empty($model->taxrate) ? null : $model->taxrate);
         $model->taxname = $data['taxname'] ?? (empty($model->taxname) ? null : $model->taxname);
+        // ClientFence core patch: lines and rates staff type are net, so the inclusive rounding cents no longer apply.
+        // shortcut: when lines change (here, or an order's lines are deleted) the cents are dropped and the total can be a cent off the
+        // shown price; lines added or deleted through the item API keep them. Recompute from stored gross prices if that matters.
+        if ($amountChanged) {
+            $model->tax_adjust = 0.0;
+        }
         $model->approved = (int) ($data['approved'] ?? (empty($model->approved) ? null : $model->approved));
         $model->notes = $data['notes'] ?? (empty($model->notes) ? null : $model->notes);
 
@@ -2154,8 +2165,7 @@ class Service implements InjectionAwareInterface
      * ClientFence: with prices that include tax, the lines of a new invoice priced from the catalog (orders, renewals)
      * hold the net price, so its total is the price the client was shown. A client exempt from tax pays the net price,
      * at the rate of their location (WHMCS "deduct tax amount for exempt clients"). A deposit line is left alone.
-     * Lines keep 2 decimals, so a cent of rounding goes on one line to make the total the shown price.
-     * shortcut: a few prices have no 2-decimal net (9.99 at 20%) and stay a cent off; store more decimals if that matters.
+     * As WHMCS, the tax is the shown total less the net: the cents its rounding needs are kept in tax_adjust.
      */
     public function applyInclusiveTax(\Model_Invoice $invoice): void
     {
@@ -2175,24 +2185,10 @@ class Service implements InjectionAwareInterface
         $args = [(int) $invoice->id, \Model_InvoiceItem::TYPE_DEPOSIT];
         $gross = round((float) $db->fetchOne($taxedSql, $args), 2);
         $db->executeStatement('UPDATE invoice_item SET price = ROUND(price * 100 / (100 + ?), 2) WHERE invoice_id = ? AND type <> ?', [$rate, ...$args]);
-        // The taxed net whose tax (rounded once on the invoice, as getTax()) makes the gross; its cent goes on one line.
         $taxRate = (float) $invoice->taxrate;
-        if ($taxRate <= 0 || $gross == 0) {
-            return;
-        }
-        $net = round($gross * 100 / (100 + $taxRate), 2);
-        foreach ([0.0, 0.01, -0.01] as $step) {
-            if (round($net + $step + round(($net + $step) * $taxRate / 100, 2), 2) === $gross) {
-                $net = round($net + $step, 2);
-
-                break;
-            }
-        }
-        $diff = round($net - (float) $db->fetchOne($taxedSql, $args), 2);
-        $line = $diff == 0 ? false : $db->fetchOne('SELECT id FROM invoice_item WHERE invoice_id = ? AND type <> ? AND taxed = 1 AND quantity = 1 ORDER BY ABS(price) DESC, id LIMIT 1', $args);
-        if ($line !== false && $line !== null) {
-            $db->executeStatement('UPDATE invoice_item SET price = ROUND(price + ?, 2) WHERE id = ?', [$diff, (int) $line]);
-        }
+        $net = round((float) $db->fetchOne($taxedSql, $args), 2);
+        $invoice->tax_adjust = $taxRate > 0 && $gross != 0 ? round($gross - $net - round($net * $taxRate / 100, 2), 2) : 0.0;
+        $db->update('invoice', ['tax_adjust' => $invoice->tax_adjust], ['id' => (int) $invoice->id]);
     }
 
     /** ClientFence: a paid or refunded invoice has its payment and income booked, so its amount is fixed. */
@@ -2929,7 +2925,7 @@ class Service implements InjectionAwareInterface
      * The summed credit is the only credit check: a per-row check skipped credit split over several rows.
      */
     private const TOTAL_WITH_TAX_SQL = '(SELECT COALESCE(SUM(t.price * t.quantity), 0)
-            + IF(CAST(m.taxrate AS DECIMAL(20, 10)) > 0, ROUND(CAST(COALESCE(SUM(CASE WHEN t.taxed <> 0 THEN t.price * t.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(m.taxrate AS DECIMAL(20, 10)) / 100, 2), 0)
+            + IF(CAST(m.taxrate AS DECIMAL(20, 10)) > 0, ROUND(CAST(COALESCE(SUM(CASE WHEN t.taxed <> 0 THEN t.price * t.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(m.taxrate AS DECIMAL(20, 10)) / 100, 2) + CAST(m.tax_adjust AS DECIMAL(20, 2)), 0)
             FROM invoice_item t WHERE t.invoice_id = m.id)';
 
     public function findAllUnpaid(?array $filter = null)

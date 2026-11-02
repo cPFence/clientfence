@@ -22,7 +22,7 @@ function statementDb(): Connection
         'CREATE TABLE setting (param TEXT PRIMARY KEY, value TEXT)',
         'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, email TEXT, currency TEXT)',
         'CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY, name TEXT)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, serie TEXT, nr TEXT, currency TEXT, status TEXT, approved INTEGER, gateway_id INTEGER, taxrate TEXT, paid_at TEXT, created_at TEXT)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, serie TEXT, nr TEXT, currency TEXT, status TEXT, approved INTEGER, gateway_id INTEGER, taxrate TEXT, tax_adjust REAL DEFAULT 0, paid_at TEXT, created_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, price REAL, quantity INTEGER, taxed INTEGER)',
         'CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, type TEXT, rel_id INTEGER, amount REAL, description TEXT, created_at TEXT)',

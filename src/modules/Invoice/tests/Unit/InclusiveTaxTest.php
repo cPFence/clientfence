@@ -20,6 +20,8 @@ function inclusiveTaxInvoice(bool $enabled, bool $inclusive, float $invoiceRate,
     $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE setting (param TEXT PRIMARY KEY, value TEXT)');
     $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, price REAL, quantity INTEGER DEFAULT 1, taxed INTEGER DEFAULT 0)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, tax_adjust REAL DEFAULT 0)');
+    $db->insert('invoice', ['id' => 1]);
     $db->insert('setting', ['param' => 'tax_enabled', 'value' => $enabled ? '1' : '0']);
     $db->insert('setting', ['param' => 'tax_inclusive', 'value' => $inclusive ? '1' : '0']);
     foreach ([['order', 12.0], ['custom', -2.4], ['deposit', 50.0]] as [$type, $price]) {
@@ -60,16 +62,29 @@ test('catalog prices that include tax become net lines; an exempt client pays th
     'tax switched off' => [false, true, 20.0, 20.0, [12.0, -2.4, 50.0]],
 ]);
 
-test('the cent the net lines round away goes on one line, so the total is the shown price', function (): void {
-    [$service, $db, $invoice] = inclusiveTaxInvoice(true, true, 20.0, 20.0);
+test('the tax is the shown total less the net, so the total is the shown price (WHMCS)', function (float $rate, array $prices, float $adjust): void {
+    [$service, $db, $invoice] = inclusiveTaxInvoice(true, true, $rate, $rate);
     $db->executeStatement('DELETE FROM invoice_item');
-    foreach ([20.0, 20.0, 20.0] as $price) {
+    foreach ($prices as $price) {
         $db->insert('invoice_item', ['invoice_id' => 1, 'type' => 'order', 'price' => $price, 'taxed' => 1]);
     }
 
     $service->applyInclusiveTax($invoice);
 
     $net = (float) $db->fetchOne('SELECT SUM(price) FROM invoice_item');
-    expect(round($net + round($net * 0.2, 2), 2))->toBe(60.0)
-        ->and(array_map('floatval', $db->fetchFirstColumn('SELECT price FROM invoice_item ORDER BY id')))->toBe([16.66, 16.67, 16.67]);
+    expect(round($net + Service::taxOf($net, $rate, (float) $invoice->tax_adjust), 2))->toBe(round(array_sum($prices), 2))
+        ->and((float) $invoice->tax_adjust)->toBe($adjust)
+        ->and((float) $db->fetchOne('SELECT tax_adjust FROM invoice WHERE id = 1'))->toBe($adjust);
+})->with([
+    '15.00 at 19% (no 2-decimal net)' => [19.0, [15.0], -0.01],
+    '9.99 at 20% (no 2-decimal net)' => [20.0, [9.99], 0.01],
+    'three 20.00 lines at 20%' => [20.0, [20.0, 20.0, 20.0], -0.01],
+    '12.00 at 20% (exact)' => [20.0, [12.0], 0.0],
+]);
+
+test('a full refund copies the cents negated and gives back exactly what was paid', function (): void {
+    expect(round(-12.61 + Service::taxOf(-12.61, 19.0, 0.01), 2))->toBe(-15.0)
+        ->and(Service::taxOf(12.61, 19.0, -0.01))->toBe(2.39)
+        ->and(Service::taxOf(0.0, 19.0, 0.01))->toBe(0.0)
+        ->and(Service::taxOf(10.0, 0.0, 0.01))->toBe(0.0);
 });

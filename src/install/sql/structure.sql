@@ -616,6 +616,7 @@ CREATE TABLE `invoice` (
   `approved` tinyint(1) DEFAULT '0',
   `taxname` varchar(255) DEFAULT NULL,
   `taxrate` varchar(35) DEFAULT NULL,
+  `tax_adjust` double(18,2) NOT NULL DEFAULT '0.00',
   `due_at` datetime DEFAULT NULL,
   `reminded_at` datetime DEFAULT NULL,
   `paid_at` datetime DEFAULT NULL,

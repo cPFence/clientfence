@@ -167,11 +167,11 @@ class Admin extends \ClientFence\Api\AbstractApi
                FROM (SELECT i.currency,
                             SUM(ii.price * ii.quantity) AS total,
                             CASE WHEN CAST(i.taxrate AS DECIMAL(20, 10)) > 0
-                                 THEN ROUND(CAST(SUM(CASE WHEN ii.taxed THEN ii.price * ii.quantity ELSE 0 END) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2)
+                                 THEN ROUND(CAST(SUM(CASE WHEN ii.taxed THEN ii.price * ii.quantity ELSE 0 END) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2) + CAST(i.tax_adjust AS DECIMAL(20, 2))
                                  ELSE 0 END AS tax
                        FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
                       WHERE i.status = 'unpaid'
-                      GROUP BY i.id, i.currency, i.taxrate) t
+                      GROUP BY i.id, i.currency, i.taxrate, i.tax_adjust) t
               GROUP BY t.currency"
         );
         foreach ($owed as $code => $amount) {

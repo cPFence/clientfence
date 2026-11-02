@@ -4418,3 +4418,26 @@ test('form answer updates retain service config and clear omitted choices', func
         'server_id' => 4, 'hostname' => 'new', 'options' => [2 => 3], 'option_lines' => ['saved'],
     ]);
 });
+
+test('deleting an order drops its pending invoice lines and the tax-inclusive cents of that invoice', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, tax_adjust REAL DEFAULT 0)');
+    $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, rel_id TEXT, status TEXT)');
+    $db->insert('invoice', ['id' => 1, 'tax_adjust' => 0.01]);
+    $db->insert('invoice', ['id' => 2, 'tax_adjust' => -0.01]);
+    $db->insert('invoice_item', ['invoice_id' => 1, 'rel_id' => '7', 'status' => Model_InvoiceItem::STATUS_PENDING_PAYMENT]);
+    $db->insert('invoice_item', ['invoice_id' => 1, 'rel_id' => '8', 'status' => Model_InvoiceItem::STATUS_PENDING_PAYMENT]);
+    $db->insert('invoice_item', ['invoice_id' => 2, 'rel_id' => '8', 'status' => Model_InvoiceItem::STATUS_PENDING_PAYMENT]);
+    $di = container();
+    $di['dbal'] = $db;
+    $service = new Service();
+    $service->setDi($di);
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 7;
+
+    $service->rmInvoiceItemByOrder($order);
+
+    expect($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 1'))->toBe(['8'])
+        ->and(array_map('floatval', $db->fetchFirstColumn('SELECT tax_adjust FROM invoice ORDER BY id')))->toBe([0.0, -0.01]);
+});

@@ -101,7 +101,7 @@ final class Statement
         $invoices = $db->fetchAllAssociative(
             'SELECT i.id, i.serie, i.nr, i.status, i.created_at, i.paid_at, g.name AS gateway, '
             // Tax once on the taxed subtotal, as Invoice\Service::getTax() (what the client was asked to pay).
-            . '(SELECT COALESCE(SUM(ii.price * ii.quantity), 0) + CASE WHEN CAST(i.taxrate AS DECIMAL(20, 10)) > 0 THEN ROUND(CAST(COALESCE(SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2) ELSE 0 END FROM invoice_item ii WHERE ii.invoice_id = i.id) AS total
+            . '(SELECT COALESCE(SUM(ii.price * ii.quantity), 0) + CASE WHEN CAST(i.taxrate AS DECIMAL(20, 10)) > 0 THEN ROUND(CAST(COALESCE(SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2) + CAST(i.tax_adjust AS DECIMAL(20, 2)) ELSE 0 END FROM invoice_item ii WHERE ii.invoice_id = i.id) AS total
              FROM invoice i LEFT JOIN pay_gateway g ON g.id = i.gateway_id
              WHERE i.client_id = ? AND i.approved = 1 AND i.currency = ? AND i.status IN (?, ?)',
             [$clientId, $currency, 'unpaid', 'paid']

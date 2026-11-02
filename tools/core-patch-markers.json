@@ -2625,7 +2625,7 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "public function creditNote(int $sourceId, string $title, float $net, bool $taxed, string $note, ?int $orderId = null): int"
+        "done": "public function creditNote(int $sourceId, string $title, float $net, bool $taxed, string $note, ?int $orderId = null, ?float $total = null): int"
     },
     {
         "file": "library/ClientFence/Twig/TwigFactory.php",
@@ -3874,5 +3874,25 @@
     {
         "file": "modules/Order/templates/client/mod_order_manage.html.twig",
         "done": "ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\\CancelRequests); the client can withdraw one while it waits."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: the cents that make a tax-inclusive invoice total the shown price (Invoice\\Service::applyInclusiveTax())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: tax once on the taxed subtotal, plus the cents that make a tax-inclusive total the shown price (applyInclusiveTax())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a refund's credit note totals the amount refunded (its tax is that amount less the net)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: lines and rates staff type are net, so the inclusive rounding cents no longer apply."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the tax-inclusive cents were for all the invoice's lines (Invoice\\Service::applyInclusiveTax())."
     }
 ]

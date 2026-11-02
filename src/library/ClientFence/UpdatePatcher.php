@@ -570,6 +570,7 @@ class UpdatePatcher implements InjectionAwareInterface
             119 => 'patch119',
             120 => 'patch120',
             121 => 'patch121',
+            122 => 'patch122',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2648,6 +2649,14 @@ class UpdatePatcher implements InjectionAwareInterface
               AND t.rel_new_value IN ('immediate', 'end_of_period') AND o.status IN ('active', 'suspended')");
         $this->executeSql("UPDATE `support_ticket` SET rel_status = 'complete'
             WHERE rel_type = 'order' AND rel_task = 'cancel' AND rel_status = 'pending' AND rel_new_value IN ('immediate', 'end_of_period')");
+    }
+
+    private function patch122(): void
+    {
+        // ClientFence core patch: the cents that make a tax-inclusive invoice total the shown price (Invoice\Service::applyInclusiveTax()).
+        if (!$this->tableHasColumn('invoice', 'tax_adjust')) {
+            $this->executeSql("ALTER TABLE `invoice` ADD COLUMN `tax_adjust` DOUBLE(18,2) NOT NULL DEFAULT '0.00' AFTER `taxrate`");
+        }
     }
 
     /**

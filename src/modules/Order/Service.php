@@ -2179,13 +2179,13 @@ class Service implements InjectionAwareInterface
 
     public function rmInvoiceItemByOrder(Order|\Model_ClientOrder $order): void
     {
-        $this->di['dbal']->executeStatement(
-            'DELETE FROM invoice_item WHERE rel_id = :rel_id AND status = :status',
-            [
-                'rel_id' => (string) $this->orderId($order),
-                'status' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT,
-            ],
-        );
+        $params = [
+            'rel_id' => (string) $this->orderId($order),
+            'status' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT,
+        ];
+        // ClientFence core patch: the tax-inclusive cents were for all the invoice's lines (Invoice\Service::applyInclusiveTax()).
+        $this->di['dbal']->executeStatement('UPDATE invoice SET tax_adjust = 0 WHERE id IN (SELECT invoice_id FROM invoice_item WHERE rel_id = :rel_id AND status = :status)', $params);
+        $this->di['dbal']->executeStatement('DELETE FROM invoice_item WHERE rel_id = :rel_id AND status = :status', $params);
     }
 
     public function rmClientOrderStatusByOrder(Order|\Model_ClientOrder $order): void

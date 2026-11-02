@@ -1006,7 +1006,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                          WHEN i.status = 'unpaid' AND i.approved = 0 THEN 'draft' ELSE i.status END AS status,
                     COUNT(*) AS count,
                     COALESCE(SUM(COALESCE(li.subtotal, 0) + CASE WHEN CAST(i.taxrate AS DECIMAL(20,10)) > 0
-                        THEN ROUND(CAST(COALESCE(li.taxable, 0) AS DECIMAL(20,2)) * CAST(i.taxrate AS DECIMAL(20,10)) / 100, 2) ELSE 0 END), 0) AS total
+                        THEN ROUND(CAST(COALESCE(li.taxable, 0) AS DECIMAL(20,2)) * CAST(i.taxrate AS DECIMAL(20,10)) / 100, 2) + CAST(i.tax_adjust AS DECIMAL(20,2)) ELSE 0 END), 0) AS total
                FROM invoice i
                LEFT JOIN (SELECT ii.invoice_id, SUM(ii.price * ii.quantity) AS subtotal,
                                  SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END) AS taxable

@@ -43,7 +43,7 @@ function upgradesDb(): Connection
         'CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, service_id INTEGER, service_type TEXT, title TEXT, status TEXT, period TEXT, price REAL, quantity INTEGER DEFAULT 1,'
             . ' discount REAL, currency TEXT, expires_at TEXT, unpaid_invoice_id INTEGER, config TEXT, updated_at TEXT)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, hash TEXT, serie TEXT, nr TEXT, updated_at TEXT, taxrate REAL, paid_at TEXT, created_at TEXT)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, hash TEXT, serie TEXT, nr TEXT, updated_at TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0, paid_at TEXT, created_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, task TEXT, rel_id TEXT, title TEXT, price REAL, quantity INTEGER, unit TEXT, period TEXT, taxed INTEGER)',
         'CREATE TABLE subscription (id INTEGER PRIMARY KEY, rel_type TEXT, rel_id INTEGER, status TEXT, sid TEXT, pay_gateway_id INTEGER)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, amount REAL, description TEXT, type TEXT, rel_id TEXT)',

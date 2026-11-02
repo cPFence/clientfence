@@ -2656,7 +2656,7 @@ test('a refund takes back the downgrade credit given from the invoice, or refuse
 
 test('a refund leaves uncertain downgrade credit to staff and keeps fully funded later credit', function (float $total, ?float $laterTotal, string $laterStatus, string $laterType, bool $takenBack, bool $refused, float $expectedTakeBack, ?float $priorRefundTotal = null, float $unrelated = 0.0, float $taxRate = 0.0, string $unrelatedType = 'custom'): void {
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT, created_at TEXT, taxrate REAL DEFAULT 0)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT, created_at TEXT, taxrate REAL DEFAULT 0, tax_adjust REAL DEFAULT 0)');
     $db->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, task TEXT, rel_id TEXT, price REAL, quantity INTEGER DEFAULT 1, taxed INTEGER DEFAULT 1)');
     $db->executeStatement('CREATE TABLE ' . ClientFence\Mod\Order\Upgrades::TABLE . ' (id INTEGER PRIMARY KEY, order_id INTEGER, invoice_id INTEGER)');
     $db->insert('invoice', ['id' => 7, 'status' => 'paid', 'paid_at' => '2026-10-01 10:00:00']);
@@ -2799,7 +2799,7 @@ test('a refund leaves uncertain downgrade credit to staff and keeps fully funded
 // date cannot tell which credit it funded.
 test('a refund leaves a downgrade credit to staff when no earlier payment funded it or the payment date is empty', function (string $paidAt, ?string $renewalPaidAt, bool $refused): void {
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT, created_at TEXT, taxrate REAL DEFAULT 0)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT, created_at TEXT, taxrate REAL DEFAULT 0, tax_adjust REAL DEFAULT 0)');
     $db->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, task TEXT, rel_id TEXT, price REAL, quantity INTEGER DEFAULT 1, taxed INTEGER DEFAULT 0)');
     $db->executeStatement('CREATE TABLE ' . ClientFence\Mod\Order\Upgrades::TABLE . ' (id INTEGER PRIMARY KEY, order_id INTEGER, invoice_id INTEGER)');
     // I1 (Pro 30), then an option upgrade U1 (1.30), then a downgrade credit note of 14.20.
@@ -2990,6 +2990,44 @@ test('creditNote copies the paying invoice and adds one negative account credit 
         ->and([$line->invoice_id, $line->task, $line->price, $line->taxed, $line->status])
         ->toBe([90, Service::CREDIT_NOTE_TASK, -218.56, '1', Model_InvoiceItem::STATUS_EXECUTED])
         ->and($line->rel_id)->toBe(2);
+});
+
+test('a part refund credit note totals exactly the amount refunded', function (): void {
+    $source = new Model_Invoice();
+    $source->loadBean(new Tests\Helpers\DummyBean());
+    $source->id = 70;
+    $source->taxrate = '19';
+    $new = new Model_Invoice();
+    $new->loadBean(new Tests\Helpers\DummyBean());
+    $new->id = 90;
+    $line = new Model_InvoiceItem();
+    $line->loadBean(new Tests\Helpers\DummyBean());
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->andReturn($source);
+    $dbMock->shouldReceive('dispense')->with('Invoice')->andReturn($new);
+    $dbMock->shouldReceive('dispense')->with('InvoiceItem')->andReturn($line);
+    $dbMock->shouldReceive('store');
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\SQLitePlatform());
+    $dbal->shouldReceive('fetchOne')->andReturn('1');
+    // 15.00 at 19%: net 12.61, tax 2.40 on it, so 0.01 back makes the credit note -15.00.
+    $dbal->shouldReceive('update')->once()->with('invoice', ['tax_adjust' => 0.01], ['id' => 90]);
+
+    $systemService = Mockery::mock(SystemService::class);
+    $systemService->shouldReceive('getParamValue')->andReturnUsing(fn (string $param, $default = null) => $default);
+    $systemService->shouldReceive('setParamValue');
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $systemService);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('addNote');
+    $service->setDi($di);
+
+    $service->creditNote(70, 'Refund of invoice CF7', 15.0 / 1.19, true, 'Refund.', null, 15.0);
+    expect(round((float) $line->price + Service::taxOf((float) $line->price, 19.0, 0.01), 2))->toBe(-15.0);
 });
 
 test('refuses to refund an invoice that is not paid or already refunded', function (string $status): void {
@@ -5244,7 +5282,7 @@ test('a part refund keeps the invoice paid, can go to credit, and the last part 
     if ($error !== null) {
         $service->shouldNotReceive('creditNote');
     } else {
-        $service->shouldReceive('creditNote')->once()->with(10, 'Refund of invoice CF7', $amount ?? 15.0 - $refunded, false, Mockery::any())->andReturn(99);
+        $service->shouldReceive('creditNote')->once()->with(10, 'Refund of invoice CF7', $amount ?? 15.0 - $refunded, false, Mockery::any(), null, $amount ?? 15.0 - $refunded)->andReturn(99);
     }
     if ($toCredit && $error === null) {
         $di['dbal']->shouldReceive('insert')->once()->with('client_balance', Mockery::on(fn (array $row): bool => $row['amount'] === $amount && $row['rel_id'] === '99' && $row['client_id'] === 20));
