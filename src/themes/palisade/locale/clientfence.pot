@@ -3378,6 +3378,14 @@ msgstr ""
 msgid "Cancellation is scheduled at the payment gateway. Select a different status only to override the synchronized state."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
+msgid "Cancellation request received"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
+msgid "Cancellation request received: %title%"
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "Cancellation requested for order #:id: :title"
 msgstr ""
@@ -8562,7 +8570,7 @@ msgstr ""
 msgid "Hello"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
+#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
 msgid "Hello %name%,"
 msgstr ""
 
@@ -9032,6 +9040,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "If you are sure that this transaction is valid you can update transaction details in &quot;Manage&quot; tab and try processing transaction again"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
+msgid "If you asked by mistake, withdraw the request from the service page before it is processed."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig
@@ -9740,6 +9752,14 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "It was paid from your balance."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
+msgid "It will be cancelled at the end of its billing period, on %date%. You will not be invoiced for it again."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
+msgid "It will be cancelled shortly, and any unpaid invoice for it will be cancelled."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -10918,7 +10938,7 @@ msgstr ""
 msgid "Manage reusable support responses and organize them into categories."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
 msgid "Manage service"
 msgstr ""
 
@@ -21577,6 +21597,10 @@ msgstr ""
 
 #: src/modules/Order/CancelRequests.php src/modules/Support/Service.php
 msgid "We have already received this request."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
+msgid "We have received your request to cancel this service: %title%."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig

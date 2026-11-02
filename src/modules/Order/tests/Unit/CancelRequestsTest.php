@@ -66,14 +66,24 @@ function cancelRequestOrder(string $status = 'active', int $id = 70): Model_Clie
     return $order;
 }
 
-test('a client request waits in the list with its type and reason', function (): void {
+test('a client request waits in the list with its type and reason, and the client gets a confirmation', function (): void {
     $db = cancelRequestDb();
     $orders = Mockery::mock();
     $orders->shouldReceive('canCancelAtPeriodEnd')->andReturn(true);
+    $sent = [];
+    $orders->shouldReceive('sendTemplate')->andReturnUsing(function (array $email) use (&$sent): bool {
+        $sent[] = $email;
+
+        return true;
+    });
     $id = CancelRequests::create(cancelRequestContainer($db, $orders), cancelRequestOrder(), CancelRequests::END_OF_PERIOD, '  Too expensive ');
 
     expect($db->fetchAssociative('SELECT client_order_id, client_id, type, reason, status FROM client_order_cancel_request WHERE id = ?', [$id]))
         ->toBe(['client_order_id' => 70, 'client_id' => 5, 'type' => 'end_of_period', 'reason' => 'Too expensive', 'status' => 'pending']);
+    expect($sent[0]['to_client'])->toBe(5)
+        ->and($sent[0]['code'])->toBe('mod_order_cancel_request')
+        ->and($sent[0]['request']['type'])->toBe('end_of_period')
+        ->and($sent[0]['order']['title'])->toBe('Hosting');
 });
 
 test('a request is refused without a reason, with a bad type, for an inactive service, or twice', function (string $type, string $reason, string $status, bool $periodEnd, bool $twice, string $message): void {

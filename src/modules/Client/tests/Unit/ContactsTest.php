@@ -57,6 +57,7 @@ test('each client email has a kind, and sign-in links, codes and staff mail are 
     ['mod_servicelicense_suspended', 'product'],
     ['mod_support_ticket_staff_reply', 'support'],
     ['mod_support_network_issue', 'general'],
+    ['mod_order_cancel_request', 'product'],
     ['mod_some_custom_notice', 'general'],
     ['mod_client_password_reset_request', null],
     ['mod_client_signup', null],

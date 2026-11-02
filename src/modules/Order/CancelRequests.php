@@ -169,15 +169,26 @@ final class CancelRequests
         self::db($di)->update(self::TABLE, ['status' => $status, 'updated_at' => date('Y-m-d H:i:s')], ['id' => $id, 'status' => self::STATUS_PENDING]);
     }
 
-    /** Staff hear of a new request by email (mod_staff_order_cancel_request) and in the bell. */
+    /** The client gets a confirmation (mod_order_cancel_request, as WHMCS); staff hear of it by email (mod_staff_order_cancel_request) and in the bell. */
     private static function notify(\Pimple\Container $di, int $id, \Model_ClientOrder $order): void
     {
+        $request = self::db($di)->fetchAssociative('SELECT * FROM ' . self::TABLE . ' WHERE id = ?', [$id]);
+        try {
+            $di['mod_service']('email')->sendTemplate([
+                'to_client' => (int) $order->client_id,
+                'code' => 'mod_order_cancel_request',
+                'request' => $request,
+                'order' => ['id' => (int) $order->id, 'title' => (string) $order->title, 'expires_at' => $order->expires_at],
+            ]);
+        } catch (\Throwable $e) {
+            $di['logger']->warning('Cancellation request #%s: client email not sent: %s', $id, $e->getMessage());
+        }
         try {
             $client = $di['db']->load('Client', (int) $order->client_id);
             $di['mod_service']('email')->sendTemplate([
                 'to_staff' => true,
                 'code' => 'mod_staff_order_cancel_request',
-                'request' => self::db($di)->fetchAssociative('SELECT * FROM ' . self::TABLE . ' WHERE id = ?', [$id]),
+                'request' => $request,
                 'order' => [
                     'id' => (int) $order->id, 'title' => (string) $order->title, 'expires_at' => $order->expires_at,
                     'url' => $di['url']->adminLink('order/manage/' . $order->id), 'list_url' => $di['url']->adminLink('order') . '#tab-cancel-requests',

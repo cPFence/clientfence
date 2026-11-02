@@ -76,7 +76,7 @@ final class Contacts
         return match (true) {
             str_starts_with($code, 'mod_invoice_'), $code === 'mod_order_price_changed' => 'invoice',
             str_starts_with($code, 'mod_servicedomain_') => 'domain',
-            preg_match('/^mod_service[a-z]+_/', $code) === 1 => 'product',
+            preg_match('/^mod_service[a-z]+_/', $code) === 1, $code === 'mod_order_cancel_request' => 'product',
             $code === 'mod_support_network_issue' => 'general',
             str_starts_with($code, 'mod_support_') => 'support',
             default => 'general',
