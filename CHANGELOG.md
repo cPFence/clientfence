@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.25 (2026-11-02)
+
+### Fixed
+
+- PayPal: a failed subscription payment is logged as a failed payment; it no longer counts as money received.
+- Payments: a Stripe or PayPal payment smaller than the balance due is recorded as a part payment, as in WHMCS, instead of being refused.
+- Cancellations: a service paid by a PayPal subscription can be cancelled at the end of its billing period; a payment PayPal still takes for it goes to the client's credit. Staff cancel the subscription in PayPal.
+- PayPal: a refund of a payment that account credit topped up is left to staff instead of refunding the whole invoice.
+- Subscriptions: a renewal paid by the gateway no longer sends "Invoice Created" twice.
+- Stripe: failed payments keep Stripe's reason, and failed subscription renewals are kept in the transactions list.
+
+### Added
+
+- Emails: the client gets a confirmation when they ask to cancel a service, and a refund email for each refund, as WHMCS sends.
+
 ## 1.0.24 (2026-11-02)
 
 ### Fixed
