@@ -1,59 +1,45 @@
 {% block subject %}[{{ guest.system_company.name }}] How did we do? Your feedback on ticket #{{ ticket.id|default('') }}{% endblock %}
 {% block content %}
-{# ClientFence: sent when a ticket closes in a help desk that asks for feedback, as WHMCS (Support/TicketFeedback.php). The link opens the feedback form without sign-in. #}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<style type="text/css">
-		body {
-			font-family: Arial, sans-serif;
-			font-size: 14px;
-			color: #333333;
-		}
-
-		h1 {
-			font-size: 24px;
-			font-weight: bold;
-			margin: 0 0 20px;
-		}
-
-		p {
-			margin: 0 0 10px;
-		}
-
-		strong {
-			font-weight: bold;
-		}
-
-		.signature {
-			font-style: italic;
-			color: #999999;
-			margin-top: 20px;
-			border-top: 1px solid #cccccc;
-			padding-top: 10px;
-		}
-
-		.reply-line {
-			color: #999999;
-			font-size: 12px;
-		}
-	</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>How did we do?</title>
 </head>
-<body>
-	<h1>How Did We Do?</h1>
-
-	<p>Hello{% if c.first_name|default(name|default('')) %} {{ c.first_name|default(name|default('')) }}{% endif %},</p>
-
-	<p>Your ticket <strong>#{{ ticket.id|default('') }} {{ ticket.subject|default('') }}</strong> is now closed. We would like to know how we handled it.</p>
-
-	<p>Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in.</p>
-
-	<p><a href='{{ feedback_url|default('') }}' target="_blank">Give feedback</a></p>
-
-	<p>Please do not reply to this email directly. Use the link above.</p>
-
-	<div class="signature">{{ guest.system_email.signature }}</div>
+<body style="margin:0; padding:0; background-color:#f1f4f8;">
+<div style="display:none; max-height:0; overflow:hidden;">Tell us how we handled your ticket.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
+	<tr><td style="padding:20px 32px; border-bottom:3px solid #2563eb;">
+		{% if guest.system_company.logo_url|default('') %}
+		<img src="{{ guest.system_company.logo_url }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
+		{% else %}
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#0f172a;">{{ guest.system_company.name }}</span>
+		{% endif %}
+	</td></tr>
+	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">How did we do?</h1>
+		<p style="margin:0 0 16px;">Hello{% if c.first_name|default(name|default('')) %} {{ c.first_name|default(name|default('')) }}{% endif %},</p>
+		<p style="margin:0 0 16px;">Your ticket <strong>#{{ ticket.id|default('') }} {{ ticket.subject|default('') }}</strong> is now closed. We would love to know how we handled it.</p>
+		<p style="margin:0 0 16px;">Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in.</p>
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+			<tr><td style="border-radius:6px; background-color:#2563eb;">
+				<a href="{{ feedback_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none;">Give feedback</a>
+			</td></tr>
+		</table>
+		<p style="margin:0 0 16px;">Thank you for helping us improve our service.</p>
+		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
+	</td></tr>
+	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
+		{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
+	</td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>
 {% endblock %}

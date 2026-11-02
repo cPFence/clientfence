@@ -1,74 +1,57 @@
-{% block subject %}[{{ guest.system_company.name }}] [Ticket #{{ ticket.id|default('') }}] {{ticket.subject|default('')}}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] [Ticket #{{ ticket.id|default('') }}] {{ ticket.subject|default('') }}{% endblock %}
 {% block content %}
+{% set is_guest_ticket = ticket.author.role|default('') == 'guest' %}
+{% set ticket_url = is_guest_ticket ? "support/ticket/#{ticket.hash|default('')}"|url(area: 'client') : "support/ticket/#{ticket.id|default('')}"|url(area: 'client') %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<style type="text/css">
-		body {
-			font-family: Arial, sans-serif;
-			font-size: 14px;
-			color: #333333;
-		}
-
-		h1 {
-			font-size: 24px;
-			font-weight: bold;
-			margin: 0 0 20px;
-		}
-
-		p {
-			margin: 0 0 10px;
-		}
-
-		strong {
-			font-weight: bold;
-		}
-
-		.signature {
-			font-style: italic;
-			color: #999999;
-			margin-top: 20px;
-			border-top: 1px solid #cccccc;
-			padding-top: 10px;
-		}
-
-		.reply-line {
-			color: #999999;
-			font-size: 12px;
-		}
-	</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>Ticket #{{ ticket.id|default('') }}</title>
 </head>
-<body>
-	{# ClientFence: replies by email go to the ticket (Support/MailImport.php): [Ticket #id] in the subject; text from this line on is cut. #}
-	<p class="reply-line">====== Please reply above this line ======</p>
-	{% set is_guest_ticket = ticket.author.role|default('') == 'guest' %}
-	<h1>Ticket Replied</h1>
-
-    <p>Hello, {{ ticket.author.name|default('') }}.</p>
-
-    <p>A new reply was posted to ticket <strong>{{ticket.subject|default('')}}</strong></p>
-
-    <p>Ticket info</p>
-    <ul>
-        <li><strong>Ticket ID:</strong> #{{ticket.id|default('')}}</li>
-        <li><strong>Department:</strong> {{ticket.helpdesk|default({}).name|default('')}}</li>
-        <li><strong>Status:</strong> {{ ticket.status|default('') == 'on_hold' ? 'Answered' : ticket.status|default('')|title }}</li>
-    </ul>
-
-    {% if is_guest_ticket %}
-        <a href='{{ "support/ticket/#{ticket.hash|default('')}"|url(area: 'client') }}' target="_blank">Reply</a>
-    {% else %}
-        <a href='{{ "support/ticket/#{ticket.id|default('')}"|url(area: 'client') }}' target="_blank">Reply</a>
-    {% endif %}
-
-    <p>Please do not reply to this email directly. Use the link provided above.</p>
-
-    {% if not is_guest_ticket %}
-    <p>You may <a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank">login</a> or <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank">edit your profile.</a>
-    {% endif %}
-
-	<div class="signature">{{ guest.system_email.signature }}</div>
+<body style="margin:0; padding:0; background-color:#f1f4f8;">
+{# ClientFence: replies by email go to the ticket (Support/MailImport.php): [Ticket #id] in the subject; text from this line on is cut. #}
+<p class="reply-line" style="margin:0; padding:8px 12px; font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#94a3b8; text-align:center;">====== Please reply above this line ======</p>
+<div style="display:none; max-height:0; overflow:hidden;">There is a new reply on your ticket "{{ ticket.subject|default('') }}".</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
+<tr><td align="center" style="padding:12px 12px 24px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
+	<tr><td style="padding:20px 32px; border-bottom:3px solid #2563eb;">
+		{% if guest.system_company.logo_url|default('') %}
+		<img src="{{ guest.system_company.logo_url }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
+		{% else %}
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#0f172a;">{{ guest.system_company.name }}</span>
+		{% endif %}
+	</td></tr>
+	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">We have replied to your ticket</h1>
+		<p style="margin:0 0 16px;">Dear {{ ticket.author.name|default('') }},</p>
+		<p style="margin:0 0 16px;">Our support team has posted a new reply to your ticket <strong>{{ ticket.subject|default('') }}</strong>. You can read the reply and answer it from the link below.</p>
+		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
+			<tr><td style="padding:16px 20px;">
+				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Ticket</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">#{{ ticket.id|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Subject</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.subject|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Department</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.helpdesk|default({}).name|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Status</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.status|default('') == 'on_hold' ? 'Answered' : ticket.status|default('')|title }}</td></tr>
+				</table>
+			</td></tr>
+		</table>
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+			<tr><td style="border-radius:6px; background-color:#2563eb;">
+				<a href="{{ ticket_url }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none;">View ticket</a>
+			</td></tr>
+		</table>
+		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
+	</td></tr>
+	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
+		{% if not is_guest_ticket %}<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">Client area</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">Profile</a> &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
+	</td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>
 {% endblock %}

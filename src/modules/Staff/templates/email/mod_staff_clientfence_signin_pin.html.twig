@@ -1,28 +1,40 @@
 {% block subject %}[{{ guest.system_company.name }}] {{ 'Your sign-in PIN: %pin%'|trans({'%pin%': pin|default('')}) }}{% endblock %}
 {% block content %}
-{# ClientFence: the email PIN of a sign-in (Clientfence/SignInSecurity.php). Sent at once, never queued or
-   kept in the email log. Variables: pin, minutes, ip, country, name. #}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<style type="text/css">
-		body { font-family: Arial, sans-serif; font-size: 14px; color: #333333; }
-		h1 { font-size: 22px; font-weight: bold; margin: 0 0 20px; }
-		p { margin: 0 0 10px; }
-		.pin { font-family: "Courier New", monospace; font-size: 30px; font-weight: bold; letter-spacing: 6px; margin: 18px 0; }
-		.muted { color: #777777; font-size: 13px; }
-		.signature { font-style: italic; color: #999999; margin-top: 20px; border-top: 1px solid #cccccc; padding-top: 10px; }
-	</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>{{ 'Your sign-in PIN'|trans }}</title>
 </head>
-<body>
-	<h1>{{ 'Your sign-in PIN'|trans }}</h1>
-	<p>{{ 'Hello %name%,'|trans({'%name%': name|default('')}) }}</p>
-	<p>{{ 'Enter this PIN to finish signing in to the staff panel. It works for %minutes% minutes.'|trans({'%minutes%': minutes|default(10)}) }}</p>
-	<p class="pin">{{ pin|default('') }}</p>
-	<p class="muted">{{ 'Sign-in from %ip%'|trans({'%ip%': ip|default('')}) }}{% if country|default('') %} ({{ country }}){% endif %}.</p>
-	<p>{{ 'If this was not you, do not share the PIN with anyone and change your password: someone knows it.'|trans }}</p>
-	<div class="signature">{{ guest.system_email.signature }}</div>
+<body style="margin:0; padding:0; background-color:#f1f4f8;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
+	<tr><td style="padding:20px 32px; border-bottom:3px solid #2563eb;">
+		{% if guest.system_company.logo_url|default('') %}
+		<img src="{{ guest.system_company.logo_url }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
+		{% else %}
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#0f172a;">{{ guest.system_company.name }}</span>
+		{% endif %}
+	</td></tr>
+	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Your sign-in PIN'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'Enter this PIN to finish signing in to the staff panel. It works for %minutes% minutes.'|trans({'%minutes%': minutes|default(10)}) }}</p>
+		<p style="margin:0 0 16px; padding:16px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; text-align:center; font-family:'Courier New', Courier, monospace; font-size:30px; font-weight:bold; letter-spacing:6px; color:#0f172a;">{{ pin|default('') }}</p>
+		<p style="margin:0 0 16px; font-size:13px; color:#64748b;">{{ 'Sign-in from %ip%'|trans({'%ip%': ip|default('')}) }}{% if country|default('') %} ({{ country }}){% endif %}.</p>
+		<p style="margin:0 0 16px; padding:12px 16px; background-color:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:14px; line-height:22px; color:#9a3412;">{{ 'If this was not you, do not share the PIN with anyone and change your password: someone knows it.'|trans }}</p>
+		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
+	</td></tr>
+	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
+	</td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>
 {% endblock %}

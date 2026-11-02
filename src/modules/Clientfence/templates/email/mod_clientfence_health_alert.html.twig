@@ -1,30 +1,52 @@
 {% block subject %}[{{ guest.system_company.name }}] System health: {{ count|default(1) == 1 ? '1 check needs attention' : (count ~ ' checks need attention') }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<style type="text/css">
-		body { font-family: Arial, sans-serif; font-size: 14px; color: #333333; }
-		h1 { font-size: 22px; font-weight: bold; margin: 0 0 16px; }
-		p { margin: 0 0 10px; }
-		li { margin: 0 0 10px; }
-		.muted { color: #777777; }
-		.signature { font-style: italic; color: #999999; margin-top: 20px; border-top: 1px solid #cccccc; padding-top: 10px; }
-	</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>System health</title>
 </head>
-<body>
-	<h1>System health</h1>
-	<p>Hello {{ c.name|default('') }},</p>
-	<p>The hourly system health checks of the billing portal found {{ count|default(1) == 1 ? 'a check that needs' : 'checks that need' }} attention:</p>
-	<ul>
-	{% for check in checks|default([]) %}
-		<li><strong>{{ check.title }}</strong> <span class="muted">({{ check.group }})</span><br>{{ check.detail }}</li>
-	{% endfor %}
-	</ul>
-	<p>You get this email once per problem: the next one comes only if a check passes and breaks again.</p>
-	<p><a href='{{ "clientfence/health"|url(area: 'admin') }}' target="_blank">Open System health</a></p>
-	<div class="signature">{{ guest.system_email.signature }}</div>
+<body style="margin:0; padding:0; background-color:#f1f4f8;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
+	<tr><td style="padding:20px 32px; border-bottom:3px solid #2563eb;">
+		{% if guest.system_company.logo_url|default('') %}
+		<img src="{{ guest.system_company.logo_url }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
+		{% else %}
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#0f172a;">{{ guest.system_company.name }}</span>
+		{% endif %}
+	</td></tr>
+	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">System health</h1>
+		<p style="margin:0 0 16px;">Hello {{ c.name|default('') }},</p>
+		<p style="margin:0 0 16px;">The hourly system health checks of the billing portal found {{ count|default(1) == 1 ? 'a check that needs' : 'checks that need' }} attention:</p>
+		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
+			<tr><td style="padding:16px 20px;">
+				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
+					{% for check in checks|default([]) %}
+					{% if not loop.first %}<tr><td style="padding:8px 0 0; border-top:1px solid #e2e8f0;"></td></tr>{% endif %}
+					<tr><td style="padding:4px 0;"><strong>{{ check.title }}</strong> <span style="color:#64748b;">({{ check.group }})</span><br>{{ check.detail }}</td></tr>
+					{% endfor %}
+				</table>
+			</td></tr>
+		</table>
+		<p style="margin:0 0 16px;">You get this email once per problem: the next one comes only if a check passes and breaks again.</p>
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+			<tr><td style="border-radius:6px; background-color:#2563eb;">
+				<a href="{{ "clientfence/health"|url(area: 'admin') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none;">Open System health</a>
+			</td></tr>
+		</table>
+	</td></tr>
+	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">Admin area</a>
+	</td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>
 {% endblock %}

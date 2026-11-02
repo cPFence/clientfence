@@ -1,26 +1,43 @@
 {% block subject %}[{{ guest.system_company.name }}] {{ 'Refund of invoice %number%'|trans({'%number%': invoice.serie_nr|default('')}) }}{% endblock %}
 {% block content %}
-{# ClientFence: as WHMCS "Invoice Refund Confirmation", sent to the client for each refund of an invoice (Invoice\Service::refundInvoice()). #}
-{% set refund = refund|default({}) %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<style type="text/css">
-		body { font-family: Arial, sans-serif; font-size: 14px; color: #333333; }
-		h1 { font-size: 24px; font-weight: bold; margin: 0 0 20px; }
-		p { margin: 0 0 10px; }
-		.signature { font-style: italic; color: #999999; margin-top: 20px; border-top: 1px solid #cccccc; padding-top: 10px; }
-	</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>{{ 'Invoice refund'|trans }}</title>
 </head>
-<body>
-	<h1>{{ 'Invoice refund'|trans }}</h1>
-	<p>{{ 'Hello %name%,'|trans({'%name%': c.first_name|default('')}) }}</p>
-	<p>{{ 'We have refunded %amount% of invoice %number%.'|trans({'%amount%': refund.amount|default(0)|format_currency(invoice.currency|default(default_currency)), '%number%': invoice.serie_nr|default('')}) }}</p>
-	<p>{% if refund.to_credit|default(false) %}{{ 'The amount was added to your account credit.'|trans }}{% else %}{{ 'It is returned to you by the payment method you paid with.'|trans }}{% endif %}</p>
-	<p><a href="{{ ('invoice/' ~ invoice.hash|default(''))|url(area: 'client') }}" target="_blank">{{ 'View invoice'|trans }}</a></p>
-
-	<div class="signature">{{ guest.system_email.signature }}</div>
+<body style="margin:0; padding:0; background-color:#f1f4f8;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
+	<tr><td style="padding:20px 32px; border-bottom:3px solid #2563eb;">
+		{% if guest.system_company.logo_url|default('') %}
+		<img src="{{ guest.system_company.logo_url }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
+		{% else %}
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#0f172a;">{{ guest.system_company.name }}</span>
+		{% endif %}
+	</td></tr>
+	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Invoice refund'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': c.first_name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'We have refunded %amount% of invoice %number%.'|trans({'%amount%': refund.amount|default(0)|format_currency(invoice.currency|default(default_currency)), '%number%': invoice.serie_nr|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{% if refund.to_credit|default(false) %}{{ 'The amount was added to your account credit.'|trans }}{% else %}{{ 'It is returned to you by the payment method you paid with.'|trans }}{% endif %}</p>
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+			<tr><td style="border-radius:6px; background-color:#2563eb;">
+				<a href="{{ ('invoice/' ~ invoice.hash|default(''))|url(area: 'client') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none;">{{ 'View invoice'|trans }}</a>
+			</td></tr>
+		</table>
+		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
+	</td></tr>
+	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
+		<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Client area'|trans }}</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Profile'|trans }}</a>{% if guest.system_company.email|default('') %} &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
+	</td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>
 {% endblock %}

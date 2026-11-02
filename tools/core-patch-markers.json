@@ -2137,7 +2137,7 @@
     },
     {
         "file": "modules/Invoice/templates/email/mod_invoice_created.html.twig",
-        "done": "invoice <strong>{{ invoice.serie_nr"
+        "done": "Invoice #{{ invoice.serie_nr|default('') }}"
     },
     {
         "file": "modules/Invoice/templates/pdf/default-invoice.twig",
@@ -2149,7 +2149,7 @@
     },
     {
         "file": "modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig",
-        "done": "manage your hosting</a>"
+        "done": ">Manage hosting</a>"
     },
     {
         "file": "modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig",
