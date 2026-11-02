@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.22 (2026-11-02)
+
+### Fixed
+
+- Invoices: the Remove credit link on the staff invoice page removes the applied credit.
+
 ## 1.0.21 (2026-11-02)
 
 ### Added
