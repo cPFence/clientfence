@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.23 (2026-11-02)
+
+### Changed
+
+- Cancellation requests: they have their own list (Orders > Cancellation Requests) instead of a support ticket. The client gives a reason, chooses Immediate or End of billing period, and can withdraw the request while it waits. Staff get an email and accept or stop the request; with the automatic setting on, the daily cron processes waiting requests once a day. No renewal invoice is made while a request waits. Requests from 1.0.21 tickets move to the list.
+- WHMCS import: open cancellation requests are imported into the list with their date, type and reason.
+
 ## 1.0.22 (2026-11-02)
 
 ### Fixed
