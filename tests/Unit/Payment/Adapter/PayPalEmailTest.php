@@ -318,7 +318,7 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     'invoice settled from account credit before payment' => [120.0, 120.0, null, false, true],
 ]);
 
-test('keeps a PayPal subscription active while a failed renewal is retried', function (): void {
+test('keeps a PayPal subscription active while a failed renewal is retried, and never counts it as paid (WHMCS)', function (): void {
     $tx = [
         'invoice_id' => 16, 'type' => 'subscr_failed', 'txn_id' => null,
         'txn_status' => null, 'amount' => null, 'currency' => null,
@@ -326,7 +326,7 @@ test('keeps a PayPal subscription active while a failed renewal is retried', fun
     $api = Mockery::mock();
     $api->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn($tx);
     $api->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn(['id' => 16, 'client' => ['id' => 9]]);
-    $api->shouldReceive('invoice_transaction_update')->once()->andReturnUsing(function (array $update) use (&$tx): void {
+    $api->shouldReceive('invoice_transaction_update')->twice()->andReturnUsing(function (array $update) use (&$tx): void {
         $tx = array_replace($tx, $update);
     });
     $api->shouldNotReceive('invoice_subscription_get');
@@ -337,13 +337,16 @@ test('keeps a PayPal subscription active while a failed renewal is retried', fun
 
     paypalProcessAdapter($di)->processTransaction($api, 42, [
         'get' => signedPayPalGet(16, 2),
-        'post' => ['txn_type' => 'subscr_failed', 'subscr_id' => 'I-ACTIVE'],
+        'post' => ['txn_type' => 'subscr_failed', 'subscr_id' => 'I-ACTIVE', 'mc_gross' => '10.00'],
     ], 2);
 
-    expect($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED);
+    // The failed amount is kept for staff, but an errored transaction is not money received (Invoice PAID_SQL, reports).
+    expect($tx['status'])->toBe(Model_Transaction::STATUS_ERROR)
+        ->and($tx['amount'])->toBe('10.00')
+        ->and($tx['error'])->toBe('PayPal subscription payment failed; PayPal retries it.');
 });
 
-test('leaves PayPal duplicate and overpayment refunds for manual settlement', function (bool $stripePayment, float $invoiceTotal, string $reason): void {
+test('leaves PayPal duplicate, overpayment and part-of-the-invoice refunds for manual settlement', function (bool $stripePayment, float $invoiceTotal, string $reason): void {
     $payments = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $payments->executeStatement('CREATE TABLE payment (id INTEGER PRIMARY KEY, txn_id TEXT, gateway_id INTEGER, status TEXT, txn_status TEXT, invoice_id INTEGER, amount REAL)');
     $payments->insert('payment', ['id' => 41, 'txn_id' => 'TXN-RENEWAL', 'gateway_id' => 2, 'status' => 'processed', 'txn_status' => 'Completed', 'invoice_id' => 26, 'amount' => 120]);
@@ -388,6 +391,7 @@ test('leaves PayPal duplicate and overpayment refunds for manual settlement', fu
 })->with([
     'Stripe duplicate' => [true, 120.0, 'invoice has multiple payments'],
     'overpayment' => [false, 60.0, 'the payment was larger than the invoice'],
+    'credit paid the rest (a part payment)' => [false, 144.0, 'credit paid the rest of the invoice'],
 ]);
 
 test('refunds the completed renewal payment rather than its earlier pending notification', function (): void {
@@ -681,7 +685,7 @@ describe('PayPal callback invoice binding', function (): void {
         $invoiceService = Mockery::mock();
         $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.00);
         $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(120.00);
-        $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(120.00, 120.00)->andReturnNull();
+        $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(120.00, 120.00, Mockery::type(Model_Invoice::class))->andReturnNull();
         $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->andReturn(false);
 
         $dbMock = paypalDbMocks(static fn (string $table): mixed => $table === 'Transaction' ? $earlier : null);
@@ -769,7 +773,7 @@ describe('PayPal callback invoice binding', function (): void {
         $invoiceService = Mockery::mock();
         $invoiceService->shouldReceive('getTotalWithTax')->andReturn(120.00);
         $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(120.00);
-        $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(120.00, 120.00)->andReturnNull();
+        $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(120.00, 120.00, Mockery::type(Model_Invoice::class))->andReturnNull();
         $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->andReturn(false);
 
         $dbMock = paypalDbMocks();

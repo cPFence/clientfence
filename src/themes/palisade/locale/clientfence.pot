@@ -8570,7 +8570,7 @@ msgstr ""
 msgid "Hello"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
+#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig src/modules/Order/templates/email/mod_order_cancel_request.html.twig …
 msgid "Hello %name%,"
 msgstr ""
 
@@ -9666,6 +9666,10 @@ msgstr ""
 msgid "Invoice numbers, due days and tax rules."
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
+msgid "Invoice refund"
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Invoice summary"
 msgstr ""
@@ -9748,6 +9752,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig src/modules/Order/templates/admin/mod_order_failed_notice.html.twig
 msgid "It is closed without running again; fix the service by hand first if needed."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
+msgid "It is returned to you by the payment method you paid with."
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
@@ -11972,10 +11980,6 @@ msgstr ""
 
 #: src/modules/Order/Service.php
 msgid "No active gateway subscription is linked to this order."
-msgstr ""
-
-#: src/modules/Order/Service.php
-msgid "No active gateway subscription that supports cancellation at period end is linked to this order."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -15012,6 +15016,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Refund"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
+msgid "Refund of invoice %number%"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
@@ -18152,6 +18160,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php
 msgid "The admin address is 4 to 40 letters, digits or dashes, for example /team-7k2."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
+msgid "The amount was added to your account credit."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php
@@ -21411,6 +21423,10 @@ msgstr ""
 msgid "View hosting servers"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
+msgid "View invoice"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Service.php src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "View invoices"
 msgstr ""
@@ -21601,6 +21617,10 @@ msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
 msgid "We have received your request to cancel this service: %title%."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
+msgid "We have refunded %amount% of invoice %number%."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig

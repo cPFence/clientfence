@@ -433,7 +433,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 $expected = $invoiceService->getBalanceDue($invoice);
 
                 try {
-                    $invoiceService->validatePaymentAmount((float) $tx->amount, $expected);
+                    $invoiceService->validatePaymentAmount((float) $tx->amount, $expected, $invoice);
                 } catch (ClientFence\Exception $e) {
                     $tx->status = Model_Transaction::STATUS_ERROR;
                     $tx->error = $e->getMessage();
@@ -477,8 +477,17 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         };
 
         $tx->status = $paymentStatus;
+        if ($paymentStatus === Model_Transaction::STATUS_ERROR) {
+            $tx->error = $this->failureReason($charge);
+        }
         $tx->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($tx);
+    }
+
+    /** ClientFence core patch: as WHMCS's gateway log, a failed attempt keeps Stripe's answer. */
+    private function failureReason(object $paymentIntent): string
+    {
+        return 'Stripe payment failed: ' . ($paymentIntent->last_payment_error->message ?? $paymentIntent->status ?? 'unknown');
     }
 
     private function processSetupIntent($api_admin, Model_Transaction $tx, ?Model_Invoice $invoice, array $data, int $gateway_id): void
@@ -1011,8 +1020,16 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
 
     private function handleInvoicePaymentFailed($api_admin, Model_Transaction $tx, object $event): bool
     {
-        // ClientFence core patch: failed invoices may be retried; subscription events report the actual status.
-        return false;
+        // ClientFence core patch: failed invoices may be retried; subscription events report the actual status. As
+        // WHMCS's gateway log, each failed renewal attempt is kept (invoice_payment.failed reports the same attempt).
+        $stripeInvoice = $event->data->object;
+        if ($event->type !== 'invoice.payment_failed' || $this->extractSubscriptionId($stripeInvoice) === null) {
+            return false;
+        }
+        $tx->status = Model_Transaction::STATUS_ERROR;
+        $tx->error = sprintf('Stripe subscription payment failed (Stripe invoice %s, attempt %d); Stripe retries it.', $stripeInvoice->id, (int) ($stripeInvoice->attempt_count ?? 0));
+
+        return true;
     }
 
     private function updateSubscriptionStatusFromGateway($api_admin, string $subscriptionId, string $status): void
@@ -1135,10 +1152,19 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
     private function handlePaymentIntentFailedWebhook($api_admin, Model_Transaction $tx, object $event): bool
     {
         $paymentIntent = $event->data->object;
+        // ClientFence core patch: a subscription's own PaymentIntent is kept by invoice.payment_failed; a one-time
+        // payment's failure is kept on its invoice with Stripe's answer, as WHMCS's gateway log.
+        $invoiceId = $paymentIntent->metadata->invoice_id ?? null;
+        if (!$invoiceId && !($paymentIntent->metadata->client_id ?? null)) {
+            return false;
+        }
+        if ($invoiceId) {
+            $tx->invoice_id = (int) $invoiceId;
+        }
         $tx->txn_id = $paymentIntent->id;
         $tx->txn_status = $paymentIntent->status;
         $tx->status = Model_Transaction::STATUS_ERROR;
-        $tx->error = 'Payment failed via webhook';
+        $tx->error = $this->failureReason($paymentIntent);
 
         return true;
     }
@@ -1316,7 +1342,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             $expected = $invoiceService->getBalanceDue($invoice);
 
             try {
-                $invoiceService->validatePaymentAmount((float) $tx->amount, $expected);
+                $invoiceService->validatePaymentAmount((float) $tx->amount, $expected, $invoice);
             } catch (ClientFence\Exception $e) {
                 $tx->status = Model_Transaction::STATUS_ERROR;
                 $tx->error = $e->getMessage();

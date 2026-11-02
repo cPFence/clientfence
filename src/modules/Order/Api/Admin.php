@@ -251,8 +251,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Check whether an order can be cancelled at the end of its period: it has an expiry, and any gateway
-     * subscription billing it supports cancellation at period end.
+     * Check whether an order can be cancelled at the end of its period: it has an expiry.
      */
     public function can_cancel_at_period_end($data): bool
     {

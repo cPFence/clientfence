@@ -368,7 +368,7 @@ describe('handleSubscriptionCreated', function (): void {
     });
 });
 
-test('keeps a subscription active after an invoice payment failure', function (): void {
+test('keeps a subscription active after an invoice payment failure, and keeps the failed attempt (WHMCS gateway log)', function (): void {
     $subscription = new Model_Subscription();
     $subscription->loadBean(new DummyBean());
     $subscription->status = 'active';
@@ -390,18 +390,38 @@ test('keeps a subscription active after an invoice payment failure', function ()
         'id' => 'evt_failed_renewal',
         'type' => 'invoice.payment_failed',
         'data' => ['object' => [
-            'id' => 'in_retry', 'object' => 'invoice', 'subscription' => 'sub_retry',
+            'id' => 'in_retry', 'object' => 'invoice', 'subscription' => 'sub_retry', 'attempt_count' => 2,
             'metadata' => ['gateway_id' => '1'],
         ]],
     ]);
+    $tx = buildTransaction();
+    $di['db']->shouldReceive('store')->once()->with($tx);
+    $di['db']->shouldNotReceive('trash');
 
-    invokePrivateMethod($this->adapter, 'processWebhookEvent', [$apiAdmin, buildTransaction(), [
+    invokePrivateMethod($this->adapter, 'processWebhookEvent', [$apiAdmin, $tx, [
         'http_raw_post_data' => $rawBody,
         'server' => ['HTTP_STRIPE_SIGNATURE' => signStripeWebhookPayload($rawBody)],
     ], 1]);
 
-    expect($subscription->status)->toBe('active');
+    expect($subscription->status)->toBe('active')
+        ->and($tx->status)->toBe(Model_Transaction::STATUS_ERROR)
+        ->and($tx->error)->toBe('Stripe subscription payment failed (Stripe invoice in_retry, attempt 2); Stripe retries it.');
 });
+
+test('keeps a failed one-time Stripe payment on its invoice with Stripe\'s answer; a subscription\'s own one is left to its invoice event', function (array $metadata, bool $kept): void {
+    $tx = buildTransaction();
+    $event = (object) ['data' => (object) ['object' => (object) [
+        'id' => 'pi_declined', 'status' => 'requires_payment_method', 'metadata' => (object) $metadata,
+        'last_payment_error' => (object) ['message' => 'Your card was declined.'],
+    ]]];
+
+    expect(invokePrivateMethod($this->adapter, 'handlePaymentIntentFailedWebhook', [Mockery::mock(), $tx, $event]))->toBe($kept);
+    if ($kept) {
+        expect($tx->invoice_id)->toBe(31)
+            ->and($tx->status)->toBe(Model_Transaction::STATUS_ERROR)
+            ->and($tx->error)->toBe('Stripe payment failed: Your card was declined.');
+    }
+})->with(['one-time payment' => [['invoice_id' => '31', 'client_id' => '5'], true], 'subscription payment' => [[], false]]);
 
 test('syncs subscription webhook status through the internal service path', function (): void {
     $stripeSubscription = (object) [
@@ -1212,7 +1232,7 @@ describe('handlePaymentIntentSucceededWebhook', function (): void {
         $invoiceService->shouldReceive('getBalanceDue')->andReturn(29.99);
         $invoiceService->shouldReceive('validatePaymentAmount')
             ->once()
-            ->with(Mockery::on(fn (mixed $amount): bool => is_float($amount) && $amount === 29.99), 29.99)
+            ->with(Mockery::on(fn (mixed $amount): bool => is_float($amount) && $amount === 29.99), 29.99, Mockery::type(Model_Invoice::class))
             ->andReturn(null);
         $invoiceService->shouldReceive('isInvoiceTypeDeposit')->andReturn(false);
         $invoiceService->shouldReceive('payInvoiceWithCredits')->andReturn(true);
@@ -2603,7 +2623,7 @@ test('credits a distinct payment for an already paid invoice once', function (st
     $invoiceService = Mockery::mock();
     $invoiceService->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(50.0);
     $invoiceService->shouldReceive('getBalanceDue')->once()->andReturn(50.0);
-    $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(50.0, 50.0);
+    $invoiceService->shouldReceive('validatePaymentAmount')->once()->with(50.0, 50.0, $invoice);
     $invoiceService->shouldNotReceive('payInvoiceWithCredits', 'markAsPaid', 'approveInvoice');
     $clientService = Mockery::mock();
     $clientService->shouldReceive('addFunds')->once()->with($client, 50.0, 'Stripe transaction pi_second (invoice already paid)', [
@@ -2651,7 +2671,7 @@ test('a transaction retried after paying its invoice reuses its balance credit',
     $invoiceService = Mockery::mock();
     $invoiceService->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(50.0);
     $invoiceService->shouldReceive('getBalanceDue')->twice()->andReturn(50.0);
-    $invoiceService->shouldReceive('validatePaymentAmount')->twice()->with(50.0, 50.0);
+    $invoiceService->shouldReceive('validatePaymentAmount')->twice()->with(50.0, 50.0, $invoice);
     $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->with($invoice)->andReturnFalse();
     $invoiceService->shouldReceive('payInvoiceWithCredits')->once()->with($invoice)
         ->andReturnUsing(function () use ($invoice): void {

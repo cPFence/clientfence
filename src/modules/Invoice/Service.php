@@ -1256,10 +1256,14 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function validatePaymentAmount(float $received, float $expected): void
+    /**
+     * ClientFence core patch: as WHMCS, a gateway payment below the balance due is a part payment (the invoice keeps the
+     * rest due); only an Add funds invoice, which credits its whole amount when paid, refuses it.
+     */
+    public function validatePaymentAmount(float $received, float $expected, \Model_Invoice $invoice): void
     {
         $epsilon = 0.01;
-        if ($received < $expected - $epsilon) {
+        if ($received < $expected - $epsilon && ($received <= 0 || $this->isInvoiceTypeDeposit($invoice))) {
             throw new \ClientFence\Exception('Payment amount does not match the expected invoice total. Expected :expected, received :received.', [':expected' => number_format($expected, 2, '.', ''), ':received' => number_format($received, 2, '.', '')]);
         }
 
@@ -1552,7 +1556,7 @@ class Service implements InjectionAwareInterface
     {
         // ClientFence core patch: under the client's credit lock, and the status is read again there: a
         // refund sent twice made two credit notes and debited a refunded Add funds twice.
-        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $note, $amount, $toCredit): ?int {
+        $creditNote = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $note, $amount, $toCredit): ?int {
             if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === \Model_Invoice::STATUS_REFUNDED) {
                 throw new InformationException('Only a paid invoice can be refunded, and only once.');
             }
@@ -1571,6 +1575,29 @@ class Service implements InjectionAwareInterface
 
             return $this->refundPartLocked($invoice, $amount ?? round($this->getTotalWithTax($invoice) - $refunded, 2), $refunded, (string) $note, $toCredit);
         });
+        if ($creditNote !== null) {
+            // An Add funds refund takes credit back; it never adds any (refundToCredit()).
+            $this->sendRefundEmail($invoice, $creditNote, $toCredit && !$this->isInvoiceTypeDeposit($invoice));
+        }
+
+        return $creditNote;
+    }
+
+    /** ClientFence core patch: as WHMCS "Invoice Refund Confirmation", the client hears of each refund (the credit note's amount). */
+    private function sendRefundEmail(\Model_Invoice $invoice, int $creditNote, bool $toCredit): void
+    {
+        try {
+            $data = $this->toApiArray($this->di['db']->getExistingModelById('Invoice', (int) $invoice->id), true, null, true);
+            $amount = abs($this->getTotalWithTax($this->di['db']->getExistingModelById('Invoice', $creditNote)));
+            $this->di['mod_service']('email')->sendTemplate($this->withBillingRecipient([
+                'to_client' => (int) $invoice->client_id,
+                'code' => 'mod_invoice_refunded',
+                'invoice' => $data,
+                'refund' => ['amount' => $amount, 'to_credit' => $toCredit],
+            ], $data));
+        } catch (\Throwable $e) {
+            $this->di['logger']->warning(sprintf('Invoice #%d: refund email not sent: %s', $invoice->id, $e->getMessage()));
+        }
     }
 
     private function refundPartLocked(\Model_Invoice $invoice, float $amount, float $refunded, string $note, bool $toCredit): int
@@ -3543,9 +3570,17 @@ class Service implements InjectionAwareInterface
             ], true)) {
                 return null;
             }
+            // ClientFence core patch: a service set to end at its period end is not renewed by a payment the gateway still
+            // takes (PayPal Email cannot be stopped by API): the payment goes to the client's credit.
+            if ($this->di['dbal']->fetchOne('SELECT 1 FROM client_order_meta WHERE client_order_id = ? AND name = ? AND value = ?', [(int) $originalOrder->id, \ClientFence\Mod\Order\Service::META_CANCEL_AT_PERIOD_END, '1'])) {
+                return null;
+            }
 
             $invoice = $this->generateForOrder($originalOrder);
-            $this->approveInvoice($invoice, ['use_credits' => false]);
+            // ClientFence core patch: the cron's renewal invoice is approved and emailed already.
+            if (!$invoice->approved) {
+                $this->approveInvoice($invoice, ['use_credits' => false]);
+            }
 
             $this->di['logger']->info("Generated renewal invoice #{$invoice->id} for subscription payment (SID: {$subscriptionSid}).");
 

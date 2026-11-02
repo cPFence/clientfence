@@ -207,7 +207,7 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
 
                 if ($invoiceDbModel instanceof Model_Invoice) {
                     $expected = $invoiceService->getBalanceDue($invoiceDbModel);
-                    $invoiceService->validatePaymentAmount((float) $ipn['mc_gross'], $expected);
+                    $invoiceService->validatePaymentAmount((float) $ipn['mc_gross'], $expected, $invoiceDbModel);
                 }
 
                 $bd = [
@@ -263,8 +263,16 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 break;
 
             case 'subscr_failed':
-                // ClientFence core patch: PayPal retries failed renewals before cancelling the subscription.
-                break;
+                // ClientFence core patch: PayPal retries failed renewals before cancelling the subscription. As WHMCS, the
+                // failure is logged, never counted as money received.
+                $api_admin->invoice_transaction_update([
+                    'id' => $id,
+                    'status' => Model_Transaction::STATUS_ERROR,
+                    'error' => 'PayPal subscription payment failed; PayPal retries it.',
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+
+                return;
 
             case 'recurring_payment_suspended_due_to_max_failed_payment':
             case 'subscr_eot':
@@ -311,6 +319,9 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 } elseif ((float) $payment->amount > $this->di['mod_service']('Invoice')->getTotalWithTax($paymentInvoice) + 0.01) {
                     // ClientFence core patch: an overpayment refund must also reverse its excess balance credit.
                     $refundError = sprintf('PayPal refund of %s %s must be settled by hand: the payment was larger than the invoice.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
+                } elseif ((float) $payment->amount < $this->di['mod_service']('Invoice')->getTotalWithTax($paymentInvoice) - 0.01) {
+                    // ClientFence core patch: account credit paid the rest of the invoice, so a full refund would refund more than PayPal returned.
+                    $refundError = sprintf('PayPal refund of %s %s must be settled by hand: credit paid the rest of the invoice.', number_format($amount, 2, '.', ''), $ipn['mc_currency']);
                 } else {
                     $api_admin->invoice_refund([
                         'id' => $payment->invoice_id,

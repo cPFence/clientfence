@@ -3082,7 +3082,7 @@ test('cancelFromOrder cancels the addons of a RedBean order too (staff Retry)', 
         ->and($master->status)->toBe(Order::STATUS_CANCELED);
 });
 
-test('scheduleCancellationFromOrder keeps the service active, with or without a gateway subscription', function (bool $withSubscription): void {
+test('scheduleCancellationFromOrder keeps the service active, with or without a gateway subscription', function (bool $withSubscription, bool $gatewayEnds = true): void {
     $order = createEntity(Order::class, [
         'id' => 10,
         'status' => Order::STATUS_ACTIVE,
@@ -3092,8 +3092,8 @@ test('scheduleCancellationFromOrder keeps the service active, with or without a 
 
     $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
     $subscriptionService->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($legacyOrder)->andReturn($withSubscription);
-    $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->times($withSubscription ? 1 : 0)->with($legacyOrder)->andReturn(true);
-    $subscriptionService->shouldReceive('scheduleCancellationForOrder')->times($withSubscription ? 1 : 0)->with($legacyOrder)->andReturn(1);
+    $subscriptionService->shouldReceive('canCancelAtPeriodEndForOrder')->times($withSubscription ? 1 : 0)->with($legacyOrder)->andReturn($gatewayEnds);
+    $subscriptionService->shouldReceive('scheduleCancellationForOrder')->times($withSubscription && $gatewayEnds ? 1 : 0)->with($legacyOrder)->andReturn(1);
 
     $di = container();
     $dbMock = Mockery::mock(\ClientFence\Database::class);
@@ -3122,7 +3122,7 @@ test('scheduleCancellationFromOrder keeps the service active, with or without a 
     expect($service->scheduleCancellationFromOrder($order, 'Customer request'))->toBeTrue()
         ->and($order->status)->toBe(Order::STATUS_ACTIVE)
         ->and($order->reason)->toBe('Customer request');
-})->with(['gateway subscription' => [true], 'no subscription (bank transfer)' => [false]]);
+})->with(['gateway subscription' => [true], 'no subscription (bank transfer)' => [false], 'PayPal Email subscription (no period-end cancel, as WHMCS)' => [true, false]]);
 
 test('scheduleCancellationFromOrder does not mark the order when no subscription was scheduled', function (): void {
     $order = createEntity(Order::class, [

@@ -3894,5 +3894,37 @@
     {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: the tax-inclusive cents were for all the invoice's lines (Invoice\\Service::applyInclusiveTax())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the cron's renewal invoice is approved and emailed already."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: as WHMCS, a gateway payment below the balance due is a part payment"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: as WHMCS \"Invoice Refund Confirmation\", the client hears of each refund"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: as WHMCS, a gateway that cannot stop at the period end (PayPal Email) does not"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: as WHMCS's gateway log, a failed attempt keeps Stripe's answer."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a subscription's own PaymentIntent is kept by invoice.payment_failed; a one-time"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a service set to end at its period end is not renewed by a payment the gateway still"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: account credit paid the rest of the invoice, so a full refund would refund more than PayPal returned."
     }
 ]

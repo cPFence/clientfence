@@ -4681,54 +4681,54 @@ test('returns false when checking deposit with empty items', function (): void {
     expect($result)->toBeFalse();
 });
 
-test('validatePaymentAmount passes for exact match', function (): void {
-    $service = new Service();
+function paymentAmountService(bool $deposit = false, ?object $logger = null): Service
+{
+    $item = new Model_InvoiceItem();
+    $item->loadBean(new Tests\Helpers\DummyBean());
+    $item->type = $deposit ? Model_InvoiceItem::TYPE_DEPOSIT : 'order';
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ?', Mockery::any())->andReturn([$item]);
     $di = container();
+    $di['db'] = $db;
+    if ($logger) {
+        $di['logger'] = $logger;
+    }
+    $service = new Service();
     $service->setDi($di);
 
-    $service->validatePaymentAmount(50.00, 50.00);
+    return $service;
+}
+
+function paymentAmountInvoice(): Model_Invoice
+{
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 7;
+
+    return $invoice;
+}
+
+test('validatePaymentAmount passes an exact match, one within a cent, and a part payment (WHMCS)', function (float $received): void {
+    paymentAmountService()->validatePaymentAmount($received, 50.00, paymentAmountInvoice());
     expect(true)->toBeTrue();
-});
+})->with(['exact' => [50.00], 'within a cent' => [49.99], 'part payment' => [40.00]]);
 
-test('validatePaymentAmount passes within epsilon tolerance', function (): void {
-    $service = new Service();
-    $di = container();
-    $service->setDi($di);
-
-    $service->validatePaymentAmount(49.99, 50.00);
-    expect(true)->toBeTrue();
-});
-
-test('validatePaymentAmount throws on underpayment', function (): void {
-    $service = new Service();
-    $di = container();
-    $service->setDi($di);
-
-    expect(fn () => $service->validatePaymentAmount(40.00, 50.00))
+test('validatePaymentAmount refuses a short payment of an Add funds invoice, and a payment of nothing', function (bool $deposit, float $received): void {
+    expect(fn () => paymentAmountService($deposit)->validatePaymentAmount($received, 50.00, paymentAmountInvoice()))
         ->toThrow(ClientFence\Exception::class);
-});
+})->with(['Add funds, short' => [true, 40.00], 'nothing received' => [false, 0.0]]);
 
 test('validatePaymentAmount logs warning on significant overpayment', function (): void {
-    $service = new Service();
     $logger = new Tests\Helpers\TestLogger();
-    $di = container();
-    $di['logger'] = $logger;
-    $service->setDi($di);
-
-    $service->validatePaymentAmount(60.00, 50.00);
+    paymentAmountService(false, $logger)->validatePaymentAmount(60.00, 50.00, paymentAmountInvoice());
 
     $warnings = array_filter($logger->calls, fn ($c): bool => $c['method'] === 'warning');
     expect($warnings)->not->toBeEmpty();
 });
 
 test('validatePaymentAmount does not warn for minor overpayment within tolerance', function (): void {
-    $service = new Service();
     $logger = new Tests\Helpers\TestLogger();
-    $di = container();
-    $di['logger'] = $logger;
-    $service->setDi($di);
-
-    $service->validatePaymentAmount(50.50, 50.00);
+    paymentAmountService(false, $logger)->validatePaymentAmount(50.50, 50.00, paymentAmountInvoice());
 
     $warnings = array_filter($logger->calls, fn ($c): bool => $c['method'] === 'warning');
     expect($warnings)->toBeEmpty();
@@ -4787,7 +4787,7 @@ test('generateRenewalInvoiceForSubscriptionPayment returns null when original or
     expect($result)->toBeNull();
 });
 
-test('generateRenewalInvoiceForSubscriptionPayment uses the original order and not a product_id lookup', function (): void {
+test('generateRenewalInvoiceForSubscriptionPayment uses the original order and not a product_id lookup, approving only a new invoice, never for a service ending at its period end', function (int $approved, bool $endsAtPeriodEnd = false): void {
     $subscription = new Model_Subscription();
     $subscription->loadBean(new Tests\Helpers\DummyBean());
     $subscription->rel_type = 'invoice';
@@ -4805,6 +4805,8 @@ test('generateRenewalInvoiceForSubscriptionPayment uses the original order and n
     $renewalInvoice = new Model_Invoice();
     $renewalInvoice->loadBean(new Tests\Helpers\DummyBean());
     $renewalInvoice->id = 99;
+    // The cron's renewal invoice is approved (and emailed) already: approving it again sent "Invoice Created" twice.
+    $renewalInvoice->approved = $approved;
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('findOne')
@@ -4820,21 +4822,28 @@ test('generateRenewalInvoiceForSubscriptionPayment uses the original order and n
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('generateForOrder')
         ->with(Mockery::on(fn ($order): bool => $order === $originalOrder))
-        ->once()
+        ->times($endsAtPeriodEnd ? 0 : 1)
         ->andReturn($renewalInvoice);
     $serviceMock->shouldReceive('approveInvoice')
-        ->once();
+        ->times($approved || $endsAtPeriodEnd ? 0 : 1);
 
     $di = container();
     $di['db'] = $dbMock;
+    // A PayPal payment PayPal still takes after an accepted End of billing period cancellation goes to credit.
+    $di['dbal']->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM client_order_meta/'), Mockery::any())->andReturn($endsAtPeriodEnd ? '1' : false);
     $di['logger'] = new Tests\Helpers\TestLogger();
     $serviceMock->setDi($di);
 
     $result = $serviceMock->generateRenewalInvoiceForSubscriptionPayment('I-TEST123', 1);
 
+    if ($endsAtPeriodEnd) {
+        expect($result)->toBeNull();
+
+        return;
+    }
     expect($result)->toBeInstanceOf(Model_Invoice::class);
     expect($result->id)->toBe(99);
-});
+})->with(['new invoice' => [0], 'the cron made and approved it' => [1], 'set to end at its period end' => [0, true]]);
 
 test('generateRenewalInvoiceForSubscriptionPayment still renews an order the batch-suspend cron already suspended', function (string $status): void {
     // A gateway's subscription-payment IPN can legitimately arrive after the
@@ -4879,6 +4888,7 @@ test('generateRenewalInvoiceForSubscriptionPayment still renews an order the bat
 
     $di = container();
     $di['db'] = $dbMock;
+    $di['dbal']->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM client_order_meta/'), Mockery::any())->andReturn(false);
     $di['logger'] = new Tests\Helpers\TestLogger();
     $serviceMock->setDi($di);
 
@@ -5261,7 +5271,7 @@ test('apply credit takes up to the free credit and the balance due, and pays a c
     'the whole balance due' => [4.0, 4.0, null, true],
 ]);
 
-test('a part refund keeps the invoice paid, can go to credit, and the last part marks it refunded', function (float $refunded, ?float $amount, bool $toCredit, ?string $error, string $status): void {
+test('a part refund keeps the invoice paid, can go to credit, the last part marks it refunded, and the client gets a refund email', function (float $refunded, ?float $amount, bool $toCredit, ?string $error, string $status): void {
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());
     foreach (['id' => 10, 'client_id' => 20, 'status' => 'paid', 'currency' => 'USD', 'serie' => 'CF', 'nr' => 7, 'taxrate' => '0', 'paid_at' => '2026-10-01 00:00:00'] as $key => $value) {
@@ -5273,9 +5283,22 @@ test('a part refund keeps the invoice paid, can go to credit, and the last part 
     $di['db']->shouldReceive('getCell')->andReturn(false);
     $system = Mockery::mock(SystemService::class);
     $system->shouldReceive('getParamValue')->with('invoice_refund_logic', 'manual')->andReturn('credit_note');
-    $di['mod_service'] = $di->protect(moduleService(['system' => $system]));
+    // As WHMCS "Invoice Refund Confirmation": one email per refund, for the credit note's amount.
+    $sent = [];
+    $email = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $email->shouldReceive('sendTemplate')->andReturnUsing(function (array $mail) use (&$sent): bool {
+        $sent[] = $mail;
+
+        return true;
+    });
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system, 'email' => $email]));
+    $creditNote = new Model_Invoice();
+    $creditNote->loadBean(new Tests\Helpers\DummyBean());
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 10)->andReturn($invoice);
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 99)->andReturn($creditNote);
     $service = Mockery::mock(Service::class)->makePartial();
-    $service->shouldReceive('getTotalWithTax')->andReturn(15.0);
+    $service->shouldReceive('getTotalWithTax')->andReturnUsing(fn (Model_Invoice $i): float => $i === $creditNote ? -($amount ?? 15.0 - $refunded) : 15.0);
+    $service->shouldReceive('toApiArray')->andReturn(['id' => 10, 'serie_nr' => 'CF7', 'client' => []]);
     $service->shouldReceive('getTax')->andReturn(0.0);
     $service->shouldReceive('isInvoiceTypeDeposit')->andReturn(false);
     $service->shouldReceive('countIncome', 'addNote');
@@ -5295,7 +5318,11 @@ test('a part refund keeps the invoice paid, can go to credit, and the last part 
         expect(fn () => $service->refundInvoice($invoice, null, $amount, $toCredit))->toThrow(ClientFence\InformationException::class, $error);
     } else {
         expect($service->refundInvoice($invoice, null, $amount, $toCredit))->toBe(99)
-            ->and($invoice->refund)->toBe(round($refunded + ($amount ?? 15.0 - $refunded), 2));
+            ->and($invoice->refund)->toBe(round($refunded + ($amount ?? 15.0 - $refunded), 2))
+            ->and($sent)->toHaveCount(1)
+            ->and($sent[0]['code'])->toBe('mod_invoice_refunded')
+            ->and($sent[0]['to_client'])->toBe(20)
+            ->and($sent[0]['refund'])->toBe(['amount' => $amount ?? 15.0 - $refunded, 'to_credit' => $toCredit]);
     }
     expect($invoice->status)->toBe($status);
 })->with([

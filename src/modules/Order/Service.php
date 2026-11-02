@@ -2012,10 +2012,11 @@ class Service implements InjectionAwareInterface
         // expired-orders cron cancels it on its expiry date.
         $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
         if ($subscriptionService->hasGatewaySubscriptionForOrder($legacyOrder)) {
+            // ClientFence core patch: as WHMCS, a gateway that cannot stop at the period end (PayPal Email) does not
+            // block it: staff cancel the subscription at the gateway, as for an immediate cancellation.
             if (!$subscriptionService->canCancelAtPeriodEndForOrder($legacyOrder)) {
-                throw new InformationException('No active gateway subscription that supports cancellation at period end is linked to this order.');
-            }
-            if ($subscriptionService->scheduleCancellationForOrder($legacyOrder) === 0) {
+                $this->di['logger']->warning(sprintf('Order #%s: cancel its gateway subscription at the gateway; it ends at the period end here.', $orderId));
+            } elseif ($subscriptionService->scheduleCancellationForOrder($legacyOrder) === 0) {
                 throw new InformationException('No active gateway subscription is linked to this order.');
             }
         }
@@ -2046,16 +2047,10 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    /**
-     * Whether the order can be cancelled at the end of its period: it has an expiry, and any gateway subscription
-     * billing it supports cancellation at period end.
-     */
+    /** Whether the order can be cancelled at the end of its period: it has an expiry (scheduleCancellationFromOrder()). */
     public function canCancelAtPeriodEnd(\Model_ClientOrder $order): bool
     {
-        $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
-
-        return (string) $order->expires_at !== ''
-            && (!$subscriptionService->hasGatewaySubscriptionForOrder($order) || $subscriptionService->canCancelAtPeriodEndForOrder($order));
+        return (string) $order->expires_at !== '';
     }
 
     public function finalizeCancellationFromGateway(Order|\Model_ClientOrder $order, $reason = null): bool
