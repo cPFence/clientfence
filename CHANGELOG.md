@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.27 (2026-11-02)
+
+### Changed
+
+- Professional email templates: one clean layout for all 65 emails (logo, details box, button, footer) with new wording.
+
+### Fixed
+
+- Domain emails show the domain's nameservers; reminders for invoices already due no longer say "due in -N days".
+- Removing a client also removes its subscriptions, cancelled at the payment gateway first.
+- A module's "Manage settings" permission works without Extensions access.
+- Pages a view-only role may not read show a 403 page instead of an error; Mass Mail and Hosting hide the tabs the role cannot use.
+- Menu entries, the New menu, Settings and Export buttons show only to staff who have the permission.
+- Staff password reset: the setting shows as on until it is saved, matching the sign-in page.
+- More admin texts translated: module names, product types, promotion periods.
+
 ## 1.0.26 (2026-11-02)
 
 ### Fixed
