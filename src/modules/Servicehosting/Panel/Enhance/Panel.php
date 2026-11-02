@@ -50,6 +50,8 @@ final class Panel
 
     private ?string $orgId = null;
     private ?int $subscriptionId = null;
+    // The login the last create() made on the panel (not one it found): kept after a failure, which cannot remove it.
+    private ?string $createdLogin = null;
 
     public function __construct(
         private readonly Api $api,
@@ -319,6 +321,11 @@ final class Panel
 
             throw $e;
         }
+    }
+
+    public function createdLogin(): ?string
+    {
+        return $this->createdLogin;
     }
 
     /**
@@ -666,6 +673,9 @@ final class Panel
         }
         // The login may already exist (another organization, or an earlier try): 409, then look it up.
         $login = $this->api->post('/logins', ['email' => $email, 'name' => $name, 'password' => $password], ['orgId' => $orgId], [409]);
+        if (is_array($login) && !empty($login['id'])) {
+            $this->createdLogin = $email;
+        }
         $loginId = is_array($login) && !empty($login['id']) ? (string) $login['id'] : $this->loginId($email);
         if ($loginId === null) {
             throw new \Server_Exception('The :panel: login for :email: could not be created.', [':panel:' => Api::PANEL, ':email:' => $email]);

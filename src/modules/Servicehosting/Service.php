@@ -25,6 +25,8 @@ class Service implements InjectionAwareInterface
     private const string PASSWORD_PLACEHOLDER = '********';
 
     public const string CREDENTIAL_KEEP_SENTINEL = '__KEEP__';
+    // Order meta: the panel login (email) a failed create of this service made.
+    public const string META_PANEL_LOGIN = 'panel_login_created';
 
     protected ?\Pimple\Container $di = null;
     private Filesystem $filesystem;
@@ -269,7 +271,18 @@ class Service implements InjectionAwareInterface
         // If the order's configuration does not specify that the service should be imported, create an account for the service on the server
         if (!$alreadyProvisioned && (!isset($config['import']) || !$config['import'])) {
             [$adapter, $account] = $this->_getAM($model, null, false);
-            $adapter->createAccount($account);
+
+            try {
+                $adapter->createAccount($account);
+            } catch (\Throwable $e) {
+                // ClientFence core patch: a failed create cannot remove the panel login it made. Record it on the
+                // order, so a retry trusts that login (see _getAM()) instead of asking for a confirmed email.
+                if ($adapter instanceof \Server_Manager_Enhance && ($login = $adapter->createdLogin()) !== null) {
+                    $this->di['dbal']->insert('client_order_meta', ['client_order_id' => $order->id, 'name' => self::META_PANEL_LOGIN, 'value' => mb_strtolower($login), 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
+                }
+
+                throw $e;
+            }
             // ClientFence core patch: persist the created subscription so domain changes cannot redirect account actions.
             $model->panel_org_id = $account->getPanelOrgId();
             $model->panel_subscription_id = $account->getPanelSubscriptionId();
@@ -648,10 +661,12 @@ class Service implements InjectionAwareInterface
             ->setTelephone($client->phone)
             // ClientFence core patch: an unconfirmed email changed to another customer's old address took over
             // that customer's panel login. A username is stored only after a create succeeded (this service's own
-            // counts: an uncancel creates it again).
+            // counts: an uncancel creates it again), or a login this service's failed create made (META_PANEL_LOGIN).
             ->setEmailTrusted((int) $client->email_approved === 1 || (int) $this->di['db']->getCell(
-                'SELECT COUNT(*) FROM service_hosting WHERE client_id = :client AND LOWER(username) = LOWER(:email)',
-                [':client' => $model->client_id, ':email' => (string) $client->email],
+                'SELECT (SELECT COUNT(*) FROM service_hosting WHERE client_id = :client AND LOWER(username) = LOWER(:email))
+                    + (SELECT COUNT(*) FROM client_order o JOIN client_order_meta m ON m.client_order_id = o.id
+                        WHERE o.service_type = \'hosting\' AND o.service_id = :service AND m.name = :meta AND m.value = LOWER(:email))',
+                [':client' => $model->client_id, ':email' => (string) $client->email, ':service' => $model->id, ':meta' => self::META_PANEL_LOGIN],
             ) > 0);
 
         $package = $this->getServerPackage($hp);

@@ -46,6 +46,20 @@ test('create refuses an existing panel login for an email the client has not pro
         ->and(array_filter($requests, fn (string $r): bool => !str_starts_with($r, 'GET ')))->toBe([]);
 });
 
+// A failed create cannot remove the login it made: it reports that login, not one it found (Track 4 F1).
+test('create reports the login it made, also when a later step fails', function (bool $exists): void {
+    $requests = [];
+    $panel = enhancePanelFake([
+        'POST /api/logins' => $exists ? new MockResponse('{}', ['http_code' => 409]) : new MockResponse('{"id":"L1"}'),
+        '/api/v2/orgs/M/customers/logins' => $exists ? [['id' => 'L1', 'email' => 'n@example.test']] : [],
+        'POST /api/orgs/M/customers/7/subscriptions' => new MockResponse('{"message":"plan limit"}', ['http_code' => 400]),
+    ], $requests);
+
+    expect(fn () => $panel->create('n@example.test', 'Org', 'Name', 'Secret-pass-1', 'new.example', 1, 'Small', $exists))->toThrow(Server_Exception::class)
+        ->and($panel->createdLogin())->toBe($exists ? null : 'n@example.test')
+        ->and($requests)->toContain('DELETE /api/orgs/7');
+})->with(['new login' => [false], 'existing login' => [true]]);
+
 test('create returns the organization and created or reused subscription id', function (array $websites): void {
     $requests = [];
     $panel = enhancePanelFake([

@@ -325,6 +325,45 @@ test('action activate stores the created panel subscription id', function (): vo
         ->and($model->panel_org_id)->toBe('B');
 });
 
+// Track 4 F1: a failed Enhance create leaves the login it made; the order records it so a retry trusts that login.
+test('action activate records the panel login a failed create made', function (?string $created): void {
+    $orderModel = new Model_ClientOrder();
+    $orderModel->loadBean(new Tests\Helpers\DummyBean());
+    $orderModel->id = 12;
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->sld = 'example';
+    $model->tld = '.com';
+
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock->shouldReceive('getOrderService')->andReturn($model);
+    $orderServiceMock->shouldReceive('getConfig')->andReturn([]);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->andReturn(new Model_ServiceHostingServer());
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $created === null
+        ? $dbal->shouldNotReceive('insert')
+        : $dbal->shouldReceive('insert')->once()->with('client_order_meta', Mockery::on(fn (array $row): bool => $row['client_order_id'] === 12 && $row['name'] === Service::META_PANEL_LOGIN && $row['value'] === 'n@example.test'));
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+
+    $serverManagerMock = Mockery::mock('\Server_Manager_Custom');
+    $serverManagerMock->shouldReceive('getPasswordLength')->andReturn(12);
+    $serverManagerMock->shouldReceive('generateUsername')->andReturn('example');
+    $adapterMock = Mockery::mock(Server_Manager_Enhance::class);
+    $adapterMock->shouldReceive('createAccount')->once()->andThrow(new Server_Exception('plan limit'));
+    $adapterMock->shouldReceive('createdLogin')->andReturn($created);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getServerManager')->andReturn($serverManagerMock);
+    $serviceMock->shouldReceive('_getAM')->once()->andReturn([$adapterMock, new Server_Account()]);
+    $serviceMock->setDi($di);
+
+    expect(fn () => $serviceMock->action_activate($orderModel))->toThrow(Server_Exception::class, 'plan limit');
+})->with(['a login it made' => ['N@example.test'], 'no login made' => [null]]);
+
 test('action activate does not recreate an account that was already provisioned', function (): void {
     // Regression test: if a previous activation attempt already created the
     // account on the server (its username was persisted), retrying must not
@@ -1829,7 +1868,7 @@ test('_getAM trusts the client email by confirmation or a stored hosting login o
     $db = Mockery::mock('ClientFence\Database');
     $db->shouldReceive('getExistingModelById')->andReturn($hp, $server, $client);
     $db->shouldReceive('getCell')
-        ->with(Mockery::on(fn (string $sql): bool => !str_contains($sql, 'id !=')), [':client' => 9, ':email' => 'b@example.test'])
+        ->with(Mockery::on(fn (string $sql): bool => !str_contains($sql, 'id !=')), [':client' => 9, ':email' => 'b@example.test', ':service' => 4, ':meta' => Service::META_PANEL_LOGIN])
         ->andReturn($logins);
     $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orderService->shouldReceive('getServiceOrder')->andReturn(null);

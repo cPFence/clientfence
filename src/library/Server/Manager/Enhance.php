@@ -29,6 +29,7 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
     private static array $apis = [];
 
     private ?HttpClientInterface $httpClient = null;
+    private ?string $createdLogin = null;
 
     public static function getForm(): array
     {
@@ -161,16 +162,20 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
         $fullName = trim((string) $client?->getFullName());
         $package = $account->getPackage();
 
-        $link = $panel->create(
-            $email,
-            trim((string) $client?->getCompany()) ?: ($fullName ?: $email),
-            $fullName ?: $email,
-            (string) $account->getPassword(),
-            (string) $account->getDomain(),
-            $panel->planId($package->getCustomValue('plan_id'), (string) $package->getName()),
-            (string) $package->getName(),
-            $client?->isEmailTrusted() ?? false,
-        );
+        try {
+            $link = $panel->create(
+                $email,
+                trim((string) $client?->getCompany()) ?: ($fullName ?: $email),
+                $fullName ?: $email,
+                (string) $account->getPassword(),
+                (string) $account->getDomain(),
+                $panel->planId($package->getCustomValue('plan_id'), (string) $package->getName()),
+                (string) $package->getName(),
+                $client?->isEmailTrusted() ?? false,
+            );
+        } finally {
+            $this->createdLogin = $panel->createdLogin();
+        }
         $account->setPanelOrgId($link['org'])->setPanelSubscriptionId($link['subscription']);
         // Per hosting plan (custom value send_setup_email): Enhance emails the client a "set your password" link.
         if (ClientFence\Tools::normalizeBoolean($package->getCustomValue('send_setup_email'), false)) {
@@ -178,6 +183,14 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
         }
 
         return true;
+    }
+
+    /**
+     * The panel login the last createAccount() made, also when it failed: a retry of the same service may reuse it.
+     */
+    public function createdLogin(): ?string
+    {
+        return $this->createdLogin;
     }
 
     /** @return array{org: string, subscription: int} */
