@@ -3944,11 +3944,31 @@
         "done": "ClientFence core patch: a service set to end at its period end is not renewed by a payment the gateway still"
     },
     {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the client's subscriptions go too (one left behind broke the Subscriptions list)."
+    },
+    {
         "file": "library/Payment/Adapter/PayPalEmail.php",
         "done": "ClientFence core patch: account credit paid the rest of the invoice, so a full refund would refund more than PayPal returned."
     },
     {
         "file": "modules/Servicedownloadable/Api/Client.php",
         "done": "ClientFence core patch: 404, the theme's not-found page (another client's link showed the developer error page)."
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: extension_config_get/config_save check the module's own \"Manage settings\" permission"
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch: a page whose template asks for data the staff member may not read shows the"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: an entry with a `permission` key shows only to staff who have it"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: translated labels (the product list showed them in English in every language)."
     }
 ]

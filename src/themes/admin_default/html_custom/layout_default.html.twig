@@ -89,9 +89,9 @@
                 <div class="bf-header-gap"></div>
                 {% set can_new = {
                     'client': has_permission('client', 'create'),
-                    'order': admin.system_is_allowed({ 'mod': 'order', 'f': 'view' }),
-                    'invoice': admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }),
-                    'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' })
+                    'order': has_permission('order', 'manage'),
+                    'invoice': has_permission('invoice', 'manage_invoices'),
+                    'support': has_permission('support', 'manage_tickets')
                 } %}
                 {% if can_new.client or can_new.order or can_new.invoice or can_new.support %}
                 <div class="dropdown">
@@ -169,7 +169,7 @@
                         </div>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ 'staff/profile'|url }}">{{ 'Profile'|trans }}</a>
-                        <a class="dropdown-item" href="{{ 'system'|url }}">{{ 'Settings'|trans }}</a>
+                        {% if has_permission('system') %}<a class="dropdown-item" href="{{ 'system'|url }}">{{ 'Settings'|trans }}</a>{% endif %}
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ 'profile/logout'|api_url }}" {{ fb_api_link({ redirect: 'staff/login'|url, message: '' }) }}>{{ 'Logout'|trans }}</a>
                     </div>

@@ -39,9 +39,13 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="#tab-servers" data-bs-toggle="tab">{{ 'Hosting Servers'|trans }}</a>
                         </li>
+                        {# ClientFence: the plans tab only with "Manage plans" (the page was a 500 without). #}
+                        {% set can_plans = has_permission('servicehosting', 'manage_plans') %}
+                        {% if can_plans %}
                         <li class="nav-item">
                             <a class="nav-link" href="#tab-plans" data-bs-toggle="tab">{{ 'Hosting Plans'|trans }}</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
                 <div class="tab-content border-top">
@@ -110,6 +114,7 @@
                         {{ include('mod_servicehosting_settings_panels.html.twig', { panels: hosting_panels }) }}
                     </div>
 
+                    {% if can_plans %}
                     <div class="tab-pane fade" id="tab-plans" role="tabpanel">
                         <div class="card-body border-bottom py-3">
                             <div class="d-flex justify-content-end">
@@ -164,6 +169,7 @@
                         </div>
                         {{ include('mod_servicehosting_settings_plans.html.twig', { panels: hosting_panels }) }}
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

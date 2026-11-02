@@ -28,7 +28,8 @@
                     <div class="mb-3">
                         <label class="form-label" for="inputPassword">
                             {{ 'Password'|trans }}
-                            {% if params.reset_pw is defined and params.reset_pw == 1 %}
+                            {# Unset means on, as the reset API treats it (and as WHMCS allows staff password reset by default). #}
+                            {% if params.reset_pw is not defined or params.reset_pw == 1 %}
                             <span class="form-label-description">
                                 <a href="{{ 'staff/passwordreset'|url }}">{{ 'Forgot your password?'|trans }}</a>
                             </span>

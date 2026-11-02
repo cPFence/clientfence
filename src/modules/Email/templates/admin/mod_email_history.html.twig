@@ -11,7 +11,8 @@
 {% set can_delete_email_history = has_permission('email', 'delete_email_history') %}
 
 {% block content %}
-    {% set config = admin.extension_config_get({ 'ext': 'mod_email' }) %}
+    {# ClientFence: the logging notice reads the email settings, which only settings managers may (the page was a 500). #}
+    {% set config = can_manage_settings ? admin.extension_config_get({ 'ext': 'mod_email' }) : { log_enabled: 1 } %}
     {% if config.log_enabled is not defined or config.log_enabled != 1 %}
         <div class="alert alert-primary alert-dismissible fade show mb-3" role="alert">
             <strong>{{ 'Information'|trans }}:</strong> {{ 'Email logging is not enabled. If you want to log sent mails to database, enable it in'|trans }}

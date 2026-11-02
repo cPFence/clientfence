@@ -76,7 +76,8 @@
     {% endset %}
 {% endif %}
 {% block content %}
-    {% set params = admin.extension_config_get({ 'ext': 'mod_email' }) %}
+    {# ClientFence: the settings are read only for settings managers (template and queue staff got a 500). #}
+    {% set params = can_manage_settings ? admin.extension_config_get({ 'ext': 'mod_email' }) : {} %}
     <div class="card">
         <div class="card-header">
             <div>

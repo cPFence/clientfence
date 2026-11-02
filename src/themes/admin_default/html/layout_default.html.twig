@@ -139,7 +139,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                            <a class="dropdown-item" href="{{ 'staff/profile'|url }}">{{ 'Profile'|trans }}</a>
-                           <a class="dropdown-item" href="{{ 'system'|url }}">{{ 'Settings'|trans }}</a>
+                           {% if has_permission('system') %}<a class="dropdown-item" href="{{ 'system'|url }}">{{ 'Settings'|trans }}</a>{% endif %}
                            <div class="dropdown-divider"></div>
                            <a class="dropdown-item" href="{{ 'profile/logout'|api_url }}"
                                {{ fb_api_link({ redirect: 'staff/login'|url }) }}>

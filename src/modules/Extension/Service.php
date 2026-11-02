@@ -301,6 +301,11 @@ class Service implements InjectionAwareInterface
 
                 if (isset($n['subpages'])) {
                     foreach ($n['subpages'] as $nn) {
+                        // ClientFence core patch: an entry with a `permission` key shows only to staff who have it
+                        // (Subscriptions, Transactions or Staff Login History led limited roles to a refused page).
+                        if (is_array($nn) && isset($nn['permission']) && !$staff_service->hasPermission($admin, $mod, $nn['permission'])) {
+                            continue;
+                        }
                         if (is_array($nn)) {
                             $nn['active'] = false;
                             $subpages[] = $nn;

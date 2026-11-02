@@ -306,12 +306,13 @@ class Service implements InjectionAwareInterface
 
     public function getTypes(): array
     {
+        // ClientFence core patch: translated labels (the product list showed them in English in every language).
         $data = [
-            self::CUSTOM => 'Custom',
-            self::LICENSE => 'License',
-            self::DOWNLOADABLE => 'Downloadable',
-            self::HOSTING => 'Hosting',
-            self::DOMAIN => 'Domain',
+            self::CUSTOM => __trans('Custom'),
+            self::LICENSE => __trans('License'),
+            self::DOWNLOADABLE => __trans('Downloadable'),
+            self::HOSTING => __trans('Hosting'),
+            self::DOMAIN => __trans('Domain'),
         ];
 
         // attach service modules
@@ -320,7 +321,7 @@ class Service implements InjectionAwareInterface
         foreach ($list as $mod) {
             if (str_starts_with((string) $mod, 'service')) {
                 $n = substr((string) $mod, strlen('service'));
-                $data[$n] = ucfirst($n);
+                $data[$n] = $n === 'apikey' ? __trans('API Key') : ucfirst($n);
             }
         }
 

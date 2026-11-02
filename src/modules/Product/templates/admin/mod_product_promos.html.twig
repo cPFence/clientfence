@@ -76,9 +76,13 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {# We need variable support to effectively localize these. Not every language is in "From *x* until *y*" format. #}
-                            From {% if promo.start_at %}{{ promo.start_at|format_date }}{% else %}now{% endif %}
-                            until {% if promo.end_at %}{{ promo.end_at|format_date }}{% else %}disabled{% endif %}
+                            {# ClientFence: translated with placeholders (it was English in every language). #}
+                            {% set promo_start = promo.start_at ? promo.start_at|format_date : 'now'|trans %}
+                            {% if promo.end_at %}
+                                {{ 'From :start until :end'|trans({ ':start': promo_start, ':end': promo.end_at|format_date }) }}
+                            {% else %}
+                                {{ 'From :start until disabled'|trans({ ':start': promo_start }) }}
+                            {% endif %}
                         </td>
                         <td>{{ mf.boolean_badge(promo.active, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                         <td>

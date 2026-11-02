@@ -166,3 +166,34 @@ test('skips admin module permission check for allowed update finalization calls'
     expect($dispatcher->dispatch($admin, 'system_update_finalization_status'))
         ->toBe(['required' => true]);
 });
+
+// Track 6 F2: a module's "Manage settings" staff (no Extensions access) reach its settings; config_get checks that permission.
+test('extension settings calls pass the module gate; other extension calls do not', function (string $method, bool $gated): void {
+    $admin = new Model_Admin();
+    $admin->loadBean(new Tests\Helpers\DummyBean());
+    $staffService = new class {
+        public function hasPermission(Model_Admin $identity, string $mod): bool
+        {
+            return false;
+        }
+    };
+    $noFinalization = new class {
+        public function isRequired(): bool
+        {
+            return false;
+        }
+    };
+    $dispatcher = createApiDispatcher(createApiDispatcherDi(staffService: $staffService, updateFinalization: $noFinalization));
+
+    try {
+        $dispatcher->dispatch($admin, $method, ['ext' => 'mod_massmailer']);
+        $code = 0;
+    } catch (Throwable $e) {
+        $code = $e->getCode();
+    }
+    expect($code === 725)->toBe($gated);
+})->with([
+    'config_get' => ['extension_config_get', false],
+    'config_save' => ['extension_config_save', false],
+    'activate' => ['extension_activate', true],
+]);

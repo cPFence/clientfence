@@ -40,12 +40,16 @@
                 <li class="nav-item" role="presentation">
                     <a href="#tab-index" class="nav-link active" data-bs-toggle="tab" aria-selected="true" role="tab">{{ 'Messages'|trans }}</a>
                 </li>
+                {# ClientFence: the Settings tab only for staff who may manage Mass Mail settings (the page was a 500 without). #}
+                {% set can_settings = has_permission('massmailer', 'manage_settings') %}
+                {% if can_settings %}
                 <li class="nav-item" role="presentation">
                     <a href="#tab-settings" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab">
                         <svg class="icon me-2"><use href="#settings" /></svg>
                         {{ 'Settings'|trans }}
                     </a>
                 </li>
+                {% endif %}
             </ul>
         </div>
 
@@ -127,6 +131,7 @@
                 </div>
             </div>
 
+            {% if can_settings %}
             <div class="tab-pane fade" id="tab-settings" role="tabpanel">
                 {% set params = admin.extension_config_get({ ext: 'mod_massmailer' }) %}
                 {% set test_client_email = admin.massmailer_get_test_client %}
@@ -155,6 +160,7 @@
                     </div>
                 </form>
             </div>
+            {% endif %}
         </div>
     </div>
 
@@ -198,7 +204,7 @@
         };
         search.addEventListener('input', filter);
 
-        if (window.location.hash === '#tab-settings') {
+        if (window.location.hash === '#tab-settings' && document.querySelector('[href="#tab-settings"]')) {
             bootstrap.Tab.getOrCreateInstance(document.querySelector('[href="#tab-settings"]')).show();
         }
 

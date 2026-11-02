@@ -62,11 +62,11 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <strong>{{ ext.name }}</strong> {{ ext.version }}<br>
+                                            <strong>{{ ext.name|trans }}</strong> {{ ext.version }}<br>
                                             <span>by <a href="{{ ext.author_url }}" target="_blank">{{ ext.author }}</a></span>
                                         </td>
                                         <td>
-                                            {{ ext.description }}<br>
+                                            {{ ext.description ? ext.description|trans }}<br>
                                             <a href="{{ ext.project_url }}" target="_blank" data-bs-toggle="tooltip" data-bs-title="{{ 'Project Details'|trans }}">{{ 'Learn more'|trans }}</a>
                                         </td>
                                         <td class="text-end">

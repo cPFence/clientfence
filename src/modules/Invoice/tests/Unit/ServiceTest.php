@@ -3267,6 +3267,46 @@ test('deletes invoice by admin', function (): void {
     expect($result)->toBeTrue();
 });
 
+// Track 6 F1: a deleted client's subscription broke the Subscriptions list for all staff.
+test('removing a client also removes the client\'s invoices and subscriptions', function (): void {
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 9;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $subscription = new Model_Subscription();
+    $subscription->loadBean(new Tests\Helpers\DummyBean());
+    $subscription->status = 'active';
+    $refused = new Model_Subscription();
+    $refused->loadBean(new Tests\Helpers\DummyBean());
+    $refused->status = 'active';
+    $canceled = new Model_Subscription();
+    $canceled->loadBean(new Tests\Helpers\DummyBean());
+    $canceled->status = 'canceled';
+
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('find')->with('Invoice', 'client_id = ?', [9])->andReturn([$invoice]);
+    $db->shouldReceive('find')->with('Subscription', 'client_id = ?', [9])->andReturn([$subscription, $refused, $canceled]);
+    // Active ones are cancelled at the gateway first; a refusal is logged and the row still goes.
+    $subscriptionService = Mockery::mock(ServiceSubscription::class);
+    $subscriptionService->shouldReceive('cancel')->once()->with($subscription);
+    $subscriptionService->shouldReceive('cancel')->once()->with($refused)->andThrow(new ClientFence\InformationException('Cancel it in PayPal'));
+    $subscriptionService->shouldReceive('cancel')->never()->with($canceled);
+    $subscriptionService->shouldReceive('delete')->times(3);
+    $di = container();
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn () => $subscriptionService);
+    $logger = Mockery::mock();
+    $logger->shouldReceive('warning')->once();
+    $di['logger'] = $logger;
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('rmInvoice')->once()->with($invoice);
+    $serviceMock->setDi($di);
+
+    $serviceMock->rmByClient($client);
+});
+
 test('renews an invoice', function (): void {
     $service = new Service();
     $newId = 2;

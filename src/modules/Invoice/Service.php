@@ -3163,6 +3163,19 @@ class Service implements InjectionAwareInterface
                 $this->rmInvoice($invoice);
             }
         }
+        // ClientFence core patch: the client's subscriptions go too (one left behind broke the Subscriptions list).
+        // They are cancelled at the gateway first, so it stops charging; a refusal is logged with the gateway id.
+        $subscriptionService = $this->di['mod_service']('Invoice', 'Subscription');
+        foreach ($this->di['db']->find('Subscription', 'client_id = ?', [$client->id]) as $subscription) {
+            if ($subscription->status !== 'canceled') {
+                try {
+                    $subscriptionService->cancel($subscription);
+                } catch (\Exception $e) {
+                    $this->di['logger']->warning(sprintf('Client #%s removed: cancel subscription %s (%s) at the gateway by hand. %s', $client->id, $subscription->sid, $subscription->gateway_id, $e->getMessage()));
+                }
+            }
+            $subscriptionService->delete($subscription);
+        }
     }
 
     public function isInvoiceTypeDeposit(\Model_Invoice $invoice): bool

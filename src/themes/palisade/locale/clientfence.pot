@@ -770,6 +770,10 @@ msgstr ""
 msgid "A service, subscription, license, plan or anything else you bill for. Hosting, domains and other special products can be added later in Products."
 msgstr ""
 
+#: src/modules/Embed/manifest.json
+msgid "A sign-in form, domain checker and contact form to show on your other websites."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
 msgid "A system issue affects every client with an active or suspended service."
 msgstr ""
@@ -788,6 +792,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "A4"
+msgstr ""
+
+#: src/modules/Api/manifest.json
+msgid "API"
 msgstr ""
 
 #: src/library/Server/Manager/CWP.php src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig …
@@ -812,6 +820,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig
 msgid "API Key Details"
+msgstr ""
+
+#: src/modules/Serviceapikey/manifest.json
+msgid "API Key Product"
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
@@ -1114,7 +1126,7 @@ msgstr ""
 msgid "Active:"
 msgstr ""
 
-#: src/modules/Activity/Controller/Admin.php
+#: src/modules/Activity/Controller/Admin.php src/modules/Activity/manifest.json
 msgid "Activity"
 msgstr ""
 
@@ -1444,6 +1456,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
 msgid "Addresses or domains (@example.com), one per line."
+msgstr ""
+
+#: src/modules/Formbuilder/manifest.json
+msgid "Adds ability to create custom forms to be used anywhere"
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
@@ -2402,6 +2418,14 @@ msgstr ""
 msgid "Announcements"
 msgstr ""
 
+#: src/modules/News/manifest.json
+msgid "Announcements for clients at /news and on their dashboard, with drafts, publish and expiry dates and pinned posts."
+msgstr ""
+
+#: src/modules/Notification/manifest.json
+msgid "Announcements for staff, in their bell and on the dashboard"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Anonymize"
 msgstr ""
@@ -2428,6 +2452,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ratings.html.twig
 msgid "Answers"
+msgstr ""
+
+#: src/modules/Antispam/manifest.json
+msgid "Anti-Spam"
 msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
@@ -4130,7 +4158,7 @@ msgstr ""
 msgid "Click install to make the registrar available when creating or editing TLDs."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig …
+#: src/modules/Client/manifest.json src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig …
 msgid "Client"
 msgstr ""
 
@@ -4314,7 +4342,7 @@ msgstr ""
 msgid "ClientBalance gateway is not enabled"
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_update.html.twig
+#: src/modules/Clientfence/manifest.json src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "ClientFence"
 msgstr ""
 
@@ -4332,6 +4360,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "ClientFence Updates"
+msgstr ""
+
+#: src/modules/Api/manifest.json src/modules/Cart/manifest.json src/modules/Extension/manifest.json …
+msgid "ClientFence core module"
 msgstr ""
 
 #: src/modules/Extension/Service.php
@@ -4416,6 +4448,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "ClientFence will automatically detect your new plugin."
+msgstr ""
+
+#: src/modules/Clientfence/manifest.json
+msgid "ClientFence: admin area style, support dashboard for staff without statistics, help desk greetings, WHMCS-style suspension and termination, domain renewal reminders for staff, store gate (closed, custom group or public), store title, store preview link, payment method cards and system health."
 msgstr ""
 
 #: src/modules/Clientfence/Service.php
@@ -4766,6 +4802,22 @@ msgstr ""
 msgid "Configured"
 msgstr ""
 
+#: src/modules/System/manifest.json
+msgid "Configures global system behavior including localization, company details, caching and other settings."
+msgstr ""
+
+#: src/modules/Order/manifest.json
+msgid "Configures ordering behavior, fraud checks, order activation, and checkout-related preferences."
+msgstr ""
+
+#: src/modules/Email/manifest.json
+msgid "Configures outgoing mail delivery, email queue processing, and message logging for system notifications."
+msgstr ""
+
+#: src/modules/Cron/manifest.json
+msgid "Configures scheduled task execution and automation used for recurring system maintenance."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Confirm Cancellation"
 msgstr ""
@@ -4958,6 +5010,10 @@ msgstr ""
 msgid "Control who can register and whether clients may manage their own email addresses."
 msgstr ""
 
+#: src/modules/Invoice/manifest.json
+msgid "Controls invoice numbering, tax behavior, payment gateways, and billing document preferences."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Controls whether HTTPS or HTTP is used for API requests."
 msgstr ""
@@ -4986,7 +5042,7 @@ msgstr ""
 msgid "Converter"
 msgstr ""
 
-#: src/modules/Cookieconsent/Controller/Admin.php src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
+#: src/modules/Cookieconsent/Controller/Admin.php src/modules/Cookieconsent/manifest.json src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
 msgid "Cookie Consent"
 msgstr ""
 
@@ -5502,7 +5558,7 @@ msgstr ""
 msgid "Currently Uploaded File"
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Product/Service.php
 msgid "Custom"
 msgstr ""
 
@@ -5526,7 +5582,7 @@ msgstr ""
 msgid "Custom Forms"
 msgstr ""
 
-#: src/modules/Custompages/Controller/Admin.php src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
+#: src/modules/Custompages/Controller/Admin.php src/modules/Custompages/manifest.json src/modules/Custompages/templates/admin/mod_custompages_index.html.twig …
 msgid "Custom Pages"
 msgstr ""
 
@@ -5584,6 +5640,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Custom port. Use blank to use default. Used to connect to the API"
+msgstr ""
+
+#: src/modules/Servicecustom/manifest.json
+msgid "Custom product type"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -6134,7 +6194,7 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_order.html.twig …
+#: src/modules/Product/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig …
 msgid "Domain"
 msgstr ""
 
@@ -6330,6 +6390,10 @@ msgstr ""
 msgid "Domain price must be a non-negative number"
 msgstr ""
 
+#: src/modules/Servicedomain/manifest.json
+msgid "Domain product type"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_config.html.twig
 msgid "Domain products are configured from the shared domain management area, including TLD pricing, registrars, and nameservers."
 msgstr ""
@@ -6432,6 +6496,14 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Download the domain registrar file and place it in"
+msgstr ""
+
+#: src/modules/Product/Service.php
+msgid "Downloadable"
+msgstr ""
+
+#: src/modules/Servicedownloadable/manifest.json
+msgid "Downloadable product type"
 msgstr ""
 
 #: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_manage.html.twig
@@ -6862,7 +6934,7 @@ msgstr ""
 msgid "Embed Code"
 msgstr ""
 
-#: src/modules/Embed/templates/admin/mod_embed_index.html.twig
+#: src/modules/Embed/manifest.json src/modules/Embed/templates/admin/mod_embed_index.html.twig
 msgid "Embed Parts"
 msgstr ""
 
@@ -7362,6 +7434,10 @@ msgstr ""
 msgid "Event ID"
 msgstr ""
 
+#: src/modules/Hook/manifest.json
+msgid "Event hooks subsystem"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Every"
 msgstr ""
@@ -7638,7 +7714,7 @@ msgstr ""
 msgid "Extension type and ID are required"
 msgstr ""
 
-#: src/modules/Extension/Controller/Admin.php src/modules/Extension/templates/admin/mod_extension_index.html.twig src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
+#: src/modules/Extension/Controller/Admin.php src/modules/Extension/manifest.json src/modules/Extension/templates/admin/mod_extension_index.html.twig …
 msgid "Extensions"
 msgstr ""
 
@@ -8058,6 +8134,10 @@ msgstr ""
 msgid "Forgot your password?"
 msgstr ""
 
+#: src/modules/Formbuilder/manifest.json
+msgid "Form Builder"
+msgstr ""
+
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Form Fields"
 msgstr ""
@@ -8168,6 +8248,14 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "From :min to :max per top-up."
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "From :start until :end"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "From :start until disabled"
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -8734,6 +8822,10 @@ msgstr ""
 msgid "Host"
 msgstr ""
 
+#: src/modules/Product/Service.php
+msgid "Hosting"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_hp.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Hosting Management"
 msgstr ""
@@ -8816,6 +8908,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Service.php
 msgid "Hosting product is not configured completely. Configure server for hosting product."
+msgstr ""
+
+#: src/modules/Servicehosting/manifest.json
+msgid "Hosting product type"
 msgstr ""
 
 #: src/modules/Servicehosting/Api/Admin.php
@@ -9172,6 +9268,10 @@ msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
 msgid "Incorrect configuration of allowed IPs can lead to a complete lockout of the administrator panel. Only use when you have static addresses."
+msgstr ""
+
+#: src/modules/Index/manifest.json
+msgid "Index page module"
 msgstr ""
 
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
@@ -10206,7 +10306,7 @@ msgstr ""
 msgid "Licences"
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
+#: src/modules/Product/Service.php src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "License"
 msgstr ""
 
@@ -10248,6 +10348,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/Service.php
 msgid "License plugin does not have generate method"
+msgstr ""
+
+#: src/modules/Servicelicense/manifest.json
+msgid "License product"
 msgstr ""
 
 #: src/modules/Servicelicense/templates/client/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_servicelicense_manage.html.twig
@@ -11038,6 +11142,22 @@ msgstr ""
 msgid "Management"
 msgstr ""
 
+#: src/modules/Theme/manifest.json
+msgid "Manages active admin and client themes, theme presets, and appearance-related configuration."
+msgstr ""
+
+#: src/modules/Client/manifest.json
+msgid "Manages client accounts, profiles, authentication settings, and client-facing account preferences."
+msgstr ""
+
+#: src/modules/Currency/manifest.json
+msgid "Manages currencies, exchange rates, formatting, and default billing currency settings."
+msgstr ""
+
+#: src/modules/Staff/manifest.json
+msgid "Manages staff accounts, roles, permissions, authentication, and administrative access settings."
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
 msgid "Manual"
 msgstr ""
@@ -11092,6 +11212,10 @@ msgstr ""
 
 #: src/modules/Massmailer/Controller/Admin.php src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Mass Mail"
+msgstr ""
+
+#: src/modules/Massmailer/manifest.json
+msgid "Mass Mail Tool"
 msgstr ""
 
 #: src/modules/Massmailer/Service.php
@@ -11862,7 +11986,7 @@ msgstr ""
 msgid "Newly created email templates can be used in custom event hooks."
 msgstr ""
 
-#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig …
+#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/News/manifest.json src/modules/News/templates/admin/mod_news_index.html.twig …
 msgid "News"
 msgstr ""
 
@@ -12528,6 +12652,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid "Notification"
+msgstr ""
+
+#: src/modules/Notification/manifest.json
+msgid "Notification Center"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/layout_default.html.twig src/themes/palisade/html/layout_default.html.twig
@@ -13364,6 +13492,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "POST Parameters"
+msgstr ""
+
+#: src/modules/Page/manifest.json
+msgid "Page"
 msgstr ""
 
 #: src/index.php src/library/ClientFence/App.php src/library/ClientFence/AppClient.php …
@@ -14642,6 +14774,10 @@ msgstr ""
 msgid "Provider"
 msgstr ""
 
+#: src/modules/Support/manifest.json
+msgid "Provides support ticket departments, helpdesk settings, knowledge base controls, and client support tools."
+msgstr ""
+
 #: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig
 msgid "Publish date"
 msgstr ""
@@ -14972,6 +15108,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "Redemption History"
+msgstr ""
+
+#: src/modules/Redirect/manifest.json
+msgid "Redirect"
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -15842,7 +15982,7 @@ msgstr ""
 msgid "SEO Metadata"
 msgstr ""
 
-#: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
+#: src/modules/Seo/manifest.json src/modules/Seo/templates/admin/mod_seo_settings.html.twig
 msgid "SEO Tools"
 msgstr ""
 
@@ -16082,6 +16222,10 @@ msgstr ""
 msgid "Scheduled"
 msgstr ""
 
+#: src/modules/Cron/manifest.json
+msgid "Scheduled Tasks"
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Scheduled for %time%."
 msgstr ""
@@ -16118,7 +16262,7 @@ msgstr ""
 msgid "Search email accounts"
 msgstr ""
 
-#: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
+#: src/modules/Seo/manifest.json src/modules/Seo/templates/admin/mod_seo_settings.html.twig
 msgid "Search engine verification and IndexNow submission."
 msgstr ""
 
@@ -16146,7 +16290,7 @@ msgstr ""
 msgid "Section"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Security/Controller/Admin.php src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Security/Controller/Admin.php src/modules/Security/manifest.json …
 msgid "Security"
 msgstr ""
 
@@ -16296,6 +16440,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Selecting this will force the item to be removed from the database even if errors occur."
+msgstr ""
+
+#: src/modules/Serviceapikey/manifest.json
+msgid "Sell API keys: each order gets a key that your application can check, with allowed IPs and usage."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig src/modules/Support/templates/client/mod_support_contact_us.html.twig
@@ -16448,6 +16596,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Sending…"
+msgstr ""
+
+#: src/modules/Redirect/manifest.json
+msgid "Sends visitors from old client-area paths to new pages or other sites, with a permanent (301) or temporary (302) redirect."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_details.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig …
@@ -16762,6 +16914,10 @@ msgstr ""
 msgid "Setup:"
 msgstr ""
 
+#: src/modules/Cart/manifest.json
+msgid "Shopping cart"
+msgstr ""
+
 #: src/modules/Cart/Api/Admin.php
 msgid "Shopping cart not found"
 msgstr ""
@@ -16954,6 +17110,10 @@ msgstr ""
 msgid "Shown on invoices, emails and the client area."
 msgstr ""
 
+#: src/modules/Cookieconsent/manifest.json
+msgid "Shows a cookie notice with an Accept button to visitors of the client area."
+msgstr ""
+
 #: src/themes/palisade/config/settings.html.twig
 msgid "Sidebar"
 msgstr ""
@@ -17130,7 +17290,7 @@ msgstr ""
 msgid "Square icon"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Staff/templates/admin/mod_staff_group.html.twig …
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Staff/manifest.json …
 msgid "Staff"
 msgstr ""
 
@@ -17306,7 +17466,7 @@ msgstr ""
 msgid "Statement period"
 msgstr ""
 
-#: src/themes/admin_default/html/mod_index_dashboard.html.twig
+#: src/modules/Stats/manifest.json src/themes/admin_default/html/mod_index_dashboard.html.twig
 msgid "Statistics"
 msgstr ""
 
@@ -19087,7 +19247,7 @@ msgstr ""
 msgid "The wording of the emails clients get."
 msgstr ""
 
-#: src/modules/Embed/templates/admin/mod_embed_index.html.twig
+#: src/modules/Embed/templates/admin/mod_embed_index.html.twig src/modules/Theme/manifest.json
 msgid "Theme"
 msgstr ""
 
@@ -20057,6 +20217,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Track the client’s support tickets and open a new ticket without leaving the client profile."
+msgstr ""
+
+#: src/modules/Activity/manifest.json
+msgid "Tracks and displays system activity logs for staff, clients, orders, invoices, and other administrative events."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
@@ -21127,6 +21291,10 @@ msgstr ""
 msgid "Used to display dates and times in your local time across tickets, invoices, and the admin dashboard."
 msgstr ""
 
+#: src/modules/Antispam/manifest.json
+msgid "Used to prevent spam using reCAPTCHA, StopForumSpam.com, disposable email domain blocking, honeypot fields, and IP blocking."
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Used when browser language detection is disabled or no suitable browser language match is found."
 msgstr ""
@@ -21839,7 +22007,11 @@ msgstr ""
 msgid "Widget cache rebuilt successfully"
 msgstr ""
 
-#: src/modules/Widgets/Controller/Admin.php src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
+#: src/modules/Widgets/manifest.json
+msgid "Widget system for ClientFence. Allows modules to register widgets that can be rendered in designated slots."
+msgstr ""
+
+#: src/modules/Widgets/Controller/Admin.php src/modules/Widgets/manifest.json src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
 msgid "Widgets"
 msgstr ""
 
@@ -21879,8 +22051,16 @@ msgstr ""
 msgid "Write"
 msgstr ""
 
+#: src/modules/Massmailer/manifest.json
+msgid "Write an email, pick which clients get it, and send it now or at a set time, with a delivery report."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig
 msgid "Write an email, pick which clients get it, and send it now or at a set time."
+msgstr ""
+
+#: src/modules/Custompages/manifest.json
+msgid "Write pages for the client area, as drafts or published, with menu and footer links and who may see them."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
@@ -22773,6 +22953,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "no unpaid invoices"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "now"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig

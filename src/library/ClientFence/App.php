@@ -208,11 +208,23 @@ class App
         } catch (\ClientFence\InformationException $e) {
             // ClientFence core patch: a page's "not found" (a wrong KB article, someone else's ticket) is the
             // theme's 404 page with the site's menus, not the last-resort error page.
+            if ($e->getCode() === 403) {
+                return $this->errorResponse($e, 403);
+            }
             if ($e->getCode() !== 404) {
                 throw $e;
             }
 
             return $this->show404($e);
+        } catch (\Twig\Error\RuntimeError $e) {
+            // ClientFence core patch: a page whose template asks for data the staff member may not read shows the
+            // 403 page (Twig wraps the permission refusal; it was a 500).
+            $refused = $e->getPrevious();
+            if ($refused instanceof \ClientFence\InformationException && $refused->getCode() === 403) {
+                return $this->errorResponse($refused, 403);
+            }
+
+            throw $e;
         }
     }
 

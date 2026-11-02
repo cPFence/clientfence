@@ -25,6 +25,7 @@ Files:
 Translations are written by people (or the project's own agents), never by a translation
 service. Needs Python 3 and GNU gettext (msgcat, msgfmt).
 """
+import glob
 import json
 import os
 import re
@@ -217,6 +218,13 @@ def extract(destination=TEMPLATE):
                     continue
                 key = (msgid, plural)
                 found.setdefault(key, set()).add(rel)
+    # Module names and descriptions (manifest.json) show translated on System > Settings, Extensions and the settings search.
+    for manifest in sorted(glob.glob(os.path.join(SRC, 'modules', '*', 'manifest.json'))):
+        with open(manifest, encoding='utf-8') as f:
+            data = json.load(f)
+        for field in ('name', 'description'):
+            if isinstance(data.get(field), str) and data[field].strip():
+                found.setdefault((data[field], None), set()).add(os.path.relpath(manifest, ROOT))
     entries = []
     for (msgid, plural), files in sorted(found.items(), key=lambda kv: kv[0][0]):
         refs = sorted(files)

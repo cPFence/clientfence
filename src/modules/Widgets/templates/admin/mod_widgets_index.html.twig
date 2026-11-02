@@ -119,7 +119,7 @@
                                         {% for widget in slot.widgets %}
                                             <div class="d-flex align-items-center gap-2">
                                                 <span class="badge bg-secondary text-white" data-bs-toggle="tooltip" data-bs-title="{{ 'Priority'|trans }}">{{ widget.priority }}</span>
-                                                <span class="fw-medium">{{ widget.module|capitalize }}</span>
+                                                <span class="fw-medium">{{ widget.module|capitalize|trans }}</span>
                                                 <span class="text-secondary">&rarr;</span>
                                                 <code class="text-secondary small">widgets/{{ widget.template }}.html.twig</code>
                                             </div>
