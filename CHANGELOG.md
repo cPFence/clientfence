@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.0.21 (2026-11-02)
+
+### Added
+
+- Invoices: part payments stay on their invoice, which shows the amount paid and the balance due; Stripe and PayPal charge only the balance due.
+- Invoices: staff and clients can apply credit to an invoice, in full or in part; staff can remove it.
+- Refunds: part of a paid invoice can be refunded, and a refund can go to the client's credit.
+- Cancellation requests: clients choose Immediate or End of billing period; staff accept or deny the request on the ticket, and the ticket list filters pending requests. A new Orders setting processes requests automatically by the cron.
+- Hosting products: a new Free Domain Renewals setting renews a free domain at 0.00 while its hosting is active or suspended.
+- Tax: a new "Prices include tax" setting: catalog prices are what the client pays, invoices show the net price and the tax in it, and a client exempt from tax pays the net price.
+- Orders: staff can move a service to another product (Change Product), with the price recalculated and Change Package for hosting.
+
+### Changed
+
+- Invoices: Mark as Paid records only what is still due after payments and applied credit.
+- Cancellation at the end of the period: staff can schedule it for any service billed by period, also without a gateway subscription.
+- WHMCS import: free domain renewals and Inclusive Tax are kept as settings.
+- Invoice emails: the amount due is the balance due (reset the invoice email templates to the default to use it).
+
 ## 1.0.20 (2026-11-01)
 
 ### Changed
