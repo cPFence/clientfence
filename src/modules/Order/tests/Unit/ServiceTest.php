@@ -1153,7 +1153,7 @@ test('getSoonExpiringActiveOrders executes query', function (): void {
     $serviceMock->getSoonExpiringActiveOrders();
 });
 
-test('getSoonExpiringActiveOrdersQuery excludes orders with scheduled cancellations', function (): void {
+test('getSoonExpiringActiveOrdersQuery excludes orders with scheduled cancellations or a waiting cancellation request', function (): void {
     $randId = 1;
 
     $systemService = Mockery::mock(ClientFence\Mod\System\Service::class);
@@ -1186,6 +1186,13 @@ test('getSoonExpiringActiveOrdersQuery excludes orders with scheduled cancellati
                     AND cancellation_meta.name = :cancellation_meta_name
                     AND cancellation_meta.value = :cancellation_meta_value
                 )
+                /* ClientFence core patch: as WHMCS, no renewal invoice while a cancellation request waits (Order\\CancelRequests). */
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM client_order_cancel_request cancel_request
+                    WHERE cancel_request.client_order_id = co.id
+                    AND cancel_request.status = :cancel_request_status
+                )
                 /* Pair non-executed renewal items with paid invoices to skip renewals already queued for activation. */
                 AND NOT EXISTS (
                     SELECT 1
@@ -1207,6 +1214,7 @@ test('getSoonExpiringActiveOrdersQuery excludes orders with scheduled cancellati
         'unpaid_invoice_status' => Model_Invoice::STATUS_UNPAID,
         'cancellation_meta_name' => Service::META_CANCEL_AT_PERIOD_END,
         'cancellation_meta_value' => '1',
+        'cancel_request_status' => ClientFence\Mod\Order\CancelRequests::STATUS_PENDING,
         'pending_item_type' => Model_InvoiceItem::TYPE_ORDER,
         'pending_item_task' => Model_InvoiceItem::TASK_RENEW,
         'pending_item_status' => Model_InvoiceItem::STATUS_EXECUTED,

@@ -18716,3 +18716,73 @@ msgstr "قیمت‌ها شامل مالیات هستند"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "قیمت محصولات، دامنه‌ها و گزینه‌ها همان قیمتی است که مشتری می‌پردازد: فاکتورها قیمت خالص آن‌ها و مالیات موجود در آن را نشان می‌دهند. مشتری معاف از مالیات قیمت خالص را می‌پردازد. ردیف‌هایی که کارکنان به‌صورت دستی روی فاکتور وارد می‌کنند، همان‌طور که وارد شده‌اند (خالص) باقی می‌مانند."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "به‌صورت خودکار: روزی یک بار، کار cron روزانه سرویسی را که درخواست «فوری» دارد لغو می‌کند و سرویسی را که درخواست «پایان دوره صورتحساب» دارد برای لغو در پایان دوره پرداخت‌شده‌اش زمان‌بندی می‌کند. تا آن زمان مشتری می‌تواند درخواست را پس بگیرد و کارکنان می‌توانند آن را متوقف کنند."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "درخواست لغو برای سفارش #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "هیچ درخواست لغوی در انتظار نیست."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "فقط سرویس فعال را می‌توان لغو کرد."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "لطفاً بگویید چرا می‌خواهید لغو کنید."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "سرویس‌هایی که مشتریان درخواست لغو آن‌ها را داده‌اند. درخواست را بپذیرید تا سرویس همین حالا یا در پایان دوره صورتحساب، طبق انتخاب مشتری، لغو شود، یا آن را متوقف کنید."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "توقف"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "درخواست لغو متوقف شود؟"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "مشتری درخواست لغو این سرویس را داده است"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "سرویس لغو نشده است. در صورت نیاز به مشتری اطلاع دهید."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "سرویس فعال می‌ماند."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "این درخواست لغو دیگر در انتظار نیست."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "این سرویس درخواست لغو در انتظاری ندارد."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "پس گرفتن درخواست"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "درخواست لغو پس گرفته شود؟"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "شما در %date% درخواست کردید این سرویس در پایان دوره صورتحساب لغو شود. تا زمان پردازش می‌توانید درخواست را پس بگیرید."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "شما در %date% درخواست کردید این سرویس بلافاصله لغو شود. تا زمان پردازش می‌توانید درخواست را پس بگیرید."

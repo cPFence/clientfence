@@ -19195,3 +19195,73 @@ msgstr "Az árak tartalmazzák az adót"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "A termékek, domain nevek és opciók árai azok az árak, amelyeket az ügyfél fizet: a számlák a nettó árukat és a bennük foglalt adót mutatják. Az adómentes ügyfél a nettó árat fizeti. Azok a tételek, amelyeket a munkatársak kézzel gépelnek a számlára, úgy maradnak, ahogy beírták őket (nettó)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "Automatikusan: naponta egyszer a napi cron feladat lemond egy Azonnal kérelmű szolgáltatást, és a Számlázási időszak vége kérelmű szolgáltatást a kifizetett időszak végére ütemezi lemondásra. Addig az ügyfél visszavonhatja a kérelmet, a munkatársak pedig leállíthatják."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "Lemondás kérve a(z) #:id megrendeléshez: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "Nincs várakozó lemondási kérelem."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "Csak aktív szolgáltatás mondható le."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "Kérjük, írja meg, miért szeretne lemondani."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "Szolgáltatások, amelyek lemondását az ügyfelek kérték. Fogadja el a kérelmet, hogy a szolgáltatás az ügyfél választása szerint azonnal vagy a számlázási időszak végén megszűnjön, vagy állítsa le."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "Leállítás"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "Leállítja a lemondási kérelmet?"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "Az ügyfél lemondást kért erre a szolgáltatásra"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "A szolgáltatás nincs lemondva. Szükség esetén értesítse az ügyfelet."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "A szolgáltatás aktív marad."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "Ez a lemondási kérelem már nem várakozik."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "Ennek a szolgáltatásnak nincs várakozó lemondási kérelme."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "Kérelem visszavonása"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "Visszavonja a lemondási kérelmet?"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "Ön %date% napján kérte e szolgáltatás lemondását a számlázási időszak végére. A kérelmet a feldolgozásig visszavonhatja."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "Ön %date% napján kérte e szolgáltatás azonnali lemondását. A kérelmet a feldolgozásig visszavonhatja."

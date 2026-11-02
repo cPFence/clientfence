@@ -18718,3 +18718,73 @@ msgstr "价格含税"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "产品、域名和选项的价格就是客户支付的价格：发票会显示其净价以及其中包含的税款。免税客户支付净价。工作人员在发票上手动输入的行保持原样（净额）。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "自动处理：每天一次，每日 cron 任务会取消请求为“立即”的服务，并将请求为“计费周期结束时”的服务安排在其已付费周期结束时取消。在此之前，客户可以撤回请求，员工也可以停止请求。"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "已请求取消订单 #:id：:title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "没有等待处理的取消请求。"
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "只能取消处于活动状态的服务。"
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "请告诉我们您为什么要取消。"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "客户已请求取消的服务。接受请求即可按客户的选择立即取消服务，或在计费周期结束时取消，也可以停止该请求。"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "停止"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "停止该取消请求？"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "客户请求取消此服务"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "服务未被取消。如有需要，请通知客户。"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "服务保持活动状态。"
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "此取消请求已不再等待处理。"
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "此服务没有等待处理的取消请求。"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "撤回请求"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "撤回该取消请求？"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "您已于 %date% 请求在计费周期结束时取消此服务。在请求处理之前，您可以撤回。"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "您已于 %date% 请求立即取消此服务。在请求处理之前，您可以撤回。"

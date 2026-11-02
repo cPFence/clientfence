@@ -671,6 +671,42 @@ class Admin extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    /** ClientFence: the waiting cancellation requests (Orders > Cancellation Requests, Order\CancelRequests). */
+    public function cancel_request_list($data): array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\CancelRequests::pendingList($this->getDi());
+    }
+
+    /** ClientFence: the waiting cancellation request of an order, or null. */
+    public function cancel_request_get($data): ?array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\CancelRequests::pending($this->getDi(), (int) $this->_getOrder($data)->getId());
+    }
+
+    /** ClientFence: accepts a cancellation request: the service is cancelled now or at the end of its period. */
+    #[RequiredParams(['id' => 'Request ID was not passed'])]
+    public function cancel_request_accept($data): bool
+    {
+        $this->checkPermissions('order', 'manage');
+        \ClientFence\Mod\Order\CancelRequests::accept($this->getDi(), (int) $data['id']);
+
+        return true;
+    }
+
+    /** ClientFence: stops a cancellation request; the service is not cancelled. */
+    #[RequiredParams(['id' => 'Request ID was not passed'])]
+    public function cancel_request_stop($data): bool
+    {
+        $this->checkPermissions('order', 'manage');
+        \ClientFence\Mod\Order\CancelRequests::stop($this->getDi(), (int) $data['id']);
+
+        return true;
+    }
+
     /**
      * ClientFence: what Orders > Bulk price update offers (Order\BulkPrices): products, billing
      * periods in use, statuses and currencies.

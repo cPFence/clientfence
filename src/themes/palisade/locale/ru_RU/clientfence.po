@@ -16972,3 +16972,73 @@ msgstr "Цены включают налог"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "Цены продуктов, доменов и настроек — это цены, которые платит клиент: в счетах показываются их цена нетто и налог, входящий в неё. Клиент, освобождённый от налога, платит цену нетто. Строки, которые сотрудники вводят в счёт вручную, остаются такими, как введены (нетто)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "Автоматически: раз в сутки ежедневное задание cron отменяет услугу с запросом «Немедленно» и планирует отмену услуги с запросом «Конец расчётного периода» в конце её оплаченного периода. До этого клиент может отозвать запрос, а сотрудники могут его остановить."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "Запрошена отмена заказа #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "Нет ожидающих запросов на отмену."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "Отменить можно только активную услугу."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "Пожалуйста, расскажите, почему вы хотите отменить."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "Услуги, которые клиенты просят отменить. Примите запрос, чтобы отменить услугу сейчас или в конце расчётного периода, как выбрал клиент, либо остановите его."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "Остановить"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "Остановить запрос на отмену?"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "Клиент попросил отменить эту услугу"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "Услуга не отменена. При необходимости сообщите клиенту."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "Услуга остаётся активной."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "Этот запрос на отмену больше не ожидает."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "У этой услуги нет ожидающего запроса на отмену."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "Отозвать запрос"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "Отозвать запрос на отмену?"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "%date% вы попросили отменить эту услугу в конце расчётного периода. Вы можете отозвать запрос, пока он не обработан."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "%date% вы попросили немедленно отменить эту услугу. Вы можете отозвать запрос, пока он не обработан."

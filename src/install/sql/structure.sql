@@ -1620,6 +1620,12 @@ CREATE TABLE `client_google_password` (`client_id` bigint(20) unsigned NOT NULL,
 CREATE TABLE `client_order_action_failure` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `client_order_id` bigint(20) NOT NULL, `action` varchar(20) NOT NULL, `message` text NOT NULL, `attempts` int(10) unsigned NOT NULL DEFAULT 1, `status` varchar(20) NOT NULL DEFAULT 'open', `first_failed_at` datetime NOT NULL, `last_failed_at` datetime NOT NULL, `resolved_at` datetime DEFAULT NULL, `resolved_by` bigint(20) DEFAULT NULL, PRIMARY KEY (`id`), KEY `status` (`status`, `last_failed_at`), KEY `order_action` (`client_order_id`, `action`, `status`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Table structure for table `client_order_cancel_request` (ClientFence)
+--
+
+CREATE TABLE `client_order_cancel_request` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_order_id` bigint(20) NOT NULL, `client_id` bigint(20) NOT NULL, `type` varchar(20) NOT NULL, `reason` text NOT NULL, `status` varchar(20) NOT NULL DEFAULT 'pending', `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `client_order_cancel_request_order_idx` (`client_order_id`, `status`), KEY `client_order_cancel_request_status_idx` (`status`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
 -- Table structure for table `support_helpdesk_mail` (ClientFence)
 --
 

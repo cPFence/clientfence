@@ -99,7 +99,7 @@
                         <label class="form-label" for="suspend_reason_list">{{ 'Suspension Reasons'|trans }}</label>
                         <textarea class="form-control" id="suspend_reason_list" name="suspend_reason_list" rows="3">{{ params.suspend_reason_list|default('') }}</textarea>
                     </div>
-                    {# ClientFence core patch: cancellation requests accepted by the cron (Support/CancelRequests.php). #}
+                    {# ClientFence core patch: cancellation requests accepted by the daily cron (Order/CancelRequests.php). #}
                     <div class="col-lg-4">
                         <label class="form-label" for="cancel_requests_auto">{{ 'Cancellation Requests'|trans }}</label>
                         <select class="form-select" id="cancel_requests_auto" name="cancel_requests_auto">
@@ -108,7 +108,7 @@
                         </select>
                     </div>
                     <div class="col-lg-8 d-flex align-items-end">
-                        <small class="form-hint">{{ 'Automatically: at its next run, the cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period.'|trans }}</small>
+                        <small class="form-hint">{{ 'Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it.'|trans }}</small>
                     </div>
                 </div>
             </div>

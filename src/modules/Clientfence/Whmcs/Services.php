@@ -21,7 +21,8 @@ use Doctrine\DBAL\Connection;
  * Statuses: Active and Completed are active (Completed, and every one-time or free service, never
  * renews), Suspended suspended, Pending pending setup; every ended service (Terminated, Cancelled,
  * Fraud, an expired or transferred domain) is a canceled order, kept for its history (owner
- * decision 2026-10-19). An end-of-period cancellation request stops the renewal invoices.
+ * decision 2026-10-19). A cancellation request of an active or suspended service waits in Orders >
+ * Cancellation Requests with its type, reason and date (Order\CancelRequests).
  *
  * Configurable options chosen on a service fill its order config (`options`, `option_lines`) as
  * checkout would; the order's price stays what WHMCS billed.
@@ -675,9 +676,12 @@ final class Services
             }
         }
         if ($request !== null && in_array($status, ['active', 'suspended'], true)) {
-            $this->meta($orderId, \ClientFence\Mod\Order\Service::META_CANCEL_AT_PERIOD_END, '1');
-            $this->db->update('client_order', ['reason' => self::cut($request['reason'] === '' ? 'Cancellation requested in WHMCS' : $request['reason'], 255)], ['id' => $orderId]);
-            $this->warn(sprintf('%s has a cancellation request (%s): it gets no renewal invoice; cancel it when it ends.', $name, $request['type'] ?: 'no type'));
+            \ClientFence\Mod\Order\CancelRequests::insert(
+                $this->db, $orderId, (int) $values['client_id'],
+                strcasecmp($request['type'], 'Immediate') === 0 ? \ClientFence\Mod\Order\CancelRequests::IMMEDIATE : \ClientFence\Mod\Order\CancelRequests::END_OF_PERIOD,
+                $request['reason'] === '' ? 'Cancellation requested in WHMCS' : $request['reason'], $request['date'] ?? $this->now,
+            );
+            $this->warn(sprintf('%s has a cancellation request (%s): it waits in Orders > Cancellation Requests.', $name, $request['type'] ?: 'no type'));
         }
         if ($status !== 'canceled' && ((string) ($row['overideautosuspend'] ?? '') === 'on' || (int) ($row['overideautosuspend'] ?? 0) === 1)) {
             $until = Accounts::date($row['overidesuspenduntil'] ?? null);
@@ -692,18 +696,18 @@ final class Services
     }
 
     /**
-     * A service's newest cancellation request (tblcancelrequests holds services only): [type, reason].
+     * A service's newest cancellation request (tblcancelrequests holds services only): [type, reason, date].
      *
-     * @return array{type: string, reason: string}|null
+     * @return array{type: string, reason: string, date: ?string}|null
      */
     private function cancelRequest(int $serviceId): ?array
     {
         if ($serviceId <= 0 || !$this->source->hasTable('tblcancelrequests')) {
             return null;
         }
-        $row = $this->source->rows('SELECT type, reason FROM tblcancelrequests WHERE relid = ? ORDER BY id DESC LIMIT 1', [$serviceId])[0] ?? null;
+        $row = $this->source->rows('SELECT type, reason, date FROM tblcancelrequests WHERE relid = ? ORDER BY id DESC LIMIT 1', [$serviceId])[0] ?? null;
 
-        return $row === null ? null : ['type' => trim((string) $row['type']), 'reason' => trim((string) $row['reason'])];
+        return $row === null ? null : ['type' => trim((string) $row['type']), 'reason' => trim((string) $row['reason']), 'date' => Accounts::date($row['date'] ?? null)];
     }
 
     private function meta(int $orderId, string $name, string $value): void

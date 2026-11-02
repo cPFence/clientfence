@@ -3788,28 +3788,20 @@
         "done": "ClientFence core patch: the transaction records the first charge, so an unpaid first charge records"
     },
     {
-        "file": "modules/Support/Service.php",
-        "done": "ClientFence core patch: a cancellation request says when the service ends (CancelRequests)."
-    },
-    {
         "file": "modules/Support/Repository/SupportTicketRepository.php",
         "done": "ClientFence core patch: tickets with a pending task (cancellation or upgrade request)."
     },
     {
-        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
-        "done": "ClientFence core patch: when a cancellation request ends the service (Support/CancelRequests.php)."
-    },
-    {
         "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
-        "done": "ClientFence core patch: tickets with a pending request (Support/CancelRequests.php)."
+        "done": "ClientFence core patch: tickets with a pending request (a cancellation or upgrade task)."
     },
     {
         "file": "modules/Order/templates/admin/mod_order_settings.html.twig",
-        "done": "ClientFence core patch: cancellation requests accepted by the cron (Support/CancelRequests.php)."
+        "done": "ClientFence core patch: cancellation requests accepted by the daily cron (Order/CancelRequests.php)."
     },
     {
         "file": "themes/palisade/html/mod_order_manage.html.twig",
-        "done": "ClientFence core patch: when the service ends, as WHMCS (Support/CancelRequests.php)."
+        "done": "ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\\CancelRequests); the client can withdraw one while it waits."
     },
     {
         "file": "modules/Invoice/Service.php",
@@ -3858,5 +3850,29 @@
     {
         "file": "themes/palisade/html/mod_cart_index.html.twig",
         "done": "ClientFence core patch: prices that include tax are what the invoice asks for (less the tax for an exempt client)."
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\\CancelRequests)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_index.html.twig",
+        "done": "ClientFence core patch: cancellation requests in their own tab, as WHMCS (Order\\CancelRequests)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the order's waiting cancellation request."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\\CancelRequests)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: as WHMCS, no renewal invoice while a cancellation request waits (Order\\CancelRequests)."
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\\CancelRequests); the client can withdraw one while it waits."
     }
 ]

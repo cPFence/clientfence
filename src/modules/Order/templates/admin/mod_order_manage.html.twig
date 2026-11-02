@@ -35,6 +35,8 @@
 {% block content %}
 {# ClientFence core patch: the order's open failed actions. #}
 {{ include('mod_order_failed_notice.html.twig') }}
+{# ClientFence core patch: the order's waiting cancellation request. #}
+{{ include('mod_order_cancel_request_notice.html.twig') }}
 {% embed 'partial_admin_detail_tabs.html.twig' with {
     title: order.title,
     subtitle: 'Review order details, manage billing configuration, and inspect related service activity.'|trans

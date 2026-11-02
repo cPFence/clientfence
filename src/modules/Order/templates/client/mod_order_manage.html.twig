@@ -15,6 +15,8 @@
 
 {% set service_partial = "mod_service" ~ order.service_type ~ "_manage.html.twig" %}
 {% set upgradables = client.order_upgradables({ 'id': order.id }) %}
+{# ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\CancelRequests); the client can withdraw one while it waits. #}
+{% set cancel_request = order.status == 'active' ? client.order_cancel_request_get({ 'id': order.id }) : null %}
 
 {% block head %}
     {{ wysiwyg('.editor-textarea') }}
@@ -120,7 +122,14 @@
                         <button class="btn btn-success btn-sm" type="button" id="request-upgrade" data-bs-toggle="modal" data-bs-target="#upgrade-request-modal">{{ 'Request Upgrade'|trans }}</button>
                     {% endif %}
                     <button class="btn btn-info btn-sm" type="button" id="open-ticket" data-bs-toggle="modal" data-bs-target="#open-ticket-modal">{{ 'Open Ticket'|trans }}</button>
-                    {% if order.status == 'active' %}
+                    {% if cancel_request %}
+                        <div class="alert alert-warning mt-2 mb-0" role="status">
+                            {{ cancel_request.type == 'end_of_period'
+                                ? 'You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed.'|trans({ '%date%': cancel_request.created_at|format_date })
+                                : 'You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed.'|trans({ '%date%': cancel_request.created_at|format_date }) }}
+                            <a class="btn btn-outline-secondary btn-sm ms-2" {{ fb_api_link({href: 'order/cancel_request_withdraw'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Withdraw the cancellation request?'|trans, content: 'The service stays active.'|trans}, reload: true}) }}>{{ 'Withdraw Request'|trans }}</a>
+                        </div>
+                    {% elseif order.status == 'active' %}
                         <button class="btn btn-danger btn-sm" type="button" id="request-cancel" data-bs-toggle="modal" data-bs-target="#cancel-request-modal">{{ 'Request Cancellation'|trans }}</button>
                     {% endif %}
                     {{ render_widgets('client.order.manage.actions.end', { 'order': order }) }}
@@ -193,20 +202,18 @@
                         </div>
                         <form action="" method="post" id="cancel-request-form" class="request-cancellation">
                             <div class="modal-body">
-                                <input type="hidden" name="rel_type" value="order">
-                                <input type="hidden" name="rel_id" value="{{ order.id }}">
-                                <input type="hidden" name="rel_task" value="cancel">
+                                {# ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\CancelRequests). #}
+                                <input type="hidden" name="id" value="{{ order.id }}">
                                 <div class="mb-3">
-                                    <label for="support-helpdesk-id" class="form-label">{{ 'Help Desk'|trans }}</label>
-                                    {{ mf.selectbox('support_helpdesk_id', client.support_helpdesk_get_pairs, request.support_helpdesk_id, 1) }}
+                                    <label for="cancel-type" class="form-label">{{ 'Cancellation Type'|trans }}</label>
+                                    <select class="form-select" id="cancel-type" name="type">
+                                        <option value="immediate">{{ 'Immediate'|trans }}</option>
+                                        {% if order.expires_at %}<option value="end_of_period">{{ 'End of billing period'|trans }} ({{ order.expires_at|format_date }})</option>{% endif %}
+                                    </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="subject" class="form-label">{{ 'Subject'|trans }}</label>
-                                    <input class="form-control" type="text" name="subject" id="subject" value="{{ request.subject|e }}" required/>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="content" class="form-label">{{ 'Reason'|trans }}</label>
-                                    <textarea class="form-control" id="content" name="content" rows="5" required>{{ request.content|e }}</textarea>
+                                    <label for="cancel-reason" class="form-label">{{ 'Reason'|trans }}</label>
+                                    <textarea class="form-control" id="cancel-reason" name="reason" rows="5" maxlength="2000" required></textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -300,7 +307,7 @@
             cancelRequestForm.addEventListener('submit', function(event) {
                 event.preventDefault();
 
-                ClientFence.api.client.post('support/ticket_create', ClientFence.tools.serializeFormDataToObject(new FormData(cancelRequestForm)),
+                ClientFence.api.client.post('order/cancel_request', ClientFence.tools.serializeFormDataToObject(new FormData(cancelRequestForm)),
                     () => {
                         ClientFence.message('Service cancellation request received');
                         const cancelRequestModal = bootstrap.Modal.getInstance(document.getElementById('cancel-request-modal'))

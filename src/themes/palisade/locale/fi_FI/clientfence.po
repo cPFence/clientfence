@@ -19646,3 +19646,73 @@ msgstr "Hinnat sisältävät veron"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "Tuotteiden, verkkotunnusten ja valintojen hinnat ovat hintoja, jotka asiakas maksaa: laskuissa näkyvät niiden nettohinta ja siihen sisältyvä vero. Verosta vapautettu asiakas maksaa nettohinnan. Rivit, jotka henkilökunta kirjoittaa laskuun käsin, pysyvät sellaisina kuin ne kirjoitettiin (netto)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "Automaattisesti: kerran päivässä päivittäinen cron-ajo peruuttaa palvelun, jonka pyyntö on Heti, ja ajoittaa palvelun, jonka pyyntö on Laskutusjakson lopussa, peruutettavaksi maksetun jakson päättyessä. Siihen asti asiakas voi peruuttaa pyyntönsä ja henkilökunta voi pysäyttää sen."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "Peruutusta pyydetty tilaukselle #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "Peruutuspyyntöjä ei odota käsittelyä."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "Vain aktiivisen palvelun voi peruuttaa."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "Kerro meille, miksi haluat peruuttaa."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "Palvelut, joiden peruuttamista asiakkaat ovat pyytäneet. Hyväksy pyyntö peruuttaaksesi palvelun heti tai laskutusjakson lopussa asiakkaan valinnan mukaan, tai pysäytä se."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "Pysäytä"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "Pysäytetäänkö peruutuspyyntö?"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "Asiakas pyysi tämän palvelun peruuttamista"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "Palvelua ei ole peruutettu. Kerro asiakkaalle tarvittaessa."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "Palvelu pysyy aktiivisena."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "Tämä peruutuspyyntö ei ole enää odottamassa."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "Tällä palvelulla ei ole odottavaa peruutuspyyntöä."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "Vedä pyyntö pois"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "Vedetäänkö peruutuspyyntö pois?"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "Pyysit %date% tämän palvelun peruuttamista laskutusjakson lopussa. Voit vetää pyynnön pois, kunnes se on käsitelty."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "Pyysit %date% tämän palvelun peruuttamista heti. Voit vetää pyynnön pois, kunnes se on käsitelty."

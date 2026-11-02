@@ -201,6 +201,35 @@ class Client extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    /**
+     * ClientFence: asks to cancel the service, as WHMCS (Order\CancelRequests): `type` immediate or
+     * end_of_period, and a `reason`.
+     */
+    #[RequiredParams(['type' => 'Choose when the service ends', 'reason' => 'Please tell us why you want to cancel.'])]
+    public function cancel_request($data): bool
+    {
+        \ClientFence\Mod\Order\CancelRequests::create($this->getDi(), $this->upgradeOrder($data), (string) $data['type'], (string) $data['reason']);
+
+        return true;
+    }
+
+    /** ClientFence: the waiting cancellation request of the service, or null. */
+    public function cancel_request_get($data): ?array
+    {
+        $request = \ClientFence\Mod\Order\CancelRequests::pending($this->getDi(), (int) $this->upgradeOrder($data)->id);
+
+        return $request === null ? null : ['type' => $request['type'], 'reason' => $request['reason'], 'created_at' => $request['created_at']];
+    }
+
+    /** ClientFence: takes back the waiting cancellation request of the service. */
+    public function cancel_request_withdraw($data): bool
+    {
+        $order = $this->upgradeOrder($data);
+        \ClientFence\Mod\Order\CancelRequests::withdraw($this->getDi(), (int) $order->client_id, (int) $order->id);
+
+        return true;
+    }
+
     protected function _getOrder($data)
     {
         $required = [

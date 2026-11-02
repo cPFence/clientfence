@@ -407,6 +407,7 @@ function whmcsServicesTarget(): Connection
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, product_id INTEGER, form_id INTEGER, promo_id INTEGER, promo_recurring INTEGER, promo_used INTEGER, group_id TEXT, group_master INTEGER, invoice_option TEXT, title TEXT, currency TEXT, unpaid_invoice_id INTEGER, service_id INTEGER, service_type TEXT, period TEXT, quantity INTEGER, unit TEXT, price REAL, discount REAL, status TEXT, reason TEXT, notes TEXT, config TEXT, referred_by TEXT, expires_at TEXT, activated_at TEXT, suspended_at TEXT, unsuspended_at TEXT, canceled_at TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_order_status (id INTEGER PRIMARY KEY AUTOINCREMENT, client_order_id INTEGER, status TEXT, notes TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY AUTOINCREMENT, client_order_id INTEGER, name TEXT, value TEXT, created_at TEXT, updated_at TEXT)',
+        'CREATE TABLE client_order_cancel_request (id INTEGER PRIMARY KEY AUTOINCREMENT, client_order_id INTEGER, client_id INTEGER, type TEXT, reason TEXT, status TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, service_hosting_server_id INTEGER, service_hosting_hp_id INTEGER, sld TEXT, tld TEXT, ip TEXT, username TEXT, pass TEXT, reseller INTEGER, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE service_license (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, license_key TEXT UNIQUE, validate_ip INTEGER, validate_host INTEGER, validate_path INTEGER, validate_version INTEGER, ips TEXT, hosts TEXT, paths TEXT, versions TEXT, config TEXT, plugin TEXT, checked_at TEXT, pinged_at TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE service_custom (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, plugin TEXT, plugin_config TEXT, f1 TEXT, config TEXT, created_at TEXT, updated_at TEXT)',
@@ -462,13 +463,16 @@ test('services become orders with their hosting account, licence or custom servi
     expect($hosting)->toMatchArray([
         'client_id' => 1, 'product_id' => (int) $starter['id'], 'form_id' => (int) $starter['form_id'], 'group_id' => 'whmcs_s1', 'group_master' => 1,
         'title' => 'Starter for shop.example.co.uk', 'currency' => 'USD', 'service_type' => 'hosting', 'period' => '1M', 'price' => 9.0, 'discount' => 0.0,
-        'promo_recurring' => 0, 'status' => 'active', 'reason' => 'Too expensive', 'notes' => 'VIP', 'invoice_option' => 'issue-invoice',
+        'promo_recurring' => 0, 'status' => 'active', 'reason' => null, 'notes' => 'VIP', 'invoice_option' => 'issue-invoice',
         'expires_at' => '2026-11-01 00:00:00', 'activated_at' => '2025-11-01 00:00:00', 'canceled_at' => null,
     ])
         ->and($hosting['promo_id'])->not->toBeNull()
         ->and($config)->toMatchArray(['whmcs_field_7' => 'M', 'whmcs_field_8' => 'Call first', 'server_id' => $server, 'hosting_plan_id' => $plan, 'whmcs_service_id' => 1, 'domain' => ['action' => 'owndomain', 'owndomain_sld' => 'shop.example', 'owndomain_tld' => '.co.uk']])
         ->and($config)->not->toHaveKey('whmcs_field_9')
-        ->and($target->fetchAllKeyValue('SELECT name, value FROM client_order_meta WHERE client_order_id = ?', [$hosting['id']]))->toBe(['whmcs_subscription_id' => 'I-ABC123', 'cancel_at_period_end' => '1'])
+        ->and($target->fetchAllKeyValue('SELECT name, value FROM client_order_meta WHERE client_order_id = ?', [$hosting['id']]))->toBe(['whmcs_subscription_id' => 'I-ABC123'])
+        ->and($target->fetchAllAssociative('SELECT client_order_id, client_id, type, reason, status, created_at FROM client_order_cancel_request'))->toBe([
+            ['client_order_id' => $hosting['id'], 'client_id' => 1, 'type' => 'end_of_period', 'reason' => 'Too expensive', 'status' => 'pending', 'created_at' => '2026-10-01 00:00:00'],
+        ])
         ->and($target->fetchAssociative('SELECT * FROM service_hosting WHERE id = ?', [$hosting['service_id']]))->toMatchArray([
             'client_id' => 1, 'service_hosting_server_id' => $server, 'service_hosting_hp_id' => $plan, 'sld' => 'shop.example', 'tld' => '.co.uk',
             'ip' => '203.0.113.5', 'username' => 'shopuser', 'pass' => '********', 'reseller' => 0,
@@ -528,7 +532,7 @@ test('services become orders with their hosting account, licence or custom servi
         ->toContain('Option "Odd" (VPS extras) was not imported: WHMCS option type 9 is not known.')
         ->toContain('Hosting account passwords were not imported')
         ->toContain('gateway subscription')
-        ->toContain('Service #1 (shop.example.co.uk) has a cancellation request (End of Billing Period)')
+        ->toContain('Service #1 (shop.example.co.uk) has a cancellation request (End of Billing Period): it waits in Orders > Cancellation Requests.')
         ->toContain('Service #6 is a hosting account without a domain')
         ->toContain('Add-on "Priority support" was typed in on services')
         ->toContain('Service add-on #3 was not imported')

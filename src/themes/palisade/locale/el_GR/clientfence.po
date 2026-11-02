@@ -19282,3 +19282,73 @@ msgstr "Οι τιμές περιλαμβάνουν φόρο"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "Οι τιμές των προϊόντων, των ονομάτων χώρου και των επιλογών είναι οι τιμές που πληρώνει ο πελάτης: τα παραστατικά εμφανίζουν την καθαρή τους τιμή και τον φόρο που περιέχεται σε αυτήν. Ένας πελάτης που έχει απαλλαγή από φόρο πληρώνει την καθαρή τιμή. Οι γραμμές που πληκτρολογεί το προσωπικό χειροκίνητα σε ένα παραστατικό παραμένουν όπως πληκτρολογήθηκαν (καθαρές)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "Αυτόματα: μία φορά την ημέρα, η ημερήσια εργασία cron ακυρώνει μια υπηρεσία με αίτημα Άμεσα και προγραμματίζει μια υπηρεσία με αίτημα Τέλος περιόδου χρέωσης να ακυρωθεί στο τέλος της πληρωμένης περιόδου της. Μέχρι τότε ο πελάτης μπορεί να αποσύρει το αίτημα και το προσωπικό μπορεί να το σταματήσει."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "Ζητήθηκε ακύρωση για την παραγγελία #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "Δεν υπάρχουν αιτήματα ακύρωσης σε αναμονή."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "Μόνο μια ενεργή υπηρεσία μπορεί να ακυρωθεί."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "Παρακαλούμε πείτε μας γιατί θέλετε να ακυρώσετε."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "Υπηρεσίες που οι πελάτες ζήτησαν να ακυρωθούν. Αποδεχτείτε ένα αίτημα για να ακυρωθεί η υπηρεσία τώρα ή στο τέλος της περιόδου χρέωσης, όπως επέλεξε ο πελάτης, ή σταματήστε το."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "Διακοπή"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "Να διακοπεί το αίτημα ακύρωσης;"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "Ο πελάτης ζήτησε να ακυρωθεί αυτή η υπηρεσία"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "Η υπηρεσία δεν έχει ακυρωθεί. Ενημερώστε τον πελάτη αν χρειάζεται."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "Η υπηρεσία παραμένει ενεργή."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "Αυτό το αίτημα ακύρωσης δεν είναι πλέον σε αναμονή."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "Αυτή η υπηρεσία δεν έχει αίτημα ακύρωσης σε αναμονή."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "Απόσυρση αιτήματος"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "Να αποσυρθεί το αίτημα ακύρωσης;"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "Ζητήσατε στις %date% να ακυρωθεί αυτή η υπηρεσία στο τέλος της περιόδου χρέωσης. Μπορείτε να αποσύρετε το αίτημα μέχρι να υποβληθεί σε επεξεργασία."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "Ζητήσατε στις %date% να ακυρωθεί αυτή η υπηρεσία άμεσα. Μπορείτε να αποσύρετε το αίτημα μέχρι να υποβληθεί σε επεξεργασία."

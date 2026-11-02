@@ -569,6 +569,7 @@ class UpdatePatcher implements InjectionAwareInterface
             118 => 'patch118',
             119 => 'patch119',
             120 => 'patch120',
+            121 => 'patch121',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2619,6 +2620,34 @@ class UpdatePatcher implements InjectionAwareInterface
                 KEY `invoice_credit_client_id_idx` (`client_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;');
         }
+    }
+
+    private function patch121(): void
+    {
+        // ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\CancelRequests).
+        if (!$this->tableExists('client_order_cancel_request')) {
+            $this->executeSql('CREATE TABLE `client_order_cancel_request` (
+                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `client_order_id` bigint(20) NOT NULL,
+                `client_id` bigint(20) NOT NULL,
+                `type` varchar(20) NOT NULL,
+                `reason` text NOT NULL,
+                `status` varchar(20) NOT NULL DEFAULT \'pending\',
+                `created_at` datetime NOT NULL,
+                `updated_at` datetime NOT NULL,
+                PRIMARY KEY (`id`),
+                KEY `client_order_cancel_request_order_idx` (`client_order_id`, `status`),
+                KEY `client_order_cancel_request_status_idx` (`status`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;');
+        }
+        // Requests that 1.0.21 kept as ticket tasks move to the list; older ones without a type stay with staff.
+        $this->executeSql("INSERT INTO `client_order_cancel_request` (`client_order_id`, `client_id`, `type`, `reason`, `status`, `created_at`, `updated_at`)
+            SELECT t.rel_id, t.client_id, t.rel_new_value, CONCAT(t.subject, ' (ticket #', t.id, ')'), 'pending', t.created_at, NOW()
+            FROM `support_ticket` t JOIN `client_order` o ON o.id = t.rel_id AND o.client_id = t.client_id
+            WHERE t.rel_type = 'order' AND t.rel_task = 'cancel' AND t.rel_status = 'pending'
+              AND t.rel_new_value IN ('immediate', 'end_of_period') AND o.status IN ('active', 'suspended')");
+        $this->executeSql("UPDATE `support_ticket` SET rel_status = 'complete'
+            WHERE rel_type = 'order' AND rel_task = 'cancel' AND rel_status = 'pending' AND rel_new_value IN ('immediate', 'end_of_period')");
     }
 
     /**

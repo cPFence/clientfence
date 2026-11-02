@@ -882,12 +882,8 @@ msgstr ""
 msgid "Absolute"
 msgstr ""
 
-#: src/modules/Cookieconsent/Service.php src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
+#: src/modules/Cookieconsent/Service.php src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig …
 msgid "Accept"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
-msgid "Accept Cancellation"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
@@ -898,7 +894,7 @@ msgstr ""
 msgid "Accept invitation"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
 msgid "Accept the cancellation request?"
 msgstr ""
 
@@ -2811,7 +2807,7 @@ msgid "Automatically send a canned response when a new ticket is created."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
-msgid "Automatically: at its next run, the cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period."
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
@@ -3366,7 +3362,7 @@ msgstr ""
 msgid "Canceled"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Cancellation Requests"
 msgstr ""
 
@@ -3374,12 +3370,16 @@ msgstr ""
 msgid "Cancellation Timing"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Cancellation Type"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig
 msgid "Cancellation is scheduled at the payment gateway. Select a different status only to override the synchronized state."
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Support/templates/admin/mod_support_tickets.html.twig
@@ -5954,14 +5954,6 @@ msgstr ""
 msgid "Delivery report"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
-msgid "Deny Cancellation"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
-msgid "Deny the cancellation request?"
-msgstr ""
-
 #: src/modules/Invoice/ServiceInvoiceItem.php
 msgid "Deposit invoice items can only be created through the Add Funds flow."
 msgstr ""
@@ -7002,7 +6994,7 @@ msgstr ""
 msgid "End"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "End of billing period"
 msgstr ""
 
@@ -9058,7 +9050,7 @@ msgstr ""
 msgid "Image URL"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "Immediate"
 msgstr ""
 
@@ -9314,7 +9306,7 @@ msgstr ""
 msgid "Invalid birthdate value"
 msgstr ""
 
-#: src/modules/Support/CancelRequests.php
+#: src/modules/Order/CancelRequests.php
 msgid "Invalid cancellation type."
 msgstr ""
 
@@ -11990,6 +11982,10 @@ msgstr ""
 msgid "No backups yet."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_canned_category.html.twig
 msgid "No canned responses in this category yet."
 msgstr ""
@@ -12736,6 +12732,10 @@ msgstr ""
 
 #: src/modules/Invoice/Api/Client.php
 msgid "Only an active or suspended service can be renewed."
+msgstr ""
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
 msgstr ""
 
 #: src/modules/Invoice/ServiceTransaction.php
@@ -14038,6 +14038,10 @@ msgstr ""
 msgid "Please take a moment to tell us how we handled your ticket. Your answers go to our support team."
 msgstr ""
 
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr ""
+
 #: src/themes/palisade/html/partials/i18n.html.twig
 msgid "Please use at least :min characters."
 msgstr ""
@@ -14810,7 +14814,7 @@ msgstr ""
 msgid "Reading the global webmail domain from Enhance…"
 msgstr ""
 
-#: src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
+#: src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig …
 msgid "Reason"
 msgstr ""
 
@@ -16518,7 +16522,7 @@ msgstr ""
 msgid "Servers:"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig
 msgid "Service"
 msgstr ""
 
@@ -16560,6 +16564,10 @@ msgstr ""
 
 #: src/modules/Client/Contacts.php
 msgid "Services (including welcome emails with sign-in details)"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -17306,12 +17314,20 @@ msgstr ""
 msgid "Stock Control"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr ""
+
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Stop Forum Spam"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_unsubscribe.html.twig
 msgid "Stop getting marketing email from us? Emails about your services, invoices and tickets will still reach you."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/palisade/html/layout_default.html.twig …
@@ -18190,6 +18206,10 @@ msgstr ""
 msgid "The client ID is a Google OAuth client ID (it ends in .apps.googleusercontent.com)."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr ""
+
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The client email :email: is a staff login on the :panel: server. Give the client a different email address."
 msgstr ""
@@ -18875,20 +18895,24 @@ msgstr ""
 msgid "The service changed after this "
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
 msgid "The service is cancelled at the end of its paid period."
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
 msgid "The service is cancelled now."
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
-msgid "The service is not cancelled. Reply to the ticket to tell the client."
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "The service no longer exists."
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
 msgstr ""
 
 #: src/modules/Client/TwoFactor.php
@@ -19197,6 +19221,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "This built-in template is using the file-backed default."
+msgstr ""
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php
@@ -19531,12 +19559,16 @@ msgstr ""
 msgid "This server's curl cannot use SFTP; use FTP or ask the host to add libssh."
 msgstr ""
 
-#: src/modules/Support/CancelRequests.php
+#: src/modules/Order/CancelRequests.php
 msgid "This service cannot be cancelled at the end of its period. Choose Immediate, or open a ticket."
 msgstr ""
 
 #: src/modules/Servicecustom/templates/admin/mod_servicecustom_manage.html.twig
 msgid "This service does not currently expose any editable configuration values."
+msgstr ""
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php
@@ -19589,10 +19621,6 @@ msgstr ""
 
 #: src/modules/Api/Controller/Client.php
 msgid "This text is too long: :field."
-msgstr ""
-
-#: src/modules/Support/CancelRequests.php
-msgid "This ticket has no pending cancellation request."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_feedback.html.twig
@@ -21547,7 +21575,7 @@ msgstr ""
 msgid "We emailed you the invoice."
 msgstr ""
 
-#: src/modules/Support/Service.php
+#: src/modules/Order/CancelRequests.php src/modules/Support/Service.php
 msgid "We have already received this request."
 msgstr ""
 
@@ -21787,6 +21815,14 @@ msgstr ""
 msgid "With the current settings, your ClientFence instance will have an external IP address of: "
 msgstr ""
 
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_quote.html.twig src/themes/palisade/html/mod_invoice_quotes.html.twig
 msgid "Withdrawn"
 msgstr ""
@@ -21881,6 +21917,14 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update_finalize.html.twig
 msgid "You are updating your system to ClientFence %target_version%. The system needs to run %count% update patches before you can proceed."
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
 msgstr ""
 
 #: src/modules/Support/TicketFiles.php

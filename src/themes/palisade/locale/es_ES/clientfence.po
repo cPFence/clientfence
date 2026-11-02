@@ -18486,3 +18486,73 @@ msgstr "Los precios incluyen impuestos"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "Los precios de productos, dominios y opciones son los precios que paga el cliente: las facturas muestran su precio neto y el impuesto que contiene. Un cliente exento de impuestos paga el precio neto. Las líneas que el personal escribe a mano en una factura se quedan tal como se escribieron (netas)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "Automáticamente: una vez al día, la tarea cron diaria cancela un servicio con una solicitud Inmediata y programa para su cancelación, al final de su periodo pagado, un servicio con una solicitud Fin del periodo de facturación. Hasta entonces el cliente puede retirar la solicitud y el personal puede detenerla."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "Cancelación solicitada para el pedido #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "No hay solicitudes de cancelación en espera."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "Solo se puede cancelar un servicio activo."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "Cuéntenos por qué desea cancelar."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "Servicios que los clientes han pedido cancelar. Acepte una solicitud para cancelar el servicio ahora o al final del periodo de facturación, según haya elegido el cliente, o deténgala."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "Detener"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "¿Detener la solicitud de cancelación?"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "El cliente ha solicitado cancelar este servicio"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "El servicio no está cancelado. Avise al cliente si es necesario."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "El servicio sigue activo."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "Esta solicitud de cancelación ya no está en espera."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "Este servicio no tiene ninguna solicitud de cancelación en espera."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "Retirar solicitud"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "¿Retirar la solicitud de cancelación?"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "El %date% solicitó cancelar este servicio al final de su periodo de facturación. Puede retirar la solicitud hasta que se procese."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "El %date% solicitó cancelar este servicio de forma inmediata. Puede retirar la solicitud hasta que se procese."

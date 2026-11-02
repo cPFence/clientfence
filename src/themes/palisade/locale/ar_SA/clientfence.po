@@ -18707,3 +18707,73 @@ msgstr "الأسعار شاملة الضريبة"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "أسعار المنتجات والنطاقات والخيارات هي الأسعار التي يدفعها العميل: تعرض الفواتير سعرها الصافي والضريبة المشمولة فيه. العميل المعفى من الضريبة يدفع السعر الصافي. أما البنود التي يدخلها الموظفون يدويًا في الفاتورة فتبقى كما أُدخلت (الصافي)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "تلقائيًا: مرة واحدة يوميًا، تقوم مهمة cron اليومية بإلغاء الخدمة التي طلب إلغاؤها فورًا، وتجدول إلغاء الخدمة التي طُلب إلغاؤها في نهاية فترة الفوترة ليتم في نهاية فترتها المدفوعة. حتى ذلك الحين يمكن للعميل سحب الطلب ويمكن للموظفين إيقافه."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "طلب إلغاء للطلب #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "لا توجد طلبات إلغاء قيد الانتظار."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "يمكن إلغاء الخدمة النشطة فقط."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "يرجى إخبارنا بسبب رغبتك في الإلغاء."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "الخدمات التي طلب العملاء إلغاءها. اقبل الطلب لإلغاء الخدمة الآن أو في نهاية فترة الفوترة، حسب اختيار العميل، أو أوقفه."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "إيقاف"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "هل تريد إيقاف طلب الإلغاء؟"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "طلب العميل إلغاء هذه الخدمة"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "لم يتم إلغاء الخدمة. أخبر العميل عند الحاجة."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "تبقى الخدمة نشطة."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "طلب الإلغاء هذا لم يعد قيد الانتظار."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "لا يوجد طلب إلغاء قيد الانتظار لهذه الخدمة."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "سحب الطلب"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "هل تريد سحب طلب الإلغاء؟"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "لقد طلبت في %date% إلغاء هذه الخدمة في نهاية فترة الفوترة. يمكنك سحب الطلب إلى أن تتم معالجته."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "لقد طلبت في %date% إلغاء هذه الخدمة فورًا. يمكنك سحب الطلب إلى أن تتم معالجته."

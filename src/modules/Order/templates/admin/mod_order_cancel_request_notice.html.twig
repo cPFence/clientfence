@@ -1,0 +1,16 @@
+{# ClientFence: the order's waiting cancellation request, on the order page (ClientFence\Mod\Order\CancelRequests). #}
+{% set cancel_request = admin.order_cancel_request_get({ 'id': order.id }) %}
+{% if cancel_request %}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-title">{{ 'The client asked to cancel this service'|trans }}</h4>
+        <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+            <span class="badge bg-warning-lt">{{ cancel_request.type == 'end_of_period' ? 'End of billing period'|trans : 'Immediate'|trans }}</span>
+            <span class="text-break">{{ cancel_request.reason }}</span>
+            <span class="text-muted small">({{ cancel_request.created_at|format_datetime }})</span>
+            {% if admin.system_is_allowed({ 'mod': 'order', 'f': 'manage' }) %}
+                <a class="btn btn-sm btn-primary" {{ fb_api_link({href: 'order/cancel_request_accept'|api_url(query: {id: cancel_request.id}), modal: {type: 'confirm', title: 'Accept the cancellation request?'|trans, content: (cancel_request.type == 'end_of_period' ? 'The service is cancelled at the end of its paid period.'|trans : 'The service is cancelled now.'|trans)}, reload: true}) }}>{{ 'Accept'|trans }}</a>
+                <a class="btn btn-sm btn-outline-secondary" {{ fb_api_link({href: 'order/cancel_request_stop'|api_url(query: {id: cancel_request.id}), modal: {type: 'confirm', title: 'Stop the cancellation request?'|trans, content: 'The service is not cancelled. Tell the client if needed.'|trans}, reload: true}) }}>{{ 'Stop'|trans }}</a>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

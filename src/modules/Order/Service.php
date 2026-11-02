@@ -630,6 +630,13 @@ class Service implements InjectionAwareInterface
                     AND cancellation_meta.name = :cancellation_meta_name
                     AND cancellation_meta.value = :cancellation_meta_value
                 )
+                /* ClientFence core patch: as WHMCS, no renewal invoice while a cancellation request waits (Order\CancelRequests). */
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM client_order_cancel_request cancel_request
+                    WHERE cancel_request.client_order_id = co.id
+                    AND cancel_request.status = :cancel_request_status
+                )
                 /* Pair non-executed renewal items with paid invoices to skip renewals already queued for activation. */
                 AND NOT EXISTS (
                     SELECT 1
@@ -671,6 +678,7 @@ class Service implements InjectionAwareInterface
         $bindings['unpaid_invoice_status'] = \Model_Invoice::STATUS_UNPAID;
         $bindings['cancellation_meta_name'] = self::META_CANCEL_AT_PERIOD_END;
         $bindings['cancellation_meta_value'] = '1';
+        $bindings['cancel_request_status'] = CancelRequests::STATUS_PENDING;
         $bindings['pending_item_type'] = \Model_InvoiceItem::TYPE_ORDER;
         $bindings['pending_item_task'] = \Model_InvoiceItem::TASK_RENEW;
         $bindings['pending_item_status'] = \Model_InvoiceItem::STATUS_EXECUTED;

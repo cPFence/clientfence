@@ -19206,3 +19206,73 @@ msgstr "Cene uključuju porez"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "Cene proizvoda, domena i opcija su cene koje klijent plaća: računi prikazuju njihovu neto cenu i porez sadržan u njoj. Klijent oslobođen poreza plaća neto cenu. Stavke koje osoblje ručno unese u račun ostaju onakve kakve su unete (neto)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "Automatski: jednom dnevno dnevni cron otkazuje uslugu sa zahtevom Odmah, a uslugu sa zahtevom Kraj perioda naplate zakazuje za otkazivanje na kraju plaćenog perioda. Do tada klijent može da povuče zahtev, a osoblje može da ga zaustavi."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "Zatraženo otkazivanje za porudžbinu #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "Nijedan zahtev za otkazivanje ne čeka."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "Može se otkazati samo aktivna usluga."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "Recite nam zašto želite da otkažete."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "Usluge koje su klijenti zatražili da se otkažu. Prihvatite zahtev da se usluga otkaže odmah ili na kraju perioda naplate, kako je klijent izabrao, ili ga zaustavite."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "Zaustavi"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "Zaustaviti zahtev za otkazivanje?"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "Klijent je zatražio otkazivanje ove usluge"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "Usluga nije otkazana. Obavestite klijenta ako je potrebno."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "Usluga ostaje aktivna."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "Ovaj zahtev za otkazivanje više ne čeka."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "Ova usluga nema zahtev za otkazivanje koji čeka."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "Povuci zahtev"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "Povući zahtev za otkazivanje?"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "Dana %date% zatražili ste otkazivanje ove usluge na kraju perioda naplate. Zahtev možete povući dok se ne obradi."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "Dana %date% zatražili ste hitno otkazivanje ove usluge. Zahtev možete povući dok se ne obradi."

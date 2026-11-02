@@ -18662,3 +18662,73 @@ msgstr "Les prix incluent la taxe"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "Les prix des produits, des domaines et des options sont les prix que le client paie : les factures indiquent leur prix net et la taxe qu'il contient. Un client exonéré de taxe paie le prix net. Les lignes saisies à la main par le personnel sur une facture restent telles que saisies (net)."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "Automatiquement : une fois par jour, la tâche cron quotidienne résilie un service ayant une demande Immédiate et programme la résiliation, à la fin de sa période payée, d'un service ayant une demande Fin de la période de facturation. D'ici là, le client peut retirer sa demande et le personnel peut l'arrêter."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "Résiliation demandée pour la commande #:id : :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "Aucune demande de résiliation en attente."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "Seul un service actif peut être résilié."
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "Dites-nous pourquoi vous souhaitez résilier."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "Services que des clients ont demandé de résilier. Acceptez une demande pour résilier le service maintenant ou à la fin de sa période de facturation, selon le choix du client, ou arrêtez-la."
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "Arrêter"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "Arrêter la demande de résiliation ?"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "Le client a demandé la résiliation de ce service"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "Le service n'est pas résilié. Informez le client si nécessaire."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "Le service reste actif."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "Cette demande de résiliation n'est plus en attente."
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "Ce service n'a aucune demande de résiliation en attente."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "Retirer la demande"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "Retirer la demande de résiliation ?"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "Le %date%, vous avez demandé la résiliation de ce service à la fin de sa période de facturation. Vous pouvez retirer la demande tant qu'elle n'est pas traitée."
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "Le %date%, vous avez demandé la résiliation immédiate de ce service. Vous pouvez retirer la demande tant qu'elle n'est pas traitée."

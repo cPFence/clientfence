@@ -17024,3 +17024,73 @@ msgstr "ราคารวมภาษีแล้ว"
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr "ราคาของผลิตภัณฑ์ โดเมน และตัวเลือกคือราคาที่ลูกค้าชำระ: ใบแจ้งหนี้จะแสดงราคาสุทธิและภาษีที่รวมอยู่ในราคานั้น ลูกค้าที่ยกเว้นภาษีจะชำระราคาสุทธิ รายการที่พนักงานพิมพ์เองในใบแจ้งหนี้จะคงไว้ตามที่พิมพ์ (สุทธิ)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
+msgstr "อัตโนมัติ: วันละครั้ง งาน cron ประจำวันจะยกเลิกบริการที่มีคำขอแบบทันที และกำหนดให้บริการที่มีคำขอแบบสิ้นสุดรอบการเรียกเก็บเงินถูกยกเลิกเมื่อสิ้นสุดรอบที่ชำระแล้ว จนถึงตอนนั้นลูกค้าสามารถถอนคำขอได้ และเจ้าหน้าที่สามารถหยุดคำขอได้"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Cancellation requested for order #:id: :title"
+msgstr "มีการขอยกเลิกคำสั่งซื้อ #:id: :title"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No cancellation requests are waiting."
+msgstr "ไม่มีคำขอยกเลิกที่รอดำเนินการ"
+
+#: src/modules/Order/CancelRequests.php
+msgid "Only an active service can be cancelled."
+msgstr "ยกเลิกได้เฉพาะบริการที่ใช้งานอยู่"
+
+#: src/modules/Order/CancelRequests.php
+msgid "Please tell us why you want to cancel."
+msgstr "โปรดบอกเราว่าทำไมคุณต้องการยกเลิก"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr "บริการที่ลูกค้าขอยกเลิก ยอมรับคำขอเพื่อยกเลิกบริการทันทีหรือเมื่อสิ้นสุดรอบการเรียกเก็บเงินตามที่ลูกค้าเลือก หรือหยุดคำขอ"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop"
+msgstr "หยุด"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Stop the cancellation request?"
+msgstr "หยุดคำขอยกเลิกหรือไม่?"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
+msgid "The client asked to cancel this service"
+msgstr "ลูกค้าขอยกเลิกบริการนี้"
+
+#: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The service is not cancelled. Tell the client if needed."
+msgstr "บริการนี้ยังไม่ถูกยกเลิก แจ้งลูกค้าหากจำเป็น"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "The service stays active."
+msgstr "บริการยังคงใช้งานอยู่"
+
+#: src/modules/Order/CancelRequests.php
+msgid "This cancellation request is no longer waiting."
+msgstr "คำขอยกเลิกนี้ไม่ได้รอดำเนินการอีกต่อไป"
+
+#: src/modules/Order/CancelRequests.php
+msgid "This service has no cancellation request waiting."
+msgstr "บริการนี้ไม่มีคำขอยกเลิกที่รอดำเนินการ"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw Request"
+msgstr "ถอนคำขอ"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Withdraw the cancellation request?"
+msgstr "ถอนคำขอยกเลิกหรือไม่?"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
+msgstr "เมื่อวันที่ %date% คุณขอยกเลิกบริการนี้เมื่อสิ้นสุดรอบการเรียกเก็บเงิน คุณสามารถถอนคำขอได้จนกว่าจะมีการดำเนินการ"
+
+#: src/themes/palisade/html/mod_order_manage.html.twig
+msgid "You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed."
+msgstr "เมื่อวันที่ %date% คุณขอยกเลิกบริการนี้ทันที คุณสามารถถอนคำขอได้จนกว่าจะมีการดำเนินการ"

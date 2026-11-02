@@ -659,6 +659,12 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
             $di['logger']->error('ClientFence: paid upgrades could not be checked: %s', $e->getMessage());
         }
         try {
+            // Once a day, when set (Order\CancelRequests).
+            \ClientFence\Mod\Order\CancelRequests::run($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('ClientFence: cancellation requests failed: %s', $e->getMessage());
+        }
+        try {
             Notifications::daily($di);
         } catch (\Throwable $e) {
             $di['logger']->error('ClientFence: the daily notifications failed: %s', $e->getMessage());
