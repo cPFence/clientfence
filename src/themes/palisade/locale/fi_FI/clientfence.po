@@ -19956,3 +19956,543 @@ msgstr "Kirjoita sivuja asiakasalueelle luonnoksina tai julkaistuina, valikko- j
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "nyt"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr ":cache on valittu, mutta siihen ei saatu yhteyttä, joten ClientFence käyttää tiedostoja: tarkista, että palvelin toimii ja asetukset ovat oikein."
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr ":changed tiedostoa muuttunut tai puuttuu: :list. Asenna ClientFence-julkaisu uudelleen."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr ":count ClientFence-tietokantapäivitystä odottaa: avaa Viimeistele päivitys hallinnassa tai suorita php console.php system:run-patcher."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr ":count ydinkorjausta otettu käyttöön."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count päivä"
+msgstr[1] ":count päivää"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr ":count tiedostoa asennettuna."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count tunti"
+msgstr[1] ":count tuntia"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr ":count skriptityyppiä estettiin (viimeiset 7 päivää), esimerkiksi :list. Syynä voi olla myös selaimen laajennus tai botti; tarkista ne, joissa mainitaan portaalin omat sivut ja skriptit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count minuutti"
+msgstr[1] ":count minuuttia"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr ":count moduulin asetusta tallennettiin toisella salausavaimella ja ne luetaan tyhjinä (:list). Jos tämä tietokanta palautettiin varmuuskopiosta, laita alkuperäinen info.salt takaisin tiedostoon config.php ennen asetusten tallentamista."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr ":count sääntölohkoa käytössä."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database: suositus on 10.6 tai uudempi."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database: suositus on 8.0 tai uudempi."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit; suositus on 256M tai enemmän."
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr ":size GB vapaana (:percent%)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr ":undone tiedostoa ilman omaa ydinkorjaustaan: :list. Asenna ClientFence-julkaisu uudelleen."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr ":waiting odottaa, :failed epäonnistui (cron yrittää uudelleen)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr ":waiting odottaa, vanhin :ago, :failed epäonnistui (cron yrittää uudelleen)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr ":waiting odottaa, vanhin :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr ":waiting odottaa."
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "Varmuuskopiota tehdään parhaillaan (alkoi :time)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "Hallinta-alueen osoite"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "Kaikki vaaditut ja suositellut laajennukset on ladattu."
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "Kaikki vaaditut; suositellut mutta puuttuvat: :suggested."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "Välimuistin taustajärjestelmä"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Captcha julkisissa lomakkeissa"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version. Uudet versiot tulevat ClientFence-julkaisuina."
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "ClientFence-tietokanta on päivityksessä :level."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile, avaimet asetettu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "Ydinkorjaukset"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "ClientFence-tietokannan päivitystasoa ei voitu lukea."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "Cron ei ole koskaan ajettu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "Päivittäinen tietokannan varmuuskopio"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "Tietokantapäivitykset"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "Tietokannan versio"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "Virheenjäljitys ja virheiden näyttö"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "Virheenjäljitystila ja PHP-virheiden näyttö ovat pois päältä."
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "Virheenjäljitystila on päällä: se voi näyttää vierailijoille palvelimen tietoja."
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "Sähköpostin toimitus"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "Sähköpostijono"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "Pakotettu. Yhtään skriptiä ei estetty viimeisten 7 päivän aikana."
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "Tiedostot: riittää pienelle sivustolle. Vilkkaalle sivustolle Redis on nopeampi: asenna Redis-palvelin ja PHP-laajennus redis (monet palveluntarjoajat tarjoavat molemmat) ja valitse sitten Redis kohdassa Järjestelmä → Asetukset → Välimuisti."
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "Vapaa levytila"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "GeoIP-tietokanta"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "HSTS, CSP ja X-Content-Type-Options lähetetään."
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "Vain HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "Webhotellipalvelin: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "Viimeksi ajettu :ago sitten."
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "Viimeksi ajettu :ago sitten; sen pitäisi ajaa 5 minuutin välein."
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "Kirjastot, käännökset, manifestit ja asiakkaan verkkotunnuksen vaihtokutsu hylätään."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr "Tehty :ago sitten."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr "Tehty :ago sitten; tee uusi."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "Tehty :time, mutta säilytetään vain tällä palvelimella: lisää SFTP/FTP tai sähköposti, niin saat kopion, joka säilyy palvelimen menetyksestä."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "Posti kulkee palvelun :mailer kautta, ei TLS-suojattua SMTP-yhteyttä käyttäen."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "Puuttuu: :list (clientfence-security-headers.php)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "Puuttuu: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "Puuttuu: :list. Asenna ClientFence-julkaisu uudelleen."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "Puuttuu: IP-osoitteiden maat ovat tuntemattomia."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "Oikeudet :mode."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "Oikeudet :mode: palvelimen muut käyttäjät voivat lukea sen. Käytä arvoa 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "Oikeudet :mode: ryhmä voi kirjoittaa siihen. Käytä arvoa 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "Moduulien asetukset voi lukea info.salt-arvolla tiedostossa config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "Uusin laskutuksen varmuuskopio"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "Työkansiosta ei löytynyt varmuuskopiota."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "Päivittäistä tietokannan varmuuskopiota ei ole käytössä: ota se käyttöön kohdassa Järjestelmä → Asetukset → Järjestelmä → Tietokannan varmuuskopiot."
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "Ei postin siirtotapaa: sähköposteja ei lähetetä."
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "Pakettimanifestia ei ole: asenna ClientFence-julkaisu uudelleen."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "Ei mitään odottamassa, :failed epäonnistui (cron yrittää uudelleen)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "Ei mitään odottamassa."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "Pois."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "Pois: PHP kääntää koodin uudelleen jokaisessa pyynnössä, joten sivut kestävät noin 4 kertaa pidempään. Ota OPcache käyttöön (opcache.enable = 1, usein \"Opcode caching\" palvelun hallintapaneelissa) tämän sivuston PHP-asetuksissa."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "Pois: aseta security.mode arvoon \"strict\" tiedostossa config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "Pois: rekisteröitymis- ja kirjautumislomakkeissa ei ole captchaa."
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "Päällä (:methods); ensimmäinen varmuuskopio tehdään seuraavalla cron-ajolla."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "Päällä, mutta avaimet puuttuvat."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "Päällä, mutta client ID tai secret puuttuu."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "Päällä, client ID ja secret asetettu."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "Päällä: PHP pitää käännetyn koodin muistissa."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "Päällä: istuntoevästeet ovat SameSite=Strict."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "Verkkojuuren ulkopuolella, mutta oikeudet :mode päästävät muut käyttäjät sisään. Käytä arvoa 700."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "Verkkojuuren ulkopuolella, vain sivuston käyttäjän käytössä."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: ClientFence vaatii uudemman PHP-version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "PHP-asetus display_errors on päällä."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "PHP-laajennukset"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "PHP-muistiraja"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "Paketin .htaccess-säännöt"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "Paketin tiedostot muuttumattomia"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "Pakettimanifesti"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "Yksityinen kansio: maksukuitit"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "Yksityinen kansio: tukipyyntöjen liitteet"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "Yksityiset polut estetty"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "Rekisteröijä: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "SMTP portissa :port: käytä 465 (TLS) tai 587 (STARTTLS)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "TLS-suojattu SMTP (portti 465)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "SMTP ja STARTTLS (portti 587)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "Ajastetut tehtävät (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "Skriptikäytäntö"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "Suojausotsakkeet"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "SendGrid API -rajapinta HTTPS-yhteydellä."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "Lähetetty :time tavalla :methods."
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "Näytetään vierailijoille: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "Aseta URL-osoitteeksi https:// ja security.force_https arvoon true tiedostossa config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "Tiukka suojaustila"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "Dynadot API vastaa tällä avaimella."
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "Dynadot API ei vastannut."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "Hallinta-alueella on oma osoitteensa, ei oletus-/admin."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "Hallinta-alue on oletusosoitteessa /admin, jota botit kokeilevat ensimmäisenä. Aseta admin_area_prefix tiedostossa config.php omaksi osoitteeksesi (esimerkiksi /team-7k2) ja kirjaudu sisään siellä."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr "Varmuuskopio ajalta :time epäonnistui (:why)."
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "Tarkistusta ei voitu suorittaa: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "Hallintapaneeli vastaa."
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "Hallintapaneeli ei vastannut."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "Tietokannan päivitys epäonnistui, eikä edellisen version palautuskaan onnistunut: palauta tietokanta ja tiedostot varmuuskopiosta kansiossa :dir. Lisätietoja on virhelokissa."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "Tietokannan päivitys epäonnistui, joten päivitys peruttiin: tietokanta ja tiedostot palautettiin ja sivusto käyttää taas ClientFence-versiota :version. Lisätietoja on virhelokissa."
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "Kansio on verkkojuuren sisällä."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "Uusin lähetetty varmuuskopio on :days päivää vanha: tarkista, että cron ajetaan."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "Portaalin URL on https ja tavallinen HTTP ohjataan uudelleen."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "Portaaliin ei saatu yhteyttä palvelimelta."
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "Rajoittamaton."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr "Päivitetty :ago sitten."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr "Päivitetty :ago sitten; ClientFencen cronin pitäisi päivittää se kuukausittain."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "config.php puuttuu."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "Tiedoston config.php oikeudet"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "sähköposti"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "modules/Clientfence/pack-manifest.json puuttuu: asenna ClientFence-julkaisu uudelleen."
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA, avaimet asetettu."
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "tämä palvelin"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "Ytimen tarkistukset"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "Paketin eheys"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "Suojauksen koventaminen"

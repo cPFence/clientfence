@@ -87,15 +87,15 @@ test('Health warns with no method on, needs attention after a failure and warns 
 
     $on = ['ftp' => ['enabled' => false], 'email' => ['enabled' => true, 'address' => 'b@example.com']];
     [$di] = backupsContainer(['backups' => $on]);
-    expect(Backups::health($di))->toBe(['ok', 'On (email); the first backup is made at the next cron run.']);
+    expect(Backups::health($di))->toBe(['ok', 'On (:methods); the first backup is made at the next cron run.', [':methods' => ['email']]]);
 
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => date('Y-m-d H:i:s'), 'ok' => false, 'results' => ['email' => 'Mail server refused']]]);
     expect(Backups::health($di)[0])->toBe('bad')
-        ->and(Backups::health($di)[1])->toContain('email: Mail server refused');
+        ->and(Backups::health($di)[2][':why'])->toBe('email: Mail server refused');
 
     $old = date('Y-m-d H:i:s', time() - 3 * 86400);
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => $old, 'ok' => true, 'last_ok_at' => $old, 'results' => ['email' => 'ok']]]);
-    expect(Backups::health($di))->toBe(['warn', 'The newest backup sent is 3 days old: check that the cron runs.']);
+    expect(Backups::health($di))->toBe(['warn', 'The newest backup sent is :days days old: check that the cron runs.', [':days' => 3]]);
 
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => date('Y-m-d H:i:s'), 'ok' => true, 'results' => ['email' => 'ok']]]);
     expect(Backups::health($di)[0])->toBe('ok');
@@ -105,7 +105,7 @@ test('Health warns with no method on, needs attention after a failure and warns 
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => $running]);
     expect(Backups::health($di)[1])->toContain('being made now');
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => date('Y-m-d H:i:s', time() - 7200)] + $running]);
-    expect(Backups::health($di))->toBe(['bad', 'The backup of ' . date('Y-m-d H:i:s', time() - 7200) . ' failed (dump: Started, but did not finish (the process stopped).).']);
+    expect(Backups::health($di))->toBe(['bad', 'The backup of :time failed (:why).', [':time' => date('Y-m-d H:i:s', time() - 7200), ':why' => 'dump: Started, but did not finish (the process stopped).']]);
 });
 
 test('update backups refuse a folder inside the site root', function (): void {
@@ -198,4 +198,42 @@ test('a backup file counts as written only when it reads back to its last line',
         ->and($complete->invoke(null, $dir . '/cut.gz'))->toBeFalse();
     array_map('unlink', glob($dir . '/*') ?: []);
     rmdir($dir);
+});
+
+test('a dump is loaded back statement by statement and tables made since are dropped', function (): void {
+    $file = tempnam(sys_get_temp_dir(), 'dump');
+    $gz = gzopen($file, 'wb6');
+    gzwrite($gz, "-- ClientFence database backup\n\n/*!40014 SET FOREIGN_KEY_CHECKS=0 */;\n\n-- Table client\nDROP TABLE IF EXISTS `client`;\nCREATE TABLE `client` (\n  `id` int NOT NULL,\n  `note` text\n) ENGINE=InnoDB;\n"
+        . 'INSERT INTO `client` (`id`, `note`) VALUES (' . "'1'," . DatabaseDump::quote("one;\ntwo;") . ");\n\n-- View v_client\nDROP VIEW IF EXISTS `v_client`;\nCREATE VIEW `v_client` AS select 1;\n\n-- Dump completed 2026-11-03 00:00:00 UTC\n");
+    gzclose($gz);
+    $run = [];
+    $db = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $db->shouldReceive('fetchNumeric')->andReturn(['STRICT_TRANS_TABLES', 'SYSTEM']);
+    $db->shouldReceive('executeStatement')->andReturnUsing(function (string $sql) use (&$run): int {
+        $run[] = $sql;
+
+        return 0;
+    });
+    $db->shouldReceive('fetchAllNumeric')->with('SHOW FULL TABLES')->andReturn([['client', 'BASE TABLE'], ['qa8_partial', 'BASE TABLE'], ['v_client', 'VIEW'], ['v_new', 'VIEW']]);
+
+    DatabaseDump::restore($db, $file);
+
+    expect($run)->toBe([
+        '/*!40014 SET FOREIGN_KEY_CHECKS=0 */',
+        'DROP TABLE IF EXISTS `client`',
+        "CREATE TABLE `client` (\n  `id` int NOT NULL,\n  `note` text\n) ENGINE=InnoDB",
+        "INSERT INTO `client` (`id`, `note`) VALUES ('1','one;\\ntwo;')",
+        'DROP VIEW IF EXISTS `v_client`',
+        'CREATE VIEW `v_client` AS select 1',
+        'SET FOREIGN_KEY_CHECKS = 0',
+        'DROP TABLE `qa8_partial`',
+        'DROP VIEW `v_new`',
+        'SET FOREIGN_KEY_CHECKS = 1, UNIQUE_CHECKS = 1',
+        'SET SESSION sql_mode = ?, time_zone = ?',
+    ]);
+
+    // A cut-off dump is refused before anything is run.
+    file_put_contents($file, gzencode("-- Table client\nDROP TABLE `client`;\n"));
+    expect(fn () => DatabaseDump::restore($db, $file))->toThrow(RuntimeException::class, 'incomplete');
+    unlink($file);
 });

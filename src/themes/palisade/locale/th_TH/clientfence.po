@@ -17334,3 +17334,540 @@ msgstr "เขียนหน้าสำหรับพื้นที่ลู
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "ตอนนี้"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr "เลือก :cache ไว้แต่เชื่อมต่อไม่ได้ ClientFence จึงใช้ไฟล์แทน ตรวจสอบว่าเซิร์ฟเวอร์ทำงานอยู่และการตั้งค่าถูกต้อง"
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr "ไฟล์เปลี่ยนแปลงหรือหายไป :changed ไฟล์: :list ติดตั้งรุ่น ClientFence ใหม่อีกครั้ง"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr "มีการอัปเดตฐานข้อมูล ClientFence รอดำเนินการ :count รายการ เปิด “ทำการอัปเดตให้เสร็จสมบูรณ์” ในส่วนผู้ดูแลระบบ หรือรัน php console.php system:run-patcher"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr "ใช้แพตช์แกนหลักแล้ว :count รายการ"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count วัน"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr "ไฟล์ตรงกับที่ติดตั้ง :count ไฟล์"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count ชั่วโมง"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr "ถูกบล็อกสคริปต์ :count ประเภท (7 วันที่ผ่านมา) เช่น :list ส่วนขยายเบราว์เซอร์หรือบอตอาจเป็นสาเหตุได้ด้วย ตรวจสอบรายการที่ระบุหน้าและสคริปต์ของพอร์ทัลเอง"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count นาที"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr "การตั้งค่าโมดูล :count รายการถูกบันทึกด้วยคีย์เข้ารหัสอื่นและอ่านได้เป็นค่าว่าง (:list) หากฐานข้อมูลนี้กู้คืนมาจากข้อมูลสำรอง ให้ใส่ info.salt เดิมกลับใน config.php ก่อนบันทึกการตั้งค่าใด ๆ"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr "มีบล็อกกฎใช้งานอยู่ :count บล็อก"
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database แนะนำรุ่น 10.6 หรือใหม่กว่า"
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database แนะนำรุ่น 8.0 หรือใหม่กว่า"
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit แนะนำ 256M หรือมากกว่า"
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr "ว่าง :size GB (:percent%)"
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr "ไฟล์ที่ไม่มีแพตช์แกนหลักของตน :undone ไฟล์: :list ติดตั้งรุ่น ClientFence ใหม่อีกครั้ง"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr "รอ :waiting รายการ ล้มเหลว :failed รายการ (cron จะลองใหม่)"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr "รอ :waiting รายการ รายการเก่าสุดรอมา :ago ล้มเหลว :failed รายการ (cron จะลองใหม่)"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr "รอ :waiting รายการ รายการเก่าสุดรอมา :ago"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr "รอ :waiting รายการ"
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "กำลังสำรองข้อมูลอยู่ (เริ่มเมื่อ :time)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "ที่อยู่ของพื้นที่ผู้ดูแลระบบ"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "โหลดส่วนขยายที่จำเป็นและที่แนะนำครบแล้ว"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "ครบทุกส่วนที่จำเป็น ส่วนที่แนะนำแต่ขาดอยู่: :suggested"
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "แบ็กเอนด์แคช"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Captcha ในแบบฟอร์มสาธารณะ"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version รุ่นใหม่จะมาในรูปแบบรุ่นของ ClientFence"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "ฐานข้อมูล ClientFence อยู่ที่การอัปเดต :level"
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile ตั้งค่าคีย์แล้ว"
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "แพตช์แกนหลัก"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "อ่านระดับการอัปเดตของฐานข้อมูล ClientFence ไม่ได้"
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "cron ยังไม่เคยทำงาน"
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "การสำรองฐานข้อมูลรายวัน"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "การอัปเดตฐานข้อมูล"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "เวอร์ชันฐานข้อมูล"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "การดีบักและการแสดงข้อผิดพลาด"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "โหมดดีบักและการแสดงข้อผิดพลาดของ PHP ปิดอยู่"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "โหมดดีบักเปิดอยู่ อาจแสดงรายละเอียดเซิร์ฟเวอร์ให้ผู้เยี่ยมชมเห็น"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "การส่งอีเมล"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "คิวอีเมล"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "บังคับใช้อยู่ ไม่มีสคริปต์ถูกบล็อกใน 7 วันที่ผ่านมา"
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "ไฟล์: เหมาะกับเว็บไซต์เล็ก สำหรับเว็บไซต์ที่คนใช้มาก Redis เร็วกว่า ติดตั้งเซิร์ฟเวอร์ Redis และส่วนขยาย redis ของ PHP (โฮสต์จำนวนมากมีให้ทั้งคู่) แล้วเลือก Redis ที่ ระบบ → การตั้งค่า → แคช"
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "พื้นที่ดิสก์ว่าง"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "ฐานข้อมูล GeoIP"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "ส่ง HSTS, CSP และ X-Content-Type-Options แล้ว"
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "HTTPS เท่านั้น"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "เซิร์ฟเวอร์โฮสติ้ง: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "ทำงานล่าสุดเมื่อ :ago ที่แล้ว"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "ทำงานล่าสุดเมื่อ :ago ที่แล้ว ควรทำงานทุก 5 นาที"
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "ไลบรารี คำแปล manifest และการเรียกเปลี่ยนโดเมนของลูกค้าถูกปฏิเสธ"
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr "สร้างเมื่อ :ago ที่แล้ว"
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr "สร้างเมื่อ :ago ที่แล้ว ควรสร้างชุดใหม่"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "สร้างเมื่อ :time แต่เก็บไว้ในเซิร์ฟเวอร์นี้เท่านั้น เพิ่ม SFTP/FTP หรืออีเมลเพื่อให้มีสำเนาที่ยังอยู่แม้เซิร์ฟเวอร์สูญหาย"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "อีเมลส่งผ่าน :mailer ไม่ใช่ SMTP ผ่าน TLS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "ขาด: :list (clientfence-security-headers.php)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "ขาด: :list"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "ขาด: :list ติดตั้งรุ่น ClientFence ใหม่อีกครั้ง"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "ขาดอยู่: ไม่ทราบประเทศของที่อยู่ IP"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "สิทธิ์ :mode"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "สิทธิ์ :mode ผู้ใช้อื่นของเซิร์ฟเวอร์อ่านได้ ใช้ 600"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "สิทธิ์ :mode กลุ่มเขียนได้ ใช้ 600"
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "อ่านการตั้งค่าโมดูลได้ด้วย info.salt ใน config.php"
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "ข้อมูลสำรองการเรียกเก็บเงินล่าสุด"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "ไม่พบข้อมูลสำรองในโฟลเดอร์ทำงาน"
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "ไม่ได้เปิดการสำรองฐานข้อมูลรายวัน เปิดได้ที่ ระบบ → การตั้งค่า → ระบบ → การสำรองฐานข้อมูล"
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "ไม่มีช่องทางส่งอีเมล อีเมลจะไม่ถูกส่ง"
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "ไม่มี manifest ของแพ็กเกจ ติดตั้งรุ่น ClientFence ใหม่อีกครั้ง"
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "ไม่มีรายการรอ ล้มเหลว :failed รายการ (cron จะลองใหม่)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "ไม่มีรายการรอ"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "ปิด"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "ปิด: PHP คอมไพล์โค้ดใหม่ทุกคำขอ หน้าเว็บจึงช้าลงประมาณ 4 เท่า เปิด OPcache (opcache.enable = 1 มักอยู่ที่ “Opcode caching” ในแผงควบคุมโฮสติ้ง) ในการตั้งค่า PHP ของไซต์นี้"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "ปิด: ตั้งค่า security.mode เป็น \"strict\" ใน config.php"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "ปิด: แบบฟอร์มสมัครและเข้าสู่ระบบไม่มี captcha"
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "เปิด (:methods) การสำรองครั้งแรกจะทำในรอบ cron ถัดไป"
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "เปิด แต่ไม่มีคีย์"
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "เปิด แต่ไม่มี client ID หรือ secret"
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "เปิด พร้อม client ID และ secret"
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "เปิด: PHP เก็บโค้ดที่คอมไพล์แล้วไว้ในหน่วยความจำ"
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "เปิด: คุกกี้เซสชันเป็น SameSite=Strict"
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "อยู่นอก web root แต่สิทธิ์ :mode ให้ผู้ใช้อื่นเข้าถึงได้ ใช้ 700"
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "อยู่นอก web root เป็นส่วนตัวของผู้ใช้ไซต์"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: ClientFence ต้องใช้ PHP ที่ใหม่กว่า"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "display_errors ของ PHP เปิดอยู่"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "ส่วนขยาย PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "ขีดจำกัดหน่วยความจำ PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "กฎ .htaccess ของแพ็กเกจ"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "ไฟล์แพ็กเกจไม่เปลี่ยนแปลง"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "manifest ของแพ็กเกจ"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "โฟลเดอร์ส่วนตัว: ใบเสร็จการชำระเงิน"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "โฟลเดอร์ส่วนตัว: ไฟล์แนบของทิกเก็ต"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "บล็อกเส้นทางส่วนตัวแล้ว"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "ผู้รับจดทะเบียน: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "SMTP ที่พอร์ต :port: ใช้ 465 (TLS) หรือ 587 (STARTTLS)"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "SMTP ผ่าน TLS (พอร์ต 465)"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "SMTP พร้อม STARTTLS (พอร์ต 587)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "งานที่ตั้งเวลาไว้ (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "นโยบายสคริปต์"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "ส่วนหัวความปลอดภัย"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "SendGrid API ผ่าน HTTPS"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "ส่งเมื่อ :time ทาง :methods"
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "ส่งให้ผู้เยี่ยมชม: :list"
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "ตั้ง URL เป็น https:// และตั้ง security.force_https เป็น true ใน config.php"
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "โหมดความปลอดภัยแบบเข้มงวด"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "Dynadot API ตอบกลับด้วยคีย์นี้"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "Dynadot API ไม่ตอบกลับ"
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "พื้นที่ผู้ดูแลระบบมีที่อยู่ของตัวเอง ไม่ใช่ /admin ค่าเริ่มต้น"
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "พื้นที่ผู้ดูแลระบบอยู่ที่ /admin ค่าเริ่มต้น ซึ่งเป็นที่อยู่แรกที่บอตลอง ตั้ง admin_area_prefix ใน config.php เป็นที่อยู่ของคุณเอง (เช่น /team-7k2) แล้วเข้าสู่ระบบที่นั่น"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr "การสำรองข้อมูลเมื่อ :time ล้มเหลว (:why)"
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "ไม่สามารถรันการตรวจสอบได้: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "แผงควบคุมตอบกลับ"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "แผงควบคุมไม่ตอบกลับ"
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "การอัปเดตฐานข้อมูลล้มเหลว และการย้อนกลับไปรุ่นก่อนหน้าก็ล้มเหลวด้วย กู้คืนฐานข้อมูลและไฟล์จากข้อมูลสำรองใน :dir ดูรายละเอียดเพิ่มเติมในบันทึกข้อผิดพลาด"
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "การอัปเดตฐานข้อมูลล้มเหลว จึงย้อนการอัปเดตกลับ: นำฐานข้อมูลและไฟล์กลับคืนแล้ว และไซต์ทำงานบน ClientFence :version อีกครั้ง ดูรายละเอียดเพิ่มเติมในบันทึกข้อผิดพลาด"
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "โฟลเดอร์อยู่ภายใน web root"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "ข้อมูลสำรองที่ส่งล่าสุดมีอายุ :days วัน ตรวจสอบว่า cron ทำงานอยู่"
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "URL ของพอร์ทัลเป็น https และ HTTP ธรรมดาถูกเปลี่ยนเส้นทาง"
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "เข้าถึงพอร์ทัลจากเซิร์ฟเวอร์ไม่ได้"
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "ไม่จำกัด."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr "อัปเดตเมื่อ :ago ที่แล้ว"
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr "อัปเดตเมื่อ :ago ที่แล้ว cron ของ ClientFence ควรรีเฟรชทุกเดือน"
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "ไม่พบ config.php"
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "สิทธิ์ของ config.php"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "อีเมล"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "ไม่พบ modules/Clientfence/pack-manifest.json ติดตั้งรุ่น ClientFence ใหม่อีกครั้ง"
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA ตั้งค่าคีย์แล้ว"
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "เซิร์ฟเวอร์นี้"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "การตรวจสอบแกนหลัก"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "ความสมบูรณ์ของแพ็กเกจ"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "การเสริมความปลอดภัย"

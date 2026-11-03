@@ -19592,3 +19592,543 @@ msgstr "Γράψτε σελίδες για την περιοχή πελατών,
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "τώρα"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr "Η επιλογή :cache δεν είναι προσβάσιμη, γι' αυτό το ClientFence χρησιμοποιεί αρχεία: ελέγξτε ότι ο διακομιστής λειτουργεί και ότι οι ρυθμίσεις είναι σωστές."
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr ":changed αρχεία έχουν αλλάξει ή λείπουν: :list. Εγκαταστήστε ξανά την έκδοση του ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr "Εκκρεμούν :count ενημερώσεις της βάσης δεδομένων του ClientFence: ανοίξτε την Οριστικοποίηση ενημέρωσης στη διαχείριση ή εκτελέστε php console.php system:run-patcher."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr "Έχουν εφαρμοστεί :count επιδιορθώσεις πυρήνα."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count ημέρα"
+msgstr[1] ":count ημέρες"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr ":count αρχεία όπως εγκαταστάθηκαν."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count ώρα"
+msgstr[1] ":count ώρες"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr "Αποκλείστηκαν :count είδη σεναρίων (τις τελευταίες 7 ημέρες), για παράδειγμα :list. Μπορεί να τα προκαλεί και μια επέκταση προγράμματος περιήγησης ή ένα bot· ελέγξτε όσα αναφέρουν τις δικές σελίδες και τα σενάρια της πύλης."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count λεπτό"
+msgstr[1] ":count λεπτά"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr ":count ρυθμίσεις μονάδων αποθηκεύτηκαν με άλλο κλειδί κρυπτογράφησης και διαβάζονται ως κενές (:list). Αν η βάση δεδομένων επαναφέρθηκε από αντίγραφο ασφαλείας, βάλτε πίσω το αρχικό info.salt στο config.php πριν αποθηκεύσετε ρυθμίσεις."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr "Ισχύουν :count μπλοκ κανόνων."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database: συνιστάται η έκδοση 10.6 ή νεότερη."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database: συνιστάται η έκδοση 8.0 ή νεότερη."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit· συνιστώνται 256M ή περισσότερα."
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr ":size GB ελεύθερα (:percent%)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr ":undone αρχεία χωρίς την επιδιόρθωση πυρήνα τους: :list. Εγκαταστήστε ξανά την έκδοση του ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr ":waiting σε αναμονή, :failed απέτυχαν (επαναλαμβάνονται από το cron)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr ":waiting σε αναμονή, το παλαιότερο εδώ και :ago, :failed απέτυχαν (επαναλαμβάνονται από το cron)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr ":waiting σε αναμονή, το παλαιότερο εδώ και :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr ":waiting σε αναμονή."
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "Δημιουργείται τώρα αντίγραφο ασφαλείας (ξεκίνησε :time)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "Διεύθυνση της περιοχής διαχείρισης"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "Όλες οι απαιτούμενες και οι συνιστώμενες επεκτάσεις έχουν φορτωθεί."
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "Όλες οι απαιτούμενες· συνιστώμενες αλλά λείπουν: :suggested."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "Σύστημα προσωρινής μνήμης"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Captcha στις δημόσιες φόρμες"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version. Οι νέες εκδόσεις έρχονται ως εκδόσεις του ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "Η βάση δεδομένων του ClientFence βρίσκεται στην ενημέρωση :level."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile, τα κλειδιά έχουν οριστεί."
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "Επιδιορθώσεις πυρήνα"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "Δεν ήταν δυνατή η ανάγνωση του επιπέδου ενημέρωσης της βάσης δεδομένων του ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "Το cron δεν έχει εκτελεστεί ποτέ."
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "Ημερήσιο αντίγραφο ασφαλείας βάσης δεδομένων"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "Ενημερώσεις βάσης δεδομένων"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "Έκδοση βάσης δεδομένων"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "Εντοπισμός σφαλμάτων και εμφάνιση σφαλμάτων"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "Η λειτουργία εντοπισμού σφαλμάτων και η εμφάνιση σφαλμάτων της PHP είναι ανενεργές."
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "Η λειτουργία εντοπισμού σφαλμάτων είναι ενεργή: μπορεί να εμφανίζει λεπτομέρειες του διακομιστή στους επισκέπτες."
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "Παράδοση email"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "Ουρά email"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "Επιβάλλεται. Κανένα σενάριο δεν αποκλείστηκε τις τελευταίες 7 ημέρες."
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "Αρχεία: αρκετά για μικρό ιστότοπο. Για πολυσύχναστο, το Redis είναι ταχύτερο: εγκαταστήστε τον διακομιστή Redis και την επέκταση redis της PHP (πολλοί πάροχοι προσφέρουν και τα δύο) και μετά επιλέξτε Redis στο Σύστημα → Ρυθμίσεις → Προσωρινή μνήμη."
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "Ελεύθερος χώρος δίσκου"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "Βάση δεδομένων GeoIP"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "Αποστέλλονται HSTS, CSP και X-Content-Type-Options."
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "Μόνο HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "Διακομιστής φιλοξενίας: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "Τελευταία εκτέλεση πριν από :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "Τελευταία εκτέλεση πριν από :ago· θα πρέπει να εκτελείται κάθε 5 λεπτά."
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "Οι βιβλιοθήκες, οι μεταφράσεις, τα manifest και η κλήση αλλαγής domain του πελάτη απορρίπτονται."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr "Δημιουργήθηκε πριν από :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr "Δημιουργήθηκε πριν από :ago· δημιουργήστε νέο."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "Δημιουργήθηκε στις :time, αλλά φυλάσσεται μόνο σε αυτόν τον διακομιστή: προσθέστε SFTP/FTP ή email για ένα αντίγραφο που επιβιώνει της απώλειάς του."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "Η αλληλογραφία περνά από το :mailer, όχι από SMTP μέσω TLS."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "Λείπουν: :list (clientfence-security-headers.php)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "Λείπουν: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "Λείπουν: :list. Εγκαταστήστε ξανά την έκδοση του ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "Λείπει: οι χώρες των διευθύνσεων IP είναι άγνωστες."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "Δικαιώματα :mode."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "Δικαιώματα :mode: άλλοι χρήστες του διακομιστή μπορούν να το διαβάσουν. Χρησιμοποιήστε 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "Δικαιώματα :mode: η ομάδα μπορεί να γράψει σε αυτό. Χρησιμοποιήστε 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "Οι ρυθμίσεις των μονάδων μπορούν να διαβαστούν με το info.salt στο config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "Νεότερο αντίγραφο ασφαλείας χρέωσης"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "Δεν βρέθηκε αντίγραφο ασφαλείας στον φάκελο εργασίας."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "Δεν είναι ενεργό ημερήσιο αντίγραφο ασφαλείας βάσης δεδομένων: ενεργοποιήστε ένα στο Σύστημα → Ρυθμίσεις → Σύστημα → Αντίγραφα ασφαλείας βάσης δεδομένων."
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "Δεν υπάρχει μεταφορά αλληλογραφίας: τα email δεν αποστέλλονται."
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "Δεν υπάρχει manifest πακέτου: εγκαταστήστε ξανά την έκδοση του ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "Τίποτα σε αναμονή, :failed απέτυχαν (επαναλαμβάνονται από το cron)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "Τίποτα σε αναμονή."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "Ανενεργό."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "Ανενεργό: η PHP μεταγλωττίζει τον κώδικα ξανά σε κάθε αίτημα, οπότε οι σελίδες αργούν περίπου 4 φορές περισσότερο. Ενεργοποιήστε το OPcache (opcache.enable = 1, συχνά «Opcode caching» στον πίνακα φιλοξενίας) στις ρυθμίσεις PHP αυτού του ιστότοπου."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "Ανενεργό: ορίστε το security.mode σε \"strict\" στο config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "Ανενεργό: οι φόρμες εγγραφής και σύνδεσης δεν έχουν captcha."
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "Ενεργό (:methods)· το πρώτο αντίγραφο ασφαλείας δημιουργείται στην επόμενη εκτέλεση του cron."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "Ενεργό, αλλά λείπουν τα κλειδιά."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "Ενεργό, αλλά λείπει το client ID ή το secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "Ενεργό, με client ID και secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "Ενεργό: η PHP κρατά τον μεταγλωττισμένο κώδικα στη μνήμη."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "Ενεργό: τα cookies συνεδρίας είναι SameSite=Strict."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "Εκτός του web root, αλλά τα δικαιώματα :mode επιτρέπουν πρόσβαση σε άλλους χρήστες. Χρησιμοποιήστε 700."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "Εκτός του web root, ιδιωτικό για τον χρήστη του ιστότοπου."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: το ClientFence χρειάζεται νεότερη PHP."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "Το display_errors της PHP είναι ενεργό."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "Επεκτάσεις PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "Όριο μνήμης PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "Κανόνες .htaccess του πακέτου"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "Αμετάβλητα αρχεία πακέτου"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "Manifest πακέτου"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "Ιδιωτικός φάκελος: αποδείξεις πληρωμών"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "Ιδιωτικός φάκελος: συνημμένα αιτημάτων"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "Αποκλεισμένες ιδιωτικές διαδρομές"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "Καταχωρητής: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "SMTP στη θύρα :port: χρησιμοποιήστε 465 (TLS) ή 587 (STARTTLS)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "SMTP μέσω TLS (θύρα 465)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "SMTP με STARTTLS (θύρα 587)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "Προγραμματισμένες εργασίες (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "Πολιτική σεναρίων"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "Κεφαλίδες ασφαλείας"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "API του SendGrid μέσω HTTPS."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "Στάλθηκε στις :time με :methods."
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "Προβάλλεται στους επισκέπτες: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "Ορίστε το URL σε https:// και το security.force_https σε true στο config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "Αυστηρή λειτουργία ασφαλείας"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "Το API του Dynadot απαντά με αυτό το κλειδί."
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "Το API του Dynadot δεν απάντησε."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "Η περιοχή διαχείρισης έχει δική της διεύθυνση, όχι το προεπιλεγμένο /admin."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "Η περιοχή διαχείρισης βρίσκεται στο προεπιλεγμένο /admin, την πρώτη διεύθυνση που δοκιμάζουν τα bots. Ορίστε το admin_area_prefix στο config.php σε δική σας διεύθυνση (για παράδειγμα /team-7k2) και συνδεθείτε εκεί."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr "Το αντίγραφο ασφαλείας της :time απέτυχε (:why)."
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "Ο έλεγχος δεν μπόρεσε να εκτελεστεί: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "Ο πίνακας ελέγχου απαντά."
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "Ο πίνακας ελέγχου δεν απάντησε."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "Η ενημέρωση της βάσης δεδομένων απέτυχε και απέτυχε επίσης η επαναφορά της προηγούμενης έκδοσης: επαναφέρετε τη βάση δεδομένων και τα αρχεία από το αντίγραφο ασφαλείας στο :dir. Περισσότερες λεπτομέρειες υπάρχουν στο αρχείο σφαλμάτων."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "Η ενημέρωση της βάσης δεδομένων απέτυχε, γι' αυτό η ενημέρωση ακυρώθηκε: η βάση δεδομένων και τα αρχεία επανήλθαν και ο ιστότοπος τρέχει πάλι ClientFence :version. Περισσότερες λεπτομέρειες υπάρχουν στο αρχείο σφαλμάτων."
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "Ο φάκελος βρίσκεται μέσα στο web root."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "Το νεότερο αντίγραφο ασφαλείας που στάλθηκε είναι :days ημερών: ελέγξτε ότι το cron εκτελείται."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "Το URL της πύλης είναι https και το απλό HTTP ανακατευθύνεται."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "Η πύλη δεν ήταν προσβάσιμη από τον διακομιστή."
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "Απεριόριστο."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr "Ενημερώθηκε πριν από :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr "Ενημερώθηκε πριν από :ago· το cron του ClientFence θα πρέπει να το ανανεώνει μηνιαία."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "Το config.php λείπει."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "Δικαιώματα του config.php"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "email"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "Το modules/Clientfence/pack-manifest.json λείπει: εγκαταστήστε ξανά την έκδοση του ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA, τα κλειδιά έχουν οριστεί."
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "αυτός ο διακομιστής"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "Έλεγχοι πυρήνα"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "Ακεραιότητα πακέτου"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "Ενίσχυση ασφαλείας"

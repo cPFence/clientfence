@@ -19526,3 +19526,549 @@ msgstr "Пишіть сторінки для клієнтської зони, ч
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "зараз"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr "Вибрано :cache, але він недоступний, тому ClientFence використовує файли: перевірте, що сервер працює і налаштування правильні."
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr "Файлів змінено або бракує: :changed (:list). Встановіть реліз ClientFence знову."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr "Очікуючих оновлень бази даних ClientFence: :count. Відкрийте «Завершити оновлення» в адмінпанелі або виконайте php console.php system:run-patcher."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr "Застосовано виправлень ядра: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count день"
+msgstr[1] ":count дні"
+msgstr[2] ":count днів"
+msgstr[3] ":count дня"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr "Файлів у тому вигляді, як при встановленні: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count година"
+msgstr[1] ":count години"
+msgstr[2] ":count годин"
+msgstr[3] ":count години"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr "Заблоковано видів скриптів: :count (за останні 7 днів), наприклад :list. Причиною може бути й розширення браузера або бот; перевірте ті, що називають власні сторінки та скрипти порталу."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count хвилина"
+msgstr[1] ":count хвилини"
+msgstr[2] ":count хвилин"
+msgstr[3] ":count хвилини"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr "Налаштувань модулів, збережених з іншим ключем шифрування та прочитаних як порожні: :count (:list). Якщо цю базу даних відновлено з резервної копії, поверніть початковий info.salt у config.php, перш ніж зберігати будь-які налаштування."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr "Діючих блоків правил: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database: рекомендується версія 10.6 або новіша."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database: рекомендується версія 8.0 або новіша."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit; рекомендується 256M або більше."
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr "Вільно :size ГБ (:percent%)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr "Файлів без власного виправлення ядра: :undone (:list). Встановіть реліз ClientFence знову."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr "Очікують: :waiting, з помилкою: :failed (cron повторить спробу)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr "Очікують: :waiting, найстаріше чекає :ago, з помилкою: :failed (cron повторить спробу)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr "Очікують: :waiting, найстаріше чекає :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr "Очікують: :waiting."
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "Резервна копія створюється просто зараз (розпочата :time)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "Адреса адміністративної області"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "Усі обов'язкові та рекомендовані розширення завантажено."
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "Усі обов'язкові; рекомендовані, але відсутні: :suggested."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "Бекенд кешу"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Капча на публічних формах"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version. Нові версії виходять як релізи ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "База даних ClientFence на оновленні :level."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile, ключі задано."
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "Виправлення ядра"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "Не вдалося прочитати рівень оновлення бази даних ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "Cron ще жодного разу не запускався."
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "Щоденна резервна копія бази даних"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "Оновлення бази даних"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "Версія бази даних"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "Налагодження та показ помилок"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "Режим налагодження та показ помилок PHP вимкнено."
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "Режим налагодження увімкнено: він може показувати відвідувачам відомості про сервер."
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "Доставка електронних листів"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "Черга електронних листів"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "Застосовується. За останні 7 днів жоден скрипт не було заблоковано."
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "Файли: підходить для невеликого сайту. Для навантаженого Redis швидший: встановіть сервер Redis і розширення PHP redis (багато хостингів пропонують обидва), потім виберіть Redis у розділі Система → Налаштування → Кеш."
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "Вільне місце на диску"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "База даних GeoIP"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "HSTS, CSP та X-Content-Type-Options надсилаються."
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "Лише HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "Сервер хостингу: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "Останній запуск :ago тому."
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "Останній запуск :ago тому; він має запускатися кожні 5 хвилин."
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "Бібліотеки, переклади, маніфести та виклик клієнта для зміни домену відхиляються."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr "Створена :ago тому."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr "Створена :ago тому; створіть нову."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "Створена :time, але зберігається лише на цьому сервері: додайте SFTP/FTP або електронну пошту, щоб копія пережила його втрату."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "Пошта йде через :mailer, а не через SMTP поверх TLS."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "Відсутнє: :list (clientfence-security-headers.php)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "Відсутнє: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "Відсутнє: :list. Встановіть реліз ClientFence знову."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "Відсутнє: країни IP-адрес невідомі."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "Права :mode."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "Права :mode: інші користувачі сервера можуть його читати. Використовуйте 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "Права :mode: група може в нього писати. Використовуйте 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "Налаштування модулів можна прочитати за допомогою info.salt у config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "Найновіша резервна копія білінгу"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "У робочій папці резервну копію не знайдено."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "Щоденну резервну копію бази даних не ввімкнено: увімкніть її в Система → Налаштування → Система → Резервні копії бази даних."
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "Немає транспорту пошти: листи не надсилаються."
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "Немає маніфесту пакета: встановіть реліз ClientFence знову."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "Нічого не очікує, з помилкою: :failed (cron повторить спробу)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "Нічого не очікує."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "Вимк."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "Вимк.: PHP заново компілює код при кожному запиті, тому сторінки завантажуються приблизно в 4 рази довше. Увімкніть OPcache (opcache.enable = 1, часто «Opcode caching» у панелі хостингу) у налаштуваннях PHP цього сайту."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "Вимк.: встановіть security.mode у \"strict\" у config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "Вимк.: у формах реєстрації та входу немає капчі."
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "Увімк. (:methods); перша резервна копія створюється під час наступного запуску cron."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "Увімк., але ключі відсутні."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "Увімк., але відсутній client ID або secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "Увімк., з client ID і secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "Увімк.: PHP зберігає скомпільований код у пам'яті."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "Увімк.: cookie сесії мають SameSite=Strict."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "Поза коренем вебсервера, але права :mode пускають інших користувачів. Використовуйте 700."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "Поза коренем вебсервера, доступна лише користувачу сайту."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: ClientFence потрібен новіший PHP."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "Параметр display_errors у PHP увімкнено."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "Розширення PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "Ліміт пам'яті PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "Правила .htaccess пакета"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "Файли пакета не змінено"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "Маніфест пакета"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "Закрита папка: квитанції про оплату"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "Закрита папка: вкладення тікетів"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "Закриті шляхи заблоковано"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "Реєстратор: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "SMTP на порту :port: використовуйте 465 (TLS) або 587 (STARTTLS)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "SMTP поверх TLS (порт 465)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "SMTP зі STARTTLS (порт 587)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "Заплановані завдання (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "Політика скриптів"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "Заголовки безпеки"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "API SendGrid через HTTPS."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "Надіслана :time через :methods."
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "Віддається відвідувачам: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "Задайте URL https:// і security.force_https у true у config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "Суворий режим безпеки"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "API Dynadot відповідає з цим ключем."
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "API Dynadot не відповів."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "Адміністративна область має власну адресу, а не /admin за замовчуванням."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "Адміністративна область розташована за адресою /admin за замовчуванням, яку боти пробують першою. Задайте в config.php параметр admin_area_prefix зі своєю адресою (наприклад, /team-7k2) і входьте за нею."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr "Резервна копія від :time не вдалася (:why)."
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "Не вдалося виконати перевірку: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "Панель керування відповідає."
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "Панель керування не відповіла."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "Оновлення бази даних не вдалося, і повернення попередньої версії теж не вдалося: відновіть базу даних і файли з резервної копії в :dir. Подробиці — в журналі помилок."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "Оновлення бази даних не вдалося, тому оновлення було скасовано: базу даних і файли повернуто, сайт знову працює на ClientFence :version. Подробиці — в журналі помилок."
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "Папка розташована всередині кореня вебсервера."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "Вік найновішої надісланої резервної копії: :days дн. Перевірте, що cron працює."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "URL порталу — https, звичайний HTTP перенаправляється."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "Портал не вдалося досягти з сервера."
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "Без обмежень."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr "Оновлено :ago тому."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr "Оновлено :ago тому; cron ClientFence має оновлювати це щомісяця."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "config.php відсутній."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "Права config.php"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "електронна пошта"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "modules/Clientfence/pack-manifest.json відсутній: встановіть реліз ClientFence знову."
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA, ключі задано."
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "цей сервер"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "Перевірки ядра"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "Цілісність пакета"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "Посилення безпеки"

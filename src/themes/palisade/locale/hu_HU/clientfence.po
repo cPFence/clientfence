@@ -19505,3 +19505,543 @@ msgstr "Írjon oldalakat az ügyfélterülethez, vázlatként vagy közzétéve,
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "most"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr "A(z) :cache van kiválasztva, de nem érhető el, ezért a ClientFence fájlokat használ: ellenőrizze, hogy fut-e a szerver, és helyesek-e a beállítások."
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr "Megváltozott vagy hiányzik :changed fájl: :list. Telepítse újra a ClientFence kiadását."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr ":count ClientFence adatbázis-frissítés vár: nyissa meg a Frissítés véglegesítése lehetőséget az adminban, vagy futtassa: php console.php system:run-patcher."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr ":count maglogikai javítás alkalmazva."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count nap"
+msgstr[1] ":count nap"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr ":count fájl a telepítettnek megfelelő."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count óra"
+msgstr[1] ":count óra"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr ":count fajta szkriptet blokkoltak (az elmúlt 7 napban), például: :list. Böngészőbővítmény vagy bot is okozhatja; ellenőrizze azokat, amelyek a portál saját oldalait és szkriptjeit nevezik meg."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count perc"
+msgstr[1] ":count perc"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr ":count modulbeállítás más titkosítási kulccsal lett mentve, és üresként olvasódik be (:list). Ha ezt az adatbázist biztonsági mentésből állították vissza, tegye vissza az eredeti info.salt értéket a config.php fájlba, mielőtt beállításokat menti."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr ":count szabályblokk van érvényben."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database: 10.6 vagy újabb ajánlott."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database: 8.0 vagy újabb ajánlott."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit; 256M vagy több ajánlott."
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr ":size GB szabad (:percent%)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr ":undone fájl a saját maglogikai javítása nélkül: :list. Telepítse újra a ClientFence kiadását."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr ":waiting vár, :failed sikertelen (a cron újra megpróbálja)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr ":waiting vár, a legrégebbi :ago óta, :failed sikertelen (a cron újra megpróbálja)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr ":waiting vár, a legrégebbi :ago óta."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr ":waiting vár."
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "Éppen készül egy biztonsági mentés (indult: :time)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "Az adminfelület címe"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "Az összes kötelező és ajánlott bővítmény betöltve."
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "Az összes kötelező; ajánlott, de hiányzik: :suggested."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "Gyorsítótár-háttér"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Captcha a nyilvános űrlapokon"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version. Az új verziók ClientFence kiadásként érkeznek."
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "A ClientFence adatbázis frissítési szintje: :level."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile, kulcsok beállítva."
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "Maglogikai javítások"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "Nem sikerült beolvasni a ClientFence adatbázis frissítési szintjét."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "A cron még soha nem futott."
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "Napi adatbázis-mentés"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "Adatbázis-frissítések"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "Adatbázis verziója"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "Hibakeresés és hibakijelzés"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "A hibakeresési mód és a PHP hibakijelzése ki van kapcsolva."
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "A hibakeresési mód be van kapcsolva: szerverrészleteket mutathat a látogatóknak."
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "E-mailek kézbesítése"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "E-mail-várólista"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "Kikényszerítve. Az elmúlt 7 napban nem blokkoltak szkriptet."
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "Fájlok: kis oldalhoz megfelelő. Forgalmasabbhoz a Redis gyorsabb: telepítse a Redis szervert és a PHP redis bővítményét (sok tárhelyszolgáltató mindkettőt kínálja), majd válassza a Redis lehetőséget itt: Rendszer → Beállítások → Gyorsítótár."
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "Szabad lemezterület"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "GeoIP-adatbázis"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "A HSTS, a CSP és az X-Content-Type-Options elküldésre kerül."
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "Csak HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "Tárhelyszerver: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "Utoljára :ago ezelőtt futott."
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "Utoljára :ago ezelőtt futott; 5 percenként kellene futnia."
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "A könyvtárak, fordítások, manifesztek és az ügyfél domainváltási hívása elutasítva."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr ":ago ezelőtt készült."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr ":ago ezelőtt készült; készítsen újat."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "Készült: :time, de csak ezen a szerveren van tárolva: adjon hozzá SFTP/FTP-t vagy e-mailt olyan másolathoz, amely túléli a szerver elvesztését."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "A levelezés ezen megy: :mailer, nem SMTP over TLS-en."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "Hiányzik: :list (clientfence-security-headers.php)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "Hiányzik: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "Hiányzik: :list. Telepítse újra a ClientFence kiadását."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "Hiányzik: az IP-címek országai ismeretlenek."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "Jogosultságok: :mode."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "Jogosultságok: :mode. A szerver más felhasználói olvashatják. Használja a 600-at."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "Jogosultságok: :mode. A csoport írhatja. Használja a 600-at."
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "A modulbeállítások az info.salt értékkel olvashatók a config.php fájlban."
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "Legújabb számlázási mentés"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "A munkamappában nem található mentés."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "Nincs bekapcsolva napi adatbázis-mentés: kapcsoljon be egyet itt: Rendszer → Beállítások → Rendszer → Adatbázis-mentések."
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "Nincs levélküldési mód: az e-mailek nem kerülnek elküldésre."
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "Nincs csomagmanifeszt: telepítse újra a ClientFence kiadását."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "Semmi sem vár, :failed sikertelen (a cron újra megpróbálja)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "Semmi sem vár."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "Ki."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "Ki: a PHP minden kérésnél újrafordítja a kódot, ezért az oldalak nagyjából 4-szer tovább töltenek. Kapcsolja be az OPcache-t (opcache.enable = 1, a tárhelypanelen gyakran „Opcode caching”) az oldal PHP-beállításaiban."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "Ki: állítsa a security.mode értékét \"strict\"-re a config.php fájlban."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "Ki: a regisztrációs és bejelentkezési űrlapokon nincs captcha."
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "Be (:methods); az első mentés a következő cron-futáskor készül."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "Be, de hiányoznak a kulcsai."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "Be, de hiányzik a kliensazonosító vagy a titok."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "Be, kliensazonosítóval és titokkal."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "Be: a PHP a lefordított kódot a memóriában tartja."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "Be: a munkamenet-sütik SameSite=Strict beállításúak."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "A webgyökéren kívül, de a(z) :mode jogosultság más felhasználókat is beenged. Használja a 700-at."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "A webgyökéren kívül, az oldal felhasználójának privát."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: a ClientFence újabb PHP-t igényel."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "A PHP display_errors be van kapcsolva."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "PHP-bővítmények"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "PHP memóriakorlát"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "A csomag .htaccess-szabályai"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "Csomagfájlok változatlanok"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "Csomagmanifeszt"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "Privát mappa: fizetési nyugták"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "Privát mappa: jegyek mellékletei"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "Privát elérési utak blokkolva"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "Regisztrátor: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "SMTP a(z) :port porton: használjon 465-öt (TLS) vagy 587-et (STARTTLS)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "SMTP over TLS (465-ös port)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "SMTP STARTTLS-sel (587-es port)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "Ütemezett feladatok (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "Szkriptszabályzat"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "Biztonsági fejlécek"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "SendGrid API HTTPS-en."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "Elküldve: :time, módja: :methods."
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "A látogatóknak kiszolgálva: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "Állítsa az URL-t https://-re, a security.force_https értékét pedig true-ra a config.php fájlban."
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "Szigorú biztonsági mód"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "A Dynadot API válaszol ezzel a kulccsal."
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "A Dynadot API nem válaszolt."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "Az adminfelületnek saját címe van, nem az alapértelmezett /admin."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "Az adminfelület az alapértelmezett /admin címen van, ezt próbálják először a botok. Állítsa az admin_area_prefix értékét a config.php fájlban saját címre (például /team-7k2), és ott jelentkezzen be."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr "A(z) :time időpontú mentés sikertelen volt (:why)."
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "Az ellenőrzést nem sikerült futtatni: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "A vezérlőpult válaszol."
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "A vezérlőpult nem válaszolt."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "Az adatbázis-frissítés sikertelen volt, és az előző verzió visszaállítása is sikertelen volt: állítsa vissza az adatbázist és a fájlokat a mentésből itt: :dir. További részletek a hibanaplóban találhatók."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "Az adatbázis-frissítés sikertelen volt, ezért a frissítést visszagörgették: az adatbázis és a fájlok visszakerültek, és az oldal ismét a ClientFence :version verziót futtatja. További részletek a hibanaplóban találhatók."
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "A mappa a webgyökéren belül van."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "A legújabb elküldött mentés :days napos: ellenőrizze, hogy fut-e a cron."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "A portál URL-je https, és a sima HTTP át van irányítva."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "A portál nem érhető el a szerverről."
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "Korlátlan."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr ":ago ezelőtt frissítve."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr ":ago ezelőtt frissítve; a ClientFence cronjának havonta frissítenie kellene."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "A config.php hiányzik."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "A config.php jogosultságai"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "e-mail"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "A modules/Clientfence/pack-manifest.json hiányzik: telepítse újra a ClientFence kiadását."
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA, kulcsok beállítva."
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "ez a szerver"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "Maglogikai ellenőrzések"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "Csomag épsége"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "Biztonsági megerősítés"

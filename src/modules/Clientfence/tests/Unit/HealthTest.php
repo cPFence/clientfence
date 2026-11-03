@@ -114,5 +114,20 @@ test('a recent health run from another version is refreshed', function (): void 
     Health::runIfDue($di);
 
     expect($saved['version'])->toBe(ClientFence\Version::CLIENTFENCE)
-        ->and(array_column($saved['checks'], 'detail', 'id')['fb_update'])->toContain('ClientFence ' . ClientFence\Version::CLIENTFENCE);
+        ->and(array_column($saved['checks'], 'detail', 'id')['fb_update'])->toBe('ClientFence :version. New versions come as ClientFence releases.')
+        ->and(array_column($saved['checks'], 'params', 'id')['fb_update'])->toBe([':version' => ClientFence\Version::CLIENTFENCE]);
+});
+
+test('a saved check is read with its values filled in', function (): void {
+    $report = Health::summarize(['checks' => [
+        ['group' => 'services', 'id' => 'svc_cron', 'title' => 'Scheduled tasks (cron)', 'state' => 'ok', 'detail' => 'Last run :ago ago.', 'params' => [':ago' => 300]],
+        ['group' => 'server', 'id' => 'srv_db_backup', 'title' => 'Registrar: :name', 'state' => 'ok', 'detail' => 'Sent :time by :methods.', 'params' => [':name' => 'Main', ':time' => '2026-11-03 04:00:00', ':methods' => ['SFTP/FTP', 'email']]],
+        // Saved before the texts had values.
+        ['group' => 'server', 'id' => 'srv_php', 'title' => 'PHP version', 'state' => 'ok', 'detail' => 'PHP 8.4.1.'],
+    ]]);
+
+    // The plural form comes from the loaded catalog, so only the number is checked.
+    expect($report['checks'][0]['detail'])->toMatch('/^Last run 5 minutes? ago\.$/')
+        ->and(array_column(array_slice($report['checks'], 1), 'detail'))->toBe(['Sent 2026-11-03 04:00:00 by SFTP/FTP, email.', 'PHP 8.4.1.'])
+        ->and($report['checks'][1]['title'])->toBe('Registrar: Main');
 });

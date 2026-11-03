@@ -163,6 +163,47 @@ final class DatabaseDump
         self::put($gz, "\n");
     }
 
+    /**
+     * Loads a dump write() made back into the database (the automatic rollback of a failed update,
+     * Update::performUpdate()): its tables and views replace those of the same name, and the ones
+     * made since (not in the dump) are dropped, so the database is as it was when the dump was made.
+     */
+    public static function restore(Connection $db, string $file): void
+    {
+        if (!self::complete($file) || ($gz = @gzopen($file, 'rb')) === false) {
+            throw new \RuntimeException('The database backup is missing or incomplete: ' . $file);
+        }
+        [$mode, $zone] = $db->fetchNumeric('SELECT @@session.sql_mode, @@session.time_zone');
+        $dumped = [];
+        $statement = '';
+        try {
+            // write() escapes line breaks in values, so every statement ends with ";" at the end of a line.
+            while (($line = gzgets($gz)) !== false) {
+                if ($statement === '' && preg_match('/\A-- (?:Table|View) (.+)\n\z/', $line, $m) === 1) {
+                    $dumped[] = $m[1];
+                }
+                if ($statement === '' && (str_starts_with($line, '--') || trim($line) === '')) {
+                    continue;
+                }
+                $statement .= $line;
+                if (str_ends_with(rtrim($line), ';')) {
+                    $db->executeStatement(substr(rtrim($statement), 0, -1));
+                    $statement = '';
+                }
+            }
+            $db->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
+            foreach ($db->fetchAllNumeric('SHOW FULL TABLES') as [$name, $type]) {
+                if (!in_array((string) $name, $dumped, true)) {
+                    $db->executeStatement((strtoupper((string) $type) === 'VIEW' ? 'DROP VIEW ' : 'DROP TABLE ') . self::name((string) $name));
+                }
+            }
+        } finally {
+            gzclose($gz);
+            $db->executeStatement('SET FOREIGN_KEY_CHECKS = 1, UNIQUE_CHECKS = 1');
+            $db->executeStatement('SET SESSION sql_mode = ?, time_zone = ?', [$mode, $zone]);
+        }
+    }
+
     /** A MySQL string literal (as mysqldump escapes: works whatever the restoring SQL mode). */
     public static function quote(string $value): string
     {

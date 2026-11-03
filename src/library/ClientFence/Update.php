@@ -372,24 +372,6 @@ class Update implements InjectionAwareInterface
             throw new InformationException('The web server cannot write :file, which this release replaces or adds (:count such files in all). Fix their owner or permissions and try again; nothing was changed.', [':count' => count($blocked), ':file' => $blocked[0]]);
         }
 
-        // ClientFence core patch: a backup of the database and of every file the release replaces
-        // (Mod\Clientfence\UpdateBackup), before anything changes; no backup, no update.
-        try {
-            $backup = \ClientFence\Mod\Clientfence\UpdateBackup::make($this->di, $archiveFile, $latestVersionNum);
-        } catch (\Throwable $e) {
-            $this->removeDownloadedArchive($archiveFile);
-            $this->di['logger']->setChannel('update')->error('The backup before the update failed: ' . $e->getMessage());
-
-            throw new Exception('The backup before the update failed, so nothing was changed. Further details are available in the error log.');
-        }
-        $this->di['logger']->setChannel('update')->info('Backup before the update: ' . $backup['dir']);
-
-        $finalization->createPendingState(Version::CLIENTFENCE, $latestVersionNum, [
-            'branch' => $updateBranch,
-            'update_type' => $releaseInfo['update_type'] ?? Version::getUpdateType($latestVersionNum),
-            'source' => 'auto-update',
-        ]);
-
         /*
          * From here until the lock is released below, files under PATH_ROOT are
          * being overwritten in place while the site may still be serving other
@@ -426,6 +408,26 @@ class Update implements InjectionAwareInterface
         ignore_user_abort(true);
 
         try {
+            // ClientFence core patch: a backup of the database and of every file the release replaces
+            // (Mod\Clientfence\UpdateBackup), before anything changes; no backup, no update. It is made
+            // under the lock, so no request saves anything the rollback below would erase.
+            try {
+                $backup = \ClientFence\Mod\Clientfence\UpdateBackup::make($this->di, $archiveFile, $latestVersionNum);
+            } catch (\Throwable $e) {
+                $this->removeDownloadedArchive($archiveFile);
+                $this->di['logger']->setChannel('update')->error('The backup before the update failed: ' . $e->getMessage());
+
+                throw new Exception('The backup before the update failed, so nothing was changed. Further details are available in the error log.');
+            }
+            $this->di['logger']->setChannel('update')->info('Backup before the update: ' . $backup['dir']);
+            $this->filesystem->touch($lockFile);
+
+            $finalization->createPendingState(Version::CLIENTFENCE, $latestVersionNum, [
+                'branch' => $updateBranch,
+                'update_type' => $releaseInfo['update_type'] ?? Version::getUpdateType($latestVersionNum),
+                'source' => 'auto-update',
+            ]);
+
             // Extract latest version archive on top of the current version.
             try {
                 $zip = new ZipFile();
@@ -480,10 +482,21 @@ class Update implements InjectionAwareInterface
             try {
                 $finalization->finalizeUpdate();
             } catch (\Throwable $e) {
-                // ClientFence core patch: the files are new; Finalize update retries the database part.
+                // ClientFence core patch: the database and the files go back to the backup made before
+                // the update (as a failed unpack above), so the site is never left half-updated.
                 $this->di['logger']->setChannel('update')->error('The database update failed: ' . $e->getMessage());
+                try {
+                    \ClientFence\Mod\Clientfence\DatabaseDump::restore($this->di['em']->getConnection(), $backup['database']);
+                    \ClientFence\Mod\Clientfence\UpdateBackup::restoreFiles($backup);
+                    $this->invalidateOpcodeCache();
+                    $finalization->cancelPendingState();
+                } catch (\Throwable $restoreError) {
+                    $this->di['logger']->setChannel('update')->error('Rolling back the update failed: ' . $restoreError->getMessage());
 
-                throw new Exception('The new files are in place but the database update failed. Sign in again and use Finalize update to retry; the backup made before the update is in :dir. Further details are available in the error log.', [':dir' => $backup['dir']]);
+                    throw new Exception('The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log.', [':dir' => $backup['dir']]);
+                }
+
+                throw new Exception('The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log.', [':version' => Version::CLIENTFENCE]);
             }
         } finally {
             $this->filesystem->remove($lockFile);

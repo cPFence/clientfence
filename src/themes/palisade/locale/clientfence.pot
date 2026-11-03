@@ -302,9 +302,35 @@ msgstr ""
 msgid ":amount was added to your account credit"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr ""
+
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
 msgid ":count addresses submitted"
 msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid ":count days"
@@ -317,6 +343,16 @@ msgstr ""
 #: src/modules/System/Service.php
 msgid ":count email template(s) have syntax errors and cannot send emails. Please review and fix them."
 msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid ":count in total"
@@ -334,8 +370,22 @@ msgstr ""
 msgid ":count items"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid ":count lines"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -366,6 +416,10 @@ msgstr ""
 msgid ":count paid"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid ":count unpaid, :overdue overdue"
 msgstr ""
@@ -376,6 +430,18 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid ":count warnings"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_feedback.html.twig
@@ -442,6 +508,14 @@ msgstr ""
 msgid ":kind: the new price is :price :period. :due"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ""
+
 #: src/modules/Product/Options.php
 msgid ":option is no longer offered."
 msgstr ""
@@ -468,6 +542,10 @@ msgstr ""
 
 #: src/modules/Embed/Service.php
 msgid ":site is not a website address such as https://example.com."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_ticket.html.twig
@@ -526,6 +604,10 @@ msgstr ""
 msgid ":type: registrar is unable to :action:"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr ""
+
 #: src/modules/Security/Checks/webserver.php
 msgid ":url: returned HTTP 200 when it shouldn't have."
 msgstr ""
@@ -554,6 +636,22 @@ msgstr ""
 msgid ":value is no longer offered."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr ""
+
 #: src/modules/Product/Options.php
 msgid ":what can be at most :max characters."
 msgstr ""
@@ -580,6 +678,10 @@ msgstr ""
 
 #: src/library/ClientFence/Mail.php
 msgid "A SendGrid API key is required to send emails via SendGrid"
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
@@ -1502,6 +1604,10 @@ msgstr ""
 msgid "Admin area"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr ""
+
 #: src/modules/Profile/Api/Admin.php
 msgid "Admin identity not found"
 msgstr ""
@@ -1554,7 +1660,7 @@ msgstr ""
 msgid "Aging Invoices"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Clientfence/Health.php
 msgid "Alert"
 msgstr ""
 
@@ -1720,6 +1826,14 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_report.html.twig
 msgid "All reports"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
 msgstr ""
 
 #: src/modules/Support/NetworkIssues.php
@@ -3314,6 +3428,10 @@ msgstr ""
 msgid "Cache Directory Cleared"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr ""
+
 #: src/library/ClientFence/Cache/CacheFactory.php
 msgid "Cache configuration is invalid."
 msgstr ""
@@ -3532,6 +3650,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Captcha"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
 msgstr ""
 
 #: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
@@ -4354,6 +4476,10 @@ msgstr ""
 msgid "ClientFence :version is available for download."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr ""
+
 #: src/library/ClientFence/Update.php
 msgid "ClientFence :version: requires at least PHP :min_php:, but you are running :current_php:."
 msgstr ""
@@ -4368,6 +4494,10 @@ msgstr ""
 
 #: src/modules/Extension/Service.php
 msgid "ClientFence core modules cannot be installed or removed"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -4442,7 +4572,7 @@ msgstr ""
 msgid "ClientFence update finalization is pending. Complete finalization before using the admin API."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
+#: src/modules/Clientfence/Health.php src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "ClientFence version"
 msgstr ""
 
@@ -4608,6 +4738,10 @@ msgstr ""
 
 #: src/modules/Antispam/Service.php
 msgid "Cloudflare Turnstile secret key is not configured."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -5078,6 +5212,10 @@ msgstr ""
 msgid "Copy it exactly; Google refuses any other address."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr ""
+
 #: src/modules/Extension/Service.php
 msgid "Core modules are an integral part of the ClientFence system and cannot be deactivated."
 msgstr ""
@@ -5088,6 +5226,10 @@ msgstr ""
 
 #: src/library/ClientFence/Module.php
 msgid "Core modules cannot be updated separately. Please update to the latest ClientFence version to have the module updated."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
@@ -5152,6 +5294,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Api.php
 msgid "Could not reach the :panel: server. Please try again later."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
 msgstr ""
 
 #: src/modules/Servicedomain/Service.php
@@ -5404,6 +5550,10 @@ msgstr ""
 
 #: src/modules/Cron/templates/admin/mod_cron_settings.html.twig
 msgid "Cron Settings"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
 msgstr ""
 
 #: src/modules/System/Service.php
@@ -5662,6 +5812,10 @@ msgstr ""
 msgid "Daily"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/partial_clientfence_sidebar.html.twig
 msgid "Daily work"
 msgstr ""
@@ -5742,6 +5896,14 @@ msgstr ""
 msgid "Database patches are small migrations that update ClientFence database tables and settings after the application files change."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr ""
+
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
 msgid "Date"
 msgstr ""
@@ -5804,6 +5966,18 @@ msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig
 msgid "Debug and above"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -6782,6 +6956,10 @@ msgstr ""
 msgid "Email backups are on."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "Email import cannot read the mailbox of :helpdesk"
 msgstr ""
@@ -6804,6 +6982,10 @@ msgstr ""
 
 #: src/modules/Email/Repository/ActivityClientEmailRepository.php
 msgid "Email not found"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
 msgstr ""
 
 #: src/themes/palisade/html/partials/i18n.html.twig
@@ -7070,7 +7252,7 @@ msgstr ""
 msgid "Encryption"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Encryption key"
 msgstr ""
 
@@ -7080,6 +7262,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "End of billing period"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
 msgstr ""
 
 #: src/library/Server/Manager/Enhance.php
@@ -7970,6 +8156,10 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Filesystem"
 msgstr ""
@@ -8238,6 +8428,10 @@ msgstr ""
 msgid "Free Subdomain Base Domain"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Free subdomain"
 msgstr ""
@@ -8372,6 +8566,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Generate due invoices for this client now?"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
@@ -8518,7 +8716,7 @@ msgstr ""
 msgid "Google returns a score from 0.0 to 1.0. Higher thresholds are stricter."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Client/templates/client/mod_client_google_link.html.twig src/themes/palisade/html/layout_default.html.twig
+#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Client/templates/client/mod_client_google_link.html.twig src/modules/Clientfence/Health.php …
 msgid "Google sign-in"
 msgstr ""
 
@@ -8634,8 +8832,16 @@ msgstr ""
 msgid "Guests"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr ""
+
 #: src/index.php
 msgid "HTTP Error :err_code occurred while attempting to load :url"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -8920,6 +9126,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Api/Admin.php
 msgid "Hosting server is used by :count: service hostings"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
 msgstr ""
 
 #: src/modules/Servicehosting/Api/Client.php
@@ -10150,6 +10360,14 @@ msgstr ""
 msgid "Last read"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Last run :time ago"
 msgstr ""
@@ -10296,6 +10514,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Letter"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
@@ -10674,6 +10896,18 @@ msgstr ""
 msgid "Made"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "Mail"
 msgstr ""
@@ -10692,6 +10926,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Mail apps signed in with the old password need the new one."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
 msgstr ""
 
 #: src/modules/Support/MailImport.php
@@ -11466,6 +11704,22 @@ msgstr ""
 msgid "Missing manifest file for the :mod module."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr ""
+
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig
 msgid "Mixed"
 msgstr ""
@@ -11476,6 +11730,18 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Mode"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -11492,6 +11758,10 @@ msgstr ""
 
 #: src/modules/Extension/Service.php
 msgid "Module cannot be installed. It requires at least :min version of FOSSBilling. You are using :v"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -11982,6 +12252,10 @@ msgstr ""
 msgid "New visitors sign up on the sign-up page (linked from the sign-in page) or on the checkout page, when they order."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Newly created email templates can be used in custom event hooks."
 msgstr ""
@@ -12126,6 +12400,10 @@ msgstr ""
 msgid "No articles or categories matched your search for:"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "No backup has been made yet."
 msgstr ""
@@ -12196,6 +12474,10 @@ msgstr ""
 
 #: src/modules/Servicecustom/templates/admin/mod_servicecustom_config.html.twig
 msgid "No custom parameters have been defined yet."
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
 msgstr ""
 
 #: src/modules/Security/Checks/generalCheck.php
@@ -12302,6 +12584,10 @@ msgstr ""
 msgid "No limit"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig
 msgid "No messages yet."
 msgstr ""
@@ -12340,6 +12626,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "No orders yet."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
@@ -12634,6 +12924,14 @@ msgstr ""
 msgid "Nothing to show for these filters."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Run.php
 msgid "Nothing was imported yet."
 msgstr ""
@@ -12710,12 +13008,28 @@ msgstr ""
 msgid "Off (default):"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_network.html.twig
 msgid "Off: only signed-in clients see it, as in WHMCS."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Off: plain FTP, which sends the password and the backup unencrypted. The SFTP server's key is not checked (as in WHMCS): use a server you reach over a network you trust."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
@@ -12730,6 +13044,10 @@ msgstr ""
 msgid "On"
 msgstr ""
 
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/Quotes.php …
 msgid "On Hold"
 msgstr ""
@@ -12738,8 +13056,28 @@ msgstr ""
 msgid "On or off"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "On:"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -13406,6 +13744,14 @@ msgstr ""
 msgid "Outages and planned work, shown to clients on the Network Status page. Clients with services on an affected server see a banner while an issue is open or the work is scheduled; you can also email them when you save an issue."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr ""
+
 #: src/modules/Invoice/Reports.php
 msgid "Over :days days"
 msgstr ""
@@ -13442,6 +13788,14 @@ msgstr ""
 msgid "PHP"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr ""
+
 #: src/modules/Security/Checks/phpVersion.php
 msgid "PHP :version: is out of date and does not get security patches."
 msgstr ""
@@ -13454,12 +13808,20 @@ msgstr ""
 msgid "PHP :version: isn't the latest, but is still supported."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+#: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "PHP OPcache"
 msgstr ""
 
 #: src/modules/Security/Checks/phpVersion.php
 msgid "PHP Version Check"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -13470,7 +13832,11 @@ msgstr ""
 msgid "PHP mail on this server. Works when the server is set up to send mail."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "PHP version"
 msgstr ""
 
@@ -13492,6 +13858,22 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "POST Parameters"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
 msgstr ""
 
 #: src/modules/Page/manifest.json
@@ -13610,7 +13992,7 @@ msgstr ""
 msgid "Part"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig
+#: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig
 msgid "Passed"
 msgstr ""
 
@@ -14506,6 +14888,18 @@ msgstr ""
 msgid "Privacy protection enabled"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_update_finalize.html.twig
 msgid "Proceeding will restore the maintenance mode setting to its previous state and return you to the dashboard."
 msgstr ""
@@ -15290,6 +15684,10 @@ msgstr ""
 msgid "Registrar missing"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig
 msgid "Registrars"
 msgstr ""
@@ -15986,7 +16384,7 @@ msgstr ""
 msgid "SEO Tools"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+#: src/modules/Clientfence/Backups.php src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "SFTP/FTP"
 msgstr ""
 
@@ -16026,12 +16424,24 @@ msgstr ""
 msgid "SMTP host or port is not configured"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr ""
+
 #: src/library/ClientFence/Mail.php
 msgid "SMTP port is invalid"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "SMTP server"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
 msgstr ""
 
 #: src/modules/Support/Mail/ImapClient.php
@@ -16230,12 +16640,20 @@ msgstr ""
 msgid "Scheduled for %time%."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr ""
+
 #: src/modules/Cron/templates/admin/mod_cron_settings.html.twig
 msgid "Scheduled tasks were never executed"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ratings.html.twig
 msgid "Score"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig …
@@ -16300,6 +16718,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Security checks"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -16566,6 +16992,10 @@ msgstr ""
 msgid "SendGrid API Key"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "SendGrid Settings"
 msgstr ""
@@ -16610,6 +17040,10 @@ msgstr ""
 msgid "Sent %date%"
 msgstr ""
 
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Sent emails"
 msgstr ""
@@ -16626,7 +17060,11 @@ msgstr ""
 msgid "Serie"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig …
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig …
 msgid "Server"
 msgstr ""
 
@@ -16742,7 +17180,7 @@ msgstr ""
 msgid "Service class :class was not found in :path"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Order/templates/client/mod_order_list.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
+#: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Order/templates/client/mod_order_list.html.twig …
 msgid "Services"
 msgstr ""
 
@@ -16824,6 +17262,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Set status"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
 msgstr ""
 
 #: src/modules/Order/Service.php
@@ -17550,6 +17992,10 @@ msgstr ""
 msgid "Storefront Visibility"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr ""
+
 #: src/library/Payment/Adapter/Stripe.php
 msgid "Stripe webhook signing secret is not configured"
 msgstr ""
@@ -18258,6 +18704,14 @@ msgstr ""
 msgid "The ClientFence release feed provided an invalid SHA-256 digest. Update canceled for security reasons."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr ""
+
 #: src/library/Server/Manager/Enhance.php
 msgid "The Enhance (ClientFence) organization ID must be the organization's UUID, not the API token."
 msgstr ""
@@ -18326,6 +18780,14 @@ msgstr ""
 msgid "The admin address is 4 to 40 letters, digits or dashes, for example /team-7k2."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr ""
+
 #: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
 msgid "The amount was added to your account credit."
 msgstr ""
@@ -18352,6 +18814,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Backups.php
 msgid "The backup could not be written to :dir."
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -18388,6 +18854,10 @@ msgstr ""
 
 #: src/modules/Security/Service.php
 msgid "The check :checkName: does not seem to be a valid check."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig
@@ -18462,6 +18932,14 @@ msgstr ""
 msgid "The contact was saved."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "The control panels your hosting servers run. A panel that is on gives its servers the ClientFence server manager and the Hosting accounts pages of the client area; switched off, its servers refuse every action."
 msgstr ""
@@ -18504,6 +18982,14 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid "The database backup failed"
+msgstr ""
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr ""
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
 msgstr ""
 
 #: src/modules/Currency/Service.php
@@ -18612,6 +19098,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Backups.php
 msgid "The folder :dir is inside the website, where it could be downloaded; set CLIENTFENCE_BACKUP_DIR to a folder outside the web root."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
@@ -18847,16 +19337,16 @@ msgstr ""
 msgid "The name, email, address, phone, ticket messages and sent emails are erased for good; orders, invoices and payments stay. The client can no longer sign in. This cannot be undone."
 msgstr ""
 
-#: src/library/ClientFence/Update.php
-msgid "The new files are in place but the database update failed. Sign in again and use Finalize update to retry; the backup made before the update is in :dir. Further details are available in the error log."
-msgstr ""
-
 #: src/modules/Order/Upgrades.php
 msgid "The new product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "The new product no longer exists."
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig
@@ -18969,6 +19459,14 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "The plans of a panel server become hosting plans with the same name and limits, linked by the panel plan ID (custom value plan_id). Hosting plans that already match a panel plan are left unchanged unless you choose to update them."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
@@ -20695,6 +21193,10 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Unlink Google"
 msgstr ""
@@ -21049,6 +21551,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/News/templates/admin/mod_news_index.html.twig …
 msgid "Updated"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
@@ -22767,6 +23277,14 @@ msgstr ""
 msgid "client_billing_email cannot be set via the API"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "country not known"
 msgstr ""
@@ -22829,6 +23347,10 @@ msgstr ""
 
 #: src/modules/Product/templates/client/mod_product_options_form.html.twig
 msgid "each"
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -22913,6 +23435,10 @@ msgstr ""
 
 #: src/library/ClientFence/Twig/Extension/ClientFenceExtension.php
 msgid "minutes"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
 msgstr ""
 
 #: src/library/ClientFence/Twig/Extension/ClientFenceExtension.php
@@ -23023,6 +23549,10 @@ msgstr ""
 msgid "reCAPTCHA verification failed."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "recorded applications"
 msgstr ""
@@ -23117,6 +23647,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "the mailbox opens at once, signed in, on mail.<the client’s domain>."
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/partial_clientfence_palette.html.twig

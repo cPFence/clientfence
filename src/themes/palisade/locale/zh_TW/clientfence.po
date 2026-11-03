@@ -20042,3 +20042,540 @@ msgstr "為客戶區撰寫頁面，可存為草稿或發布，並設定選單與
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "現在"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr "已選擇 :cache，但無法連線，因此 ClientFence 改用檔案：請檢查伺服器是否在執行、設定是否正確。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr "有 :changed 個檔案已變更或遺失：:list。請重新安裝 ClientFence 發行版。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr "有 :count 個 ClientFence 資料庫更新待處理：請在管理後台開啟「完成更新」，或執行 php console.php system:run-patcher。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr "已套用 :count 個核心修補程式。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count 天"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr ":count 個檔案與安裝時一致。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count 小時"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr "過去 7 天內攔截了 :count 種指令碼，例如 :list。瀏覽器擴充功能或機器人也可能造成這種情況；請檢查其中提到入口網站自身頁面和指令碼的項目。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count 分鐘"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr "有 :count 項模組設定是用另一組加密金鑰儲存的，讀取結果為空（:list）。如果此資料庫是從備份還原的，請在儲存任何設定之前，把原本的 info.salt 放回 config.php。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr "已生效 :count 個規則區塊。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database：建議使用 10.6 或更新版本。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database：建議使用 8.0 或更新版本。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit；建議 256M 或更多。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr "剩餘 :size GB（:percent%）。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr "有 :undone 個檔案缺少各自的核心修補程式：:list。請重新安裝 ClientFence 發行版。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr ":waiting 個等待中，:failed 個失敗（cron 會重試）。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr ":waiting 個等待中，最久的已等待 :ago，:failed 個失敗（cron 會重試）。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr ":waiting 個等待中，最久的已等待 :ago。"
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr ":waiting 個等待中。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "正在建立備份（開始於 :time）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "管理區網址"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "所有必要和建議的擴充功能均已載入。"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "所有必要的擴充功能均已載入；建議但缺少：:suggested。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "快取後端"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "公開表單上的驗證碼"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version。新版本會以 ClientFence 發行版的形式提供。"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "ClientFence 資料庫處於更新 :level。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile，金鑰已設定。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "核心修補程式"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "無法讀取 ClientFence 資料庫的更新層級。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "cron 從未執行過。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "每日資料庫備份"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "資料庫更新"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "資料庫版本"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "除錯與錯誤顯示"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "除錯模式和 PHP 錯誤顯示均已關閉。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "除錯模式已開啟：它可能向訪客顯示伺服器詳細資料。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "郵件寄送"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "郵件佇列"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "已強制執行。過去 7 天內沒有指令碼被攔截。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "檔案：適合小型網站。流量大的網站用 Redis 更快：安裝 Redis 伺服器和 PHP 的 redis 擴充功能（許多主機兩者都提供），然後在 系統 → 設定 → 快取 中選擇 Redis。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "可用磁碟空間"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "GeoIP 資料庫"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "已傳送 HSTS、CSP 和 X-Content-Type-Options。"
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "僅限 HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "主機伺服器：:name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "上次執行於 :ago 前。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "上次執行於 :ago 前；它應每 5 分鐘執行一次。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "函式庫、翻譯、清單檔和客戶變更網域的呼叫均被拒絕。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr "建立於 :ago 前。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr "建立於 :ago 前；請建立一份新的。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "建立於 :time，但只保存在此伺服器上：請新增 SFTP/FTP 或電子郵件，以便在伺服器遺失後仍有副本。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "郵件透過 :mailer 寄送，而不是透過 TLS 上的 SMTP。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "缺少：:list（clientfence-security-headers.php）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "缺少：:list。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "缺少：:list。請重新安裝 ClientFence 發行版。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "缺少：無法得知 IP 位址所屬國家。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "權限 :mode。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "權限 :mode：伺服器上的其他使用者可以讀取。請使用 600。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "權限 :mode：同群組使用者可以寫入。請使用 600。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "可以用 config.php 中的 info.salt 讀取模組設定。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "最新的帳單備份"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "在工作資料夾中找不到備份。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "未開啟每日資料庫備份：請在 系統 → 設定 → 系統 → 資料庫備份 中開啟。"
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "沒有郵件傳輸方式：郵件不會寄出。"
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "沒有套件清單：請重新安裝 ClientFence 發行版。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "沒有等待中的，:failed 個失敗（cron 會重試）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "沒有等待中的。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "關閉。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "關閉：PHP 每次請求都重新編譯程式碼，因此頁面大約慢 4 倍。請在此網站的 PHP 設定中開啟 OPcache（opcache.enable = 1，在主機面板中通常叫「Opcode caching」）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "關閉：請在 config.php 中把 security.mode 設為 \"strict\"。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "關閉：註冊和登入表單沒有驗證碼。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "開啟（:methods）；首次備份會在下次執行 cron 時建立。"
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "已開啟，但缺少金鑰。"
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "已開啟，但缺少用戶端 ID 或密鑰。"
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "已開啟，已有用戶端 ID 和密鑰。"
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "開啟：PHP 把編譯後的程式碼保存在記憶體中。"
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "開啟：工作階段 Cookie 為 SameSite=Strict。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "位於網站根目錄之外，但權限 :mode 允許其他使用者存取。請使用 700。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "位於網站根目錄之外，僅限網站使用者存取。"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version。"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version：ClientFence 需要更新的 PHP。"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "PHP 的 display_errors 已開啟。"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "PHP 擴充功能"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "PHP 記憶體限制"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "套件的 .htaccess 規則"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "套件檔案未變更"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "套件清單"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "私人資料夾：付款收據"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "私人資料夾：工單附件"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "私人路徑已攔截"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "註冊商：:name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "連接埠 :port 上的 SMTP：請使用 465（TLS）或 587（STARTTLS）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "TLS 上的 SMTP（連接埠 465）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "帶 STARTTLS 的 SMTP（連接埠 587）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "排程工作（cron）"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "指令碼政策"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "安全標頭"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "透過 HTTPS 的 SendGrid API。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "於 :time 透過 :methods 寄出。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "向訪客提供：:list。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "請在 config.php 中把網址設為 https://，並把 security.force_https 設為 true。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "嚴格安全模式"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "Dynadot API 使用此金鑰可正常回應。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "Dynadot API 沒有回應。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "管理區有自己的網址，不是預設的 /admin。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "管理區位於預設的 /admin，這是機器人最先嘗試的網址。請在 config.php 中把 admin_area_prefix 設為您自己的網址（例如 /team-7k2），並從該網址登入。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr ":time 的備份失敗（:why）。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "無法執行檢查：:error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "控制面板有回應。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "控制面板沒有回應。"
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "資料庫更新失敗，還原到先前的版本也失敗了：請用 :dir 中的備份還原資料庫和檔案。更多詳細資料請查看錯誤記錄。"
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "資料庫更新失敗，因此更新已復原：資料庫和檔案已還原，網站重新執行 ClientFence :version。更多詳細資料請查看錯誤記錄。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "該資料夾位於網站根目錄之內。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "最新已寄出備份的存在時間為 :days 天：請檢查 cron 是否在執行。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "入口網站網址為 https，一般 HTTP 會被重新導向。"
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "無法從伺服器存取入口網站。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "不限。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr "更新於 :ago 前。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr "更新於 :ago 前；ClientFence 的 cron 應每月重新整理一次。"
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "缺少 config.php。"
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "config.php 的權限"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "電子郵件"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "缺少 modules/Clientfence/pack-manifest.json：請重新安裝 ClientFence 發行版。"
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA，金鑰已設定。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "此伺服器"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "核心檢查"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "套件完整性"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "安全強化"

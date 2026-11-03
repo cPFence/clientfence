@@ -21,7 +21,7 @@
         'copied': 'Copied'|trans,
         'failed': 'The checks could not be run.'|trans
      }|json_encode|e('html_attr') }}"
-     data-checks="{{ (report ? report.checks|map(c => c|merge({ 'title': c.title|trans })) : [])|json_encode|e('html_attr') }}">
+     data-checks="{{ (report ? report.checks : [])|json_encode|e('html_attr') }}">
     <section class="bf-card bf-health-head">
         <div class="bf-health-rating">
             <span class="bf-tile bf-tone-{{ report ? { 'excellent': 'ok', 'good': 'ok', 'attention': 'bad' }[report.rating] ?? 'warn' : 'warn' }}" aria-hidden="true"><svg class="icon"><use href="#bf-health" /></svg></span>
@@ -72,7 +72,7 @@
         <div class="bf-row bf-row-static bf-row-top">
             <span class="bf-tile bf-tone-{{ state.tone }}" aria-hidden="true"><svg class="icon"><use href="#{{ state.icon }}" /></svg></span>
             <span class="bf-row-main">
-                <span class="bf-strong">{{ check.title|trans }}</span>
+                <span class="bf-strong">{{ check.title }}</span>
                 <span class="bf-muted bf-small">{{ check.detail }}</span>
             </span>
             <span class="bf-chip">{{ (groups[check.group]|default(check.group))|trans }}</span>

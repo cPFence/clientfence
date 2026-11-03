@@ -17294,3 +17294,543 @@ msgstr "Müşteri alanı için sayfalar yazın; taslak veya yayında, menü ve a
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "şimdi"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr ":cache seçildi ancak erişilemedi, bu yüzden ClientFence dosyaları kullanıyor: sunucunun çalıştığını ve ayarların doğru olduğunu kontrol edin."
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr ":changed dosya değişmiş veya eksik: :list. ClientFence sürümünü yeniden kurun."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr "Bekleyen ClientFence veritabanı güncellemesi: :count. Yönetimde Güncellemeyi Tamamla seçeneğini açın veya php console.php system:run-patcher komutunu çalıştırın."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr "Uygulanan çekirdek yaması: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count gün"
+msgstr[1] ":count gün"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr "Kurulduğu gibi duran dosya: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count saat"
+msgstr[1] ":count saat"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr "Engellenen betik türü: :count (son 7 gün), örneğin :list. Bunlara bir tarayıcı eklentisi veya bir bot da neden olabilir; portalın kendi sayfalarını ve betiklerini adlandıranları kontrol edin."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count dakika"
+msgstr[1] ":count dakika"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr "Başka bir şifreleme anahtarıyla kaydedilip boş okunan modül ayarı: :count (:list). Bu veritabanı bir yedekten geri yüklendiyse, herhangi bir ayarı kaydetmeden önce orijinal info.salt değerini config.php içine geri koyun."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr "Yürürlükteki kural bloğu: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database: 10.6 veya daha yenisi önerilir."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database: 8.0 veya daha yenisi önerilir."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit; 256M veya daha fazlası önerilir."
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr "Boş alan: :size GB (:percent%)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr "Kendi çekirdek yaması olmayan dosya: :undone (:list). ClientFence sürümünü yeniden kurun."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr "Bekleyen: :waiting, başarısız: :failed (cron yeniden dener)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr "Bekleyen: :waiting, en eskisi :ago önce, başarısız: :failed (cron yeniden dener)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr "Bekleyen: :waiting, en eskisi :ago önce."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr "Bekleyen: :waiting."
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "Şu anda bir yedek alınıyor (başlangıç: :time)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "Yönetim alanı adresi"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "Gerekli ve önerilen tüm uzantılar yüklü."
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "Gerekli olanların tümü; önerilen ancak eksik olanlar: :suggested."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "Önbellek arka ucu"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Herkese açık formlarda Captcha"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version. Yeni sürümler ClientFence sürümleri olarak gelir."
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "ClientFence veritabanı :level güncellemesinde."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile, anahtarlar ayarlı."
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "Çekirdek yamaları"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "ClientFence veritabanı güncelleme düzeyi okunamadı."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "Cron hiç çalışmadı."
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "Günlük veritabanı yedeği"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "Veritabanı güncellemeleri"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "Veritabanı sürümü"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "Hata ayıklama ve hata gösterimi"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "Hata ayıklama modu ve PHP hata gösterimi kapalı."
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "Hata ayıklama modu açık: ziyaretçilere sunucu ayrıntılarını gösterebilir."
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "E-posta teslimi"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "E-posta kuyruğu"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "Zorunlu kılındı. Son 7 günde hiçbir betik engellenmedi."
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "Dosyalar: küçük bir site için yeterli. Yoğun bir site için Redis daha hızlıdır: Redis sunucusunu ve PHP redis uzantısını kurun (birçok barındırıcı ikisini de sunar), sonra Sistem → Ayarlar → Önbellek bölümünden Redis seçin."
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "Boş disk alanı"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "GeoIP veritabanı"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "HSTS, CSP ve X-Content-Type-Options gönderiliyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "Yalnızca HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "Barındırma sunucusu: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "Son çalışma :ago önce."
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "Son çalışma :ago önce; her 5 dakikada bir çalışmalıdır."
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "Kütüphaneler, çeviriler, manifestler ve müşterinin alan adı değiştirme çağrısı reddediliyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr ":ago önce alındı."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr ":ago önce alındı; yenisini alın."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr ":time tarihinde alındı, ancak yalnızca bu sunucuda tutuluyor: sunucunun kaybına dayanacak bir kopya için SFTP/FTP veya e-posta ekleyin."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "Posta :mailer üzerinden gidiyor, TLS üzerinden SMTP ile değil."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "Eksik: :list (clientfence-security-headers.php)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "Eksik: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "Eksik: :list. ClientFence sürümünü yeniden kurun."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "Eksik: IP adreslerinin ülkeleri bilinmiyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "İzinler :mode."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "İzinler :mode: sunucunun diğer kullanıcıları okuyabilir. 600 kullanın."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "İzinler :mode: grup yazabilir. 600 kullanın."
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "Modül ayarları config.php içindeki info.salt ile okunabilir."
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "En yeni faturalama yedeği"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "Çalışma klasöründe yedek bulunamadı."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "Günlük veritabanı yedeği açık değil: Sistem → Ayarlar → Sistem → Veritabanı Yedekleri bölümünden birini açın."
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "Posta taşıma yöntemi yok: e-postalar gönderilmiyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "Paket manifesti yok: ClientFence sürümünü yeniden kurun."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "Bekleyen yok, başarısız: :failed (cron yeniden dener)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "Bekleyen yok."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "Kapalı."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "Kapalı: PHP kodu her istekte yeniden derliyor, bu yüzden sayfalar yaklaşık 4 kat daha uzun sürüyor. Bu sitenin PHP ayarlarında OPcache'i açın (opcache.enable = 1, barındırma panelinde çoğu zaman \"Opcode caching\")."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "Kapalı: config.php içinde security.mode değerini \"strict\" yapın."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "Kapalı: kayıt ve giriş formlarında captcha yok."
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "Açık (:methods); ilk yedek sonraki cron çalışmasında alınır."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "Açık, ancak anahtarları eksik."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "Açık, ancak client ID veya secret eksik."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "Açık, client ID ve secret ile."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "Açık: PHP derlenmiş kodu bellekte tutuyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "Açık: oturum çerezleri SameSite=Strict."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "Web kökünün dışında, ancak :mode izinleri diğer kullanıcıların girmesine izin veriyor. 700 kullanın."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "Web kökünün dışında, site kullanıcısına özel."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: ClientFence daha yeni bir PHP gerektiriyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "PHP display_errors açık."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "PHP uzantıları"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "PHP bellek sınırı"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "Paketin .htaccess kuralları"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "Paket dosyaları değişmemiş"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "Paket manifesti"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "Özel klasör: ödeme makbuzları"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "Özel klasör: destek talebi ekleri"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "Özel yollar engellendi"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "Kayıt kuruluşu: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr ":port numaralı bağlantı noktasında SMTP: 465 (TLS) veya 587 (STARTTLS) kullanın."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "TLS üzerinden SMTP (bağlantı noktası 465)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "STARTTLS ile SMTP (bağlantı noktası 587)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "Zamanlanmış görevler (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "Betik ilkesi"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "Güvenlik başlıkları"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "HTTPS üzerinden SendGrid API."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr ":time tarihinde :methods ile gönderildi."
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "Ziyaretçilere sunulan: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "URL'yi https:// yapın ve config.php içinde security.force_https değerini true yapın."
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "Katı güvenlik modu"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "Dynadot API bu anahtarla yanıt veriyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "Dynadot API yanıt vermedi."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "Yönetim alanının varsayılan /admin değil, kendi adresi var."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "Yönetim alanı botların ilk denediği varsayılan /admin adresinde. config.php içinde admin_area_prefix değerini kendinize ait bir adrese (örneğin /team-7k2) ayarlayın ve oradan giriş yapın."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr ":time tarihli yedek başarısız oldu (:why)."
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "Kontrol çalıştırılamadı: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "Kontrol paneli yanıt veriyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "Kontrol paneli yanıt vermedi."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "Veritabanı güncellemesi başarısız oldu ve önceki sürümü geri koyma da başarısız oldu: veritabanını ve dosyaları :dir içindeki yedekten geri yükleyin. Daha fazla ayrıntı hata günlüğünde mevcut."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "Veritabanı güncellemesi başarısız oldu, bu yüzden güncelleme geri alındı: veritabanı ve dosyalar geri konuldu ve site yeniden ClientFence :version çalıştırıyor. Daha fazla ayrıntı hata günlüğünde mevcut."
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "Klasör web kökünün içinde."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "Gönderilen en yeni yedeğin yaşı :days gün: cron'un çalıştığını kontrol edin."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "Portal URL'si https ve düz HTTP yönlendiriliyor."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "Portala sunucudan ulaşılamadı."
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "Sınırsız."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr ":ago önce güncellendi."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr ":ago önce güncellendi; ClientFence cron'u bunu aylık yenilemelidir."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "config.php eksik."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "config.php izinleri"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "e-posta"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "modules/Clientfence/pack-manifest.json eksik: ClientFence sürümünü yeniden kurun."
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA, anahtarlar ayarlı."
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "bu sunucu"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "Çekirdek denetimleri"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "Paket bütünlüğü"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "Güvenlik sıkılaştırma"

@@ -295,21 +295,21 @@ final class Backups
      * The Health check: [state, detail]. Warn when no method is on or the newest backup that was
      * sent is over two days old; needs attention when the last run failed.
      *
-     * @return array{0: string, 1: string}
+     * @return array{0: string, 1: string, 2: array<string, mixed>} the state, the text (Health::msg()) and its values
      */
     public static function health(\Pimple\Container $di): array
     {
         $settings = self::settings($di);
-        $on = array_keys(array_filter(['SFTP/FTP' => $settings['ftp']['enabled'], 'email' => $settings['email']['enabled'], 'this server' => $settings['local']['enabled']]));
+        $on = array_keys(array_filter([Health::msg('SFTP/FTP') => $settings['ftp']['enabled'], Health::msg('email') => $settings['email']['enabled'], Health::msg('this server') => $settings['local']['enabled']]));
         if ($on === []) {
-            return ['warn', 'No daily database backup is on: turn one on in System → Settings → System → Database Backups.'];
+            return ['warn', Health::msg('No daily database backup is on: turn one on in System → Settings → System → Database Backups.'), []];
         }
         $status = self::state($di, self::STATUS);
         if ($status === null) {
-            return ['ok', 'On (' . implode(', ', $on) . '); the first backup is made at the next cron run.'];
+            return ['ok', Health::msg('On (:methods); the first backup is made at the next cron run.'), [':methods' => $on]];
         }
         if (!empty($status['running']) && time() - (int) strtotime((string) $status['ran_at']) < 3600) {
-            return ['ok', 'A backup is being made now (started ' . $status['ran_at'] . ').'];
+            return ['ok', Health::msg('A backup is being made now (started :time).'), [':time' => $status['ran_at']]];
         }
         if (empty($status['ok'])) {
             $why = [];
@@ -319,17 +319,17 @@ final class Backups
                 }
             }
 
-            return ['bad', 'The backup of ' . $status['ran_at'] . ' failed (' . implode('; ', $why) . ').'];
+            return ['bad', Health::msg('The backup of :time failed (:why).'), [':time' => $status['ran_at'], ':why' => implode('; ', $why)]];
         }
         $age = time() - (int) strtotime((string) ($status['last_ok_at'] ?? $status['ran_at']));
 
         if ($age > 2 * 86400) {
-            return ['warn', 'The newest backup sent is ' . (int) floor($age / 86400) . ' days old: check that the cron runs.'];
+            return ['warn', Health::msg('The newest backup sent is :days days old: check that the cron runs.'), [':days' => (int) floor($age / 86400)]];
         }
 
         return $on === ['this server']
-            ? ['warn', 'Made ' . $status['ran_at'] . ', but kept only on this server: add SFTP/FTP or email for a copy that survives losing it.']
-            : ['ok', 'Sent ' . $status['ran_at'] . ' by ' . implode(', ', $on) . '.'];
+            ? ['warn', Health::msg('Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it.'), [':time' => $status['ran_at']]]
+            : ['ok', Health::msg('Sent :time by :methods.'), [':time' => $status['ran_at'], ':methods' => $on]];
     }
 
     // ---- Kept on this server.
@@ -445,7 +445,8 @@ final class Backups
             if ($in === false) {
                 throw new \RuntimeException('The backup file could not be read.');
             }
-            $options += [CURLOPT_UPLOAD => true, CURLOPT_INFILE => $in, CURLOPT_INFILESIZE => (int) filesize($file)];
+            // A database backup holds client data: over SFTP it is stored readable by its owner only (FTP servers set their own modes).
+            $options += [CURLOPT_UPLOAD => true, CURLOPT_INFILE => $in, CURLOPT_INFILESIZE => (int) filesize($file), CURLOPT_NEW_FILE_PERMS => 0o600];
         }
         curl_setopt_array($curl, $options);
         $ok = curl_exec($curl) !== false;

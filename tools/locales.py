@@ -160,6 +160,8 @@ def unescape(body, quote, php):
 LITERAL = r"""(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")"""
 TWIG = re.compile(LITERAL + r'\s*\|\s*trans\b', re.S)
 PHP_SINGLE = re.compile(r'\b__trans\(\s*' + LITERAL, re.S)
+# System Health check texts, translated when read (Health::localize()).
+PHP_HEALTH = re.compile(r'\b(?:self|Health)::msg\(\s*' + LITERAL, re.S)
 PHP_PLURAL = re.compile(r'\b__pluralTrans\(\s*' + LITERAL + r'\s*,\s*' + LITERAL, re.S)
 # Exceptions whose constructor translates the message (ClientFence\Exception and its subclasses).
 PHP_THROW = re.compile(r'\bnew\s+(\\?[A-Za-z_][A-Za-z0-9_\\]*)\(\s*' + LITERAL, re.S)
@@ -211,6 +213,7 @@ def extract(destination=TEMPLATE):
             if php:
                 hits += [(literal(m, 1, True), None) for m in PHP_SINGLE.finditer(text)]
                 hits += [(literal(m, 1, True), literal(m, 3, True)) for m in PHP_PLURAL.finditer(text)]
+                hits += [(literal(m, 1, True), None) for m in PHP_HEALTH.finditer(text)]
                 hits += [(literal(m, 2, True), None) for m in PHP_THROW.finditer(text)
                          if resolve_class(m.group(1), text) in TRANSLATING_EXCEPTIONS]
             for msgid, plural in hits:

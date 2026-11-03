@@ -396,7 +396,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('system', 'manage_settings');
 
-        return ['report' => Health::latest($this->getDi()), 'groups' => Health::GROUPS];
+        return ['report' => Health::latest($this->getDi()), 'groups' => Health::groups()];
     }
 
     /**

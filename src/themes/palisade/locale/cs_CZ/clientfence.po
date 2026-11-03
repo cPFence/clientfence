@@ -19294,3 +19294,549 @@ msgstr "Pište stránky pro klientskou zónu, jako koncepty nebo zveřejněné, 
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "nyní"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr ":cache je vybrána, ale nelze se k ní připojit, proto ClientFence používá soubory: zkontrolujte, zda server běží a zda jsou nastavení správná."
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr "Změněno nebo chybí :changed souborů: :list. Nainstalujte vydání ClientFence znovu."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr "Čeká :count aktualizací databáze ClientFence: otevřete Dokončit aktualizaci v administraci nebo spusťte php console.php system:run-patcher."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr "Použito :count oprav jádra."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count den"
+msgstr[1] ":count dny"
+msgstr[2] ":count dne"
+msgstr[3] ":count dní"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr ":count souborů je beze změny od instalace."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count hodina"
+msgstr[1] ":count hodiny"
+msgstr[2] ":count hodiny"
+msgstr[3] ":count hodin"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr "Bylo zablokováno :count druhů skriptů (za posledních 7 dní), například :list. Příčinou může být i rozšíření prohlížeče nebo bot; zkontrolujte ty, které uvádějí vlastní stránky a skripty portálu."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count minuta"
+msgstr[1] ":count minuty"
+msgstr[2] ":count minuty"
+msgstr[3] ":count minut"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr ":count nastavení modulů bylo uloženo jiným šifrovacím klíčem a čtou se jako prázdná (:list). Pokud byla tato databáze obnovena ze zálohy, vraťte do config.php původní info.salt, než uložíte jakákoli nastavení."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr "Platí :count bloků pravidel."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database: doporučená je verze 10.6 nebo novější."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database: doporučená je verze 8.0 nebo novější."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit; doporučeno je 256M nebo více."
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr "Volných :size GB (:percent%)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr ":undone souborů bez své opravy jádra: :list. Nainstalujte vydání ClientFence znovu."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr "Čeká :waiting, selhalo :failed (cron to zkusí znovu)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr "Čeká :waiting, nejstarší :ago, selhalo :failed (cron to zkusí znovu)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr "Čeká :waiting, nejstarší :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr "Čeká :waiting."
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "Právě se vytváří záloha (začala :time)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "Adresa administrátorské zóny"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "Všechna povinná i doporučená rozšíření jsou načtena."
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "Všechna povinná; doporučená, ale chybějící: :suggested."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "Backend mezipaměti"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Captcha ve veřejných formulářích"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version. Nové verze přicházejí jako vydání ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "Databáze ClientFence je na aktualizaci :level."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile, klíče nastaveny."
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "Opravy jádra"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "Nepodařilo se přečíst úroveň aktualizace databáze ClientFence."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "Cron ještě nikdy neběžel."
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "Denní záloha databáze"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "Aktualizace databáze"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "Verze databáze"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "Ladění a zobrazování chyb"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "Režim ladění a zobrazování chyb PHP jsou vypnuty."
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "Režim ladění je zapnutý: může návštěvníkům prozradit údaje o serveru."
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "Doručování e-mailů"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "Fronta e-mailů"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "Vynuceno. Za posledních 7 dní nebyl zablokován žádný skript."
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "Soubory: pro malý web stačí. Pro vytížený je rychlejší Redis: nainstalujte server Redis a rozšíření PHP redis (mnoho hostingů nabízí obojí), pak vyberte Redis v Systém → Nastavení → Mezipaměť."
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "Volné místo na disku"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "Databáze GeoIP"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "Odesílají se HSTS, CSP a X-Content-Type-Options."
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "Pouze HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "Hostingový server: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "Naposledy spuštěno před :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "Naposledy spuštěno před :ago; mělo by běžet každých 5 minut."
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "Knihovny, překlady, manifesty a klientské volání změny domény jsou odmítnuty."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr "Vytvořeno před :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr "Vytvořeno před :ago; vytvořte novou."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "Vytvořeno :time, ale uloženo jen na tomto serveru: přidejte SFTP/FTP nebo e-mail pro kopii, která přežije jeho ztrátu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "Pošta jde přes :mailer, ne přes SMTP přes TLS."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "Chybí: :list (clientfence-security-headers.php)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "Chybí: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "Chybí: :list. Nainstalujte vydání ClientFence znovu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "Chybí: země IP adres nejsou známy."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "Oprávnění :mode."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "Oprávnění :mode: ostatní uživatelé serveru ho mohou číst. Použijte 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "Oprávnění :mode: skupina do něj může zapisovat. Použijte 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "Nastavení modulů lze přečíst pomocí info.salt v config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "Nejnovější záloha fakturace"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "V pracovní složce nebyla nalezena žádná záloha."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "Není zapnutá žádná denní záloha databáze: zapněte ji v Systém → Nastavení → Systém → Zálohy databáze."
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "Žádný přenos pošty: e-maily se neodesílají."
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "Chybí manifest balíčku: nainstalujte vydání ClientFence znovu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "Nic nečeká, selhalo :failed (cron to zkusí znovu)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "Nic nečeká."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "Vypnuto."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "Vypnuto: PHP překládá kód znovu při každém požadavku, takže stránky trvají asi 4krát déle. Zapněte OPcache (opcache.enable = 1, často „Opcode caching“ v hostingovém panelu) v nastavení PHP tohoto webu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "Vypnuto: nastavte security.mode na \"strict\" v config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "Vypnuto: registrační a přihlašovací formuláře nemají captcha."
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "Zapnuto (:methods); první záloha se vytvoří při příštím běhu cronu."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "Zapnuto, ale chybí klíče."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "Zapnuto, ale chybí client ID nebo secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "Zapnuto, s client ID a secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "Zapnuto: PHP drží přeložený kód v paměti."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "Zapnuto: cookies relace jsou SameSite=Strict."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "Mimo webový kořen, ale oprávnění :mode pouští dovnitř další uživatele. Použijte 700."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "Mimo webový kořen, soukromé pro uživatele webu."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: ClientFence potřebuje novější PHP."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "PHP display_errors je zapnuto."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "Rozšíření PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "Limit paměti PHP"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr "Pravidla .htaccess balíčku"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "Soubory balíčku beze změny"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "Manifest balíčku"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "Soukromá složka: doklady o platbě"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "Soukromá složka: přílohy tiketů"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "Soukromé cesty jsou blokovány"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "Registrátor: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "SMTP na portu :port: použijte 465 (TLS) nebo 587 (STARTTLS)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "SMTP přes TLS (port 465)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "SMTP se STARTTLS (port 587)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "Plánované úlohy (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "Zásady skriptů"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "Bezpečnostní hlavičky"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "SendGrid API přes HTTPS."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "Odesláno :time přes :methods."
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "Zobrazeno návštěvníkům: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "Nastavte URL na https:// a security.force_https na true v config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "Přísný bezpečnostní režim"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "Dynadot API s tímto klíčem odpovídá."
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "Dynadot API neodpovědělo."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "Administrátorská zóna má vlastní adresu, ne výchozí /admin."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "Administrátorská zóna je na výchozím /admin, což je první adresa, kterou boti zkoušejí. Nastavte admin_area_prefix v config.php na vlastní adresu (například /team-7k2) a přihlaste se tam."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr "Záloha z :time selhala (:why)."
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "Kontrolu se nepodařilo spustit: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "Ovládací panel odpovídá."
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "Ovládací panel neodpověděl."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "Aktualizace databáze selhala a vrácení předchozí verze také: obnovte databázi a soubory ze zálohy v :dir. Další podrobnosti jsou v protokolu chyb."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "Aktualizace databáze selhala, proto byla aktualizace vrácena: databáze i soubory byly vráceny a web znovu běží na ClientFence :version. Další podrobnosti jsou v protokolu chyb."
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "Složka je uvnitř webového kořene."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "Nejnovější odeslaná záloha je stará :days dní: zkontrolujte, zda běží cron."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "URL portálu je https a prosté HTTP se přesměrovává."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "Portál se ze serveru nepodařilo zastihnout."
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "Neomezeno."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr "Aktualizováno před :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr "Aktualizováno před :ago; cron ClientFence by to měl obnovovat měsíčně."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "config.php chybí."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "Oprávnění config.php"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "e-mail"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "modules/Clientfence/pack-manifest.json chybí: nainstalujte vydání ClientFence znovu."
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA, klíče nastaveny."
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "tento server"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "Kontroly jádra"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "Integrita balíčku"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "Posílení zabezpečení"

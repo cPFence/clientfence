@@ -19516,3 +19516,546 @@ msgstr "Pišite stranice za klijentski deo, kao nacrte ili objavljene, sa vezama
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr "sada"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid ":cache is chosen but could not be reached, so ClientFence uses files: check that the server runs and the settings are right."
+msgstr "Izabran je :cache, ali nije dostupan, pa ClientFence koristi datoteke: proverite da li server radi i da li su podešavanja ispravna."
+
+#: src/modules/Clientfence/Health.php
+msgid ":cache."
+msgstr ":cache."
+
+#: src/modules/Clientfence/Health.php
+msgid ":changed file(s) changed or missing: :list. Install the ClientFence release again."
+msgstr "Promenjenih ili nedostajućih datoteka: :changed (:list). Ponovo instalirajte izdanje ClientFence-a."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr "Ažuriranja ClientFence baze podataka na čekanju: :count. Otvorite Završi ažuriranje u administraciji ili pokrenite php console.php system:run-patcher."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count core patches applied."
+msgstr "Primenjenih ispravki jezgra: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count day"
+msgid_plural ":count days"
+msgstr[0] ":count dan"
+msgstr[1] ":count dana"
+msgstr[2] ":count dana"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count files as installed."
+msgstr "Datoteka kakve su bile pri instalaciji: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count hour"
+msgid_plural ":count hours"
+msgstr[0] ":count sat"
+msgstr[1] ":count sata"
+msgstr[2] ":count sati"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count kind(s) of script were blocked (last 7 days), for example :list. A browser extension or a bot can also cause these; check any that name the portal's own pages and scripts."
+msgstr "Blokiranih vrsta skripti (poslednjih 7 dana): :count, na primer :list. Uzrok može biti i dodatak pregledača ili bot; proverite one koje navode sopstvene stranice i skripte portala."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count minute"
+msgid_plural ":count minutes"
+msgstr[0] ":count minut"
+msgstr[1] ":count minuta"
+msgstr[2] ":count minuta"
+
+#: src/modules/Clientfence/Health.php
+msgid ":count module setting(s) were saved with another encryption key and read as empty (:list). If this database was restored from a backup, put the original info.salt back in config.php before saving any settings."
+msgstr "Podešavanja modula sačuvanih drugim ključem za šifrovanje i očitanih kao prazna: :count (:list). Ako je ova baza podataka vraćena iz rezervne kopije, vratite originalni info.salt u config.php pre nego što sačuvate bilo koja podešavanja."
+
+#: src/modules/Clientfence/Health.php
+msgid ":count rule blocks in place."
+msgstr "Aktivnih blokova pravila: :count."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database."
+msgstr ":database."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 10.6 or newer is recommended."
+msgstr ":database: preporučuje se verzija 10.6 ili novija."
+
+#: src/modules/Clientfence/Health.php
+msgid ":database: 8.0 or newer is recommended."
+msgstr ":database: preporučuje se verzija 8.0 ili novija."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit."
+msgstr ":limit."
+
+#: src/modules/Clientfence/Health.php
+msgid ":limit; 256M or more is recommended."
+msgstr ":limit; preporučuje se 256M ili više."
+
+#: src/modules/Clientfence/Health.php
+msgid ":size GB free (:percent%)."
+msgstr "Slobodno :size GB (:percent%)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":undone file(s) without their core patch: :list. Install the ClientFence release again."
+msgstr "Datoteka bez svoje ispravke jezgra: :undone (:list). Ponovo instalirajte izdanje ClientFence-a."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, :failed failed (retried by cron)."
+msgstr "Na čekanju: :waiting, neuspelo: :failed (cron ponovo pokušava)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago, :failed failed (retried by cron)."
+msgstr "Na čekanju: :waiting, najstarije čeka :ago, neuspelo: :failed (cron ponovo pokušava)."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting, the oldest for :ago."
+msgstr "Na čekanju: :waiting, najstarije čeka :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid ":waiting waiting."
+msgstr "Na čekanju: :waiting."
+
+#: src/modules/Clientfence/Backups.php
+msgid "A backup is being made now (started :time)."
+msgstr "Rezervna kopija se upravo pravi (počela :time)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Admin area address"
+msgstr "Adresa administratorske oblasti"
+
+#: src/modules/Clientfence/Health.php
+msgid "All required and recommended extensions are loaded."
+msgstr "Sva obavezna i preporučena proširenja su učitana."
+
+#: src/modules/Clientfence/Health.php
+msgid "All required ones; recommended but missing: :suggested."
+msgstr "Sva obavezna; preporučena, ali nedostaju: :suggested."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cache backend"
+msgstr "Keš pozadina"
+
+#: src/modules/Clientfence/Health.php
+msgid "Captcha on public forms"
+msgstr "Captcha na javnim obrascima"
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence :version. New versions come as ClientFence releases."
+msgstr "ClientFence :version. Nove verzije stižu kao izdanja ClientFence-a."
+
+#: src/modules/Clientfence/Health.php
+msgid "ClientFence database at update :level."
+msgstr "ClientFence baza podataka je na ažuriranju :level."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloudflare Turnstile, keys set."
+msgstr "Cloudflare Turnstile, ključevi podešeni."
+
+#: src/modules/Clientfence/Health.php
+msgid "Core patches"
+msgstr "Ispravke jezgra"
+
+#: src/modules/Clientfence/Health.php
+msgid "Could not read the ClientFence database update level."
+msgstr "Nije moguće pročitati nivo ažuriranja ClientFence baze podataka."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cron has never run."
+msgstr "Cron nikada nije pokrenut."
+
+#: src/modules/Clientfence/Health.php
+msgid "Daily database backup"
+msgstr "Dnevna rezervna kopija baze podataka"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database updates"
+msgstr "Ažuriranja baze podataka"
+
+#: src/modules/Clientfence/Health.php
+msgid "Database version"
+msgstr "Verzija baze podataka"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug and error display"
+msgstr "Otklanjanje grešaka i prikaz grešaka"
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode and PHP error display are off."
+msgstr "Režim otklanjanja grešaka i prikaz PHP grešaka su isključeni."
+
+#: src/modules/Clientfence/Health.php
+msgid "Debug mode is on: it can show server details to visitors."
+msgstr "Režim otklanjanja grešaka je uključen: može posetiocima prikazati detalje o serveru."
+
+#: src/modules/Clientfence/Health.php
+msgid "Email delivery"
+msgstr "Isporuka e-pošte"
+
+#: src/modules/Clientfence/Health.php
+msgid "Email queue"
+msgstr "Red e-pošte"
+
+#: src/modules/Clientfence/Health.php
+msgid "Enforced. No script was blocked in the last 7 days."
+msgstr "Sprovodi se. Nijedna skripta nije blokirana u poslednjih 7 dana."
+
+#: src/modules/Clientfence/Health.php
+msgid "Files: fine for a small site. For a busy one, Redis is faster: install the Redis server and the PHP redis extension (many hosts offer both), then choose Redis in System → Settings → Cache."
+msgstr "Datoteke: dovoljno za mali sajt. Za prometan sajt Redis je brži: instalirajte Redis server i PHP proširenje redis (mnogi hosting provajderi nude oba), a zatim izaberite Redis u Sistem → Podešavanja → Keš."
+
+#: src/modules/Clientfence/Health.php
+msgid "Free disk space"
+msgstr "Slobodan prostor na disku"
+
+#: src/modules/Clientfence/Health.php
+msgid "GeoIP database"
+msgstr "GeoIP baza podataka"
+
+#: src/modules/Clientfence/Health.php
+msgid "HSTS, CSP and X-Content-Type-Options are sent."
+msgstr "Šalju se HSTS, CSP i X-Content-Type-Options."
+
+#: src/modules/Clientfence/Health.php
+msgid "HTTPS only"
+msgstr "Samo HTTPS"
+
+#: src/modules/Clientfence/Health.php
+msgid "Hosting server: :name"
+msgstr "Hosting server: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago."
+msgstr "Poslednje pokretanje pre :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Last run :ago ago; it should run every 5 minutes."
+msgstr "Poslednje pokretanje pre :ago; trebalo bi da se pokreće na svakih 5 minuta."
+
+#: src/modules/Clientfence/Health.php
+msgid "Libraries, translations, manifests and the client domain-change call are refused."
+msgstr "Biblioteke, prevodi, manifesti i poziv klijenta za promenu domena se odbijaju."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago."
+msgstr "Napravljena pre :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Made :ago ago; make a fresh one."
+msgstr "Napravljena pre :ago; napravite novu."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it."
+msgstr "Napravljena :time, ali čuva se samo na ovom serveru: dodajte SFTP/FTP ili e-poštu za kopiju koja preživljava njegov gubitak."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mail goes through :mailer, not SMTP over TLS."
+msgstr "Pošta ide preko :mailer, a ne preko SMTP-a preko TLS-a."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list (clientfence-security-headers.php)."
+msgstr "Nedostaje: :list (clientfence-security-headers.php)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list."
+msgstr "Nedostaje: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: :list. Install the ClientFence release again."
+msgstr "Nedostaje: :list. Ponovo instalirajte izdanje ClientFence-a."
+
+#: src/modules/Clientfence/Health.php
+msgid "Missing: countries of IP addresses are unknown."
+msgstr "Nedostaje: države IP adresa nisu poznate."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode."
+msgstr "Dozvole :mode."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: other users of the server can read it. Use 600."
+msgstr "Dozvole :mode: drugi korisnici servera mogu da ga čitaju. Koristite 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Mode :mode: the group can write it. Use 600."
+msgstr "Dozvole :mode: grupa može da piše u njega. Koristite 600."
+
+#: src/modules/Clientfence/Health.php
+msgid "Module settings can be read with info.salt in config.php."
+msgstr "Podešavanja modula mogu se pročitati pomoću info.salt u config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Newest billing backup"
+msgstr "Najnovija rezervna kopija naplate"
+
+#: src/modules/Clientfence/Health.php
+msgid "No backup found in the work folder."
+msgstr "U radnom folderu nije pronađena rezervna kopija."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgstr "Nije uključena dnevna rezervna kopija baze podataka: uključite je u Sistem → Podešavanja → Sistem → Rezervne kopije baze podataka."
+
+#: src/modules/Clientfence/Health.php
+msgid "No mail transport: emails are not sent."
+msgstr "Nema transporta pošte: e-poruke se ne šalju."
+
+#: src/modules/Clientfence/Health.php
+msgid "No pack manifest: install the ClientFence release again."
+msgstr "Nema manifesta paketa: ponovo instalirajte izdanje ClientFence-a."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting, :failed failed (retried by cron)."
+msgstr "Ništa ne čeka, neuspelo: :failed (cron ponovo pokušava)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Nothing waiting."
+msgstr "Ništa ne čeka."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off."
+msgstr "Isključeno."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
+msgstr "Isključeno: PHP ponovo kompajlira kod pri svakom zahtevu, pa stranice traju oko 4 puta duže. Uključite OPcache (opcache.enable = 1, često \"Opcode caching\" u hosting panelu) u PHP podešavanjima ovog sajta."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: set security.mode to \"strict\" in config.php."
+msgstr "Isključeno: podesite security.mode na \"strict\" u config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Off: sign-up and sign-in forms have no captcha."
+msgstr "Isključeno: obrasci za registraciju i prijavu nemaju captcha."
+
+#: src/modules/Clientfence/Backups.php
+msgid "On (:methods); the first backup is made at the next cron run."
+msgstr "Uključeno (:methods); prva rezervna kopija se pravi pri sledećem pokretanju crona."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but its keys are missing."
+msgstr "Uključeno, ali ključevi nedostaju."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, but the client ID or secret is missing."
+msgstr "Uključeno, ali nedostaje client ID ili secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On, with a client ID and secret."
+msgstr "Uključeno, sa client ID i secret."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: PHP keeps the compiled code in memory."
+msgstr "Uključeno: PHP drži kompajlirani kod u memoriji."
+
+#: src/modules/Clientfence/Health.php
+msgid "On: session cookies are SameSite=Strict."
+msgstr "Uključeno: kolačići sesije su SameSite=Strict."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, but mode :mode lets other users in. Use 700."
+msgstr "Van korena veba, ali dozvole :mode puštaju druge korisnike unutra. Koristite 700."
+
+#: src/modules/Clientfence/Health.php
+msgid "Outside the web root, private to the site user."
+msgstr "Van korena veba, privatna za korisnika sajta."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version."
+msgstr "PHP :version."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP :version: ClientFence needs a newer PHP."
+msgstr "PHP :version: ClientFence zahteva noviji PHP."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP display_errors is on."
+msgstr "PHP display_errors je uključen."
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP extensions"
+msgstr "PHP proširenja"
+
+#: src/modules/Clientfence/Health.php
+msgid "PHP memory limit"
+msgstr "PHP ograničenje memorije"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack .htaccess rules"
+msgstr ".htaccess pravila paketa"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack files unchanged"
+msgstr "Datoteke paketa nepromenjene"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack manifest"
+msgstr "Manifest paketa"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: payment receipts"
+msgstr "Privatni folder: potvrde o uplati"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private folder: ticket attachments"
+msgstr "Privatni folder: prilozi tiketa"
+
+#: src/modules/Clientfence/Health.php
+msgid "Private paths blocked"
+msgstr "Privatne putanje blokirane"
+
+#: src/modules/Clientfence/Health.php
+msgid "Registrar: :name"
+msgstr "Registrar: :name"
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP on port :port: use 465 (TLS) or 587 (STARTTLS)."
+msgstr "SMTP na portu :port: koristite 465 (TLS) ili 587 (STARTTLS)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP over TLS (port 465)."
+msgstr "SMTP preko TLS-a (port 465)."
+
+#: src/modules/Clientfence/Health.php
+msgid "SMTP with STARTTLS (port 587)."
+msgstr "SMTP sa STARTTLS (port 587)."
+
+#: src/modules/Clientfence/Health.php
+msgid "Scheduled tasks (cron)"
+msgstr "Zakazani zadaci (cron)"
+
+#: src/modules/Clientfence/Health.php
+msgid "Script policy"
+msgstr "Politika skripti"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security headers"
+msgstr "Bezbednosna zaglavlja"
+
+#: src/modules/Clientfence/Health.php
+msgid "SendGrid API over HTTPS."
+msgstr "SendGrid API preko HTTPS."
+
+#: src/modules/Clientfence/Backups.php
+msgid "Sent :time by :methods."
+msgstr "Poslata :time putem :methods."
+
+#: src/modules/Clientfence/Health.php
+msgid "Served to visitors: :list."
+msgstr "Isporučuje se posetiocima: :list."
+
+#: src/modules/Clientfence/Health.php
+msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr "Podesite URL na https:// i security.force_https na true u config.php."
+
+#: src/modules/Clientfence/Health.php
+msgid "Strict security mode"
+msgstr "Strogi bezbednosni režim"
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API answers with this key."
+msgstr "Dynadot API odgovara sa ovim ključem."
+
+#: src/modules/Clientfence/Health.php
+msgid "The Dynadot API did not answer."
+msgstr "Dynadot API nije odgovorio."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area has its own address, not the default /admin."
+msgstr "Administratorska oblast ima sopstvenu adresu, a ne podrazumevani /admin."
+
+#: src/modules/Clientfence/Health.php
+msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr "Administratorska oblast je na podrazumevanom /admin, prvoj adresi koju botovi probaju. Podesite admin_area_prefix u config.php na sopstvenu adresu (na primer /team-7k2) i prijavite se tamo."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The backup of :time failed (:why)."
+msgstr "Rezervna kopija od :time nije uspela (:why)."
+
+#: src/modules/Clientfence/Health.php
+msgid "The check could not run: :error"
+msgstr "Provera nije mogla da se pokrene: :error"
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel answers."
+msgstr "Kontrolni panel odgovara."
+
+#: src/modules/Clientfence/Health.php
+msgid "The control panel did not answer."
+msgstr "Kontrolni panel nije odgovorio."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, and putting the previous version back failed too: restore the database and the files from the backup in :dir. Further details are available in the error log."
+msgstr "Ažuriranje baze podataka nije uspelo, a vraćanje prethodne verzije takođe nije uspelo: vratite bazu podataka i datoteke iz rezervne kopije u :dir. Dodatni detalji su dostupni u evidenciji grešaka."
+
+#: src/library/ClientFence/Update.php
+msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr "Ažuriranje baze podataka nije uspelo, pa je ažuriranje poništeno: baza podataka i datoteke su vraćeni i sajt ponovo radi na ClientFence :version. Dodatni detalji su dostupni u evidenciji grešaka."
+
+#: src/modules/Clientfence/Health.php
+msgid "The folder is inside the web root."
+msgstr "Folder je unutar korena veba."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup sent is :days days old: check that the cron runs."
+msgstr "Najnovija poslata rezervna kopija je stara :days dana: proverite da li cron radi."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal URL is https and plain HTTP is redirected."
+msgstr "URL portala je https, a običan HTTP se preusmerava."
+
+#: src/modules/Clientfence/Health.php
+msgid "The portal could not be reached from the server."
+msgstr "Portal nije bio dostupan sa servera."
+
+#: src/modules/Clientfence/Health.php
+msgid "Unlimited."
+msgstr "Neograničeno."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago."
+msgstr "Ažurirano pre :ago."
+
+#: src/modules/Clientfence/Health.php
+msgid "Updated :ago ago; ClientFence's cron should refresh it monthly."
+msgstr "Ažurirano pre :ago; ClientFence cron bi trebalo da ga osvežava mesečno."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php is missing."
+msgstr "config.php nedostaje."
+
+#: src/modules/Clientfence/Health.php
+msgid "config.php permissions"
+msgstr "Dozvole za config.php"
+
+#: src/modules/Clientfence/Backups.php
+msgid "email"
+msgstr "e-pošta"
+
+#: src/modules/Clientfence/Health.php
+msgid "modules/Clientfence/pack-manifest.json is missing: install the ClientFence release again."
+msgstr "modules/Clientfence/pack-manifest.json nedostaje: ponovo instalirajte izdanje ClientFence-a."
+
+#: src/modules/Clientfence/Health.php
+msgid "reCAPTCHA, keys set."
+msgstr "reCAPTCHA, ključevi podešeni."
+
+#: src/modules/Clientfence/Backups.php
+msgid "this server"
+msgstr "ovaj server"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Core checks"
+msgstr "Provere jezgra"
+
+#: src/modules/Clientfence/Health.php
+msgid "Pack integrity"
+msgstr "Integritet paketa"
+
+#: src/modules/Clientfence/Health.php
+msgid "Security hardening"
+msgstr "Pojačavanje bezbednosti"

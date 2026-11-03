@@ -12,9 +12,9 @@ use PhpZip\ZipFile;
  * root), a database dump (database.sql.gz), every file the release replaces (files.zip) and the
  * files it adds (added.json).
  *
- * restoreFiles() puts the files back when unpacking fails. The database is never restored on its
- * own: if a database update fails, the files stay new and Finalize update tries again; the dump
- * is there for a restore by hand.
+ * restoreFiles() puts the files back when unpacking fails. When the database update fails, the
+ * database is loaded back from the dump (DatabaseDump::restore()) and the files are put back too,
+ * so the site runs the version it ran before, as it was.
  *
  * Each update keeps only its own backup: once it is made, prune() removes the older update
  * backups, so updates do not fill the server's disk.
