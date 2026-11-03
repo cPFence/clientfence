@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.28 (2026-11-03)
+
+### Fixed
+
+- A release whose database update fails is rolled back on its own: the database and the files go back to the backup made before the update, and the site keeps running the version it had.
+- Database backups sent over SFTP are stored readable by their owner only.
+- System Health no longer warns "Newest billing backup" on every install, and every check is shown in the staff member's language.
+
 ## 1.0.27 (2026-11-02)
 
 ### Changed
