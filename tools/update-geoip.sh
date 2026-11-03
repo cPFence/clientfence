@@ -25,7 +25,7 @@ docker build -q --target test -t clientfence-test "$ROOT" >/dev/null
 
 # Prints "<kind> <build date>" per database and fails when one is not usable or too old.
 check() {
-  docker run --rm -v "$1:/db:ro" -e MAX_DAYS="$MAX_DAYS" clientfence-test php -r '
+  docker run --rm --memory=3g --cpus=2 -v "$1:/db:ro" -e MAX_DAYS="$MAX_DAYS" clientfence-test php -r '
     require "src/vendor/autoload.php";
     $failed = false;
     foreach (["country" => "/db/CC0-Country.mmdb", "asn" => "/db/PDDL-ASN.mmdb"] as $kind => $file) {

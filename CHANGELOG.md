@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.29 (2026-11-03)
+
+### Added
+
+- Hebrew translations for the client and admin areas, with right-to-left client pages, sign-in screens, admin navigation and dashboard.
+
+### Changed
+
+- Importing clients from WHMCS preserves their Hebrew language preference.
+
+### Fixed
+
+- Persian (Farsi) now uses right-to-left layouts in the client area, sign-in screens, admin navigation and dashboard.
+- Staff can choose their language before signing in.
+
 ## 1.0.28 (2026-11-03)
 
 ### Fixed
