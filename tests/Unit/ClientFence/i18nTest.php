@@ -37,6 +37,14 @@ function requestWithTimezoneCookie(?string $timezone = null, string $cookieName 
     return $request;
 }
 
+test('Hebrew is installed and selected for a Hebrew browser', function (): void {
+    $request = Request::create('/');
+    $request->headers->set('Accept-Language', 'he-IL,he;q=0.9');
+
+    expect(i18n::getLocales())->toContain('he_IL')
+        ->and(i18n::getActiveLocale($request))->toBe('he_IL');
+});
+
 test('getTimezoneList returns every PHP timezone identifier sorted', function (): void {
     $list = i18n::getTimezoneList();
 

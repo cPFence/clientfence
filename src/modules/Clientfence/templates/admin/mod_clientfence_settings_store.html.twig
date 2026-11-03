@@ -13,7 +13,7 @@
 	'testers': { 'label': 'Custom group'|trans, 'hint': 'Only signed-in clients in the chosen client group see the store and order themselves. Everyone else sees that the store is closed. New accounts join that group only when made with the store preview link.'|trans },
 	'public': { 'label': 'Everyone'|trans, 'hint': 'Anyone can see the store and order. New visitors can sign up on the checkout while client sign-up is on (Settings → Clients).'|trans },
 } %}
-{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 {{ include('mod_clientfence_settings_style.html.twig') }}
 <div class="card mt-3 clientfence-settings" id="store" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form class="clientfence-settings-group" method="post" action="{{ 'clientfence/store_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>

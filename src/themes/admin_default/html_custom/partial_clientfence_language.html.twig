@@ -1,0 +1,29 @@
+{% set languages = guest.extension_languages(true) %}
+{% if languages|length == 2 %}
+    {% set other_language = languages|filter(l => l.locale != guest.system_locale)|first %}
+    {% if other_language %}
+    <button type="button" class="bf-icon-btn bf-lang" data-bf-locale="{{ other_language.locale }}" lang="{{ other_language.locale|replace({'_': '-'}) }}" title="{{ other_language.title }}" aria-label="{{ other_language.title }}">
+        <svg class="icon" aria-hidden="true"><use href="{{ icon_only|default(false) ? '#bf-language' : '#bf-world' }}" /></svg>
+        {% if not icon_only|default(false) %}<span class="bf-lang-code" aria-hidden="true">{{ other_language.locale|split('_')|first|upper }}</span>{% endif %}
+    </button>
+    {% endif %}
+{% elseif languages|length > 2 %}
+    {# More languages: one button (a globe and the language's short code) opens a scrolling
+       menu with the full names. FOSSBilling's select box was too wide for a phone's header. #}
+    {% set current_language = languages|filter(l => l.locale == guest.system_locale)|first %}
+    <div class="dropdown bf-lang-menu">
+        <button type="button" class="bf-icon-btn bf-lang" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'Language'|trans }}" aria-label="{{ 'Language'|trans }}">
+            <svg class="icon" aria-hidden="true"><use href="{{ icon_only|default(false) ? '#bf-language' : '#bf-world' }}" /></svg>
+            {% if not icon_only|default(false) %}<span class="bf-lang-code" aria-hidden="true">{{ (current_language ? current_language.locale : guest.system_locale)|split('_')|first|upper }}</span>{% endif %}
+        </button>
+        <div class="dropdown-menu {{ icon_only|default(false) and frame_dir == 'rtl' ? 'dropdown-menu-start' : 'dropdown-menu-end' }} bf-lang-list">
+            {% for lang in languages %}
+                {% if lang.locale == guest.system_locale %}
+                    <button type="button" class="dropdown-item active" aria-current="true" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ lang.title }}</button>
+                {% else %}
+                    <button type="button" class="dropdown-item" data-bf-locale="{{ lang.locale }}" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ lang.title }}</button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

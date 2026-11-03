@@ -18,17 +18,21 @@ use Twig\TwigFunction;
 
 final class PalisadeGateGuestStub
 {
-    public function __construct(private bool $guestTickets)
+    public function __construct(private bool $guestTickets, private string $locale = 'en_US')
     {
     }
 
     public function __call(string $name, array $args): mixed
     {
+        if ($name === 'system_locale') {
+            return $this->locale;
+        }
+
         return $name === 'support_guest_tickets_enabled' ? $this->guestTickets : false;
     }
 }
 
-function renderPalisadeGatedPage(string $layout, bool $guestTickets): string
+function renderPalisadeGatedPage(string $layout, bool $guestTickets, string $locale = 'en_US'): string
 {
     $loader = new ChainLoader([
         new ArrayLoader([
@@ -51,7 +55,7 @@ function renderPalisadeGatedPage(string $layout, bool $guestTickets): string
         'client' => null,
         'settings' => ['require_login' => '1'],
         'request_path' => '/support/contact-us',
-        'guest' => new PalisadeGateGuestStub($guestTickets),
+        'guest' => new PalisadeGateGuestStub($guestTickets, $locale),
     ]);
 }
 
@@ -70,3 +74,16 @@ test('an open page keeps its scripts', function (string $layout): void {
         ->and($html)->toContain('pageScript()')
         ->and($html)->not->toContain('id="gate"');
 })->with(['layout_public.html.twig']);
+
+test('both client layouts follow the selected language direction', function (string $locale, string $direction): void {
+    foreach (['layout_public.html.twig', 'layout_default.html.twig'] as $layout) {
+        $html = renderPalisadeGatedPage($layout, false, $locale);
+
+        expect($html)->toContain('<html lang="' . str_replace('_', '-', $locale) . '" dir="' . $direction . '"');
+    }
+})->with([
+    'Arabic' => ['ar_SA', 'rtl'],
+    'Persian' => ['fa_IR', 'rtl'],
+    'Hebrew' => ['he_IL', 'rtl'],
+    'English' => ['en_US', 'ltr'],
+]);

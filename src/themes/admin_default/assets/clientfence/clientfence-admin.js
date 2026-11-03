@@ -1,6 +1,6 @@
 // ClientFence admin frame (themes/admin_default/assets/clientfence/clientfence-admin.js, a module after
 // FOSSBilling's own admin script): the Ctrl+K search, the menu drawer and its collapsed mode, the
-// one-click language switch, the "New ..." links (#bf-new=<modal id> opens that page's create
+// "New ..." links (#bf-new=<modal id> opens that page's create
 // form), the bell, the dashboard income chart and the dashboard card order. Text from the server goes in
 // with textContent only.
 
@@ -119,19 +119,6 @@ document.querySelectorAll('[data-bf-group] > summary').forEach((summary) => {
       setCollapsed(false);
       summary.parentElement.open = true;
     }
-  });
-});
-
-// ---- Language: the header button (two languages) or the language menu's items switch the language
-document.querySelectorAll('[data-bf-locale]').forEach((button) => {
-  button.addEventListener('click', () => {
-    const name = window.ClientFence?.cookieNames?.locale || 'clientfence_locale';
-    if (typeof window.ClientFence?.cookieCreate === 'function') {
-      window.ClientFence.cookieCreate(name, button.dataset.bfLocale, 365);
-    } else {
-      document.cookie = `${name}=${encodeURIComponent(button.dataset.bfLocale)}; path=/; max-age=31536000; SameSite=Lax`;
-    }
-    window.location.reload();
   });
 });
 

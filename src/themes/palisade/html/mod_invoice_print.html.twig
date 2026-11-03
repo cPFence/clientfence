@@ -8,7 +8,7 @@
 {% set locale = guest.system_locale|default('en_US') %}
 
 <!DOCTYPE html>
-<html lang="{{ locale|replace({'_': '-'}) }}" dir="{{ locale starts with 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ locale|replace({'_': '-'}) }}" dir="{{ locale|lower|slice(0, 2) in ['ar', 'fa', 'he'] ? 'rtl' : 'ltr' }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="{{ 'build/css/palisade.css' | asset_url }}">

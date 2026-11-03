@@ -7,7 +7,7 @@
 {% set _auth_footer_note_fallback %}{% block auth_footer_note %}{% endblock %}{% endset %}
 {% set auth_footer_note = block('auth_footer_note')|trim %}
 {% set company = company|default(guest.system_company) %}
-{% set frame_dir = guest.system_locale|default('en') starts with 'ar' ? 'rtl' : 'ltr' %}
+{% set frame_dir = guest.system_locale|default('en')|lower|slice(0, 2) in ['ar', 'fa', 'he'] ? 'rtl' : 'ltr' %}
 
 <div class="bf-auth" dir="{{ frame_dir }}">
     <aside class="bf-auth-brand" aria-hidden="true">
@@ -40,6 +40,7 @@
                 fallback_class: 'h2 mb-0'
             }) }}
             <div class="bf-auth-tools">
+                {{ include('partial_clientfence_language.html.twig', { icon_only: true }) }}
                 <a class="bf-icon-btn hide-theme-dark js-theme-toggler" href="?theme=dark" title="{{ 'Enable dark mode'|trans }}" aria-label="{{ 'Enable dark mode'|trans }}">
                     <svg class="icon" aria-hidden="true"><use href="#moon" /></svg>
                 </a>

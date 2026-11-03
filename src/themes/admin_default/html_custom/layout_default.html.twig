@@ -1,13 +1,13 @@
 {# ClientFence admin frame (installed in themes/admin_default/html_custom/, which FOSSBilling reads
    before html/): FOSSBilling's admin layout with a sidebar menu, a slim header with the Ctrl+K
    search, and a small footer. Every block, widget slot and script of the stock layout stays, so
-   the inner pages render as before. Arabic: the frame and the dashboard read right to left; the
+   the inner pages render as before. Arabic, Persian and Hebrew: the frame and dashboard read right to left; the
    inner pages keep FOSSBilling's left-to-right layout. #}
 {% set profile = admin.profile_get %}
 {% set company = guest.system_company %}
 {% set active_locale = guest.system_locale|default('en')|replace({'_': '-'}) %}
 {% set current_active_menu = active_menu|default('') %}
-{% set frame_dir = guest.system_locale|default('en') starts with 'ar' ? 'rtl' : 'ltr' %}
+{% set frame_dir = guest.system_locale|default('en')|lower|slice(0, 2) in ['ar', 'fa', 'he'] ? 'rtl' : 'ltr' %}
 {% set content_dir = current_active_menu == 'dashboard' ? frame_dir : 'ltr' %}
 
 <!DOCTYPE html>
@@ -107,35 +107,7 @@
                     </div>
                 </div>
                 {% endif %}
-                {% set languages = guest.extension_languages(true) %}
-                {% if languages|length == 2 %}
-                    {% set other_language = languages|filter(l => l.locale != guest.system_locale)|first %}
-                    {% if other_language %}
-                    <button type="button" class="bf-icon-btn bf-lang" data-bf-locale="{{ other_language.locale }}" lang="{{ other_language.locale|replace({'_': '-'}) }}" title="{{ other_language.title }}" aria-label="{{ other_language.title }}">
-                        <svg class="icon" aria-hidden="true"><use href="#bf-world" /></svg>
-                        <span class="bf-lang-code" aria-hidden="true">{{ other_language.locale|split('_')|first|upper }}</span>
-                    </button>
-                    {% endif %}
-                {% elseif languages|length > 2 %}
-                    {# More languages: one button (a globe and the language's short code) opens a scrolling
-                       menu with the full names. FOSSBilling's select box was too wide for a phone's header. #}
-                    {% set current_language = languages|filter(l => l.locale == guest.system_locale)|first %}
-                    <div class="dropdown bf-lang-menu">
-                        <button type="button" class="bf-icon-btn bf-lang" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'Language'|trans }}" aria-label="{{ 'Language'|trans }}">
-                            <svg class="icon" aria-hidden="true"><use href="#bf-world" /></svg>
-                            <span class="bf-lang-code" aria-hidden="true">{{ (current_language ? current_language.locale : guest.system_locale)|split('_')|first|upper }}</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end bf-lang-list">
-                            {% for lang in languages %}
-                                {% if lang.locale == guest.system_locale %}
-                                    <button type="button" class="dropdown-item active" aria-current="true" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ lang.title }}</button>
-                                {% else %}
-                                    <button type="button" class="dropdown-item" data-bf-locale="{{ lang.locale }}" lang="{{ lang.locale|replace({'_': '-'}) }}">{{ lang.title }}</button>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
+                {{ include('partial_clientfence_language.html.twig') }}
                 <a class="bf-icon-btn hide-theme-dark js-theme-toggler" href="?theme=dark" title="{{ 'Enable dark mode'|trans }}" aria-label="{{ 'Enable dark mode'|trans }}">
                     <svg class="icon" aria-hidden="true"><use href="#moon" /></svg>
                 </a>

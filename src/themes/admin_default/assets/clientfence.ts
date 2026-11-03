@@ -154,6 +154,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ClientFence core patch: the locale picker is available before and after staff sign in.
+  document.querySelectorAll('[data-bf-locale]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const name = window.ClientFence?.cookieNames?.locale || 'clientfence_locale';
+      if (typeof window.ClientFence?.cookieCreate === 'function') {
+        window.ClientFence.cookieCreate(name, button.dataset.bfLocale, 365);
+      } else {
+        document.cookie = `${name}=${encodeURIComponent(button.dataset.bfLocale)}; path=/; max-age=31536000; SameSite=Lax`;
+      }
+      window.location.reload();
+    });
+  });
+
 
   /**
    * Enable Bootstrap Tooltip

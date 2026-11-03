@@ -41,15 +41,20 @@ test('invalid websites are refused', function (string $text): void {
     'more than 20' => [implode("\n", array_map(fn (int $i): string => "https://site{$i}.example.com", range(1, 21)))],
 ]);
 
-test('the sign-in embed sends the visitor to the sign-in page in the top window, in the chosen theme and direction', function (): void {
+test('the sign-in embed sends the visitor to the sign-in page in the top window, in the chosen theme and direction', function (string $locale, string $direction): void {
     $twig = new Environment(new FilesystemLoader(PATH_MODS . '/Embed/templates/client'), ['autoescape' => 'html']);
     $twig->addFilter(new TwigFilter('trans', static fn (string $text): string => $text));
     $twig->addFilter(new TwigFilter('url', static fn (string $path): string => '/' . $path));
 
-    $html = $twig->render('mod_embed_loginform.html.twig', ['guest' => ['system_locale' => 'ar_SA'], 'request' => ['theme' => 'dark']]);
+    $html = $twig->render('mod_embed_loginform.html.twig', ['guest' => ['system_locale' => $locale], 'request' => ['theme' => 'dark']]);
 
-    expect($html)->toContain('<html lang="ar-SA" dir="rtl" data-theme="dark">')
+    expect($html)->toContain('<html lang="' . str_replace('_', '-', $locale) . '" dir="' . $direction . '" data-theme="dark">')
         ->toContain('<form action="/login" method="get" target="_top"')
         ->not->toContain('name="password"')
         ->not->toContain('client/login');
-});
+})->with([
+    'Arabic' => ['ar_SA', 'rtl'],
+    'Persian' => ['fa_IR', 'rtl'],
+    'Hebrew' => ['he_IL', 'rtl'],
+    'English' => ['en_US', 'ltr'],
+]);

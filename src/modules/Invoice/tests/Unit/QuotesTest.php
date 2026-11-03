@@ -513,18 +513,19 @@ test('the quote page answers: the client it is for accepts as the client, others
         ->and(fn () => Quotes::answer($di, str_repeat('0', 40), true, null, '203.0.113.7'))->toThrow(InformationException::class, 'Quote not found');
 });
 
-test('the quote PDF renders in English, Arabic and Hebrew', function (string $locale): void {
+test('the quote PDF renders in English and each shipped RTL layout language', function (string $locale): void {
     (new ClientFence\Translate())->setLocale('en_US')->setup();
     $db = quotesDb();
     [$di] = quotesContainer($db, 14.0);
-    $quote = Quotes::get($di, Quotes::save($di, quotesForm(['subject' => 'تطوير موقع / פיתוח אתר'])));
+    $quote = Quotes::get($di, Quotes::save($di, quotesForm(['subject' => 'تطوير موقع / פיתוח אתר / طراحی وب‌سایت'])));
 
     $response = QuotePdf::response($di, $quote, $locale);
     expect(substr((string) $response->getContent(), 0, 5))->toBe('%PDF-')
+        ->and((string) $response->getContent())->toContain($locale === 'en_US' ? '/Direction /L2R' : '/Direction /R2L')
         ->and($response->headers->get('Content-Disposition'))->toBe('attachment; filename=quote-' . $quote['id'] . '.pdf')
         // The PDF is translated into its language; the request's language comes back after.
         ->and(Locale::getDefault())->toBe('en_US');
-})->with(['en_US', 'ar_SA', 'he_IL']);
+})->with(['en_US', 'ar_SA', 'he_IL', 'fa_IR']);
 
 test('right-to-left PDF text keeps Latin values, short Latin phrases and numbered words left to right', function (): void {
     $text = ClientFence\Mod\Invoice\RtlPdf::text(true);

@@ -288,7 +288,7 @@ def missing(lang):
 
 def starter(lang):
     fb_path, cf_path, _ = paths(lang)
-    fb_header, _ = split_header(read_po(fb_path))
+    fb_header, _ = split_header(read_po(fb_path) if os.path.exists(fb_path) else [])
     existing = os.path.exists(cf_path)
     if existing:
         header, entries = split_header(read_po(cf_path))

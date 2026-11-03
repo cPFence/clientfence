@@ -2,7 +2,7 @@
    mod_client (Clientfence\Service::SETTINGS); saved with client/signin_update, never with the
    page's main form. #}
 {% set signin = admin.client_signin_get %}
-{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 {{ include('mod_clientfence_settings_style.html.twig') }}
 <div class="card mt-3 clientfence-settings" id="google-sign-in" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form method="post" action="{{ 'client/signin_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }} autocomplete="off">

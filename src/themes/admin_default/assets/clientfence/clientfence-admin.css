@@ -341,7 +341,7 @@ body { font-family: var(--bf-font); }
 .bf-auth-list .icon { width: 20px; height: 20px; color: #60a5fa; }
 .bf-auth-brand small { color: #8d99ac; }
 .bf-auth-panel { display: flex; flex-direction: column; min-height: 100vh; padding: 20px 16px; }
-.bf-auth-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bf-auth-top { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .bf-auth-logo { display: inline-flex; color: var(--bf-ink); text-decoration: none; }
 .bf-auth-logo img { display: block; height: 30px; width: auto; max-width: 180px; }
 .bf-auth-tools { display: flex; gap: 8px; margin-inline-start: auto; }

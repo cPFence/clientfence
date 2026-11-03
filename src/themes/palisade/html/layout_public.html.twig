@@ -2,7 +2,7 @@
 {# Full-screen pages (sign-in, password reset, maintenance). Who may see a page while signed out
    is set in partials/guest_access.html.twig, as in layout_default; others get the sign-in gate. #}
 {% set locale = guest.system_locale|default('en_US') %}
-{% set is_rtl = locale starts with 'ar' %}
+{% set is_rtl = locale|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 {% set guest_gated = include('partials/guest_access.html.twig')|trim == 'gated' %}
 {% set page_title = guest_gated ? 'Sign in required'|trans : (block('meta_title') is defined ? block('meta_title')|trim : '') %}
 {% set page_title = (page_title ? page_title ~ ' · ' : '') ~ guest.system_company.name|default('ClientFence')|e %}

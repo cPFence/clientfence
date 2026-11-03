@@ -14,6 +14,7 @@ $root = rtrim($argv[1] ?? dirname(__DIR__) . '/src', '/');
 $manifest = 'modules/Clientfence/pack-manifest.json';
 // The pack's files: these folders and files, at their install paths.
 $paths = [
+    'locale/he_IL/LC_MESSAGES/messages.mo',
     'library/Payment/Adapter/CustomEgp.php',
     'library/Registrar/Adapter/Dynadot.php',
     'library/Server/Manager/Enhance.php',

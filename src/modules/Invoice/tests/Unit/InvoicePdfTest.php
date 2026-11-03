@@ -6,7 +6,7 @@ use ClientFence\Mod\Invoice\Controller\Admin;
 use ClientFence\Mod\Invoice\InvoicePdf;
 use Symfony\Component\HttpFoundation\Request;
 
-function invoicePdfFixture(): array
+function invoicePdfFixture(string $locale = 'ar_SA'): array
 {
     $di = new Pimple\Container();
     $system = Mockery::mock(ClientFence\Mod\System\Service::class);
@@ -22,11 +22,17 @@ function invoicePdfFixture(): array
         'theme' => $theme,
     });
 
+    $buyer = match ($locale) {
+        'he_IL' => ['Company' => 'אחסון לדוגמה', 'Name' => 'לקוח לדוגמה', 'Address' => '7440 – רחוב הרצל – תל אביב'],
+        'fa_IR' => ['Company' => 'میزبانی نمونه', 'Name' => 'مشتری نمونه', 'Address' => '7440 – خیابان آزادی – تهران'],
+        default => ['Company' => 'شركة قمة للمقاولات', 'Name' => 'عميل לקוח', 'Address' => 'الرياض'],
+    };
+
     return [$di, [
         'currency_code' => 'USD',
         'logo_source' => '',
         'seller' => ['Name' => 'Example Hosting', 'Address 1' => '1 Example Street'],
-        'buyer' => ['Company' => 'شركة قمة للمقاولات', 'Name' => 'عميل לקוח', 'Address' => 'الرياض'],
+        'buyer' => $buyer,
         'invoice' => [
             'serie_nr' => 'CF-00001',
             'created_at' => '2026-10-01 12:00:00',
@@ -59,11 +65,11 @@ function invoicePdfFixture(): array
     ]];
 }
 
-test('invoice PDFs render Arabic buyers in the chosen language and restore the request locale', function (string $locale, bool $rtl): void {
+test('invoice PDFs render buyers in the chosen language and restore the request locale', function (string $locale, bool $rtl): void {
     $previous = Locale::getDefault();
     (new ClientFence\Translate())->setLocale('de_DE')->setup();
     try {
-        [$di, $data] = invoicePdfFixture();
+        [$di, $data] = invoicePdfFixture($locale);
         $pdf = InvoicePdf::render($di, $data, $locale);
 
         expect($pdf)->toStartWith('%PDF-')
@@ -74,6 +80,8 @@ test('invoice PDFs render Arabic buyers in the chosen language and restore the r
     }
 })->with([
     'Arabic' => ['ar_SA', true],
+    'Hebrew' => ['he_IL', true],
+    'Persian' => ['fa_IR', true],
     'English' => ['en_US', false],
 ]);
 

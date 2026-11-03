@@ -2,7 +2,7 @@
    settings page. Kept in mod_support; saved with support/ticket_files_update, never with the
    tab's main form. #}
 {% set files = admin.extension_config_get({ 'ext': 'mod_support' }) %}
-{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 {{ include('mod_clientfence_settings_style.html.twig') }}
 <div class="clientfence-settings border-top" id="ticket-files" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form method="post" action="{{ 'support/ticket_files_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>

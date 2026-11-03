@@ -1,7 +1,7 @@
 {# ClientFence: hosting panels, on the Hosting Servers tab of the Hosting Plans and Servers page.
    Kept in mod_servicehosting; saved with servicehosting/panels_update.
    `panels`: admin.servicehosting_panels_get_list, read once by the page. #}
-{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 {{ include('mod_clientfence_settings_style.html.twig') }}
 <div class="clientfence-settings border-top" id="hosting-panels" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form class="clientfence-settings-group" method="post" action="{{ 'servicehosting/panels_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>

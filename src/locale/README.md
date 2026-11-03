@@ -9,6 +9,9 @@ is built from two catalogues:
   (ClientFence's own texts and FOSSBilling texts it never translated), plus fixes. It wins where
   both have a text.
 
+Hebrew (`he_IL`) has a complete standalone ClientFence catalogue, without an upstream catalogue.
+The language menu lists installed locales, including regional English, Portuguese and Chinese variants.
+
 `src/themes/palisade/locale/clientfence.pot` lists every text the code translates.
 
 ## Translating

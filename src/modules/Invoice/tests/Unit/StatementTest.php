@@ -221,6 +221,7 @@ test('the statement PDF renders left to right and right to left', function (stri
 
     expect(StatementPdf::isRtl($locale))->toBe($rtl)
         ->and(substr($pdf, 0, 5))->toBe('%PDF-')
+        ->and($pdf)->toContain($rtl ? '/Direction /R2L' : '/Direction /L2R')
         ->and(strlen($pdf))->toBeGreaterThan(5000);
 
     $response = StatementPdf::response($di, $statement, $locale);
@@ -231,6 +232,7 @@ test('the statement PDF renders left to right and right to left', function (stri
     'English' => ['en_US', false],
     'Arabic' => ['ar_SA', true],
     'Hebrew' => ['he_IL', true],
+    'Persian' => ['fa_IR', true],
 ]);
 
 test('client users with invoice access may see the statement', function (): void {

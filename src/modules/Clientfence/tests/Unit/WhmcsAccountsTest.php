@@ -166,6 +166,15 @@ test('clients keep their ids, details, currency, group, notes and custom fields'
         ]);
 });
 
+test('Hebrew client language survives the account import', function (): void {
+    $source = whmcsAccountsSource();
+    $source->update('tblusers', ['language' => 'hebrew'], ['id' => 10]);
+    $target = whmcsAccountsTarget();
+    whmcsImportAll($source, $target, Cipher::withKey(WHMCS_TEST_KEY));
+
+    expect($target->fetchOne('SELECT lang FROM client WHERE id = 1'))->toBe('he_IL');
+});
+
 test('owner logins sign in to their account; the others are named in warnings', function (): void {
     $target = whmcsAccountsTarget();
     [$accounts] = whmcsImportAll(whmcsAccountsSource(), $target, Cipher::withKey(WHMCS_TEST_KEY));

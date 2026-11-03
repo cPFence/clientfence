@@ -5,7 +5,7 @@
    for Guests" drops it for visitors), the top bar links, the breadcrumbs, the footer, the "Top"
    button and the extra JavaScript (partials/page_end.html.twig). #}
 {% set locale = guest.system_locale|default('en_US') %}
-{% set is_rtl = locale starts with 'ar' %}
+{% set is_rtl = locale|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 {% set guest_gated = include('partials/guest_access.html.twig')|trim == 'gated' %}
 {% set current_active_menu = active_menu|default('') %}
 {% set page_title = guest_gated ? 'Sign in required'|trans : (block('meta_title') is defined ? block('meta_title')|trim : '') %}

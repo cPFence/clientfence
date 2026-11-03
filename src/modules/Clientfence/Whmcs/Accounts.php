@@ -55,7 +55,7 @@ final class Accounts
     public const LANGUAGES = [
         'arabic' => 'ar_SA', 'bulgarian' => 'bg_BG', 'chinese' => 'zh_CN', 'czech' => 'cs_CZ', 'dutch' => 'nl_NL',
         'english' => 'en_US', 'farsi' => 'fa_IR', 'finnish' => 'fi_FI', 'french' => 'fr_FR', 'german' => 'de_DE',
-        'greek' => 'el_GR', 'hungarian' => 'hu_HU', 'indonesian' => 'id_ID', 'italian' => 'it_IT', 'persian' => 'fa_IR',
+        'greek' => 'el_GR', 'hebrew' => 'he_IL', 'hungarian' => 'hu_HU', 'indonesian' => 'id_ID', 'italian' => 'it_IT', 'persian' => 'fa_IR',
         'polish' => 'pl_PL', 'portuguese-br' => 'pt_BR', 'portuguese-pt' => 'pt_PT', 'romanian' => 'ro_RO',
         'russian' => 'ru_RU', 'serbian' => 'sr_RS', 'spanish' => 'es_ES', 'thai' => 'th_TH', 'turkish' => 'tr_TR',
         'ukranian' => 'uk_UA', 'ukrainian' => 'uk_UA', 'uzbek' => 'uz_UZ', 'vietnamese' => 'vi_VN',

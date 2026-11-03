@@ -1,7 +1,7 @@
 {# ClientFence: hosting plans from a panel server, on the Hosting Plans tab of the Hosting Plans
    and Servers page (shown while a panel with servers is on). `panels`: as for
    mod_servicehosting_settings_panels. #}
-{% set is_rtl = (active_locale|default('en_US'))|lower starts with 'ar' %}
+{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 {{ include('mod_clientfence_settings_style.html.twig') }}
 {% set plan_servers = [] %}
 {% for panel in panels %}
