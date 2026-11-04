@@ -45,6 +45,9 @@ class Service implements \ClientFence\InjectionAwareInterface
     protected QueuedEmailRepository $queuedEmailRepository;
     private Filesystem $filesystem;
 
+    /** @var int[] */
+    private static array $queuedAfterResponse = [];
+
     /**
      * Cache of the parsed "Bcc" setting for the lifetime of this instance, so an invalid
      * configured address is logged once per batch run rather than once per queued email.
@@ -302,6 +305,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         $send_now = $data['send_now'] ?? false;
         $throw_exceptions = $data['throw_exceptions'] ?? false;
         $attachment = $data['attachment'] ?? null;
+        // ClientFence core patch: page emails should arrive promptly while cron keeps its batch limit.
+        $after_response = !(isset($this->di['is_cron']) && $this->di['is_cron']);
 
         $template = $this->getOrCreateTemplateByCode($data['code'], $data);
 
@@ -407,12 +412,12 @@ class Service implements \ClientFence\InjectionAwareInterface
 
                 $to = $staff['email'];
                 $to_name = $staff['name'];
-                $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $staff['id'], $send_now, $throw_exceptions, $attachment, sensitive: $signInLink);
+                $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $staff['id'], $send_now, $throw_exceptions, $attachment, sensitive: $signInLink, after_response: $after_response);
             }
         } elseif (isset($oneStaff)) {
             $to = $oneStaff['email'];
             $to_name = $oneStaff['name'];
-            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $oneStaff['id'], $send_now, $throw_exceptions, $attachment, sensitive: $signInLink);
+            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, $oneStaff['id'], $send_now, $throw_exceptions, $attachment, sensitive: $signInLink, after_response: $after_response);
         } elseif (isset($customer)) {
             // A generic `to` is ignored for client-bound emails so their
             // rendered data cannot be redirected to an arbitrary recipient.
@@ -421,12 +426,12 @@ class Service implements \ClientFence\InjectionAwareInterface
             // ClientFence core patch: emails with a sign-in link stay out of the account's email history,
             // which authorized users may read (a password reset link there hands over the owner login).
             $historyClientId = $signInLink ? null : $customer['id'];
-            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, $historyClientId, null, $send_now, $throw_exceptions, $attachment, $replyTo, sensitive: $signInLink);
+            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, $historyClientId, null, $send_now, $throw_exceptions, $attachment, $replyTo, sensitive: $signInLink, after_response: $after_response);
             // ClientFence core patch: contact copies: the account's contacts who get this kind of email
             // (Client/Contacts.php); a failed copy never fails the email itself.
             foreach (\ClientFence\Mod\Client\Contacts::copies($this->di, (int) $customer['id'], (string) $data['code'], (string) $to) as $contact) {
                 try {
-                    $this->sendMail($contact['email'], $from, $subject, $content, $contact['name'], $from_name, $historyClientId, null, $send_now, false, $attachment, $replyTo, sensitive: $signInLink);
+                    $this->sendMail($contact['email'], $from, $subject, $content, $contact['name'], $from_name, $historyClientId, null, $send_now, false, $attachment, $replyTo, sensitive: $signInLink, after_response: $after_response);
                 } catch (\Throwable $e) {
                     $this->di['logger']->setChannel('email')->warning('Contact copy not sent: ' . $e->getMessage());
                 }
@@ -434,7 +439,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         } else {
             $to = $data['to'];
             $to_name = $data['to_name'] ?? null;
-            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, null, $send_now, $throw_exceptions, $attachment, $replyTo, sensitive: $signInLink);
+            $sent = $this->sendMail($to, $from, $subject, $content, $to_name, $from_name, null, null, $send_now, $throw_exceptions, $attachment, $replyTo, sensitive: $signInLink, after_response: $after_response);
         }
 
         return $sent;
@@ -477,7 +482,7 @@ class Service implements \ClientFence\InjectionAwareInterface
     /**
      * @param array{content: string, name: string, mime?: string}|null $attachment a file to attach to the email, e.g. a generated invoice PDF
      */
-    public function sendMail($to, $from, $subject, $content, $to_name = null, $from_name = null, $client_id = null, $admin_id = null, bool $send_now = false, bool $throw_exceptions = false, ?array $attachment = null, ?string $reply_to = null, ?string $unsubscribe = null, bool $sensitive = false): bool
+    public function sendMail($to, $from, $subject, $content, $to_name = null, $from_name = null, $client_id = null, $admin_id = null, bool $send_now = false, bool $throw_exceptions = false, ?array $attachment = null, ?string $reply_to = null, ?string $unsubscribe = null, bool $sensitive = false, bool $after_response = false): bool
     {
         // ClientFence core patch: sign-in emails are sent at once and never stored: staff can read the queue.
         $email = $this->_queue($to, $from, $subject, $content, $to_name, $from_name, $client_id, $admin_id, $attachment, !$sensitive);
@@ -490,9 +495,36 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
         if ($send_now || $sensitive) {
             $this->_sendFromQueue($email, $throw_exceptions, $sensitive);
+        } elseif ($after_response) {
+            self::$queuedAfterResponse[] = (int) $email->getId();
+            // ClientFence core patch: finish the response before sending its queued emails.
+            if (count(self::$queuedAfterResponse) === 1) {
+                register_shutdown_function(function (): void {
+                    if (function_exists('fastcgi_finish_request')) {
+                        fastcgi_finish_request();
+                    } elseif (function_exists('litespeed_finish_request')) {
+                        litespeed_finish_request();
+                    }
+                    $this->sendQueuedAfterResponse();
+                });
+            }
         }
 
         return true;
+    }
+
+    // ClientFence core patch: cap shutdown work so excess emails stay queued for cron.
+    public function sendQueuedAfterResponse(): void
+    {
+        $ids = array_slice(self::$queuedAfterResponse, 0, 20);
+        self::$queuedAfterResponse = [];
+
+        foreach ($ids as $id) {
+            $email = $this->getQueuedEmailRepository()->find($id);
+            if ($email instanceof QueuedEmail) {
+                $this->_sendFromQueue($email);
+            }
+        }
     }
 
     private function _getDefaults($data): array
@@ -1278,6 +1310,16 @@ class Service implements \ClientFence\InjectionAwareInterface
         $extensionService = $this->di['mod_service']('extension');
         if ($extensionService->isExtensionActive('mod', 'demo')) {
             return false;
+        }
+        if (!$sensitive) {
+            // ClientFence core patch: shutdown and cron must not send the same queued email.
+            $claimed = $this->di['em']->getConnection()->executeStatement(
+                "UPDATE email_queue SET status = 'sending', updated_at = ? WHERE id = ? AND (status IN (?, ?, ?) OR (status = 'sending' AND updated_at < ?))",
+                [date('Y-m-d H:i:s'), $queue->getId(), QueuedEmail::STATUS_UNSENT, QueuedEmail::STATUS_PENDING, QueuedEmail::STATUS_FAILED, (new \DateTime('-' . QueuedEmailRepository::SENDING_STALE_MINUTES . ' minutes'))->format('Y-m-d H:i:s')]
+            );
+            if ($claimed === 0) {
+                return false;
+            }
         }
         // ClientFence core patch: a retry of an email cut off while 'sending' (findDueBatch) counts as a try.
         if ($queue->getStatus() === 'sending') {

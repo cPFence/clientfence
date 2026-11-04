@@ -64,8 +64,9 @@
                     </li>
                     {% endif %}
                     {% if can_manage_balance %}
+                    {# ClientFence core patch: the balance tab is named Credit Balance; Payments was confused with Transactions. #}
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" href="#tab-balance" data-bs-toggle="tab" role="tab">{{ 'Payments'|trans }}</a>
+                        <a class="nav-link" href="#tab-balance" data-bs-toggle="tab" role="tab">{{ 'Credit Balance'|trans }}</a>
                     </li>
                     {% endif %}
                     {% if can_view_client_login_history %}
@@ -140,7 +141,7 @@
                                         <td class="text-end">{{ 'Currency'|trans }}</td>
                                         <td>{{ client.currency ? (client.currency|currency_name) : '-' }}</td>
                                     </tr>
-                                    {# ClientFence core patch: an Add Funds shortcut next to the balance (opens the Payments tab). #}
+                                    {# ClientFence core patch: an Add Funds shortcut next to the balance (opens the Credit Balance tab). #}
                                     <tr>
                                         <td class="text-end">{{ 'Balance'|trans }}</td>
                                         {% if client.currency is not null %}
@@ -774,8 +775,8 @@
             {% set paymentsPerPage = request.payments_per_page in [10, 25, 50, 100] ? request.payments_per_page : 20 %}
             {% set payments = admin.client_balance_get_list({ 'per_page': paymentsPerPage, 'page': paymentsPage, 'client_id': client.id }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
-                title: 'Client Payments History'|trans,
-                subtitle: 'Review balance adjustments and record a manual credit for this client when needed.'|trans,
+                title: 'Credit History'|trans,
+                subtitle: "Credit added to or used from this client's balance."|trans,
                 card_class: 'm-3 mb-0'
             } %}
                 {% block section_content %}

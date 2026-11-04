@@ -12,10 +12,15 @@ declare(strict_types=1);
 
 use ClientFence\Mod\Currency\Entity\Currency;
 use ClientFence\Mod\Email\Entity\EmailTemplate;
+use ClientFence\Mod\Email\Entity\QueuedEmail;
 
 use function Tests\Helpers\container;
 use function Tests\Helpers\createEntity;
 use function Tests\Helpers\moduleService;
+
+afterEach(function (): void {
+    (new ReflectionProperty(ClientFence\Mod\Email\Service::class, 'queuedAfterResponse'))->setValue(null, []);
+});
 
 function emailTemplate(string $actionCode = '', ?int $id = null, array $data = []): EmailTemplate
 {
@@ -515,6 +520,67 @@ test('sendTemplate sends email when template exists', function (): void {
 
     expect($result)->toBeTrue();
 });
+
+test('sendTemplate sends queued email after the response outside cron', function (bool $isCron): void {
+    $template = emailTemplate('mod_email_test', data: [
+        'enabled' => true, 'is_custom' => true, 'subject' => 'Subject', 'content' => 'Body',
+    ]);
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->once()->andReturn($template);
+    $queueRepo = Mockery::mock(ClientFence\Mod\Email\Repository\QueuedEmailRepository::class);
+    $em = emailBuildEm(templateRepo: $templateRepo, queueRepo: $queueRepo);
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $connection->shouldReceive('executeStatement')->andReturn(1);
+    $em->shouldReceive('getConnection')->andReturn($connection);
+    $queued = null;
+    $em->shouldReceive('persist')->once()->with(Mockery::on(function (QueuedEmail $email) use (&$queued): bool {
+        $queued = $email;
+        \Tests\Helpers\setEntityId($email, 42);
+
+        return true;
+    }));
+
+    $crypt = Mockery::mock(ClientFence\Crypt::class);
+    $crypt->shouldReceive('encrypt')->once()->andReturn('encrypted');
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->andReturn('company@example.test');
+    $system->shouldReceive('renderEmailTplString', 'renderEmailSubjectString')->andReturnArg(0);
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->shouldReceive('isExtensionActive')->with('mod', 'demo')->andReturn(false);
+    $mod = Mockery::mock(ClientFence\Module::class);
+    $mod->shouldReceive('getConfig')->andReturn([
+        'from_email' => 'company@example.test', 'from_name' => 'Company',
+        'mailer' => 'custom', 'custom_dsn' => 'null://null',
+    ]);
+
+    $di = container();
+    $di['em'] = $em;
+    $di['crypt'] = $crypt;
+    $di['mod'] = $di->protect(fn () => $mod);
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system, 'extension' => $extension]));
+    if ($isCron) {
+        $di['is_cron'] = true;
+    }
+    $service = new ClientFence\Mod\Email\Service();
+    $service->setDi($di);
+
+    expect($service->sendTemplate(['code' => 'mod_email_test', 'to' => 'client@example.test']))->toBeTrue();
+    $remembered = new ReflectionProperty($service, 'queuedAfterResponse');
+    expect($remembered->getValue())->toBe($isCron ? [] : [42])
+        ->and($queued->getStatus())->toBe(QueuedEmail::STATUS_PENDING);
+
+    $queueRepo->shouldReceive('find')->times($isCron ? 0 : 1)->with(42)->andReturn($queued);
+    $em->shouldReceive('remove')->times($isCron ? 0 : 1)->with($queued);
+
+    $otherService = new ClientFence\Mod\Email\Service();
+    $otherService->setDi($di);
+    withAppEnv('prod', fn () => $otherService->sendQueuedAfterResponse());
+
+    expect($remembered->getValue())->toBe([]);
+    if ($isCron) {
+        expect($queued->getStatus())->toBe(QueuedEmail::STATUS_PENDING);
+    }
+})->with(['page action' => [false], 'cron run' => [true]]);
 
 test('sendTemplate forwards the attachment to the queue and strips it from the stored vars', function (): void {
     $data = [
@@ -1695,6 +1761,9 @@ test('batchSend processes email queue', function (): void {
         ->andReturn([$queueModel]);
 
     $em = emailBuildEm(null, null, $queueRepo);
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $connection->shouldReceive('executeStatement')->andReturn(1);
+    $em->shouldReceive('getConnection')->andReturn($connection);
     $em->shouldReceive('flush')->atLeast()->once();
 
     $modMock = Mockery::mock(ClientFence\Module::class);
@@ -2179,6 +2248,34 @@ test('parseBccAddresses returns an empty array for a blank setting', function ()
     expect($result)->toBe([]);
 });
 
+test('_sendFromQueue does not send when another process has claimed the email', function (): void {
+    $queue = new QueuedEmail();
+    \Tests\Helpers\setEntityId($queue, 1);
+    $queue->setSubject('subject');
+    $queue->setSender('sender@example.com');
+    $queue->setRecipient('receiver@example.com');
+    $queue->setContent('content');
+
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('executeStatement')->once()->andReturn(0);
+    $em = emailBuildEm();
+    $em->shouldReceive('getConnection')->once()->andReturn($connection);
+    $em->shouldNotReceive('flush');
+    $mod = Mockery::mock(ClientFence\Module::class);
+    $mod->shouldNotReceive('getConfig');
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->shouldReceive('isExtensionActive')->once()->with('mod', 'demo')->andReturn(false);
+
+    $di = container();
+    $di['em'] = $em;
+    $di['mod'] = $di->protect(fn () => $mod);
+    $di['mod_service'] = $di->protect(moduleService(['extension' => $extension]));
+    $service = new ClientFence\Mod\Email\Service();
+    $service->setDi($di);
+
+    expect((new ReflectionMethod($service, '_sendFromQueue'))->invoke($service, $queue))->toBeFalse();
+});
+
 // A sensitive email (sign-in links) never reads the Bcc setting; an invalid address shows whether it was read.
 test('_sendFromQueue skips the configured Bcc for sensitive emails', function (bool $sensitive, int $warnings): void {
     $queue = new ClientFence\Mod\Email\Entity\QueuedEmail();
@@ -2190,6 +2287,9 @@ test('_sendFromQueue skips the configured Bcc for sensitive emails', function (b
 
     $em = emailBuildEm();
     $em->shouldReceive('flush');
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $connection->shouldReceive('executeStatement')->times($sensitive ? 0 : 1)->andReturn(1);
+    $em->shouldReceive('getConnection')->andReturn($connection);
     $modMock = Mockery::mock(ClientFence\Module::class);
     $modMock->shouldReceive('getConfig')->andReturn(['mailer' => 'sendmail', 'bcc_email' => 'not-an-email']);
     $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
@@ -2227,6 +2327,10 @@ test('_sendFromQueue only logs an invalid Bcc address once per service instance'
 
     $em = emailBuildEm();
     $em->shouldReceive('flush')->atLeast()->once();
+
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $connection->shouldReceive('executeStatement')->twice()->andReturn(1);
+    $em->shouldReceive('getConnection')->andReturn($connection);
 
     $modMock = Mockery::mock(ClientFence\Module::class);
     $modMock->shouldReceive('getConfig')
@@ -2277,6 +2381,7 @@ test('_sendFromQueue counts a retry of a cut-off send and marks an \\Error as fa
 
     $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
     $connection->shouldReceive('fetchOne')->andThrow(new Error('boom'));
+    $connection->shouldReceive('executeStatement')->once()->andReturn(1);
     $em = emailBuildEm();
     $em->shouldReceive('getConnection')->andReturn($connection);
 
