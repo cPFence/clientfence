@@ -20562,3 +20562,185 @@ msgstr "Osoitteesi nyt: %ip%. Tallennus hylkää luettelon, jossa sitä ei ole."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "IP-osoiteluettelossa"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ":label poistettu"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ":label poistettu aikarajan jälkeen"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label avattu: :name"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "Pääsyn tyyppi"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "Lisää turvallisesti"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "Asiakkaan lisäämä, salattu. Jokainen avaus tallennetaan ja näytetään asiakkaalle; kaikki poistetaan, kun tukipyyntö suljetaan."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "Tukipyyntöön voi lisätä enintään :count salaista tietoa."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "Valitse kelvollinen salaisen tiedon laji."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "Valitse kelvollinen palvelinpääsyn tyyppi."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "Poista salaiset tiedot, kun on kulunut"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "Salataan heti, vain valtuutettu tukihenkilöstö voi avata (jokainen avaus näkyy tässä) ja poistetaan, kun tukipyyntö suljetaan tai :days päivän kuluttua."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "Anna otsikko ja arvo."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "Anna salasana tai SSH-avain."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "Anna palvelimen isäntä."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "Myös silloin, kun tukipyyntö pysyy avoimena. Tukipyynnön sulkeminen poistaa ne heti."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "Esimerkiksi: WordPressin ylläpitäjän kirjautuminen"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "Isäntä tai IP-osoite"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "Jos tukitiimimme tarvitsee kirjautua palvelimellesi, lisää tiedot tähän. Ne salataan heti, vain valtuutettu tukihenkilöstö voi avata ne, jokainen avaus näkyy tukipyynnössä, ja ne poistetaan, kun tukipyyntö suljetaan. Voit lisätä ne myös myöhemmin tukipyynnön sivulta."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "Salaisen tiedon laji"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "Salli asiakkaiden lisätä muita salaisia tietoja (API-avaimet, kirjautumistiedot)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "Salli asiakkaiden lisätä palvelimen pääsytiedot"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "Älä koskaan kirjoita salasanoja itse viestiin."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "Muistiinpano tiimillemme (valinnainen)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "Avaa tukipyyntöjen salaiset tiedot"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "Muu salainen tieto"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "SSH-yksityisavain"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "SSH-yksityisavain (salasanan sijaan)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "Salainen tieto"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "Salaiset tiedot (valinnainen)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "Suljettuun tukipyyntöön ei voi lisätä salaisia tietoja."
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "Palvelinpääsy"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "Palvelinpääsy (valinnainen)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "Palvelinpääsy ja salaiset tiedot"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "Kirjautuneet asiakkaat voivat lisätä avoimeen tukipyyntöön palvelinpääsyn tai muita salaisia tietoja viestien ulkopuolelle. Ne salataan, vain henkilöstö, jolla on oikeus ”Avaa tukipyyntöjen salaiset tiedot”, voi avata ne, jokainen avaus näkyy tukipyynnössä, ja ne poistetaan, kun tukipyyntö suljetaan."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr "Kenttä :field sisältää ohjausmerkkejä."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr "Kentässä :field saa olla enintään :max merkkiä."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr "Kentän :field on oltava tekstiä."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "Portin on oltava välillä 1–65535."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "Tämä salaisen tiedon laji on poistettu käytöstä."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "Tämä salainen tieto on liian suuri."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "Tukipyyntöjen salaiset tiedot"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "Mikä tämä on?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "Arvojen näkemiseen tarvitaan oikeus ”Avaa tukipyyntöjen salaiset tiedot”."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "Lisää palvelinpääsy tai salainen tieto"

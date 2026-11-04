@@ -23798,3 +23798,185 @@ msgstr "הכתובת שלכם כעת: %ip%. השמירה דוחה רשימה ש�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "ברשימת כתובות ה-IP"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ":label נמחק"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ":label נמחק לאחר תום התקופה"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label נפתח על ידי :name"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "סוג גישה"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "הוספה מאובטחת"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "נוסף על ידי הלקוח, מוצפן. כל פתיחה נרשמת ומוצגת ללקוח; הכול נמחק עם סגירת הפנייה."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "ניתן להוסיף לפנייה עד :count פרטים סודיים."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "בחרו סוג תקין של פרטים סודיים."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "בחרו סוג תקין של גישה לשרת."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "מחיקת הפרטים הסודיים לאחר"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "מוצפנים מיד, נפתחים רק על ידי אנשי תמיכה מורשים (כל פתיחה מופיעה כאן) ונמחקים עם סגירת הפנייה או לאחר :days ימים."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "הזינו תווית וערך."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "הזינו סיסמה או מפתח SSH."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "הזינו את מארח השרת."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "גם כשהפנייה נשארת פתוחה. סגירת הפנייה מוחקת אותם מיד."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "לדוגמה: כניסת מנהל WordPress"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "מארח או כתובת IP"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "אם צוות התמיכה שלנו צריך להיכנס לשרת שלכם, הוסיפו את הפרטים כאן. הם מוצפנים מיד, רק אנשי תמיכה מורשים יכולים לפתוח אותם, כל פתיחה מוצגת בפנייה, והם נמחקים עם סגירת הפנייה. אפשר גם להוסיף אותם מאוחר יותר מעמוד הפנייה."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "סוג הפרטים הסודיים"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "לאפשר ללקוחות להוסיף פרטים סודיים אחרים (מפתחות API, פרטי כניסה)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "לאפשר ללקוחות להוסיף פרטי גישה לשרת"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "לעולם אל תכתבו סיסמאות בגוף ההודעה עצמה."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "הערה לצוות שלנו (אופציונלי)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "פתיחת פרטים סודיים בפניות"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "פרטים סודיים אחרים"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "מפתח SSH פרטי"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "מפתח SSH פרטי (במקום סיסמה)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "פרטים סודיים"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "פרטים סודיים (אופציונלי)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "לא ניתן להוסיף פרטים סודיים לפנייה סגורה."
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "גישה לשרת"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "גישה לשרת (אופציונלי)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "גישה לשרת ופרטים סודיים"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "לקוחות מחוברים יכולים להוסיף לפנייה פתוחה גישה לשרת או פרטים סודיים אחרים, בנפרד מההודעות. הם מוצפנים, רק אנשי צוות עם ההרשאה “פתיחת פרטים סודיים בפניות” יכולים לפתוח אותם, כל פתיחה מוצגת בפנייה, והם נמחקים עם סגירת הפנייה."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr "השדה :field מכיל תווי בקרה."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr "השדה :field יכול להכיל לכל היותר :max תווים."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr "השדה :field חייב להיות טקסט."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "היציאה חייבת להיות בין 1 ל-65535."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "סוג זה של פרטים סודיים כבוי."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "הפרטים הסודיים האלה גדולים מדי."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "פרטים סודיים בפניות"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "מה זה?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "נדרשת ההרשאה “פתיחת פרטים סודיים בפניות” כדי לראות את הערכים."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "הוספת גישה לשרת או פרטים סודיים"

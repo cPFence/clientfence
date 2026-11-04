@@ -125,6 +125,10 @@ function helpdeskFixture(): Helpdesk
 
 function supportWireKbRepositories(EntityManagerInterface $em, ?KbArticleRepository $articleRepo = null, ?KbArticleCategoryRepository $categoryRepo = null, ?CannedResponseRepository $cannedRepo = null, ?CannedResponseCategoryRepository $cannedCategoryRepo = null, ?HelpdeskRepository $helpdeskRepo = null, ?SupportTicketRepository $supportTicketRepo = null, ?SupportTicketMessageRepository $supportTicketMessageRepo = null, ?SupportTicketNoteRepository $supportTicketNoteRepo = null, ?SupportTicketMessageHistoryRepository $supportTicketMessageHistoryRepo = null): void
 {
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $connection->shouldReceive('delete')->byDefault()->andReturn(0);
+    $connection->shouldReceive('fetchAssociative')->byDefault()->andReturn(false);
+    $em->shouldReceive('getConnection')->byDefault()->andReturn($connection);
     $articleRepo ??= Mockery::mock(KbArticleRepository::class)->shouldIgnoreMissing();
     $categoryRepo ??= Mockery::mock(KbArticleCategoryRepository::class)->shouldIgnoreMissing();
     $cannedRepo ??= Mockery::mock(CannedResponseRepository::class)->shouldIgnoreMissing();

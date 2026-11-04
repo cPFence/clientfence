@@ -19631,3 +19631,185 @@ msgstr "您当前的地址：%ip%。不含该地址的列表无法保存。"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "在 IP 地址列表中"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr "已删除 :label"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr "已在期限届满后删除 :label"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":name 已打开 :label"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "访问类型"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "安全添加"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "由客户添加，已加密。每次打开都会被记录并显示给客户；工单关闭时全部删除。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "每个工单最多可添加 :count 条保密信息。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "请选择有效的保密信息类型。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "请选择有效的服务器访问类型。"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "多久后删除保密信息"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "立即加密，仅获授权的支持人员可以打开（每次打开都会列在此处），并在工单关闭时或 :days 天后删除。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "请输入标签和值。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "请输入密码或 SSH 密钥。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "请输入服务器主机。"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "即使工单保持开放也会删除。关闭工单时会立即删除。"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "例如：WordPress 管理员登录信息"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "主机或 IP 地址"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "如果我们的支持团队需要登录您的服务器，请在此添加详细信息。它们会立即加密，仅获授权的支持人员可以打开，每次打开都会显示在工单上，并在工单关闭时删除。您也可以稍后在工单页面添加。"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "保密信息类型"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "允许客户添加其他保密信息（API 密钥、登录信息）"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "允许客户添加服务器访问信息"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "切勿把密码写在消息正文中。"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "给我们团队的备注（可选）"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "打开工单保密信息"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "其他保密信息"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "SSH 私钥"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "SSH 私钥（代替密码）"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "保密信息"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "保密信息（可选）"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "无法向已关闭的工单添加保密信息。"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "服务器访问"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "服务器访问（可选）"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "服务器访问和保密信息"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "已登录的客户可以在消息之外，向开放的工单添加服务器访问信息或其他保密信息。它们会被加密，只有拥有“打开工单保密信息”权限的员工才能打开，每次打开都会显示在工单上，并在工单关闭时删除。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr ":field 字段包含控制字符。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr ":field 字段最多 :max 个字符。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr ":field 字段必须是文本。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "端口必须在 1 到 65535 之间。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "此类保密信息已关闭。"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "此保密信息太大。"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "工单保密信息"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "这是什么？"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "您需要“打开工单保密信息”权限才能查看这些值。"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "添加服务器访问或保密信息"

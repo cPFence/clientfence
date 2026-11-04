@@ -17900,3 +17900,185 @@ msgstr "Şu anki adresiniz: %ip%. Kaydetme, bu adresi içermeyen bir listeyi red
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "IP adresi listesinde"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ":label silindi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ":label süre dolduğu için silindi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label, :name tarafından açıldı"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "Erişim türü"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "Güvenli şekilde ekle"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "Müşteri tarafından eklendi, şifrelendi. Her açılış kaydedilir ve müşteriye gösterilir; destek talebi kapandığında hepsi silinir."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "Bir destek talebine en fazla :count gizli bilgi eklenebilir."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "Geçerli bir gizli bilgi türü seçin."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "Geçerli bir sunucu erişim türü seçin."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "Gizli bilgileri şu süre sonra sil:"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "Hemen şifrelenir, yalnızca yetkili destek personeli açabilir (her açılış burada listelenir) ve destek talebi kapandığında ya da :days gün sonra silinir."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "Bir etiket ve bir değer girin."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "Bir parola veya SSH anahtarı girin."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "Sunucu adresini girin."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "Destek talebi açık kalsa bile. Talebi kapatmak bunları hemen siler."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "Örneğin: WordPress yönetici girişi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "Sunucu veya IP adresi"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "Destek ekibimizin sunucunuza giriş yapması gerekiyorsa bilgileri buraya ekleyin. Bilgiler hemen şifrelenir, yalnızca yetkili destek personeli açabilir, her açılış destek talebinde gösterilir ve talep kapandığında silinir. Bunları daha sonra destek talebi sayfasından da ekleyebilirsiniz."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "Gizli bilgi türü"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "Müşteriler başka gizli bilgiler de eklesin (API anahtarları, girişler)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "Müşteriler sunucu erişim bilgisi eklesin"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "Parolaları asla mesajın içine yazmayın."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "Ekibimiz için not (isteğe bağlı)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "Destek talebi gizli bilgilerini aç"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "Diğer gizli bilgi"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "SSH özel anahtarı"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "SSH özel anahtarı (parola yerine)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "Gizli bilgi"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "Gizli bilgiler (isteğe bağlı)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "Kapalı bir destek talebine gizli bilgi eklenemez."
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "Sunucu erişimi"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "Sunucu erişimi (isteğe bağlı)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "Sunucu erişimi ve gizli bilgiler"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "Oturum açmış müşteriler, açık bir destek talebine mesajların dışında sunucu erişimi veya başka gizli bilgiler ekleyebilir. Bilgiler şifrelenir, yalnızca “Destek talebi gizli bilgilerini aç” yetkisine sahip personel açabilir, her açılış destek talebinde gösterilir ve talep kapandığında silinir."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr ":field alanı denetim karakterleri içeriyor."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr ":field alanı en fazla :max karakter olabilir."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr ":field alanı metin olmalıdır."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "Bağlantı noktası 1 ile 65535 arasında olmalıdır."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "Bu gizli bilgi türü kapalıdır."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "Bu gizli bilgi çok büyük."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "Destek talebi gizli bilgileri"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "Bu nedir?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "Değerleri görmek için “Destek talebi gizli bilgilerini aç” yetkisi gerekir."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "Sunucu erişimi veya gizli bilgi ekle"

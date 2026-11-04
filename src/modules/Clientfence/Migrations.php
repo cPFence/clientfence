@@ -28,6 +28,7 @@ final class Migrations
         2 => 'm2UnverifiedSenders',
         3 => 'm3Privacy',
         4 => 'm4ClientRecords',
+        5 => 'm5TicketSecrets',
     ];
 
     public static function latest(): int
@@ -122,6 +123,12 @@ final class Migrations
     }
 
     private static function m4ClientRecords(\Pimple\Container $di): void
+    {
+        Service::ensureTables($di, true);
+    }
+
+    // ClientFence core patch: existing installs create the ticket secret tables before use.
+    private static function m5TicketSecrets(\Pimple\Container $di): void
     {
         Service::ensureTables($di, true);
     }

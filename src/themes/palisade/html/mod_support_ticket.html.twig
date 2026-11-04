@@ -189,6 +189,10 @@
                             </div>
                         </div>
                     {% endif %}
+                    {# ClientFence: server access and other secrets (Support/TicketSecrets.php); signed-in clients only. #}
+                    {% if not is_guest_ticket %}
+                        {{ include('partials/ticket_secrets.html.twig') }}
+                    {% endif %}
                 </div>
             </div>
         </div>

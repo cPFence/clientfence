@@ -176,6 +176,33 @@ class Client extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    // ClientFence core patch: new ticket forms read secret availability without a ticket.
+    public function ticket_secret_kinds(): array
+    {
+        return \ClientFence\Mod\Support\TicketSecrets::kinds($this->getDi());
+    }
+
+    // ClientFence core patch: ticket secrets stay separate from ticket messages and email payloads.
+    #[RequiredParams(['ticket_id' => 'Ticket ID was not passed', 'kind' => 'Choose a kind of secret'])]
+    public function ticket_secret_add(array $data): array
+    {
+        return \ClientFence\Mod\Support\TicketSecrets::addForClient($this->getDi(), (int) $this->getIdentity()->id, (int) $data['ticket_id'], (string) $data['kind'], $data);
+    }
+
+    #[RequiredParams(['ticket_id' => 'Ticket ID was not passed'])]
+    public function ticket_secret_list(array $data): array
+    {
+        return \ClientFence\Mod\Support\TicketSecrets::listForTicket($this->getDi(), (int) $data['ticket_id'], (int) $this->getIdentity()->id);
+    }
+
+    #[RequiredParams(['id' => 'Secret ID was not passed'])]
+    public function ticket_secret_delete(array $data): bool
+    {
+        \ClientFence\Mod\Support\TicketSecrets::delete($this->getDi(), (int) $data['id'], null, (int) $this->getIdentity()->id);
+
+        return true;
+    }
+
     /**
      * ClientFence: the open issues and the scheduled work that affect the client's services, for the
      * client area's banner (NetworkIssues.php); none while network status is off.

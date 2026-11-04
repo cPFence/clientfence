@@ -20105,3 +20105,185 @@ msgstr "Địa chỉ hiện tại của bạn: %ip%. Việc lưu sẽ từ chố
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "trong danh sách địa chỉ IP"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ":label đã bị xóa"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ":label đã bị xóa khi hết thời hạn"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label được mở bởi :name"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "Loại truy cập"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "Thêm an toàn"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "Do khách hàng thêm, đã được mã hóa. Mỗi lần mở đều được ghi lại và hiển thị cho khách hàng; tất cả sẽ bị xóa khi phiếu được đóng."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "Mỗi phiếu chỉ có thể thêm tối đa :count thông tin bí mật."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "Hãy chọn loại thông tin bí mật hợp lệ."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "Hãy chọn loại truy cập máy chủ hợp lệ."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "Xóa thông tin bí mật sau"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "Được mã hóa ngay, chỉ nhân viên hỗ trợ được ủy quyền mới mở được (mỗi lần mở đều được liệt kê tại đây) và bị xóa khi phiếu được đóng hoặc sau :days ngày."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "Hãy nhập nhãn và giá trị."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "Hãy nhập mật khẩu hoặc khóa SSH."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "Hãy nhập máy chủ."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "Kể cả khi phiếu vẫn đang mở. Đóng phiếu sẽ xóa chúng ngay."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "Ví dụ: tài khoản quản trị WordPress"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "Máy chủ hoặc địa chỉ IP"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "Nếu đội hỗ trợ của chúng tôi cần đăng nhập vào máy chủ của quý khách, hãy thêm thông tin tại đây. Thông tin được mã hóa ngay, chỉ nhân viên hỗ trợ được ủy quyền mới mở được, mỗi lần mở đều hiển thị trên phiếu và sẽ bị xóa khi phiếu được đóng. Quý khách cũng có thể thêm sau từ trang phiếu."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "Loại thông tin bí mật"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "Cho phép khách hàng thêm thông tin bí mật khác (khóa API, tài khoản đăng nhập)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "Cho phép khách hàng thêm thông tin truy cập máy chủ"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "Tuyệt đối không ghi mật khẩu vào chính nội dung tin nhắn."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "Ghi chú cho đội của chúng tôi (không bắt buộc)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "Mở thông tin bí mật của phiếu hỗ trợ"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "Thông tin bí mật khác"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "Khóa riêng SSH"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "Khóa riêng SSH (thay cho mật khẩu)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "Thông tin bí mật"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "Thông tin bí mật (không bắt buộc)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "Không thể thêm thông tin bí mật vào phiếu đã đóng."
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "Truy cập máy chủ"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "Truy cập máy chủ (không bắt buộc)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "Truy cập máy chủ và thông tin bí mật"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "Khách hàng đã đăng nhập có thể thêm thông tin truy cập máy chủ hoặc thông tin bí mật khác vào phiếu đang mở, tách riêng khỏi tin nhắn. Thông tin được mã hóa, chỉ nhân viên có quyền “Mở thông tin bí mật của phiếu hỗ trợ” mới mở được, mỗi lần mở đều hiển thị trên phiếu và sẽ bị xóa khi phiếu được đóng."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr "Trường :field chứa ký tự điều khiển."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr "Trường :field tối đa :max ký tự."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr "Trường :field phải là văn bản."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "Cổng phải nằm trong khoảng từ 1 đến 65535."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "Loại thông tin bí mật này đã bị tắt."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "Thông tin bí mật này quá lớn."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "Thông tin bí mật của phiếu hỗ trợ"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "Đây là gì?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "Cần có quyền “Mở thông tin bí mật của phiếu hỗ trợ” để xem các giá trị."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "Thêm truy cập máy chủ hoặc thông tin bí mật"

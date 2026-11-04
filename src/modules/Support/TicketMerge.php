@@ -105,6 +105,13 @@ final class TicketMerge
                 ]);
             }
             $db->update('support_ticket', $update, ['id' => $masterId]);
+            // ClientFence core patch: merged source tickets lose secrets and events; a closed target loses values.
+            foreach ($others as $id) {
+                TicketSecrets::forgetTicket($db, $id, true);
+            }
+            if ($update['status'] === SupportTicket::STATUS_CLOSED) {
+                TicketSecrets::forgetTicket($db, $masterId);
+            }
             $db->executeStatement('DELETE FROM support_ticket WHERE id IN (:ids)', $list, $types);
             // Reply stars and closing feedback go with the replies (TicketFeedback).
             TicketFeedback::moveForMerge($db, $masterId, $others);

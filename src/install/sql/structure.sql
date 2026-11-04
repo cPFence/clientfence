@@ -1857,6 +1857,10 @@ CREATE TABLE `mod_clientfence_notification` (`id` bigint(20) unsigned NOT NULL A
 CREATE TABLE `client_note` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_id` bigint(20) NOT NULL, `admin_id` bigint(20) NOT NULL, `note` text NOT NULL, `pinned` tinyint(1) NOT NULL DEFAULT 0, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `client_notes` (`client_id`, `pinned`, `created_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE `client_file` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_id` bigint(20) NOT NULL, `admin_id` bigint(20) NOT NULL, `name` varchar(191) NOT NULL, `stored_name` char(32) NOT NULL, `size` int(10) unsigned NOT NULL, `mime` varchar(100) NOT NULL, `created_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `stored_name` (`stored_name`), KEY `client_files` (`client_id`, `created_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ClientFence core patch: encrypted ticket secrets and their retained audit events.
+CREATE TABLE `support_ticket_secret` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ticket_id` bigint(20) NOT NULL, `kind` varchar(10) NOT NULL, `label` varchar(100) NOT NULL, `data` text NOT NULL, `added_by_client_id` bigint(20) DEFAULT NULL, `created_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `ticket` (`ticket_id`), KEY `created` (`created_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `support_ticket_secret_event` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ticket_id` bigint(20) NOT NULL, `secret_label` varchar(100) NOT NULL, `action` varchar(10) NOT NULL, `admin_id` bigint(20) DEFAULT NULL, `client_id` bigint(20) DEFAULT NULL, `created_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `ticket` (`ticket_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

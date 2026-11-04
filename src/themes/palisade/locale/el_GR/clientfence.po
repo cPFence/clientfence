@@ -20198,3 +20198,185 @@ msgstr "Η διεύθυνσή σας τώρα: %ip%. Η αποθήκευση α�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "στη λίστα διευθύνσεων IP"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ":label διαγράφηκε"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ":label διαγράφηκε μετά τη λήξη της προθεσμίας"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label ανοίχθηκε από :name"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "Τύπος πρόσβασης"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "Ασφαλής προσθήκη"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "Προστέθηκαν από τον πελάτη, κρυπτογραφημένα. Κάθε άνοιγμα καταγράφεται και εμφανίζεται στον πελάτη· όλα διαγράφονται όταν κλείσει το αίτημα."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "Σε ένα αίτημα μπορούν να προστεθούν το πολύ :count εμπιστευτικά στοιχεία."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "Επιλέξτε έγκυρο είδος εμπιστευτικών στοιχείων."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "Επιλέξτε έγκυρο τύπο πρόσβασης στον διακομιστή."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "Διαγραφή εμπιστευτικών στοιχείων μετά από"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "Κρυπτογραφούνται αμέσως, ανοίγουν μόνο από εξουσιοδοτημένο προσωπικό υποστήριξης (κάθε άνοιγμα καταγράφεται εδώ) και διαγράφονται όταν κλείσει το αίτημα ή μετά από :days ημέρες."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "Εισαγάγετε μια ετικέτα και μια τιμή."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "Εισαγάγετε έναν κωδικό ή ένα κλειδί SSH."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "Εισαγάγετε τον διακομιστή (host)."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "Ακόμη και όταν το αίτημα παραμένει ανοιχτό. Το κλείσιμο του αιτήματος τα διαγράφει αμέσως."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "Για παράδειγμα: σύνδεση διαχειριστή WordPress"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "Διακομιστής (host) ή διεύθυνση IP"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "Αν η ομάδα υποστήριξής μας χρειάζεται να συνδεθεί στον διακομιστή σας, προσθέστε εδώ τα στοιχεία. Κρυπτογραφούνται αμέσως, μόνο εξουσιοδοτημένο προσωπικό υποστήριξης μπορεί να τα ανοίξει, κάθε άνοιγμα εμφανίζεται στο αίτημα και διαγράφονται όταν κλείσει το αίτημα. Μπορείτε επίσης να τα προσθέσετε αργότερα από τη σελίδα του αιτήματος."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "Είδος εμπιστευτικών στοιχείων"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "Να επιτρέπεται στους πελάτες να προσθέτουν άλλα εμπιστευτικά στοιχεία (κλειδιά API, στοιχεία σύνδεσης)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "Να επιτρέπεται στους πελάτες να προσθέτουν στοιχεία πρόσβασης στον διακομιστή"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "Μη γράφετε ποτέ κωδικούς μέσα στο ίδιο το μήνυμα."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "Σημείωση για την ομάδα μας (προαιρετικό)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "Άνοιγμα εμπιστευτικών στοιχείων αιτημάτων"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "Άλλα εμπιστευτικά στοιχεία"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "Ιδιωτικό κλειδί SSH"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "Ιδιωτικό κλειδί SSH (αντί για κωδικό)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "Εμπιστευτικά στοιχεία"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "Εμπιστευτικά στοιχεία (προαιρετικό)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "Δεν μπορούν να προστεθούν εμπιστευτικά στοιχεία σε κλειστό αίτημα."
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "Πρόσβαση στον διακομιστή"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "Πρόσβαση στον διακομιστή (προαιρετικό)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "Πρόσβαση στον διακομιστή και εμπιστευτικά στοιχεία"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "Οι συνδεδεμένοι πελάτες μπορούν να προσθέσουν σε ανοιχτό αίτημα πρόσβαση στον διακομιστή ή άλλα εμπιστευτικά στοιχεία, εκτός των μηνυμάτων. Κρυπτογραφούνται, μόνο το προσωπικό με το δικαίωμα «Άνοιγμα εμπιστευτικών στοιχείων αιτημάτων» μπορεί να τα ανοίξει, κάθε άνοιγμα εμφανίζεται στο αίτημα και διαγράφονται όταν κλείσει το αίτημα."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr "Το πεδίο :field περιέχει χαρακτήρες ελέγχου."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr "Το πεδίο :field πρέπει να έχει το πολύ :max χαρακτήρες."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr "Το πεδίο :field πρέπει να είναι κείμενο."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "Η θύρα πρέπει να είναι από 1 έως 65535."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "Αυτό το είδος εμπιστευτικών στοιχείων είναι απενεργοποιημένο."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "Αυτά τα εμπιστευτικά στοιχεία είναι πολύ μεγάλα."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "Εμπιστευτικά στοιχεία αιτημάτων"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "Τι είναι αυτό;"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "Χρειάζεστε το δικαίωμα «Άνοιγμα εμπιστευτικών στοιχείων αιτημάτων» για να δείτε τις τιμές."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "Προσθήκη πρόσβασης στον διακομιστή ή εμπιστευτικών στοιχείων"

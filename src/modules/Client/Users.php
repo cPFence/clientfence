@@ -133,6 +133,9 @@ final class Users
             'ticket_create' => 'tickets', 'ticket_reply' => 'tickets', 'ticket_close' => 'tickets',
             // Ticket attachments (Support/TicketFiles.php).
             'ticket_file_upload' => 'tickets', 'ticket_file_discard' => 'tickets',
+            // ClientFence core patch: authorized users need tickets permission for ticket secrets.
+            'ticket_secret_kinds' => 'tickets',
+            'ticket_secret_add' => 'tickets', 'ticket_secret_list' => 'tickets', 'ticket_secret_delete' => 'tickets',
             // Reply stars (Support/TicketFeedback.php).
             'ticket_message_rate' => 'tickets',
             // The network issues banner (Support/NetworkIssues.php): every user of the account.

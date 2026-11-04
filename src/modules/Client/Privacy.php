@@ -157,6 +157,8 @@ final class Privacy
             $db->executeStatement('UPDATE support_ticket SET subject = ?, author_name = NULL, author_email = NULL WHERE id IN (' . $tickets . ')', ['Ticket (removed)']);
             $db->executeStatement('UPDATE support_ticket_message SET content = ?, ip = NULL WHERE support_ticket_id IN (' . $tickets . ')', [self::REMOVED]);
             $db->executeStatement('UPDATE support_ticket_note SET note = ? WHERE support_ticket_id IN (' . $tickets . ')', [self::REMOVED]);
+            $db->executeStatement('DELETE FROM support_ticket_secret WHERE ticket_id IN (' . $tickets . ')');
+            $db->executeStatement('DELETE FROM support_ticket_secret_event WHERE ticket_id IN (' . $tickets . ')');
             $db->executeStatement('UPDATE activity_system SET ip = NULL WHERE client_id = ?', [$clientId]);
             foreach (['activity_client_history', 'activity_client_email', 'client_password_reset', 'email_queue', 'extension_meta'] as $table) {
                 $db->delete($table, ['client_id' => $clientId]);

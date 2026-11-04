@@ -20,6 +20,8 @@ function ticketMergeDb(): Connection
         'CREATE TABLE support_ticket_note (id INTEGER PRIMARY KEY, support_ticket_id INTEGER, note TEXT)',
         'CREATE TABLE support_ticket_file (id INTEGER PRIMARY KEY, ticket_id INTEGER, message_id INTEGER)',
         'CREATE TABLE support_ticket_author (message_id INTEGER PRIMARY KEY, ticket_id INTEGER)',
+        'CREATE TABLE support_ticket_secret (id INTEGER PRIMARY KEY, ticket_id INTEGER)',
+        'CREATE TABLE support_ticket_secret_event (id INTEGER PRIMARY KEY, ticket_id INTEGER)',
         'CREATE TABLE support_mail_import (id INTEGER PRIMARY KEY, ticket_id INTEGER)',
         'CREATE TABLE ' . TicketMerge::TABLE . ' (ticket_id INTEGER PRIMARY KEY, merged_into INTEGER NOT NULL, access_hash TEXT, subject TEXT NOT NULL DEFAULT \'\', merged_by INTEGER, merged_at TEXT NOT NULL)',
     ] as $sql) {
@@ -64,6 +66,8 @@ function ticketMergeContainer(Connection $db): Pimple\Container
 test('tickets of one client merge into the oldest', function (): void {
     $db = ticketMergeDb();
     $di = ticketMergeContainer($db);
+    $db->insert('support_ticket_secret', ['id' => 1, 'ticket_id' => 12]);
+    $db->insert('support_ticket_secret_event', ['id' => 1, 'ticket_id' => 12]);
 
     expect(TicketMerge::merge($di, ['15', 12, '10', 10], null, 3))->toBe(['id' => 10, 'merged' => [12, 15]]);
 
@@ -77,6 +81,8 @@ test('tickets of one client merge into the oldest', function (): void {
         ->and($db->fetchOne('SELECT ticket_id FROM support_ticket_file WHERE id = 1'))->toBe(10)
         ->and($db->fetchOne('SELECT ticket_id FROM support_ticket_author WHERE message_id = 104'))->toBe(10)
         ->and($db->fetchOne('SELECT ticket_id FROM support_mail_import WHERE id = 1'))->toBe(10)
+        ->and($db->fetchOne('SELECT COUNT(*) FROM support_ticket_secret'))->toBe(0)
+        ->and($db->fetchOne('SELECT COUNT(*) FROM support_ticket_secret_event'))->toBe(0)
         ->and(TicketMerge::target($di, 12))->toBe(10)
         ->and(TicketMerge::target($di, 15))->toBe(10)
         ->and(TicketMerge::target($di, 10))->toBeNull()

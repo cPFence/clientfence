@@ -150,6 +150,29 @@
                                 <span class="form-check-label">{{ 'Let clients rate staff replies'|trans }}</span>
                             </label>
                         </div>
+                        {# ClientFence core patch: ticket secrets, server access and other details kept encrypted on a ticket (Support/TicketSecrets.php). #}
+                        <div class="card-body border-top">
+                            <h4 class="card-title mb-2">{{ 'Ticket Secrets'|trans }}</h4>
+                            <p class="text-secondary mb-3">{{ 'Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the "Open ticket secrets" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes.'|trans }}</p>
+                            <input name="secrets_server" type="hidden" value="0">
+                            <label class="form-check form-switch form-switch-2">
+                                <input class="form-check-input" name="secrets_server" type="checkbox" value="1"{% if params.secrets_server|default('0') == '1' %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'Let clients add server access details'|trans }}</span>
+                            </label>
+                            <input name="secrets_other" type="hidden" value="0">
+                            <label class="form-check form-switch form-switch-2">
+                                <input class="form-check-input" name="secrets_other" type="checkbox" value="1"{% if params.secrets_other|default('0') == '1' %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'Let clients add other secrets (API keys, logins)'|trans }}</span>
+                            </label>
+                            <div class="mt-3">
+                                <label class="form-label" for="secrets_days">{{ 'Delete secrets after'|trans }}</label>
+                                <div class="input-group col-12 col-xl-8">
+                                    <input class="form-control" id="secrets_days" type="number" min="1" max="90" name="secrets_days" value="{{ params.secrets_days|default('7') }}" required>
+                                    <span class="input-group-text">{{ 'days'|trans }}</span>
+                                </div>
+                                <small class="form-hint">{{ 'Even when the ticket stays open. Closing the ticket deletes them at once.'|trans }}</small>
+                            </div>
+                        </div>
                         <div class="card-body border-top">
                             <h4 class="card-title mb-2">{{ 'Guest Tickets'|trans }}</h4>
                             <p class="text-secondary mb-3">{{ 'Control whether non-client visitors may open support tickets.'|trans }}</p>

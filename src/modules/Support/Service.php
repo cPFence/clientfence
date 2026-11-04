@@ -140,6 +140,11 @@ class Service implements \ClientFence\InjectionAwareInterface
                 'description' => __trans('Allows the staff member to create, update, and delete knowledge base articles and categories.'),
             ],
             'manage_settings' => [],
+            // ClientFence core patch: ticket access alone must not reveal encrypted secrets.
+            'open_secrets' => [
+                'type' => 'bool',
+                'display_name' => __trans('Open ticket secrets'),
+            ],
         ];
     }
 
@@ -181,6 +186,8 @@ class Service implements \ClientFence\InjectionAwareInterface
             $di['logger']->error('Support: escalation rules failed: %s', $e->getMessage());
         }
         TicketEscalation::sweep($di);
+        // ClientFence core patch: expire ticket secrets through the ticket attachment cron path.
+        TicketSecrets::prune($di);
         try {
             TicketFiles::prune($di);
         } catch (\Throwable $e) {
@@ -396,6 +403,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         $ticket->close();
         $this->di['em']->flush();
 
+        // ClientFence core patch: discard ticket secrets before either close event can send email.
+        TicketSecrets::forgetTicket($this->di['em']->getConnection(), (int) $ticket->getId());
         if ($identity instanceof \Model_Admin) {
             $this->di['events_manager']->fire(['event' => 'onAfterAdminCloseTicket', 'params' => ['id' => $ticket->getId()]]);
         } else {
@@ -413,6 +422,8 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         $model->close();
         $this->di['em']->flush();
+        // ClientFence core patch: auto-closing bypasses the staff and client close events.
+        TicketSecrets::forgetTicket($this->di['em']->getConnection(), (int) $model->getId());
         $this->di['logger']->info('Ticket %s was closed', $model->getId());
         // ClientFence core patch: ask the client for feedback after an inactivity close, as WHMCS (TicketFeedback).
         TicketFeedback::afterClose($this->di, (int) $model->getId());
@@ -459,6 +470,8 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         $em = $this->di['em'];
         foreach ($this->getSupportTicketRepository()->findByClientId((int) $client->id) as $ticket) {
+            // ClientFence core patch: deleting a client's tickets also erases secrets and their events.
+            TicketSecrets::forgetTicket($em->getConnection(), (int) $ticket->getId(), true);
             $em->remove($ticket);
         }
         $em->flush();
@@ -469,6 +482,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         $em = $this->di['em'];
         $id = $model->getId();
 
+        // ClientFence core patch: a deleted ticket retains neither secrets nor opening history.
+        TicketSecrets::forgetTicket($em->getConnection(), (int) $id, true);
         foreach ($this->getSupportTicketNoteRepository()->findByTicketId($id ?? 0) as $note) {
             $em->remove($note);
         }
@@ -1068,6 +1083,10 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         $this->di['em']->flush();
 
+        // ClientFence core patch: changing ticket status to closed also discards its secrets.
+        if ($model->getStatus() === SupportTicket::STATUS_CLOSED) {
+            TicketSecrets::forgetTicket($this->di['em']->getConnection(), (int) $model->getId());
+        }
         $this->di['logger']->info('Updated ticket #%s', $model->getId());
 
         return true;

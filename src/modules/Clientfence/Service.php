@@ -256,6 +256,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
     public const HOME_TABLES = [
         'client_note', 'client_file',
         'support_ticket_file', 'support_ticket_author',
+        // ClientFence core patch: ticket secret tables belong to Support.
+        'support_ticket_secret', 'support_ticket_secret_event',
         'client_user', 'client_user_account', 'client_user_password_reset', 'client_user_invite', 'client_user_invite_log',
         'client_twofactor', 'client_google', 'client_google_signup', 'client_google_password',
         'client_order_action_failure', 'support_helpdesk_mail', 'support_mail_import',

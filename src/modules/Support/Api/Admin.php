@@ -1050,6 +1050,36 @@ class Admin extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    // ClientFence core patch: opening ticket secrets needs its own permission and an audit event.
+    #[RequiredParams(['ticket_id' => 'Ticket ID was not passed'])]
+    public function ticket_secret_list(array $data): array
+    {
+        $this->checkPermissions('support', 'view');
+        $di = $this->getDi();
+        $result = \ClientFence\Mod\Support\TicketSecrets::listForTicket($di, (int) $data['ticket_id']);
+        $result['can_open'] = $di['mod_service']('Staff')->hasPermission($this->getIdentity(), 'support', 'open_secrets');
+        $result['can_delete'] = $di['mod_service']('Staff')->hasPermission($this->getIdentity(), 'support', 'manage_tickets');
+
+        return $result;
+    }
+
+    #[RequiredParams(['id' => 'Secret ID was not passed'])]
+    public function ticket_secret_open(array $data): array
+    {
+        $this->checkPermissions('support', 'open_secrets');
+
+        return \ClientFence\Mod\Support\TicketSecrets::openForStaff($this->getDi(), (int) $data['id'], (int) $this->getIdentity()->id);
+    }
+
+    #[RequiredParams(['id' => 'Secret ID was not passed'])]
+    public function ticket_secret_delete(array $data): bool
+    {
+        $this->checkPermissions('support', 'manage_tickets');
+        \ClientFence\Mod\Support\TicketSecrets::delete($this->getDi(), (int) $data['id'], (int) $this->getIdentity()->id, null);
+
+        return true;
+    }
+
     /**
      * ClientFence: saves how many days sent ticket files are kept (`ticket_files_days`, 0: kept),
      * on the Support settings page.

@@ -18232,3 +18232,185 @@ msgstr "Hozirgi manzilingiz: %ip%. Saqlash u yo'q ro'yxatni rad etadi."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "IP manzillar ro'yxatida"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ":label o'chirildi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ":label muddat tugagani uchun o'chirildi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label :name tomonidan ochildi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "Kirish turi"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "Xavfsiz qo'shish"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "Mijoz tomonidan qo'shilgan, shifrlangan. Har bir ochilish qayd etiladi va mijozga ko'rsatiladi; chipta yopilganda hammasi o'chiriladi."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "Bitta chiptaga ko'pi bilan :count ta maxfiy ma'lumot qo'shish mumkin."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "Maxfiy ma'lumotning yaroqli turini tanlang."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "Serverga kirishning yaroqli turini tanlang."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "Maxfiy ma'lumotlarni shundan keyin o'chirish"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "Darhol shifrlanadi, faqat vakolatli qo'llab-quvvatlash xodimlari ocha oladi (har bir ochilish shu yerda ko'rsatiladi) va chipta yopilganda yoki :days kundan keyin o'chiriladi."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "Yorliq va qiymatni kiriting."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "Parol yoki SSH kalitini kiriting."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "Server xostini kiriting."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "Chipta ochiq qolsa ham. Chiptani yopish ularni darhol o'chiradi."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "Masalan: WordPress administrator kirishi"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "Xost yoki IP manzil"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "Agar qo'llab-quvvatlash jamoamiz serveringizga kirishi kerak bo'lsa, ma'lumotlarni shu yerga qo'shing. Ular darhol shifrlanadi, faqat vakolatli qo'llab-quvvatlash xodimlari ocha oladi, har bir ochilish chiptada ko'rsatiladi va chipta yopilganda o'chiriladi. Ularni keyinroq chipta sahifasidan ham qo'shishingiz mumkin."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "Maxfiy ma'lumot turi"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "Mijozlar boshqa maxfiy ma'lumotlarni ham qo'shsin (API kalitlari, kirish ma'lumotlari)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "Mijozlar serverga kirish ma'lumotlarini qo'shsin"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "Parollarni hech qachon xabarning o'ziga yozmang."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "Jamoamiz uchun eslatma (ixtiyoriy)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "Chipta maxfiy ma'lumotlarini ochish"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "Boshqa maxfiy ma'lumot"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "SSH maxfiy kaliti"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "SSH maxfiy kaliti (parol o'rniga)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "Maxfiy ma'lumot"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "Maxfiy ma'lumotlar (ixtiyoriy)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "Yopilgan chiptaga maxfiy ma'lumot qo'shib bo'lmaydi."
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "Serverga kirish"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "Serverga kirish (ixtiyoriy)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "Serverga kirish va maxfiy ma'lumotlar"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "Tizimga kirgan mijozlar ochiq chiptaga xabarlardan alohida serverga kirish yoki boshqa maxfiy ma'lumotlarni qo'shishi mumkin. Ular shifrlanadi, faqat “Chipta maxfiy ma'lumotlarini ochish” ruxsatiga ega xodimlar ocha oladi, har bir ochilish chiptada ko'rsatiladi va chipta yopilganda o'chiriladi."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr ":field maydonida boshqaruv belgilari bor."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr ":field maydoni ko'pi bilan :max belgidan iborat bo'lishi kerak."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr ":field maydoni matn bo'lishi kerak."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "Port 1 dan 65535 gacha bo'lishi kerak."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "Bu turdagi maxfiy ma'lumot o'chirib qo'yilgan."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "Bu maxfiy ma'lumot juda katta."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "Chipta maxfiy ma'lumotlari"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "Bu nima?"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "Qiymatlarni ko'rish uchun “Chipta maxfiy ma'lumotlarini ochish” ruxsati kerak."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "Serverga kirish yoki maxfiy ma'lumot qo'shish"

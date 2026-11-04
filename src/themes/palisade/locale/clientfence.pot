@@ -508,6 +508,18 @@ msgstr ""
 msgid ":kind: the new price is :price :period. :due"
 msgstr ""
 
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid ":limit."
 msgstr ""
@@ -1036,6 +1048,10 @@ msgstr ""
 msgid "Access"
 msgstr ""
 
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
 msgid "Account"
 msgstr ""
@@ -1416,6 +1432,14 @@ msgstr ""
 msgid "Add replies from any address to a ticket. Off: only the ticket's client, its authorized users with ticket access or the guest who opened it; other replies wait in the log."
 msgstr ""
 
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr ""
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr ""
+
 #: src/modules/Massmailer/Api/Admin.php
 msgid "Add some content before sending message"
 msgstr ""
@@ -1466,6 +1490,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "Added"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
 msgstr ""
 
 #: src/themes/palisade/html/partials/pay_methods.html.twig
@@ -2812,6 +2840,10 @@ msgstr ""
 msgid "At most :count files per message."
 msgstr ""
 
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr ""
+
 #: src/modules/Support/TicketBulk.php
 msgid "At most :max tickets at once."
 msgstr ""
@@ -4000,6 +4032,14 @@ msgstr ""
 msgid "Choose a ticket status."
 msgstr ""
 
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr ""
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr ""
+
 #: src/modules/Product/Options.php
 msgid "Choose a value for :option."
 msgstr ""
@@ -5076,7 +5116,7 @@ msgstr ""
 msgid "Control invoice cleanup rules and the numbering scheme used for generated documents."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
 msgid "Control panel"
 msgstr ""
 
@@ -6142,6 +6182,10 @@ msgstr ""
 
 #: src/modules/Redirect/Service.php
 msgid "Delete redirects"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -7248,6 +7292,10 @@ msgstr ""
 msgid "Enabling this hides some information from the company guest API endpoint, including address, phone number, email, VAT number, and more."
 msgstr ""
 
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Encryption"
 msgstr ""
@@ -7300,12 +7348,20 @@ msgstr ""
 msgid "Enter a client ID to see the client's statement."
 msgstr ""
 
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr ""
+
 #: src/modules/Cookieconsent/Service.php
 msgid "Enter a message of up to 1000 characters."
 msgstr ""
 
 #: src/modules/Notification/Service.php
 msgid "Enter a message of up to 2000 characters."
+msgstr ""
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php
@@ -7496,6 +7552,10 @@ msgstr ""
 msgid "Enter the server host name or IP address, without ftp:// or a path."
 msgstr ""
 
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr ""
+
 #: src/modules/Clientfence/Setup.php
 msgid "Enter the signing secret of the Stripe webhook (Developers → Webhooks in your Stripe dashboard)."
 msgstr ""
@@ -7610,6 +7670,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Escalation rule saved"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
 msgstr ""
 
 #: src/modules/Extension/templates/admin/mod_extension_index.html.twig
@@ -8294,6 +8358,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "For example: Monthly support plan"
+msgstr ""
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -9000,7 +9068,7 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "History"
 msgstr ""
 
@@ -9026,6 +9094,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig …
 msgid "Host"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
 msgstr ""
 
 #: src/modules/Product/Service.php
@@ -9318,6 +9390,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "If none of the available options exactly meet your needs, you can define a custom DSN. Please keep in mind that usernames, passwords, and hostnames with special characters need to be URL-encoded."
+msgstr ""
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
@@ -10212,6 +10288,10 @@ msgstr ""
 msgid "Kind"
 msgstr ""
 
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr ""
+
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Support/Controller/Admin.php src/modules/Support/templates/admin/mod_support_kb_article.html.twig …
 msgid "Knowledge Base"
 msgstr ""
@@ -10494,6 +10574,14 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Less than a month"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
@@ -11980,6 +12068,10 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Never signed in"
 msgstr ""
@@ -12872,6 +12964,10 @@ msgstr ""
 msgid "Note added"
 msgstr ""
 
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr ""
+
 #: src/modules/Client/Notes.php
 msgid "Note is required"
 msgstr ""
@@ -13372,6 +13468,10 @@ msgstr ""
 msgid "Open the invoice to pay"
 msgstr ""
 
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr ""
+
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Open tickets"
 msgstr ""
@@ -13698,6 +13798,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -16420,6 +16524,18 @@ msgstr ""
 msgid "SMTP with STARTTLS (port 587)."
 msgstr ""
 
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr ""
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr ""
+
 #: src/modules/Support/Mail/ImapClient.php
 msgid "STARTTLS failed: the mail server certificate could not be checked or the server refused TLS."
 msgstr ""
@@ -16676,8 +16792,20 @@ msgstr ""
 msgid "Searching…"
 msgstr ""
 
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Secret key"
+msgstr ""
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr ""
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
 msgstr ""
 
 #: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig
@@ -17092,6 +17220,18 @@ msgstr ""
 msgid "Server Updated"
 msgstr ""
 
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr ""
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Server connected"
 msgstr ""
@@ -17340,7 +17480,7 @@ msgstr ""
 msgid "Shopping cart not found"
 msgstr ""
 
-#: src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/themes/palisade/html/mod_invoice_statement.html.twig
+#: src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/mod_invoice_statement.html.twig
 msgid "Show"
 msgstr ""
 
@@ -17598,6 +17738,10 @@ msgstr ""
 
 #: src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
 msgid "Signed-in clients"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -18600,6 +18744,18 @@ msgstr ""
 msgid "The \"redis\" cache driver requires the PHP redis (or relay) extension to be installed."
 msgstr ""
 
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr ""
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr ""
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr ""
+
 #: src/modules/Client/Contacts.php
 msgid "The :field is too long (:max characters at most)."
 msgstr ""
@@ -19445,6 +19601,10 @@ msgstr ""
 msgid "The plans of a panel server become hosting plans with the same name and limits, linked by the panel plan ID (custom value plan_id). Hosting plans that already match a panel plan are left unchanged unless you choose to update them."
 msgstr ""
 
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid "The portal URL is https and plain HTTP is redirected."
 msgstr ""
@@ -20085,6 +20245,10 @@ msgstr ""
 msgid "This item is currently out of stock"
 msgstr ""
 
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr ""
+
 #: src/modules/Order/Upgrades.php
 msgid "This kind of service cannot be changed here."
 msgstr ""
@@ -20219,6 +20383,10 @@ msgstr ""
 
 #: src/modules/Support/TicketFeedback.php
 msgid "This reply was already rated."
+msgstr ""
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -20423,6 +20591,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
 msgid "Ticket Ratings"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
@@ -22377,6 +22549,10 @@ msgstr ""
 msgid "What are you looking for?"
 msgstr ""
 
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "What is new in ClientFence %version%"
 msgstr ""
@@ -22883,6 +23059,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
 msgid "You must verify your email address before you may access our services."
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
 msgstr ""
 
 #: src/modules/System/Api/Admin.php

@@ -4034,5 +4034,89 @@
     {
         "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
         "done": "ClientFence core patch: the staff IP address rule moved to System > Settings > Sign-in security."
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence core patch: ticket secrets stay separate from ticket messages and email payloads."
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence core patch: new ticket forms read secret availability without a ticket."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: opening ticket secrets needs its own permission and an audit event."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: ticket access alone must not reveal encrypted secrets."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: expire ticket secrets through the ticket attachment cron path."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: discard ticket secrets before either close event can send email."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: auto-closing bypasses the staff and client close events."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: deleting a client's tickets also erases secrets and their events."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: a deleted ticket retains neither secrets nor opening history."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: changing ticket status to closed also discards its secrets."
+    },
+    {
+        "file": "modules/Support/TicketMerge.php",
+        "done": "ClientFence core patch: merged source tickets lose secrets and events; a closed target loses values."
+    },
+    {
+        "file": "modules/Client/Users.php",
+        "done": "ClientFence core patch: authorized users need tickets permission for ticket secrets."
+    },
+    {
+        "file": "modules/Clientfence/Service.php",
+        "done": "ClientFence core patch: ticket secret tables belong to Support."
+    },
+    {
+        "file": "modules/Clientfence/schema.json",
+        "done": "ClientFence core patch: register ticket secrets and audit events."
+    },
+    {
+        "file": "modules/Clientfence/Migrations.php",
+        "done": "ClientFence core patch: existing installs create the ticket secret tables before use."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: encrypted ticket secrets and their retained audit events."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the ticket secret table migration."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "ClientFence core patch: ticket secrets, server access and other details kept encrypted on a ticket (Support/TicketSecrets.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: ticket secrets the client added (Support/TicketSecrets.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_support_ticket.html.twig",
+        "done": "ClientFence: server access and other secrets (Support/TicketSecrets.php); signed-in clients only."
+    },
+    {
+        "file": "themes/palisade/html/mod_support_tickets.html.twig",
+        "done": "ClientFence: optional server access or another secret, added once the ticket exists (Support/TicketSecrets.php)."
     }
 ]

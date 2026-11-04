@@ -144,6 +144,8 @@
                     </div>
                 </div>
                 {% endif %}
+                {# ClientFence core patch: ticket secrets the client added (Support/TicketSecrets.php). #}
+                {% if ticket.client_id %}{{ include('mod_support_ticket_secrets.html.twig', { ticket: ticket }) }}{% endif %}
                 {# ClientFence core patch: the conversation as in the client area (full-width messages, oldest first, all open), with a red warning on emails from an unverified sender (MailImport). #}
                 <div class="card mb-3">
                     <div class="card-body pb-3">

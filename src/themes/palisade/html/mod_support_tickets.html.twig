@@ -64,6 +64,19 @@
                                 <textarea name="content" class="form-control" id="message" rows="10" dir="auto" required>{{ request.content|e }}</textarea>
                                 {% include 'partials/ticket_upload.html.twig' %}
                             </div>
+                            {# ClientFence: optional server access or another secret, added once the ticket exists (Support/TicketSecrets.php). #}
+                            {% set secret_kinds = client.support_ticket_secret_kinds %}
+                            {% if secret_kinds.server or secret_kinds.other %}
+                                <div class="col-12">
+                                    <details class="border rounded p-3" id="new-ticket-secret">
+                                        <summary class="fw-medium">{{ secret_kinds.server ? 'Server access (optional)'|trans : 'Secrets (optional)'|trans }}</summary>
+                                        <p class="text-secondary small mt-2">{{ 'If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page.'|trans }}</p>
+                                        <p class="small fw-medium">{{ 'Never put passwords in the message itself.'|trans }}</p>
+                                        {{ include('partials/ticket_secret_fields.html.twig', { kinds: secret_kinds, prefix: 'new-secret' }) }}
+                                    </details>
+                                </div>
+                                {{ include('partials/ticket_secrets_script.html.twig') }}
+                            {% endif %}
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary">{{ 'Submit'|trans }}</button>
                             </div>
@@ -129,9 +142,17 @@
                 event.preventDefault();
                 const ticket = ClientFence.tools.serializeFormDataToObject(new FormData(submitTicket));
                 ticket.content = keepLineBreaks(ticket.content);
+                delete ticket['new-secret_kind'];
+                const secretBox = document.getElementById('new-ticket-secret');
+                const secret = secretBox && window.ClientFenceSecrets ? ClientFenceSecrets.collect(secretBox) : null;
                 ClientFence.api.client.post('support/ticket_create', ticket,
                     (res) => {
-                        window.location = "{{ 'support/ticket'|url }}" + '/' + res
+                        const open = (hash) => { window.location = "{{ 'support/ticket'|url }}" + '/' + res + hash; };
+                        if (!secret) return open('');
+                        // The ticket exists either way; a refused secret is shown and can be added again there.
+                        ClientFence.api.client.post('support/ticket_secret_add', Object.assign({ ticket_id: res }, secret),
+                            () => open('#secrets'),
+                            (err) => { ClientFence.message(err.message, 'error'); setTimeout(() => open('#secrets'), 4000); });
                     },
                     (res) => {
                         ClientFence.message(res.message, 'error')

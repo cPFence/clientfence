@@ -29,6 +29,8 @@ $paths = [
     'modules/Invoice/Receipts.php',
     'modules/Invoice/templates/admin/mod_invoice_settings_receipts.html.twig',
     'modules/Support/TicketFiles.php',
+    'modules/Support/TicketSecrets.php',
+    'modules/Support/templates/admin/mod_support_ticket_secrets.html.twig',
     'modules/Support/templates/admin/mod_support_settings_ticket_files.html.twig',
     'modules/Support/templates/admin/mod_support_ticket_message_files.html.twig',
     'modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig',

@@ -17937,3 +17937,185 @@ msgstr "ที่อยู่ของคุณตอนนี้: %ip% กา�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "ในรายการที่อยู่ IP"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr "ลบ :label แล้ว"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr "ลบ :label แล้วเมื่อครบกำหนดเวลา"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label ถูกเปิดโดย :name"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "ประเภทการเข้าถึง"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "เพิ่มอย่างปลอดภัย"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "เพิ่มโดยลูกค้า เข้ารหัสแล้ว การเปิดทุกครั้งจะถูกบันทึกและแสดงให้ลูกค้าเห็น ข้อมูลทั้งหมดจะถูกลบเมื่อปิดคำขอสนับสนุน"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "เพิ่มข้อมูลลับในคำขอสนับสนุนได้สูงสุด :count รายการ"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "เลือกประเภทข้อมูลลับที่ถูกต้อง"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "เลือกประเภทการเข้าถึงเซิร์ฟเวอร์ที่ถูกต้อง"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "ลบข้อมูลลับหลังจาก"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "เข้ารหัสทันที เปิดได้เฉพาะเจ้าหน้าที่สนับสนุนที่ได้รับอนุญาต (การเปิดทุกครั้งแสดงไว้ที่นี่) และจะถูกลบเมื่อปิดคำขอสนับสนุนหรือหลังจาก :days วัน"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "กรอกป้ายกำกับและค่า"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "กรอกรหัสผ่านหรือคีย์ SSH"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "กรอกโฮสต์ของเซิร์ฟเวอร์"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "แม้คำขอสนับสนุนจะยังเปิดอยู่ การปิดคำขอสนับสนุนจะลบข้อมูลเหล่านี้ทันที"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "ตัวอย่าง: การเข้าสู่ระบบผู้ดูแล WordPress"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "โฮสต์หรือที่อยู่ IP"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "หากทีมสนับสนุนของเราต้องเข้าสู่ระบบเซิร์ฟเวอร์ของคุณ ให้เพิ่มรายละเอียดที่นี่ ข้อมูลจะถูกเข้ารหัสทันที เฉพาะเจ้าหน้าที่สนับสนุนที่ได้รับอนุญาตเท่านั้นที่เปิดได้ ทุกครั้งที่เปิดจะแสดงในคำขอสนับสนุน และจะถูกลบเมื่อปิดคำขอสนับสนุน คุณยังเพิ่มได้ภายหลังจากหน้าคำขอสนับสนุน"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "ประเภทข้อมูลลับ"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "ให้ลูกค้าเพิ่มข้อมูลลับอื่น ๆ ได้ (คีย์ API, ข้อมูลเข้าสู่ระบบ)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "ให้ลูกค้าเพิ่มรายละเอียดการเข้าถึงเซิร์ฟเวอร์ได้"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "อย่าใส่รหัสผ่านไว้ในข้อความเอง"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "บันทึกถึงทีมของเรา (ไม่บังคับ)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "เปิดข้อมูลลับของคำขอสนับสนุน"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "ข้อมูลลับอื่น ๆ"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "คีย์ส่วนตัว SSH"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "คีย์ส่วนตัว SSH (แทนรหัสผ่าน)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "ข้อมูลลับ"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "ข้อมูลลับ (ไม่บังคับ)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "ไม่สามารถเพิ่มข้อมูลลับในคำขอสนับสนุนที่ปิดแล้วได้"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "การเข้าถึงเซิร์ฟเวอร์"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "การเข้าถึงเซิร์ฟเวอร์ (ไม่บังคับ)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "การเข้าถึงเซิร์ฟเวอร์และข้อมูลลับ"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "ลูกค้าที่เข้าสู่ระบบสามารถเพิ่มการเข้าถึงเซิร์ฟเวอร์หรือข้อมูลลับอื่น ๆ ในคำขอสนับสนุนที่เปิดอยู่ แยกจากข้อความ ข้อมูลจะถูกเข้ารหัส เฉพาะเจ้าหน้าที่ที่มีสิทธิ์ “เปิดข้อมูลลับของคำขอสนับสนุน” เท่านั้นที่เปิดได้ ทุกครั้งที่เปิดจะแสดงในคำขอสนับสนุน และจะถูกลบเมื่อปิดคำขอสนับสนุน"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr "ช่อง :field มีอักขระควบคุม"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr "ช่อง :field ต้องมีไม่เกิน :max อักขระ"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr "ช่อง :field ต้องเป็นข้อความ"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "พอร์ตต้องอยู่ระหว่าง 1 ถึง 65535"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "ข้อมูลลับประเภทนี้ถูกปิดอยู่"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "ข้อมูลลับนี้มีขนาดใหญ่เกินไป"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "ข้อมูลลับของคำขอสนับสนุน"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "นี่คืออะไร"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "ต้องมีสิทธิ์ “เปิดข้อมูลลับของคำขอสนับสนุน” จึงจะดูค่าได้"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "เพิ่มการเข้าถึงเซิร์ฟเวอร์หรือข้อมูลลับ"

@@ -31,6 +31,8 @@ function privacyDb(): Connection
         'CREATE TABLE support_ticket (id INTEGER PRIMARY KEY, client_id INTEGER, subject TEXT, status TEXT, priority INTEGER, author_name TEXT, author_email TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE support_ticket_message (id INTEGER PRIMARY KEY, support_ticket_id INTEGER, client_id INTEGER, admin_id INTEGER, content TEXT, ip TEXT, created_at TEXT)',
         'CREATE TABLE support_ticket_note (id INTEGER PRIMARY KEY, support_ticket_id INTEGER, note TEXT)',
+        'CREATE TABLE support_ticket_secret (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, kind TEXT NOT NULL, label TEXT NOT NULL, data TEXT NOT NULL, added_by_client_id INTEGER, created_at TEXT NOT NULL)',
+        'CREATE TABLE support_ticket_secret_event (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, secret_label TEXT NOT NULL, action TEXT NOT NULL, admin_id INTEGER, client_id INTEGER, created_at TEXT NOT NULL)',
         'CREATE TABLE activity_system (id INTEGER PRIMARY KEY, client_id INTEGER, message TEXT, ip TEXT)',
         'CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)',
         'CREATE TABLE activity_client_email (id INTEGER PRIMARY KEY, client_id INTEGER, sender TEXT, recipients TEXT, subject TEXT, content_text TEXT, created_at TEXT)',
@@ -127,6 +129,8 @@ test('anonymizing erases the person and keeps the money records', function (): v
     $db = privacyDb();
     $db->insert('client_note', ['client_id' => 7, 'note' => 'Private note']);
     $db->insert('client_file', ['client_id' => 7, 'name' => 'contract.pdf']);
+    $db->insert('support_ticket_secret', ['ticket_id' => 9, 'kind' => 'server', 'label' => 'SSH alice.client.test', 'data' => 'encrypted-credentials', 'created_at' => date('Y-m-d H:i:s')]);
+    $db->insert('support_ticket_secret_event', ['ticket_id' => 9, 'secret_label' => 'SSH alice.client.test', 'action' => 'opened', 'admin_id' => 1, 'created_at' => date('Y-m-d H:i:s')]);
     Privacy::anonymize(privacyDi($db), 7, 1);
 
     expect((int) $db->fetchOne('SELECT COUNT(*) FROM client_note'))->toBe(0)
@@ -154,7 +158,7 @@ test('anonymizing erases the person and keeps the money records', function (): v
         ->and($db->fetchFirstColumn('SELECT DISTINCT content FROM support_ticket_message'))->toBe(['[Removed: the client was anonymized.]'])
         ->and($db->fetchOne('SELECT subject FROM support_ticket'))->toBe('Ticket (removed)')
         ->and($db->fetchOne('SELECT note FROM support_ticket_note'))->toBe('[Removed: the client was anonymized.]');
-    foreach (['activity_client_history', 'activity_client_email', 'extension_meta'] as $table) {
+    foreach (['activity_client_history', 'activity_client_email', 'extension_meta', 'support_ticket_secret', 'support_ticket_secret_event'] as $table) {
         expect((int) $db->fetchOne("SELECT COUNT(*) FROM $table"))->toBe(0);
     }
     // Another client is untouched; a second run is refused.

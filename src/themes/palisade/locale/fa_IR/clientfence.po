@@ -19632,3 +19632,185 @@ msgstr "نشانی فعلی شما: %ip%. ذخیره، فهرستی را که آ
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "on the IP address list"
 msgstr "در فهرست نشانی‌های IP"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted"
+msgstr ":label حذف شد"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label deleted after the time limit"
+msgstr ":label پس از پایان مهلت حذف شد"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid ":label opened by :name"
+msgstr ":label توسط :name باز شد"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Access type"
+msgstr "نوع دسترسی"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add securely"
+msgstr "افزودن امن"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "Added by the client, encrypted. Opening one is recorded and shown to the client; all are deleted when the ticket closes."
+msgstr "توسط مشتری افزوده شده و رمزگذاری شده است. هر بار باز کردن ثبت و به مشتری نشان داده می‌شود؛ همه با بسته شدن تیکت حذف می‌شوند."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "At most :count secrets can be added to a ticket."
+msgstr "حداکثر :count اطلاعات محرمانه را می‌توان به یک تیکت افزود."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid kind of secret."
+msgstr "یک نوع معتبر از اطلاعات محرمانه انتخاب کنید."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Choose a valid server access type."
+msgstr "یک نوع معتبر دسترسی به سرور انتخاب کنید."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Delete secrets after"
+msgstr "حذف اطلاعات محرمانه پس از"
+
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
+msgstr "بلافاصله رمزگذاری می‌شوند، فقط کارکنان مجاز پشتیبانی می‌توانند آن‌ها را باز کنند (هر بار باز کردن اینجا فهرست می‌شود) و با بسته شدن تیکت یا پس از :days روز حذف می‌شوند."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a label and a value for the secret."
+msgstr "یک برچسب و یک مقدار وارد کنید."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter a password or an SSH key."
+msgstr "یک رمزعبور یا یک کلید SSH وارد کنید."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Enter the server host."
+msgstr "میزبان سرور را وارد کنید."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Even when the ticket stays open. Closing the ticket deletes them at once."
+msgstr "حتی اگر تیکت باز بماند. بستن تیکت آن‌ها را بلافاصله حذف می‌کند."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "For example: WordPress admin login"
+msgstr "برای مثال: ورود مدیر WordPress"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Host or IP address"
+msgstr "میزبان یا نشانی IP"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "If our support team needs to sign in to your server, add the details here. They are encrypted at once, only authorized support staff can open them, every opening is shown on the ticket, and they are deleted when the ticket is closed. You can also add them later from the ticket page."
+msgstr "اگر تیم پشتیبانی ما باید به سرور شما وارد شود، جزئیات را اینجا اضافه کنید. این اطلاعات بلافاصله رمزگذاری می‌شوند، فقط کارکنان مجاز پشتیبانی می‌توانند آن‌ها را باز کنند، هر بار باز کردن در تیکت نمایش داده می‌شود و با بسته شدن تیکت حذف می‌شوند. می‌توانید بعداً هم از صفحه تیکت آن‌ها را اضافه کنید."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Kind of secret"
+msgstr "نوع اطلاعات محرمانه"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add other secrets (API keys, logins)"
+msgstr "اجازه به مشتریان برای افزودن اطلاعات محرمانه دیگر (کلیدهای API، اطلاعات ورود)"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Let clients add server access details"
+msgstr "اجازه به مشتریان برای افزودن جزئیات دسترسی به سرور"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Never put passwords in the message itself."
+msgstr "هرگز رمزعبور را در خود پیام ننویسید."
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Note for our team (optional)"
+msgstr "یادداشت برای تیم ما (اختیاری)"
+
+#: src/modules/Support/Service.php
+msgid "Open ticket secrets"
+msgstr "باز کردن اطلاعات محرمانه تیکت"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Other secret"
+msgstr "اطلاعات محرمانه دیگر"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH / SFTP"
+msgstr "SSH / SFTP"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "SSH private key"
+msgstr "کلید خصوصی SSH"
+
+#: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "SSH private key (instead of a password)"
+msgstr "کلید خصوصی SSH (به‌جای رمزعبور)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "Secret"
+msgstr "اطلاعات محرمانه"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Secrets (optional)"
+msgstr "اطلاعات محرمانه (اختیاری)"
+
+#: src/modules/Support/TicketSecrets.php
+msgid "Secrets cannot be added to a closed ticket."
+msgstr "نمی‌توان به تیکت بسته‌شده اطلاعات محرمانه افزود."
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access"
+msgstr "دسترسی به سرور"
+
+#: src/themes/palisade/html/mod_support_tickets.html.twig
+msgid "Server access (optional)"
+msgstr "دسترسی به سرور (اختیاری)"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Server access and secrets"
+msgstr "دسترسی به سرور و اطلاعات محرمانه"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Signed-in clients can add server access or other secrets to an open ticket, outside the messages. They are encrypted, only staff with the \"Open ticket secrets\" permission can open them, every opening is shown on the ticket, and they are deleted when the ticket closes."
+msgstr "مشتریان واردشده می‌توانند جدا از پیام‌ها، دسترسی به سرور یا اطلاعات محرمانه دیگر را به تیکت باز اضافه کنند. این اطلاعات رمزگذاری می‌شوند، فقط کارکنانی که دسترسی «باز کردن اطلاعات محرمانه تیکت» را دارند می‌توانند آن‌ها را باز کنند، هر بار باز کردن در تیکت نمایش داده می‌شود و با بسته شدن تیکت حذف می‌شوند."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field contains control characters."
+msgstr "فیلد :field شامل نویسه‌های کنترلی است."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be at most :max characters."
+msgstr "فیلد :field باید حداکثر :max نویسه باشد."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The :field field must be text."
+msgstr "فیلد :field باید متن باشد."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "The port must be between 1 and 65535."
+msgstr "درگاه باید بین 1 و 65535 باشد."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This kind of secret is turned off."
+msgstr "این نوع اطلاعات محرمانه غیرفعال است."
+
+#: src/modules/Support/TicketSecrets.php
+msgid "This secret is too large."
+msgstr "این اطلاعات محرمانه بیش از حد بزرگ است."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Secrets"
+msgstr "اطلاعات محرمانه تیکت"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+msgid "What is it?"
+msgstr "این چیست؟"
+
+#: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
+msgid "You need the \"Open ticket secrets\" permission to see the values."
+msgstr "برای دیدن مقدارها به دسترسی «باز کردن اطلاعات محرمانه تیکت» نیاز دارید."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ticket_secrets.html.twig
+msgid "Add server access or a secret"
+msgstr "افزودن دسترسی به سرور یا اطلاعات محرمانه"
