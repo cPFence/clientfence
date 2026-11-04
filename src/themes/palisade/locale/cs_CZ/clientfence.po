@@ -19849,3 +19849,60 @@ msgstr "Historie kreditu"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Kredit přidaný na zůstatek tohoto klienta nebo z něj použitý."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Přidejte alespoň jednu IP adresu, ze které se mohou zaměstnanci přihlašovat."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Povolit přihlášení zaměstnanců jen z těchto IP adres"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "IP adresy, jedna na řádek"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Není to IP adresa: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Ostatní země a adresy, jejichž země není známa, jsou odmítnuty. Adresy ze seznamu IP adres zaměstnanců (Systém > Nastavení > Zabezpečení přihlášení) projdou vždy."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Přihlášení zaměstnanců jen z těchto IP adres"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Pravidla přihlášení zaměstnanců (PIN e-mailem, IP adresy, země) jsou v Systém > Nastavení > Zabezpečení přihlášení."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Přihlášení zaměstnanců z jakékoli jiné adresy je odmítnuto. Používejte to jen s pevnými adresami, například kancelář nebo VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Přihlášení zaměstnanců z jakékoli jiné země nebo z adresy, jejíž země není známa, je odmítnuto. Adresy ze seznamu IP adres výše projdou vždy: přidejte tam pevnou adresu kanceláře nebo serveru jako cestu zpět."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Země vaší adresy (:ip) není známa, takže by vás to zamklo. Nejdřív přidejte svou adresu do seznamu IP adres zaměstnanců."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Přihlašujete se ze země :country (:ip), která není na seznamu: to by vás zamklo. Přidejte :country nebo dejte svou adresu do seznamu IP adres zaměstnanců."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Přihlašujete se z adresy :ip, která není na seznamu: to by vás zamklo. Přidejte :ip do seznamu."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Vaše adresa nyní: %ip%. Uložení odmítne seznam bez ní."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "v seznamu IP adres"

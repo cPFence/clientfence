@@ -703,6 +703,10 @@ class Service implements InjectionAwareInterface
         if ($ext === 'mod_client') {
             $kept = [...$kept, ...array_keys(\ClientFence\Mod\Client\Google::DEFAULTS)];
         }
+        if ($ext === 'mod_staff') {
+            // The staff IP address rule is saved by Sign-in security (Clientfence/SignInSecurity.php).
+            $kept = [...$kept, 'check_ip', 'allowed_ips'];
+        }
         if ($ext === 'mod_support') {
             $kept = [...$kept, 'ticket_files_days', ...array_keys(\ClientFence\Mod\Support\MailImport::DEFAULTS)];
             // The network status switches (Support settings > Network Status, NetworkIssues).

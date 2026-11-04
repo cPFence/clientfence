@@ -20588,3 +20588,60 @@ msgstr "餘額歷史"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "已加入此客戶餘額或從中使用的金額。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "請至少新增一個允許員工登入的 IP 位址。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "僅允許員工從這些 IP 位址登入"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "IP 位址，每行一個"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "不是 IP 位址：:ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "其他國家/地區以及無法判定所屬國家/地區的位址會被拒絕。員工 IP 位址清單中的位址（系統 > 設定 > 登入安全性）一律放行。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "僅限員工從指定 IP 位址登入"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "員工登入規則（電子郵件 PIN 碼、IP 位址、國家/地區）位於 系統 > 設定 > 登入安全性。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "來自其他任何位址的員工登入都會被拒絕。僅用於固定位址，例如辦公室或 VPN。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "來自其他任何國家/地區，或無法判定所屬國家/地區之位址的員工登入都會被拒絕。上方 IP 位址清單中的位址一律放行：請在其中新增辦公室或伺服器的固定位址作為恢復途徑。"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "無法判定您的位址 (:ip) 所屬的國家/地區，因此這會把您鎖在外面。請先將您的位址新增到員工 IP 位址清單。"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "您正從 :country (:ip) 登入，該國家/地區不在清單中：這會把您鎖在外面。請新增 :country，或將您的位址放入員工 IP 位址清單。"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "您正從 :ip 登入，該位址不在清單中：這會把您鎖在外面。請將 :ip 新增到清單。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "您目前的位址：%ip%。不含該位址的清單無法儲存。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "在 IP 位址清單中"

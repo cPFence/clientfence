@@ -20081,3 +20081,60 @@ msgstr "Історія балансу"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Кошти, додані до балансу цього клієнта або використані з нього."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Додайте щонайменше одну IP-адресу, з якої персонал може входити."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Дозволяти вхід персоналу лише з цих IP-адрес"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "IP-адреси, по одній у рядку"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Це не IP-адреса: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Інші країни та адреси з невідомою країною відхиляються. Адреси зі списку IP-адрес персоналу (Система > Налаштування > Безпека входу) завжди проходять."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Вхід персоналу лише з цих IP-адрес"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Правила входу персоналу (PIN-код на email, IP-адреси, країни) розташовані в Система > Налаштування > Безпека входу."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Вхід персоналу з будь-якої іншої адреси відхиляється. Використовуйте це лише зі сталими адресами, наприклад офісу чи VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Вхід персоналу з будь-якої іншої країни або з адреси з невідомою країною відхиляється. Адреси зі списку IP-адрес вище завжди проходять: додайте туди сталу адресу офісу чи сервера, щоб мати змогу повернутися."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Країна вашої адреси (:ip) невідома, тому ви втратите доступ. Спочатку додайте свою адресу до списку IP-адрес персоналу."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Ви входите з країни :country (:ip), якої немає в списку: ви втратите доступ. Додайте :country або внесіть свою адресу до списку IP-адрес персоналу."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Ви входите з адреси :ip, якої немає в списку: ви втратите доступ. Додайте :ip до списку."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Ваша адреса зараз: %ip%. Збереження відхиляє список без неї."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "у списку IP-адрес"

@@ -17880,3 +17880,60 @@ msgstr "ประวัติเครดิต"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "เครดิตที่เพิ่มเข้าหรือใช้จากยอดคงเหลือของลูกค้ารายนี้"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "เพิ่มที่อยู่ IP อย่างน้อยหนึ่งรายการที่เจ้าหน้าที่ใช้เข้าสู่ระบบได้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "อนุญาตให้เจ้าหน้าที่เข้าสู่ระบบจากที่อยู่ IP เหล่านี้เท่านั้น"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "ที่อยู่ IP บรรทัดละหนึ่งรายการ"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "ไม่ใช่ที่อยู่ IP: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "ประเทศอื่นและที่อยู่ที่ไม่ทราบประเทศจะถูกปฏิเสธ ที่อยู่ในรายการที่อยู่ IP ของเจ้าหน้าที่ (ระบบ > การตั้งค่า > ความปลอดภัยการเข้าสู่ระบบ) ผ่านได้เสมอ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "เจ้าหน้าที่เข้าสู่ระบบได้เฉพาะจากที่อยู่ IP เหล่านี้"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "กฎการเข้าสู่ระบบของเจ้าหน้าที่ (รหัส PIN ทางอีเมล, ที่อยู่ IP, ประเทศ) อยู่ที่ ระบบ > การตั้งค่า > ความปลอดภัยการเข้าสู่ระบบ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "การเข้าสู่ระบบของเจ้าหน้าที่จากที่อยู่อื่นใดจะถูกปฏิเสธ ใช้เฉพาะกับที่อยู่คงที่ เช่น สำนักงานหรือ VPN"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "การเข้าสู่ระบบของเจ้าหน้าที่จากประเทศอื่นใด หรือจากที่อยู่ที่ไม่ทราบประเทศ จะถูกปฏิเสธ ที่อยู่ในรายการที่อยู่ IP ด้านบนผ่านได้เสมอ: เพิ่มที่อยู่คงที่ของสำนักงานหรือเซิร์ฟเวอร์ไว้ที่นั่นเป็นทางกลับเข้ามา"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "ไม่ทราบประเทศของที่อยู่ของคุณ (:ip) การทำเช่นนี้จะทำให้คุณเข้าระบบไม่ได้ โปรดเพิ่มที่อยู่ของคุณลงในรายการที่อยู่ IP ของเจ้าหน้าที่ก่อน"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "คุณกำลังเข้าสู่ระบบจาก :country (:ip) ซึ่งไม่อยู่ในรายการ: การทำเช่นนี้จะทำให้คุณเข้าระบบไม่ได้ เพิ่ม :country หรือใส่ที่อยู่ของคุณในรายการที่อยู่ IP ของเจ้าหน้าที่"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "คุณกำลังเข้าสู่ระบบจาก :ip ซึ่งไม่อยู่ในรายการ: การทำเช่นนี้จะทำให้คุณเข้าระบบไม่ได้ เพิ่ม :ip ลงในรายการ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "ที่อยู่ของคุณตอนนี้: %ip% การบันทึกจะปฏิเสธรายการที่ไม่มีที่อยู่นี้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "ในรายการที่อยู่ IP"

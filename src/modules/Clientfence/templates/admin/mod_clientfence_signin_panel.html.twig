@@ -1,6 +1,6 @@
 {# ClientFence: the "Sign-in security" tab of System > Settings > System (core patch in
-   mod_system_settings; SignInSecurity.php): an email PIN at sign-in for staff, clients or both, and
-   staff sign-in from chosen countries only. All off by default; Super Administrators only.
+   mod_system_settings; SignInSecurity.php): an email PIN at sign-in for staff, clients or both, staff
+   sign-in from listed IP addresses only (stored in the Staff settings) and from chosen countries only. All off by default; Super Administrators only.
    `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
    clientfenceSigninSaved (clientfence-admin.js) shows the PIN field and the form is saved again. #}
 {% set countries_names = signin.all_countries %}
@@ -31,8 +31,27 @@
     <div class="card mt-3">
         <div class="card-header">
             <div>
+                <h3 class="card-title">{{ 'Staff sign-in from these IP addresses only'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="ips_on" value="0">
+            <label class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" name="ips_on" value="1"{% if signin.ips_on %} checked{% endif %}>
+                <span class="form-check-label">{{ 'Allow staff sign-in only from these IP addresses'|trans }}</span>
+            </label>
+            <label class="form-label" for="cf-signin-ips">{{ 'IP addresses, one per line'|trans }}</label>
+            <textarea class="form-control font-monospace" id="cf-signin-ips" name="ips" rows="3" dir="ltr" placeholder="{{ signin.ip }}">{{ signin.ips|join("\n") }}</textarea>
+            <div class="form-hint">{{ 'Your address now: %ip%. Save refuses a list without it.'|trans({'%ip%': signin.ip}) }}</div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <div>
                 <h3 class="card-title">{{ 'Staff sign-in from chosen countries only'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the Allowed IPs list in Staff settings always pass: list a fixed office or server address there as a way back in.'|trans }}</p>
+                <p class="card-subtitle">{{ 'Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in.'|trans }}</p>
             </div>
         </div>
         <div class="card-body">
@@ -45,13 +64,15 @@
                 <span class="form-check-label">{{ 'Allow staff sign-in only from these countries'|trans }}</span>
             </label>
             <label class="form-label" for="cf-signin-countries">{{ 'Countries'|trans }}</label>
+            {# An empty list starts with the country of this sign-in, as in Quick setup, so turning the switch on keeps you in. #}
+            {% set chosen = signin.countries ?: (signin.ip_country ? [signin.ip_country] : []) %}
             <select class="form-select js-multi-select" id="cf-signin-countries" name="countries[]" multiple placeholder="{{ 'Choose countries'|trans }}">
                 {% for code, name in countries_names %}
-                    <option value="{{ code }}"{% if code in signin.countries %} selected{% endif %}>{{ name }}</option>
+                    <option value="{{ code }}"{% if code in chosen %} selected{% endif %}>{{ name }}</option>
                 {% endfor %}
             </select>
             <div class="form-hint">
-                {{ 'You are signing in from %ip%'|trans({'%ip%': signin.ip}) }}{% if signin.ip_country %} ({{ countries_names[signin.ip_country] ?? signin.ip_country }}){% else %} ({{ 'country not known'|trans }}){% endif %}{% if signin.ip_listed %}, {{ 'on the Allowed IPs list'|trans }}{% endif %}.
+                {{ 'You are signing in from %ip%'|trans({'%ip%': signin.ip}) }}{% if signin.ip_country %} ({{ countries_names[signin.ip_country] ?? signin.ip_country }}){% else %} ({{ 'country not known'|trans }}){% endif %}{% if signin.ip_listed %}, {{ 'on the IP address list'|trans }}{% endif %}.
             </div>
         </div>
         <div class="card-footer d-flex flex-wrap align-items-center justify-content-between gap-2">

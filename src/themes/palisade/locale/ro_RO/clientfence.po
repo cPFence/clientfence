@@ -19590,3 +19590,60 @@ msgstr "Istoricul creditului"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Credit adăugat la soldul acestui client sau folosit din acesta."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Adăugați cel puțin o adresă IP de la care se poate autentifica personalul."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Permiteți autentificarea personalului doar de la aceste adrese IP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "Adrese IP, câte una pe linie"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Nu este o adresă IP: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Celelalte țări și adresele a căror țară nu este cunoscută sunt refuzate. Adresele din lista de adrese IP a personalului (Sistem > Setări > Securitatea autentificării) trec întotdeauna."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Autentificarea personalului doar de la aceste adrese IP"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Regulile de autentificare a personalului (PIN prin e-mail, adrese IP, țări) se află în Sistem > Setări > Securitatea autentificării."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Autentificările personalului de la orice altă adresă sunt refuzate. Folosiți această opțiune doar cu adrese fixe, cum ar fi un birou sau un VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Autentificările personalului din orice altă țară sau de la o adresă a cărei țară nu este cunoscută sunt refuzate. Adresele din lista de adrese IP de mai sus trec întotdeauna: adăugați acolo o adresă fixă de birou sau de server ca drum de întoarcere."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Țara adresei dvs. (:ip) nu este cunoscută, deci v-ați bloca accesul. Adăugați mai întâi adresa dvs. în lista de adrese IP a personalului."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Vă autentificați din :country (:ip), care nu este în listă: v-ați bloca accesul. Adăugați :country sau puneți adresa dvs. în lista de adrese IP a personalului."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Vă autentificați de la :ip, care nu este în listă: v-ați bloca accesul. Adăugați :ip în listă."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Adresa dvs. acum: %ip%. Salvarea refuză o listă fără ea."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "în lista de adrese IP"

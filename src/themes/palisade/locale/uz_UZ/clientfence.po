@@ -18175,3 +18175,60 @@ msgstr "Kredit tarixi"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Ushbu mijoz balansiga qo'shilgan yoki balansdan ishlatilgan kredit."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Xodimlar kira oladigan kamida bitta IP manzil qo'shing."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Xodimlar kirishiga faqat shu IP manzillardan ruxsat berish"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "IP manzillar, har qatorda bittadan"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "IP manzil emas: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Boshqa mamlakatlar va mamlakati noma'lum manzillar rad etiladi. Xodimlar IP manzillari ro'yxatidagi manzillar (Tizim > Sozlamalar > Kirish xavfsizligi) doim o'tadi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Xodimlar kirishi faqat shu IP manzillardan"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Xodimlar kirish qoidalari (elektron pochta PIN-kodi, IP manzillar, mamlakatlar) Tizim > Sozlamalar > Kirish xavfsizligi bo'limida."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Xodimlarning boshqa har qanday manzildan kirishi rad etiladi. Buni faqat ofis yoki VPN kabi doimiy manzillar bilan ishlating."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Xodimlarning boshqa har qanday mamlakatdan yoki mamlakati noma'lum manzildan kirishi rad etiladi. Yuqoridagi IP manzillar ro'yxatidagi manzillar doim o'tadi: qaytish yo'li sifatida u yerga ofis yoki serverning doimiy manzilini qo'shing."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Manzilingiz (:ip) mamlakati noma'lum, shuning uchun bu sizni tizimdan chiqarib qo'yadi. Avval manzilingizni xodimlar IP manzillari ro'yxatiga qo'shing."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Siz :country (:ip) mamlakatidan kiryapsiz, u ro'yxatda yo'q: bu sizni tizimdan chiqarib qo'yadi. :country mamlakatini qo'shing yoki manzilingizni xodimlar IP manzillari ro'yxatiga kiriting."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Siz :ip manzilidan kiryapsiz, u ro'yxatda yo'q: bu sizni tizimdan chiqarib qo'yadi. :ip manzilini ro'yxatga qo'shing."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Hozirgi manzilingiz: %ip%. Saqlash u yo'q ro'yxatni rad etadi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "IP manzillar ro'yxatida"

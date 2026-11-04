@@ -413,7 +413,7 @@
                     <div class="cf-toggle-card">
                         <label class="form-check form-switch m-0">
                             <input class="form-check-input" type="checkbox" name="countries_on" value="1"{% if signin.countries_on %} checked{% endif %} data-cf-toggle="countries">
-                            <span class="form-check-label"><strong>{{ 'Staff sign-in from chosen countries only'|trans }}</strong><span class="d-block text-secondary">{{ 'Other countries, and addresses whose country is not known, are refused. Addresses on the Allowed IPs list in Staff settings always pass.'|trans }}</span></span>
+                            <span class="form-check-label"><strong>{{ 'Staff sign-in from chosen countries only'|trans }}</strong><span class="d-block text-secondary">{{ 'Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass.'|trans }}</span></span>
                         </label>
                         <div class="mt-3" data-cf-when="countries">
                             <label class="form-label" for="cf-countries">{{ 'Countries'|trans }}</label>
@@ -423,7 +423,7 @@
                                 {% endfor %}
                             </select>
                             <div class="form-hint">
-                                {{ 'You are signing in from %ip%'|trans({'%ip%': signin.ip}) }}{% if signin.ip_country %} ({{ signin.all_countries[signin.ip_country] ?? signin.ip_country }}){% else %} ({{ 'country not known'|trans }}){% endif %}{% if signin.ip_listed %}, {{ 'on the Allowed IPs list'|trans }}{% endif %}.
+                                {{ 'You are signing in from %ip%'|trans({'%ip%': signin.ip}) }}{% if signin.ip_country %} ({{ signin.all_countries[signin.ip_country] ?? signin.ip_country }}){% else %} ({{ 'country not known'|trans }}){% endif %}{% if signin.ip_listed %}, {{ 'on the IP address list'|trans }}{% endif %}.
                             </div>
                         </div>
                     </div>

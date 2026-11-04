@@ -20505,3 +20505,60 @@ msgstr "Hyvityshistoria"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Tämän asiakkaan saldoon lisätty tai siitä käytetty hyvitys."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Lisää vähintään yksi IP-osoite, josta henkilökunta saa kirjautua."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Salli henkilökunnan kirjautuminen vain näistä IP-osoitteista"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "IP-osoitteet, yksi riviä kohden"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Ei ole IP-osoite: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Muut maat ja osoitteet, joiden maata ei tunneta, hylätään. Henkilökunnan IP-osoiteluettelon (Järjestelmä > Asetukset > Kirjautumisen turvallisuus) osoitteet pääsevät aina läpi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Henkilökunnan kirjautuminen vain näistä IP-osoitteista"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Henkilökunnan kirjautumissäännöt (sähköpostin PIN, IP-osoitteet, maat) ovat kohdassa Järjestelmä > Asetukset > Kirjautumisen turvallisuus."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Henkilökunnan kirjautumiset muista osoitteista hylätään. Käytä tätä vain kiinteillä osoitteilla, kuten toimisto tai VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Henkilökunnan kirjautumiset muista maista tai osoitteesta, jonka maata ei tunneta, hylätään. Yllä olevan IP-osoiteluettelon osoitteet pääsevät aina läpi: lisää sinne kiinteä toimiston tai palvelimen osoite paluutieksi."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Osoitteesi (:ip) maata ei tunneta, joten tämä lukitsisi sinut ulos. Lisää ensin osoitteesi henkilökunnan IP-osoiteluetteloon."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Kirjaudut maasta :country (:ip), joka ei ole luettelossa: tämä lukitsisi sinut ulos. Lisää :country tai laita osoitteesi henkilökunnan IP-osoiteluetteloon."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Kirjaudut osoitteesta :ip, joka ei ole luettelossa: tämä lukitsisi sinut ulos. Lisää :ip luetteloon."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Osoitteesi nyt: %ip%. Tallennus hylkää luettelon, jossa sitä ei ole."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "IP-osoiteluettelossa"

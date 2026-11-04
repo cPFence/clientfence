@@ -20,7 +20,7 @@ final class SettingsIndex
 
     /** Extra search words, by "module" or "module#tab". English: they are names and acronyms. */
     public const WORDS = [
-        'system#tab-signin' => '2FA two-factor MFA OTP PIN login lockout country countries GeoIP',
+        'system#tab-signin' => '2FA two-factor MFA OTP PIN login lockout country countries GeoIP IP allowed IPs whitelist',
         'system#tab-cache' => 'Redis Memcached flush clear',
         'system#tab-backups' => 'backup dump SFTP FTP',
         'system#tab-health' => 'health status check problems',
@@ -30,7 +30,7 @@ final class SettingsIndex
         'antispam' => 'captcha reCAPTCHA hCaptcha Turnstile spam bots honeypot block IP',
         'email' => 'SMTP mail sendmail mailer sender DKIM',
         'invoice' => 'tax VAT invoice number prefix due',
-        'staff' => 'admin team IP',
+        'staff' => 'admin team',
         'cron' => 'scheduled tasks cron job',
         'currency' => 'exchange rate money',
         'client' => 'sign-up signup registration register',

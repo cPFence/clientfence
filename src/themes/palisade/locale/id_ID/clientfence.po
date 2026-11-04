@@ -20218,3 +20218,60 @@ msgstr "Riwayat Kredit"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Kredit yang ditambahkan ke atau digunakan dari saldo klien ini."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Tambahkan setidaknya satu alamat IP yang boleh digunakan staf untuk masuk."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Izinkan login staf hanya dari alamat IP ini"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "Alamat IP, satu per baris"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Bukan alamat IP: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Negara lain dan alamat yang negaranya tidak diketahui akan ditolak. Alamat pada daftar alamat IP staf (Sistem > Pengaturan > Keamanan masuk) selalu lolos."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Login staf hanya dari alamat IP ini"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Aturan login staf (PIN email, alamat IP, negara) ada di Sistem > Pengaturan > Keamanan masuk."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Login staf dari alamat lain mana pun akan ditolak. Gunakan hanya dengan alamat tetap, seperti kantor atau VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Login staf dari negara lain mana pun, atau dari alamat yang negaranya tidak diketahui, akan ditolak. Alamat pada daftar alamat IP di atas selalu lolos: tambahkan alamat kantor atau server yang tetap di sana sebagai jalan masuk kembali."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Negara dari alamat Anda (:ip) tidak diketahui, sehingga ini akan mengunci Anda. Tambahkan alamat Anda ke daftar alamat IP staf terlebih dahulu."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Anda masuk dari :country (:ip), yang tidak ada dalam daftar: ini akan mengunci Anda. Tambahkan :country atau masukkan alamat Anda ke daftar alamat IP staf."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Anda masuk dari :ip, yang tidak ada dalam daftar: ini akan mengunci Anda. Tambahkan :ip ke daftar."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Alamat Anda saat ini: %ip%. Penyimpanan menolak daftar tanpa alamat ini."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "pada daftar alamat IP"

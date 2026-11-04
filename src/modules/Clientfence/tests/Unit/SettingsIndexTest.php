@@ -14,7 +14,7 @@ test('settings-index.json is up to date (run php tools/build-settings-index.php)
 
     expect(json_decode((string) file_get_contents(SettingsIndex::FILE), true))->toBe($built)
         ->and($built)->toContain(['mod' => 'system', 'tab' => 'tab-signin', 'kind' => 'field', 'label' => 'Ask for an email PIN'])
-        ->and($built)->toContain(['mod' => 'staff', 'tab' => 'tab-settings', 'kind' => 'field', 'label' => 'Allowed IPs. One Per Line']);
+        ->and($built)->toContain(['mod' => 'system', 'tab' => 'tab-signin', 'kind' => 'field', 'label' => 'IP addresses, one per line']);
 });
 
 test('every extra word names a page or tab of the index', function (): void {

@@ -1356,6 +1356,10 @@ msgstr ""
 msgid "Add and continue"
 msgstr ""
 
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr ""
+
 #: src/modules/Invoice/Quotes.php
 msgid "Add at least one line to the quote."
 msgstr ""
@@ -1929,6 +1933,10 @@ msgid "Allow self-signed certificate"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "Allow staff sign-in only from these countries"
 msgstr ""
 
@@ -1942,10 +1950,6 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig
 msgid "Allowed IPs"
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Allowed IPs. One Per Line"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -3822,10 +3826,6 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Check"
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Check Login IP"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -9260,6 +9260,10 @@ msgstr ""
 msgid "IP address is required"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "IPN"
 msgstr ""
@@ -9474,10 +9478,6 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Income this month"
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Incorrect configuration of allowed IPs can lead to a complete lockout of the administrator panel. Only use when you have static addresses."
 msgstr ""
 
 #: src/modules/Index/manifest.json
@@ -10774,10 +10774,6 @@ msgstr ""
 
 #: src/themes/palisade/config/settings.html.twig
 msgid "Login Page"
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Login Restrictions"
 msgstr ""
 
 #: src/modules/Client/Service.php
@@ -12796,6 +12792,10 @@ msgstr ""
 msgid "Not Run"
 msgstr ""
 
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_option_group.html.twig
 msgid "Not attached to any product yet: open a product and use its Options tab."
 msgstr ""
@@ -13468,10 +13468,6 @@ msgstr ""
 msgid "Optionally prepend or append text around the field value."
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Optionally restrict staff access to a specific list of known administrator IP addresses."
-msgstr ""
-
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Optionally waive any setup fee when the promotion is applied."
 msgstr ""
@@ -13701,7 +13697,7 @@ msgid "Other Actions"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
-msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the Allowed IPs list in Staff settings always pass."
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -17812,12 +17808,24 @@ msgstr ""
 msgid "Staff sign-in from chosen countries only"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr ""
+
 #: src/modules/Clientfence/SignInSecurity.php
 msgid "Staff sign-in is not allowed from your location."
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
-msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the Allowed IPs list in Staff settings always pass: list a fixed office or server address there as a way back in."
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig
@@ -18925,7 +18933,7 @@ msgid "The copy of this email could not be read."
 msgstr ""
 
 #: src/modules/Clientfence/SignInSecurity.php
-msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the Allowed IPs list in Staff settings first."
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -21709,10 +21717,6 @@ msgstr ""
 msgid "Use these fields to store extra client details that do not fit the standard profile."
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Use these options to restrict which IPs staff may log in from and whether staff can reset their own passwords."
-msgstr ""
-
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Use these protections together: CAPTCHA and honeypot help stop automated signups, while IP and email checks help block abusive traffic."
 msgstr ""
@@ -22614,7 +22618,11 @@ msgid "You are signing in from %ip%"
 msgstr ""
 
 #: src/modules/Clientfence/SignInSecurity.php
-msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the Allowed IPs list."
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr ""
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_unsubscribe.html.twig
@@ -22987,6 +22995,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Your account is ready. Sign in to place your order; you come back here."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig
@@ -23466,7 +23478,7 @@ msgid "on :date"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
-msgid "on the Allowed IPs list"
+msgid "on the IP address list"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_index.html.twig

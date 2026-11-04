@@ -20246,3 +20246,60 @@ msgstr "Historia środków"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Środki dodane do salda tego klienta lub z niego wykorzystane."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Dodaj co najmniej jeden adres IP, z którego personel może się logować."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Zezwalaj na logowanie personelu tylko z tych adresów IP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "Adresy IP, jeden w wierszu"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "To nie jest adres IP: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Inne kraje i adresy o nieznanym kraju są odrzucane. Adresy z listy adresów IP personelu (System > Ustawienia > Bezpieczeństwo logowania) zawsze przechodzą."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Logowanie personelu tylko z tych adresów IP"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Zasady logowania personelu (PIN przez email, adresy IP, kraje) są w System > Ustawienia > Bezpieczeństwo logowania."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Logowania personelu z każdego innego adresu są odrzucane. Używaj tego tylko ze stałymi adresami, takimi jak biuro lub VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Logowania personelu z każdego innego kraju lub z adresu o nieznanym kraju są odrzucane. Adresy z listy adresów IP powyżej zawsze przechodzą: dodaj tam stały adres biura lub serwera jako drogę powrotną."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Kraj Twojego adresu (:ip) jest nieznany, więc ta zmiana zablokowałaby Ci dostęp. Najpierw dodaj swój adres do listy adresów IP personelu."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Logujesz się z kraju :country (:ip), którego nie ma na liście: ta zmiana zablokowałaby Ci dostęp. Dodaj :country albo umieść swój adres na liście adresów IP personelu."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Logujesz się z adresu :ip, którego nie ma na liście: ta zmiana zablokowałaby Ci dostęp. Dodaj :ip do listy."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Twój obecny adres: %ip%. Zapis odrzuca listę bez niego."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "na liście adresów IP"

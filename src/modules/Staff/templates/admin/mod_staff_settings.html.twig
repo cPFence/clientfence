@@ -176,23 +176,8 @@
                         <input type="hidden" name="ext" value="mod_staff">
                         <div class="card-body">
                         {% set params = admin.extension_config_get({ 'ext': 'mod_staff' }) %}
-                            <div class="alert alert-info" role="alert">
-                                <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'Use these options to restrict which IPs staff may log in from and whether staff can reset their own passwords.'|trans }}
-                            </div>
-
-                            <h4 class="card-title mb-2">{{ 'Login Restrictions'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Optionally restrict staff access to a specific list of known administrator IP addresses.'|trans }}</p>
-                            <label class="form-check form-switch form-switch-2 mb-3">
-                                <input class="form-check-input" id="check_ip_enabled" type="checkbox" name="check_ip" value="1"{% if params.check_ip|default('') == '1' %} checked{% endif %}>
-                                <span class="form-check-label">{{ 'Check Login IP'|trans }}</span>
-                            </label>
-                            <div id="check_ip"{% if not params.check_ip|default(false) %} style="display:none;"{% endif %}>
-                                <label class="form-label" for="allowed_ips">{{ 'Allowed IPs. One Per Line'|trans }}</label>
-                                <div class="alert alert-warning mb-3" role="alert">
-                                    <strong class="me-1">{{ 'Warning:'|trans }}</strong>{{ 'Incorrect configuration of allowed IPs can lead to a complete lockout of the administrator panel. Only use when you have static addresses.'|trans }}
-                                </div>
-                                <textarea class="form-control" id="allowed_ips" name="allowed_ips" rows="4" placeholder="{{ admin.system_env({ 'ip': 1 }) }}">{{ params.allowed_ips|default('') }}</textarea>
-                            </div>
+                            {# ClientFence core patch: the staff IP address rule moved to System > Settings > Sign-in security. #}
+                            <p class="text-secondary mb-0">{{ 'Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security.'|trans }}</p>
                         </div>
                         <div class="card-body border-top">
                             <h4 class="card-title mb-2">{{ 'Password Recovery'|trans }}</h4>
@@ -397,15 +382,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            const checkIpToggle = document.getElementById('check_ip_enabled');
-            const checkIpElement = document.getElementById('check_ip');
-
-            if (checkIpToggle && checkIpElement) {
-                checkIpToggle.addEventListener('change', function() {
-                    checkIpElement.style.display = this.checked ? 'block' : 'none';
-                });
-            }
-
             if (window.location.hash === '#tab-new') {
                 const modalElement = document.getElementById('newStaffModal');
                 if (modalElement) {

@@ -13,11 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * For a site whose staff are locked out by sign-in security (SignInSecurity.php): turns the email
- * PIN and the staff country rule off (or only one of them with --pin / --countries).
+ * PIN and the staff country and IP rules off (or only the selected --pin / --countries / --ips).
  */
 #[AsCommand(
     name: 'clientfence:signin-security-off',
-    description: 'Turns sign-in security off: the email PIN and the staff country rule',
+    description: 'Turns sign-in security off: the email PIN and the staff country and IP address rules',
     hidden: false
 )]
 class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareInterface
@@ -38,18 +38,20 @@ class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareIn
     {
         $this->addOption('pin', null, InputOption::VALUE_NONE, 'Only turn the email PIN off');
         $this->addOption('countries', null, InputOption::VALUE_NONE, 'Only turn the staff country rule off');
+        $this->addOption('ips', null, InputOption::VALUE_NONE, 'Only turn the staff IP address rule off');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $pin = (bool) $input->getOption('pin');
         $countries = (bool) $input->getOption('countries');
-        if (!$pin && !$countries) {
-            $pin = $countries = true;
+        $ips = (bool) $input->getOption('ips');
+        if (!$pin && !$countries && !$ips) {
+            $pin = $countries = $ips = true;
         }
-        $settings = SignInSecurity::turnOff($this->di, $pin, $countries);
-        $this->di['logger']->warning('Sign-in security turned off from the console (email PIN: %s, country rule: %s)', $pin ? 'off' : 'kept', $countries ? 'off' : 'kept');
-        $output->writeln(sprintf('Email PIN: %s. Staff countries: %s.', $settings['pin'], $settings['countries_on'] ? implode(', ', $settings['countries']) : 'off'));
+        $settings = SignInSecurity::turnOff($this->di, $pin, $countries, $ips);
+        $this->di['logger']->warning('Sign-in security turned off from the console (email PIN: %s, country rule: %s, IP rule: %s)', $pin ? 'off' : 'kept', $countries ? 'off' : 'kept', $ips ? 'off' : 'kept');
+        $output->writeln(sprintf('Email PIN: %s. Staff countries: %s. Staff IPs: %s.', $settings['pin'], $settings['countries_on'] ? implode(', ', $settings['countries']) : 'off', $settings['ips_on'] ? implode(', ', $settings['ips']) : 'off'));
 
         return Command::SUCCESS;
     }

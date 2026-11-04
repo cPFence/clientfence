@@ -19489,3 +19489,60 @@ msgstr "سجل الرصيد"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "الرصيد المضاف إلى رصيد هذا العميل أو المستخدم منه."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "أضف عنوان IP واحدًا على الأقل يمكن للموظفين تسجيل الدخول منه."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "السماح بتسجيل دخول الموظفين من عناوين IP هذه فقط"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "عناوين IP، عنوان واحد في كل سطر"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "ليس عنوان IP: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "تُرفض الدول الأخرى والعناوين التي لا يُعرف بلدها. العناوين الموجودة في قائمة عناوين IP للموظفين (النظام > الإعدادات > أمان تسجيل الدخول) تُقبل دائمًا."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "تسجيل دخول الموظفين من عناوين IP هذه فقط"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "قواعد تسجيل دخول الموظفين (رمز PIN عبر البريد، عناوين IP، الدول) موجودة في النظام > الإعدادات > أمان تسجيل الدخول."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "يُرفض تسجيل دخول الموظفين من أي عنوان آخر. استخدمه فقط مع عناوين ثابتة، مثل المكتب أو VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "يُرفض تسجيل دخول الموظفين من أي دولة أخرى أو من عنوان لا يُعرف بلده. العناوين الموجودة في قائمة عناوين IP أعلاه تُقبل دائمًا: أضف إليها عنوان مكتب أو خادم ثابتًا كطريق للعودة."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "بلد عنوانك (:ip) غير معروف، لذا سيؤدي هذا إلى منعك من الدخول. أضف عنوانك إلى قائمة عناوين IP للموظفين أولًا."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "أنت تسجّل الدخول من :country (:ip) وهي غير موجودة في القائمة: سيؤدي هذا إلى منعك من الدخول. أضف :country أو ضع عنوانك في قائمة عناوين IP للموظفين."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "أنت تسجّل الدخول من :ip وهو غير موجود في القائمة: سيؤدي هذا إلى منعك من الدخول. أضف :ip إلى القائمة."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "عنوانك الآن: %ip%. يرفض الحفظ أي قائمة لا تتضمنه."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "في قائمة عناوين IP"

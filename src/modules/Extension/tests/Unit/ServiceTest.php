@@ -853,6 +853,13 @@ test('setConfig keeps the ClientFence settings a module page saves with their ow
         ['ext' => 'mod_client', 'disable_signup' => '0'],
         ['ext' => 'mod_client', 'disable_signup' => '0', 'google_signin' => '1', 'google_client_secret' => 's'],
     ],
+    // The staff IP address rule, saved by Sign-in security, survives the Staff settings form.
+    'staff ip rule' => [
+        'mod_staff',
+        ['ext' => 'mod_staff', 'check_ip' => 1, 'allowed_ips' => '203.0.113.5', 'public' => ['reset_pw' => '1']],
+        ['ext' => 'mod_staff', 'public' => ['reset_pw' => '0']],
+        ['ext' => 'mod_staff', 'public' => ['reset_pw' => '0'], 'check_ip' => 1, 'allowed_ips' => '203.0.113.5'],
+    ],
 ]);
 
 test('setConfig reserves mail transport changes for super administrators', function (bool $isSuperAdministrator, array $stored, array $sentTransport, array $expectedTransport): void {

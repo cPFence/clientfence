@@ -12,6 +12,8 @@ use Symfony\Component\Intl\Countries;
  * Sign-in security (System → Settings → System → Sign-in security; Super Administrators only),
  * all off by default:
  *
+ * - Staff sign-in from chosen IP addresses only (kept in the Staff module config).
+ *
  * - Staff sign-in from chosen countries only: the staff login (core patch in Staff/Api/Guest.php)
  *   looks up the country of the address in the GeoIP country database and refuses any other, or
  *   one without a known country. An address on the Staff "Allowed IPs" list always passes (a way
@@ -29,7 +31,7 @@ use Symfony\Component\Intl\Countries;
  *   it stops working when the login's password changes (the signature covers the password hash).
  *
  * Locked out: `php console.php clientfence:signin-security-off` turns the features off.
- * Settings are kept in mod_clientfence_state (STATE).
+ * Settings are kept in mod_clientfence_state (STATE), except the Staff IP rule.
  */
 final class SignInSecurity
 {
@@ -52,14 +54,16 @@ final class SignInSecurity
      */
     public static ?int $newClientId = null;
 
-    /** @return array{pin: string, countries_on: bool, countries: list<string>} */
+    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di) ?? [];
         $pin = in_array($saved['pin'] ?? null, self::PIN_MODES, true) ? (string) $saved['pin'] : 'off';
         $countries = is_array($saved['countries'] ?? null) ? array_values(array_filter($saved['countries'], fn ($c): bool => is_string($c) && Countries::exists($c))) : [];
+        $staff = $di['mod']('staff')->getConfig();
+        $ips = array_values(array_filter(array_map(trim(...), preg_split('/\R/', (string) ($staff['allowed_ips'] ?? ''))), fn (string $ip): bool => $ip !== ''));
 
-        return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries];
+        return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries, 'ips_on' => !empty($staff['check_ip']) && $ips !== [], 'ips' => $ips];
     }
 
     /** Whether sign-ins of an area ('staff' or 'client') ask for an email PIN. */
@@ -108,13 +112,33 @@ final class SignInSecurity
         if ($countriesOn && $countries === []) {
             throw new InformationException('Choose at least one country staff may sign in from.');
         }
-        if ($countriesOn && !self::ipListed($di, $ip)) {
+        $saveIps = array_key_exists('ips_on', $data);
+        $ipsOn = $old['ips_on'];
+        $ips = $old['ips'];
+        if ($saveIps) {
+            $ipsOn = !empty($data['ips_on']);
+            $ips = $data['ips'] ?? [];
+            $ips = is_array($ips) ? $ips : preg_split('/[\s,]+/', (string) $ips);
+            $ips = array_values(array_unique(array_filter(array_map(fn ($address): string => trim((string) $address), $ips), fn (string $address): bool => $address !== '')));
+            foreach ($ips as $address) {
+                if (filter_var($address, FILTER_VALIDATE_IP) === false) {
+                    throw new InformationException('Not an IP address: :ip', [':ip' => $address]);
+                }
+            }
+            if ($ipsOn && $ips === []) {
+                throw new InformationException('Add at least one IP address staff may sign in from.');
+            }
+            if ($ipsOn && !in_array($ip, $ips, true)) {
+                throw new InformationException('You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list.', [':ip' => $ip]);
+            }
+        }
+        if ($countriesOn && !($saveIps ? $ipsOn : self::ipListed($di, $ip))) {
             $own = self::countryOf($di, $ip);
             if ($own === null) {
-                throw new InformationException('The country of your address (:ip) is not known, so this would lock you out. Add your address to the Allowed IPs list in Staff settings first.', [':ip' => $ip]);
+                throw new InformationException('The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first.', [':ip' => $ip]);
             }
             if (!in_array($own, $countries, true)) {
-                throw new InformationException('You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the Allowed IPs list.', [':country' => Countries::getName($own), ':ip' => $ip]);
+                throw new InformationException('You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list.', [':country' => Countries::getName($own), ':ip' => $ip]);
             }
         }
 
@@ -144,14 +168,18 @@ final class SignInSecurity
             $di['session']->delete(self::CONFIRM);
         }
 
+        if ($saveIps) {
+            $extension = $di['mod_service']('extension');
+            $extension->setConfig(array_merge($extension->getConfig('mod_staff'), ['ext' => 'mod_staff', 'check_ip' => (int) $ipsOn, 'allowed_ips' => implode(PHP_EOL, $ips)]));
+        }
         self::saveState($di, ['pin' => $pin, 'countries_on' => $countriesOn, 'countries' => $countries]);
-        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s, staff countries %s', $admin['id'], $pin, $countriesOn ? implode(',', $countries) : 'off');
+        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s, staff countries %s, staff IPs %s', $admin['id'], $pin, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off');
 
         return ['saved' => true];
     }
 
-    /** The console command for a locked-out site: turns the email PIN and/or the country rule off. */
-    public static function turnOff(\Pimple\Container $di, bool $pin, bool $countries): array
+    /** The console command for a locked-out site: turns the email PIN, country and/or IP rules off. */
+    public static function turnOff(\Pimple\Container $di, bool $pin, bool $countries, bool $ips): array
     {
         $settings = self::settings($di);
         if ($pin) {
@@ -160,7 +188,11 @@ final class SignInSecurity
         if ($countries) {
             $settings['countries_on'] = false;
         }
-        self::saveState($di, $settings);
+        if ($ips) {
+            $extension = $di['mod_service']('extension');
+            $extension->setConfig(array_merge($extension->getConfig('mod_staff'), ['ext' => 'mod_staff', 'check_ip' => 0]));
+        }
+        self::saveState($di, ['pin' => $settings['pin'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries']]);
 
         return self::settings($di);
     }

@@ -23741,3 +23741,60 @@ msgstr "היסטוריית זיכוי"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "זיכוי שנוסף ליתרת הלקוח הזה או שנוצל ממנה."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "הוסיפו לפחות כתובת IP אחת שממנה אנשי צוות רשאים להתחבר."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "אפשרו לאנשי צוות להתחבר רק מכתובות IP אלה"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "כתובות IP, אחת בכל שורה"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "זו אינה כתובת IP: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "מדינות אחרות וכתובות שהמדינה שלהן אינה ידועה נדחות. כתובות ברשימת כתובות ה-IP של הצוות (מערכת > הגדרות > אבטחת כניסה) תמיד עוברות."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "כניסת אנשי צוות מכתובות IP אלה בלבד"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "כללי הכניסה של אנשי הצוות (PIN בדוא״ל, כתובות IP, מדינות) נמצאים במערכת > הגדרות > אבטחת כניסה."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "כניסות של אנשי צוות מכל כתובת אחרת נדחות. השתמשו בזה רק עם כתובות קבועות, כמו משרד או VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "כניסות של אנשי צוות מכל מדינה אחרת, או מכתובת שהמדינה שלה אינה ידועה, נדחות. כתובות ברשימת כתובות ה-IP שלמעלה תמיד עוברות: הוסיפו שם כתובת קבועה של משרד או שרת כדרך חזרה."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "המדינה של הכתובת שלכם (:ip) אינה ידועה, ולכן הפעולה תנעל אתכם בחוץ. הוסיפו קודם את הכתובת שלכם לרשימת כתובות ה-IP של הצוות."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "אתם מתחברים מ-:country (:ip), שאינה ברשימה: הפעולה תנעל אתכם בחוץ. הוסיפו את :country או הוסיפו את הכתובת שלכם לרשימת כתובות ה-IP של הצוות."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "אתם מתחברים מ-:ip, שאינה ברשימה: הפעולה תנעל אתכם בחוץ. הוסיפו את :ip לרשימה."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "הכתובת שלכם כעת: %ip%. השמירה דוחה רשימה שאינה כוללת אותה."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "ברשימת כתובות ה-IP"

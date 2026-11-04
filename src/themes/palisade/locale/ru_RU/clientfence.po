@@ -17837,3 +17837,60 @@ msgstr "История баланса"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Средства, добавленные на баланс этого клиента или списанные с него."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Добавьте хотя бы один IP-адрес, с которого персонал может входить."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Разрешать вход персонала только с этих IP-адресов"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "IP-адреса, по одному в строке"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Это не IP-адрес: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Другие страны и адреса с неизвестной страной отклоняются. Адреса из списка IP-адресов персонала (Система > Настройки > Безопасность входа) всегда проходят."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Вход персонала только с этих IP-адресов"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Правила входа персонала (PIN-код по email, IP-адреса, страны) находятся в Система > Настройки > Безопасность входа."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Вход персонала с любого другого адреса отклоняется. Используйте это только с постоянными адресами, например офиса или VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Вход персонала из любой другой страны или с адреса с неизвестной страной отклоняется. Адреса из списка IP-адресов выше всегда проходят: добавьте туда постоянный адрес офиса или сервера, чтобы можно было вернуться."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Страна вашего адреса (:ip) неизвестна, поэтому вы потеряете доступ. Сначала добавьте свой адрес в список IP-адресов персонала."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Вы входите из страны :country (:ip), которой нет в списке: вы потеряете доступ. Добавьте :country или внесите свой адрес в список IP-адресов персонала."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Вы входите с адреса :ip, которого нет в списке: вы потеряете доступ. Добавьте :ip в список."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Ваш адрес сейчас: %ip%. Сохранение отклоняет список без него."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "в списке IP-адресов"

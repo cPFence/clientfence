@@ -19514,3 +19514,60 @@ msgstr "Guthabenverlauf"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Guthaben, das dem Kontostand dieses Kunden hinzugefügt oder davon verbraucht wurde."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Fügen Sie mindestens eine IP-Adresse hinzu, von der sich Mitarbeiter anmelden dürfen."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Mitarbeiter-Anmeldung nur von diesen IP-Adressen erlauben"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "IP-Adressen, eine pro Zeile"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Keine IP-Adresse: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Andere Länder und Adressen, deren Land unbekannt ist, werden abgewiesen. Adressen auf der IP-Adressliste der Mitarbeiter (System > Einstellungen > Anmeldesicherheit) werden immer durchgelassen."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Mitarbeiter-Anmeldung nur von diesen IP-Adressen"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Die Anmelderegeln für Mitarbeiter (E-Mail-PIN, IP-Adressen, Länder) finden Sie unter System > Einstellungen > Anmeldesicherheit."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Anmeldungen von Mitarbeitern von jeder anderen Adresse werden abgewiesen. Nutzen Sie das nur mit festen Adressen, etwa einem Büro oder einem VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Anmeldungen von Mitarbeitern aus jedem anderen Land oder von einer Adresse mit unbekanntem Land werden abgewiesen. Adressen auf der IP-Adressliste oben werden immer durchgelassen: Tragen Sie dort eine feste Büro- oder Serveradresse als Rückweg ein."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Das Land Ihrer Adresse (:ip) ist unbekannt, daher würden Sie sich aussperren. Fügen Sie zuerst Ihre Adresse zur IP-Adressliste der Mitarbeiter hinzu."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Sie melden sich aus :country (:ip) an, das nicht auf der Liste steht: Sie würden sich aussperren. Fügen Sie :country hinzu oder setzen Sie Ihre Adresse auf die IP-Adressliste der Mitarbeiter."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Sie melden sich von :ip an, das nicht auf der Liste steht: Sie würden sich aussperren. Fügen Sie :ip zur Liste hinzu."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Ihre aktuelle Adresse: %ip%. Das Speichern lehnt eine Liste ohne sie ab."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "auf der IP-Adressliste"

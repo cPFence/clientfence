@@ -20141,3 +20141,60 @@ msgstr "Ιστορικό πίστωσης"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Credit added to or used from this client's balance."
 msgstr "Πίστωση που προστέθηκε ή χρησιμοποιήθηκε από το υπόλοιπο αυτού του πελάτη."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Add at least one IP address staff may sign in from."
+msgstr "Προσθέστε τουλάχιστον μία διεύθυνση IP από την οποία μπορεί να συνδέεται το προσωπικό."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff sign-in only from these IP addresses"
+msgstr "Να επιτρέπεται η σύνδεση προσωπικού μόνο από αυτές τις διευθύνσεις IP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "IP addresses, one per line"
+msgstr "Διευθύνσεις IP, μία ανά γραμμή"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Not an IP address: :ip"
+msgstr "Δεν είναι διεύθυνση IP: :ip"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr "Οι άλλες χώρες και οι διευθύνσεις με άγνωστη χώρα απορρίπτονται. Οι διευθύνσεις της λίστας διευθύνσεων IP προσωπικού (Σύστημα > Ρυθμίσεις > Ασφάλεια σύνδεσης) επιτρέπονται πάντα."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-in from these IP addresses only"
+msgstr "Σύνδεση προσωπικού μόνο από αυτές τις διευθύνσεις IP"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgstr "Οι κανόνες σύνδεσης προσωπικού (PIN μέσω email, διευθύνσεις IP, χώρες) βρίσκονται στο Σύστημα > Ρυθμίσεις > Ασφάλεια σύνδεσης."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other address are refused. Use it only with fixed addresses, such as an office or a VPN."
+msgstr "Οι συνδέσεις προσωπικού από οποιαδήποτε άλλη διεύθυνση απορρίπτονται. Χρησιμοποιήστε το μόνο με σταθερές διευθύνσεις, όπως γραφείο ή VPN."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff sign-ins from any other country, or from an address whose country is not known, are refused. Addresses on the IP address list above always pass: add a fixed office or server address there as a way back in."
+msgstr "Οι συνδέσεις προσωπικού από οποιαδήποτε άλλη χώρα ή από διεύθυνση με άγνωστη χώρα απορρίπτονται. Οι διευθύνσεις της λίστας διευθύνσεων IP παραπάνω επιτρέπονται πάντα: προσθέστε εκεί μια σταθερή διεύθυνση γραφείου ή διακομιστή ως τρόπο επιστροφής."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first."
+msgstr "Η χώρα της διεύθυνσής σας (:ip) δεν είναι γνωστή, οπότε θα κλειδωθείτε έξω. Προσθέστε πρώτα τη διεύθυνσή σας στη λίστα διευθύνσεων IP προσωπικού."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :country (:ip), which is not on the list: this would lock you out. Add :country or put your address on the staff IP address list."
+msgstr "Συνδέεστε από :country (:ip), που δεν είναι στη λίστα: θα κλειδωθείτε έξω. Προσθέστε :country ή βάλτε τη διεύθυνσή σας στη λίστα διευθύνσεων IP προσωπικού."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list."
+msgstr "Συνδέεστε από :ip, που δεν είναι στη λίστα: θα κλειδωθείτε έξω. Προσθέστε το :ip στη λίστα."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Your address now: %ip%. Save refuses a list without it."
+msgstr "Η διεύθυνσή σας τώρα: %ip%. Η αποθήκευση απορρίπτει λίστα χωρίς αυτήν."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "on the IP address list"
+msgstr "στη λίστα διευθύνσεων IP"
