@@ -485,7 +485,7 @@ test('is valid host', function (): void {
 test('is valid host test2', function (): void {
     $service = new Service();
     $serviceLicenseModel = new ServiceLicense();
-    $serviceLicenseModel->setHosts('["fossbilling.org"]');
+    $serviceLicenseModel->setHosts('["clientfence.com"]');
     $value = 'site.com';
 
     $em = Mockery::mock(EntityManagerInterface::class);
@@ -503,7 +503,7 @@ test('is valid host test2', function (): void {
 test('is valid host test3', function (): void {
     $service = new Service();
     $serviceLicenseModel = new ServiceLicense();
-    $serviceLicenseModel->setHosts('["fossbilling.org"]');
+    $serviceLicenseModel->setHosts('["clientfence.com"]');
     $serviceLicenseModel->setValidateHost(true);
     $value = 'site.com';
 
@@ -594,7 +594,7 @@ test('update', function (): void {
     $data = [
         'license_key' => '123456Licence',
         'validate_ip' => '1.1.1.1',
-        'validate_host' => 'fossbilling.org',
+        'validate_host' => 'clientfence.com',
         'validate_version' => '1.0',
         'validate_path' => '/usr',
         'ips' => "2.2.2.2\n",

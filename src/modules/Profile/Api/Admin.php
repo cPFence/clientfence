@@ -27,12 +27,14 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @return array
      *
+     * ClientFence core patch: profile examples use the project domain.
+     *
      * @example
      * <code class="response">
      * Array
      * (
      * 		[id] => 1
-     *		[email] => demo@fossbilling.org
+     *		[email] => demo@clientfence.com
      *		[pass] => 89e495e7941cf9e40e6980d14a16bf023ccd4c91
      *		[name] => Demo Administrator
      *		[signature] => Sincerely Yours, Demo Administrator

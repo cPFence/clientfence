@@ -250,28 +250,7 @@ globalThis.ClientFence = Object.assign(globalThis.ClientFence || {}, {
      }
    });
 
-   //===== Discord community popover (shown once) =====//
-   const discordBtn = document.getElementById('discord-community-btn');
-   const isDiscordBtnVisible = () => {
-     if (!discordBtn) {
-       return false;
-     }
-
-     const style = window.getComputedStyle(discordBtn);
-
-     return style.visibility !== 'hidden' && style.display !== 'none' && discordBtn.getClientRects().length > 0;
-   };
-
-   if (discordBtn && !localStorage.getItem('fb-discord-popover-seen') && isDiscordBtnVisible()) {
-     const popover = bootstrap.Popover.getOrCreateInstance(discordBtn);
-     localStorage.setItem('fb-discord-popover-seen', '1');
-     popover.show();
-     document.addEventListener('click', (e) => {
-       if (!discordBtn.contains(e.target)) {
-         popover.hide();
-       }
-     }, { once: true });
-   }
+   // ClientFence core patch: the retired upstream community promotion has no popover.
 
    //===== Search filter toggle state =====//
    const syncSearchFilterToggleState = (toggle, panel) => {

@@ -77,34 +77,7 @@
                         </select>
                     </div>
                     {% endif %}
-                     <div class="nav-item d-none d-sm-flex">
-                        <div class="btn-list gap-2">
-                           <a href="https://github.com/FOSSBilling/FOSSBilling" class="btn px-3" target="_blank" rel="noreferrer" title="GitHub">
-                              <svg class="icon m-0">
-                                 <use href="#brand-github" />
-                              </svg>
-                           </a>
-                           <a href="https://fossbilling.org/discord"
-                              class="btn px-3"
-                              id="discord-community-btn"
-                              target="_blank"
-                              rel="noreferrer"
-                              title="{{ 'Discord'|trans }}"
-                              data-bs-toggle="popover"
-                              data-bs-trigger="manual"
-                              data-bs-placement="bottom"
-                              data-bs-content="{{ 'Join our Discord community for support and discussion!'|trans }}">
-                              <svg class="icon m-0">
-                                 <use href="#brand-discord" />
-                              </svg>
-                           </a>
-                           <a href="https://github.com/sponsors/FOSSBilling" class="btn px-3" target="_blank" rel="noreferrer" title="{{ 'Sponsor'|trans }}">
-                              <svg class="icon m-0 text-pink">
-                                 <use href="#heart" />
-                              </svg>
-                           </a>
-                        </div>
-                     </div>
+                     {# ClientFence core patch: project links belong in Help, without upstream promotions. #}
                       <div class="nav-item">
                         <a class="nav-link px-0 hide-theme-dark js-theme-toggler"
                            href="?theme=dark"
@@ -197,10 +170,10 @@
                                   <div class="dropdown-menu">
                                     <div class="dropdown-menu-columns">
                                         <div class="dropdown-menu-column">
-                                            <a class="dropdown-item" href="https://docs.fossbilling.org/" target="_blank" rel="noopener">{{ 'Documentation'|trans }}</a>
-                                            <a class="dropdown-item" href="https://github.com/FOSSBilling/FOSSBilling" target="_blank" rel="noopener">GitHub</a>
-                                            <a class="dropdown-item" href="https://github.com/FOSSBilling/FOSSBilling/issues" target="_blank" rel="noopener">{{ 'Report a Bug'|trans }}</a>
-                                            <a class="dropdown-item" href="https://fossbilling.org/discord" target="_blank" rel="noopener">{{ 'Discord'|trans }}</a>
+                                            {# ClientFence core patch: Help opens the ClientFence documentation site. #}
+                                            <a class="dropdown-item" href="https://clientfence.com/docs/" target="_blank" rel="noopener">{{ 'Documentation'|trans }}</a>
+                                            <a class="dropdown-item" href="https://github.com/cPFence/clientfence" target="_blank" rel="noopener">GitHub</a>
+                                            <a class="dropdown-item" href="https://github.com/cPFence/clientfence/issues" target="_blank" rel="noopener">{{ 'Report a Bug'|trans }}</a>
                                         </div>
                                     </div>
                                 </div>

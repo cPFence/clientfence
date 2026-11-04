@@ -32,7 +32,7 @@ test('fetchNavigation returns array', function (): void {
     /** @var Mockery\Expectation $expectation */
     $expectation = $urlMock->shouldReceive('adminLink');
     $expectation->atLeast()->once();
-    $expectation->andReturn('https://fossbilling.org/index.php?_url=/' . $link);
+    $expectation->andReturn('https://clientfence.com/index.php?_url=/' . $link);
     $di['url'] = $urlMock;
 
     $controller->setDi($di);

@@ -40,7 +40,6 @@ jobs:
         with:
           build-args: |
             PHP_VERSION=${{ matrix.php }}
-            INSTALL_TRANSLATIONS=false
           cache-from: type=gha,scope=clientfence-test-${{ matrix.php }}
           cache-to: type=gha,scope=clientfence-test-${{ matrix.php }},mode=max
           context: .

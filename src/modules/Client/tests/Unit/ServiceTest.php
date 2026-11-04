@@ -106,7 +106,7 @@ test('generateEmailConfirmationLink returns string', function (): void {
     $toolsMock = Mockery::mock(ClientFence\Tools::class);
     $toolsMock->shouldReceive('url')
         ->atLeast()->once()
-        ->andReturn('fossbilling.org/index.php/client/confirm-email/');
+        ->andReturn('clientfence.com/index.php/client/confirm-email/');
     $toolsMock->shouldReceive('generatePassword')
         ->atLeast()->once()
         ->andReturn('randomhash123456789012345678901234567890');
@@ -1043,7 +1043,7 @@ test('authorizeClient with confirmed email returns Client', function (): void {
 test('canChangeEmail returns true', function (): void {
     $service = new ClientFence\Mod\Client\Service();
     $clientModel = createEntity(ClientFence\Mod\Client\Entity\Client::class);
-    $email = 'client@fossbilling.org';
+    $email = 'client@clientfence.com';
 
     $config = [
         'disable_change_email' => false,
@@ -1059,7 +1059,7 @@ test('canChangeEmail returns true', function (): void {
 
 test('canChangeEmail returns true when emails are the same', function (): void {
     $service = new ClientFence\Mod\Client\Service();
-    $email = 'client@fossbilling.org';
+    $email = 'client@clientfence.com';
     $clientModel = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['email' => $email]);
 
     $config = [
@@ -1077,7 +1077,7 @@ test('canChangeEmail returns true when emails are the same', function (): void {
 test('canChangeEmail returns true with empty config', function (): void {
     $service = new ClientFence\Mod\Client\Service();
     $clientModel = createEntity(ClientFence\Mod\Client\Entity\Client::class);
-    $email = 'client@fossbilling.org';
+    $email = 'client@clientfence.com';
 
     $config = [];
 
@@ -1092,7 +1092,7 @@ test('canChangeEmail returns true with empty config', function (): void {
 test('canChangeEmail throws exception when email change is disabled', function (): void {
     $service = new ClientFence\Mod\Client\Service();
     $clientModel = createEntity(ClientFence\Mod\Client\Entity\Client::class);
-    $email = 'client@fossbilling.org';
+    $email = 'client@clientfence.com';
 
     $config = [
         'disable_change_email' => true,

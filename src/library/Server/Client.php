@@ -16,7 +16,8 @@ class Server_Client
     private ?string $last_name = 'Client';
     private ?string $full_name = 'ClientFence Client';
     private ?string $company = 'ClientFence';
-    private ?string $www = 'www.fossbilling.org';
+    // ClientFence core patch: the default client website uses the project domain.
+    private ?string $www = 'clientfence.com';
     private ?string $address_1 = null;
     private ?string $address_2 = null;
     private ?string $street = null;

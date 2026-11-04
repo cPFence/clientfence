@@ -13,14 +13,10 @@ namespace ClientFence;
 
 use Pimple\Container;
 use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class CentralAlerts implements InjectionAwareInterface
 {
     protected ?Container $di = null;
-
-    private string $apiUrl = 'https://api.fossbilling.net/central-alerts/v1/';
 
     public function setDi(Container $di): void
     {
@@ -104,30 +100,5 @@ class CentralAlerts implements InjectionAwareInterface
     {
         // ClientFence: FOSSBilling's alert service is not contacted.
         return ['alerts' => []];
-
-        $url = $this->apiUrl . $endpoint;
-
-        try {
-            $httpClient = $this->di['http_client'];
-            $response = $httpClient->request('GET', $url, [
-                'timeout' => 5,
-                'query' => [...$params, 'fossbilling_version' => Version::VERSION],
-            ]);
-            $json = $response->toArray();
-        } catch (TransportExceptionInterface|HttpExceptionInterface $e) {
-            error_log($e->getMessage());
-
-            throw new Exception('Unable to fetch alerts from Central Alerts System. See the error log for more information.', null);
-        }
-
-        if (isset($json['error']) && is_array($json['error'])) {
-            throw new Exception($json['error']['message'], null);
-        }
-
-        if (!isset($json['result']) || !is_array($json['result'])) {
-            throw new Exception('Invalid response from the FOSSBilling Central Alerts System.', null);
-        }
-
-        return $json['result'];
     }
 }

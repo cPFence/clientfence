@@ -217,24 +217,24 @@ function _createApiRole (role) {
 
 /**
  * ClientFence API wrapper for JavaScript.
- * @documentation https://docs.fossbilling.org/extensions-and-development/javascript/
+ * @documentation https://clientfence.com/docs/
  */
 const API = {
   /**
    * Wrapper for the admin API.
-   * @documentation https://docs.fossbilling.org/extensions-and-development/javascript/
+   * @documentation https://clientfence.com/docs/
    */
   admin: _createApiRole('admin'),
 
   /**
    * Wrapper for the client API.
-   * @documentation https://docs.fossbilling.org/extensions-and-development/javascript/
+   * @documentation https://clientfence.com/docs/
    */
   client: _createApiRole('client'),
 
   /**
    * Wrapper for the guest API.
-   * @documentation https://docs.fossbilling.org/extensions-and-development/javascript/
+   * @documentation https://clientfence.com/docs/
    */
   guest: _createApiRole('guest'),
 
@@ -249,7 +249,7 @@ const API = {
    * @param {boolean} [enableLoader=true] Enable or disable the usage of the page loader (css/loader.css).
    * @param {number} [timeoutMs=30000] Timeout duration in milliseconds.
    * @param {string|null} [timeoutMessage=null] Message to show when the request times out.
-   * @documentation https://docs.fossbilling.org/extensions-and-development/javascript/
+   * @documentation https://clientfence.com/docs/
    */
   makeRequest: function (method, url, params, successHandler, errorHandler, enableLoader = true, timeoutMs = 30000, timeoutMessage = null) {
     let loader = enableLoader ? this._createLoader() : null;

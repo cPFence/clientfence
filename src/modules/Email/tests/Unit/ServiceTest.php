@@ -707,7 +707,7 @@ dataset('sendTemplateExistsStaffProvider', fn (): array => [
         ],
         'never',
         'atLeastOnce',
-        'staff@fossbilling.org',
+        'staff@clientfence.com',
     ],
     [
         [
@@ -722,7 +722,7 @@ dataset('sendTemplateExistsStaffProvider', fn (): array => [
         'never',
         // A generic `to` must never redirect a client-bound template: the
         // recipient stays the client's registered email.
-        'staff@fossbilling.org',
+        'staff@clientfence.com',
     ],
     [
         [
@@ -734,7 +734,7 @@ dataset('sendTemplateExistsStaffProvider', fn (): array => [
         ],
         'atLeastOnce',
         'never',
-        'staff@fossbilling.org',
+        'staff@clientfence.com',
     ],
 ]);
 
@@ -781,7 +781,7 @@ test('sendTemplate handles to_staff and to_client options', function (array $dat
             ->andReturn([
                 0 => [
                     'id' => 1,
-                    'email' => 'staff@fossbilling.org',
+                    'email' => 'staff@clientfence.com',
                     'name' => 'George',
                     'signature' => '',
                     'timezone' => null,
@@ -805,7 +805,7 @@ test('sendTemplate handles to_staff and to_client options', function (array $dat
             ->andReturn($clientModel);
         $clientApiArray = [
             'id' => 1,
-            'email' => 'staff@fossbilling.org',
+            'email' => 'staff@clientfence.com',
             'first_name' => 'John',
             'last_name' => 'Smith',
         ];
@@ -1036,7 +1036,7 @@ test('sendTemplate sends to a specific admin via to_admin using the Admin entity
 
     $admin = createEntity(ClientFence\Mod\Staff\Entity\Admin::class, [
         'id' => 7,
-        'email' => 'admin@fossbilling.org',
+        'email' => 'admin@clientfence.com',
         'name' => 'Root Admin',
         'signature' => '— Root',
         'timezone' => 'UTC',
@@ -1108,7 +1108,7 @@ test('sendTemplate sends to a specific admin via to_admin using the Admin entity
 
     expect($result)->toBeTrue();
     expect($persistedQueue)->not->toBeNull();
-    expect($persistedQueue->getRecipient())->toBe('admin@fossbilling.org');
+    expect($persistedQueue->getRecipient())->toBe('admin@clientfence.com');
     expect($persistedQueue->getClientId())->toBeNull();
     expect($persistedQueue->getAdminId())->toBe(7);
 });

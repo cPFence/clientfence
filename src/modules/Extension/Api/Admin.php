@@ -38,8 +38,8 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Get list of extensions from extensions.fossbilling.org
-     * which can be installed on current version of FOSSBilling.
+     * ClientFence core patch: the external extension directory is disabled.
+     * Returns an empty catalogue for API compatibility.
      *
      * @return array - list of extensions
      */

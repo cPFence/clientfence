@@ -26,12 +26,12 @@ test('check returns license details array', function (): void {
     $api = apiEndpoint(new Guest());
     $data = [
         'license' => 'license1234',
-        'host' => 'fossbilling.org',
+        'host' => 'clientfence.com',
         'version' => 1,
     ];
 
     $licenseResult = [
-        'licensed_to' => 'fossbilling.org',
+        'licensed_to' => 'clientfence.com',
         'created_at' => '2011-12-31',
         'expires_at' => '2020-01+01',
         'valid' => true,

@@ -104,9 +104,6 @@ ARG CLIENTFENCE_BASE_VERSION=0.8.8
 ARG CLIENTFENCE_BASE_VERSION_TRUNCATE=0
 ARG SENTRY_DSN=
 # Translations are in the repository (src/locale: FOSSBilling 0.8.8 catalogues with the ClientFence texts merged by tools/locales.py).
-ARG INSTALL_TRANSLATIONS=false
-ARG TRANSLATIONS_URL=https://github.com/FOSSBilling/locale/releases/latest/download/translations.zip
-ARG TRANSLATIONS_SHA256=
 
 COPY --from=composer:2@sha256:5946476338742b200bb9ff88f8be56275ddae4b3949c72305cb0dbf10cfcb760 /usr/bin/composer /usr/bin/composer
 COPY composer.json ./composer.json
@@ -128,14 +125,6 @@ RUN set -eux; \
   php ./tools/build-pack-manifest.php ./src; \
   rm -rf ./tools; \
   mkdir -p ./src/locale; \
-  if [ "${INSTALL_TRANSLATIONS}" = "true" ]; then \
-    curl -fsSL "${TRANSLATIONS_URL}" -o /tmp/translations.zip; \
-    if [ -n "${TRANSLATIONS_SHA256}" ]; then \
-      echo "${TRANSLATIONS_SHA256}  /tmp/translations.zip" | sha256sum -c -; \
-    fi; \
-    unzip -oq /tmp/translations.zip -d ./src/locale; \
-    rm /tmp/translations.zip; \
-  fi; \
   CLIENTFENCE_BASE_VERSION="${CLIENTFENCE_BASE_VERSION}" \
   CLIENTFENCE_BASE_VERSION_TRUNCATE="${CLIENTFENCE_BASE_VERSION_TRUNCATE}" \
   SENTRY_DSN="${SENTRY_DSN}" \

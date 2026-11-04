@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace ClientFence;
 
-use Symfony\Contracts\Cache\ItemInterface;
-
 class ExtensionManager implements InjectionAwareInterface
 {
     protected ?\Pimple\Container $di = null;
@@ -24,8 +22,6 @@ class ExtensionManager implements InjectionAwareInterface
     final public const string TYPE_DR = 'domain-registrar';
     final public const string TYPE_HOOK = 'hook';
     final public const string TYPE_TRANSLATION = 'translation';
-
-    private string $apiUrl = 'https://api.fossbilling.net/extensions/v1/';
 
     public function setDi(\Pimple\Container $di): void
     {
@@ -43,8 +39,6 @@ class ExtensionManager implements InjectionAwareInterface
      * @param string $id The extension identifier (e.g. Example)
      *
      * @return array The extension details
-     *
-     * @example https://api.fossbilling.net/extensions/v1/Example An example of the API response
      *
      * @throws Exception
      */
@@ -66,8 +60,6 @@ class ExtensionManager implements InjectionAwareInterface
      *
      * @return array The list of releases of the extension
      *
-     * @example https://api.fossbilling.net/extensions/v1/Example An example of the API response (the "releases" array)
-     *
      * @throws Exception
      */
     public function getExtensionReleases(string $id): array
@@ -87,8 +79,6 @@ class ExtensionManager implements InjectionAwareInterface
      * @param string $id The extension identifier (e.g. Example)
      *
      * @return array The latest release of the extension
-     *
-     * @example https://api.fossbilling.net/extensions/v1/Example An example of the API response (the first element in the "releases" array)
      *
      * @throws Exception
      */
@@ -111,7 +101,6 @@ class ExtensionManager implements InjectionAwareInterface
      *
      * @return array The list of extensions
      *
-     * @example https://api.fossbilling.net/extensions/v1/list An example of the API response
      */
     public function getExtensionList(?string $type = null): array
     {
@@ -163,30 +152,5 @@ class ExtensionManager implements InjectionAwareInterface
         }
 
         throw new InformationException('The FOSSBilling extension directory is not used by ClientFence.', null, 746);
-
-        $url = $this->apiUrl . $endpoint;
-        $key = 'extension-manager-' . hash('xxh3', $endpoint . serialize($params));
-
-        return $this->di['cache']->get($key, function (ItemInterface $item) use ($url, $params) {
-            $item->expiresAfter(60 * 60);
-
-            $httpClient = $this->di['http_client'];
-            $response = $httpClient->request('GET', $url, [
-                'timeout' => 5,
-                'query' => [...$params, 'fossbilling_version' => Version::VERSION],
-            ]);
-
-            $json = $response->toArray();
-
-            if (isset($json['error']) && is_array($json['error'])) {
-                throw new Exception($json['error']['message'], null, 746);
-            }
-
-            if (!isset($json['result']) || !is_array($json['result'])) {
-                throw new Exception('Invalid response from the FOSSBilling extension directory.', null, 746);
-            }
-
-            return $json['result'];
-        });
     }
 }

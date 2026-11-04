@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * FOSSBilling configuration file example.
+ * ClientFence configuration file example.
  *
  * If you are not using the web installer, you can rename this file
  * to "config.php" and fill in the values.
@@ -11,12 +11,12 @@ declare(strict_types=1);
  * Open browser https://www.yourdomain.com/admin to create a new admin account.
  * Remove /install directory
  *
- * For more information, see the documentation: https://docs.fossbilling.org/customizing-fossbilling/config/
+ * ClientFence core patch: configuration documentation is at https://clientfence.com/docs/.
  */
 
 return [
     /*
-     * These configuration options allow you to configure the security options inside of FOSSBilling.
+     * These configuration options allow you to configure the security options inside of ClientFence.
      * The default values are what we recommended running unless they are causing issues.
      */
     'security' => [

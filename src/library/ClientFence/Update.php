@@ -15,7 +15,6 @@ use PhpZip\ZipFile;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class Update implements InjectionAwareInterface
 {
@@ -77,6 +76,7 @@ class Update implements InjectionAwareInterface
      */
     public function getLatestReleaseNotes(): string
     {
+        // ClientFence core patch: release notes come only from the ClientFence feed.
         $updateBranch = $this->getUpdateBranch();
 
         return $this->getLatestVersionInfo($updateBranch)['release_notes'];
@@ -91,28 +91,6 @@ class Update implements InjectionAwareInterface
     {
         // ClientFence: the newer release the last daily check found (no network call), else this one.
         return (string) (\ClientFence\Mod\Clientfence\Updates::available($this->di)['version'] ?? Version::CLIENTFENCE);
-    }
-
-    /**
-     * Builds a complete changelog for all updates between the the newest FOSSBilling version and an ending version number.
-     *
-     * @param string $end (optional) What version number to end on. Defaults to the current version.
-     */
-    private function buildCompleteChangelog(string $end = Version::VERSION): string
-    {
-        if (Version::isPreviewVersion($end)) {
-            return 'Changelogs are not available when updating from a preview release';
-        }
-
-        return $this->di['cache']->get("changelog_from_$end", function (ItemInterface $item) use ($end) {
-            $item->expiresAfter(3600);
-
-            $httpClient = $this->di['http_client'];
-            $response = $httpClient->request('GET', "https://api.fossbilling.net/versions/v1/build_changelog/{$end}");
-            $result = $response->toArray();
-
-            return $result['result'];
-        });
     }
 
     /**

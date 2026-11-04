@@ -20,7 +20,7 @@ test('gets admin profile', function (): void {
 
     $model = createEntity(ClientFence\Mod\Staff\Entity\Admin::class, [
         'id' => 1,
-        'email' => 'admin@fossbilling.org',
+        'email' => 'admin@clientfence.com',
         'name' => 'Admin',
         'signature' => 'Sincerely',
         'status' => 'active',
