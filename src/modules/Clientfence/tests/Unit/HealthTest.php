@@ -118,6 +118,71 @@ test('a recent health run from another version is refreshed', function (): void 
         ->and(array_column($saved['checks'], 'params', 'id')['fb_update'])->toBe([':version' => ClientFence\Version::CLIENTFENCE]);
 });
 
+test('a registrar failure emails only after two consecutive failed runs', function (): void {
+    $saved = null;
+    $emails = [];
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('fetchOne')->with('SELECT value FROM mod_clientfence_state WHERE name = ?', [Health::STATE])->andReturnUsing(function () use (&$saved): string {
+        return json_encode($saved);
+    });
+    $connection->shouldReceive('executeStatement')->andReturnUsing(function (string $sql, array $params) use (&$saved): int {
+        $saved = json_decode($params[1], true);
+
+        return 1;
+    });
+    $connection->shouldReceive('fetchAssociative')->andReturn(['waiting' => 0, 'failed' => 0, 'oldest' => null]);
+    $connection->shouldReceive('fetchAllAssociative')->andReturnUsing(static fn (string $sql): array => str_contains($sql, 'tld_registrar') ? [['id' => 1, 'name' => 'Main']] : []);
+    $connection->shouldReceive('fetchFirstColumn')->andReturn([1]);
+    $schema = Mockery::mock(Doctrine\DBAL\Schema\AbstractSchemaManager::class);
+    $schema->shouldReceive('listTableNames')->andReturn(array_keys(ClientFence\Mod\Clientfence\Service::tables()));
+    $connection->shouldReceive('createSchemaManager')->andReturn($schema);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($connection);
+    // A real method: Health checks method_exists(), which a plain mock does not pass.
+    $adapter = new class () {
+        public array $answers = [true, false, false, false];
+
+        public function testConnection(): bool
+        {
+            return array_shift($this->answers);
+        }
+    };
+    $service = Mockery::mock();
+    $service->shouldReceive('getAllChecks', 'getMessages', 'getConfig')->andReturn([]);
+    $service->shouldReceive('getParamValue')->andReturn(date('Y-m-d H:i:s'));
+    $service->shouldReceive('registrarGetRegistrarAdapter')->andReturn($adapter);
+    $service->shouldReceive('isSuperAdministrator')->andReturnTrue();
+    $service->shouldReceive('sendTemplate')->andReturnUsing(function (array $data) use (&$emails): bool {
+        $emails[] = $data;
+
+        return true;
+    });
+    $di = new Pimple\Container();
+    $di['em'] = $em;
+    $di['db'] = Mockery::mock();
+    $di['db']->shouldReceive('load')->andReturn(new stdClass());
+    $di['logger'] = Mockery::mock()->shouldIgnoreMissing();
+    $di['mod_service'] = $di->protect(fn () => $service);
+
+    // Establish the other checks' states before the registrar connection fails.
+    Health::run($di);
+    expect($emails)->toHaveCount(1)
+        ->and(array_column($emails[0]['checks'], 'title'))->toContain(__trans('Email delivery'));
+    $emails = [];
+
+    Health::run($di);
+    expect($emails)->toBe([])
+        ->and(array_column($saved['checks'], 'fails', 'id')['svc_registrar_1'])->toBe(1);
+
+    Health::run($di);
+    expect($emails)->toHaveCount(1)
+        ->and($emails[0]['count'])->toBe(1)
+        ->and(array_column($saved['checks'], 'fails', 'id')['svc_registrar_1'])->toBe(2);
+
+    Health::run($di);
+    expect($emails)->toHaveCount(1);
+});
+
 test('a saved check is read with its values filled in', function (): void {
     $report = Health::summarize(['checks' => [
         ['group' => 'services', 'id' => 'svc_cron', 'title' => 'Scheduled tasks (cron)', 'state' => 'ok', 'detail' => 'Last run :ago ago.', 'params' => [':ago' => 300]],

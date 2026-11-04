@@ -13,6 +13,7 @@ declare(strict_types=1);
  * mod_clientfence_state, so the dashboard never waits for them; "Run checks now" on the page runs
  * them at once. When a check first needs attention, the Super Administrators get one email
  * (template mod_clientfence_health_alert); nothing more until it passes and breaks again.
+ * Registrar and hosting server checks email after two failed runs in a row.
  *
  * Pack integrity compares the install with modules/Clientfence/pack-manifest.json, which
  * the release build writes (tools/build-pack-manifest.php): the hash of every pack file, the core patches and the
@@ -64,10 +65,13 @@ final class Health
     public static function run(\Pimple\Container $di): array
     {
         $previous = self::latest($di);
+        $previousChecks = array_column($previous['checks'] ?? [], null, 'id');
         $checks = [];
         foreach (self::checkers() as $checker) {
             try {
                 foreach ($checker($di) as $check) {
+                    $prev = $previousChecks[$check['id']] ?? [];
+                    $check['fails'] = $check['state'] === 'bad' ? ($prev['fails'] ?? (($prev['state'] ?? '') === 'bad' ? 2 : 0)) + 1 : 0;
                     $checks[] = $check;
                 }
             } catch (\Throwable $e) {
@@ -77,13 +81,7 @@ final class Health
         }
         $report = self::summarize(['ran_at' => date('Y-m-d H:i:s'), 'checks' => $checks]);
 
-        $wasBad = [];
-        foreach ($previous['checks'] ?? [] as $check) {
-            if (($check['state'] ?? '') === 'bad') {
-                $wasBad[$check['id']] = true;
-            }
-        }
-        $newlyBad = array_values(array_filter($checks, static fn (array $c): bool => $c['state'] === 'bad' && !isset($wasBad[$c['id']])));
+        $newlyBad = array_values(array_filter($checks, static fn (array $c): bool => $c['fails'] === (str_starts_with($c['id'], 'svc_registrar_') || str_starts_with($c['id'], 'svc_server_') ? 2 : 1)));
         if ($newlyBad !== []) {
             try {
                 self::notify($di, $newlyBad);
