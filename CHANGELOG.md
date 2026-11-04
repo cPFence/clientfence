@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.30 (2026-11-04)
+
+### Added
+
+- Clients can add server access or other secrets to a ticket: encrypted, opened only by staff with the new "Open ticket secrets" permission (each opening is shown to the client), and deleted when the ticket closes. Turn it on under Settings > Support.
+
+### Changed
+
+- The staff IP address rule moved to Sign-in security and refuses a list that would lock you out.
+- The sign-in country list starts with your current country.
+- The client page tab "Payments" is now "Credit Balance".
+- Admin help and documentation links point to ClientFence.
+
+### Fixed
+
+- Emails from staff actions (Mark as Paid, ticket replies, renewals, order activation) are sent at once instead of waiting for the cron.
+- System Health sends a registrar or server alert only after two failed runs in a row.
+
 ## 1.0.29 (2026-11-03)
 
 ### Added
