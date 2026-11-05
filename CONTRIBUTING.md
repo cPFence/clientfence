@@ -5,6 +5,8 @@ Thanks for helping. By taking part you agree to follow the
 
 ## Issues
 
+- **Questions:** ask setup, usage and troubleshooting questions on the
+  [ClientFence forum](https://community.cpfence.app/t/clientfence).
 - **Bugs:** open a [GitHub issue](https://github.com/cPFence/clientfence/issues) with the
   ClientFence version, what you did, what you expected and what happened instead.
   Leave out passwords, keys and customer data.
