@@ -164,7 +164,7 @@ test('generates PDF', function (): void {
     $api->pdf($data);
 });
 
-// Track 5 F2: the client area opens the signed-in client's own invoices through the guest routes; only other links are limited.
+// The client area opens the signed-in client's own invoices through the guest routes; only other links are limited.
 test('invoice links are rate limited except for the signed-in owner', function (int $ownerId, int $limited): void {
     $api = apiEndpoint(new Guest());
     $serviceMock = Mockery::mock(Service::class);

@@ -11,18 +11,29 @@ The open-source billing platform built for hosting providers.
 ClientFence is a billing and client management system for hosting businesses: invoices,
 payments, orders, domains, hosting accounts and support tickets in one client area.
 
+- **Download:** the latest release from [GitHub Releases](https://github.com/cPFence/clientfence/releases/latest)
+  (the zip and its SHA-256).
+- **Documentation:** [clientfence.com/docs](https://clientfence.com/docs/), from installing to
+  [moving from WHMCS](https://clientfence.com/docs/getting-started/import-from-whmcs/).
+- **Demo:** [demo.clientfence.com](https://demo.clientfence.com/) (changes are not saved).
+
 ## Features
 
 - **Client area** with the Palisade theme, and an admin area with a sidebar menu, Ctrl+K
   search and a dashboard. Both come in light and dark, left to right and right to left
-  (Arabic included).
+  (Arabic, Hebrew and Persian), in 30 languages.
 - **Accounts:** authorized users with their own permissions, two-factor sign-in and
-  Google sign-in.
-- **Billing:** invoices, payment receipts, order form answers and a manual payment
-  gateway that can also show the total in Egyptian pounds.
+  Google sign-in; staff groups with detailed permissions and sign-in security rules.
+- **Billing:** invoices with part payments, credit and part refunds, an optional "prices
+  include tax" mode, payment receipts, order form answers, cancellation requests, Stripe,
+  PayPal and a manual payment gateway.
 - **Hosting and domains:** an Enhance server manager with client pages for each hosting
-  account, and a Dynadot registrar.
-- **Support:** tickets with file attachments.
+  account (including Enhance backups), a daily status check, Change Product, and a Dynadot
+  registrar.
+- **Support:** tickets with file attachments, and ticket secrets: server logins a client adds
+  to a ticket, stored encrypted and opened only by staff with that permission.
+- **Moving from WHMCS:** an import of clients, products, services, invoices and tickets
+  from a WHMCS database.
 - **Security and health:** security hardening and a system health page, built in.
 - **Updates:** a daily check of the ClientFence release list on clientfence.com (it sends
   nothing about your site, and System → Update turns it off), a dashboard notice and a staff

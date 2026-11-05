@@ -3267,7 +3267,7 @@ test('deletes invoice by admin', function (): void {
     expect($result)->toBeTrue();
 });
 
-// Track 6 F1: a deleted client's subscription broke the Subscriptions list for all staff.
+// A deleted client's subscription broke the Subscriptions list for all staff.
 test('removing a client also removes the client\'s invoices and subscriptions', function (): void {
     $client = new Model_Client();
     $client->loadBean(new Tests\Helpers\DummyBean());

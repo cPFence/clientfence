@@ -2,7 +2,7 @@
 # Builds the Dockerfile `test` target on each supported PHP version (8.3 to 8.5) and runs Pest
 # on each; PHPStan runs once (phpstan.neon checks the code against the whole 8.3-8.5 range). The
 # build cache stays in GitHub Actions' cache, so no images are pushed to a registry.
-# Not on pushes (owner, 2026-10-19): a run costs about 27 Actions minutes and the same tests run
+# Not on pushes: a run takes about 27 Actions minutes and the same tests run
 # locally before every commit and release. Start it by hand (Run workflow) or from a pull request.
 name: ClientFence tests
 
@@ -59,7 +59,7 @@ jobs:
             ./src/vendor/bin/pest --test-directory ../tests --configuration phpunit.xml.dist --ci
 
   install:
-    # Release plan R4: the release build installed with its own installer on a clean MariaDB,
+    # The release build installed with its own installer on a clean MariaDB,
     # then staff sign-in, a product, a client order paid with the manual gateway and a ticket
     # (tools/install-test.sh). "upgrade" installs the release on the clientfence.com feed first
     # and updates it to this build, as System → Update does.

@@ -46,7 +46,7 @@ test('create refuses an existing panel login for an email the client has not pro
         ->and(array_filter($requests, fn (string $r): bool => !str_starts_with($r, 'GET ')))->toBe([]);
 });
 
-// A failed create cannot remove the login it made: it reports that login, not one it found (Track 4 F1).
+// A failed create cannot remove the login it made: it reports that login, not one it found.
 test('create reports the login it made, also when a later step fails', function (bool $exists): void {
     $requests = [];
     $panel = enhancePanelFake([

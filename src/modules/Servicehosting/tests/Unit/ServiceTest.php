@@ -325,7 +325,7 @@ test('action activate stores the created panel subscription id', function (): vo
         ->and($model->panel_org_id)->toBe('B');
 });
 
-// Track 4 F1: a failed Enhance create leaves the login it made; the order records it so a retry trusts that login.
+// A failed Enhance create leaves the login it made; the order records it so a retry trusts that login.
 test('action activate records the panel login a failed create made', function (?string $created): void {
     $orderModel = new Model_ClientOrder();
     $orderModel->loadBean(new Tests\Helpers\DummyBean());

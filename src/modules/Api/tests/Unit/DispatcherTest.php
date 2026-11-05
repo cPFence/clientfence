@@ -167,7 +167,7 @@ test('skips admin module permission check for allowed update finalization calls'
         ->toBe(['required' => true]);
 });
 
-// Track 6 F2: a module's "Manage settings" staff (no Extensions access) reach its settings; config_get checks that permission.
+// A module's "Manage settings" staff (no Extensions access) reach its settings; config_get checks that permission.
 test('extension settings calls pass the module gate; other extension calls do not', function (string $method, bool $gated): void {
     $admin = new Model_Admin();
     $admin->loadBean(new Tests\Helpers\DummyBean());
