@@ -20544,3 +20544,125 @@ msgstr "A biztonsági kódját felhasználták: készítsen újat."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr "A helyes jelszó után egy 6 számjegyű PIN-kód érkezik a belépési azonosító e-mail-címére, és a bejelentkezéshez szükség van rá. Egyszer használható, 10 percig érvényes. Azokat az ügyfeleket, akik hitelesítő alkalmazással vagy Google-lal jelentkeznek be, nem kérdezzük. Azok a munkatársak, akik a Profil oldalukon hitelesítő alkalmazást állítottak be, helyette annak kódját is megadhatják. A „Megbízok ebben a böngészőben 30 napig” beállítás ismert böngészőn kihagyja a PIN-kódot a jelszó megváltoztatásáig."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr "0 az esedékesség napján terheli a kártyát."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
+msgstr "Az elutasított kártyát 7 és 14 nap múlva újra megpróbálja. Az ügyfél minden sikertelen terhelés után e-mailt kap."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr "Kártya hozzáadása"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
+msgstr "WHMCS-ből való költözés után, ugyanazzal a Stripe-fiókkal: minden mentett kártya nélküli ügyfélnél átveszi az ügyfél e-mail-címével rendelkező Stripe-ügyfél alapértelmezett (vagy legújabb) kártyáját."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr "A kártya nem található."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr "Terhelés ennyi nappal az esedékesség előtt"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr "Mentett kártya terhelése"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr "Terheli a mentett kártyát (:card)?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
+msgstr ":checked ügyfél ellenőrizve, :found mentett kártya található."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgstr "Az ügyfelek fizetéskor a Stripe-pal vagy a Fizetési módok oldalon menthetnek kártyát. A kártyát automatikusan terheli a rendszer azokért a kifizetetlen számlákért, amelyeknek nincs fizetési módjuk, vagy Stripe-ot használnak."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr "Az esedékesség előtti napok száma 0 és 30 közötti egész szám legyen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr "Mentett kártyák keresése"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
+msgstr "Mentett kártyák keresése a Stripe-ban"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
+msgstr "Automatikusan fizeti a számlákat"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr "Eltávolítja ezt a kártyát?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr "Kártya mentése"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr "Mentett kártyák"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
+msgstr "A mentett kártyák nem érhetők el."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr "A kártyánál az ügyfélnek meg kell erősítenie a fizetést."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr "A kártya terhelése megtörtént."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr "A kártyát elutasították: :reason"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
+msgstr "A kártya mentése nem sikerült. Kérjük, próbálja újra."
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
+msgstr "Az ügyfélnek nincs mentett kártyája."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
+msgstr "A fizetési szolgáltatás nem válaszolt. Kérjük, próbálja újra később."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
+msgstr "Újrapróbálás sikertelen terhelés után"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
+msgstr "Használat számlákhoz"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr "Nincs mentett kártyája."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
+msgstr "Az alapértelmezett kártya automatikusan kifizeti a számláit, amikor esedékesek. Kártyát számla fizetésekor is menthet."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr "Kártyabeállítások mentése"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
+msgstr "Ez a számla már ki van fizetve vagy törölve van."

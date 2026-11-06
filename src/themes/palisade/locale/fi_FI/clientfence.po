@@ -20995,3 +20995,125 @@ msgstr "Varmuuskoodisi on käytetty: luo uusi."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr "Oikean salasanan jälkeen kirjautumistunnuksen sähköpostiin lähetetään 6-numeroinen PIN-koodi, jota sisäänkirjautuminen vaatii. Se toimii kerran, 10 minuuttia. Asiakkailta, jotka kirjautuvat todennussovelluksella tai Googlella, sitä ei kysytä. Henkilökunta, joka on ottanut todennussovelluksen käyttöön Profiili-sivullaan, voi syöttää sen koodin sen sijaan. Valinta ”Luota tähän selaimeen 30 päivää” ohittaa PIN-koodin tutussa selaimessa, kunnes salasana vaihtuu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr "0 veloittaa kortin eräpäivänä."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
+msgstr "Hylättyä korttia yritetään uudelleen 7 ja 14 päivää myöhemmin. Asiakas saa sähköpostin jokaisesta epäonnistuneesta veloituksesta."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr "Lisää kortti"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
+msgstr "Siirryttäessä WHMCS:stä samalle Stripe-tilille: jokaiselle asiakkaalle, jolla ei ole tallennettua korttia, haetaan asiakkaan sähköpostiosoitetta vastaavan Stripe-asiakkaan oletuskortti (tai uusin kortti)."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr "Korttia ei löytynyt."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr "Veloituksen ajankohta päiviä ennen eräpäivää"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr "Veloita tallennettu kortti"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr "Veloitetaanko tallennettu kortti :card?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
+msgstr "Tarkistettu :checked asiakasta, löytyi :found tallennettua korttia."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgstr "Asiakkaat voivat tallentaa kortin Stripen avulla maksaessaan tai Maksutavat-sivullaan. Kortti veloitetaan automaattisesti maksamattomista laskuista, joilla ei ole maksutapaa tai joiden maksutapa on Stripe."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr "Eräpäivää edeltävien päivien on oltava kokonaisluku väliltä 0–30."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr "Etsi tallennetut kortit"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
+msgstr "Etsi tallennetut kortit Stripestä"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
+msgstr "Maksaa laskut automaattisesti"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr "Poistetaanko tämä kortti?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr "Tallenna kortti"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr "Tallennetut kortit"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
+msgstr "Tallennetut kortit eivät ole käytettävissä."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr "Kortti vaatii, että asiakas vahvistaa maksun."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr "Kortti veloitettiin."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr "Kortti hylättiin: :reason"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
+msgstr "Korttia ei tallennettu. Yritä uudelleen."
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
+msgstr "Asiakkaalla ei ole tallennettua korttia."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
+msgstr "Maksupalvelu ei vastannut. Yritä myöhemmin uudelleen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
+msgstr "Yritä uudelleen epäonnistuneen veloituksen jälkeen"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
+msgstr "Käytä laskuihin"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr "Sinulla ei ole tallennettuja kortteja."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
+msgstr "Oletuskorttisi maksaa laskusi automaattisesti niiden erääntyessä. Voit tallentaa kortin myös laskua maksaessasi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr "Tallenna korttien asetukset"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
+msgstr "Tämä lasku on jo maksettu tai peruutettu."

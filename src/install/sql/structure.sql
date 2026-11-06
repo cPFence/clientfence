@@ -816,10 +816,21 @@ CREATE TABLE `pay_gateway_customer` (
   `external_customer_id` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `saved_cards` tinyint(1) NOT NULL DEFAULT 0,
+  `default_payment_method` varchar(255) DEFAULT NULL,
+  `default_card` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `pay_gateway_customer_gateway_client_mode` (`pay_gateway_id`,`client_id`,`test_mode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE TABLE `invoice_card_charge` (
+  `invoice_id` bigint(20) NOT NULL,
+  `attempts` int(11) NOT NULL DEFAULT 0,
+  `last_attempt_at` datetime DEFAULT NULL,
+  `last_error` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`invoice_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `pay_gateway_product`

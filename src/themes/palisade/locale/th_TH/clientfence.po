@@ -18370,3 +18370,125 @@ msgstr "ใช้รหัสสำรองของคุณไปแล้ว
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr "หลังจากใส่รหัสผ่านถูกต้อง ระบบจะส่งรหัส PIN 6 หลักไปยังอีเมลของบัญชี และต้องใช้รหัสนี้เพื่อเข้าสู่ระบบ ใช้ได้ครั้งเดียวภายใน 10 นาที ลูกค้าที่เข้าสู่ระบบด้วยแอปยืนยันตัวตนหรือ Google จะไม่ถูกถาม เจ้าหน้าที่ที่ตั้งค่าแอปยืนยันตัวตนในหน้า \"ข้อมูลส่วนตัว\" ของตนเอง สามารถป้อนรหัสจากแอปนั้นแทนได้ ตัวเลือก \"เชื่อถือเบราว์เซอร์นี้ 30 วัน\" จะข้ามรหัส PIN บนเบราว์เซอร์ที่รู้จักจนกว่าจะเปลี่ยนรหัสผ่าน"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr "0 คือเรียกเก็บเงินจากบัตรในวันครบกำหนด"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
+msgstr "บัตรที่ถูกปฏิเสธจะลองใหม่หลังจาก 7 และ 14 วัน ลูกค้าจะได้รับอีเมลหลังการเรียกเก็บเงินที่ล้มเหลวทุกครั้ง"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr "เพิ่มบัตร"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
+msgstr "หลังย้ายจาก WHMCS โดยใช้บัญชี Stripe เดียวกัน: สำหรับลูกค้าแต่ละรายที่ไม่มีบัตรที่บันทึกไว้ ระบบจะใช้บัตรเริ่มต้น (หรือบัตรล่าสุด) ของลูกค้า Stripe ที่มีอีเมลตรงกับลูกค้า"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr "ไม่พบบัตร"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr "จำนวนวันก่อนวันครบกำหนดที่จะเรียกเก็บเงิน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr "เรียกเก็บเงินจากบัตรที่บันทึกไว้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr "เรียกเก็บเงินจากบัตรที่บันทึกไว้ :card ใช่หรือไม่?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
+msgstr "ตรวจสอบลูกค้าแล้ว :checked ราย พบบัตรที่บันทึกไว้ :found ใบ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgstr "ลูกค้าสามารถบันทึกบัตรกับ Stripe ตอนชำระเงิน หรือในหน้าวิธีการชำระเงิน ระบบจะเรียกเก็บเงินจากบัตรโดยอัตโนมัติสำหรับใบแจ้งหนี้ที่ยังไม่ชำระซึ่งไม่มีวิธีการชำระเงินหรือใช้ Stripe"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr "จำนวนวันก่อนวันครบกำหนดต้องเป็นจำนวนเต็มตั้งแต่ 0 ถึง 30"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr "ค้นหาบัตรที่บันทึกไว้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
+msgstr "ค้นหาบัตรที่บันทึกไว้ใน Stripe"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
+msgstr "ชำระใบแจ้งหนี้อัตโนมัติ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr "ลบบัตรนี้หรือไม่?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr "บันทึกบัตร"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr "บัตรที่บันทึกไว้"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
+msgstr "ไม่สามารถใช้บัตรที่บันทึกไว้ได้"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr "บัตรนี้ต้องให้ลูกค้ายืนยันการชำระเงิน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr "เรียกเก็บเงินจากบัตรแล้ว"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr "บัตรถูกปฏิเสธ: :reason"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
+msgstr "ไม่ได้บันทึกบัตร โปรดลองอีกครั้ง"
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
+msgstr "ลูกค้าไม่มีบัตรที่บันทึกไว้"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
+msgstr "บริการชำระเงินไม่ตอบสนอง โปรดลองอีกครั้งในภายหลัง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
+msgstr "ลองใหม่หลังจากการเรียกเก็บเงินล้มเหลว"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
+msgstr "ใช้สำหรับใบแจ้งหนี้"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr "คุณไม่มีบัตรที่บันทึกไว้"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
+msgstr "บัตรเริ่มต้นของคุณจะชำระใบแจ้งหนี้โดยอัตโนมัติเมื่อถึงกำหนด คุณยังบันทึกบัตรได้ตอนชำระใบแจ้งหนี้"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr "บันทึกการตั้งค่าบัตร"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
+msgstr "ใบแจ้งหนี้นี้ชำระแล้วหรือถูกยกเลิกแล้ว"

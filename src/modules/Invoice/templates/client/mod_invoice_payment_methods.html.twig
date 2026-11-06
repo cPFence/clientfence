@@ -1,0 +1,56 @@
+{# ClientFence: the client's saved cards (/payment-methods, Invoice/SavedCards.php): the card invoices
+   are charged to automatically, other saved cards, adding a card with Stripe's card form, and
+   removing one. The card form runs in assets/src/js/cards.js. cards comes from invoice_card_list. #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'payment-methods' %}
+
+{% block meta_title %}{{ 'Payment methods'|trans }}{% endblock %}
+{% block page_header %}{{ 'Payment methods'|trans }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Payment methods'|trans }}</li>{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>{{ 'Payment methods'|trans }}</h1>
+    <p>{{ 'Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice.'|trans }}</p>
+</div>
+
+{% if not cards.available %}
+    <div class="alert alert-info" role="status">{{ 'Saved cards are not available.'|trans }}</div>
+{% else %}
+<div data-clientfence-cards data-return-url="{{ 'payment-methods'|url }}">
+    <div class="card mb-4">
+        <div class="card-header"><h2>{{ 'Saved cards'|trans }}</h2></div>
+        {% if cards.cards is empty %}
+            <div class="card-body"><p class="mb-0 text-secondary">{{ 'You have no saved cards.'|trans }}</p></div>
+        {% else %}
+            <ul class="list-group list-group-flush">
+                {% for card in cards.cards %}
+                    <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span dir="ltr">{{ card.card }}</span>
+                        <span class="d-flex flex-wrap align-items-center gap-2">
+                            {% if card.default %}
+                                <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
+                            {% else %}
+                                <button class="btn btn-sm btn-outline-primary" type="button" data-clientfence-card-call="invoice/card_default" data-id="{{ card.id }}">{{ 'Use for invoices'|trans }}</button>
+                            {% endif %}
+                            <button class="btn btn-sm btn-outline-danger" type="button" data-clientfence-card-call="invoice/card_remove" data-id="{{ card.id }}" data-confirm="{{ 'Remove this card?'|trans }}">{{ 'Remove'|trans }}</button>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2>{{ 'Add a card'|trans }}</h2></div>
+        <div class="card-body">
+            <button class="btn btn-primary" type="button" data-clientfence-card-add>{{ 'Add a card'|trans }}</button>
+            <form data-clientfence-card-form hidden>
+                <div class="mb-3" data-clientfence-card-element></div>
+                <button class="btn btn-primary" type="submit">{{ 'Save card'|trans }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

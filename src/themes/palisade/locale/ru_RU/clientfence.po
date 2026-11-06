@@ -18327,3 +18327,125 @@ msgstr "Ваш резервный код использован: создайт�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr "После верного пароля на email учётной записи отправляется 6-значный PIN-код, и для входа он обязателен. Он действует один раз в течение 10 минут. Клиентов, которые входят через приложение-аутентификатор или Google, он не запрашивает. Сотрудники, настроившие приложение-аутентификатор на своей странице «Профиль», могут вместо этого ввести его код. «Доверять этому браузеру 30 дней» пропускает PIN-код в известном браузере до смены пароля."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr "0 списывает деньги с карты в срок оплаты."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
+msgstr "Отклонённая карта списывается повторно через 7 и 14 дней. После каждого неудачного списания клиент получает письмо."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr "Добавить карту"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
+msgstr "После переноса из WHMCS с тем же аккаунтом Stripe: для каждого клиента без сохранённой карты берёт карту по умолчанию (или самую новую) клиента Stripe с адресом электронной почты этого клиента."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr "Карта не найдена."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr "За сколько дней до срока оплаты списывать"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr "Списать с сохранённой карты"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr "Списать с сохранённой карты :card?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
+msgstr "Проверено клиентов: :checked, найдено сохранённых карт: :found."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgstr "Клиенты могут сохранить карту через Stripe при оплате или на странице «Способы оплаты». Деньги с карты списываются автоматически по неоплаченным счетам, у которых нет способа оплаты или выбран Stripe."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr "Число дней до срока оплаты должно быть целым числом от 0 до 30."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr "Найти сохранённые карты"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
+msgstr "Найти сохранённые карты в Stripe"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
+msgstr "Оплачивает счета автоматически"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr "Удалить эту карту?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr "Сохранить карту"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr "Сохранённые карты"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
+msgstr "Сохранённые карты недоступны."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr "Для этой карты клиент должен подтвердить платёж."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr "С карты списаны деньги."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr "Карта отклонена: :reason"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
+msgstr "Карта не сохранена. Попробуйте ещё раз."
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
+msgstr "У клиента нет сохранённой карты."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
+msgstr "Платёжный сервис не ответил. Попробуйте позже."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
+msgstr "Повторять после неудачного списания"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
+msgstr "Использовать для счетов"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr "У вас нет сохранённых карт."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
+msgstr "Ваша карта по умолчанию автоматически оплачивает счета в срок. Вы также можете сохранить карту при оплате счёта."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr "Сохранить настройки карт"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
+msgstr "Этот счёт уже оплачен или отменён."

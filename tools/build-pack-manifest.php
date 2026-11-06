@@ -28,6 +28,10 @@ $paths = [
     'modules/Order/templates/client/mod_order_addons.html.twig',
     // Moved from the ClientFence module into its home module.
     'modules/Invoice/Receipts.php',
+    'modules/Invoice/SavedCards.php',
+    'modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig',
+    'modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig',
+    'modules/Invoice/templates/email/mod_invoice_card_failed.html.twig',
     'modules/Invoice/templates/admin/mod_invoice_settings_receipts.html.twig',
     'modules/Support/TicketFiles.php',
     'modules/Support/TicketSecrets.php',

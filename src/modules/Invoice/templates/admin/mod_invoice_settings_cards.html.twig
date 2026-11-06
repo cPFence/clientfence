@@ -1,0 +1,68 @@
+{# ClientFence: saved cards, on the Invoices settings page (Invoice/SavedCards.php). Kept in mod_invoice;
+   saved with invoice/card_settings_update. #}
+{% set cards = admin.extension_config_get({ 'ext': 'mod_invoice' }) %}
+{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
+<div class="card mt-3 clientfence-settings" id="saved-cards" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<form method="post" action="{{ 'invoice/card_settings_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
+		<div class="clientfence-settings-intro">
+			<h3>{{ 'Saved cards'|trans }}</h3>
+			<p>{{ 'Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe.'|trans }}</p>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="card_days_before">{{ 'Charge days before the due date'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ '0 charges the card on the due date.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="number" min="0" max="30" id="card_days_before" name="card_days_before" value="{{ cards.card_days_before|default(0) }}">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="card_retries">{{ 'Try again after a failed charge'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input type="hidden" name="card_retries" value="0">
+				<label class="form-check form-switch">
+					<input class="form-check-input" type="checkbox" id="card_retries" name="card_retries" value="1"{% if cards.card_retries|default('1') != '0' %} checked{% endif %}>
+				</label>
+			</div>
+		</div>
+		<div class="clientfence-settings-actions">
+			<button type="submit" class="btn btn-primary">{{ 'Save card settings'|trans }}</button>
+		</div>
+	</form>
+	<div class="clientfence-setting clientfence-setting-row" data-cf-card-find data-done-text="{{ 'Checked :checked clients, found :found saved cards.'|trans }}">
+		<div class="clientfence-setting-label">
+			<span class="form-label">{{ 'Find saved cards in Stripe'|trans }}</span>
+			<div class="clientfence-setting-hint">{{ 'After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client\'s email.'|trans }}</div>
+		</div>
+		<div class="clientfence-setting-control">
+			<button type="button" class="btn btn-outline-primary">{{ 'Find saved cards'|trans }}</button>
+			<div class="form-text" role="status" data-cf-card-find-status></div>
+		</div>
+	</div>
+</div>
+<script nonce="{{ csp_nonce }}">
+	// ClientFence: runs invoice/card_find 25 clients at a time until every client was checked.
+	document.querySelector('[data-cf-card-find] button')?.addEventListener('click', async (event) => {
+		const button = event.currentTarget;
+		const box = document.querySelector('[data-cf-card-find]');
+		const status = box.querySelector('[data-cf-card-find-status]');
+		button.disabled = true;
+		let after = 0, checked = 0, found = 0;
+		try {
+			while (after !== null) {
+				const result = await new Promise((resolve, reject) => ClientFence.api.admin.post('invoice/card_find', { after_id: after }, resolve, reject));
+				checked += result.checked;
+				found += result.found;
+				after = result.next;
+				status.textContent = box.dataset.doneText.replace(':checked', checked).replace(':found', found);
+			}
+		} catch (error) {
+			ClientFence.message(error?.message || String(error), 'error');
+		}
+		button.disabled = false;
+	});
+</script>

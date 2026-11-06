@@ -166,6 +166,10 @@ msgstr ""
 msgid "/ year"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "0 keeps every check."
 msgstr ""
@@ -734,6 +738,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
 msgstr ""
 
 #: src/modules/Product/Service.php
@@ -1376,6 +1384,10 @@ msgstr ""
 msgid "Add Server"
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Add a client group in Clients → Groups first."
 msgstr ""
@@ -1694,6 +1706,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig src/modules/Product/templates/admin/mod_product_addons.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "After Payment is Received"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -3728,6 +3744,10 @@ msgstr ""
 msgid "Card in the bottom corner"
 msgstr ""
 
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Cards and wallets. Keys are in your Stripe dashboard under Developers → API keys."
 msgstr ""
@@ -3888,6 +3908,18 @@ msgstr ""
 msgid "Charge"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Check"
 msgstr ""
@@ -3946,6 +3978,10 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Checkbox"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -4702,6 +4738,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Clients can restore backups"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -6038,6 +6078,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_ticket_files.html.twig
 msgid "Days after a file was sent. Older files are removed by the cron; the message then shows that the file was removed. 0 keeps every file."
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig
@@ -8314,6 +8358,14 @@ msgstr ""
 
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/themes/palisade/html/partials/guest_dashboard.html.twig
 msgid "Find answers to frequent questions"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -14468,7 +14520,7 @@ msgstr ""
 msgid "Payment method not found. Missing param gateway_id"
 msgstr ""
 
-#: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
+#: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Payment methods"
 msgstr ""
 
@@ -14506,6 +14558,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Payments to your PayPal account."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -16000,6 +16056,10 @@ msgstr ""
 msgid "Remove the promo code"
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
 msgid "Remove this contact?"
 msgstr ""
@@ -16716,6 +16776,14 @@ msgstr ""
 msgid "Save and test"
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
 msgid "Save contact"
 msgstr ""
@@ -16818,6 +16886,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig …
 msgid "Saved"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig …
@@ -19136,8 +19212,24 @@ msgstr ""
 msgid "The button text can be up to 40 characters."
 msgstr ""
 
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr ""
+
 #: src/modules/Clientfence/Api/Admin.php
 msgid "The card order could not be read."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr ""
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr ""
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
@@ -19186,6 +19278,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The client has :amount of credit."
+msgstr ""
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
@@ -19739,6 +19835,10 @@ msgstr ""
 
 #: src/modules/Invoice/ServiceSubscription.php
 msgid "The payment gateway does not support cancellation at the end of the billing period."
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -20367,6 +20467,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "This invoice and :method both support subscription payments. Subscribe to pay the next invoices of this service automatically, or pay this invoice once."
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
 msgstr ""
 
 #: src/modules/Invoice/Receipts.php
@@ -21195,6 +21299,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Try again"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
 msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_suggestions.html.twig
@@ -22059,6 +22167,10 @@ msgstr ""
 
 #: src/modules/Massmailer/Api/Admin.php
 msgid "Use at most 255 characters."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
@@ -23217,6 +23329,10 @@ msgstr ""
 msgid "You have no hosting accounts yet."
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr ""
+
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "You have no services yet."
 msgstr ""
@@ -23451,6 +23567,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your current period ends on %date%; %left% of its %total% days are unused. Their value is credited against the new price."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
 msgstr ""
 
 #: src/modules/Antispam/Service.php

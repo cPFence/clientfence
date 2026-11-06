@@ -571,6 +571,7 @@ class UpdatePatcher implements InjectionAwareInterface
             120 => 'patch120',
             121 => 'patch121',
             122 => 'patch122',
+            123 => 'patch123',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2656,6 +2657,25 @@ class UpdatePatcher implements InjectionAwareInterface
         // ClientFence core patch: the cents that make a tax-inclusive invoice total the shown price (Invoice\Service::applyInclusiveTax()).
         if (!$this->tableHasColumn('invoice', 'tax_adjust')) {
             $this->executeSql("ALTER TABLE `invoice` ADD COLUMN `tax_adjust` DOUBLE(18,2) NOT NULL DEFAULT '0.00' AFTER `taxrate`");
+        }
+    }
+
+    private function patch123(): void
+    {
+        // ClientFence core patch: saved cards (Invoice/SavedCards.php): the card a client's invoices are
+        // charged to, kept with their Stripe customer, and each invoice's automatic charge attempts.
+        if (!$this->tableHasColumn('pay_gateway_customer', 'default_payment_method')) {
+            // saved_cards: the Stripe customer was made for this client's cards (or linked by staff), never adopted by email.
+            $this->executeSql('ALTER TABLE `pay_gateway_customer` ADD COLUMN `saved_cards` tinyint(1) NOT NULL DEFAULT 0, ADD COLUMN `default_payment_method` varchar(255) DEFAULT NULL, ADD COLUMN `default_card` varchar(100) DEFAULT NULL');
+        }
+        if (!$this->tableExists('invoice_card_charge')) {
+            $this->executeSql('CREATE TABLE `invoice_card_charge` (
+                `invoice_id` bigint(20) NOT NULL,
+                `attempts` int(11) NOT NULL DEFAULT 0,
+                `last_attempt_at` datetime DEFAULT NULL,
+                `last_error` varchar(255) DEFAULT NULL,
+                PRIMARY KEY (`invoice_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
         }
     }
 

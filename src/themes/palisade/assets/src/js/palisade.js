@@ -395,6 +395,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (twoFactor) {
     import('./twofactor.js').then((module) => module.default(twoFactor));
   }
+  const cards = document.querySelector('[data-clientfence-cards]');
+  if (cards) {
+    import('./cards.js').then((module) => module.default(cards));
+  }
   if (document.querySelector('[data-clientfence-ticket-upload]')) {
     import('./ticketfiles.js').then((module) => module.default());
   }

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Invoice\Api;
 
 use ClientFence\Mod\Invoice\Receipts;
+use ClientFence\Mod\Invoice\SavedCards;
 use ClientFence\InformationException;
 use ClientFence\PaginationOptions;
 use ClientFence\Validation\Api\RequiredParams;
@@ -1344,6 +1345,64 @@ class Admin extends \ClientFence\Api\AbstractApi
         $extension = $di['mod_service']('extension');
         $extension->setConfig(array_merge($extension->getConfig('mod_invoice'), ['receipt_helpdesk' => $helpdesk, 'ext' => 'mod_invoice']));
         $di['logger']->info('Invoice: payment receipts go to help desk %s', $helpdesk === '' ? 'the first' : $helpdesk);
+
+        return true;
+    }
+
+    /**
+     * ClientFence: saves when saved cards are charged (SavedCards.php): `card_days_before` (0-30 days
+     * before the due date) and `card_retries` (try again 7 and 14 days later).
+     */
+    public function card_settings_update($data): bool
+    {
+        $di = $this->getDi();
+        $di['mod_service']('extension')->hasManagePermission('mod_invoice');
+        SavedCards::saveSettings($di, is_array($data) ? $data : []);
+
+        return true;
+    }
+
+    /**
+     * ClientFence: finds saved cards at Stripe for clients without one (a move from WHMCS), 25 clients
+     * after `after_id` per call: {checked, found, next} (SavedCards.php).
+     */
+    public function card_find($data): array
+    {
+        $di = $this->getDi();
+        $di['mod_service']('extension')->hasManagePermission('mod_invoice');
+        $adapter = SavedCards::stripe($di) ?? throw new InformationException('Saved cards are not available.');
+        $result = $adapter->findCards((int) ($data['after_id'] ?? 0), 25);
+        $di['logger']->info('Invoice: looked for saved cards at Stripe for %s clients, found %s', $result['checked'], $result['found']);
+
+        return $result;
+    }
+
+    /** ClientFence: the saved card an invoice's client is charged to ("Visa •••• 4242 (12/2028)"), or null. */
+    #[RequiredParams(['id' => 'Invoice ID was not passed'])]
+    public function card_get($data): ?string
+    {
+        $this->checkPermissions('invoice', 'view');
+        $invoice = $this->getDi()['db']->getExistingModelById('Invoice', $data['id'], 'Invoice not found');
+
+        return SavedCards::card($this->getDi(), (int) $invoice->client_id)['card'] ?? null;
+    }
+
+    /** ClientFence: charges the client's saved card for an unpaid invoice (`id`) now; a failed charge is an error. */
+    #[RequiredParams(['id' => 'Invoice ID was not passed'])]
+    public function card_charge($data): bool
+    {
+        $this->checkPermissions('invoice', 'manage_transactions');
+        $di = $this->getDi();
+        $invoice = $di['db']->getExistingModelById('Invoice', $data['id'], 'Invoice not found');
+        $adapter = SavedCards::stripe($di) ?? throw new \ClientFence\InformationException('Saved cards are not available.');
+        if ($adapter->savedCard((int) $invoice->client_id) === null) {
+            throw new \ClientFence\InformationException('The client has no saved card.');
+        }
+
+        $result = SavedCards::charge($di, $invoice, $adapter, true);
+        if (!$result['paid']) {
+            throw new InformationException((string) $result['error']);
+        }
 
         return true;
     }

@@ -4202,5 +4202,45 @@
     {
         "file": "modules/Api/Controller/Client.php",
         "done": "'staff_login_pin', 'staff_login_code',"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "public function chargeSavedCard(Model_Invoice $invoice, string $attempt): string"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: saved cards are charged for the invoices that are due"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "public function card_charge($data): bool"
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "public function card_list(): array"
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "public function get_payment_methods(\\ClientFence\\App $app): string"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "'payment-methods' => 'invoice',"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "invoice/card_charge"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_settings.html.twig",
+        "done": "mod_invoice_settings_cards.html.twig"
+    },
+    {
+        "file": "themes/palisade/html/layout_default.html.twig",
+        "done": "'payment-methods'|url"
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "private function patch123(): void"
     }
 ]

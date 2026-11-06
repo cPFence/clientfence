@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Invoice\Api;
 
 use ClientFence\Mod\Invoice\Receipts;
+use ClientFence\Mod\Invoice\SavedCards;
 use ClientFence\PaginationOptions;
 use ClientFence\Validation\Api\RequiredParams;
 
@@ -243,5 +244,54 @@ class Client extends \ClientFence\Api\AbstractApi
         $gateway = Receipts::manualGateway($di, (int) ($data['gateway_id'] ?? 0));
 
         return Receipts::send($di, $client, $invoice, $gateway, $di['request']->files->get('receipt'));
+    }
+
+    /**
+     * ClientFence: the client's saved cards at Stripe for the Payment methods page (SavedCards.php):
+     * {available, cards: [{id, card, default}]}. available is false without an enabled Stripe gateway.
+     */
+    public function card_list(): array
+    {
+        $adapter = SavedCards::stripe($this->getDi());
+
+        return ['available' => $adapter !== null, 'cards' => $adapter?->cards((int) $this->getIdentity()->id) ?? []];
+    }
+
+    /** ClientFence: starts adding a card: {client_secret, pub_key} for Stripe's card form. */
+    public function card_setup(): array
+    {
+        return $this->cardAdapter()->cardSetup((int) $this->getIdentity()->id);
+    }
+
+    /** ClientFence: keeps the card of a confirmed setup (`setup_intent`), the default one when there is none. */
+    #[RequiredParams(['setup_intent' => 'Setup ID was not passed'])]
+    public function card_added($data): bool
+    {
+        $this->cardAdapter()->cardAdded((int) $this->getIdentity()->id, (string) $data['setup_intent']);
+
+        return true;
+    }
+
+    /** ClientFence: makes a saved card (`id`) the one invoices are charged to. */
+    #[RequiredParams(['id' => 'Card ID was not passed'])]
+    public function card_default($data): bool
+    {
+        $this->cardAdapter()->cardDefault((int) $this->getIdentity()->id, (string) $data['id']);
+
+        return true;
+    }
+
+    /** ClientFence: removes a saved card (`id`). */
+    #[RequiredParams(['id' => 'Card ID was not passed'])]
+    public function card_remove($data): bool
+    {
+        $this->cardAdapter()->cardRemove((int) $this->getIdentity()->id, (string) $data['id']);
+
+        return true;
+    }
+
+    private function cardAdapter(): \Payment_Adapter_Stripe
+    {
+        return SavedCards::stripe($this->getDi()) ?? throw new \ClientFence\InformationException('Saved cards are not available.');
     }
 }

@@ -20631,3 +20631,125 @@ msgstr "Ο κωδικός ανάκτησης χρησιμοποιήθηκε: δ�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr "Μετά τον σωστό κωδικό πρόσβασης, ένα PIN 6 ψηφίων αποστέλλεται στο email του λογαριασμού και απαιτείται για τη σύνδεση. Ισχύει μία φορά, για 10 λεπτά. Δεν ζητείται από πελάτες που συνδέονται με εφαρμογή ελέγχου ταυτότητας ή με Google. Το προσωπικό που έχει ρυθμίσει εφαρμογή ελέγχου ταυτότητας στη σελίδα Προφίλ του μπορεί να εισαγάγει τον κωδικό της αντί για το PIN. Η επιλογή «Εμπιστοσύνη σε αυτό το πρόγραμμα περιήγησης για 30 ημέρες» παραλείπει το PIN σε γνωστό πρόγραμμα περιήγησης μέχρι να αλλάξει ο κωδικός πρόσβασης."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr "0 χρεώνει την κάρτα την ημερομηνία λήξης."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
+msgstr "Μια κάρτα που απορρίφθηκε δοκιμάζεται ξανά μετά από 7 και 14 ημέρες. Ο πελάτης λαμβάνει email μετά από κάθε αποτυχημένη χρέωση."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr "Προσθήκη κάρτας"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
+msgstr "Μετά από μετακίνηση από το WHMCS με τον ίδιο λογαριασμό Stripe: για κάθε πελάτη χωρίς αποθηκευμένη κάρτα, παίρνει την προεπιλεγμένη (ή την πιο πρόσφατη) κάρτα του πελάτη Stripe με το email του πελάτη."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr "Η κάρτα δεν βρέθηκε."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr "Ημέρες πριν από την ημερομηνία λήξης για χρέωση"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr "Χρέωση αποθηκευμένης κάρτας"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr "Να χρεωθεί η αποθηκευμένη κάρτα :card;"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
+msgstr "Ελέγχθηκαν :checked πελάτες, βρέθηκαν :found αποθηκευμένες κάρτες."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgstr "Οι πελάτες μπορούν να αποθηκεύσουν μια κάρτα με το Stripe όταν πληρώνουν ή στη σελίδα Τρόποι πληρωμής. Η κάρτα χρεώνεται αυτόματα για απλήρωτα παραστατικά που δεν έχουν τρόπο πληρωμής ή χρησιμοποιούν Stripe."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr "Οι ημέρες πριν από την ημερομηνία λήξης πρέπει να είναι ακέραιος αριθμός από 0 έως 30."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr "Εύρεση αποθηκευμένων καρτών"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
+msgstr "Εύρεση αποθηκευμένων καρτών στο Stripe"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
+msgstr "Πληρώνει τα παραστατικά αυτόματα"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr "Να αφαιρεθεί αυτή η κάρτα;"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr "Αποθήκευση κάρτας"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr "Αποθηκευμένες κάρτες"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
+msgstr "Οι αποθηκευμένες κάρτες δεν είναι διαθέσιμες."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr "Η κάρτα απαιτεί από τον πελάτη να επιβεβαιώσει την πληρωμή."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr "Η κάρτα χρεώθηκε."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr "Η κάρτα απορρίφθηκε: :reason"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
+msgstr "Η κάρτα δεν αποθηκεύτηκε. Δοκιμάστε ξανά."
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
+msgstr "Ο πελάτης δεν έχει αποθηκευμένη κάρτα."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
+msgstr "Η υπηρεσία πληρωμών δεν απάντησε. Δοκιμάστε ξανά αργότερα."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
+msgstr "Νέα προσπάθεια μετά από αποτυχημένη χρέωση"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
+msgstr "Χρήση για παραστατικά"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr "Δεν έχετε αποθηκευμένες κάρτες."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
+msgstr "Η προεπιλεγμένη κάρτα σας πληρώνει αυτόματα τα παραστατικά σας όταν λήξουν. Μπορείτε επίσης να αποθηκεύσετε μια κάρτα όταν πληρώνετε ένα παραστατικό."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr "Αποθήκευση ρυθμίσεων καρτών"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
+msgstr "Αυτό το παραστατικό έχει ήδη πληρωθεί ή ακυρωθεί."

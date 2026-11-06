@@ -35,6 +35,8 @@ class AppClient extends \ClientFence\App
             'google-sign-in' => 'client', 'receipt' => 'invoice',
             // ClientFence: quote links (Invoice/Quotes.php).
             'quote' => 'invoice',
+            // ClientFence: the client's saved cards (Invoice/SavedCards.php).
+            'payment-methods' => 'invoice',
             // ClientFence: the Network Status page (Support/NetworkIssues.php).
             'network-status' => 'support',
             // ClientFence core patch: privacy (Client/Privacy.php): the data download and unsubscribe links.

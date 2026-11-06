@@ -193,6 +193,10 @@
                             <li><a class="dropdown-item" href="{{ 'client/profile'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#user"/></svg>{{ 'Profile'|trans }}</a></li>
                         {% endif %}
                         <li><a class="dropdown-item" href="{{ 'two-factor'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#shield-check"/></svg>{{ 'Two-factor sign-in'|trans }}</a></li>
+                        {# ClientFence core patch: the account owner's saved cards (Invoice/SavedCards.php). #}
+                        {% if not clientfence_user or clientfence_user.owner %}
+                            <li><a class="dropdown-item" href="{{ 'payment-methods'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#credit-card"/></svg>{{ 'Payment methods'|trans }}</a></li>
+                        {% endif %}
                         {% if guest.client_google_on %}
                             <li><a class="dropdown-item" href="{{ 'google-sign-in'|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#brand-google"/></svg>{{ 'Google sign-in'|trans }}</a></li>
                         {% endif %}

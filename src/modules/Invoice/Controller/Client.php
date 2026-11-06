@@ -49,6 +49,15 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/invoice/pdf/:hash', 'get_pdf', ['hash' => '[a-z0-9]+'], static::class);
         // ClientFence: a payment receipt (Receipts.php), linked from its support ticket.
         $app->get('/receipt/:id', 'get_receipt', ['id' => '[a-f0-9]{32}'], static::class);
+        // ClientFence: the client's saved cards (SavedCards.php).
+        $app->get('/payment-methods', 'get_payment_methods', [], static::class);
+    }
+
+    public function get_payment_methods(\ClientFence\App $app): string
+    {
+        $this->di['is_client_logged'];
+
+        return $app->render('mod_invoice_payment_methods', ['cards' => $this->di['api_client']->invoice_card_list()]);
     }
 
     public function get_invoices(\ClientFence\App $app): string

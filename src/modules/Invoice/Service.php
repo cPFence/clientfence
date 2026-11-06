@@ -659,6 +659,12 @@ class Service implements InjectionAwareInterface
                 $di['logger']->info("Removed expired unpaid invoice #{$id}.");
             }
         }
+        // ClientFence core patch: saved cards are charged for the invoices that are due (Invoice/SavedCards.php).
+        try {
+            SavedCards::runDue($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('Invoice: charging saved cards failed: %s', $e->getMessage());
+        }
     }
 
     public static function onEventAfterInvoiceIsDue(\ClientFence\Event $event): void

@@ -20042,3 +20042,125 @@ msgstr "Uw back-upcode is gebruikt: maak een nieuwe aan."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr "Na het juiste wachtwoord gaat een pincode van 6 cijfers naar het e-mailadres van het account, en die is nodig om aan te melden. Hij werkt één keer, 10 minuten lang. Klanten die zich aanmelden met een authenticator-app of met Google krijgen die vraag niet. Medewerkers die op hun pagina Profiel een authenticator-app hebben ingesteld, kunnen in plaats daarvan de code ervan invoeren. \"Deze browser 30 dagen vertrouwen\" slaat de pincode over in een bekende browser totdat het wachtwoord verandert."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr "0 incasseert de kaart op de vervaldatum."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
+msgstr "Een geweigerde kaart wordt 7 en 14 dagen later opnieuw geprobeerd. De klant krijgt na elke mislukte afschrijving een e-mail."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr "Een kaart toevoegen"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
+msgstr "Na een verhuizing van WHMCS met hetzelfde Stripe-account: voor elke klant zonder opgeslagen kaart wordt de standaardkaart (of de nieuwste kaart) van de Stripe-klant met het e-mailadres van de klant overgenomen."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr "Kaart niet gevonden."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr "Dagen vóór de vervaldatum om af te schrijven"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr "Opgeslagen kaart belasten"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr "De opgeslagen kaart :card belasten?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
+msgstr ":checked klanten gecontroleerd, :found opgeslagen kaarten gevonden."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgstr "Klanten kunnen een kaart opslaan met Stripe wanneer ze betalen, of op hun pagina Betaalmethodes. De kaart wordt automatisch belast voor onbetaalde facturen zonder betaalmethode of met Stripe."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr "De dagen vóór de vervaldatum moeten een geheel getal van 0 tot 30 zijn."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr "Opgeslagen kaarten zoeken"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
+msgstr "Opgeslagen kaarten zoeken in Stripe"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
+msgstr "Betaalt facturen automatisch"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr "Deze kaart verwijderen?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr "Kaart opslaan"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr "Opgeslagen kaarten"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
+msgstr "Opgeslagen kaarten zijn niet beschikbaar."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr "De kaart vereist dat de klant de betaling bevestigt."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr "De kaart is belast."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr "De kaart is geweigerd: :reason"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
+msgstr "De kaart is niet opgeslagen. Probeer het opnieuw."
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
+msgstr "De klant heeft geen opgeslagen kaart."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
+msgstr "De betaaldienst reageerde niet. Probeer het later opnieuw."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
+msgstr "Opnieuw proberen na een mislukte afschrijving"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
+msgstr "Gebruiken voor facturen"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr "U hebt geen opgeslagen kaarten."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
+msgstr "Uw standaardkaart betaalt uw facturen automatisch wanneer ze vervallen. U kunt ook een kaart opslaan wanneer u een factuur betaalt."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr "Instellingen voor kaarten opslaan"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
+msgstr "Deze factuur is al betaald of geannuleerd."

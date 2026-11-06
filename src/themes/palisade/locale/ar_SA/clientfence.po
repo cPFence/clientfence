@@ -19975,3 +19975,125 @@ msgstr "تم استخدام رمزك الاحتياطي: أنشئ رمزًا ج�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr "بعد إدخال كلمة المرور الصحيحة، يُرسل رمز PIN من 6 أرقام إلى البريد الإلكتروني الخاص بتسجيل الدخول، ويلزم لإتمامه. يعمل مرة واحدة ولمدة 10 دقائق. لا يُطلب من العملاء الذين يسجلون الدخول بتطبيق المصادقة أو عبر Google. يمكن للموظفين الذين أعدّوا تطبيق مصادقة في صفحة الملف الشخصي الخاصة بهم إدخال رمزه بدلًا من ذلك. خيار \"الوثوق بهذا المتصفح لمدة 30 يومًا\" يتخطى رمز PIN على متصفح معروف حتى تتغير كلمة المرور."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 charges the card on the due date."
+msgstr "0 يخصم من البطاقة في تاريخ الاستحقاق."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
+msgstr "تتم إعادة محاولة البطاقة المرفوضة بعد 7 و14 يومًا. يتلقى العميل رسالة بريد إلكتروني بعد كل عملية خصم فاشلة."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card"
+msgstr "إضافة بطاقة"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
+msgstr "بعد الانتقال من WHMCS بنفس حساب Stripe: لكل عميل ليس لديه بطاقة محفوظة، يأخذ البطاقة الافتراضية (أو أحدث بطاقة) لعميل Stripe الذي له البريد الإلكتروني نفسه."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Card not found."
+msgstr "لم يتم العثور على البطاقة."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Charge days before the due date"
+msgstr "عدد الأيام قبل تاريخ الاستحقاق للخصم"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved card"
+msgstr "خصم من البطاقة المحفوظة"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge the saved card :card?"
+msgstr "هل تريد الخصم من البطاقة المحفوظة :card؟"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Checked :checked clients, found :found saved cards."
+msgstr "تم فحص :checked عميل، وتم العثور على :found بطاقة محفوظة."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgstr "يمكن للعملاء حفظ بطاقة عبر Stripe عند الدفع، أو في صفحة طرق الدفع. يتم الخصم من البطاقة تلقائيًا للفواتير غير المدفوعة التي ليس لها طريقة دفع أو التي تستخدم Stripe."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr "يجب أن يكون عدد الأيام قبل تاريخ الاستحقاق عددًا صحيحًا من 0 إلى 30."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards"
+msgstr "البحث عن البطاقات المحفوظة"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Find saved cards in Stripe"
+msgstr "البحث عن البطاقات المحفوظة في Stripe"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Pays invoices automatically"
+msgstr "تدفع الفواتير تلقائيًا"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this card?"
+msgstr "هل تريد إزالة هذه البطاقة؟"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save card"
+msgstr "حفظ البطاقة"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards"
+msgstr "البطاقات المحفوظة"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards are not available."
+msgstr "البطاقات المحفوظة غير متاحة."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card needs the client to confirm the payment."
+msgstr "تتطلب البطاقة أن يؤكد العميل الدفع."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The card was charged."
+msgstr "تم الخصم من البطاقة."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was declined: :reason"
+msgstr "تم رفض البطاقة: :reason"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The card was not saved. Please try again."
+msgstr "لم يتم حفظ البطاقة. يرجى المحاولة مرة أخرى."
+
+#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved card."
+msgstr "ليس لدى العميل بطاقة محفوظة."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment service did not answer. Please try again later."
+msgstr "لم تستجب خدمة الدفع. يرجى المحاولة مرة أخرى لاحقًا."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Try again after a failed charge"
+msgstr "إعادة المحاولة بعد فشل الخصم"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Use for invoices"
+msgstr "استخدام للفواتير"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards."
+msgstr "ليس لديك بطاقات محفوظة."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
+msgstr "تدفع بطاقتك الافتراضية فواتيرك تلقائيًا عند استحقاقها. يمكنك أيضًا حفظ بطاقة عند دفع فاتورة."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Save card settings"
+msgstr "حفظ إعدادات البطاقات"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is already paid or cancelled."
+msgstr "هذه الفاتورة مدفوعة أو ملغاة بالفعل."

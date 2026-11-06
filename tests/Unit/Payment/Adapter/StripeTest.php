@@ -2762,3 +2762,63 @@ test('records a renewal against its renewal invoice when the subscription origin
     expect(invokePrivateMethod($this->adapter, 'handleInvoicePaymentSucceeded', [$api, $tx, (object) ['data' => (object) ['object' => $payload]], 1]))->toBeTrue()
         ->and($tx->invoice_id)->toBe(43);
 })->with([false, true]);
+
+describe('saved cards', function (): void {
+    beforeEach(function (): void {
+        $this->cards = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+        $this->cards->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT)');
+        $this->cards->insert('pay_gateway_customer', ['pay_gateway_id' => 1, 'client_id' => 9, 'test_mode' => 1, 'external_customer_id' => 'cus_9', 'saved_cards' => 1]);
+        $invoiceService = Mockery::mock();
+        $invoiceService->allows('getBalanceDue')->andReturn(25.50);
+        $di = container();
+        $di['dbal'] = $this->cards;
+        $di['mod_service'] = $di->protect(fn (): object => $invoiceService);
+        $this->adapter->setDi($di);
+        $this->stripe = Mockery::mock(StripeClient::class);
+        $this->stripe->paymentMethods = Mockery::mock();
+        $this->stripe->paymentMethods->allows('retrieve')->andReturnUsing(fn (string $id): object => (object) ['id' => $id, 'type' => 'card', 'customer' => 'cus_9', 'card' => (object) ['brand' => 'visa', 'last4' => '4242', 'exp_month' => 3, 'exp_year' => 2030]]);
+        setPrivateProperty($this->adapter, 'stripe', $this->stripe);
+        $this->invoice = new Model_Invoice();
+        $this->invoice->loadBean(new DummyBean());
+        $this->invoice->id = 70;
+        $this->invoice->client_id = 9;
+        $this->invoice->currency = 'USD';
+        $this->invoice->buyer_email = 'client@example.com';
+    });
+
+    test('a card is kept only when the client chose to save it, and stays the default until changed', function (): void {
+        $paid = ['status' => 'succeeded', 'customer' => 'cus_9', 'payment_method' => 'pm_1'];
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) $paid, 9]);
+        expect($this->adapter->savedCard(9))->toBeNull();
+
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) ($paid + ['setup_future_usage' => 'off_session']), 9]);
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) (['payment_method' => 'pm_2', 'setup_future_usage' => 'off_session'] + $paid), 9]);
+        expect($this->adapter->savedCard(9))->toBe(['payment_method' => 'pm_1', 'card' => 'Visa •••• 4242 (03/2030)']);
+
+        $this->adapter->cardDefault(9, 'pm_2');
+        expect($this->adapter->savedCard(9)['payment_method'])->toBe('pm_2');
+
+        // A customer only cached for a subscription (it may have been found by email) holds no saved cards.
+        $this->cards->update('pay_gateway_customer', ['saved_cards' => 0], ['client_id' => 9]);
+        expect($this->adapter->savedCard(9))->toBeNull()
+            ->and($this->adapter->cards(9))->toBe([])
+            ->and(fn () => $this->adapter->cardDefault(9, 'pm_2'))->toThrow(ClientFence\InformationException::class, 'Card not found.');
+    });
+
+    test('the saved card is charged off session for the balance; a card that needs the client fails', function (string $status, ?string $error): void {
+        $this->cards->update('pay_gateway_customer', ['default_payment_method' => 'pm_1', 'default_card' => 'Visa'], ['client_id' => 9]);
+        $this->stripe->paymentIntents = Mockery::mock();
+        $this->stripe->paymentIntents->shouldReceive('create')->once()
+            ->withArgs(fn (array $params, array $options): bool => $params['amount'] === 2550 && $params['customer'] === 'cus_9' && $params['payment_method'] === 'pm_1'
+                && $params['off_session'] === true && $params['confirm'] === true && $params['metadata']['invoice_id'] === '70'
+                && $params['automatic_payment_methods'] === ['enabled' => true, 'allow_redirects' => 'never']
+                && str_starts_with($options['idempotency_key'], 'saved_card_invoice_70_attempt_2_'))
+            ->andReturn((object) ['id' => 'pi_70', 'status' => $status]);
+
+        $charge = fn (): string => $this->adapter->chargeSavedCard($this->invoice, 'attempt_2');
+        $error === null ? expect($charge())->toBe('pi_70') : expect($charge)->toThrow(ClientFence\InformationException::class, $error);
+    })->with([
+        'charged' => ['succeeded', null],
+        'needs the client' => ['requires_action', 'The card needs the client to confirm the payment.'],
+    ]);
+});
