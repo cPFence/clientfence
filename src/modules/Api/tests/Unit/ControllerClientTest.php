@@ -238,3 +238,20 @@ test('guest identity and cart mutations require POST and a same-origin session n
     ['cart_reset', 'POST', null, rtrim(SYSTEM_URL, '/'), 403],
     ['cart_set_currency', 'GET', 'session-token', rtrim(SYSTEM_URL, '/'), 405],
 ]);
+
+test('the API IP list applies to API key sign-ins and takes ranges', function (): void {
+    $controller = new Client();
+    (new ReflectionProperty(Client::class, 'apiConfig'))->setValue($controller, ['allowed_ips' => ['203.0.113.0/24']]);
+    $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode('admin:some-api-token');
+    $dbMock = Mockery::mock(\ClientFence\Database::class);
+    $dbMock->shouldReceive('findOne')->once()->andReturn(null);
+    $di = new Pimple\Container();
+    $di['db'] = $dbMock;
+    $controller->setDi($di);
+
+    $di['request'] = Request::create('/', 'GET', [], [], [], ['REMOTE_ADDR' => '198.51.100.1'] + $_SERVER);
+    expect(fn (): mixed => invokeControllerPrivate($controller, '_tryTokenLogin', ['admin']))->toThrow(InformationException::class, 'Unauthorized IP');
+
+    $di['request'] = Request::create('/', 'GET', [], [], [], ['REMOTE_ADDR' => '203.0.113.9'] + $_SERVER);
+    expect(fn (): mixed => invokeControllerPrivate($controller, '_tryTokenLogin', ['admin']))->toThrow(InformationException::class, 'Authentication Failed');
+});

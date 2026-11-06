@@ -397,7 +397,7 @@
                 </div>
 
                 <h2 class="cf-setup-h2 mt-4">{{ 'Staff sign-in'|trans }}</h2>
-                <p class="text-secondary">{{ 'More can be set in System → Settings → System → Sign-in security. Locked out? On the server run: php console.php clientfence:signin-security-off'|trans }}</p>
+                <p class="text-secondary">{{ 'More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off'|trans }}</p>
                 <div class="cf-toggle-card">
                     <label class="form-check form-switch m-0">
                         <input class="form-check-input" type="checkbox" name="staff_pin" value="1"{% if signin.pin in ['staff', 'both'] %} checked{% endif %}>

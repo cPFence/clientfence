@@ -185,7 +185,7 @@ final class SignInSecurityTestWorld
 test('everything is off by default and nobody is asked for a PIN', function (): void {
     $world = new SignInSecurityTestWorld();
 
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => []])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true])
         ->and(SignInSecurity::pinOn($world->di, 'staff'))->toBeFalse()
         ->and(SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'c@example.test'], [], '192.0.2.5'))->toBeFalse()
         ->and($world->pins)->toBe([]);
@@ -250,6 +250,16 @@ test('a save without the IP switch leaves the staff config untouched', function 
 
     expect($world->save(['pin' => 'clients']))->toBe(['saved' => true])
         ->and($world->staffConfig)->toBe($config);
+});
+
+test('staff password reset is on unless saved off, and saving it keeps the other staff settings', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->staffConfig = ['check_ip' => 1, 'allowed_ips' => '198.51.100.1', 'public' => ['other' => 'x']];
+
+    expect(SignInSecurity::settings($world->di)['staff_reset'])->toBeTrue()
+        ->and($world->save(['staff_reset' => '0']))->toBe(['saved' => true])
+        ->and($world->staffConfig)->toBe(['check_ip' => 1, 'allowed_ips' => '198.51.100.1', 'public' => ['reset_pw' => '0', 'other' => 'x'], 'ext' => 'mod_staff'])
+        ->and(SignInSecurity::settings($world->di)['staff_reset'])->toBeFalse();
 });
 
 test('a private address has no country', function (): void {
@@ -424,10 +434,10 @@ test('the console command turns sign-in security off', function (): void {
     $world = new SignInSecurityTestWorld();
     $world->save(['pin' => 'clients', 'countries_on' => '1', 'countries' => ['DE'], 'ips_on' => 1, 'ips' => ['198.51.100.1']]);
 
-    expect(SignInSecurity::turnOff($world->di, false, false, true))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1']])
+    expect(SignInSecurity::turnOff($world->di, false, false, true))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true])
         ->and($world->staffConfig['check_ip'])->toBe(0)
         ->and($world->staffConfig['allowed_ips'])->toBe('198.51.100.1')
-        ->and(SignInSecurity::turnOff($world->di, false, true, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1']])
+        ->and(SignInSecurity::turnOff($world->di, false, true, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true])
         ->and(SignInSecurity::turnOff($world->di, true, false, false)['pin'])->toBe('off');
 });
 
@@ -438,18 +448,18 @@ test('the setup wizard sets the staff side only and saves nothing until the PIN 
     $wizard = ['captcha_provider' => 'none', 'admin_path' => '', 'staff_pin' => 1, 'countries_on' => 1, 'countries' => ['DE']];
 
     expect(Setup::saveSecurity($world->di, $wizard, $admin, '198.51.100.1'))->toBe(['admin_path' => null, 'confirm' => true, 'email' => 'o••••@example.test'])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => []]);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true]);
 
     expect(Setup::saveSecurity($world->di, $wizard + ['confirm_pin' => $world->lastPin()], $admin, '198.51.100.1'))->toBe(['admin_path' => null])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => []]);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true]);
 
     // No country fields (no GeoIP database): the country rule stays; the client PIN always does.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'staff_pin' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => []])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true])
         ->and(fn () => Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 1, 'countries' => ['US']], $admin, '198.51.100.1'))
         ->toThrow(InformationException::class, 'would lock you out');
 
     // Switched off, the rule keeps its list for next time.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => []]);
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true]);
 });

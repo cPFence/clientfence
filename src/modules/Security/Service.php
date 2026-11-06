@@ -50,6 +50,8 @@ class Service
                 'display_name' => __trans('Manage rate limits'),
                 'description' => __trans('Allows the staff member to review and reset IP-based rate limiter counters.'),
             ],
+            // ClientFence core patch: opens Security > Settings (extension/settings/security); its settings stay Super Administrators only.
+            'manage_settings' => [],
         ];
     }
 

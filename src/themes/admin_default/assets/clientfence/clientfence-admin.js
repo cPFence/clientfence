@@ -1220,6 +1220,23 @@ window.clientfenceSigninSaved = (result) => {
   window.setTimeout(() => window.location.reload(), 900);
 };
 
+// Security > Settings > Proxies: "Add Cloudflare ranges" adds the built-in ranges missing from the list.
+document.querySelectorAll('[data-cf-add-cloudflare]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const list = button.closest('form').querySelector('[data-cf-proxy-list]');
+    const have = list.value.split(/\s+/).filter(Boolean);
+    const add = readJson(button, 'cfAddCloudflare', []).filter((range) => !have.includes(range));
+    list.value = [...have, ...add].join('\n');
+  });
+});
+
+// A settings tab that moved to another page (data-cf-moved-tabs: {tab id: new address}): old links land there.
+const movedTabs = document.querySelector('[data-cf-moved-tabs]');
+if (movedTabs) {
+  const target = readJson(movedTabs, 'cfMovedTabs', {})[window.location.hash.slice(1)];
+  if (target) window.location.replace(target);
+}
+
 // SFTP/FTP backups card (mod_clientfence_backups_panel, fb_api_form callback): a test answers
 // {tested} and keeps the typed details; "Save & Activate" reloads to show the saved state.
 window.clientfenceBackupFtpSaved = (result) => {

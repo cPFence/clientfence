@@ -91,7 +91,9 @@ test('settings encrypted with another salt are reported', function (): void {
 });
 
 test('a recent health run from another version is refreshed', function (): void {
-    $saved = ['ran_at' => date('Y-m-d H:i:s', time() - 60), 'version' => '0.0.0', 'checks' => []];
+    // The cron keeps the last web result of the proxy check untranslated, so staff read it in their language.
+    $proxy = ['group' => 'security', 'id' => 'sec_proxy', 'title' => 'Visitor addresses', 'state' => 'ok', 'detail' => 'Read from the trusted proxy at :ip.', 'params' => [':ip' => '203.0.113.9']];
+    $saved = ['ran_at' => date('Y-m-d H:i:s', time() - 60), 'version' => '0.0.0', 'checks' => [$proxy]];
     $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
     $connection->shouldReceive('fetchOne')->with('SELECT value FROM mod_clientfence_state WHERE name = ?', [Health::STATE])->andReturn(json_encode($saved));
     $connection->shouldReceive('executeStatement')->andReturnUsing(function (string $sql, array $params) use (&$saved): int {
@@ -115,7 +117,9 @@ test('a recent health run from another version is refreshed', function (): void 
 
     expect($saved['version'])->toBe(ClientFence\Version::CLIENTFENCE)
         ->and(array_column($saved['checks'], 'detail', 'id')['fb_update'])->toBe('ClientFence :version. New versions come as ClientFence releases.')
-        ->and(array_column($saved['checks'], 'params', 'id')['fb_update'])->toBe([':version' => ClientFence\Version::CLIENTFENCE]);
+        ->and(array_column($saved['checks'], 'params', 'id')['fb_update'])->toBe([':version' => ClientFence\Version::CLIENTFENCE])
+        ->and(array_column($saved['checks'], 'detail', 'id')['sec_proxy'])->toBe($proxy['detail'])
+        ->and(array_column($saved['checks'], 'params', 'id')['sec_proxy'])->toBe($proxy['params']);
 });
 
 test('a registrar failure emails only after two consecutive failed runs', function (): void {

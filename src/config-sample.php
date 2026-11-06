@@ -25,6 +25,7 @@ return [
         /*
          * Configure trusted reverse proxies when HTTPS is terminated before the PHP backend.
          * Keep this disabled unless requests arrive through a proxy you control.
+         * Security > Settings > Proxies changes it.
          */
         'trusted_proxies' => [
             'enabled' => false,
@@ -229,7 +230,8 @@ return [
         // All requests made to the API must have referrer request header with the same URL as the FOSSBilling installation
         'require_referrer_header' => false,
 
-        // Empty array will allow all IPs to access the API
+        // Addresses or ranges API keys may be used from; empty allows all. The admin and client pages are not affected.
+        // Security > Settings > Access lists changes it.
         'allowed_ips' => [],
 
         // Enables CSRF token protection.

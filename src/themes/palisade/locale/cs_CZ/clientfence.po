@@ -20088,3 +20088,180 @@ msgstr "K zobrazení hodnot potřebujete oprávnění „Otevírat důvěrné ú
 #: src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Add server access or a secret"
 msgstr "Přidat přístup k serveru nebo důvěrné údaje"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API addresses and ranges, one per line"
+msgstr "Adresy a rozsahy API, jedna na řádek"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API keys from these addresses only"
+msgstr "Klíče API jen z těchto adres"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists"
+msgstr "Seznamy přístupu"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists saved."
+msgstr "Seznamy přístupu byly uloženy."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Add Cloudflare ranges"
+msgstr "Přidat rozsahy Cloudflare"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Add at least one proxy address."
+msgstr "Přidejte alespoň jednu adresu proxy."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Addresses and ranges, one per line"
+msgstr "Adresy a rozsahy, jedna na řádek"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff to reset a forgotten password by email"
+msgstr "Povolit zaměstnancům obnovit zapomenuté heslo e-mailem"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Check that each request comes from the same browser"
+msgstr "Kontrolovat, zda každý požadavek přichází ze stejného prohlížeče"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose the header the proxy sends."
+msgstr "Vyberte hlavičku, kterou proxy posílá."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Cloudflare ranges in the list: %count% of %total%."
+msgstr "Rozsahy Cloudflare v seznamu: %count% z %total%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr "Každý požadavek přihlášené relace se porovnává s prohlížečem, ze kterého proběhlo přihlášení: jeho typem, systémem, jazykem a adresou. Relace, která náhle vypadá jako jiný prohlížeč, je odhlášena, což brání použití ukradené relační cookie jinde. Vypněte to jen tehdy, pokud jsou zaměstnanci nebo klienti odhlašováni bez důvodu."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Forwarded (RFC 7239)"
+msgstr "Forwarded (RFC 7239)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Header the proxy sends"
+msgstr "Hlavička, kterou proxy posílá"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgstr "Další nastavení najdete v části Zabezpečení → Nastavení. Zamknuti? Na serveru spusťte: php console.php clientfence:signin-security-off"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never rate limited"
+msgstr "Bez omezení četnosti"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Not an IP address or range: :ip. Ranges wider than /8 (IPv4) or /16 (IPv6) are not allowed."
+msgstr "Není to adresa IP ani rozsah: :ip. Rozsahy širší než /8 (IPv4) nebo /16 (IPv6) nejsou povoleny."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Only Super Administrators can change security settings."
+msgstr "Nastavení zabezpečení mohou měnit jen superadministrátoři."
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Open Security settings"
+msgstr "Otevřít nastavení zabezpečení"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxies"
+msgstr "Proxy"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy addresses and ranges, one per line"
+msgstr "Adresy a rozsahy proxy, jedna na řádek"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy settings saved."
+msgstr "Nastavení proxy bylo uloženo."
+
+#: src/modules/Clientfence/Health.php
+msgid "Read from the trusted proxy at :ip."
+msgstr "Načteno z důvěryhodné proxy na adrese :ip."
+
+#: src/modules/Clientfence/Health.php
+msgid "Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies."
+msgstr "Požadavky přicházejí přes proxy na adrese :ip, které není důvěryhodné, takže se návštěvníci zobrazují jako :ip. Označte ji jako důvěryhodnou v Zabezpečení > Nastavení > Proxy."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server."
+msgstr "Požadavky z těchto adres obcházejí všechna omezení četnosti (pokusy o přihlášení, obnovy hesla, volání API). Použijte to pro vlastní pevné adresy, například monitorovací server."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr "Požadavky podepsané klíčem API z jakékoli jiné adresy jsou odmítnuty. Prázdné: klíče API fungují odkudkoli. Stránky správce a klienta tím nejsou dotčeny."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Same browser check"
+msgstr "Kontrola stejného prohlížeče"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Security settings"
+msgstr "Nastavení zabezpečení"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Session settings saved."
+msgstr "Nastavení relací bylo uloženo."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sessions"
+msgstr "Relace"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in"
+msgstr "Přihlášení"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in rules, proxies, access lists and sessions."
+msgstr "Pravidla přihlášení, proxy, seznamy přístupu a relace."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff password reset"
+msgstr "Obnova hesla zaměstnanců"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings."
+msgstr "Pravidla přihlášení zaměstnanců (PIN e-mailem, IP adresy, státy) a obnova hesla zaměstnanců jsou v Zabezpečení > Nastavení."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "The \"Forgot your password?\" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator."
+msgstr "Odkaz „Zapomněli jste heslo?“ v přihlášení zaměstnanců pošle e-mailem odkaz pro obnovu. Vypněte ho, pokud hesla zaměstnanců obnovuje jen superadministrátor."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "This request comes from %remote%. The address used for the visitor: %client%."
+msgstr "Tento požadavek přichází z %remote%. Adresa použitá pro návštěvníka: %client%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trust these proxies"
+msgstr "Důvěřovat těmto proxy"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trusted proxies"
+msgstr "Důvěryhodné proxy"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Unknown settings section."
+msgstr "Neznámá část nastavení."
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitor addresses"
+msgstr "Adresy návštěvníků"
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitors connect directly: no proxy in front of the portal."
+msgstr "Návštěvníci se připojují přímo: před portálem není žádná proxy."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network."
+msgstr "Když návštěvníci přistupují k portálu přes proxy, například Cloudflare, každý požadavek přichází z proxy. Důvěřujte jejím adresám, aby se adresa návštěvníka četla z hlavičky, kterou proxy posílá: pravidla přihlášení, omezení četnosti a protokoly pak vidí skutečného návštěvníka. Důvěřujte jen adresám, které opravdu patří vaší proxy, nikdy celé síti."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For (Cloudflare and most proxies)"
+msgstr "X-Forwarded-For (Cloudflare a většina proxy)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
+msgstr "X-Forwarded-For, Host a Prefix (jen pokud je vaše proxy nastavuje všechny)"

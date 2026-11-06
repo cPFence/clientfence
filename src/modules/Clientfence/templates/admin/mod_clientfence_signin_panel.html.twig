@@ -1,6 +1,6 @@
-{# ClientFence: the "Sign-in security" tab of System > Settings > System (core patch in
-   mod_system_settings; SignInSecurity.php): an email PIN at sign-in for staff, clients or both, staff
-   sign-in from listed IP addresses only (stored in the Staff settings) and from chosen countries only. All off by default; Super Administrators only.
+{# ClientFence: the "Sign-in" tab of Security > Settings (mod_security_settings; SignInSecurity.php): an email
+   PIN at sign-in for staff, clients or both, staff sign-in from listed IP addresses only and staff password
+   reset (both stored in the Staff settings), and staff sign-in from chosen countries only. Super Administrators only.
    `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
    clientfenceSigninSaved (clientfence-admin.js) shows the PIN field and the form is saved again. #}
 {% set countries_names = signin.all_countries %}
@@ -44,6 +44,22 @@
             <label class="form-label" for="cf-signin-ips">{{ 'IP addresses, one per line'|trans }}</label>
             <textarea class="form-control font-monospace" id="cf-signin-ips" name="ips" rows="3" dir="ltr" placeholder="{{ signin.ip }}">{{ signin.ips|join("\n") }}</textarea>
             <div class="form-hint">{{ 'Your address now: %ip%. Save refuses a list without it.'|trans({'%ip%': signin.ip}) }}</div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Staff password reset'|trans }}</h3>
+                <p class="card-subtitle">{{ 'The "Forgot your password?" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="staff_reset" value="0">
+            <label class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" name="staff_reset" value="1"{% if signin.staff_reset %} checked{% endif %}>
+                <span class="form-check-label">{{ 'Allow staff to reset a forgotten password by email'|trans }}</span>
+            </label>
         </div>
     </div>
 

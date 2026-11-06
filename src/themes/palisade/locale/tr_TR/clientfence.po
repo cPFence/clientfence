@@ -18082,3 +18082,180 @@ msgstr "Değerleri görmek için “Destek talebi gizli bilgilerini aç” yetki
 #: src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Add server access or a secret"
 msgstr "Sunucu erişimi veya gizli bilgi ekle"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API addresses and ranges, one per line"
+msgstr "API adresleri ve aralıkları, her satıra bir tane"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API keys from these addresses only"
+msgstr "API anahtarları yalnızca bu adreslerden"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists"
+msgstr "Erişim listeleri"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists saved."
+msgstr "Erişim listeleri kaydedildi."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Add Cloudflare ranges"
+msgstr "Cloudflare aralıklarını ekle"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Add at least one proxy address."
+msgstr "En az bir proxy adresi ekleyin."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Addresses and ranges, one per line"
+msgstr "Adresler ve aralıklar, her satıra bir tane"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff to reset a forgotten password by email"
+msgstr "Personelin unutulan şifreyi e-postayla sıfırlamasına izin ver"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Check that each request comes from the same browser"
+msgstr "Her isteğin aynı tarayıcıdan geldiğini denetle"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose the header the proxy sends."
+msgstr "Proxy'nin gönderdiği üst bilgiyi seçin."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Cloudflare ranges in the list: %count% of %total%."
+msgstr "Listedeki Cloudflare aralıkları: %count% / %total%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr "Oturum açılmış her istek, oturumu açan tarayıcıyla karşılaştırılır: türü, sistemi, dili ve adresi. Birdenbire başka bir tarayıcı gibi görünen oturum kapatılır; bu, çalınmış bir oturum çerezinin başka bir yerde kullanılmasını engeller. Yalnızca personel veya müşteriler nedensiz yere oturumdan çıkarılıyorsa kapatın."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Forwarded (RFC 7239)"
+msgstr "Forwarded (RFC 7239)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Header the proxy sends"
+msgstr "Proxy'nin gönderdiği üst bilgi"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgstr "Daha fazlası Güvenlik → Ayarlar bölümünde ayarlanabilir. Dışarıda mı kaldınız? Sunucuda şunu çalıştırın: php console.php clientfence:signin-security-off"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never rate limited"
+msgstr "Hız sınırı uygulanmayanlar"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Not an IP address or range: :ip. Ranges wider than /8 (IPv4) or /16 (IPv6) are not allowed."
+msgstr "IP adresi veya aralık değil: :ip. /8 (IPv4) veya /16 (IPv6) değerinden geniş aralıklara izin verilmez."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Only Super Administrators can change security settings."
+msgstr "Güvenlik ayarlarını yalnızca Süper Yöneticiler değiştirebilir."
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Open Security settings"
+msgstr "Güvenlik ayarlarını aç"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxies"
+msgstr "Proxy'ler"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy addresses and ranges, one per line"
+msgstr "Proxy adresleri ve aralıkları, her satıra bir tane"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy settings saved."
+msgstr "Proxy ayarları kaydedildi."
+
+#: src/modules/Clientfence/Health.php
+msgid "Read from the trusted proxy at :ip."
+msgstr "Güvenilen :ip adresindeki proxy'den okundu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies."
+msgstr "İstekler güvenilmeyen :ip adresindeki bir proxy üzerinden geliyor, bu yüzden ziyaretçiler :ip olarak görünüyor. Ona Güvenlik > Ayarlar > Proxy'ler bölümünden güvenin."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server."
+msgstr "Bu adreslerden gelen istekler tüm hız sınırlarını atlar (giriş denemeleri, şifre sıfırlamaları, API çağrıları). Kendi sabit adresleriniz için kullanın, örneğin bir izleme sunucusu."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr "Başka bir adresten API anahtarıyla imzalanan istekler reddedilir. Boş: API anahtarları her yerden çalışır. Yönetici ve müşteri sayfaları etkilenmez."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Same browser check"
+msgstr "Aynı tarayıcı denetimi"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Security settings"
+msgstr "Güvenlik ayarları"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Session settings saved."
+msgstr "Oturum ayarları kaydedildi."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sessions"
+msgstr "Oturumlar"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in"
+msgstr "Giriş"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in rules, proxies, access lists and sessions."
+msgstr "Giriş kuralları, proxy'ler, erişim listeleri ve oturumlar."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff password reset"
+msgstr "Personel şifre sıfırlama"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings."
+msgstr "Personel giriş kuralları (e-posta PIN'i, IP adresleri, ülkeler) ve personel şifre sıfırlama Güvenlik > Ayarlar bölümündedir."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "The \"Forgot your password?\" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator."
+msgstr "Personel girişindeki “Şifrenizi mi unuttunuz?” bağlantısı e-postayla bir sıfırlama bağlantısı gönderir. Personel şifrelerini yalnızca bir Süper Yönetici sıfırlıyorsa kapatın."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "This request comes from %remote%. The address used for the visitor: %client%."
+msgstr "Bu istek %remote% adresinden geliyor. Ziyaretçi için kullanılan adres: %client%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trust these proxies"
+msgstr "Bu proxy'lere güven"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trusted proxies"
+msgstr "Güvenilen proxy'ler"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Unknown settings section."
+msgstr "Bilinmeyen ayar bölümü."
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitor addresses"
+msgstr "Ziyaretçi adresleri"
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitors connect directly: no proxy in front of the portal."
+msgstr "Ziyaretçiler doğrudan bağlanıyor: portalın önünde proxy yok."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network."
+msgstr "Ziyaretçiler portala Cloudflare gibi bir proxy üzerinden ulaştığında her istek proxy'den gelir. Ziyaretçi adresinin proxy'nin gönderdiği üst bilgiden okunması için adreslerine güvenin: giriş kuralları, hız sınırları ve günlükler gerçek ziyaretçiyi görür. Yalnızca gerçekten proxy'nize ait adreslere güvenin, asla bir ağın tamamına değil."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For (Cloudflare and most proxies)"
+msgstr "X-Forwarded-For (Cloudflare ve çoğu proxy)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
+msgstr "X-Forwarded-For, Host ve Prefix (yalnızca proxy'niz üçünü de ayarlıyorsa)"

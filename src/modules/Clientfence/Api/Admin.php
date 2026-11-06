@@ -9,6 +9,7 @@ use ClientFence\Mod\Clientfence\Branding;
 use ClientFence\Mod\Clientfence\Customized;
 use ClientFence\Mod\Clientfence\Health;
 use ClientFence\Mod\Clientfence\Notifications;
+use ClientFence\Mod\Clientfence\SecuritySettings;
 use ClientFence\Mod\Clientfence\Service;
 use ClientFence\Mod\Clientfence\SettingsIndex;
 use ClientFence\Mod\Clientfence\Setup;
@@ -504,6 +505,26 @@ class Admin extends \ClientFence\Api\AbstractApi
         $admin = $this->getIdentity();
 
         return SignInSecurity::save($this->getDi(), (array) $data, ['id' => (int) $admin->id, 'email' => (string) $admin->email, 'name' => (string) $admin->name, 'timezone' => (string) ($admin->timezone ?? '')], (string) $this->getIp());
+    }
+
+    /**
+     * Security → Settings, the config.php parts (SecuritySettings.php): proxies, access lists and
+     * sessions, with this request's connecting and visitor addresses. Super Administrators only.
+     */
+    public function security_settings_get(): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can change security settings.');
+
+        return SecuritySettings::forPage($this->getDi());
+    }
+
+    /** Saves one `section` of Security → Settings: proxies, access or sessions. */
+    public function security_settings_save($data): bool
+    {
+        $this->requireSuperAdmin('Only Super Administrators can change security settings.');
+        SecuritySettings::save($this->getDi(), (array) $data, (int) $this->adminId());
+
+        return true;
     }
 
     /**

@@ -956,6 +956,10 @@ msgstr ""
 msgid "API Module - External program which uses ClientFence API"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API addresses and ranges, one per line"
+msgstr ""
+
 #: src/modules/Servicecustom/Api/Admin.php
 msgid "API call is missing arguments"
 msgstr ""
@@ -978,6 +982,10 @@ msgstr ""
 
 #: src/modules/Profile/Api/Client.php
 msgid "API keys are not available."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API keys from these addresses only"
 msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_iplookup.html.twig
@@ -1046,6 +1054,14 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Access"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists saved."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
@@ -1284,6 +1300,10 @@ msgstr ""
 msgid "Add :field to continue"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Add Cloudflare ranges"
+msgstr ""
+
 #: src/modules/Servicecustom/templates/admin/mod_servicecustom_config.html.twig
 msgid "Add Custom Parameter"
 msgstr ""
@@ -1378,6 +1398,10 @@ msgstr ""
 
 #: src/modules/Invoice/Quotes.php
 msgid "Add at least one line to the quote."
+msgstr ""
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Add at least one proxy address."
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
@@ -1586,6 +1610,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Address line 3"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Addresses and ranges, one per line"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
@@ -1924,10 +1952,6 @@ msgstr ""
 msgid "Allow Registration"
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Allow Staff Reset Passwords"
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Allow Subscription Payments"
 msgstr ""
@@ -1966,6 +1990,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "Allow staff sign-in only from these countries"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff to reset a forgotten password by email"
 msgstr ""
 
 #: src/modules/Extension/Service.php
@@ -3892,6 +3920,10 @@ msgstr ""
 msgid "Check for new ClientFence releases every day"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Check that each request comes from the same browser"
+msgstr ""
+
 #: src/modules/Support/MailImport.php
 msgid "Check the email import numbers: limits are :min to :max."
 msgstr ""
@@ -4178,6 +4210,10 @@ msgstr ""
 
 #: src/modules/Extension/templates/admin/mod_extension_languages.html.twig
 msgid "Choose the default language under System Settings, Localization."
+msgstr ""
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose the header the proxy sends."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
@@ -4784,6 +4820,10 @@ msgstr ""
 msgid "Cloudflare hides the server behind it. In Cloudflare, the A record must point to :ip."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Cloudflare ranges in the list: %count% of %total%."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig src/modules/Client/templates/client/mod_client_twofactor_code.html.twig …
 msgid "Code"
 msgstr ""
@@ -5150,10 +5190,6 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
 msgid "Control whether non-client visitors may open support tickets."
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Control whether staff users may request password reset emails from the public login flow."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
@@ -7800,6 +7836,10 @@ msgstr ""
 msgid "Every open preview ends at once."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
 msgid "Everyone"
 msgstr ""
@@ -8452,6 +8492,10 @@ msgstr ""
 msgid "Forward to"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Forwarded (RFC 7239)"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Forwarder"
 msgstr ""
@@ -8926,6 +8970,10 @@ msgstr ""
 
 #: src/themes/palisade/config/settings.html.twig
 msgid "Header Items"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Header the proxy sends"
 msgstr ""
 
 #: src/modules/Embed/templates/admin/mod_embed_index.html.twig src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
@@ -11881,7 +11929,7 @@ msgid "More actions"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
-msgid "More can be set in System → Settings → System → Sign-in security. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
@@ -12070,6 +12118,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_support_tickets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Never put passwords in the message itself."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never rate limited"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -12884,6 +12936,10 @@ msgstr ""
 msgid "Not Run"
 msgstr ""
 
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Not an IP address or range: :ip. Ranges wider than /8 (IPv4) or /16 (IPv6) are not allowed."
+msgstr ""
+
 #: src/modules/Clientfence/SignInSecurity.php
 msgid "Not an IP address: :ip"
 msgstr ""
@@ -13248,6 +13304,10 @@ msgstr ""
 msgid "Only Super Administrators can call hooks."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Only Super Administrators can change security settings."
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
 msgid "Only Super Administrators can change staff group details."
 msgstr ""
@@ -13426,6 +13486,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Open Quotes"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Open Security settings"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -14098,10 +14162,6 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Password Length"
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Password Recovery"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
@@ -15256,6 +15316,18 @@ msgstr ""
 msgid "Provides support ticket departments, helpdesk settings, knowledge base controls, and client support tools."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxies"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy addresses and ranges, one per line"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy settings saved."
+msgstr ""
+
 #: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig
 msgid "Publish date"
 msgstr ""
@@ -15442,6 +15514,10 @@ msgstr ""
 
 #: src/modules/Notification/Service.php
 msgid "Read announcements"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Read from the trusted proxy at :ip."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
@@ -16032,6 +16108,18 @@ msgstr ""
 msgid "Requests"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Require Email Confirmation"
 msgstr ""
@@ -16556,6 +16644,10 @@ msgstr ""
 msgid "Same"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Same browser check"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "Same name as"
 msgstr ""
@@ -16830,6 +16922,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Security headers"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Security settings"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -17316,6 +17412,14 @@ msgstr ""
 msgid "Services to renew"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Session settings saved."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sessions"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Set 0 to keep invoices forever."
 msgstr ""
@@ -17716,6 +17820,10 @@ msgstr ""
 msgid "Sign up"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in"
+msgstr ""
+
 #: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
 msgid "Sign-in from %ip%"
 msgstr ""
@@ -17724,8 +17832,8 @@ msgstr ""
 msgid "Sign-in page"
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "Sign-in security"
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in rules, proxies, access lists and sessions."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -17944,6 +18052,10 @@ msgstr ""
 msgid "Staff only"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff password reset"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/admin_default/html_custom/partial_admin_auth_card.html.twig
 msgid "Staff sign-in"
 msgstr ""
@@ -17961,7 +18073,7 @@ msgid "Staff sign-in is not allowed from your location."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
-msgid "Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security."
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -18730,6 +18842,10 @@ msgstr ""
 
 #: src/library/Server/Manager/CWP.php src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Whm.php
 msgid "The \":server_manager\" server manager is not fully configured. Please configure the :missing"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "The \"Forgot your password?\" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator."
 msgstr ""
 
 #: src/modules/Email/Service.php
@@ -20385,6 +20501,10 @@ msgstr ""
 msgid "This reply was already rated."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "This request comes from %remote%. The address used for the visitor: %client%."
+msgstr ""
+
 #: src/modules/Support/TicketSecrets.php
 msgid "This secret is too large."
 msgstr ""
@@ -21013,8 +21133,16 @@ msgstr ""
 msgid "Trigger hooks"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trust these proxies"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
 msgid "Trust this browser for %days% days"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trusted proxies"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
@@ -21323,6 +21451,10 @@ msgstr ""
 
 #: src/modules/Order/Api/Admin.php
 msgid "Unknown scope."
+msgstr ""
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Unknown settings section."
 msgstr ""
 
 #: src/modules/Custompages/Service.php
@@ -22333,8 +22465,16 @@ msgstr ""
 msgid "Visit website"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Visitor addresses"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
 msgid "Visitors"
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitors connect directly: no proxy in front of the portal."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
@@ -22605,6 +22745,10 @@ msgstr ""
 msgid "When using ExchangeRate-API, their API informs ClientFence when the next update will occur, which makes automated syncing more efficient."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network."
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_quote.html.twig
 msgid "When you accept, we make the invoice and email it to you."
 msgstr ""
@@ -22723,6 +22867,14 @@ msgstr ""
 
 #: src/modules/Custompages/manifest.json
 msgid "Write pages for the client area, as drafts or published, with menu and footer links and who may see them."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For (Cloudflare and most proxies)"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig

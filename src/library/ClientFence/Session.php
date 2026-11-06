@@ -163,7 +163,9 @@ class Session implements InjectionAwareInterface
         }
 
         $storedFingerprint = json_decode($session->fingerprint ?? '', true);
-        if (!$fingerprint->checkFingerprint($storedFingerprint) && Config::getProperty('security.perform_session_fingerprinting', true)) {
+        // ClientFence core patch: a session saved while the check was off has an empty fingerprint; it is taken
+        // now, so turning the check back on (Security > Settings > Sessions) does not sign everyone out.
+        if ($storedFingerprint !== [] && !$fingerprint->checkFingerprint($storedFingerprint) && Config::getProperty('security.perform_session_fingerprinting', true)) {
             $invalid = true;
             error_log("Session ID $sessionID has potentially been hijacked as it failed the fingerprint check. The session has automatically been destroyed.");
         }

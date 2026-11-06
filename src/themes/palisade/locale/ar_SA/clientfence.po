@@ -19728,3 +19728,176 @@ msgstr "تحتاج إلى صلاحية «فتح البيانات السرية ل
 #: src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Add server access or a secret"
 msgstr "إضافة وصول إلى الخادم أو بيانات سرية"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API addresses and ranges, one per line"
+msgstr "عناوين ونطاقات API، واحد في كل سطر"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API keys from these addresses only"
+msgstr "مفاتيح API من هذه العناوين فقط"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists"
+msgstr "قوائم الوصول"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists saved."
+msgstr "تم حفظ قوائم الوصول."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Add Cloudflare ranges"
+msgstr "إضافة نطاقات Cloudflare"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Add at least one proxy address."
+msgstr "أضف عنوان خادم وكيل واحدًا على الأقل."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Addresses and ranges, one per line"
+msgstr "العناوين والنطاقات، واحد في كل سطر"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff to reset a forgotten password by email"
+msgstr "السماح للموظفين بإعادة تعيين كلمة المرور المنسية عبر البريد"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Check that each request comes from the same browser"
+msgstr "التحقق من أن كل طلب يأتي من المتصفح نفسه"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose the header the proxy sends."
+msgstr "اختر الترويسة التي يرسلها الخادم الوكيل."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Cloudflare ranges in the list: %count% of %total%."
+msgstr "نطاقات Cloudflare في القائمة: %count% من %total%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr "تتم مقارنة كل طلب من جلسة مسجَّل دخولها بالمتصفح الذي سجّل الدخول: نوعه ونظامه ولغته وعنوانه. تُنهى الجلسة التي تبدو فجأة كمتصفح آخر، مما يمنع استخدام ملف تعريف ارتباط جلسة مسروق في مكان آخر. أوقف هذا الخيار فقط إذا كان الموظفون أو العملاء يُسجَّل خروجهم دون سبب."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Forwarded (RFC 7239)"
+msgstr "Forwarded (RFC 7239)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Header the proxy sends"
+msgstr "الترويسة التي يرسلها الخادم الوكيل"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgstr "يمكن ضبط المزيد في الأمن ← الإعدادات. هل أُغلق عليك الوصول؟ نفّذ على الخادم: php console.php clientfence:signin-security-off"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never rate limited"
+msgstr "بلا حد للمعدل"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Not an IP address or range: :ip. Ranges wider than /8 (IPv4) or /16 (IPv6) are not allowed."
+msgstr "ليس عنوان IP أو نطاقًا: :ip. النطاقات الأوسع من /8 (IPv4) أو /16 (IPv6) غير مسموح بها."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Only Super Administrators can change security settings."
+msgstr "لا يمكن لغير المسؤولين الأعلى تغيير إعدادات الأمن."
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Open Security settings"
+msgstr "فتح إعدادات الأمن"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxies"
+msgstr "الخوادم الوكيلة"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy addresses and ranges, one per line"
+msgstr "عناوين ونطاقات الخوادم الوكيلة، واحد في كل سطر"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy settings saved."
+msgstr "تم حفظ إعدادات الخادم الوكيل."
+
+#: src/modules/Clientfence/Health.php
+msgid "Read from the trusted proxy at :ip."
+msgstr "قُرئ من الخادم الوكيل الموثوق على :ip."
+
+#: src/modules/Clientfence/Health.php
+msgid "Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies."
+msgstr "تصل الطلبات عبر خادم وكيل على :ip غير موثوق، لذلك يظهر الزوار بالعنوان :ip. ثق به في الأمن > الإعدادات > الخوادم الوكيلة."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server."
+msgstr "تتجاوز الطلبات من هذه العناوين كل حدود المعدل (محاولات تسجيل الدخول وإعادة تعيين كلمات المرور واستدعاءات API). استخدمها لعناوينك الثابتة، مثل خادم المراقبة."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr "تُرفض الطلبات الموقَّعة بمفتاح API من أي عنوان آخر. فارغ: تعمل مفاتيح API من أي مكان. لا تتأثر صفحات المسؤول والعميل."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Same browser check"
+msgstr "فحص المتصفح نفسه"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Security settings"
+msgstr "إعدادات الأمن"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Session settings saved."
+msgstr "تم حفظ إعدادات الجلسات."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sessions"
+msgstr "الجلسات"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in rules, proxies, access lists and sessions."
+msgstr "قواعد تسجيل الدخول والخوادم الوكيلة وقوائم الوصول والجلسات."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff password reset"
+msgstr "إعادة تعيين كلمة مرور الموظفين"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings."
+msgstr "قواعد دخول الموظفين (رمز PIN عبر البريد وعناوين IP والدول) وإعادة تعيين كلمة مرور الموظفين في الأمن > الإعدادات."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "The \"Forgot your password?\" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator."
+msgstr "يرسل رابط «نسيت كلمة المرور؟» في دخول الموظفين رابط إعادة التعيين بالبريد. أوقفه إذا كانت كلمات مرور الموظفين تُعاد من قِبل مسؤول أعلى فقط."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "This request comes from %remote%. The address used for the visitor: %client%."
+msgstr "يأتي هذا الطلب من %remote%. العنوان المستخدم للزائر: %client%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trust these proxies"
+msgstr "الوثوق بهذه الخوادم الوكيلة"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trusted proxies"
+msgstr "الخوادم الوكيلة الموثوقة"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Unknown settings section."
+msgstr "قسم إعدادات غير معروف."
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitor addresses"
+msgstr "عناوين الزوار"
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitors connect directly: no proxy in front of the portal."
+msgstr "يتصل الزوار مباشرة: لا يوجد خادم وكيل أمام البوابة."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network."
+msgstr "عندما يصل الزوار إلى البوابة عبر خادم وكيل مثل Cloudflare، يأتي كل طلب من الخادم الوكيل. ثق بعناوينه حتى يُقرأ عنوان الزائر من الترويسة التي يرسلها: فترى قواعد تسجيل الدخول وحدود المعدل والسجلات الزائر الحقيقي. ثق فقط بالعناوين التي هي فعلًا خادمك الوكيل، وليس بشبكة كاملة أبدًا."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For (Cloudflare and most proxies)"
+msgstr "X-Forwarded-For (Cloudflare ومعظم الخوادم الوكيلة)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
+msgstr "X-Forwarded-For وHost وPrefix (فقط إذا كان الخادم الوكيل يضبطها جميعًا)"

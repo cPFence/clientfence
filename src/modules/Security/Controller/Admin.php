@@ -58,6 +58,14 @@ class Admin implements \ClientFence\InjectionAwareInterface
                     'uri' => $this->di['url']->adminLink('security/rate-limits'),
                     'class' => '',
                 ],
+                // ClientFence core patch: Security > Settings, the security settings in one place (mod_security_settings).
+                [
+                    'location' => 'security',
+                    'label' => __trans('Settings'),
+                    'index' => 400,
+                    'uri' => $this->di['url']->adminLink('extension/settings/security'),
+                    'class' => '',
+                ],
             ],
         ];
     }

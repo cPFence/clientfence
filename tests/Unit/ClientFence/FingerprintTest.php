@@ -95,3 +95,26 @@ test('constructor sources request headers and remote address into fingerprint pr
         ->and($generated['referrer'])->toBe(md5('https://referrer.example.com/'))
         ->and($generated['forwardedFor'])->toBe(md5('198.51.100.1'));
 });
+
+test('behind a trusted proxy the visitor address and its country header are used; without one the header is ignored', function (): void {
+    $proxies = Request::getTrustedProxies();
+    $headers = Request::getTrustedHeaderSet();
+    $server = ['REMOTE_ADDR' => '162.158.1.1', 'HTTP_X_FORWARDED_FOR' => '198.51.100.7', 'HTTP_CF_IPCOUNTRY' => 'XX', 'HTTP_USER_AGENT' => 'Mozilla/5.0'];
+    $read = static function (array $server): array {
+        $properties = (new ReflectionClass(Fingerprint::class))->getProperty('fingerprintProperties')->getValue(new Fingerprint(Request::create('/', 'GET', [], [], [], $server)));
+
+        return [$properties['ip']['source'], $properties['geoIpCountry']['source']];
+    };
+
+    try {
+        Request::setTrustedProxies([], 0);
+        [$ip, $country] = $read($server);
+        expect($ip)->toBe('162.158.1.1')->and($country)->not->toBe('XX');
+
+        Request::setTrustedProxies(['162.158.0.0/15'], Request::HEADER_X_FORWARDED_FOR);
+        [$ip, $country] = $read($server);
+        expect($ip)->toBe('198.51.100.7')->and($country)->toBe('XX');
+    } finally {
+        Request::setTrustedProxies($proxies, $headers);
+    }
+});

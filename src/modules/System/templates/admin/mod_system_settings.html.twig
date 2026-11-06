@@ -33,13 +33,12 @@
     {% set bf_backups = guest.extension_is_on({ 'mod': 'clientfence' }) and admin.clientfence_backup_access ? admin.clientfence_backup_get : null %}
     {# ClientFence core patch: the WHMCS import as a tab here (Clientfence Whmcs/Import.php; Super Administrators, ClientFence on). #}
     {% set bf_whmcs = bf_backups ? admin.clientfence_whmcs_import_get : null %}
-    {# ClientFence core patch: sign-in security as a tab here (Clientfence SignInSecurity.php; Super Administrators, ClientFence on). #}
-    {% set bf_signin = guest.extension_is_on({ 'mod': 'clientfence' }) and admin.clientfence_backup_access ? admin.clientfence_signin_security_get : null %}
     {# ClientFence core patch: system health as a tab here (Clientfence Health.php; System settings permission, ClientFence on). #}
     {% set bf_health = guest.extension_is_on({ 'mod': 'clientfence' }) and has_permission('system', 'manage_settings') ? admin.clientfence_health_page : null %}
     {# ClientFence core patch: the licence check log and bans as a tab here (Servicelicense CheckLog.php, Bans.php; licence managers). #}
     {% set bf_licences = has_permission('servicelicense', 'manage') ? admin.servicelicense_settings_get : null %}
-    <div class="card">
+    {# ClientFence core patch: sign-in security moved to Security > Settings; old #tab-signin links land there (clientfence-admin.js). #}
+    <div class="card" data-cf-moved-tabs="{{ { 'tab-signin': 'extension/settings/security'|url ~ '#tab-signin' }|json_encode }}">
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'System Settings'|trans }}</h3>
@@ -66,11 +65,6 @@
                 {% if bf_health %}
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" href="#tab-health" data-bs-toggle="tab" role="tab">{{ 'System Health'|trans }}</a>
-                </li>
-                {% endif %}
-                {% if bf_signin %}
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" href="#tab-signin" data-bs-toggle="tab" role="tab">{{ 'Sign-in security'|trans }}</a>
                 </li>
                 {% endif %}
                 {% if bf_backups %}
@@ -481,14 +475,6 @@
                 <div class="tab-pane fade" id="tab-health" role="tabpanel">
                     <div class="card-body">
                         {% include 'mod_clientfence_health_panel.html.twig' with { 'report': bf_health.report, 'groups': bf_health.groups } %}
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if bf_signin %}
-                <div class="tab-pane fade" id="tab-signin" role="tabpanel">
-                    <div class="card-body">
-                        {% include 'mod_clientfence_signin_panel.html.twig' with { 'signin': bf_signin } %}
                     </div>
                 </div>
                 {% endif %}

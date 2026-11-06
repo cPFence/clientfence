@@ -87,9 +87,11 @@ declare(strict_types=1);
  *    Client/Google.php; tables client_twofactor, client_google, client_google_signup,
  *    client_google_password). Google sign-in's settings are on the Client settings page.
  *
- * 16. Sign-in security (SignInSecurity.php; System → Settings → System → Sign-in security): an
- *    email PIN at sign-in for staff, clients or both, and staff sign-in from chosen countries
- *    only. All off by default; `php console.php clientfence:signin-security-off` for a lockout.
+ * 16. Security → Settings (mod_security_settings): sign-in security (SignInSecurity.php: an email
+ *    PIN at sign-in for staff, clients or both, staff sign-in from chosen IP addresses and
+ *    countries only, staff password reset; `php console.php clientfence:signin-security-off` for a
+ *    lockout) and the config.php security options (SecuritySettings.php: trusted proxies, access
+ *    lists, the same browser check).
  */
 
 namespace ClientFence\Mod\Clientfence;

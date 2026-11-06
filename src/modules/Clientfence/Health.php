@@ -39,6 +39,14 @@ final class Health
      */
     public static function latest(\Pimple\Container $di): ?array
     {
+        $report = self::saved($di);
+
+        return $report === null ? null : self::summarize($report);
+    }
+
+    /** The last saved run as stored: texts still untranslated, with their params. */
+    private static function saved(\Pimple\Container $di): ?array
+    {
         try {
             $row = $di['em']->getConnection()->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', [self::STATE]);
         } catch (\Throwable) {
@@ -46,7 +54,7 @@ final class Health
         }
         $report = is_string($row) ? json_decode($row, true) : null;
 
-        return is_array($report) && is_array($report['checks'] ?? null) ? self::summarize($report) : null;
+        return is_array($report) && is_array($report['checks'] ?? null) ? $report : null;
     }
 
     public static function runIfDue(\Pimple\Container $di): void
@@ -298,6 +306,11 @@ final class Health
         $strict = Config::getProperty('security.mode', 'strict') === 'strict';
         yield self::check('security', 'sec_strict', self::msg('Strict security mode'), $strict ? 'ok' : 'bad', $strict ? self::msg('On: session cookies are SameSite=Strict.') : self::msg('Off: set security.mode to "strict" in config.php.'));
 
+        $proxy = self::proxyCheck($di);
+        if ($proxy !== null) {
+            yield $proxy;
+        }
+
         // The report can be copied into a ticket or chat, so it never names the custom address.
         $defaultAdmin = self::isDefaultAdminPath(defined('ADMIN_PREFIX') ? (string) ADMIN_PREFIX : (string) Config::getProperty('admin_area_prefix', '/admin'));
         yield self::check('security', 'sec_admin_path', self::msg('Admin area address'), $defaultAdmin ? 'warn' : 'ok', $defaultAdmin
@@ -363,6 +376,30 @@ final class Health
         yield $answered === 0
             ? self::check('security', 'sec_private_paths', self::msg('Private paths blocked'), 'warn', self::msg('The portal could not be reached from the server.'))
             : self::check('security', 'sec_private_paths', self::msg('Private paths blocked'), $served === [] ? 'ok' : 'bad', $served === [] ? self::msg('Libraries, translations, manifests and the client domain-change call are refused.') : self::msg('Served to visitors: :list.'), params: [':list' => implode(', ', $served)]);
+    }
+
+    /**
+     * Behind a proxy that is not trusted, every visitor shows as the proxy (sign-in rules, rate
+     * limits, logs). Only a web request can tell, so a cron run keeps the last web result.
+     */
+    private static function proxyCheck(\Pimple\Container $di): ?array
+    {
+        if (PHP_SAPI === 'cli') {
+            $last = array_values(array_filter(self::saved($di)['checks'] ?? [], static fn (array $c): bool => $c['id'] === 'sec_proxy'));
+
+            return $last[0] ?? null;
+        }
+        $request = $di['request'];
+        $params = [':ip' => (string) $request->server->get('REMOTE_ADDR', '')];
+        $url = 'extension/settings/security#tab-proxies';
+        if ($request->isFromTrustedProxy()) {
+            return self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'ok', self::msg('Read from the trusted proxy at :ip.'), $url, $params);
+        }
+        $forwarded = $request->headers->has('X-Forwarded-For') || $request->headers->has('CF-Connecting-IP') || $request->headers->has('Forwarded');
+
+        return $forwarded
+            ? self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'warn', self::msg('Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies.'), $url, $params)
+            : self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'ok', self::msg('Visitors connect directly: no proxy in front of the portal.'), $url);
     }
 
     // ---- Pack integrity: the install against the pack manifest.

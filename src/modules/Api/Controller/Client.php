@@ -188,10 +188,12 @@ class Client implements InjectionAwareInterface
         return true;
     }
 
+    // ClientFence core patch: the allowed IPs apply to API key sign-ins only (as WHMCS), so the admin and
+    // client pages keep working from anywhere; addresses or ranges (Security > Settings > Access lists).
     private function checkAllowedIps(): bool
     {
-        $ips = $this->apiConfig['allowed_ips'];
-        if (!empty($ips) && !in_array($this->_getIp(), $ips)) {
+        $ips = $this->apiConfig['allowed_ips'] ?? [];
+        if (!empty($ips) && !\Symfony\Component\HttpFoundation\IpUtils::checkIp((string) $this->_getIp(), (array) $ips)) {
             throw new \ClientFence\InformationException('Unauthorized IP', null, 1002);
         }
 
@@ -213,7 +215,6 @@ class Client implements InjectionAwareInterface
     private function _apiCall($role, $class, $method, $params): Response
     {
         $this->_loadConfig();
-        $this->checkAllowedIps();
 
         $this->checkHttpReferer();
         $this->isRoleAllowed($role);
@@ -304,6 +305,7 @@ class Client implements InjectionAwareInterface
 
     protected function _tryTokenLogin(string $routeRole): void
     {
+        $this->checkAllowedIps();
         [$username, $password] = $this->getAuth();
         if ($username !== $routeRole) {
             throw new \ClientFence\InformationException('Authentication Failed', null, 203);

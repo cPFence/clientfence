@@ -1552,10 +1552,6 @@
         "done": "public function signin_pin($data): bool"
     },
     {
-        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
-        "done": "ClientFence core patch: sign-in security as a tab here"
-    },
-    {
         "file": "modules/Index/Controller/Admin.php",
         "done": "ClientFence core patch: a staff sign-in waiting for its email PIN goes to the PIN page"
     },
@@ -3696,10 +3692,6 @@
         "done": "ClientFence core patch: only Super Administrators change the cache backend (cached settings hold decrypted secrets)."
     },
     {
-        "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
-        "done": "ClientFence core patch: an unchecked switch saves 0, so staff password recovery can be turned off."
-    },
-    {
         "file": "modules/Cart/Service.php",
         "done": "ClientFence core patch: tryPayWithCredits() compares the balance with the invoice total in the client's currency"
     },
@@ -4032,10 +4024,6 @@
         "done": "ClientFence core patch: the balance tab is named Credit Balance; Payments was confused with Transactions."
     },
     {
-        "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
-        "done": "ClientFence core patch: the staff IP address rule moved to System > Settings > Sign-in security."
-    },
-    {
         "file": "modules/Support/Api/Client.php",
         "done": "ClientFence core patch: ticket secrets stay separate from ticket messages and email payloads."
     },
@@ -4118,5 +4106,37 @@
     {
         "file": "themes/palisade/html/mod_support_tickets.html.twig",
         "done": "ClientFence: optional server access or another secret, added once the ticket exists (Support/TicketSecrets.php)."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch: sign-in security moved to Security > Settings"
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
+        "done": "ClientFence core patch: staff sign-in rules and password reset moved to Security > Settings"
+    },
+    {
+        "file": "modules/Security/Controller/Admin.php",
+        "done": "ClientFence core patch: Security > Settings, the security settings in one place"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: the allowed IPs apply to API key sign-ins only"
+    },
+    {
+        "file": "library/ClientFence/Fingerprint.php",
+        "done": "ClientFence core patch: the visitor's address, read from a trusted proxy's header"
+    },
+    {
+        "file": "library/ClientFence/Fingerprint.php",
+        "done": "ClientFence core patch: Cloudflare's country header only from a trusted proxy"
+    },
+    {
+        "file": "modules/Security/Service.php",
+        "done": "ClientFence core patch: opens Security > Settings (extension/settings/security)"
+    },
+    {
+        "file": "library/ClientFence/Session.php",
+        "done": "ClientFence core patch: a session saved while the check was off has an empty fingerprint"
     }
 ]

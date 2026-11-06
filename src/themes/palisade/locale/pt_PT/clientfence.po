@@ -20985,3 +20985,180 @@ msgstr "Precisa da permissão “Abrir dados confidenciais dos bilhetes” para 
 #: src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Add server access or a secret"
 msgstr "Adicionar acesso ao servidor ou um dado confidencial"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API addresses and ranges, one per line"
+msgstr "Endereços e intervalos de API, um por linha"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API keys from these addresses only"
+msgstr "Chaves de API apenas a partir destes endereços"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists"
+msgstr "Listas de acesso"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists saved."
+msgstr "Listas de acesso guardadas."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Add Cloudflare ranges"
+msgstr "Adicionar intervalos da Cloudflare"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Add at least one proxy address."
+msgstr "Adicione pelo menos um endereço de proxy."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Addresses and ranges, one per line"
+msgstr "Endereços e intervalos, um por linha"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff to reset a forgotten password by email"
+msgstr "Permitir que a equipa reponha por e-mail uma palavra-passe esquecida"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Check that each request comes from the same browser"
+msgstr "Verificar se cada pedido vem do mesmo navegador"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose the header the proxy sends."
+msgstr "Escolha o cabeçalho que o proxy envia."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Cloudflare ranges in the list: %count% of %total%."
+msgstr "Intervalos da Cloudflare na lista: %count% de %total%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr "Cada pedido com sessão iniciada é comparado com o navegador que iniciou a sessão: tipo, sistema, idioma e endereço. Uma sessão que de repente parece outro navegador é terminada, o que impede a utilização noutro local de um cookie de sessão roubado. Desative apenas se a equipa ou os clientes forem desligados sem motivo."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Forwarded (RFC 7239)"
+msgstr "Forwarded (RFC 7239)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Header the proxy sends"
+msgstr "Cabeçalho que o proxy envia"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgstr "Há mais opções em Segurança → Definições. Ficou bloqueado? No servidor, execute: php console.php clientfence:signin-security-off"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never rate limited"
+msgstr "Nunca limitados"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Not an IP address or range: :ip. Ranges wider than /8 (IPv4) or /16 (IPv6) are not allowed."
+msgstr "Não é um endereço IP nem um intervalo: :ip. Os intervalos maiores do que /8 (IPv4) ou /16 (IPv6) não são permitidos."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Only Super Administrators can change security settings."
+msgstr "Apenas os Superadministradores podem alterar as definições de segurança."
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Open Security settings"
+msgstr "Abrir as definições de segurança"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxies"
+msgstr "Proxies"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy addresses and ranges, one per line"
+msgstr "Endereços e intervalos de proxy, um por linha"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy settings saved."
+msgstr "Definições de proxy guardadas."
+
+#: src/modules/Clientfence/Health.php
+msgid "Read from the trusted proxy at :ip."
+msgstr "Lido a partir do proxy de confiança em :ip."
+
+#: src/modules/Clientfence/Health.php
+msgid "Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies."
+msgstr "Os pedidos passam por um proxy em :ip que não é de confiança, por isso os visitantes aparecem como :ip. Confie nele em Segurança > Definições > Proxies."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server."
+msgstr "Os pedidos destes endereços ignoram todos os limites de taxa (tentativas de início de sessão, reposições de palavra-passe, chamadas de API). Use para os seus próprios endereços fixos, como um servidor de monitorização."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr "Os pedidos assinados com uma chave de API a partir de qualquer outro endereço são recusados. Vazio: as chaves de API funcionam a partir de qualquer lugar. As páginas de administração e do cliente não são afetadas."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Same browser check"
+msgstr "Verificação do mesmo navegador"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Security settings"
+msgstr "Definições de segurança"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Session settings saved."
+msgstr "Definições de sessão guardadas."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sessions"
+msgstr "Sessões"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in"
+msgstr "Início de sessão"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in rules, proxies, access lists and sessions."
+msgstr "Regras de início de sessão, proxies, listas de acesso e sessões."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff password reset"
+msgstr "Reposição de palavra-passe da equipa"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings."
+msgstr "As regras de início de sessão da equipa (PIN por e-mail, endereços IP, países) e a reposição de palavra-passe da equipa estão em Segurança > Definições."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "The \"Forgot your password?\" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator."
+msgstr "A ligação “Esqueceu-se da sua palavra-passe?” do início de sessão da equipa envia por e-mail uma ligação de reposição. Desative se as palavras-passe da equipa só forem repostas por um Superadministrador."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "This request comes from %remote%. The address used for the visitor: %client%."
+msgstr "Este pedido vem de %remote%. O endereço usado para o visitante: %client%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trust these proxies"
+msgstr "Confiar nestes proxies"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trusted proxies"
+msgstr "Proxies de confiança"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Unknown settings section."
+msgstr "Secção de definições desconhecida."
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitor addresses"
+msgstr "Endereços dos visitantes"
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitors connect directly: no proxy in front of the portal."
+msgstr "Os visitantes ligam-se diretamente: nenhum proxy à frente do portal."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network."
+msgstr "Quando os visitantes chegam ao portal através de um proxy como a Cloudflare, todos os pedidos vêm do proxy. Confie nos endereços dele para que o endereço do visitante seja lido do cabeçalho que ele envia: as regras de início de sessão, os limites de taxa e os registos passam a ver o visitante real. Confie apenas em endereços que sejam mesmo o seu proxy, nunca numa rede inteira."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For (Cloudflare and most proxies)"
+msgstr "X-Forwarded-For (Cloudflare e a maioria dos proxies)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
+msgstr "X-Forwarded-For, Host e Prefix (apenas se o seu proxy definir os três)"

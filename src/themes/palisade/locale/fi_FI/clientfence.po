@@ -20744,3 +20744,180 @@ msgstr "Arvojen näkemiseen tarvitaan oikeus ”Avaa tukipyyntöjen salaiset tie
 #: src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Add server access or a secret"
 msgstr "Lisää palvelinpääsy tai salainen tieto"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API addresses and ranges, one per line"
+msgstr "API-osoitteet ja -alueet, yksi riviä kohden"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API keys from these addresses only"
+msgstr "API-avaimet vain näistä osoitteista"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists"
+msgstr "Käyttölistat"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists saved."
+msgstr "Käyttölistat tallennettu."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Add Cloudflare ranges"
+msgstr "Lisää Cloudflare-alueet"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Add at least one proxy address."
+msgstr "Lisää vähintään yksi välityspalvelimen osoite."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Addresses and ranges, one per line"
+msgstr "Osoitteet ja alueet, yksi riviä kohden"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff to reset a forgotten password by email"
+msgstr "Salli henkilöstön palauttaa unohtunut salasana sähköpostilla"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Check that each request comes from the same browser"
+msgstr "Tarkista, että jokainen pyyntö tulee samasta selaimesta"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose the header the proxy sends."
+msgstr "Valitse otsake, jonka välityspalvelin lähettää."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Cloudflare ranges in the list: %count% of %total%."
+msgstr "Cloudflare-alueita listassa: %count% / %total%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr "Jokaista kirjautuneen istunnon pyyntöä verrataan selaimeen, jolla kirjauduttiin: sen tyyppiin, järjestelmään, kieleen ja osoitteeseen. Istunto, joka näyttää yhtäkkiä toiselta selaimelta, kirjataan ulos, mikä estää varastetun istuntoevästeen käytön muualla. Poista tarkistus käytöstä vain, jos henkilöstö tai asiakkaat kirjataan ulos ilman syytä."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Forwarded (RFC 7239)"
+msgstr "Forwarded (RFC 7239)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Header the proxy sends"
+msgstr "Otsake, jonka välityspalvelin lähettää"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgstr "Lisää asetuksia on kohdassa Tietoturva → Asetukset. Lukittuna ulos? Suorita palvelimella: php console.php clientfence:signin-security-off"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never rate limited"
+msgstr "Ei koskaan nopeusrajoitettu"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Not an IP address or range: :ip. Ranges wider than /8 (IPv4) or /16 (IPv6) are not allowed."
+msgstr "Ei ole IP-osoite eikä alue: :ip. Alueet, jotka ovat laajempia kuin /8 (IPv4) tai /16 (IPv6), eivät ole sallittuja."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Only Super Administrators can change security settings."
+msgstr "Vain pääylläpitäjät voivat muuttaa tietoturva-asetuksia."
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Open Security settings"
+msgstr "Avaa tietoturva-asetukset"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxies"
+msgstr "Välityspalvelimet"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy addresses and ranges, one per line"
+msgstr "Välityspalvelinten osoitteet ja alueet, yksi riviä kohden"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy settings saved."
+msgstr "Välityspalvelinasetukset tallennettu."
+
+#: src/modules/Clientfence/Health.php
+msgid "Read from the trusted proxy at :ip."
+msgstr "Luettu luotetulta välityspalvelimelta osoitteessa :ip."
+
+#: src/modules/Clientfence/Health.php
+msgid "Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies."
+msgstr "Pyynnöt tulevat välityspalvelimen kautta osoitteessa :ip, johon ei luoteta, joten kävijät näkyvät osoitteena :ip. Luota siihen kohdassa Tietoturva > Asetukset > Välityspalvelimet."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server."
+msgstr "Näistä osoitteista tulevat pyynnöt ohittavat kaikki nopeusrajat (kirjautumisyritykset, salasanan palautukset, API-kutsut). Käytä tätä omille kiinteille osoitteillesi, kuten valvontapalvelimelle."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr "Pyynnöt, jotka on allekirjoitettu API-avaimella mistä tahansa muusta osoitteesta, hylätään. Tyhjä: API-avaimet toimivat mistä tahansa. Ylläpito- ja asiakassivut eivät ole mukana."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Same browser check"
+msgstr "Saman selaimen tarkistus"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Security settings"
+msgstr "Tietoturva-asetukset"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Session settings saved."
+msgstr "Istuntoasetukset tallennettu."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sessions"
+msgstr "Istunnot"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in"
+msgstr "Kirjautuminen"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in rules, proxies, access lists and sessions."
+msgstr "Kirjautumissäännöt, välityspalvelimet, käyttölistat ja istunnot."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff password reset"
+msgstr "Henkilöstön salasanan palautus"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings."
+msgstr "Henkilöstön kirjautumissäännöt (sähköpostin PIN, IP-osoitteet, maat) ja henkilöstön salasanan palautus ovat kohdassa Tietoturva > Asetukset."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "The \"Forgot your password?\" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator."
+msgstr "Henkilöstön kirjautumisen ”Unohditko salasanan?” -linkki lähettää palautuslinkin sähköpostilla. Poista se käytöstä, jos henkilöstön salasanat palauttaa vain pääylläpitäjä."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "This request comes from %remote%. The address used for the visitor: %client%."
+msgstr "Tämä pyyntö tulee osoitteesta %remote%. Kävijän osoitteena käytetään: %client%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trust these proxies"
+msgstr "Luota näihin välityspalvelimiin"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trusted proxies"
+msgstr "Luotetut välityspalvelimet"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Unknown settings section."
+msgstr "Tuntematon asetusosio."
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitor addresses"
+msgstr "Kävijöiden osoitteet"
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitors connect directly: no proxy in front of the portal."
+msgstr "Kävijät yhdistävät suoraan: portaalin edessä ei ole välityspalvelinta."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network."
+msgstr "Kun kävijät saapuvat portaaliin välityspalvelimen, kuten Cloudflaren, kautta, jokainen pyyntö tulee välityspalvelimelta. Luota sen osoitteisiin, jotta kävijän osoite luetaan sen lähettämästä otsakkeesta: kirjautumissäännöt, nopeusrajat ja lokit näkevät silloin oikean kävijän. Luota vain osoitteisiin, jotka ovat todella välityspalvelimesi, älä koskaan kokonaiseen verkkoon."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For (Cloudflare and most proxies)"
+msgstr "X-Forwarded-For (Cloudflare ja useimmat välityspalvelimet)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
+msgstr "X-Forwarded-For, Host ja Prefix (vain jos välityspalvelimesi asettaa kaikki kolme)"

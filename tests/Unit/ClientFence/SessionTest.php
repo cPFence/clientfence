@@ -178,3 +178,24 @@ test('a session deleted while a request ran is not written back by that request'
         ->and($running->write('fresh', 'x|i:1;'))->toBeTrue()
         ->and($pdo->query("SELECT COUNT(*) FROM session WHERE id = 'fresh'")->fetchColumn())->toBe(1);
 });
+
+test('a session saved while the browser check was off is kept when the check is turned back on', function (): void {
+    session_name('PHPSESSID');
+    session_id('');
+    $_COOKIE['PHPSESSID'] = 'checked-session';
+    $request = Symfony\Component\HttpFoundation\Request::create('/', 'GET', [], [], [], ['REMOTE_ADDR' => '198.51.100.7', 'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) Firefox/140.0']);
+    $check = function (string $fingerprint, bool $trashed) use ($request): void {
+        $db = Mockery::mock();
+        $db->shouldReceive('findOne')->andReturn((object) ['fingerprint' => $fingerprint, 'created_at' => time()]);
+        $db->shouldReceive('trash')->times($trashed ? 1 : 0);
+        $di = new Pimple\Container();
+        $di['db'] = $db;
+        $di['request'] = $request;
+        $session = createSession();
+        $session->setDi($di);
+        @invokePrivate($session, 'canUseSession');
+    };
+
+    $check('[]', false);
+    $check(json_encode(['browser' => md5('Another browser'), 'os' => md5('Another system')]), true);
+});

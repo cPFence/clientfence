@@ -9,8 +9,7 @@ use ClientFence\InformationException;
 use Symfony\Component\Intl\Countries;
 
 /**
- * Sign-in security (System → Settings → System → Sign-in security; Super Administrators only),
- * all off by default:
+ * Sign-in security (Security → Settings → Sign-in; Super Administrators only), all off by default:
  *
  * - Staff sign-in from chosen IP addresses only (kept in the Staff module config).
  *
@@ -30,8 +29,11 @@ use Symfony\Component\Intl\Countries;
  * - "Trust this browser for 30 days": a signed cookie per area (staff, client) naming the login;
  *   it stops working when the login's password changes (the signature covers the password hash).
  *
+ * - Staff password reset: the "Forgot your password?" link of the staff login (the Staff module's
+ *   public.reset_pw, on unless saved off, as in WHMCS).
+ *
  * Locked out: `php console.php clientfence:signin-security-off` turns the features off.
- * Settings are kept in mod_clientfence_state (STATE), except the Staff IP rule.
+ * Settings are kept in mod_clientfence_state (STATE), except the staff IP rule and password reset.
  */
 final class SignInSecurity
 {
@@ -54,7 +56,7 @@ final class SignInSecurity
      */
     public static ?int $newClientId = null;
 
-    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>} */
+    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>, staff_reset: bool} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di) ?? [];
@@ -63,7 +65,7 @@ final class SignInSecurity
         $staff = $di['mod']('staff')->getConfig();
         $ips = array_values(array_filter(array_map(trim(...), preg_split('/\R/', (string) ($staff['allowed_ips'] ?? ''))), fn (string $ip): bool => $ip !== ''));
 
-        return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries, 'ips_on' => !empty($staff['check_ip']) && $ips !== [], 'ips' => $ips];
+        return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries, 'ips_on' => !empty($staff['check_ip']) && $ips !== [], 'ips' => $ips, 'staff_reset' => (string) ($staff['public']['reset_pw'] ?? '1') !== '0'];
     }
 
     /** Whether sign-ins of an area ('staff' or 'client') ask for an email PIN. */
@@ -168,12 +170,21 @@ final class SignInSecurity
             $di['session']->delete(self::CONFIRM);
         }
 
-        if ($saveIps) {
+        // Quick setup saves without these fields, so each is kept unless sent.
+        if ($saveIps || array_key_exists('staff_reset', $data)) {
             $extension = $di['mod_service']('extension');
-            $extension->setConfig(array_merge($extension->getConfig('mod_staff'), ['ext' => 'mod_staff', 'check_ip' => (int) $ipsOn, 'allowed_ips' => implode(PHP_EOL, $ips)]));
+            $staffConfig = $extension->getConfig('mod_staff');
+            $changes = ['ext' => 'mod_staff'];
+            if ($saveIps) {
+                $changes += ['check_ip' => (int) $ipsOn, 'allowed_ips' => implode(PHP_EOL, $ips)];
+            }
+            if (array_key_exists('staff_reset', $data)) {
+                $changes['public'] = ['reset_pw' => empty($data['staff_reset']) ? '0' : '1'] + (array) ($staffConfig['public'] ?? []);
+            }
+            $extension->setConfig(array_merge($staffConfig, $changes));
         }
         self::saveState($di, ['pin' => $pin, 'countries_on' => $countriesOn, 'countries' => $countries]);
-        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s, staff countries %s, staff IPs %s', $admin['id'], $pin, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off');
+        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s, staff countries %s, staff IPs %s, staff password reset %s', $admin['id'], $pin, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off', array_key_exists('staff_reset', $data) ? (empty($data['staff_reset']) ? 'off' : 'on') : 'unchanged');
 
         return ['saved' => true];
     }

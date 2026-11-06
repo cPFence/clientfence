@@ -13,8 +13,9 @@ test('settings-index.json is up to date (run php tools/build-settings-index.php)
     $built = SettingsIndex::build(dirname(__DIR__, 3));
 
     expect(json_decode((string) file_get_contents(SettingsIndex::FILE), true))->toBe($built)
-        ->and($built)->toContain(['mod' => 'system', 'tab' => 'tab-signin', 'kind' => 'field', 'label' => 'Ask for an email PIN'])
-        ->and($built)->toContain(['mod' => 'system', 'tab' => 'tab-signin', 'kind' => 'field', 'label' => 'IP addresses, one per line']);
+        ->and($built)->toContain(['mod' => 'security', 'tab' => 'tab-signin', 'kind' => 'field', 'label' => 'Ask for an email PIN'])
+        ->and($built)->toContain(['mod' => 'security', 'tab' => 'tab-signin', 'kind' => 'field', 'label' => 'IP addresses, one per line'])
+        ->and($built)->toContain(['mod' => 'security', 'tab' => 'tab-proxies', 'kind' => 'field', 'label' => 'Trust these proxies']);
 });
 
 test('every extra word names a page or tab of the index', function (): void {
@@ -97,9 +98,9 @@ test('staff see only the settings pages they may open', function (): void {
         ->and($index)->toContain([
             'label' => 'Ask for an email PIN',
             'kind' => 'field',
-            'page' => 'System module',
-            'tab' => 'Sign-in security',
-            'words' => SettingsIndex::WORDS['system#tab-signin'],
-            'url' => 'extension/settings/system#tab-signin',
+            'page' => 'Security module',
+            'tab' => 'Sign-in',
+            'words' => SettingsIndex::WORDS['security#tab-signin'],
+            'url' => 'extension/settings/security#tab-signin',
         ]);
 });

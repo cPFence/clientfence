@@ -47,7 +47,8 @@ class Fingerprint
                 'weight' => 100, // Always fail if this doesn't match.
             ],
             'ip' => [
-                'source' => $this->request->server->get('REMOTE_ADDR', ''),
+                // ClientFence core patch: the visitor's address, read from a trusted proxy's header when one is set.
+                'source' => (string) $this->request->getClientIp(),
                 'weight' => 2,
             ],
             'referrer' => [
@@ -229,8 +230,8 @@ class Fingerprint
 
     private function getIpCountry(): string
     {
-        // Use the CF header if it is set.
-        $cfIpCountry = $this->request->headers->get('CF-IPCountry');
+        // ClientFence core patch: Cloudflare's country header only from a trusted proxy; anyone else can send it.
+        $cfIpCountry = $this->request->isFromTrustedProxy() ? $this->request->headers->get('CF-IPCountry') : null;
         if ($cfIpCountry !== null) {
             return $cfIpCountry;
         }
@@ -238,7 +239,7 @@ class Fingerprint
         // Otherwise, instance the system's GeoIP reader and read the country from there.
         try {
             $reader = new GeoIP\Reader();
-            $remoteAddr = $this->request->server->get('REMOTE_ADDR', '');
+            $remoteAddr = (string) $this->request->getClientIp();
 
             if (empty($remoteAddr)) {
                 return '';
@@ -253,7 +254,7 @@ class Fingerprint
     private function getIpAsn()
     {
         try {
-            $remoteAddr = $this->request->server->get('REMOTE_ADDR', '');
+            $remoteAddr = (string) $this->request->getClientIp();
 
             if (empty($remoteAddr)) {
                 return '';

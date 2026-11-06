@@ -172,27 +172,11 @@
                 </div>
 
                 <div class="tab-pane fade" id="tab-settings" role="tabpanel">
-                    <form method="post" action="{{ 'extension/config_save'|api_url }}" {{ fb_api_form({message: 'Configuration Updated'|trans}) }}>
-                        <input type="hidden" name="ext" value="mod_staff">
-                        <div class="card-body">
-                        {% set params = admin.extension_config_get({ 'ext': 'mod_staff' }) %}
-                            {# ClientFence core patch: the staff IP address rule moved to System > Settings > Sign-in security. #}
-                            <p class="text-secondary mb-0">{{ 'Staff sign-in rules (email PIN, IP addresses, countries) are in System > Settings > Sign-in security.'|trans }}</p>
-                        </div>
-                        <div class="card-body border-top">
-                            <h4 class="card-title mb-2">{{ 'Password Recovery'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Control whether staff users may request password reset emails from the public login flow.'|trans }}</p>
-                            {# ClientFence core patch: an unchecked switch saves 0, so staff password recovery can be turned off. #}
-                            <input type="hidden" name="public[reset_pw]" value="0">
-                            <label class="form-check form-switch form-switch-2">
-                                <input class="form-check-input" type="checkbox" name="public[reset_pw]" value="1"{% if params.public.reset_pw|default('1') == '1' %} checked{% endif %}>
-                                <span class="form-check-label">{{ 'Allow Staff Reset Passwords'|trans }}</span>
-                            </label>
-                        </div>
-                        <div class="card-footer text-end">
-                            <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
-                        </div>
-                    </form>
+                    <div class="card-body">
+                        {# ClientFence core patch: staff sign-in rules and password reset moved to Security > Settings (Clientfence SignInSecurity.php). #}
+                        <p class="text-secondary mb-2">{{ 'Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings.'|trans }}</p>
+                        <a class="btn" href="{{ 'extension/settings/security'|url }}#tab-signin">{{ 'Open Security settings'|trans }}</a>
+                    </div>
                 </div>
 
                 <div class="tab-pane fade" id="tab-groups" role="tabpanel">

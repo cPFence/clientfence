@@ -20,7 +20,10 @@ final class SettingsIndex
 
     /** Extra search words, by "module" or "module#tab". English: they are names and acronyms. */
     public const WORDS = [
-        'system#tab-signin' => '2FA two-factor MFA OTP PIN login lockout country countries GeoIP IP allowed IPs whitelist',
+        'security#tab-signin' => '2FA two-factor MFA OTP PIN login lockout country countries GeoIP IP allowed IPs whitelist forgot password reset',
+        'security#tab-proxies' => 'Cloudflare proxy reverse proxy load balancer X-Forwarded-For CF-Connecting-IP real IP visitor IP',
+        'security#tab-access' => 'whitelist allow list rate limit API IP restriction',
+        'security#tab-sessions' => 'session fingerprint hijacking cookie IP check',
         'system#tab-cache' => 'Redis Memcached flush clear',
         'system#tab-backups' => 'backup dump SFTP FTP',
         'system#tab-health' => 'health status check problems',

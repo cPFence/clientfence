@@ -1,0 +1,124 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{# ClientFence: Security > Settings (extension/settings/security): sign-in rules (SignInSecurity.php), proxies,
+   access lists and sessions (SecuritySettings.php, saved in config.php). Super Administrators only. #}
+
+{% block meta_title %}{{ 'Security settings'|trans }}{% endblock %}
+
+{% set active_menu = 'security' %}
+
+{% block content %}
+{% set cf_super = guest.extension_is_on({ 'mod': 'clientfence' }) and admin.clientfence_backup_access %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Security settings'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Sign-in rules, proxies, access lists and sessions.'|trans }}</p>
+        </div>
+    </div>
+    {% if not cf_super %}
+        <div class="card-body">
+            <p class="text-secondary mb-0">{{ 'Only Super Administrators can change security settings.'|trans }}</p>
+        </div>
+    {% else %}
+    {% set signin = admin.clientfence_signin_security_get %}
+    {% set sec = admin.clientfence_security_settings_get %}
+    <div class="card-body pt-3 pb-0 px-0">
+        <ul class="nav nav-pills mb-3 px-3" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" href="#tab-signin" data-bs-toggle="tab" role="tab">{{ 'Sign-in'|trans }}</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#tab-proxies" data-bs-toggle="tab" role="tab">{{ 'Proxies'|trans }}</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#tab-access" data-bs-toggle="tab" role="tab">{{ 'Access lists'|trans }}</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#tab-sessions" data-bs-toggle="tab" role="tab">{{ 'Sessions'|trans }}</a>
+            </li>
+        </ul>
+
+        <div class="tab-content border-top">
+            <div class="tab-pane fade show active" id="tab-signin" role="tabpanel">
+                <div class="card-body">
+                    {% include 'mod_clientfence_signin_panel.html.twig' with { 'signin': signin } %}
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tab-proxies" role="tabpanel">
+                <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'Proxy settings saved.'|trans }) }}>
+                    <input type="hidden" name="section" value="proxies">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ 'Trusted proxies'|trans }}</h3>
+                        <p class="text-secondary">{{ 'When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network.'|trans }}</p>
+                        <div class="alert alert-info" role="alert">
+                            {{ 'This request comes from %remote%. The address used for the visitor: %client%.'|trans({ '%remote%': sec.remote_addr, '%client%': sec.client_ip }) }}
+                        </div>
+                        <input type="hidden" name="proxies_on" value="0">
+                        <label class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" name="proxies_on" value="1"{% if sec.proxies_on %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Trust these proxies'|trans }}</span>
+                        </label>
+                        <label class="form-label" for="cf-sec-proxies">{{ 'Proxy addresses and ranges, one per line'|trans }}</label>
+                        <textarea class="form-control font-monospace" id="cf-sec-proxies" name="proxies" rows="8" dir="ltr" data-cf-proxy-list>{{ sec.proxies|join("\n") }}</textarea>
+                        <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                            <button type="button" class="btn btn-sm" data-cf-add-cloudflare="{{ sec.cloudflare|json_encode }}">{{ 'Add Cloudflare ranges'|trans }}</button>
+                            <span class="text-secondary small">{{ 'Cloudflare ranges in the list: %count% of %total%.'|trans({ '%count%': sec.cloudflare_listed, '%total%': sec.cloudflare|length }) }}</span>
+                        </div>
+                        <label class="form-label mt-3" for="cf-sec-headers">{{ 'Header the proxy sends'|trans }}</label>
+                        <select class="form-select" id="cf-sec-headers" name="headers">
+                            {% for mode, label in { 'aws_elb': 'X-Forwarded-For (Cloudflare and most proxies)'|trans, 'x_forwarded': 'X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)'|trans, 'forwarded': 'Forwarded (RFC 7239)'|trans } %}
+                                <option value="{{ mode }}"{% if sec.headers == mode %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="tab-access" role="tabpanel">
+                <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'Access lists saved.'|trans }) }}>
+                    <input type="hidden" name="section" value="access">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ 'Never rate limited'|trans }}</h3>
+                        <p class="text-secondary">{{ 'Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server.'|trans }}</p>
+                        <label class="form-label" for="cf-sec-whitelist">{{ 'Addresses and ranges, one per line'|trans }}</label>
+                        <textarea class="form-control font-monospace" id="cf-sec-whitelist" name="whitelist" rows="4" dir="ltr">{{ sec.whitelist|join("\n") }}</textarea>
+                    </div>
+                    <div class="card-body border-top">
+                        <h3 class="card-title">{{ 'API keys from these addresses only'|trans }}</h3>
+                        <p class="text-secondary">{{ 'Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected.'|trans }}</p>
+                        <label class="form-label" for="cf-sec-api-ips">{{ 'API addresses and ranges, one per line'|trans }}</label>
+                        <textarea class="form-control font-monospace" id="cf-sec-api-ips" name="api_ips" rows="4" dir="ltr">{{ sec.api_ips|join("\n") }}</textarea>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="tab-sessions" role="tabpanel">
+                <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'Session settings saved.'|trans }) }}>
+                    <input type="hidden" name="section" value="sessions">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ 'Same browser check'|trans }}</h3>
+                        <p class="text-secondary">{{ 'Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason.'|trans }}</p>
+                        <input type="hidden" name="fingerprint" value="0">
+                        <label class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" name="fingerprint" value="1"{% if sec.fingerprint %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Check that each request comes from the same browser'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -19814,3 +19814,180 @@ msgstr "برای دیدن مقدارها به دسترسی «باز کردن ا�
 #: src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Add server access or a secret"
 msgstr "افزودن دسترسی به سرور یا اطلاعات محرمانه"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API addresses and ranges, one per line"
+msgstr "نشانی‌ها و بازه‌های API، یکی در هر خط"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API keys from these addresses only"
+msgstr "کلیدهای API فقط از این نشانی‌ها"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists"
+msgstr "فهرست‌های دسترسی"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Access lists saved."
+msgstr "فهرست‌های دسترسی ذخیره شد."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Add Cloudflare ranges"
+msgstr "افزودن بازه‌های Cloudflare"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Add at least one proxy address."
+msgstr "دست‌کم یک نشانی پروکسی اضافه کنید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Addresses and ranges, one per line"
+msgstr "نشانی‌ها و بازه‌ها، یکی در هر خط"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow staff to reset a forgotten password by email"
+msgstr "اجازه دهید کارکنان رمز عبور فراموش‌شده را با ایمیل بازنشانی کنند"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Check that each request comes from the same browser"
+msgstr "بررسی اینکه هر درخواست از همان مرورگر می‌آید"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose the header the proxy sends."
+msgstr "سرایندی را که پروکسی می‌فرستد انتخاب کنید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Cloudflare ranges in the list: %count% of %total%."
+msgstr "بازه‌های Cloudflare در فهرست: %count% از %total%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr "هر درخواست جلسه‌ی واردشده با مرورگری که وارد شده مقایسه می‌شود: نوع، سیستم، زبان و نشانی آن. جلسه‌ای که ناگهان شبیه مرورگر دیگری شود از سیستم خارج می‌شود و این مانع استفاده از کوکی جلسه‌ی دزدیده‌شده در جای دیگر می‌شود. فقط اگر کارکنان یا مشتریان بی‌دلیل خارج می‌شوند آن را خاموش کنید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Forwarded (RFC 7239)"
+msgstr "Forwarded (RFC 7239)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Header the proxy sends"
+msgstr "سرایندی که پروکسی می‌فرستد"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgstr "تنظیمات بیشتر در امنیت ← تنظیمات است. قفل شده‌اید؟ روی سرور اجرا کنید: php console.php clientfence:signin-security-off"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never rate limited"
+msgstr "هرگز محدود به نرخ نمی‌شود"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Not an IP address or range: :ip. Ranges wider than /8 (IPv4) or /16 (IPv6) are not allowed."
+msgstr "نشانی IP یا بازه نیست: :ip. بازه‌های گسترده‌تر از /8 (IPv4) یا /16 (IPv6) مجاز نیستند."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Only Super Administrators can change security settings."
+msgstr "فقط مدیران ارشد می‌توانند تنظیمات امنیتی را تغییر دهند."
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Open Security settings"
+msgstr "باز کردن تنظیمات امنیتی"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxies"
+msgstr "پروکسی‌ها"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy addresses and ranges, one per line"
+msgstr "نشانی‌ها و بازه‌های پروکسی، یکی در هر خط"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Proxy settings saved."
+msgstr "تنظیمات پروکسی ذخیره شد."
+
+#: src/modules/Clientfence/Health.php
+msgid "Read from the trusted proxy at :ip."
+msgstr "از پروکسی مورد اعتماد در :ip خوانده شد."
+
+#: src/modules/Clientfence/Health.php
+msgid "Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies."
+msgstr "درخواست‌ها از طریق پروکسی در :ip می‌رسند که مورد اعتماد نیست، بنابراین بازدیدکنندگان :ip نمایش داده می‌شوند. در امنیت > تنظیمات > پروکسی‌ها به آن اعتماد کنید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server."
+msgstr "درخواست‌های این نشانی‌ها از همه‌ی محدودیت‌های نرخ (تلاش ورود، بازنشانی رمز عبور، فراخوانی‌های API) معاف هستند. برای نشانی‌های ثابت خودتان مانند سرور پایش از آن استفاده کنید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr "درخواست‌هایی که با کلید API از هر نشانی دیگر امضا شده باشند رد می‌شوند. خالی: کلیدهای API از هر جا کار می‌کنند. صفحه‌های مدیر و مشتری تحت تأثیر نیستند."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Same browser check"
+msgstr "بررسی همان مرورگر"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Security settings"
+msgstr "تنظیمات امنیتی"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Session settings saved."
+msgstr "تنظیمات جلسه ذخیره شد."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sessions"
+msgstr "جلسه‌ها"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in"
+msgstr "ورود"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-in rules, proxies, access lists and sessions."
+msgstr "قوانین ورود، پروکسی‌ها، فهرست‌های دسترسی و جلسه‌ها."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Staff password reset"
+msgstr "بازنشانی رمز عبور کارکنان"
+
+#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+msgid "Staff sign-in rules (email PIN, IP addresses, countries) and staff password reset are in Security > Settings."
+msgstr "قوانین ورود کارکنان (پین ایمیلی، نشانی‌های IP، کشورها) و بازنشانی رمز عبور کارکنان در امنیت > تنظیمات است."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "The \"Forgot your password?\" link of the staff login emails a reset link. Turn it off when staff passwords are only reset by a Super Administrator."
+msgstr "پیوند «رمز عبور را فراموش کرده‌اید؟» در ورود کارکنان، پیوند بازنشانی را ایمیل می‌کند. اگر رمز عبور کارکنان فقط توسط مدیر ارشد بازنشانی می‌شود آن را خاموش کنید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "This request comes from %remote%. The address used for the visitor: %client%."
+msgstr "این درخواست از %remote% می‌آید. نشانی استفاده‌شده برای بازدیدکننده: %client%."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trust these proxies"
+msgstr "اعتماد به این پروکسی‌ها"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Trusted proxies"
+msgstr "پروکسی‌های مورد اعتماد"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Unknown settings section."
+msgstr "بخش تنظیمات ناشناخته است."
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitor addresses"
+msgstr "نشانی‌های بازدیدکنندگان"
+
+#: src/modules/Clientfence/Health.php
+msgid "Visitors connect directly: no proxy in front of the portal."
+msgstr "بازدیدکنندگان مستقیم متصل می‌شوند: هیچ پروکسی‌ای جلوی پورتال نیست."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network."
+msgstr "وقتی بازدیدکنندگان از طریق پروکسی مانند Cloudflare به پورتال می‌رسند، هر درخواست از پروکسی می‌آید. به نشانی‌های آن اعتماد کنید تا نشانی بازدیدکننده از سرایندی که می‌فرستد خوانده شود: قوانین ورود، محدودیت‌های نرخ و گزارش‌ها آن‌وقت بازدیدکننده‌ی واقعی را می‌بینند. فقط به نشانی‌هایی اعتماد کنید که واقعاً پروکسی شما هستند، هرگز به یک شبکه‌ی کامل."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For (Cloudflare and most proxies)"
+msgstr "X-Forwarded-For (Cloudflare و بیشتر پروکسی‌ها)"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
+msgstr "X-Forwarded-For، Host و Prefix (فقط اگر پروکسی شما هر سه را تنظیم کند)"
