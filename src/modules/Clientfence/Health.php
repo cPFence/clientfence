@@ -389,16 +389,28 @@ final class Health
 
             return $last[0] ?? null;
         }
-        $request = $di['request'];
-        $params = [':ip' => (string) $request->server->get('REMOTE_ADDR', '')];
+
+        return self::proxyState($di['request']);
+    }
+
+    /** The web part of proxyCheck(), for this request. */
+    public static function proxyState(\Symfony\Component\HttpFoundation\Request $request): array
+    {
+        $remote = (string) $request->server->get('REMOTE_ADDR', '');
+        $params = [':ip' => $remote];
         $url = 'extension/settings/security#tab-proxies';
         if ($request->isFromTrustedProxy()) {
             return self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'ok', self::msg('Read from the trusted proxy at :ip.'), $url, $params);
         }
-        $forwarded = $request->headers->has('X-Forwarded-For') || $request->headers->has('CF-Connecting-IP') || $request->headers->has('Forwarded');
+        // A web server that already took the visitor from the header (LiteSpeed behind Cloudflare) leaves it naming REMOTE_ADDR.
+        $xff = explode(',', (string) $request->headers->get('X-Forwarded-For', ''));
+        $named = array_filter([trim((string) end($xff)), trim((string) $request->headers->get('CF-Connecting-IP', ''))]);
+        if (array_diff($named, [$remote]) !== [] || $request->headers->has('Forwarded')) {
+            return self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'warn', self::msg('Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies.'), $url, $params);
+        }
 
-        return $forwarded
-            ? self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'warn', self::msg('Requests come through a proxy at :ip that is not trusted, so visitors show as :ip. Trust it in Security > Settings > Proxies.'), $url, $params)
+        return $named !== []
+            ? self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'ok', self::msg('The web server already reads the visitor address from the proxy: :ip.'), $url, $params)
             : self::check('security', 'sec_proxy', self::msg('Visitor addresses'), 'ok', self::msg('Visitors connect directly: no proxy in front of the portal.'), $url);
     }
 

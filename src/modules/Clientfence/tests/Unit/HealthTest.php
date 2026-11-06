@@ -200,3 +200,17 @@ test('a saved check is read with its values filled in', function (): void {
         ->and(array_column(array_slice($report['checks'], 1), 'detail'))->toBe(['Sent 2026-11-03 04:00:00 by SFTP/FTP, email.', 'PHP 8.4.1.'])
         ->and($report['checks'][1]['title'])->toBe('Registrar: Main');
 });
+
+test('the proxy check warns only when the forwarded address is not the connecting one', function (string $remote, array $headers, string $state, string $detail): void {
+    Symfony\Component\HttpFoundation\Request::setTrustedProxies([], -1);
+    $request = Symfony\Component\HttpFoundation\Request::create('/', server: ['REMOTE_ADDR' => $remote]);
+    $request->headers->add($headers);
+
+    $check = Health::proxyState($request);
+
+    expect($check['state'])->toBe($state)->and($check['detail'])->toStartWith($detail);
+})->with([
+    'no proxy' => ['203.0.113.9', [], 'ok', 'Visitors connect directly'],
+    'web server already resolved it' => ['203.0.113.9', ['X-Forwarded-For' => '203.0.113.9', 'CF-Connecting-IP' => '203.0.113.9'], 'ok', 'The web server already reads'],
+    'untrusted proxy' => ['10.0.0.5', ['X-Forwarded-For' => '203.0.113.9'], 'warn', 'Requests come through a proxy'],
+]);
