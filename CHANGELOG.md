@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.31 (2026-11-06)
+
+### Added
+
+- Security > Settings: every security setting on one page (sign-in rules, proxies, access lists, sessions), for Super Administrators.
+- Trusted proxies such as Cloudflare, with the Cloudflare ranges built in, so sign-in rules, rate limits and logs see the visitor's real address.
+- System Health warns when the portal sits behind a proxy that is not trusted.
+
+### Changed
+
+- Sign-in security moved from System > Settings, and the staff password reset switch from Staff settings, to Security > Settings.
+- The API allowed addresses apply to API key sign-ins only and accept ranges.
+
+### Fixed
+
+- Turning the same browser check back on no longer signs everyone out.
+- The same browser check reads the visitor's address through trusted proxies only.
+
 ## 1.0.30 (2026-11-04)
 
 ### Added
