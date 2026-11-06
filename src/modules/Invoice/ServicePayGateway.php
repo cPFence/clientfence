@@ -148,6 +148,13 @@ class ServicePayGateway implements InjectionAwareInterface
             // If the subdirectory does not exist, ignore the exception.
         }
 
+        // ClientFence core patch: gateways shipped by active modules (Extension\Service::getModuleAdapterFiles()).
+        foreach (array_keys($this->di['mod_service']('extension')->getModuleAdapterFiles('Payment/Adapter')) as $adapter) {
+            if (!array_key_exists($adapter, $exists) && !in_array($adapter, $adapters, true)) {
+                $adapters[] = $adapter;
+            }
+        }
+
         return $adapters;
     }
 
@@ -511,6 +518,9 @@ class ServicePayGateway implements InjectionAwareInterface
                 require_once $nestedFile;
             } elseif ($this->filesystem->exists($flatFile)) {
                 require_once $flatFile;
+            } elseif ($moduleFile = $this->di['mod_service']('extension')->getModuleAdapterFiles('Payment/Adapter')[$pg->gateway] ?? null) {
+                // ClientFence core patch: a gateway shipped by an active module.
+                require_once $moduleFile;
             }
         }
 

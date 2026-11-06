@@ -125,7 +125,8 @@ class ExtensionManager implements InjectionAwareInterface
         $latest = $this->getLatestExtensionRelease($extension);
 
         if (Config::getProperty('update_branch', 'release') === 'release') {
-            if (version_compare(Version::VERSION, $latest['min_fossbilling_version'], '<')) {
+            // ClientFence core patch: compared with the FOSSBilling base, not the VERSION placeholder (every extension was "not compatible").
+            if (version_compare(Version::FOSSBILLING, (string) $latest['min_fossbilling_version'], '<')) {
                 return false;
             }
         }

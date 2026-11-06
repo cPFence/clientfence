@@ -879,7 +879,7 @@ test('to api array', function (): void {
 
     $di = container();
     $di['db'] = $dbMock;
-    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+    $di['mod_service'] = $di->protect(fn (string $name = ''): object => strtolower($name) === 'extension' ? Tests\Helpers\extensionServiceWithoutClientfence() : $orderServiceMock);
     $di['server_manager'] = $di->protect(fn ($manager, $config) => $serverManagerCustomMock);
 
     $service->setDi($di);
@@ -911,6 +911,7 @@ test('update', function (): void {
 
 test('get server managers', function (): void {
     $service = new Service();
+    $service->setDi(container());
     $result = $service->getServerManagers();
     expect($result)->toBeArray();
 });
@@ -923,6 +924,7 @@ test('get server manager config', function (): void {
         'label' => 'Custom Server Manager',
     ];
 
+    $service->setDi(container());
     $result = $service->getServerManagerConfig($manager);
     expect($result)->toBeArray();
     expect($result)->toEqual($expected);

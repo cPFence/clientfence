@@ -1138,3 +1138,122 @@ test('guest settings ignore inactive modules and normalize active module names',
     $api->setService($service);
     expect($api->settings(['ext' => $extension]))->toBe($active ? ['enabled' => true] : []);
 })->with([['MOD_CLIENT', true], ['mod_inactive', false]]);
+
+function extensionVersionedModule(array $manifest, ?object $service = null): Mockery\MockInterface
+{
+    $mod = Mockery::mock(ClientFence\Module::class);
+    $mod->shouldReceive('isCore')->andReturn(false);
+    $mod->shouldReceive('getManifest')->andReturn($manifest);
+    $mod->shouldReceive('install')->andReturn(true);
+    $mod->shouldReceive('hasAdminController')->andReturn(false);
+    $mod->shouldReceive('hasSettingsPage')->andReturn(false);
+    $mod->shouldReceive('hasService')->andReturn($service !== null);
+    if ($service !== null) {
+        $mod->shouldReceive('getService')->andReturn($service);
+    }
+
+    return $mod;
+}
+
+function extensionVersionedService(Mockery\MockInterface $mod): Service
+{
+    $di = container();
+    $di['em'] = extensionBuildEm();
+    $di['mod'] = $di->protect(fn (): Mockery\MockInterface => $mod);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = new Service();
+    $service->setDi($di);
+
+    return $service;
+}
+
+test('a module is checked against the ClientFence release and the FOSSBilling base, not the version placeholder', function (array $manifest, ?string $refused): void {
+    $service = extensionVersionedService(extensionVersionedModule(['version' => '1.0.0', ...$manifest]));
+    $activate = fn (): array => $service->activate(extensionCreateEntity(1, 'mod', 'hello', 'deactivated'));
+
+    if ($refused === null) {
+        expect($activate())->toBeArray();
+    } else {
+        expect($activate)->toThrow(ClientFence\InformationException::class, $refused);
+    }
+})->with([
+    'FOSSBilling extension for 0.6' => [['minimum_fossbilling_version' => '0.6.0'], null],
+    'needs a newer FOSSBilling' => [['minimum_fossbilling_version' => '0.9.0'], 'It requires FOSSBilling 0.9.0 or later'],
+    'needs this ClientFence' => [['minimum_clientfence_version' => '1.0.0'], null],
+    'needs a newer ClientFence' => [['minimum_clientfence_version' => '99.0.0'], 'It requires ClientFence 99.0.0 or later'],
+]);
+
+test('a module with newer files runs its upgrade from the installed version, once', function (): void {
+    $moduleService = new class {
+        public array $from = [];
+
+        public function upgrade(string $from): void
+        {
+            $this->from[] = $from;
+        }
+    };
+    $service = extensionVersionedService(extensionVersionedModule(['version' => '1.2.0'], $moduleService));
+    $ext = extensionCreateEntity(1, 'mod', 'hello', 'installed', '1.0.0');
+
+    expect($service->upgradeModule($ext))->toBeTrue()
+        ->and($ext->getVersion())->toBe('1.2.0')
+        ->and($service->upgradeModule($ext))->toBeFalse()
+        ->and($moduleService->from)->toBe(['1.0.0']);
+});
+
+test('modules can ship their own payment gateways, registrars and server managers', function (): void {
+    $dir = PATH_MODS . '/Zzadaptertest/Payment/Adapter';
+    mkdir($dir, 0o755, true);
+    touch($dir . '/ZzPay.php');
+
+    try {
+        $repository = Mockery::mock(ExtensionRepository::class);
+        $repository->shouldReceive('findInstalledNamesByType')->with(Extension::TYPE_MOD)->andReturn(['zzadaptertest'], []);
+        $di = container();
+        $di['em'] = extensionBuildEm($repository);
+        $service = new Service();
+        $service->setDi($di);
+
+        expect($service->getModuleAdapterFiles('Payment/Adapter'))->toBe(['ZzPay' => $dir . '/ZzPay.php'])
+            ->and($service->getModuleAdapterFiles('Payment/Adapter'))->toBe([]);
+    } finally {
+        unlink($dir . '/ZzPay.php');
+        rmdir($dir);
+        rmdir(dirname($dir));
+        rmdir(dirname($dir, 2));
+    }
+});
+
+test('a module stays active while a gateway it ships is still installed', function (array $installed, bool $refused): void {
+    $dir = PATH_MODS . '/Zzdeactivatetest/Payment/Adapter';
+    mkdir($dir, 0o755, true);
+    touch($dir . '/ZzPay.php');
+
+    try {
+        $db = Mockery::mock(ClientFence\Database::class);
+        $db->shouldReceive('getAll')->with('SELECT gateway AS name FROM pay_gateway')->andReturn($installed);
+        $mod = Mockery::mock(ClientFence\Module::class);
+        $mod->shouldReceive('getCoreModules')->andReturn([]);
+        $di = container();
+        $di['em'] = extensionBuildEm();
+        $di['db'] = $db;
+        $di['mod'] = $di->protect(fn (): Mockery\MockInterface => $mod);
+        $service = new Service();
+        $service->setDi($di);
+        $deactivate = fn (): bool => $service->deactivate(extensionCreateEntity(1, 'mod', 'zzdeactivatetest', 'installed'));
+
+        if ($refused) {
+            expect($deactivate)->toThrow(ClientFence\InformationException::class, 'This module provides ZzPay, which is still installed.');
+        } else {
+            expect($deactivate())->toBeTrue();
+        }
+    } finally {
+        unlink($dir . '/ZzPay.php');
+        rmdir($dir);
+        rmdir(dirname($dir));
+        rmdir(dirname($dir, 2));
+    }
+})->with([
+    'gateway installed' => [[['name' => 'ZzPay'], ['name' => 'Custom']], true],
+    'gateway removed' => [[['name' => 'Custom']], false],
+]);

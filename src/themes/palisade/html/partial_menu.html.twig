@@ -71,3 +71,5 @@
         </a>
     </li>
 {% endfor %}
+{# ClientFence: modules add their own menu links with a widget in this slot (an <li> like the ones above). #}
+{{ render_widgets('client.theme.menu.end', { active_menu: current_active_menu }) }}

@@ -4262,5 +4262,61 @@
     {
         "file": "modules/Antispam/templates/admin/mod_antispam_settings.html.twig",
         "done": "ClientFence core patch: the domain search CAPTCHA (Servicedomain Guest lookup_captcha)."
+    },
+    {
+        "file": "library/ClientFence/Version.php",
+        "done": "ClientFence core patch: the FOSSBilling release ClientFence is based on"
+    },
+    {
+        "file": "library/ClientFence/ExtensionManager.php",
+        "done": "ClientFence core patch: compared with the FOSSBilling base, not the VERSION placeholder"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: a manifest's minimum versions are checked against the FOSSBilling base and the ClientFence release"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: a module whose manifest version is newer than the installed one runs its"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: modules with newer files are upgraded (upgradeModule())"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: active modules can ship their own payment gateways, registrars and server"
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: gateways shipped by active modules"
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: a gateway shipped by an active module."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: registrars shipped by active modules"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: else a registrar shipped by an active module."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: server managers shipped by active modules"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: the built-in server manager's file, else the one an active module ships."
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: also a server manager shipped by an active module."
+    },
+    {
+        "file": "library/ClientFence/Translate.php",
+        "done": "ClientFence core patch: a module ships its own texts in modules/<Name>/locale/"
     }
 ]

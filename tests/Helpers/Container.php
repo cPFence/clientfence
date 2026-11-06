@@ -316,6 +316,7 @@ function extensionServiceWithoutClientfence(): object
 {
     $extension = \Mockery::mock()->shouldIgnoreMissing();
     $extension->shouldReceive('isExtensionActive')->byDefault()->andReturn(false);
+    $extension->shouldReceive('getModuleAdapterFiles')->byDefault()->andReturn([]);
 
     return $extension;
 }

@@ -106,6 +106,15 @@ class Service implements InjectionAwareInterface
             error_log($e->getMessage());
         }
 
+        // ClientFence core patch: modules with newer files are upgraded (upgradeModule()); a failed one keeps its version and is tried again next run.
+        foreach ($extensionService->getExtensionRepository()->findInstalledByType(Extension::TYPE_MOD) as $model) {
+            try {
+                $extensionService->upgradeModule($model);
+            } catch (\Throwable $e) {
+                $di['logger']->error('Upgrading extension "%s" failed: %s', $model->getName(), $e->getMessage());
+            }
+        }
+
         return true;
     }
 
@@ -379,11 +388,65 @@ class Service implements InjectionAwareInterface
         return $this->di['url']->adminLink(ltrim($uri, '/'));
     }
 
-    public function update(Extension $model): never
+    public function update(Extension $model): array
     {
         $this->di['mod_service']('Staff')->checkPermissionsAndThrowException('extension', 'manage_extensions');
 
-        throw new \ClientFence\InformationException('Visit the extension directory for more information on updating this extension.', null, 252);
+        if (!$this->upgradeModule($model)) {
+            throw new \ClientFence\InformationException('Visit the extension directory for more information on updating this extension.', null, 252);
+        }
+
+        return ['id' => $model->getName(), 'type' => $model->getType(), 'version' => $model->getVersion()];
+    }
+
+    /**
+     * ClientFence core patch: a module whose manifest version is newer than the installed one runs its
+     * service's upgrade($fromVersion) and is then recorded at the new version, as WHMCS runs an addon's
+     * upgrade function. Cron does this for every active module (onBeforeAdminCronRun()); false when there is nothing to do.
+     */
+    public function upgradeModule(Extension $model): bool
+    {
+        if ($model->getType() !== Extension::TYPE_MOD) {
+            return false;
+        }
+
+        $mod = $this->di['mod']($model->getName());
+        if ($mod->isCore()) {
+            return false;
+        }
+        $to = (string) ($mod->getManifest()['version'] ?? '');
+        $from = (string) $model->getVersion();
+        if ($to === '' || version_compare($to, $from, '<=')) {
+            return false;
+        }
+
+        if ($mod->hasService() && method_exists($service = $mod->getService(), 'upgrade')) {
+            $service->upgrade($from);
+        }
+        $model->setVersion($to);
+        $this->di['em']->flush();
+        $this->di['logger']->info('Upgraded extension "%s" from %s to %s', $model->getName(), $from, $to);
+
+        return true;
+    }
+
+    /**
+     * ClientFence core patch: active modules can ship their own payment gateways, registrars and server
+     * managers in modules/<Name>/<dir> (Payment/Adapter, Registrar/Adapter, Server/Manager); callers look in
+     * library/<dir> first, so a built-in adapter wins a name clash.
+     *
+     * @return array<string, string> adapter name => file
+     */
+    public function getModuleAdapterFiles(string $dir): array
+    {
+        $files = [];
+        foreach ($this->getExtensionRepository()->findInstalledNamesByType(Extension::TYPE_MOD) as $mod) {
+            foreach (glob(Path::join(PATH_MODS, ucfirst($mod), $dir, '*.php')) ?: [] as $file) {
+                $files[Path::getFilenameWithoutExtension($file)] ??= $file;
+            }
+        }
+
+        return $files;
     }
 
     /**
@@ -446,6 +509,21 @@ class Service implements InjectionAwareInterface
                 $mod = $ext->getName();
                 if ($this->isCoreModule($mod)) {
                     throw new \ClientFence\InformationException('Core modules are an integral part of the ClientFence system and cannot be deactivated.');
+                }
+                // ClientFence core patch: a gateway, registrar or server manager the module ships that is still installed keeps the
+                // module active; without the module its adapter is not found and the gateway list and invoice payments fail.
+                $inUse = [];
+                foreach (['Payment/Adapter' => 'SELECT gateway AS name FROM pay_gateway', 'Registrar/Adapter' => 'SELECT registrar AS name FROM tld_registrar', 'Server/Manager' => 'SELECT manager AS name FROM service_hosting_server'] as $dir => $sql) {
+                    $names = array_filter(
+                        array_map(Path::getFilenameWithoutExtension(...), glob(Path::join(PATH_MODS, ucfirst((string) $mod), $dir, '*.php')) ?: []),
+                        fn (string $name): bool => !is_file(Path::join(PATH_LIBRARY, $dir, $name . '.php')),
+                    );
+                    if ($names !== []) {
+                        $inUse = [...$inUse, ...array_intersect($names, array_column($this->di['db']->getAll($sql), 'name'))];
+                    }
+                }
+                if ($inUse !== []) {
+                    throw new \ClientFence\InformationException('This module provides :list, which is still installed. Remove it first, then deactivate the module.', [':list' => implode(', ', array_unique($inUse))]);
                 }
 
                 break;
@@ -597,8 +675,11 @@ class Service implements InjectionAwareInterface
         }
 
         $info = $mod->getManifest();
-        if (isset($info['minimum_fossbilling_version']) && \ClientFence\Version::compareVersion($info['minimum_fossbilling_version']) > 0) {
-            throw new \ClientFence\InformationException('Module cannot be installed. It requires at least :min version of FOSSBilling. You are using :v', [':min' => $info['minimum_fossbilling_version'], ':v' => \ClientFence\Version::VERSION]);
+        // ClientFence core patch: a manifest's minimum versions are checked against the FOSSBilling base and the ClientFence release (VERSION is a placeholder that refused every module with a minimum).
+        foreach (['FOSSBilling' => ['minimum_fossbilling_version', \ClientFence\Version::FOSSBILLING], 'ClientFence' => ['minimum_clientfence_version', \ClientFence\Version::CLIENTFENCE]] as $product => [$key, $have]) {
+            if (!empty($info[$key]) && version_compare($have, (string) $info[$key], '<')) {
+                throw new \ClientFence\InformationException('Module cannot be installed. It requires :product :min or later; this site has :v.', [':product' => $product, ':min' => $info[$key], ':v' => $have]);
+            }
         }
 
         // Allow install module even if no installer exists

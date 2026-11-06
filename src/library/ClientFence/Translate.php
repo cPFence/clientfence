@@ -109,6 +109,19 @@ class Translate
         _bindtextdomain($this->domain, PATH_LANGS);
         _bind_textdomain_codeset($this->domain, $codeset);
         _textdomain($this->domain);
+
+        // ClientFence core patch: a module ships its own texts in modules/<Name>/locale/<locale>/LC_MESSAGES/messages.mo;
+        // they are added to the main catalogue, which keeps its own translation of a text both have.
+        $main = \PhpMyAdmin\MoTranslator\Loader::getInstance()->getTranslator($this->domain);
+        foreach (\PhpMyAdmin\MoTranslator\Loader::listLocales($locale) as $name) {
+            foreach (glob(PATH_MODS . '/*/locale/' . $name . '/LC_MESSAGES/messages.mo') ?: [] as $file) {
+                foreach ((new \PhpMyAdmin\MoTranslator\Translator($file))->getTranslations() as $msgid => $msgstr) {
+                    if (!$main->exists((string) $msgid)) {
+                        $main->setTranslation((string) $msgid, $msgstr);
+                    }
+                }
+            }
+        }
     }
 
     /**

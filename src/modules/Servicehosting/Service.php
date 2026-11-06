@@ -1011,8 +1011,18 @@ class Service implements InjectionAwareInterface
         foreach ($finder as $file) {
             $files[] = $file->getFilenameWithoutExtension();
         }
+        // ClientFence core patch: server managers shipped by active modules (Extension\Service::getModuleAdapterFiles()).
+        $files = array_values(array_unique([...$files, ...array_keys($this->di['mod_service']('extension')->getModuleAdapterFiles('Server/Manager'))]));
 
         return $files;
+    }
+
+    // ClientFence core patch: the built-in server manager's file, else the one an active module ships.
+    public function getServerManagerFile(string $manager): string
+    {
+        $file = Path::join(PATH_LIBRARY, 'Server', 'Manager', "{$manager}.php");
+
+        return $this->filesystem->exists($file) ? $file : ($this->di['mod_service']('extension')->getModuleAdapterFiles('Server/Manager')[$manager] ?? $file);
     }
 
     public function getServerManagerConfig($manager)
@@ -1025,7 +1035,7 @@ class Service implements InjectionAwareInterface
             return [];
         }
 
-        $filename = Path::join(PATH_LIBRARY, 'Server', 'Manager', "{$manager}.php");
+        $filename = $this->getServerManagerFile($manager);
         if (!$this->filesystem->exists($filename)) {
             return [];
         }
@@ -1065,7 +1075,7 @@ class Service implements InjectionAwareInterface
             return array_values(array_unique($secrets));
         }
 
-        $filename = Path::join(PATH_LIBRARY, 'Server', 'Manager', "{$manager}.php");
+        $filename = $this->getServerManagerFile($manager);
         if (!$this->filesystem->exists($filename)) {
             return array_values(array_unique($secrets));
         }

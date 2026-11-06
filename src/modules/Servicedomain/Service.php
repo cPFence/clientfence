@@ -1208,6 +1208,12 @@ class Service implements \ClientFence\InjectionAwareInterface
                 $adapters[] = $adapter;
             }
         }
+        // ClientFence core patch: registrars shipped by active modules (Extension\Service::getModuleAdapterFiles()).
+        foreach (array_keys($this->di['mod_service']('extension')->getModuleAdapterFiles('Registrar/Adapter')) as $adapter) {
+            if (!array_key_exists($adapter, $exists) && !in_array($adapter, $adapters, true)) {
+                $adapters[] = $adapter;
+            }
+        }
 
         return $adapters;
     }
@@ -1239,6 +1245,10 @@ class Service implements \ClientFence\InjectionAwareInterface
     private function registrarGetRegistrarAdapterClassName(\Model_TldRegistrar $model): string
     {
         $file = Path::join(PATH_LIBRARY, 'Registrar', 'Adapter', "{$model->registrar}.php");
+        // ClientFence core patch: else a registrar shipped by an active module.
+        if (!$this->filesystem->exists($file)) {
+            $file = $this->di['mod_service']('extension')->getModuleAdapterFiles('Registrar/Adapter')[$model->registrar] ?? $file;
+        }
         if (!$this->filesystem->exists($file)) {
             throw new \ClientFence\InformationException('Domain registrar :adapter was not found', [':adapter' => $model->registrar]);
         }

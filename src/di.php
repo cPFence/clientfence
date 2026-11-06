@@ -649,7 +649,8 @@ $di['server_manager'] = $di->protect(function ($manager, $config) use ($di) {
     $class = sprintf('Server_Manager_%s', $managerName);
 
     if (!class_exists($class)) {
-        $file = Path::join(PATH_LIBRARY, 'Server', 'Manager', $managerName . '.php');
+        // ClientFence core patch: also a server manager shipped by an active module.
+        $file = $di['mod_service']('servicehosting')->getServerManagerFile($managerName);
         if ($di['filesystem']->exists($file)) {
             require_once $file;
         }

@@ -2146,6 +2146,7 @@ test('throws exception when getting registrar adapter config for non-existing re
     $model = new Model_TldRegistrar();
     $model->loadBean(new Tests\Helpers\DummyBean());
     $model->registrar = 'NonExisting';
+    $service->setDi(container());
 
     expect(fn () => $service->registrarGetRegistrarAdapterConfig($model))
         ->toThrow(ClientFence\Exception::class);
