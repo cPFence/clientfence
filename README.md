@@ -15,7 +15,7 @@ payments, orders, domains, hosting accounts and support tickets in one client ar
   (the zip and its SHA-256).
 - **Documentation:** [clientfence.com/docs](https://clientfence.com/docs/), from installing to
   [moving from WHMCS](https://clientfence.com/docs/getting-started/import-from-whmcs/).
-- **Demo:** [demo.clientfence.com](https://demo.clientfence.com/) (changes are not saved).
+- **Demo:** [demo.clientfence.com](https://demo.clientfence.com/login) (changes are not saved).
 - **Community:** [ClientFence forum](https://community.cpfence.app/t/clientfence), for setup help
   and usage questions.
 
