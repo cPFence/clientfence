@@ -50,6 +50,8 @@ class Admin implements InjectionAwareInterface
         $app->get('/staff/login', 'get_login', [], static::class);
         // ClientFence core patch: the email PIN step of a staff sign-in (Clientfence/SignInSecurity.php).
         $app->get('/staff/login/pin', 'get_login_pin', [], static::class);
+        // ClientFence core patch: the authenticator code step of a staff sign-in (Client/TwoFactor.php).
+        $app->get('/staff/login/code', 'get_login_code', [], static::class);
         $app->get('/staff/manage/:id', 'get_manage', ['id' => '[0-9]+'], static::class);
         $app->get('/staff/group/:id', 'get_group', ['id' => '[0-9]+'], static::class);
         $app->get('/staff/profile', 'get_profile', [], static::class);
@@ -72,7 +74,24 @@ class Admin implements InjectionAwareInterface
             return $app->redirect('staff/login');
         }
 
-        return $app->render('mod_staff_login_pin', ['pin' => $pin]);
+        $pending = \ClientFence\Mod\Clientfence\SignInSecurity::pending($this->di, 'staff');
+
+        return $app->render('mod_staff_login_pin', ['pin' => $pin, 'app' => \ClientFence\Mod\Client\TwoFactor::isOn($this->di, 'staff', (int) $pending['id'])]);
+    }
+
+    /**
+     * ClientFence: the authenticator code step of a staff sign-in; the sign-in page when none is waiting.
+     */
+    public function get_login_code(\ClientFence\App $app): string|Response
+    {
+        if ($this->di['auth']->isAdminLoggedIn()) {
+            return $app->redirect('');
+        }
+        if (\ClientFence\Mod\Client\TwoFactor::staffPending($this->di) === null) {
+            return $app->redirect('staff/login');
+        }
+
+        return $app->render('mod_staff_login_code', ['trust_days' => \ClientFence\Mod\Clientfence\SignInSecurity::TRUST_DAYS]);
     }
 
     public function get_login(\ClientFence\App $app): string|Response

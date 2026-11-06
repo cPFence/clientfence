@@ -53,6 +53,10 @@ class Admin implements InjectionAwareInterface
         if (\ClientFence\Mod\Clientfence\SignInSecurity::pending($this->di, 'staff') !== null) {
             return $app->redirect('/staff/login/pin');
         }
+        // ClientFence core patch: one waiting for its authenticator code goes to the code page (Client/TwoFactor.php).
+        if (\ClientFence\Mod\Client\TwoFactor::staffPending($this->di) !== null) {
+            return $app->redirect('/staff/login/code');
+        }
 
         return $app->redirect('/staff/login');
     }

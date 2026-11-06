@@ -20270,3 +20270,72 @@ msgstr "X-Forwarded-For, Host a Prefix (jen pokud je vaše proxy nastavuje všec
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "Webový server už čte adresu návštěvníka z proxy: :ip."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "Po zadání hesla zadejte kód z autentizační aplikace, například Google Authenticator, Microsoft Authenticator nebo 1Password. E-mailový PIN se při přihlášení vždy nabízí jako alternativa."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "Kód z aplikace"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "Kód z aplikace nebo záložní kód"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "Raději poslat PIN e-mailem"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "Zadejte 6místný kód z autentizační aplikace nebo záložní kód."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "Uložte jej na bezpečné místo: pokud ztratíte telefon, jednou vás přihlásí. Zobrazuje se pouze nyní."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "Nový záložní kód"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "Dvoufázové přihlášení mohou vypnout jen superadministrátoři."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "Naskenujte tento QR kód autentizační aplikací nebo zadejte klíč."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "Od %date%."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "Tento zaměstnanec se přihlašuje autentizační aplikací. Vypněte ji, pokud ztratil telefon i záložní kód."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "Vypnout dvoufázové přihlášení"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "Vypnout dvoufázové přihlášení?"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "Dvoufázové přihlášení je vypnuto."
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "Použít raději autentizační aplikaci"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "Váš záložní kód byl použit: vytvořte nový."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "Po správném hesle se na e-mail přihlášení odešle 6místný kód PIN a k přihlášení je potřeba. Platí jednou po dobu 10 minut. Klienti, kteří se přihlašují přes autentizační aplikaci nebo Google, se neptají. Zaměstnanci, kteří si nastavili autentizační aplikaci na své stránce Profil, mohou místo toho zadat její kód. „Důvěřovat tomuto prohlížeči 30 dní“ přeskočí PIN ve známém prohlížeči, dokud se nezmění heslo."

@@ -1,5 +1,5 @@
 {# ClientFence: the email PIN step of a staff sign-in (Clientfence/SignInSecurity.php; Staff guest API
-   login_pin). `pin`: {email (masked), minutes, trust_days}. #}
+   login_pin). `pin`: {email (masked), minutes, trust_days}; `app`: the staff member has the authenticator app. #}
 {% extends 'layout_login.html.twig' %}
 {% set pin = pin|default({ email: '', minutes: 10, trust_days: 30 }) %}
 
@@ -35,6 +35,9 @@
                 </form>
                 <div class="d-flex flex-wrap justify-content-between gap-2 mt-3 small">
                     <a href="{{ 'staff/login_pin_resend'|api_url(role: 'guest') }}" {{ fb_api_link({ message: 'A new PIN is on its way.'|trans }) }}>{{ 'Send a new PIN'|trans }}</a>
+                    {% if app|default(false) %}
+                        <a href="{{ 'staff/login_pin_app'|api_url(role: 'guest') }}" {{ fb_api_link({ redirect: 'staff/login/code'|url }) }}>{{ 'Use the authenticator app instead'|trans }}</a>
+                    {% endif %}
                     <a href="{{ 'staff/login'|url }}">{{ 'Back to Login'|trans }}</a>
                 </div>
     {% endblock %}

@@ -1705,11 +1705,15 @@ msgid "After file is uploaded in place, reload this page."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
-msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "After the right password, a 6-digit PIN goes to the staff member's email. Turning it on first emails you a PIN, so email sending must work."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
@@ -4828,6 +4832,14 @@ msgstr ""
 msgid "Code"
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "Code from your app, or your backup code"
 msgstr ""
@@ -7060,6 +7072,10 @@ msgstr ""
 msgid "Email logging is not enabled. If you want to log sent mails to database, enable it in"
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr ""
+
 #: src/modules/Email/Repository/ActivityClientEmailRepository.php
 msgid "Email not found"
 msgstr ""
@@ -7506,6 +7522,10 @@ msgstr ""
 
 #: src/modules/Order/Service.php
 msgid "Enter the \"Do not suspend until\" date as YYYY-MM-DD, or leave it blank."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_code.html.twig
@@ -10256,6 +10276,10 @@ msgstr ""
 msgid "Keep it private. A new link or turning it off ends every open preview at once."
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Keep the current setting"
 msgstr ""
@@ -11084,7 +11108,7 @@ msgstr ""
 msgid "Maintain the registrar transfer code and renewal period stored for this service."
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Make a new backup code"
 msgstr ""
 
@@ -12280,6 +12304,10 @@ msgstr ""
 msgid "New announcement"
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "New client: :name"
 msgstr ""
@@ -13334,6 +13362,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Api/Admin.php src/modules/Clientfence/Controller/Admin.php
 msgid "Only Super Administrators can run the setup wizard."
+msgstr ""
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
@@ -16804,6 +16836,10 @@ msgstr ""
 msgid "Saved; the connection works."
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "Scan this QR code, or type the key below."
 msgstr ""
@@ -17524,7 +17560,7 @@ msgstr ""
 msgid "Set this price"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Set up two-factor sign-in"
 msgstr ""
 
@@ -17862,6 +17898,10 @@ msgstr ""
 
 #: src/themes/palisade/config/settings.html.twig
 msgid "Simple Sidebar Note"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -18464,7 +18504,7 @@ msgstr ""
 msgid "Switch account"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Switch off"
 msgstr ""
 
@@ -18476,7 +18516,7 @@ msgstr ""
 msgid "Switch off two-factor"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Switch off two-factor sign-in"
 msgstr ""
 
@@ -18492,7 +18532,7 @@ msgstr ""
 msgid "Switch on"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Switch on two-factor sign-in"
 msgstr ""
 
@@ -20581,6 +20621,10 @@ msgstr ""
 msgid "This staff member is used by ClientFence to perform system tasks and cannot be removed."
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "This template has no known parameters, you may need to take an action to trigger its sending before they become known."
 msgstr ""
@@ -21141,7 +21185,7 @@ msgstr ""
 msgid "Trust these proxies"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+#: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_code.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
 msgid "Trust this browser for %days% days"
 msgstr ""
 
@@ -21163,6 +21207,14 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Turn off only for a mail server on this machine with a self-signed certificate."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
 msgstr ""
 
 #: src/modules/Clientfence/Setup.php
@@ -21201,7 +21253,7 @@ msgstr ""
 msgid "Two-factor on"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_code.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/themes/palisade/html/layout_default.html.twig
+#: src/modules/Client/templates/client/mod_client_twofactor_code.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_login_code.html.twig …
 msgid "Two-factor sign-in"
 msgstr ""
 
@@ -21213,8 +21265,12 @@ msgstr ""
 msgid "Two-factor sign-in is already on."
 msgstr ""
 
-#: src/modules/Client/TwoFactor.php
+#: src/modules/Client/TwoFactor.php src/modules/Staff/Api/Guest.php
 msgid "Two-factor sign-in is not on."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
@@ -22011,6 +22067,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_network.html.twig
 msgid "Use network status"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -23341,8 +23401,12 @@ msgstr ""
 msgid "Your application sends the key to this address. The answer has \"result\": true when the key is valid."
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Your backup code"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
 msgstr ""
 
 #: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
@@ -23485,7 +23549,7 @@ msgstr ""
 msgid "Your sign-in PIN: %pin%"
 msgstr ""
 
-#: src/modules/Client/TwoFactor.php src/modules/Clientfence/SignInSecurity.php
+#: src/modules/Client/TwoFactor.php src/modules/Clientfence/SignInSecurity.php src/modules/Staff/Api/Guest.php
 msgid "Your sign-in has expired. Please sign in again."
 msgstr ""
 

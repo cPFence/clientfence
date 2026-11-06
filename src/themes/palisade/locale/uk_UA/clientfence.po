@@ -20502,3 +20502,72 @@ msgstr "X-Forwarded-For, Host і Prefix (лише якщо ваш проксі �
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "Вебсервер уже читає адресу відвідувача від проксі: :ip."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "Після пароля введіть код із застосунку-автентифікатора, наприклад Google Authenticator, Microsoft Authenticator або 1Password. PIN-код на email під час входу завжди пропонується як альтернатива."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "Код із застосунку"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "Код із застосунку або резервний код"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "Надіслати PIN-код на email"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "Введіть 6-значний код із застосунку-автентифікатора або резервний код."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "Зберігайте його в надійному місці: він одноразово виконає вхід, якщо ви втратите телефон. Показується лише зараз."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "Новий резервний код"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "Вимкнути двофакторний вхід можуть лише суперадміністратори."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "Відскануйте цей QR-код застосунком-автентифікатором або введіть ключ."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "З %date%."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "Цей співробітник входить через застосунок-автентифікатор. Вимкніть його, якщо він втратив телефон і резервний код."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "Вимкнути двофакторний вхід"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "Вимкнути двофакторний вхід?"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "Двофакторний вхід вимкнено."
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "Використати застосунок-автентифікатор"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "Ваш резервний код використано: створіть новий."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "Після правильного пароля на email облікового запису надсилається 6-значний PIN-код, і для входу він обов'язковий. Він діє один раз протягом 10 хвилин. Клієнтів, які входять через застосунок-автентифікатор або Google, він не запитує. Співробітники, які налаштували застосунок-автентифікатор на своїй сторінці «Профіль», можуть натомість ввести його код. «Довіряти цьому браузеру 30 днів» пропускає PIN-код у відомому браузері до зміни пароля."

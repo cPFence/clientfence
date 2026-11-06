@@ -121,6 +121,12 @@ class Service implements InjectionAwareInterface
         // nobody in: the sign-in waits for the PIN (modules/Clientfence/SignInSecurity.php), and
         // completeLogin() finishes it.
         $login = ['kind' => 'staff', 'id' => (int) $model->id, 'email' => (string) $model->email, 'name' => (string) $model->name, 'timezone' => (string) ($model->timezone ?? '')];
+        // ClientFence core patch: staff with the authenticator app are asked for its code (or the email PIN
+        // instead) unless this browser is trusted (modules/Client/TwoFactor.php).
+        if (!\ClientFence\Mod\Clientfence\SignInSecurity::trusted($this->di, 'staff', 'staff', (int) $model->id)
+            && \ClientFence\Mod\Client\TwoFactor::challengeStaff($this->di, (int) $model->id)) {
+            return ['clientfence_2fa' => true];
+        }
         if (\ClientFence\Mod\Clientfence\SignInSecurity::challenge($this->di, 'staff', $login, [], (string) $ip)) {
             return ['clientfence_pin' => true];
         }
@@ -514,6 +520,8 @@ class Service implements InjectionAwareInterface
             'timezone' => $model->timezone,
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at,
+            // ClientFence core patch: whether the staff member signs in with the authenticator app (Client/TwoFactor.php).
+            'twofactor' => \ClientFence\Mod\Client\TwoFactor::isOn($this->di, 'staff', (int) $model->id),
         ];
 
         $data['groups'] = array_map(
@@ -592,6 +600,8 @@ class Service implements InjectionAwareInterface
         $this->adminGroupMemberRepository->deleteMembershipsForAdmin((int) $id);
         \ClientFence\RequestCache::forget($this->di, 'staff.');
         $this->di['db']->trash($model);
+        // ClientFence core patch: a deleted staff member leaves no two-factor row (Client/TwoFactor.php).
+        \ClientFence\Mod\Client\TwoFactor::forgetLogin($this->di['dbal'], 'staff', (int) $id);
 
         $this->di['events_manager']->fire(['event' => 'onAfterAdminStaffDelete', 'params' => ['id' => $id]]);
 

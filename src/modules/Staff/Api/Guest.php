@@ -57,8 +57,8 @@ class Guest extends \ClientFence\Api\AbstractApi
             $this->checkPasswordResetCaptcha($data);
 
             $result = $this->getService()->login($data['email'], $data['password'], $this->getIp());
-            // ClientFence core patch: a sign-in waiting for its email PIN keeps the page to return to.
-            if (empty($result['clientfence_pin'])) {
+            // ClientFence core patch: a sign-in waiting for its email PIN or app code keeps the page to return to.
+            if (empty($result['clientfence_pin']) && empty($result['clientfence_2fa'])) {
                 $this->getDi()['session']->delete('redirect_uri');
             }
 
@@ -99,6 +99,72 @@ class Guest extends \ClientFence\Api\AbstractApi
     public function login_pin_resend(): array
     {
         return \ClientFence\Mod\Clientfence\SignInSecurity::resend($this->getDi(), 'staff', (string) $this->getIp());
+    }
+
+    /**
+     * ClientFence: the authenticator code (or the backup code) of a staff sign-in waiting for one
+     * (Client/TwoFactor.php): `code`, and `trust` to trust this browser for 30 days. Finishes the sign-in.
+     */
+    public function login_code($data): array
+    {
+        $startedAt = microtime(true);
+
+        try {
+            $di = $this->getDi();
+            \ClientFence\Mod\Clientfence\SignInSecurity::checkStaffCountry($di, (string) $this->getIp());
+            $accepted = \ClientFence\Mod\Client\TwoFactor::verifyStaff($di, $data['code'] ?? null, (string) $this->getIp());
+            $model = $di['db']->load('Admin', $accepted['id']);
+            if (!$model instanceof \Model_Admin || $model->status !== \Model_Admin::STATUS_ACTIVE) {
+                throw new \ClientFence\InformationException('Check your login details', null, 403);
+            }
+            // Switched off while it waited: the email PIN when staff need it, as at a sign-in without the app.
+            $login = ['kind' => 'staff', 'id' => (int) $model->id, 'email' => (string) $model->email, 'name' => (string) $model->name, 'timezone' => (string) ($model->timezone ?? '')];
+            if ($accepted['off'] && \ClientFence\Mod\Clientfence\SignInSecurity::challenge($di, 'staff', $login, [], (string) $this->getIp())) {
+                return ['clientfence_pin' => true];
+            }
+            if (!empty($data['trust'])) {
+                \ClientFence\Mod\Clientfence\SignInSecurity::trust($di, 'staff', 'staff', (int) $model->id);
+            }
+            $result = $this->getService()->completeLogin($model, (string) $this->getIp());
+            $di['session']->delete('redirect_uri');
+
+            return $result + ['backup_used' => $accepted['backup_used']];
+        } finally {
+            RandomizedTimeFloor::apply($startedAt);
+        }
+    }
+
+    /**
+     * ClientFence: the staff sign-in waiting for an app code takes the email PIN instead (either one signs in).
+     */
+    public function login_code_email(): bool
+    {
+        $di = $this->getDi();
+        $pending = \ClientFence\Mod\Client\TwoFactor::staffPending($di);
+        $model = $pending === null ? null : $di['db']->load('Admin', (int) $pending['id']);
+        if (!$model instanceof \Model_Admin || !hash_equals((string) $pending['password_fingerprint'], hash('sha256', (string) \ClientFence\Mod\Clientfence\SignInSecurity::passwordHash($di, 'staff', (int) $model->id)))) {
+            throw new \ClientFence\InformationException('Your sign-in has expired. Please sign in again.', null, 401);
+        }
+        $login = ['kind' => 'staff', 'id' => (int) $model->id, 'email' => (string) $model->email, 'name' => (string) $model->name, 'timezone' => (string) ($model->timezone ?? '')];
+
+        return \ClientFence\Mod\Clientfence\SignInSecurity::challenge($di, 'staff', $login, [], (string) $this->getIp(), true);
+    }
+
+    /**
+     * ClientFence: the staff sign-in waiting for an email PIN goes back to the authenticator code.
+     */
+    public function login_pin_app(): bool
+    {
+        $di = $this->getDi();
+        $pending = \ClientFence\Mod\Clientfence\SignInSecurity::pending($di, 'staff');
+        if ($pending === null || !hash_equals((string) $pending['password_fingerprint'], hash('sha256', (string) \ClientFence\Mod\Clientfence\SignInSecurity::passwordHash($di, 'staff', (int) $pending['id'])))) {
+            throw new \ClientFence\InformationException('Your sign-in has expired. Please sign in again.', null, 401);
+        }
+        if (!\ClientFence\Mod\Client\TwoFactor::challengeStaff($di, (int) $pending['id'])) {
+            throw new \ClientFence\InformationException('Two-factor sign-in is not on.');
+        }
+
+        return true;
     }
 
     public function update_password($data): void

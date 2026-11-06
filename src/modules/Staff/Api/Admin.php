@@ -73,6 +73,22 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence: switches off a staff member's authenticator sign-in (Client/TwoFactor.php), for
+     * one who lost the phone and the backup code. Super Administrators only.
+     */
+    #[RequiredParams(['id' => 'ID was not passed'])]
+    public function twofactor_disable($data): bool
+    {
+        if (!$this->getService()->isSuperAdministrator()) {
+            throw new \ClientFence\InformationException('Only Super Administrators can switch off two-factor sign-in.', null, 403);
+        }
+        $model = $this->getDi()['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
+        \ClientFence\Mod\Client\TwoFactor::adminDisable($this->getDi(), (int) $model->id, (int) $this->getIdentity()->id);
+
+        return true;
+    }
+
+    /**
      * Returns whether the logged-in staff member is a Super Administrator.
      */
     public function is_super_administrator($data): bool

@@ -32,10 +32,17 @@ use ClientFence\InformationException;
  * disable() needs the password and a code (or the backup code); newBackup() the password.
  * Staff switch it off on the Users tab of the client page (staffDisable()). Every change is in
  * the activity log, under the account (a user's on every account of the user).
+ *
+ * Staff (kind 'staff', subject_id = admin id; the *For() functions, Profile API): set up on the
+ * staff profile. Their sign-in (core patch in Staff/Service.php) waits for a code in STAFF_PENDING
+ * (/staff/login/code), and the code page always offers the email PIN instead (SignInSecurity):
+ * either one signs in, as Cloudflare's dashboard does. A browser trusted for 30 days skips both.
+ * A Super Administrator switches it off for a staff member on the staff page (adminDisable()).
  */
 final class TwoFactor
 {
     public const PENDING = 'clientfence_2fa_pending';
+    public const STAFF_PENDING = 'clientfence_2fa_staff_pending';
     public const SETUP = 'clientfence_2fa_setup';
     public const PENDING_SECONDS = 300;
     public const SETUP_SECONDS = 900;
@@ -189,11 +196,64 @@ final class TwoFactor
      */
     public static function verify(\Pimple\Container $di, mixed $code, string $ip): array
     {
+        $pending = self::accept($di, self::PENDING, $code, $ip);
+        self::signIn($di, (int) $pending['client_id'], is_array($pending['user'] ?? null) ? $pending['user'] : null, $ip);
+
+        return ['backup_used' => $pending['backup_used']];
+    }
+
+    /**
+     * The staff login (core patch in Staff/Service.php), after the password: true when the sign-in
+     * now waits for a code from the app (nothing is signed in).
+     */
+    public static function challengeStaff(\Pimple\Container $di, int $adminId): bool
+    {
+        if (!self::isOn($di, 'staff', $adminId)) {
+            return false;
+        }
+        $di['session']->delete(\ClientFence\Mod\Clientfence\SignInSecurity::PENDING);
+        $di['session']->set(self::STAFF_PENDING, [
+            'kind' => 'staff',
+            'id' => $adminId,
+            'client_id' => 0,
+            'password_fingerprint' => hash('sha256', (string) \ClientFence\Mod\Clientfence\SignInSecurity::passwordHash($di, 'staff', $adminId)),
+            'expires' => time() + self::PENDING_SECONDS,
+            'tries' => 0,
+        ]);
+
+        return true;
+    }
+
+    /** The staff sign-in waiting for an app code in this session, or null. */
+    public static function staffPending(\Pimple\Container $di): ?array
+    {
+        $pending = $di['session']->get(self::STAFF_PENDING);
+
+        return is_array($pending) && (int) ($pending['expires'] ?? 0) >= time() ? $pending : null;
+    }
+
+    /**
+     * The staff code page: checks a code (or the backup code). Returns {id, backup_used, off}; the caller
+     * signs in, or with `off` (the app was switched off while it waited) asks for the usual staff step.
+     */
+    public static function verifyStaff(\Pimple\Container $di, mixed $code, string $ip): array
+    {
+        $pending = self::accept($di, self::STAFF_PENDING, $code, $ip);
+
+        return ['id' => (int) $pending['id'], 'backup_used' => $pending['backup_used'], 'off' => $pending['off']];
+    }
+
+    /**
+     * Checks the code of the sign-in waiting in the session under $key and ends the wait; the
+     * waiting sign-in is returned with backup_used.
+     */
+    private static function accept(\Pimple\Container $di, string $key, mixed $code, string $ip): array
+    {
         $session = $di['session'];
-        $pending = $session->get(self::PENDING);
+        $pending = $session->get($key);
         if (!is_array($pending) || (int) ($pending['expires'] ?? 0) < time()
             || !hash_equals((string) ($pending['password_fingerprint'] ?? ''), hash('sha256', (string) \ClientFence\Mod\Clientfence\SignInSecurity::passwordHash($di, (string) $pending['kind'], (int) $pending['id'])))) {
-            $session->delete(self::PENDING);
+            $session->delete($key);
 
             throw new InformationException('Your sign-in has expired. Please sign in again.', null, 401);
         }
@@ -221,12 +281,12 @@ final class TwoFactor
                 $di['rate_limiter']->consume('profile_password_change_account', $limitKey);
                 $pending['tries'] = (int) $pending['tries'] + 1;
                 if ($pending['tries'] >= self::MAX_TRIES) {
-                    $session->delete(self::PENDING);
+                    $session->delete($key);
                     self::log($di, (string) $pending['kind'], (int) $pending['id'], (int) $pending['client_id'], 'two-factor sign-in stopped after ' . self::MAX_TRIES . ' wrong codes');
 
                     throw new InformationException('Too many wrong codes. Please sign in again.', null, 401);
                 }
-                $session->set(self::PENDING, $pending);
+                $session->set($key, $pending);
 
                 throw new InformationException('The code is not correct.');
             }
@@ -235,10 +295,9 @@ final class TwoFactor
             }
         }
         // Switched off meanwhile (by staff): the password was right, so the sign-in completes.
-        $session->delete(self::PENDING);
-        self::signIn($di, (int) $pending['client_id'], is_array($pending['user'] ?? null) ? $pending['user'] : null, $ip);
+        $session->delete($key);
 
-        return ['backup_used' => $backupUsed];
+        return $pending + ['backup_used' => $backupUsed, 'off' => $row === null];
     }
 
     /**
@@ -283,7 +342,11 @@ final class TwoFactor
      */
     public static function status(\Pimple\Container $di, int $clientId): array
     {
-        [$kind, $id] = self::subject($di, $clientId);
+        return self::statusFor($di, ...self::subject($di, $clientId));
+    }
+
+    public static function statusFor(\Pimple\Container $di, string $kind, int $id): array
+    {
         $row = self::row($di, $kind, $id);
 
         return [
@@ -299,7 +362,11 @@ final class TwoFactor
      */
     public static function setup(\Pimple\Container $di, int $clientId): array
     {
-        [$kind, $id] = self::subject($di, $clientId);
+        return self::setupFor($di, ...self::subject($di, $clientId));
+    }
+
+    public static function setupFor(\Pimple\Container $di, string $kind, int $id): array
+    {
         if (self::isOn($di, $kind, $id)) {
             throw new InformationException('Two-factor sign-in is already on.');
         }
@@ -320,7 +387,11 @@ final class TwoFactor
      */
     public static function enable(\Pimple\Container $di, int $clientId, array $data, string $ip): array
     {
-        [$kind, $id] = self::subject($di, $clientId);
+        return self::enableFor($di, ...self::subject($di, $clientId), clientId: $clientId, data: $data, ip: $ip);
+    }
+
+    public static function enableFor(\Pimple\Container $di, string $kind, int $id, int $clientId, array $data, string $ip): array
+    {
         $setup = $di['session']->get(self::SETUP);
         if (!is_array($setup) || $setup['kind'] !== $kind || (int) $setup['id'] !== $id || (int) $setup['expires'] < time()) {
             throw new InformationException('The setup has expired. Please start again.');
@@ -354,7 +425,11 @@ final class TwoFactor
      */
     public static function disable(\Pimple\Container $di, int $clientId, array $data, string $ip): void
     {
-        [$kind, $id] = self::subject($di, $clientId);
+        self::disableFor($di, ...self::subject($di, $clientId), clientId: $clientId, data: $data, ip: $ip);
+    }
+
+    public static function disableFor(\Pimple\Container $di, string $kind, int $id, int $clientId, array $data, string $ip): void
+    {
         $row = self::row($di, $kind, $id);
         if ($row === null) {
             throw new InformationException('Two-factor sign-in is not on.');
@@ -377,7 +452,11 @@ final class TwoFactor
      */
     public static function newBackup(\Pimple\Container $di, int $clientId, array $data, string $ip): array
     {
-        [$kind, $id] = self::subject($di, $clientId);
+        return self::newBackupFor($di, ...self::subject($di, $clientId), clientId: $clientId, data: $data, ip: $ip);
+    }
+
+    public static function newBackupFor(\Pimple\Container $di, string $kind, int $id, int $clientId, array $data, string $ip): array
+    {
         $row = self::row($di, $kind, $id);
         if ($row === null) {
             throw new InformationException('Two-factor sign-in is not on.');
@@ -410,8 +489,17 @@ final class TwoFactor
         self::log($di, $kind, $id, $clientId, 'two-factor sign-in switched off by staff', $adminId);
     }
 
+    /** A Super Administrator switches off a staff member's two-factor sign-in (staff page). */
+    public static function adminDisable(\Pimple\Container $di, int $adminId, int $byAdminId): void
+    {
+        if ($di['em']->getConnection()->delete('client_twofactor', ['kind' => 'staff', 'subject_id' => $adminId]) === 0) {
+            throw new InformationException('Two-factor sign-in is not on.');
+        }
+        self::log($di, 'staff', $adminId, 0, 'two-factor sign-in switched off by staff #' . $byAdminId);
+    }
+
     /**
-     * A deleted client or user leaves no two-factor row (Users::clientDeleted, dropOrphan).
+     * A deleted client, user or staff member leaves no two-factor row (Users::clientDeleted, dropOrphan).
      */
     public static function forgetLogin(\Doctrine\DBAL\Connection $db, string $kind, int $id): void
     {
@@ -427,8 +515,7 @@ final class TwoFactor
         $di['rate_limiter']->consumeOrThrow('profile_password_change_ip', $ip);
         // Its own count: settings changes do not use up the wrong codes of a sign-in.
         $di['rate_limiter']->consumeOrThrow('profile_password_change_account', 'clientfence-2fa-password-' . $kind . '-' . $id);
-        $db = $di['em']->getConnection();
-        $hash = (string) $db->fetchOne($kind === 'user' ? 'SELECT pass FROM client_user WHERE id = ?' : 'SELECT pass FROM client WHERE id = ?', [$id]);
+        $hash = (string) \ClientFence\Mod\Clientfence\SignInSecurity::passwordHash($di, $kind, $id);
         if (!is_string($password) || $hash === '' || !$di['password']->verify($password, $hash)) {
             throw new InformationException('The password is not correct.');
         }
@@ -438,7 +525,11 @@ final class TwoFactor
     {
         $db = $di['em']->getConnection();
 
-        return $kind === 'user' ? Users::userEmail($db, $id) : (string) $db->fetchOne('SELECT email FROM client WHERE id = ?', [$id]);
+        return match ($kind) {
+            'user' => Users::userEmail($db, $id),
+            'staff' => (string) $db->fetchOne('SELECT email FROM admin WHERE id = ?', [$id]),
+            default => (string) $db->fetchOne('SELECT email FROM client WHERE id = ?', [$id]),
+        };
     }
 
     /**
@@ -447,6 +538,11 @@ final class TwoFactor
      */
     public static function log(\Pimple\Container $di, string $kind, int $id, int $clientId, string $what, ?int $adminId = null): void
     {
+        if ($kind === 'staff') {
+            $di['logger']->info('Staff #%s: %s', $id, $what);
+
+            return;
+        }
         if ($kind === 'user') {
             $db = $di['em']->getConnection();
             $clients = Users::linkedClients($db, $id) ?: [$clientId];

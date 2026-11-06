@@ -128,6 +128,41 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence: the staff member's own authenticator sign-in (Client/TwoFactor.php, the staff
+     * profile): {enabled, backup, enabled_at}.
+     */
+    public function twofactor_get(): array
+    {
+        return \ClientFence\Mod\Client\TwoFactor::statusFor($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId());
+    }
+
+    /** ClientFence: a new key for the authenticator app: {secret, uri}. */
+    public function twofactor_setup(): array
+    {
+        return \ClientFence\Mod\Client\TwoFactor::setupFor($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId());
+    }
+
+    /** ClientFence: switches it on with `password` and `code`; returns {backup_code}, shown once. */
+    public function twofactor_enable($data): array
+    {
+        return \ClientFence\Mod\Client\TwoFactor::enableFor($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), 0, $data, (string) $this->getIp());
+    }
+
+    /** ClientFence: switches it off with `password` and `code` (or the backup code). */
+    public function twofactor_disable($data): bool
+    {
+        \ClientFence\Mod\Client\TwoFactor::disableFor($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), 0, $data, (string) $this->getIp());
+
+        return true;
+    }
+
+    /** ClientFence: a new backup code with `password`; returns {backup_code}. */
+    public function twofactor_backup($data): array
+    {
+        return \ClientFence\Mod\Client\TwoFactor::newBackupFor($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), 0, $data, (string) $this->getIp());
+    }
+
+    /**
      * Destroy / invalidate all existing sessions for the currently logged in user.
      */
     public function destroy_sessions(): bool

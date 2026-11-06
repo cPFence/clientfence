@@ -122,6 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 'sortable tables');
   }
 
+  // ClientFence: the staff two-factor setup draws its QR code with this (mod_staff_profile.html.twig).
+  if (document.querySelector('[data-cf-2fa-qr]')) {
+    globalThis.ClientFenceQr = async (text: string) => (await import('./js/qr.ts')).default(text);
+  }
+
   if (document.querySelector('#theme-settings')) {
     loadAdminFeature(async () => {
       const { default: initThemeSettings } = await import('./js/ui/theme_settings.ts');

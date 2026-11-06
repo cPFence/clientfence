@@ -19533,3 +19533,72 @@ msgstr "X-Forwarded-For, Host e Prefix (solo se il suo proxy li imposta tutti e 
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "Il server web legge già l'indirizzo del visitatore dal proxy: :ip."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "Dopo la password, inserisci un codice da un'app di autenticazione come Google Authenticator, Microsoft Authenticator o 1Password. Al momento dell'accesso il PIN via email è sempre offerto in alternativa."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "Codice dall'app"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "Codice dall'app o codice di backup"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "Inviami invece un PIN via email"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "Inserisci il codice a 6 cifre della tua app di autenticazione, o il tuo codice di backup."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "Conservalo in un luogo sicuro: ti fa accedere una volta se perdi il telefono. Viene mostrato solo ora."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "Nuovo codice di backup"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "Solo i super amministratori possono disattivare l'accesso a due fattori."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "Scansiona questo codice QR con la tua app di autenticazione, o digita la chiave."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "Da %date%."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "Questo membro dello staff accede con un'app di autenticazione. Disattivala se ha perso il telefono e il codice di backup."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "Disattiva l'accesso a due fattori"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "Disattivare l'accesso a due fattori?"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "L'accesso a due fattori è disattivato."
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "Usa invece l'app di autenticazione"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "Il tuo codice di backup è stato usato: creane uno nuovo."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "Dopo la password corretta, un PIN di 6 cifre viene inviato all'email dell'account e l'accesso lo richiede. Funziona una sola volta, per 10 minuti. I clienti che accedono con un'app di autenticazione o con Google non vengono interpellati. Lo staff che ha configurato un'app di autenticazione nella propria pagina Profilo può inserire invece il suo codice. «Considera attendibile questo browser per 30 giorni» salta il PIN su un browser noto finché la password non cambia."

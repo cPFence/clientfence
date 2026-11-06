@@ -192,9 +192,13 @@ class App
             if ($e->getArea() === 'admin') {
                 $this->di['set_return_uri'];
 
-                // ClientFence core patch: a staff sign-in waiting for its email PIN goes to the PIN page.
+                // ClientFence core patch: a staff sign-in waiting for its email PIN goes to the PIN page,
+                // one waiting for its authenticator code to the code page.
                 if (\ClientFence\Mod\Clientfence\SignInSecurity::pending($this->di, 'staff') !== null) {
                     return $this->responseFactory()->redirect($this->di['url']->adminLink('staff/login/pin'));
+                }
+                if (\ClientFence\Mod\Client\TwoFactor::staffPending($this->di) !== null) {
+                    return $this->responseFactory()->redirect($this->di['url']->adminLink('staff/login/code'));
                 }
 
                 return $this->responseFactory()->redirect($this->di['url']->adminLink('staff/login'));
@@ -390,6 +394,10 @@ class App
             // ClientFence core patch: the staff email PIN (Clientfence/SignInSecurity.php).
             '/api/guest/staff/login_pin',
             '/api/guest/staff/login_pin_resend',
+            // ClientFence core patch: the staff authenticator code (Client/TwoFactor.php).
+            '/api/guest/staff/login_code',
+            '/api/guest/staff/login_code_email',
+            '/api/guest/staff/login_pin_app',
             '/api/admin',
             'api/admin',
             '/index.php?_url=/api/admin/',

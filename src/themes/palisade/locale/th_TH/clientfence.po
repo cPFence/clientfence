@@ -18301,3 +18301,72 @@ msgstr "X-Forwarded-For, Host และ Prefix (เฉพาะเมื่อ�
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "เว็บเซิร์ฟเวอร์อ่านที่อยู่ของผู้เยี่ยมชมจากพร็อกซีอยู่แล้ว: :ip"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "หลังจากรหัสผ่าน ให้ป้อนรหัสจากแอปยืนยันตัวตน เช่น Google Authenticator, Microsoft Authenticator หรือ 1Password และเมื่อเข้าสู่ระบบ จะมีตัวเลือก PIN ทางอีเมลให้เสมอ"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "รหัสจากแอป"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "รหัสจากแอปหรือรหัสสำรอง"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "ส่ง PIN ทางอีเมลแทน"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "ป้อนรหัส 6 หลักจากแอปยืนยันตัวตนของคุณ หรือรหัสสำรองของคุณ"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "เก็บไว้ในที่ปลอดภัย: ใช้เข้าสู่ระบบได้หนึ่งครั้งหากโทรศัพท์หาย แสดงเพียงครั้งนี้เท่านั้น"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "รหัสสำรองใหม่"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "เฉพาะผู้ดูแลระบบระดับสูงสุดเท่านั้นที่ปิดการเข้าสู่ระบบสองปัจจัยได้"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "สแกนคิวอาร์โค้ดนี้ด้วยแอปยืนยันตัวตนของคุณ หรือพิมพ์คีย์"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "ตั้งแต่ %date%"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "เจ้าหน้าที่คนนี้เข้าสู่ระบบด้วยแอปยืนยันตัวตน ปิดแอปนี้หากโทรศัพท์และรหัสสำรองหาย"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "ปิดการเข้าสู่ระบบสองปัจจัย"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "ปิดการเข้าสู่ระบบสองปัจจัยหรือไม่?"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "การเข้าสู่ระบบสองปัจจัยปิดอยู่"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "ใช้แอปยืนยันตัวตนแทน"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "ใช้รหัสสำรองของคุณไปแล้ว: สร้างรหัสใหม่"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "หลังจากใส่รหัสผ่านถูกต้อง ระบบจะส่งรหัส PIN 6 หลักไปยังอีเมลของบัญชี และต้องใช้รหัสนี้เพื่อเข้าสู่ระบบ ใช้ได้ครั้งเดียวภายใน 10 นาที ลูกค้าที่เข้าสู่ระบบด้วยแอปยืนยันตัวตนหรือ Google จะไม่ถูกถาม เจ้าหน้าที่ที่ตั้งค่าแอปยืนยันตัวตนในหน้า \"ข้อมูลส่วนตัว\" ของตนเอง สามารถป้อนรหัสจากแอปนั้นแทนได้ ตัวเลือก \"เชื่อถือเบราว์เซอร์นี้ 30 วัน\" จะข้ามรหัส PIN บนเบราว์เซอร์ที่รู้จักจนกว่าจะเปลี่ยนรหัสผ่าน"

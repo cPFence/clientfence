@@ -9,6 +9,7 @@ declare(strict_types=1);
  */
 
 use ClientFence\InformationException;
+use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Clientfence\Setup;
 use ClientFence\Mod\Clientfence\SignInSecurity;
 use Symfony\Component\HttpFoundation\Request;
@@ -407,11 +408,17 @@ test('a pending sign-in expires when its password changes', function (string $fa
     } else {
         $world->db->executeStatement('CREATE TABLE client_twofactor (kind TEXT, subject_id INTEGER)');
         $world->db->insert('client_twofactor', ['kind' => $kind, 'subject_id' => $id]);
-        ClientFence\Mod\Client\TwoFactor::challenge($world->di, 7, $user);
-        $key = ClientFence\Mod\Client\TwoFactor::PENDING;
+        if ($kind === 'staff') {
+            ClientFence\Mod\Client\TwoFactor::challengeStaff($world->di, $id);
+            $key = ClientFence\Mod\Client\TwoFactor::STAFF_PENDING;
+            $complete = fn () => ClientFence\Mod\Client\TwoFactor::verifyStaff($world->di, '123456', '192.0.2.5');
+        } else {
+            ClientFence\Mod\Client\TwoFactor::challenge($world->di, 7, $user);
+            $key = ClientFence\Mod\Client\TwoFactor::PENDING;
+            $complete = fn () => ClientFence\Mod\Client\TwoFactor::verify($world->di, '123456', '192.0.2.5');
+        }
         // Disabling the factor meanwhile must not bypass the password check.
         $world->db->delete('client_twofactor', ['kind' => $kind, 'subject_id' => $id]);
-        $complete = fn () => ClientFence\Mod\Client\TwoFactor::verify($world->di, '123456', '192.0.2.5');
     }
     $table = ['staff' => 'admin', 'client' => 'client', 'user' => 'client_user'][$kind];
     expect($world->session[$key]['password_fingerprint'])->toBe(hash('sha256', (string) $world->db->fetchOne("SELECT pass FROM {$table} WHERE id = ?", [$id])));
@@ -428,7 +435,41 @@ test('a pending sign-in expires when its password changes', function (string $fa
     'user email PIN' => ['pin', 'user', 8],
     'client authenticator' => ['totp', 'client', 7],
     'user authenticator' => ['totp', 'user', 8],
+    'staff authenticator' => ['totp', 'staff', 1],
 ]);
+
+test('staff with the authenticator app sign in with its code, or switch to the email PIN and back', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->di['crypt'] = new class {
+        public function decrypt(string $value): string
+        {
+            return $value;
+        }
+    };
+    $world->db->executeStatement('CREATE TABLE client_twofactor (id INTEGER PRIMARY KEY, kind TEXT, subject_id INTEGER, secret TEXT, backup_hash TEXT, last_step INTEGER)');
+    $world->db->insert('client_twofactor', ['id' => 1, 'kind' => 'staff', 'subject_id' => 1, 'secret' => 'JBSWY3DPEHPK3PXP', 'backup_hash' => null, 'last_step' => 0]);
+    $login = ['kind' => 'staff', 'id' => 1, 'email' => 'owner@example.test', 'name' => 'Owner'];
+
+    // The staff PIN setting is off: "Email me a PIN instead" still sends one, and only one step waits.
+    expect(TwoFactor::challengeStaff($world->di, 1))->toBeTrue()
+        ->and(SignInSecurity::challenge($world->di, 'staff', $login, [], '192.0.2.5'))->toBeFalse()
+        ->and(SignInSecurity::challenge($world->di, 'staff', $login, [], '192.0.2.5', true))->toBeTrue()
+        ->and(TwoFactor::staffPending($world->di))->toBeNull()
+        ->and(TwoFactor::challengeStaff($world->di, 1))->toBeTrue()
+        ->and(SignInSecurity::pending($world->di, 'staff'))->toBeNull();
+
+    $code = TwoFactor::code(TwoFactor::base32Decode('JBSWY3DPEHPK3PXP'), intdiv(time(), 30));
+    $wrong = $code === '000000' ? '111111' : '000000';
+    expect(fn () => TwoFactor::verifyStaff($world->di, $wrong, '192.0.2.5'))->toThrow(InformationException::class, 'not correct')
+        ->and(TwoFactor::verifyStaff($world->di, $code, '192.0.2.5'))->toBe(['id' => 1, 'backup_used' => false, 'off' => false])
+        ->and(TwoFactor::staffPending($world->di))->toBeNull()
+        ->and(TwoFactor::isOn($world->di, 'client', 1))->toBeFalse();
+
+    // Switched off while a sign-in waits: any code passes, flagged `off` so the caller asks for the usual step.
+    TwoFactor::challengeStaff($world->di, 1);
+    $world->db->delete('client_twofactor', ['kind' => 'staff', 'subject_id' => 1]);
+    expect(TwoFactor::verifyStaff($world->di, 'x', '192.0.2.5'))->toBe(['id' => 1, 'backup_used' => false, 'off' => true]);
+});
 
 test('the console command turns sign-in security off', function (): void {
     $world = new SignInSecurityTestWorld();

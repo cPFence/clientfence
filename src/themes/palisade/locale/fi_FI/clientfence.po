@@ -20926,3 +20926,72 @@ msgstr "X-Forwarded-For, Host ja Prefix (vain jos välityspalvelimesi asettaa ka
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "Verkkopalvelin lukee kävijän osoitteen jo välityspalvelimelta: :ip."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "Salasanan jälkeen anna koodi todennussovelluksesta, kuten Google Authenticator, Microsoft Authenticator tai 1Password. Sähköpostin PIN-koodi on kirjautuessa aina tarjolla vaihtoehtona."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "Koodi sovelluksesta"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "Koodi sovelluksesta tai varmuuskoodi"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "Lähetä PIN-koodi sähköpostiin"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "Anna todennussovelluksen 6-numeroinen koodi tai varmuuskoodisi."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "Säilytä se turvallisessa paikassa: se kirjaa sinut sisään kerran, jos menetät puhelimesi. Se näytetään vain nyt."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "Uusi varmuuskoodi"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "Vain pääylläpitäjät voivat poistaa kaksivaiheisen kirjautumisen käytöstä."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "Skannaa tämä QR-koodi todennussovelluksella tai kirjoita avain."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "%date% alkaen."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "Tämä henkilökunnan jäsen kirjautuu todennussovelluksella. Poista se käytöstä, jos hän on menettänyt puhelimen ja varmuuskoodin."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "Poista kaksivaiheinen kirjautuminen käytöstä"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "Poistetaanko kaksivaiheinen kirjautuminen käytöstä?"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "Kaksivaiheinen kirjautuminen ei ole käytössä."
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "Käytä todennussovellusta"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "Varmuuskoodisi on käytetty: luo uusi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "Oikean salasanan jälkeen kirjautumistunnuksen sähköpostiin lähetetään 6-numeroinen PIN-koodi, jota sisäänkirjautuminen vaatii. Se toimii kerran, 10 minuuttia. Asiakkailta, jotka kirjautuvat todennussovelluksella tai Googlella, sitä ei kysytä. Henkilökunta, joka on ottanut todennussovelluksen käyttöön Profiili-sivullaan, voi syöttää sen koodin sen sijaan. Valinta ”Luota tähän selaimeen 30 päivää” ohittaa PIN-koodin tutussa selaimessa, kunnes salasana vaihtuu."

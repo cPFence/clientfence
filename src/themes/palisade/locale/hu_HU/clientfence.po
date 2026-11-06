@@ -20475,3 +20475,72 @@ msgstr "X-Forwarded-For, Host és Prefix (csak ha a proxy mindhármat beállítj
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "A webszerver már a proxyról olvassa a látogató címét: :ip."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "A jelszó után adjon meg egy kódot egy hitelesítő alkalmazásból, például a Google Authenticatorból, a Microsoft Authenticatorból vagy az 1Passwordből. Bejelentkezéskor az e-mailes PIN-kód mindig alternatívaként is felkínálódik."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "Kód az alkalmazásból"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "Kód az alkalmazásból vagy a biztonsági kód"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "Inkább PIN-kódot kérek e-mailben"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "Adja meg a hitelesítő alkalmazás 6 számjegyű kódját vagy a biztonsági kódját."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "Tartsa biztonságos helyen: ha elveszti a telefonját, egyszer beléptet. Csak most jelenik meg."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "Új biztonsági kód"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "A kétlépcsős bejelentkezést csak a főadminisztrátorok kapcsolhatják ki."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "Olvassa be ezt a QR-kódot a hitelesítő alkalmazásával, vagy gépelje be a kulcsot."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "%date% óta."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "Ez a munkatárs hitelesítő alkalmazással jelentkezik be. Kapcsolja ki, ha elvesztette a telefonját és a biztonsági kódját."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "Kétlépcsős bejelentkezés kikapcsolása"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "Kikapcsolja a kétlépcsős bejelentkezést?"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "A kétlépcsős bejelentkezés ki van kapcsolva."
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "Inkább a hitelesítő alkalmazást használom"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "A biztonsági kódját felhasználták: készítsen újat."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "A helyes jelszó után egy 6 számjegyű PIN-kód érkezik a belépési azonosító e-mail-címére, és a bejelentkezéshez szükség van rá. Egyszer használható, 10 percig érvényes. Azokat az ügyfeleket, akik hitelesítő alkalmazással vagy Google-lal jelentkeznek be, nem kérdezzük. Azok a munkatársak, akik a Profil oldalukon hitelesítő alkalmazást állítottak be, helyette annak kódját is megadhatják. A „Megbízok ebben a böngészőben 30 napig” beállítás ismert böngészőn kihagyja a PIN-kódot a jelszó megváltoztatásáig."

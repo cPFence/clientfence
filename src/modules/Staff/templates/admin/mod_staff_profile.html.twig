@@ -14,6 +14,10 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-password" data-bs-toggle="tab" role="tab">{{ 'Change Password'|trans }}</a>
                     </li>
+                    {# ClientFence core patch: the staff member's own authenticator sign-in (Client/TwoFactor.php). #}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="#tab-twofactor" data-bs-toggle="tab" role="tab">{{ 'Two-factor sign-in'|trans }}</a>
+                    </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-api" data-bs-toggle="tab" role="tab">API</a>
                     </li>
@@ -98,6 +102,65 @@
             </div>
         </div>
 
+        {% set twofactor = admin.profile_twofactor_get %}
+        <div class="tab-pane fade" id="tab-twofactor" role="tabpanel">
+            <div class="p-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ 'Two-factor sign-in'|trans }}</h3>
+                        <p class="text-secondary">{{ 'After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in.'|trans }}</p>
+                        {% if twofactor.enabled %}
+                            <p>
+                                <span class="badge bg-success-lt">{{ 'On'|trans }}</span>
+                                {{ 'Since %date%.'|trans({ '%date%': twofactor.enabled_at|format_datetime }) }}
+                                {% if not twofactor.backup %}<span class="text-warning">{{ 'Your backup code was used: make a new one.'|trans }}</span>{% endif %}
+                            </p>
+                            <div class="row g-4" data-cf-2fa-forms>
+                                <form class="col-lg-6" method="post" action="{{ 'profile/twofactor_backup'|api_url }}" {{ fb_api_form({ callback: 'cfTwoFactorBackup' }) }}>
+                                    <h4>{{ 'New backup code'|trans }}</h4>
+                                    <label class="form-label" for="cf-2fa-backup-password">{{ 'Password'|trans }}</label>
+                                    <input class="form-control mb-3" type="password" name="password" id="cf-2fa-backup-password" autocomplete="current-password" required>
+                                    <button class="btn" type="submit">{{ 'Make a new backup code'|trans }}</button>
+                                </form>
+                                <form class="col-lg-6" method="post" action="{{ 'profile/twofactor_disable'|api_url }}" {{ fb_api_form({ message: 'Two-factor sign-in is off.'|trans, reload: true }) }}>
+                                    <h4>{{ 'Switch off'|trans }}</h4>
+                                    <label class="form-label" for="cf-2fa-off-password">{{ 'Password'|trans }}</label>
+                                    <input class="form-control mb-2" type="password" name="password" id="cf-2fa-off-password" autocomplete="current-password" required>
+                                    <label class="form-label" for="cf-2fa-off-code">{{ 'Code from the app or the backup code'|trans }}</label>
+                                    <input class="form-control mb-3" type="text" name="code" id="cf-2fa-off-code" inputmode="numeric" autocomplete="one-time-code" dir="ltr" required>
+                                    <button class="btn btn-outline-danger" type="submit">{{ 'Switch off two-factor sign-in'|trans }}</button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div data-cf-2fa-start>
+                                <a class="btn btn-primary" href="{{ 'profile/twofactor_setup'|api_url }}" {{ fb_api_link({ callback: 'cfTwoFactorSetup' }) }}>{{ 'Set up two-factor sign-in'|trans }}</a>
+                            </div>
+                            <div class="row g-4" data-cf-2fa-forms data-cf-2fa-setup hidden>
+                                <div class="col-lg-5">
+                                    <p>{{ 'Scan this QR code with your authenticator app, or type in the key.'|trans }}</p>
+                                    <div class="cf-2fa-qr border rounded p-2 bg-white mb-2" data-cf-2fa-qr></div>
+                                    <code class="d-inline-block" dir="ltr" data-cf-2fa-secret></code>
+                                </div>
+                                <form class="col-lg-7" method="post" action="{{ 'profile/twofactor_enable'|api_url }}" {{ fb_api_form({ callback: 'cfTwoFactorBackup' }) }}>
+                                    <label class="form-label" for="cf-2fa-code">{{ 'Code from the app'|trans }}</label>
+                                    <input class="form-control mb-2" type="text" name="code" id="cf-2fa-code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr" required>
+                                    <label class="form-label" for="cf-2fa-password">{{ 'Password'|trans }}</label>
+                                    <input class="form-control mb-3" type="password" name="password" id="cf-2fa-password" autocomplete="current-password" required>
+                                    <button class="btn btn-primary" type="submit">{{ 'Switch on two-factor sign-in'|trans }}</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                        <div class="alert alert-warning mt-3 mb-0" role="alert" data-cf-2fa-backup hidden>
+                            <h4 class="alert-title">{{ 'Your backup code'|trans }}</h4>
+                            <p><code class="fs-3" dir="ltr" data-cf-2fa-backup-code></code></p>
+                            <p>{{ 'Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now.'|trans }}</p>
+                            <a class="btn" href="{{ 'staff/profile'|url }}#tab-twofactor">{{ 'Done'|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="tab-pane fade" id="tab-api" role="tabpanel">
             <div class="p-3">
                 <form method="post" action="{{ 'profile/generate_api_key'|api_url }}" {{ fb_api_form({callback: 'onAfterKeyUpdate'}) }}>
@@ -127,6 +190,20 @@
 
 {% block js %}
 <script nonce="{{ csp_nonce }}">
+    // ClientFence core patch: two-factor sign-in setup (the QR code comes from the admin bundle, ClientFenceQr).
+    function cfTwoFactorSetup(result) {
+        document.querySelector('[data-cf-2fa-start]').hidden = true;
+        document.querySelector('[data-cf-2fa-setup]').hidden = false;
+        document.querySelector('[data-cf-2fa-secret]').textContent = result.secret;
+        globalThis.ClientFenceQr?.(result.uri).then((svg) => document.querySelector('[data-cf-2fa-qr]').replaceChildren(svg));
+    }
+
+    function cfTwoFactorBackup(result) {
+        document.querySelectorAll('[data-cf-2fa-forms]').forEach((el) => { el.hidden = true; });
+        document.querySelector('[data-cf-2fa-backup-code]').textContent = result.backup_code;
+        document.querySelector('[data-cf-2fa-backup]').hidden = false;
+    }
+
     function onAfterKeyUpdate(result) {
         ClientFence.api.admin.post('profile/get', {},
             (result) => {

@@ -251,7 +251,7 @@ class Client implements InjectionAwareInterface
     {
         if ($role !== 'guest' || !in_array(strtolower($method), [
             'client_login', 'client_create', 'staff_login', 'client_user_invite_accept',
-            'client_twofactor_verify', 'client_signin_pin', 'staff_login_pin',
+            'client_twofactor_verify', 'client_signin_pin', 'staff_login_pin', 'staff_login_code',
             'cart_add_item', 'cart_remove_item', 'cart_apply_promo',
             'cart_remove_promo', 'cart_reset', 'cart_set_currency',
         ], true)) {

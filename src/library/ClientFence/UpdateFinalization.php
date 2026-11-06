@@ -37,6 +37,8 @@ class UpdateFinalization implements InjectionAwareInterface
         'staff/login',
         // ClientFence core patch: the staff email PIN page (Clientfence/SignInSecurity.php).
         'staff/login/pin',
+        // ClientFence core patch: the staff authenticator code page (Client/TwoFactor.php).
+        'staff/login/code',
         'system/update/finalize',
     ];
     private const array ALLOWED_ADMIN_API_CALLS = [

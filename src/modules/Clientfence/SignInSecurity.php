@@ -26,6 +26,10 @@ use Symfony\Component\Intl\Countries;
  *   sign-in, a sign-up's own sign-in, invitations and staff "Login as client" are not asked.
  *   Turning the staff PIN on needs a PIN sent to the saving admin (proves email works).
  *
+ * - Staff with the authenticator app (Client/TwoFactor.php) are asked for its code first, with the
+ *   email PIN offered instead: either one signs in. So the staff PIN setting is the switch that
+ *   requires a second step of every staff member.
+ *
  * - "Trust this browser for 30 days": a signed cookie per area (staff, client) naming the login;
  *   it stops working when the login's password changes (the signature covers the password hash).
  *
@@ -262,11 +266,12 @@ final class SignInSecurity
      * After the right password: when the area asks for a PIN and this browser is not trusted for
      * the login, keeps the sign-in waiting (PENDING), sends the PIN and returns true; false when
      * the sign-in may go on. $login: {kind: staff|client|user, id, email, name, timezone};
-     * $payload: what the finishing step needs (kept in the session).
+     * $payload: what the finishing step needs (kept in the session). $force: a staff member with the
+     * authenticator app chose the email PIN instead (sent whatever the PIN setting).
      */
-    public static function challenge(\Pimple\Container $di, string $area, array $login, array $payload, string $ip): bool
+    public static function challenge(\Pimple\Container $di, string $area, array $login, array $payload, string $ip, bool $force = false): bool
     {
-        if (!self::pinOn($di, $area) || self::trusted($di, $area, (string) $login['kind'], (int) $login['id'])) {
+        if (!$force && (!self::pinOn($di, $area) || self::trusted($di, $area, (string) $login['kind'], (int) $login['id']))) {
             return false;
         }
         if ($area === 'client' && $login['kind'] === 'client' && self::$newClientId !== null && self::$newClientId === (int) $login['id']) {
@@ -278,6 +283,7 @@ final class SignInSecurity
         $pin = self::newPin();
         // One waiting sign-in per session: not also an authenticator code step of an earlier one.
         $di['session']->delete(\ClientFence\Mod\Client\TwoFactor::PENDING);
+        $di['session']->delete(\ClientFence\Mod\Client\TwoFactor::STAFF_PENDING);
         $di['session']->set(self::PENDING, [
             'area' => $area,
             'kind' => (string) $login['kind'],
@@ -417,7 +423,7 @@ final class SignInSecurity
         return $password !== null && hash_equals(self::sign($body, $password), $mac);
     }
 
-    private static function trust(\Pimple\Container $di, string $area, string $kind, int $id): void
+    public static function trust(\Pimple\Container $di, string $area, string $kind, int $id): void
     {
         $password = self::passwordHash($di, $kind, $id);
         if ($password === null) {

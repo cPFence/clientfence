@@ -100,6 +100,7 @@ $paths = [
     'modules/Client/templates/client/mod_client_no_access.html.twig',
     'modules/Client/templates/client/mod_client_twofactor_settings.html.twig',
     'modules/Client/templates/client/mod_client_twofactor_code.html.twig',
+    'modules/Staff/templates/admin/mod_staff_login_code.html.twig',
     'modules/Client/templates/client/mod_client_google_link.html.twig',
     'modules/Client/templates/client/mod_client_google_profile.html.twig',
     'modules/Client/templates/client/widgets/mod_client_google_button.html.twig',

@@ -20562,3 +20562,72 @@ msgstr "X-Forwarded-For, Host και Prefix (μόνο αν το proxy σας τ�
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "Ο διακομιστής ιστού διαβάζει ήδη τη διεύθυνση του επισκέπτη από το proxy: :ip."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "Μετά τον κωδικό πρόσβασης, εισαγάγετε έναν κωδικό από εφαρμογή επαλήθευσης, όπως το Google Authenticator, το Microsoft Authenticator ή το 1Password. Το PIN μέσω email προσφέρεται πάντα ως εναλλακτική κατά τη σύνδεση."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "Κωδικός από την εφαρμογή"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "Κωδικός από την εφαρμογή ή ο κωδικός ανάκτησης"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "Στείλτε μου PIN με email"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "Εισαγάγετε τον 6ψήφιο κωδικό από την εφαρμογή επαλήθευσης ή τον κωδικό ανάκτησης."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "Φυλάξτε τον σε ασφαλές μέρος: σας συνδέει μία φορά αν χάσετε το τηλέφωνό σας. Εμφανίζεται μόνο τώρα."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "Νέος κωδικός ανάκτησης"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "Μόνο οι Υπερδιαχειριστές μπορούν να απενεργοποιήσουν τη σύνδεση δύο παραγόντων."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "Σαρώστε αυτό το QR code με την εφαρμογή επαλήθευσης ή πληκτρολογήστε το κλειδί."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "Από %date%."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "Αυτό το μέλος του προσωπικού συνδέεται με εφαρμογή επαλήθευσης. Απενεργοποιήστε την αν έχασε το τηλέφωνο και τον κωδικό ανάκτησης."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "Απενεργοποίηση σύνδεσης δύο παραγόντων"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "Να απενεργοποιηθεί η σύνδεση δύο παραγόντων;"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "Η σύνδεση δύο παραγόντων είναι ανενεργή."
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "Χρήση της εφαρμογής επαλήθευσης"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "Ο κωδικός ανάκτησης χρησιμοποιήθηκε: δημιουργήστε νέο."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "Μετά τον σωστό κωδικό πρόσβασης, ένα PIN 6 ψηφίων αποστέλλεται στο email του λογαριασμού και απαιτείται για τη σύνδεση. Ισχύει μία φορά, για 10 λεπτά. Δεν ζητείται από πελάτες που συνδέονται με εφαρμογή ελέγχου ταυτότητας ή με Google. Το προσωπικό που έχει ρυθμίσει εφαρμογή ελέγχου ταυτότητας στη σελίδα Προφίλ του μπορεί να εισαγάγει τον κωδικό της αντί για το PIN. Η επιλογή «Εμπιστοσύνη σε αυτό το πρόγραμμα περιήγησης για 30 ημέρες» παραλείπει το PIN σε γνωστό πρόγραμμα περιήγησης μέχρι να αλλάξει ο κωδικός πρόσβασης."

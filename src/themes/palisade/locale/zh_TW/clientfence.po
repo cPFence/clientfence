@@ -21009,3 +21009,72 @@ msgstr "X-Forwarded-For、Host 和 Prefix（僅當您的代理全部設定這三
 #: src/modules/Clientfence/Health.php
 msgid "The web server already reads the visitor address from the proxy: :ip."
 msgstr "網頁伺服器已從代理讀取訪客位址：:ip。"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "After your password, enter a code from an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password. The email PIN is always offered instead when you sign in."
+msgstr "輸入密碼後，再輸入驗證器應用程式（如 Google Authenticator、Microsoft Authenticator 或 1Password）中的驗證碼。登入時一律可改用電子郵件 PIN 碼。"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app"
+msgstr "應用程式中的驗證碼"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Code from the app or the backup code"
+msgstr "應用程式中的驗證碼或備用碼"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Email me a PIN instead"
+msgstr "改為以電子郵件寄送 PIN 碼"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_code.html.twig
+msgid "Enter the 6-digit code from your authenticator app, or your backup code."
+msgstr "請輸入驗證器應用程式中的 6 位數驗證碼，或您的備用碼。"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
+msgstr "請妥善保管：遺失手機時，可用它登入一次。此代碼僅顯示這一次。"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "New backup code"
+msgstr "新備用碼"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can switch off two-factor sign-in."
+msgstr "只有超級管理員可以關閉雙重驗證登入。"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Scan this QR code with your authenticator app, or type in the key."
+msgstr "請用驗證器應用程式掃描此 QR 碼，或輸入金鑰。"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Since %date%."
+msgstr "自 %date% 起。"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member signs in with an authenticator app. Turn it off if they lost the phone and the backup code."
+msgstr "該員工使用驗證器應用程式登入。若其遺失手機和備用碼，請將其關閉。"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in"
+msgstr "關閉雙重驗證登入"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Turn off two-factor sign-in?"
+msgstr "關閉雙重驗證登入？"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Two-factor sign-in is off."
+msgstr "雙重驗證登入已關閉。"
+
+#: src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
+msgid "Use the authenticator app instead"
+msgstr "改用驗證器應用程式"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Your backup code was used: make a new one."
+msgstr "您的備用碼已被使用：請產生新的備用碼。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
+msgstr "輸入正確密碼後，會向登入帳號的電子郵件寄送一組 6 位數 PIN 碼，登入時需要輸入。該碼僅能使用一次，有效期限 10 分鐘。使用驗證器應用程式或 Google 登入的客戶不會被詢問。在自己的「個人資料」頁面設定了驗證器應用程式的員工可改為輸入該應用程式的驗證碼。選擇「信任此瀏覽器 30 天」後，已知的瀏覽器將略過 PIN 碼，直到密碼變更。"

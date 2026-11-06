@@ -1442,6 +1442,9 @@ test('delete removes admin account', function (): void {
     $di['logger'] = $logStub;
     $di['db'] = $dbMock;
     $di['loggedin_admin'] = staffHierarchyBypassAdmin();
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('delete')->once()->with('client_twofactor', ['kind' => 'staff', 'subject_id' => 5]);
+    $di['dbal'] = $dbal;
 
     $serviceMock->setDi($di);
 

@@ -1509,7 +1509,7 @@
     },
     {
         "file": "modules/Staff/Api/Guest.php",
-        "done": "ClientFence core patch: a sign-in waiting for its email PIN keeps the page to return to."
+        "done": "ClientFence core patch: a sign-in waiting for its email PIN or app code keeps the page to return to."
     },
     {
         "file": "modules/Staff/Api/Guest.php",
@@ -1525,7 +1525,7 @@
     },
     {
         "file": "library/ClientFence/App.php",
-        "done": "ClientFence core patch: a staff sign-in waiting for its email PIN goes to the PIN page."
+        "done": "ClientFence core patch: a staff sign-in waiting for its email PIN goes to the PIN page,"
     },
     {
         "file": "library/ClientFence/UpdateFinalization.php",
@@ -4138,5 +4138,69 @@
     {
         "file": "library/ClientFence/Session.php",
         "done": "ClientFence core patch: a session saved while the check was off has an empty fingerprint"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: staff with the authenticator app are asked for its code"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: whether the staff member signs in with the authenticator app"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: a deleted staff member leaves no two-factor row"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "public function login_code($data): array"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "public function login_code_email(): bool"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "public function login_pin_app(): bool"
+    },
+    {
+        "file": "modules/Staff/Api/Admin.php",
+        "done": "public function twofactor_disable($data): bool"
+    },
+    {
+        "file": "modules/Profile/Api/Admin.php",
+        "done": "public function twofactor_enable($data): array"
+    },
+    {
+        "file": "modules/Staff/Controller/Admin.php",
+        "done": "ClientFence core patch: the authenticator code step of a staff sign-in"
+    },
+    {
+        "file": "modules/Index/Controller/Admin.php",
+        "done": "ClientFence core patch: one waiting for its authenticator code goes to the code page"
+    },
+    {
+        "file": "library/ClientFence/UpdateFinalization.php",
+        "done": "ClientFence core patch: the staff authenticator code page"
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_profile.html.twig",
+        "done": "ClientFence core patch: the staff member's own authenticator sign-in"
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_manage.html.twig",
+        "done": "ClientFence core patch: a Super Administrator turns off a staff member's authenticator app"
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_login_pin.html.twig",
+        "done": "staff/login_pin_app"
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "'/api/guest/staff/login_code_email',"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "'staff_login_pin', 'staff_login_code',"
     }
 ]

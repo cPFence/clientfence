@@ -143,6 +143,7 @@ declare global {
   var ClientFence: ClientFenceRuntime;
   var Modals: ModalsRuntime | undefined;
   var TomSelect: unknown;
+  var ClientFenceQr: ((text: string) => Promise<SVGSVGElement>) | undefined;
 }
 
 declare module '*.css' {
