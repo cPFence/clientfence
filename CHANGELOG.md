@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.34 (2026-11-07)
+
+### Added
+
+- Modules can carry their own payment gateways, registrars, control panels and translations.
+- Modules can add links to the client area menu.
+- A module with a newer version in its manifest is upgraded on the next cron run.
+- A module can name the oldest ClientFence version it needs; older sites refuse to activate it.
+
+### Changed
+
+- A module cannot be deactivated while one of its payment gateways, registrars or control panels is still installed.
+
+### Fixed
+
+- Extensions that name a minimum version in their manifest can be installed again (the check used a placeholder version).
+
 ## 1.0.33 (2026-11-06)
 
 ### Added
