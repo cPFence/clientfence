@@ -35,6 +35,10 @@ final class CspReports
         if (preg_match('#(chrome|moz|safari|safari-web|ms-browser)-extension:#i', $blocked . ' ' . $source)) {
             return false;
         }
+        // Cloudflare injects its own scripts under /cdn-cgi/ (bot detection); the portal never serves that path.
+        if (str_starts_with(self::path($blocked), '/cdn-cgi/') || str_starts_with(self::path($source), '/cdn-cgi/')) {
+            return false;
+        }
         $entry = [
             'page' => self::path((string) ($report['document-uri'] ?? '')),
             'directive' => mb_substr((string) ($report['effective-directive'] ?? $report['violated-directive'] ?? ''), 0, 60),

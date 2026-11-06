@@ -45,6 +45,7 @@ test('noise is not kept, and the list stays bounded', function (): void {
         expect(CspReports::record('not json', $file))->toBeFalse()
             ->and(CspReports::record('123', $file))->toBeFalse()
             ->and(CspReports::record(cspReportBody(['source-file' => 'chrome-extension://abc/content.js']), $file))->toBeFalse()
+            ->and(CspReports::record(cspReportBody(['blocked-uri' => 'https://portal.example/cdn-cgi/challenge-platform/scripts/jsd/main.js']), $file))->toBeFalse()
             ->and(CspReports::record(str_repeat('x', 20000), $file))->toBeFalse();
 
         for ($i = 0; $i <= CspReports::MAX; ++$i) {
