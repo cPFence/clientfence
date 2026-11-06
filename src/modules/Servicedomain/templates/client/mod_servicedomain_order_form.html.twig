@@ -96,6 +96,8 @@
     </div>
 </div>
 
+{# ClientFence core patch: domain searches show the guest CAPTCHA (once an hour). #}
+{{ include('mod_servicedomain_lookup_captcha.html.twig') }}
 <input type="hidden" name="id" value="{{ product.id }}"/>
 <input type="hidden" name="action" value="register" id="domain-action"/>
 
@@ -191,7 +193,7 @@
                 document.getElementById('domain-action').value = 'transfer';
                 const domain = sld + tld;
 
-                ClientFence.api.guest.post(
+                ClientFenceDomainCaptcha.post(
                     'servicedomain/can_be_transferred',
                     {sld: sld, tld: tld},
                     function (result) {
@@ -221,7 +223,7 @@
                 const tld = document.querySelector('select[name="register_tld"]').value.toLowerCase();
                 const domain = sld + tld;
                 document.getElementById('domain-action').value = 'register';
-                ClientFence.api.guest.post(
+                ClientFenceDomainCaptcha.post(
                     'servicedomain/check',
                     {sld: sld, tld: tld},
                     function (result) {

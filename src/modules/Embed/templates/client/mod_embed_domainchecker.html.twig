@@ -36,6 +36,8 @@
         </select>
         <button class="embed-button" type="submit"><span>{{ 'Search'|trans }}</span></button>
     </div>
+    {# ClientFence core patch: embedded domain searches show the guest CAPTCHA (once an hour). #}
+    {{ include('mod_servicedomain_lookup_captcha.html.twig') }}
 </form>
 
 <script nonce="{{ csp_nonce }}">
@@ -43,27 +45,30 @@
         document.getElementById('domain-checker').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            const formData = new FormData(this);
-            const searchParams = new URLSearchParams();
+            const searchParams = new URLSearchParams({ sld: this.elements.sld.value, tld: this.elements.tld.value });
 
-            for (const [key, value] of formData) {
-                searchParams.append(key, value);
-            }
+            ClientFenceDomainCaptcha.fields()
+                .then(captcha => {
+                    for (const [key, value] of Object.entries(captcha)) {
+                        searchParams.append(key, value);
+                    }
 
-            fetch("{{ 'servicedomain/check'|api_url(role='guest') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: searchParams.toString()
-            })
-            .then(response => response.json())
-            .then(json => {
-                alert(json.error ? json.error.message : {{ 'Domain is available'|trans|json_encode|raw }});
-            })
-            .catch(error => {
-                alert({{ 'Error'|trans|json_encode|raw }});
-            });
+                    return fetch("{{ 'servicedomain/check'|api_url(role='guest') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: searchParams.toString()
+                    });
+                })
+                .then(response => response.json())
+                .then(json => {
+                    ClientFenceDomainCaptcha.after();
+                    alert(json.error ? json.error.message : {{ 'Domain is available'|trans|json_encode|raw }});
+                })
+                .catch(error => {
+                    alert({{ 'Error'|trans|json_encode|raw }});
+                });
         });
     });
 </script>

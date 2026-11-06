@@ -1,0 +1,70 @@
+{# ClientFence: guests answer the CAPTCHA on their first domain search, then search without it for an
+   hour (servicedomain/lookup_captcha). Searches send their fields through ClientFenceDomainCaptcha. The
+   widget stays on the page, hidden while not needed, so it can come back when the hour runs out. #}
+{% set rc = not client and guest.extension_is_on({"mod":"antispam"}) ? guest.antispam_recaptcha : {} %}
+{% set provider = rc.captcha_provider|default('recaptcha_v2') %}
+{% set key = provider == 'turnstile' ? rc.turnstile_site_key|default('') : (provider == 'hcaptcha' ? rc.hcaptcha_site_key|default('') : rc.publickey|default('')) %}
+{% if rc.enabled|default(false) and key %}
+<div class="mb-3" data-domain-captcha{% if not guest.servicedomain_lookup_captcha %} hidden{% endif %}>
+    {% if provider == 'turnstile' %}
+        <script nonce="{{ csp_nonce }}" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        <div class="cf-turnstile" data-sitekey="{{ key }}"></div>
+    {% elseif provider == 'recaptcha_v2' %}
+        <script nonce="{{ csp_nonce }}" src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <div class="g-recaptcha" data-sitekey="{{ key }}"></div>
+    {% elseif provider == 'recaptcha_v3' %}
+        <script nonce="{{ csp_nonce }}" src="https://www.google.com/recaptcha/api.js?render={{ key|url_encode }}" async defer></script>
+    {% elseif provider == 'hcaptcha' %}
+        <script nonce="{{ csp_nonce }}" src="https://js.hcaptcha.com/1/api.js" async defer></script>
+        <div class="h-captcha" data-sitekey="{{ key }}"></div>
+    {% endif %}
+</div>
+{% endif %}
+<script nonce="{{ csp_nonce }}">
+window.ClientFenceDomainCaptcha = (() => {
+    const provider = {{ provider|json_encode|raw }};
+    const key = {{ key|json_encode|raw }};
+    const box = () => document.querySelector('[data-domain-captcha]');
+
+    // The CAPTCHA answer for the next search ({} once the visitor has passed it).
+    const fields = async () => {
+        const el = box();
+        if (!el) return {};
+        // v3 is invisible: every search sends a token, so none fails when the hour runs out.
+        if (provider === 'recaptcha_v3') {
+            if (!window.grecaptcha) return {};
+            await new Promise((resolve) => window.grecaptcha.ready(resolve));
+            return { 'g-recaptcha-response': await window.grecaptcha.execute(key, { action: 'clientfence_submit' }), 'g-recaptcha-action': 'clientfence_submit' };
+        }
+        if (el.hidden) return {};
+        const out = {};
+        for (const name of ['g-recaptcha-response', 'cf-turnstile-response', 'h-captcha-response']) {
+            const input = el.querySelector(`[name="${name}"]`);
+            if (input) out[name] = input.value;
+        }
+        return out;
+    };
+
+    // After a search: hide the CAPTCHA once passed, or show a fresh one (each answer works once).
+    const after = () => {
+        const el = box();
+        if (!el) return;
+        fetch({{ 'servicedomain/lookup_captcha'|api_url(role='guest')|json_encode|raw }}, { method: 'POST' })
+            .then((response) => response.json())
+            .then((json) => {
+                el.hidden = json.result === false;
+                if (!el.hidden && provider !== 'recaptcha_v3') {
+                    (window.turnstile || window.hcaptcha || window.grecaptcha)?.reset?.();
+                }
+            })
+            .catch(() => {});
+    };
+
+    // ClientFence.api.guest.post for a domain search, with the CAPTCHA answer added.
+    const post = (endpoint, params, success) => fields().then((extra) => ClientFence.api.guest.post(endpoint, { ...params, ...extra },
+        (result) => { after(); success(result); },
+        (error) => { after(); ClientFence.message(error.message, 'error'); }));
+
+    return { fields, after, post };
+})();
+</script>

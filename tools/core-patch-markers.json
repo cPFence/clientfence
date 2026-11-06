@@ -1740,6 +1740,10 @@
         "done": "private function visitorPrices(array $tld): array"
     },
     {
+        "file": "modules/Servicedomain/Api/Guest.php",
+        "done": "ClientFence core patch: domain searches ask guests for the CAPTCHA once an hour, on top of the lookup rate limit."
+    },
+    {
         "file": "modules/Servicedomain/Api/Admin.php",
         "done": "CurrencyPrices::save($this->getDi()['em']->getConnection(), 'tld', (int) $model->id, $data['currency_prices']);"
     },
@@ -4242,5 +4246,21 @@
     {
         "file": "library/ClientFence/UpdatePatcher.php",
         "done": "private function patch123(): void"
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig",
+        "done": "ClientFence core patch: domain searches show the guest CAPTCHA (once an hour)."
+    },
+    {
+        "file": "modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig",
+        "done": "ClientFence core patch: domain searches show the guest CAPTCHA (once an hour)."
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_domainchecker.html.twig",
+        "done": "ClientFence core patch: embedded domain searches show the guest CAPTCHA (once an hour)."
+    },
+    {
+        "file": "modules/Antispam/templates/admin/mod_antispam_settings.html.twig",
+        "done": "ClientFence core patch: the domain search CAPTCHA (Servicedomain Guest lookup_captcha)."
     }
 ]

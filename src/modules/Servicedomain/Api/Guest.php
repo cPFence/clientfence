@@ -18,6 +18,8 @@ use ClientFence\Validation\Api\RequiredParams;
  */
 class Guest extends \ClientFence\Api\AbstractApi
 {
+    private const LOOKUP_CAPTCHA = 'domain_lookup_captcha_until';
+
     /**
      * Get configured TLDs which can be ordered. Shows only enabled TLDs.
      *
@@ -105,6 +107,7 @@ class Guest extends \ClientFence\Api\AbstractApi
     public function check($data): bool
     {
         $this->getDi()['rate_limiter']->consumeOrThrow('domain_lookup_ip', (string) $this->getIp());
+        $this->checkLookupCaptcha($data);
 
         $sld = (string) $data['sld'];
         $validator = $this->getDi()['validator'];
@@ -140,6 +143,7 @@ class Guest extends \ClientFence\Api\AbstractApi
     public function can_be_transferred($data): bool
     {
         $this->getDi()['rate_limiter']->consumeOrThrow('domain_lookup_ip', (string) $this->getIp());
+        $this->checkLookupCaptcha($data);
 
         $tld = $this->getService()->tldFindOneByTld($data['tld']);
         if (!$tld instanceof \Model_Tld) {
@@ -153,5 +157,32 @@ class Guest extends \ClientFence\Api\AbstractApi
         }
 
         return true;
+    }
+
+    /**
+     * Whether the next domain search needs the CAPTCHA: guests answer it once, then search
+     * without it for an hour (signed-in clients never see it).
+     */
+    public function lookup_captcha($data = []): bool
+    {
+        $di = $this->getDi();
+        if ($di['auth']->isClientLoggedIn() || !$di['mod_service']('extension')->isExtensionActive('mod', 'antispam')) {
+            return false;
+        }
+        if (empty($di['mod_config']('Antispam')['captcha_enabled'])) {
+            return false;
+        }
+
+        return (int) ($di['session']->get(self::LOOKUP_CAPTCHA) ?? 0) < time();
+    }
+
+    // ClientFence core patch: domain searches ask guests for the CAPTCHA once an hour, on top of the lookup rate limit.
+    private function checkLookupCaptcha(array $data): void
+    {
+        if (!$this->lookup_captcha()) {
+            return;
+        }
+        $this->getDi()['mod_service']('Antispam')->checkCaptcha($data);
+        $this->getDi()['session']->set(self::LOOKUP_CAPTCHA, time() + 3600);
     }
 }

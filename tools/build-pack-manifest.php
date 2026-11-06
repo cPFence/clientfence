@@ -32,6 +32,7 @@ $paths = [
     'modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig',
     'modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig',
     'modules/Invoice/templates/email/mod_invoice_card_failed.html.twig',
+    'modules/Servicedomain/templates/client/mod_servicedomain_lookup_captcha.html.twig',
     'modules/Invoice/templates/admin/mod_invoice_settings_receipts.html.twig',
     'modules/Support/TicketFiles.php',
     'modules/Support/TicketSecrets.php',

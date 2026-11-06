@@ -168,6 +168,8 @@
     </div>
 </div>
 
+{# ClientFence core patch: domain searches show the guest CAPTCHA (once an hour). #}
+{% if can_register or can_transfer %}{{ include('mod_servicedomain_lookup_captcha.html.twig') }}{% endif %}
 <input type="hidden" name="domain[action]" value="{{ default_action }}" id="domain-action">
 {% endif %}
 
@@ -243,7 +245,7 @@
                 const sld = document.querySelector('input[name="domain[register_sld]"]').value.toLowerCase();
                 const tld = document.querySelector('select[name="domain[register_tld]"]').value.toLowerCase();
 
-                ClientFence.api.guest.post('servicedomain/check', { sld: sld, tld: tld },
+                ClientFenceDomainCaptcha.post('servicedomain/check', { sld: sld, tld: tld },
                     function(result) {
                         if (generation !== domainCheckGeneration) return;
                         setRegistrationPricing(tld, generation);
@@ -300,7 +302,7 @@
                 const sld = document.querySelector('input[name="domain[transfer_sld]"]').value.toLowerCase();
                 const tld = document.querySelector('select[name="domain[transfer_tld]"]').value.toLowerCase();
 
-                ClientFence.api.guest.post('servicedomain/can_be_transferred', { sld: sld, tld: tld },
+                ClientFenceDomainCaptcha.post('servicedomain/can_be_transferred', { sld: sld, tld: tld },
                     function(result) {
                         if (generation !== transferCheckGeneration) return;
                         setTransferPricing(tld, generation);

@@ -14,6 +14,7 @@ use ClientFence\Mod\Servicedomain\Api\Guest;
 use ClientFence\Mod\Servicedomain\Service;
 
 use function Tests\Helpers\container;
+use function Tests\Helpers\moduleService;
 
 test('gets tlds', function (): void {
     $guestApi = apiEndpoint(new Guest());
@@ -335,3 +336,41 @@ test('throws exception when checking domain cannot be transferred', function ():
     expect(fn (): bool => $guestApi->can_be_transferred($data))
         ->toThrow(ClientFence\Exception::class);
 });
+
+test('guests answer the domain search CAPTCHA once an hour, signed-in clients never', function (bool $signedIn, int $passedUntil, bool $asked): void {
+    $guestApi = apiEndpoint(new Guest());
+    $tld = new Model_Tld();
+    $tld->loadBean(new Tests\Helpers\DummyBean());
+    $tld->active = true;
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('tldFindOneByTld')->andReturn($tld);
+    $serviceMock->shouldReceive('isDomainAvailable')->andReturn(true);
+    $guestApi->setService($serviceMock);
+
+    $extension = Mockery::mock();
+    $extension->shouldReceive('isExtensionActive')->with('mod', 'antispam')->andReturn(true);
+    $antispam = Mockery::mock(ClientFence\Mod\Antispam\Service::class);
+    $antispam->shouldReceive('checkCaptcha')->times($asked ? 1 : 0)->with(Mockery::on(fn (array $data): bool => $data['cf-turnstile-response'] === 'token'));
+    $session = Mockery::mock(ClientFence\Session::class);
+    $session->shouldReceive('get')->with('domain_lookup_captcha_until')->andReturn($passedUntil);
+    $session->shouldReceive('set')->times($asked ? 1 : 0)->with('domain_lookup_captcha_until', Mockery::on(fn (int $until): bool => abs($until - (time() + 3600)) < 5));
+    $auth = Mockery::mock();
+    $auth->shouldReceive('isClientLoggedIn')->andReturn($signedIn);
+    $validator = Mockery::mock(ClientFence\Validate::class);
+    $validator->shouldReceive('isSldValid')->andReturn(true);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(moduleService(['extension' => $extension, 'antispam' => $antispam]));
+    $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'Antispam' ? ['captcha_enabled' => '1'] : []);
+    $di['session'] = $session;
+    $di['auth'] = $auth;
+    $di['validator'] = $validator;
+    $guestApi->setDi($di);
+
+    expect($guestApi->check(['tld' => '.com', 'sld' => 'example', 'cf-turnstile-response' => 'token']))->toBeTrue();
+})->with([
+    'first search' => [false, 0, true],
+    'passed an hour ago' => [false, time() - 1, true],
+    'passed within the hour' => [false, time() + 600, false],
+    'signed-in client' => [true, 0, false],
+]);
