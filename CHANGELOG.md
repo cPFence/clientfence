@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.33 (2026-11-06)
+
+### Added
+
+- Staff two-factor sign-in: staff turn on an authenticator app on their Profile page; the app code or the email PIN signs them in.
+- Saved cards with Stripe: clients save a card when they pay or on the new Payment methods page.
+- Invoices are paid with the saved card on the due date, with retries 7 and 14 days later and an email when a payment fails.
+- Staff can charge a saved card from the invoice page and set the charge days and retries in Invoices settings.
+- Find saved cards in Stripe links the cards of clients moved from WHMCS, matched by email.
+- With the CAPTCHA on, guests answer it on their first domain search, then search without it for an hour.
+
+### Fixed
+
+- System Health no longer reports the scripts Cloudflare adds itself as script policy problems.
+
 ## 1.0.32 (2026-11-06)
 
 ### Added
