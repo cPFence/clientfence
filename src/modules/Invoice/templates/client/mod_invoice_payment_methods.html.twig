@@ -11,7 +11,9 @@
 {% block content %}
 <div class="page-heading">
     <h1>{{ 'Payment methods'|trans }}</h1>
+    {% if cards.available %}
     <p>{{ 'Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice.'|trans }}</p>
+    {% endif %}
 </div>
 
 {% if not cards.available %}

@@ -35,7 +35,7 @@ final class Health
     private const WEB_SPEED = 'clientfence_web_speed';
 
     /**
-     * The last saved run: ran_at (Y-m-d H:i:s), checks (list), counts, rating; null before the first.
+     * The last saved run: ran_at and started_at (Y-m-d H:i:s), checks (list), counts, rating; null before the first.
      */
     public static function latest(\Pimple\Container $di): ?array
     {
@@ -72,6 +72,8 @@ final class Health
      */
     public static function run(\Pimple\Container $di): array
     {
+        // Before any check reads its data (staff runs clear the script reports this run showed, CspReports).
+        $startedAt = date('Y-m-d H:i:s');
         $previous = self::latest($di);
         $previousChecks = array_column($previous['checks'] ?? [], null, 'id');
         $checks = [];
@@ -102,7 +104,7 @@ final class Health
         $di['em']->getConnection()->executeStatement(
             'INSERT INTO mod_clientfence_state (name, value, updated_at) VALUES (?, ?, ?)
              ON DUPLICATE KEY UPDATE value = VALUES(value), updated_at = VALUES(updated_at)',
-            [self::STATE, json_encode(['ran_at' => $report['ran_at'], 'version' => \ClientFence\Version::CLIENTFENCE, 'checks' => $checks], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), $report['ran_at']]
+            [self::STATE, json_encode(['ran_at' => $report['ran_at'], 'started_at' => $startedAt, 'version' => \ClientFence\Version::CLIENTFENCE, 'checks' => $checks], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), $report['ran_at']]
         );
 
         return $report;

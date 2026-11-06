@@ -257,6 +257,12 @@ class Client extends \ClientFence\Api\AbstractApi
         return ['available' => $adapter !== null, 'cards' => $adapter?->cards((int) $this->getIdentity()->id) ?? []];
     }
 
+    /** ClientFence: whether saved cards can be used here (an enabled Stripe gateway), for the client menu. */
+    public function card_available(): bool
+    {
+        return SavedCards::stripe($this->getDi()) !== null;
+    }
+
     /** ClientFence: starts adding a card: {client_secret, pub_key} for Stripe's card form. */
     public function card_setup(): array
     {

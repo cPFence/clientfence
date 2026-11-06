@@ -33,6 +33,11 @@ test('a report is kept as one kind with a count, without query strings', functio
             ->and($recent[1]['blocked'])->toBe('inline')
             // Only the last 7 days count.
             ->and(CspReports::recent($file, 2000 + 8 * 86400))->toBe([]);
+
+        // Staff running the checks clear what the last run showed; a later report still warns.
+        expect(CspReports::record(cspReportBody(['line-number' => 7]), $file, 3000))->toBeTrue();
+        CspReports::clear(2500, $file);
+        expect(array_column(CspReports::recent($file, 3000), 'line'))->toBe([7]);
     } finally {
         @unlink($file);
     }

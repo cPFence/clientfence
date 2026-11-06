@@ -6,6 +6,7 @@ namespace ClientFence\Mod\Clientfence\Api;
 
 use ClientFence\Mod\Clientfence\Backups;
 use ClientFence\Mod\Clientfence\Branding;
+use ClientFence\Mod\Clientfence\CspReports;
 use ClientFence\Mod\Clientfence\Customized;
 use ClientFence\Mod\Clientfence\Health;
 use ClientFence\Mod\Clientfence\Notifications;
@@ -401,12 +402,19 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Runs the system health checks now and saves the result (the cron runs them hourly).
+     * Runs the system health checks now and saves the result (the cron runs them hourly). First clears
+     * the script policy reports the last run already showed, so only scripts blocked since then warn.
      */
     public function health_run(): array
     {
         $this->checkPermissions('system', 'manage_settings');
         $this->getDi()['logger']->info('ClientFence: system health checks run by staff');
+        // Script policy warnings come from stored browser reports: a staff run clears those the last run showed.
+        $started = Health::latest($this->getDi())['started_at'] ?? null;
+        if ($started !== null) {
+            // Only what came in before that run read the reports; a second's margin keeps a report of that same second.
+            CspReports::clear((int) strtotime((string) $started) - 1);
+        }
 
         return Health::run($this->getDi());
     }

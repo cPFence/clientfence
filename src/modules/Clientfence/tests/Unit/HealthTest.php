@@ -171,7 +171,9 @@ test('a registrar failure emails only after two consecutive failed runs', functi
     // Establish the other checks' states before the registrar connection fails.
     Health::run($di);
     expect($emails)->toHaveCount(1)
-        ->and(array_column($emails[0]['checks'], 'title'))->toContain(__trans('Email delivery'));
+        ->and(array_column($emails[0]['checks'], 'title'))->toContain(__trans('Email delivery'))
+        // Saved for staff runs, which clear the script reports read after this time (Api\Admin::health_run).
+        ->and($saved['started_at'] <= $saved['ran_at'])->toBeTrue();
     $emails = [];
 
     Health::run($di);

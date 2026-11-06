@@ -7,7 +7,8 @@ namespace ClientFence\Mod\Clientfence;
 /**
  * ClientFence: the enforced script policy's violation reports (report-uri /csp-report).
  * Kept as up to MAX kinds of violation in data/csp-reports.json, each with a count; System Health lists
- * those of the last 7 days. Only paths and origins are kept, never query strings.
+ * those of the last 7 days. "Run checks now" clears those the last run already showed. Only paths and origins are
+ * kept, never query strings.
  */
 final class CspReports
 {
@@ -73,6 +74,28 @@ final class CspReports
         }
 
         return true;
+    }
+
+    /** Forgets the kinds last reported at or before $before: staff saw them, so only new reports warn again. */
+    public static function clear(int $before, ?string $file = null): void
+    {
+        $handle = @fopen($file ?? self::file(), 'c+');
+        if ($handle === false) {
+            return;
+        }
+
+        try {
+            flock($handle, LOCK_EX);
+            $all = json_decode((string) stream_get_contents($handle), true);
+            $kept = array_filter(is_array($all) ? $all : [], static fn ($entry): bool => is_array($entry) && (int) ($entry['last'] ?? 0) > $before);
+            ftruncate($handle, 0);
+            rewind($handle);
+            fwrite($handle, (string) json_encode((object) $kept, JSON_UNESCAPED_SLASHES));
+            fflush($handle);
+        } finally {
+            flock($handle, LOCK_UN);
+            fclose($handle);
+        }
     }
 
     /**

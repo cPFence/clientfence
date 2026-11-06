@@ -406,3 +406,14 @@ test('gets tax rate for client', function (): void {
     $result = $api->get_tax_rate();
     expect($result)->toBe($taxRate);
 });
+
+test('the client menu offers saved cards only with an enabled Stripe gateway', function (): void {
+    $api = apiEndpoint(new Client());
+    $di = container();
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('findOne')->with('PayGateway', 'gateway = ? AND enabled = 1', ['Stripe'])->once()->andReturnNull();
+    $di['db'] = $db;
+    $api->setDi($di);
+
+    expect($api->card_available())->toBeFalse();
+});
