@@ -20201,3 +20201,50 @@ msgstr "无法安装该模块。它需要 :product :min 或更高版本；此站
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "此模块提供 :list，该项仍处于已安装状态。请先将其移除，然后再停用该模块。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "退款到账户余额时，不能同时通过支付网关原路退回。"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "请先输入 PayPal REST API 的 client ID 和 secret。"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal 未接受 REST API 密钥：:error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal 未取消订阅 :id：:error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal 未退还付款 :id：:error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "仅记录：由我自己退款"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "通过 :gateway 退回"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "此账单没有可通过支付网关退款的付款。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "此账单的一笔付款最多可通过支付网关退款 :amount：请退回该金额，再记录其余部分。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "通过 :gateway 退回（最多 :amount）"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "留空则全额退款"

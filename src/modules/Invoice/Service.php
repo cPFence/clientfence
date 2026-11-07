@@ -1556,13 +1556,17 @@ class Service implements InjectionAwareInterface
 
     /**
      * ClientFence core patch: WHMCS refunds: an amount (default: what is left to refund) and, optionally, to the
-     * client's credit. A part refund keeps the invoice paid until its refunds reach the total.
+     * client's credit or back through the gateway that took the payment (PayPal Email with its REST API keys).
+     * A part refund keeps the invoice paid until its refunds reach the total.
      */
-    public function refundInvoice(\Model_Invoice $invoice, $note = null, ?float $amount = null, bool $toCredit = false): ?int
+    public function refundInvoice(\Model_Invoice $invoice, $note = null, ?float $amount = null, bool $toCredit = false, bool $throughGateway = false): ?int
     {
+        if ($toCredit && $throughGateway) {
+            throw new InformationException('A refund to account credit cannot also be sent back through the payment gateway.');
+        }
         // ClientFence core patch: under the client's credit lock, and the status is read again there: a
         // refund sent twice made two credit notes and debited a refunded Add funds twice.
-        $creditNote = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $note, $amount, $toCredit): ?int {
+        $record = function () use ($invoice, $note, $amount, $toCredit): ?int {
             if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === \Model_Invoice::STATUS_REFUNDED) {
                 throw new InformationException('Only a paid invoice can be refunded, and only once.');
             }
@@ -1580,13 +1584,85 @@ class Service implements InjectionAwareInterface
             }
 
             return $this->refundPartLocked($invoice, $amount ?? round($this->getTotalWithTax($invoice) - $refunded, 2), $refunded, (string) $note, $toCredit);
-        });
+        };
+        $creditNote = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, !$throughGateway ? $record : fn (): ?int => $this->di['dbal']->transactional(function () use ($record, $invoice): int {
+            // Recorded first and kept only when the gateway refunds it: a refused refund leaves no credit note.
+            $creditNote = $record() ?? throw new InformationException('Refunds are handled by hand (Invoice settings), so this refund cannot be recorded.');
+            $this->refundThroughGateway($invoice, $creditNote);
+
+            return $creditNote;
+        }));
         if ($creditNote !== null) {
             // An Add funds refund takes credit back; it never adds any (refundToCredit()).
             $this->sendRefundEmail($invoice, $creditNote, $toCredit && !$this->isInvoiceTypeDeposit($invoice));
         }
 
         return $creditNote;
+    }
+
+    /**
+     * ClientFence core patch: a completed payment of the invoice through a gateway that refunds by API (PayPal Email
+     * with its REST API keys), as WHMCS refunds a transaction: the newest one with at least $amount left to refund,
+     * or without $amount the one with the most left. {transaction, adapter, gateway, left}, or null.
+     */
+    public function gatewayRefundPayment(\Model_Invoice $invoice, ?float $amount = null): ?array
+    {
+        $rows = $this->di['dbal']->fetchAllAssociative(
+            "SELECT id, txn_id, gateway_id, amount FROM transaction WHERE invoice_id = ? AND status = ? AND txn_status = 'Completed' AND amount > 0 AND txn_id IS NOT NULL AND txn_id <> '' ORDER BY id DESC",
+            [(int) $invoice->id, \Model_Transaction::STATUS_PROCESSED],
+        );
+        $most = null;
+        foreach ($rows as $row) {
+            $gateway = $this->di['db']->load('PayGateway', (int) $row['gateway_id']);
+            if (!$gateway instanceof \Model_PayGateway || !$gateway->id) {
+                continue;
+            }
+            $adapter = $this->di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway);
+            if (!ServiceSubscription::gatewayCan($adapter, 'refundPayment')) {
+                continue;
+            }
+            $payment = ['transaction' => (string) $row['txn_id'], 'adapter' => $adapter, 'gateway' => (string) $gateway->name];
+            $payment['left'] = round((float) $row['amount'] - $this->refundedThroughGateway($payment['transaction']), 2);
+            if ($amount !== null && $payment['left'] >= round($amount, 2)) {
+                return $payment;
+            }
+            if ($amount === null && $payment['left'] > ($most['left'] ?? 0)) {
+                $most = $payment;
+            }
+        }
+
+        return $most;
+    }
+
+    /** ClientFence core patch: what ClientFence refunded of a gateway payment: its credit notes carry "of payment <ID>." (refundThroughGateway()). */
+    private function refundedThroughGateway(string $transaction): float
+    {
+        $refunded = 0.0;
+        foreach ($this->di['dbal']->fetchFirstColumn('SELECT id FROM invoice WHERE notes LIKE ?', ['% of payment ' . $transaction . '.%']) as $id) {
+            $refunded += abs($this->getTotalWithTax($this->di['db']->getExistingModelById('Invoice', (int) $id)));
+        }
+
+        return $refunded;
+    }
+
+    /** ClientFence core patch: sends the credit note's amount back through the invoice's gateway payment and notes the gateway's refund ID on it. */
+    private function refundThroughGateway(\Model_Invoice $invoice, int $creditNoteId): void
+    {
+        $creditNote = $this->di['db']->getExistingModelById('Invoice', $creditNoteId);
+        $amount = round(abs($this->getTotalWithTax($creditNote)), 2);
+        $payment = $this->gatewayRefundPayment($invoice, $amount);
+        if ($payment === null) {
+            $left = $this->gatewayRefundPayment($invoice)['left'] ?? 0;
+            if ($left > 0) {
+                throw new InformationException('One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest.', [':amount' => number_format($left, 2) . ' ' . $invoice->currency]);
+            }
+
+            throw new InformationException('This invoice has no payment that can be refunded through the payment gateway.');
+        }
+        $refundId = $payment['adapter']->refundPayment($payment['transaction'], $amount, (string) $invoice->currency);
+        // The PayPal IPN of this refund finds this note and records nothing more (PayPalEmail::refundedFromClientFence()).
+        $this->addNote($creditNote, 'PayPal refund ' . $refundId . ' of payment ' . $payment['transaction'] . '.');
+        $this->di['logger']->info('Invoice #%s: refunded %s %s through %s (refund %s).', $invoice->id, number_format($amount, 2), $invoice->currency, $payment['gateway'], $refundId);
     }
 
     /** ClientFence core patch: as WHMCS "Invoice Refund Confirmation", the client hears of each refund (the credit note's amount). */

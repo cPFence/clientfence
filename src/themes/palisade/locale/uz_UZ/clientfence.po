@@ -18802,3 +18802,50 @@ msgstr "Modulni o'rnatib bo'lmaydi. Unga :product :min yoki undan yangi versiya 
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Bu modul :list ni taqdim etadi, u hali o'rnatilgan. Avval uni olib tashlang, keyin modulni o'chiring."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Hisob kreditiga qaytarilgan to'lovni bir vaqtning o'zida to'lov shlyuzi orqali ham qaytarib bo'lmaydi."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Avval PayPal REST API client ID va secret'ni kiriting."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal REST API kalitlarini qabul qilmadi: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal :id obunani bekor qilmadi: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal :id to'lovni qaytarmadi: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Faqat yozib qo'yish: pulni o'zim qaytaraman"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "U orqali qaytarish: :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Bu hisob-fakturada to'lov shlyuzi orqali qaytarib bo'ladigan to'lov yo'q."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Bu hisob-fakturaning bitta to'lovini to'lov shlyuzi orqali :amount gacha qaytarish mumkin: shuni qaytaring, qolganini yozib qo'ying."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "U orqali qaytarish: :gateway (:amount gacha)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "To'liq qaytarish uchun bo'sh qoldiring"

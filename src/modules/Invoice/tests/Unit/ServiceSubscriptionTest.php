@@ -727,3 +727,36 @@ test('unsubscribes', function (): void {
 
     $service->unsubscribe($subscriptionModel);
 });
+
+test('a gateway can cancel or refund only with the method, and PayPal Email only with its REST API keys', function (): void {
+    $keys = ['email' => 'merchant@example.com', 'test_mode' => false];
+
+    expect(ServiceSubscription::gatewayCan(new stdClass(), 'cancelSubscription'))->toBeFalse()
+        ->and(ServiceSubscription::gatewayCan(new class {
+            public function cancelSubscription(string $id): void
+            {
+            }
+        }, 'cancelSubscription'))->toBeTrue()
+        ->and(ServiceSubscription::gatewayCan(new Payment_Adapter_PayPalEmail($keys), 'refundPayment'))->toBeFalse()
+        ->and(ServiceSubscription::gatewayCan(new Payment_Adapter_PayPalEmail($keys + ['api_client_id' => 'id', 'api_secret' => 'secret']), 'refundPayment'))->toBeTrue();
+});
+
+test('a gateway that cannot find the subscription cannot cancel it', function (bool $found): void {
+    $adapter = new class($found) {
+        public function __construct(private bool $found)
+        {
+        }
+
+        public function cancelSubscription(string $id): void
+        {
+        }
+
+        public function canCancelSubscription(string $id): bool
+        {
+            return $this->found && $id === 'I-ACTIVE';
+        }
+    };
+
+    expect(ServiceSubscription::gatewayCan($adapter, 'cancelSubscription', 'I-ACTIVE'))->toBe($found)
+        ->and(ServiceSubscription::gatewayCan($adapter, 'cancelSubscription'))->toBeTrue();
+})->with(['found at the gateway' => [true], 'unknown to the gateway' => [false]]);

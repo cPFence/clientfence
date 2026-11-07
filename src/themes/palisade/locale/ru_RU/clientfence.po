@@ -18464,3 +18464,50 @@ msgstr "Модуль нельзя установить. Он требует :pro
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Этот модуль предоставляет :list, который всё ещё установлен. Сначала удалите его, затем отключите модуль."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Возврат на кредит на счёте нельзя одновременно отправить обратно через платёжный шлюз."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Сначала введите client ID и secret PayPal REST API."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal не принял ключи REST API: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal не отменил подписку :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal не вернул платёж :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Только записать: деньги верну я сам"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Вернуть через :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "В этом счёте нет платежа, который можно вернуть через платёжный шлюз."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Один платёж по этому счёту можно вернуть через платёжный шлюз на сумму до :amount: верните её, а остальное запишите."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Вернуть через :gateway (до :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Оставьте поле пустым для полного возврата"

@@ -144,6 +144,8 @@ class Admin extends \ClientFence\Api\AbstractApi
      * Add refunds.
      *
      * @optional string $note - note for refund
+     * @optional string $refund_to - gateway (send it back through the gateway that took the payment), credit (to the
+     *                               client's credit) or manual (record it only); to_credit=1 is the same as credit
      *
      * @return bool
      */
@@ -155,8 +157,19 @@ class Admin extends \ClientFence\Api\AbstractApi
         $model = $this->_getInvoice($data);
         $note = $data['note'] ?? null;
         $amount = isset($data['amount']) && $data['amount'] !== '' ? (float) $data['amount'] : null;
+        $to = (string) ($data['refund_to'] ?? '');
 
-        return $this->getService()->refundInvoice($model, $note, $amount, !empty($data['to_credit']));
+        return $this->getService()->refundInvoice($model, $note, $amount, !empty($data['to_credit']) || $to === 'credit', $to === 'gateway');
+    }
+
+    /** ClientFence core patch: the gateway a refund of this invoice can be sent back through (PayPal with its REST API keys) and the most one payment has left to refund: {gateway, left}, or null. */
+    #[RequiredParams(['id' => 'Invoice ID was not passed'])]
+    public function refund_gateway($data): ?array
+    {
+        $this->checkPermissions('invoice', 'view');
+        $payment = $this->getService()->gatewayRefundPayment($this->_getInvoice($data));
+
+        return $payment === null ? null : ['gateway' => $payment['gateway'], 'left' => $payment['left']];
     }
 
     /**

@@ -20695,3 +20695,50 @@ msgstr "Modul se ne može instalirati. Zahteva :product :min ili noviji; ovaj sa
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Ovaj modul obezbeđuje :list, koji je još instaliran. Prvo ga uklonite, pa onda deaktivirajte modul."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Povraćaj na kredit na nalogu ne može se istovremeno vratiti i preko platnog prolaza."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Prvo unesite client ID i secret za PayPal REST API."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal nije prihvatio REST API ključeve: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal nije otkazao pretplatu :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal nije vratio uplatu :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Samo evidentiraj: novac vraćam sam"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Vrati preko :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Ovaj račun nema uplatu koja se može vratiti preko platnog prolaza."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Jedna uplata sa ovog računa može se vratiti preko platnog prolaza do :amount: vratite taj iznos, a ostatak evidentirajte."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Vrati preko :gateway (do :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Ostavite prazno za potpuni povraćaj"

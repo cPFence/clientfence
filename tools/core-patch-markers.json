@@ -4318,5 +4318,49 @@
     {
         "file": "library/ClientFence/Translate.php",
         "done": "ClientFence core patch: a module ships its own texts in modules/<Name>/locale/"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: the REST API access token of this request (see restToken())."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: optional REST API keys (a PayPal REST app): staff refunds go to PayPal and"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: the REST API part of PayPal Email (optional keys of a PayPal REST app). It refunds"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: a refund staff sent from ClientFence (refundPayment()) has its credit note already."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: a gateway with API keys (PayPal Email's REST keys) checks them on saving."
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: whether the gateway adapter can do $method now (cancel a subscription, refund a"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a completed payment of the invoice through a gateway that refunds by API (PayPal Email"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: sends the credit note's amount back through the invoice's gateway payment and notes the gateway's refund ID on it."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: the gateway a refund of this invoice can be sent back through (PayPal with its REST API keys) and the most one payment has left to refund: {gateway, left}, or null."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: as WHMCS's refund types, when a payment's gateway refunds by API (PayPal with its REST keys); a blank amount refunds what is left, or it suggests what that payment has left."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: what ClientFence refunded of a gateway payment: its credit notes carry \"of payment <ID>.\" (refundThroughGateway())."
     }
 ]

@@ -20217,3 +20217,50 @@ msgstr "Modulul nu poate fi instalat. Necesită :product :min sau o versiune mai
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Acest modul oferă :list, care este încă instalat. Eliminați-l mai întâi, apoi dezactivați modulul."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "O rambursare în credit în cont nu poate fi trimisă în același timp înapoi prin modalitatea de plată."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Introduceți mai întâi client ID și secret ale API-ului REST PayPal."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal nu a acceptat cheile API REST: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal nu a anulat abonamentul :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal nu a rambursat plata :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Doar înregistrează: trimit eu banii înapoi"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Trimite înapoi prin :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Această factură nu are nicio plată care să poată fi rambursată prin modalitatea de plată."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "O plată din această factură poate fi rambursată prin modalitatea de plată până la :amount: rambursați această sumă, apoi înregistrați restul."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Trimite înapoi prin :gateway (până la :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Lăsați necompletat pentru rambursare integrală"

@@ -319,7 +319,14 @@ class ServicePayGateway implements InjectionAwareInterface
             if (!class_exists($class)) {
                 return;
             }
-            new $class($adapterConfig);
+            $adapter = new $class($adapterConfig);
+            // ClientFence core patch: a gateway with API keys (PayPal Email's REST keys) checks them on saving.
+            if (method_exists($adapter, 'testConnection')) {
+                $adapter->setDi($this->di);
+                $adapter->testConnection();
+            }
+        } catch (\ClientFence\InformationException $e) {
+            throw $e;
         } catch (\Payment_Exception $e) {
             throw new \ClientFence\Exception($e->getMessage(), null, 819);
         } catch (\Throwable $e) {

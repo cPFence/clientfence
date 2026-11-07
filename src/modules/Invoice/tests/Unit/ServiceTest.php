@@ -5404,3 +5404,80 @@ test('a full Add funds refund the client has spent is refused before anything is
 
     expect(fn () => $service->refundInvoice($invoice))->toThrow(ClientFence\InformationException::class, 'the client has spent it');
 });
+
+test('a refund sent back through PayPal notes its refund ID, and a refused one records nothing and emails no one', function (bool $accepted): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 20, 'status' => 'paid', 'currency' => 'USD', 'serie' => 'CF', 'nr' => 7, 'taxrate' => '0', 'paid_at' => '2026-10-01 00:00:00'] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $di = container();
+    $di['dbal']->shouldReceive('fetchOne')->with('SELECT status FROM invoice WHERE id = ?', [10])->andReturn('paid');
+    $di['dbal']->shouldReceive('fetchOne')->with('SELECT refund FROM invoice WHERE id = ?', [10])->andReturn(0.0);
+    // The credit note is written inside this transaction, so a refused refund rolls it back.
+    $di['dbal']->shouldReceive('transactional')->once()->andReturnUsing(fn (callable $work): mixed => $work());
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['db']->shouldReceive('getCell')->andReturn(false);
+    $system = Mockery::mock(SystemService::class);
+    $system->shouldReceive('getParamValue')->with('invoice_refund_logic', 'manual')->andReturn('credit_note');
+    $email = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $email->shouldReceive('sendTemplate')->times($accepted ? 1 : 0)->andReturnTrue();
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system, 'email' => $email]));
+    $creditNote = new Model_Invoice();
+    $creditNote->loadBean(new Tests\Helpers\DummyBean());
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 10)->andReturn($invoice);
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 99)->andReturn($creditNote);
+    $adapter = Mockery::mock();
+    $refund = $adapter->shouldReceive('refundPayment')->once()->with('97452580WT6535333', 5.0, 'USD');
+    $accepted ? $refund->andReturn('1JU08902781691411') : $refund->andThrow(new ClientFence\InformationException('PayPal did not refund payment 97452580WT6535333: refused'));
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('gatewayRefundPayment')->with($invoice, 5.0)->andReturn(['transaction' => '97452580WT6535333', 'adapter' => $adapter, 'gateway' => 'PayPal']);
+    $service->shouldReceive('getTotalWithTax')->andReturnUsing(fn (Model_Invoice $i): float => $i === $creditNote ? -5.0 : 15.0);
+    $service->shouldReceive('toApiArray')->andReturn(['id' => 10, 'serie_nr' => 'CF7', 'client' => []]);
+    $service->shouldReceive('getTax')->andReturn(0.0);
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturn(false);
+    $service->shouldReceive('countIncome');
+    $service->shouldReceive('creditNote')->once()->andReturn(99);
+    $service->shouldReceive('addNote')->times($accepted ? 1 : 0)->with($creditNote, 'PayPal refund 1JU08902781691411 of payment 97452580WT6535333.');
+    $service->setDi($di);
+
+    expect(fn () => $service->refundInvoice($invoice, null, 5.0, true, true))->toThrow(ClientFence\InformationException::class, 'cannot also be sent back');
+    if ($accepted) {
+        expect($service->refundInvoice($invoice, null, 5.0, false, true))->toBe(99);
+    } else {
+        expect(fn () => $service->refundInvoice($invoice, null, 5.0, false, true))->toThrow(ClientFence\InformationException::class, 'PayPal did not refund payment');
+    }
+})->with(['accepted' => [true], 'refused' => [false]]);
+
+test('a gateway refund goes against a payment with enough left, as WHMCS refunds a transaction', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $di = container();
+    // Two PayPal payments, the newest (4.00) already refunded in full from ClientFence.
+    $di['dbal']->shouldReceive('fetchAllAssociative')->andReturn([
+        ['id' => 2, 'txn_id' => 'NEWEST00000001', 'gateway_id' => 7, 'amount' => '4.00'],
+        ['id' => 1, 'txn_id' => 'OLDEST00000001', 'gateway_id' => 7, 'amount' => '6.00'],
+    ]);
+    $di['dbal']->shouldReceive('fetchFirstColumn')->with('SELECT id FROM invoice WHERE notes LIKE ?', ['% of payment NEWEST00000001.%'])->andReturn([50]);
+    $di['dbal']->shouldReceive('fetchFirstColumn')->with('SELECT id FROM invoice WHERE notes LIKE ?', ['% of payment OLDEST00000001.%'])->andReturn([]);
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $gateway->id = 7;
+    $gateway->name = 'PayPal';
+    $creditNote = new Model_Invoice();
+    $creditNote->loadBean(new Tests\Helpers\DummyBean());
+    $di['db']->shouldReceive('load')->with('PayGateway', 7)->andReturn($gateway);
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 50)->andReturn($creditNote);
+    $adapter = new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'test_mode' => false, 'api_client_id' => 'id', 'api_secret' => 'secret']);
+    $payGateway = Mockery::mock(ServicePayGateway::class);
+    $payGateway->shouldReceive('getPaymentAdapter')->andReturn($adapter);
+    $di['mod_service'] = $di->protect(fn () => $payGateway);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->with($creditNote)->andReturn(-4.0);
+    $service->setDi($di);
+
+    expect($service->gatewayRefundPayment($invoice, 6.0))->toMatchArray(['transaction' => 'OLDEST00000001', 'left' => 6.0])
+        ->and($service->gatewayRefundPayment($invoice, 6.01))->toBeNull()
+        ->and($service->gatewayRefundPayment($invoice))->toMatchArray(['transaction' => 'OLDEST00000001', 'gateway' => 'PayPal', 'left' => 6.0]);
+});

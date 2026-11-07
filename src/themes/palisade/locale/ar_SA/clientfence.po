@@ -20112,3 +20112,50 @@ msgstr "لا يمكن تثبيت الوحدة. تتطلب :product :min أو أ�
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "توفر هذه الوحدة :list، وهو لا يزال مثبتًا. أزِله أولاً، ثم عطّل الوحدة."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "لا يمكن إرسال الاسترداد إلى الرصيد الدائن وإعادته عبر بوابة الدفع في الوقت نفسه."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "أدخل معرّف العميل (Client ID) والسر الخاص بـ PayPal REST API أولاً."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "لم يقبل PayPal مفاتيح REST API: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "لم يلغِ PayPal الاشتراك :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "لم يسترد PayPal الدفعة :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "سجّله فقط: سأعيد المبلغ بنفسي"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "أعده عبر :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "لا توجد في هذه الفاتورة دفعة يمكن استردادها عبر بوابة الدفع."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "يمكن استرداد دفعة واحدة من هذه الفاتورة عبر بوابة الدفع حتى :amount: استردّ هذا المبلغ، ثم سجّل الباقي."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "أعده عبر :gateway (حتى :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "اتركه فارغاً لاسترداد المبلغ كاملاً"

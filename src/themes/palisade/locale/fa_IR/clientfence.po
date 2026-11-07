@@ -20202,3 +20202,50 @@ msgstr "نصب ماژول ممکن نیست. به :product نسخه :min یا ب
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "این ماژول :list را ارائه می‌دهد که هنوز نصب است. ابتدا آن را حذف کنید، سپس ماژول را غیرفعال کنید."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "بازگشت وجه به اعتبار حساب را نمی‌توان هم‌زمان از طریق درگاه پرداخت هم برگرداند."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "ابتدا client ID و secret مربوط به PayPal REST API را وارد کنید."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal کلیدهای REST API را نپذیرفت: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal اشتراک :id را لغو نکرد: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal پرداخت :id را برگشت نزد: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "فقط ثبت شود: پول را خودم برمی‌گردانم"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "از طریق :gateway برگردانده شود"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "این صورتحساب پرداختی ندارد که بتوان آن را از طریق درگاه پرداخت برگشت زد."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "یکی از پرداخت‌های این صورتحساب را می‌توان تا سقف :amount از طریق درگاه پرداخت برگشت زد: همان مبلغ را برگشت بزنید و بقیه را ثبت کنید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "از طریق :gateway برگردانده شود (تا سقف :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "برای برگشت کامل خالی بگذارید"

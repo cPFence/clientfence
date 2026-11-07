@@ -15,6 +15,8 @@ use Pimple\Container;
 class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements ClientFence\InjectionAwareInterface
 {
     protected ?Container $di = null;
+    // ClientFence core patch: the REST API access token of this request (see restToken()).
+    private ?string $restToken = null;
 
     public function setDi(Container $di): void
     {
@@ -50,6 +52,31 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                     [
                         'label' => 'PayPal email address for payments',
                         'validators' => ['EmailAddress'],
+                    ],
+                ],
+                // ClientFence core patch: optional REST API keys (a PayPal REST app): staff refunds go to PayPal and
+                // subscriptions are cancelled from ClientFence, as WHMCS does. Without them PayPal works as before.
+                'api_client_id' => [
+                    'text', [
+                        'label' => 'Live REST API client ID (optional):',
+                        'description' => 'The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence.',
+                    ],
+                ],
+                'api_secret' => [
+                    'password', [
+                        'label' => 'Live REST API secret:',
+                        'secret' => true,
+                    ],
+                ],
+                'test_api_client_id' => [
+                    'text', [
+                        'label' => 'Sandbox REST API client ID (optional):',
+                    ],
+                ],
+                'test_api_secret' => [
+                    'password', [
+                        'label' => 'Sandbox REST API secret:',
+                        'secret' => true,
                     ],
                 ],
             ],
@@ -293,6 +320,7 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
             isset($ipn['payment_status'], $ipn['txn_type'])
             && $ipn['payment_status'] == 'Refunded'
             && in_array($ipn['txn_type'], ['web_accept', 'subscr_payment'], true)
+            && !$this->refundedFromClientFence((string) ($ipn['txn_id'] ?? ''))
         ) {
             // ClientFence core patch: only a full refund of the parent payment refunds its own invoice.
             $payment = empty($ipn['parent_txn_id']) ? null : $this->di['db']->findOne(
@@ -694,5 +722,130 @@ document.addEventListener('DOMContentLoaded', function() {
         $data['charset'] = 'utf-8';
 
         return $data;
+    }
+
+    // ClientFence core patch: the REST API part of PayPal Email (optional keys of a PayPal REST app). It refunds
+    // payments and cancels subscriptions, also those made through PayPal Standard (their transaction and profile IDs
+    // are REST capture and subscription IDs).
+
+    /** Whether the REST API keys of the current mode (live or sandbox) are set: refunds and subscription cancels need them. */
+    public function hasApiKeys(): bool
+    {
+        return $this->restKeys() !== null;
+    }
+
+    /** Checks the REST API keys when they are set (on saving the gateway). */
+    public function testConnection(): void
+    {
+        if ($this->restKeys() !== null) {
+            $this->restToken();
+        }
+    }
+
+    public function cancelSubscription(string $subscriptionId): void
+    {
+        if ($this->restKeys() === null) {
+            throw new ClientFence\InformationException('Cancel subscription :id in PayPal: ClientFence marks it canceled when PayPal reports it.', [':id' => $subscriptionId]);
+        }
+        [$status, $body] = $this->rest('POST', '/v1/billing/subscriptions/' . rawurlencode($subscriptionId) . '/cancel', ['reason' => 'Cancelled in ClientFence']);
+        // Already cancelled or ended at PayPal (by the client, or by an earlier try) is what was asked.
+        if ($status === 422 && in_array($this->rest('GET', '/v1/billing/subscriptions/' . rawurlencode($subscriptionId))[1]['status'] ?? '', ['CANCELLED', 'EXPIRED'], true)) {
+            return;
+        }
+        if ($status !== 204) {
+            throw new ClientFence\InformationException('PayPal did not cancel subscription :id: :error', [':id' => $subscriptionId, ':error' => $this->restError($body, $status)]);
+        }
+    }
+
+    /** Whether PayPal finds the subscription and it can still be cancelled (a check before a plan change relies on it). */
+    public function canCancelSubscription(string $subscriptionId): bool
+    {
+        try {
+            [$status, $body] = $this->rest('GET', '/v1/billing/subscriptions/' . rawurlencode($subscriptionId));
+        } catch (\Throwable) {
+            return false;
+        }
+
+        return $status === 200 && in_array($body['status'] ?? '', ['APPROVAL_PENDING', 'APPROVED', 'ACTIVE', 'SUSPENDED'], true);
+    }
+
+    /** PayPal charges a subscription again only when its period ends, so cancelling it now ends it there. */
+    public function cancelSubscriptionAtPeriodEnd(string $subscriptionId): void
+    {
+        $this->cancelSubscription($subscriptionId);
+    }
+
+    /** Refunds $amount of a PayPal payment (its transaction ID) and returns PayPal's refund ID. */
+    public function refundPayment(string $transactionId, float $amount, string $currency): string
+    {
+        [$status, $body] = $this->rest('POST', '/v2/payments/captures/' . rawurlencode($transactionId) . '/refund', [
+            'amount' => ['value' => $this->moneyFormat($amount, $currency), 'currency_code' => $currency],
+        ]);
+        if ($status !== 201 || empty($body['id'])) {
+            throw new ClientFence\InformationException('PayPal did not refund payment :id: :error', [':id' => $transactionId, ':error' => $this->restError($body, $status)]);
+        }
+
+        return (string) $body['id'];
+    }
+
+    /** ClientFence core patch: a refund staff sent from ClientFence (refundPayment()) has its credit note already. */
+    private function refundedFromClientFence(string $refundId): bool
+    {
+        return preg_match('/^[A-Z0-9]{8,32}$/i', $refundId) === 1
+            && (bool) $this->di['db']->getCell('SELECT 1 FROM invoice WHERE notes LIKE ? LIMIT 1', ['%PayPal refund ' . $refundId . ' %']);
+    }
+
+    /** [client ID, secret] of the current mode, or null. */
+    private function restKeys(): ?array
+    {
+        $prefix = empty($this->config['test_mode']) ? '' : 'test_';
+        $id = trim((string) ($this->config[$prefix . 'api_client_id'] ?? ''));
+        $secret = trim((string) ($this->config[$prefix . 'api_secret'] ?? ''));
+
+        return $id !== '' && $secret !== '' ? [$id, $secret] : null;
+    }
+
+    private function restUrl(string $path): string
+    {
+        return (empty($this->config['test_mode']) ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com') . $path;
+    }
+
+    private function restToken(): string
+    {
+        if ($this->restToken === null) {
+            [$id, $secret] = $this->restKeys() ?? throw new ClientFence\InformationException('Enter the PayPal REST API client ID and secret first.');
+            $response = $this->di['http_client']->request('POST', $this->restUrl('/v1/oauth2/token'), [
+                'auth_basic' => [$id, $secret],
+                'body' => ['grant_type' => 'client_credentials'],
+                'timeout' => 30,
+            ]);
+            $body = $response->toArray(false);
+            if ($response->getStatusCode() !== 200 || empty($body['access_token'])) {
+                throw new ClientFence\InformationException('PayPal did not accept the REST API keys: :error', [':error' => (string) ($body['error_description'] ?? $response->getStatusCode())]);
+            }
+            $this->restToken = (string) $body['access_token'];
+        }
+
+        return $this->restToken;
+    }
+
+    /** [HTTP status, decoded body] of a REST call; network errors throw. */
+    private function rest(string $method, string $path, ?array $json = null): array
+    {
+        $options = ['auth_bearer' => $this->restToken(), 'timeout' => 60];
+        if ($json !== null) {
+            $options['json'] = $json;
+        }
+        $response = $this->di['http_client']->request($method, $this->restUrl($path), $options);
+        $status = $response->getStatusCode();
+
+        return [$status, $status === 204 ? [] : $response->toArray(false)];
+    }
+
+    private function restError(array $body, int $status): string
+    {
+        $detail = $body['details'][0]['description'] ?? $body['details'][0]['issue'] ?? null;
+
+        return trim(($body['message'] ?? $body['name'] ?? 'HTTP ' . $status) . ($detail ? ' (' . $detail . ')' : ''));
     }
 }

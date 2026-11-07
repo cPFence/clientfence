@@ -762,7 +762,7 @@ final class Upgrades
             }
             $gateway = $di['db']->getExistingModelById('PayGateway', (int) $subscription['pay_gateway_id'], 'Payment gateway not found');
             $adapter = $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway);
-            if (!method_exists($adapter, 'cancelSubscription')) {
+            if (!\ClientFence\Mod\Invoice\ServiceSubscription::gatewayCan($adapter, 'cancelSubscription', (string) $subscription['sid'])) {
                 return __trans('This service is paid by a PayPal subscription: cancel it in PayPal first, then change the plan.');
             }
         }

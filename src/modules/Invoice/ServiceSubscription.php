@@ -233,7 +233,7 @@ class ServiceSubscription implements InjectionAwareInterface
         }
 
         $adapter = $this->getGatewayAdapter($model);
-        if (!method_exists($adapter, 'cancelSubscriptionAtPeriodEnd')) {
+        if (!self::gatewayCan($adapter, 'cancelSubscriptionAtPeriodEnd')) {
             throw new \ClientFence\InformationException('The payment gateway does not support cancellation at the end of the billing period.');
         }
 
@@ -251,7 +251,7 @@ class ServiceSubscription implements InjectionAwareInterface
         $adapter = $this->getGatewayAdapter($model);
 
         // ClientFence core patch: PayPal subscriptions remain active until the gateway confirms cancellation.
-        if (!method_exists($adapter, 'cancelSubscription')) {
+        if (!self::gatewayCan($adapter, 'cancelSubscription')) {
             throw new \ClientFence\InformationException('Cancel subscription :id in PayPal: ClientFence marks it canceled when PayPal reports it.', [':id' => $subscriptionId]);
         }
 
@@ -264,6 +264,17 @@ class ServiceSubscription implements InjectionAwareInterface
         $payGatewayService = $this->di['mod_service']('Invoice', 'PayGateway');
 
         return $payGatewayService->getPaymentAdapter($gateway);
+    }
+
+    /**
+     * ClientFence core patch: whether the gateway adapter can do $method now (cancel a subscription, refund a
+     * payment): PayPal Email has the methods but needs its REST API keys (hasApiKeys()), and with $subscriptionId
+     * PayPal must find that subscription (an old S- profile or one of another account it cannot cancel).
+     */
+    public static function gatewayCan(object $adapter, string $method, ?string $subscriptionId = null): bool
+    {
+        return method_exists($adapter, $method) && (!method_exists($adapter, 'hasApiKeys') || $adapter->hasApiKeys())
+            && ($subscriptionId === null || !method_exists($adapter, 'canCancelSubscription') || $adapter->canCancelSubscription($subscriptionId));
     }
 
     public function cancelForOrder(\Model_ClientOrder $order): int
@@ -364,7 +375,7 @@ class ServiceSubscription implements InjectionAwareInterface
                 return false;
             }
 
-            if (!method_exists($adapter, 'cancelSubscriptionAtPeriodEnd')) {
+            if (!self::gatewayCan($adapter, 'cancelSubscriptionAtPeriodEnd', (string) $subscription->sid)) {
                 return false;
             }
         }

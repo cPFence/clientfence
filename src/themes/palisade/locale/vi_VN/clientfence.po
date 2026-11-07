@@ -20675,3 +20675,50 @@ msgstr "Không thể cài đặt mô đun. Mô đun này yêu cầu :product :mi
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Mô đun này cung cấp :list, hiện vẫn đang được cài đặt. Hãy gỡ bỏ trước, rồi hủy kích hoạt mô đun."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Khoản hoàn tiền vào tín dụng tài khoản không thể đồng thời được gửi lại qua cổng thanh toán."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Hãy nhập client ID và secret của PayPal REST API trước."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal không chấp nhận khóa REST API: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal đã không hủy thuê bao :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal đã không hoàn tiền khoản thanh toán :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Chỉ ghi lại: tôi tự gửi lại tiền"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Gửi lại qua :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Hóa đơn này không có khoản thanh toán nào có thể hoàn tiền qua cổng thanh toán."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Một khoản thanh toán của hóa đơn này có thể được hoàn tiền qua cổng thanh toán tối đa :amount: hãy hoàn khoản đó, rồi ghi lại phần còn lại."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Gửi lại qua :gateway (tối đa :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Để trống để hoàn tiền toàn bộ"

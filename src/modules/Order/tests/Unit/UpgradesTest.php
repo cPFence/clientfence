@@ -699,10 +699,24 @@ test('a plan change requires a PayPal subscription to be canceled in PayPal firs
     $gateway = new Model_PayGateway();
     $gateway->loadBean(new Tests\Helpers\DummyBean());
     $gatewayService = Mockery::mock(ClientFence\Mod\Invoice\ServicePayGateway::class);
-    $gatewayService->shouldReceive('getPaymentAdapter')->once()->with($gateway)
-        ->andReturn(new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com']));
+    $config = ['email' => 'merchant@example.com'];
+    $paypalStatus = 404;
+    $http = new Symfony\Component\HttpClient\MockHttpClient(function (string $method, string $url) use (&$paypalStatus): Symfony\Component\HttpClient\Response\MockResponse {
+        return str_ends_with($url, '/v1/oauth2/token')
+            ? new Symfony\Component\HttpClient\Response\MockResponse('{"access_token":"token"}')
+            : new Symfony\Component\HttpClient\Response\MockResponse($paypalStatus === 200 ? '{"status":"ACTIVE"}' : '{"name":"RESOURCE_NOT_FOUND"}', ['http_code' => $paypalStatus]);
+    });
+    $gatewayService->shouldReceive('getPaymentAdapter')->times(3)->with($gateway)
+        ->andReturnUsing(function () use (&$config, $http): Payment_Adapter_PayPalEmail {
+            $adapter = new Payment_Adapter_PayPalEmail($config);
+            $adapterDi = Tests\Helpers\container();
+            $adapterDi['http_client'] = $http;
+            $adapter->setDi($adapterDi);
+
+            return $adapter;
+        });
     $models = Mockery::mock(ClientFence\Database::class);
-    $models->shouldReceive('getExistingModelById')->once()->with('PayGateway', 2, 'Payment gateway not found')->andReturn($gateway);
+    $models->shouldReceive('getExistingModelById')->times(3)->with('PayGateway', 2, 'Payment gateway not found')->andReturn($gateway);
     $di['db'] = $models;
     $di['mod_service'] = $di->protect(fn () => $gatewayService);
 
@@ -712,6 +726,13 @@ test('a plan change requires a PayPal subscription to be canceled in PayPal firs
     expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBe('This service is paid by a PayPal subscription: cancel it in PayPal first, then change the plan.');
 
     $db->update('subscription', ['sid' => ''], ['id' => 7]);
+    expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBeNull();
+
+    // With its REST API keys, PayPal Email cancels the subscription itself, as Stripe does, once PayPal finds it.
+    $db->update('subscription', ['sid' => 'I-PAYPAL'], ['id' => 7]);
+    $config += ['api_client_id' => 'live-id', 'api_secret' => 'live-secret'];
+    expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBe('This service is paid by a PayPal subscription: cancel it in PayPal first, then change the plan.');
+    $paypalStatus = 200;
     expect(Upgrades::blocker($di, $order, UPGRADES_NOW))->toBeNull();
 });
 

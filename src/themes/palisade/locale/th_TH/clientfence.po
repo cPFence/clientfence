@@ -18507,3 +18507,50 @@ msgstr "ไม่สามารถติดตั้งโมดูลได้
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "โมดูลนี้ให้บริการ :list ซึ่งยังติดตั้งอยู่ โปรดลบออกก่อน แล้วจึงปิดใช้งานโมดูล"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "การคืนเงินเป็นเครดิตในบัญชีไม่สามารถส่งคืนผ่านช่องทางการชำระเงินพร้อมกันได้"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "โปรดกรอก client ID และ secret ของ PayPal REST API ก่อน"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal ไม่ยอมรับคีย์ REST API: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal ไม่ได้ยกเลิกการสมัครสมาชิก :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal ไม่ได้คืนเงินการชำระเงิน :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "บันทึกอย่างเดียว: ฉันจะคืนเงินเอง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "ส่งคืนผ่าน :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "ใบแจ้งหนี้นี้ไม่มีการชำระเงินที่คืนเงินผ่านช่องทางการชำระเงินได้"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "การชำระเงินหนึ่งรายการของใบแจ้งหนี้นี้คืนเงินผ่านช่องทางการชำระเงินได้สูงสุด :amount: ให้คืนจำนวนนั้น แล้วบันทึกส่วนที่เหลือ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "ส่งคืนผ่าน :gateway (สูงสุด :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "เว้นว่างเพื่อคืนเงินเต็มจำนวน"

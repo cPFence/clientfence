@@ -876,6 +876,10 @@ msgstr ""
 msgid "A redirect for this path already exists."
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
 msgid "A reply to a closed ticket is refused and the sender told. Help desks where clients cannot reopen tickets always refuse them."
 msgstr ""
@@ -3580,7 +3584,7 @@ msgstr ""
 msgid "Cancel schedule"
 msgstr ""
 
-#: src/modules/Invoice/ServiceSubscription.php
+#: src/library/Payment/Adapter/PayPalEmail.php src/modules/Invoice/ServiceSubscription.php
 msgid "Cancel subscription :id in PayPal: ClientFence marks it canceled when PayPal reports it."
 msgstr ""
 
@@ -7584,6 +7588,10 @@ msgstr ""
 msgid "Enter the 6-digit code the app shows, and your password."
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr ""
+
 #: src/modules/Clientfence/Setup.php
 msgid "Enter the PayPal email address that receives payments."
 msgstr ""
@@ -10620,6 +10628,10 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Leave blank for unlimited uses"
 msgstr ""
@@ -13352,6 +13364,10 @@ msgstr ""
 msgid "One path per line"
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr ""
+
 #: src/modules/Embed/templates/admin/mod_embed_index.html.twig
 msgid "One per line, up to 20, such as https://example.com. Empty: the parts show only on this site."
 msgstr ""
@@ -14370,6 +14386,18 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal callback signature is invalid"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -15730,6 +15758,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "Record a staff-only note against this ticket."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
@@ -17258,6 +17290,14 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "Send invitation"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
 msgstr ""
 
 #: src/modules/Massmailer/Service.php
@@ -20471,6 +20511,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "This invoice and :method both support subscription payments. Subscribe to pay the next invoices of this service automatically, or pay this invoice once."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
 msgstr ""
 
 #: src/modules/Invoice/SavedCards.php

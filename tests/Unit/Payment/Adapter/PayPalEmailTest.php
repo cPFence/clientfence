@@ -904,3 +904,101 @@ test('rejects array-valued IPN fields before verification', function (): void {
     $adapter = buildPayPalEmailAdapter('merchant@example.com', 'VERIFIED');
     expect(callIsIpnValid($adapter, 'receiver_email=merchant%40example.com&item_number[]=1'))->toBeFalse();
 });
+
+/** A PayPal Email adapter with sandbox REST keys whose HTTP calls go to $responses (path => [status, body]), recorded in $calls. */
+function paypalRestAdapter(array $responses, ?array &$calls = [], ?object $db = null): Payment_Adapter_PayPalEmail
+{
+    $calls = [];
+    $http = new Symfony\Component\HttpClient\MockHttpClient(function (string $method, string $url, array $options) use ($responses, &$calls): Symfony\Component\HttpClient\Response\MockResponse {
+        $path = (string) parse_url($url, PHP_URL_PATH);
+        $calls[] = [$method, $url, json_decode((string) ($options['body'] ?? ''), true)];
+        [$status, $body] = $responses[$method . ' ' . $path] ?? $responses[$path] ?? [500, []];
+
+        return new Symfony\Component\HttpClient\Response\MockResponse($status === 204 ? '' : (string) json_encode($body), ['http_code' => $status]);
+    });
+    $adapter = new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'test_mode' => true, 'test_api_client_id' => 'sandbox-id', 'test_api_secret' => 'sandbox-secret']);
+    $di = container();
+    $di['http_client'] = $http;
+    if ($db !== null) {
+        $di['db'] = $db;
+    }
+    $adapter->setDi($di);
+
+    return $adapter;
+}
+
+const PAYPAL_TOKEN = ['/v1/oauth2/token' => [200, ['access_token' => 'token']]];
+
+test('uses the REST API keys of the current mode only', function (): void {
+    $keys = ['email' => 'merchant@example.com', 'api_client_id' => 'live-id', 'api_secret' => 'live-secret'];
+
+    expect((new Payment_Adapter_PayPalEmail($keys + ['test_mode' => false]))->hasApiKeys())->toBeTrue()
+        ->and((new Payment_Adapter_PayPalEmail($keys + ['test_mode' => true]))->hasApiKeys())->toBeFalse()
+        ->and((new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'api_client_id' => 'live-id', 'test_mode' => false]))->hasApiKeys())->toBeFalse();
+    expect(fn () => (new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'test_mode' => false]))->cancelSubscription('I-ABC'))
+        ->toThrow(ClientFence\InformationException::class, 'Cancel subscription I-ABC in PayPal');
+});
+
+test('cancels a PayPal subscription through the REST API', function (int $status, ?string $after, ?string $error): void {
+    $adapter = paypalRestAdapter(PAYPAL_TOKEN + [
+        'POST /v1/billing/subscriptions/I-ABC/cancel' => [$status, $status === 204 ? [] : ['name' => 'UNPROCESSABLE_ENTITY', 'message' => 'The requested action could not be performed.', 'details' => [['issue' => 'SUBSCRIPTION_STATUS_INVALID']]]],
+        'GET /v1/billing/subscriptions/I-ABC' => [200, ['status' => $after]],
+    ], $calls);
+
+    $error === null ? $adapter->cancelSubscriptionAtPeriodEnd('I-ABC') : expect(fn () => $adapter->cancelSubscription('I-ABC'))->toThrow(ClientFence\InformationException::class, $error);
+    expect($calls[0][1])->toBe('https://api-m.sandbox.paypal.com/v1/oauth2/token')
+        ->and($calls[1][2])->toBe(['reason' => 'Cancelled in ClientFence']);
+})->with([
+    'cancelled' => [204, null, null],
+    'already cancelled at PayPal' => [422, 'CANCELLED', null],
+    'refused' => [422, 'ACTIVE', 'PayPal did not cancel subscription I-ABC: The requested action could not be performed. (SUBSCRIPTION_STATUS_INVALID)'],
+]);
+
+test('refunds a PayPal payment through the REST API', function (): void {
+    $adapter = paypalRestAdapter(PAYPAL_TOKEN + ['POST /v2/payments/captures/97452580WT6535333/refund' => [201, ['id' => '1JU08902781691411', 'status' => 'COMPLETED']]], $calls);
+
+    expect($adapter->refundPayment('97452580WT6535333', 0.4, 'USD'))->toBe('1JU08902781691411')
+        ->and($calls[1][2])->toBe(['amount' => ['value' => '0.40', 'currency_code' => 'USD']]);
+
+    $refused = paypalRestAdapter(PAYPAL_TOKEN + ['POST /v2/payments/captures/97452580WT6535333/refund' => [422, ['message' => 'The requested action could not be performed.', 'details' => [['issue' => 'CAPTURE_FULLY_REFUNDED', 'description' => 'The capture has already been fully refunded']]]]]);
+    expect(fn () => $refused->refundPayment('97452580WT6535333', 1.0, 'USD'))
+        ->toThrow(ClientFence\InformationException::class, 'PayPal did not refund payment 97452580WT6535333: The requested action could not be performed. (The capture has already been fully refunded)');
+
+    $badKeys = paypalRestAdapter(['/v1/oauth2/token' => [401, ['error' => 'invalid_client', 'error_description' => 'Client Authentication failed']]]);
+    expect(fn () => $badKeys->testConnection())->toThrow(ClientFence\InformationException::class, 'PayPal did not accept the REST API keys: Client Authentication failed');
+});
+
+test('records nothing more for the IPN of a refund staff sent from ClientFence', function (): void {
+    $tx = ['invoice_id' => 16, 'type' => 'web_accept', 'txn_id' => '1JU08902781691411', 'txn_status' => 'Refunded', 'amount' => -1, 'currency' => 'USD'];
+    $api = Mockery::mock();
+    $api->shouldReceive('invoice_transaction_get')->once()->with(['id' => 42])->andReturn($tx);
+    $api->shouldReceive('invoice_get')->once()->with(['id' => 16])->andReturn(['id' => 16, 'client' => ['id' => 9]]);
+    $api->shouldReceive('invoice_transaction_update')->andReturnUsing(function (array $update) use (&$tx): void {
+        $tx = array_replace($tx, $update);
+    });
+    $api->shouldNotReceive('invoice_refund');
+    $db = paypalDbMocks();
+    $db->shouldReceive('getCell')->once()->with('SELECT 1 FROM invoice WHERE notes LIKE ? LIMIT 1', ['%PayPal refund 1JU08902781691411 %'])->andReturn('1');
+    $db->shouldNotReceive('findOne');
+    $di = container();
+    $di['db'] = $db;
+
+    paypalProcessAdapter($di)->processTransaction($api, 42, [
+        'get' => signedPayPalGet(16, 2),
+        'post' => ['txn_type' => 'web_accept', 'payment_status' => 'Refunded', 'txn_id' => '1JU08902781691411', 'parent_txn_id' => '97452580WT6535333', 'mc_gross' => -1, 'mc_currency' => 'USD'],
+    ], 2);
+
+    expect($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED)
+        ->and($tx['error'])->toBe('');
+});
+
+test('finds a PayPal subscription it can still cancel', function (int $status, string $state, bool $can): void {
+    $adapter = paypalRestAdapter(PAYPAL_TOKEN + ['GET /v1/billing/subscriptions/I-ABC' => [$status, $status === 200 ? ['status' => $state] : ['name' => 'RESOURCE_NOT_FOUND']]]);
+
+    expect($adapter->canCancelSubscription('I-ABC'))->toBe($can);
+})->with([
+    'active' => [200, 'ACTIVE', true],
+    'suspended' => [200, 'SUSPENDED', true],
+    'already cancelled' => [200, 'CANCELLED', false],
+    'unknown to the REST API (old S- profile, another account)' => [404, '', false],
+]);

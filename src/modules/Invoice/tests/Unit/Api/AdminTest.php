@@ -299,9 +299,9 @@ test('refunds an invoice', function (): void {
     ];
     $newNegativeInvoiceId = 2;
     $serviceMock = Mockery::mock(Service::class);
-    $serviceMock->shouldReceive('refundInvoice')
-        ->atLeast()->once()
-        ->andReturn($newNegativeInvoiceId);
+    $serviceMock->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), null, null, false, false)->andReturn($newNegativeInvoiceId);
+    $serviceMock->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), null, 5.0, false, true)->andReturn(3);
+    $serviceMock->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), null, null, true, false)->andReturn(4);
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $model = new Model_Invoice();
@@ -317,7 +317,9 @@ test('refunds an invoice', function (): void {
     $api->setService($serviceMock);
 
     $result = $api->refund($data);
-    expect($result)->toBeInt()->toBe($newNegativeInvoiceId);
+    expect($result)->toBeInt()->toBe($newNegativeInvoiceId)
+        ->and($api->refund($data + ['refund_to' => 'gateway', 'amount' => '5']))->toBe(3)
+        ->and($api->refund($data + ['refund_to' => 'credit']))->toBe(4);
 });
 
 test('updates an invoice', function (): void {

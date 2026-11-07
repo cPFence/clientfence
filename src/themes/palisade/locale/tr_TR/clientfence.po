@@ -18470,3 +18470,50 @@ msgstr "Modül yüklenemiyor. :product :min veya daha yenisini gerektirir; bu si
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Bu modül hâlâ yüklü olan :list sağlıyor. Önce onu kaldırın, sonra modülü devre dışı bırakın."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Hesap kredisine yapılan bir iade, ödeme geçidi üzerinden de geri gönderilemez."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Önce PayPal REST API client ID ve secret bilgilerini girin."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal REST API anahtarlarını kabul etmedi: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal :id aboneliğini iptal etmedi: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal :id ödemesini iade etmedi: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Yalnızca kaydet: parayı kendim geri gönderiyorum"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Şuradan geri gönder: :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Bu faturada ödeme geçidi üzerinden iade edilebilecek bir ödeme yok."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Bu faturanın bir ödemesi ödeme geçidi üzerinden en fazla :amount tutarına kadar iade edilebilir: o tutarı iade edin, kalanı kaydedin."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Şuradan geri gönder: :gateway (en fazla :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Tam iade için boş bırakın"

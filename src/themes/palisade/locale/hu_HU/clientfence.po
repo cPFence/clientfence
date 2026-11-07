@@ -20681,3 +20681,50 @@ msgstr "A modul nem telepíthető. :product :min vagy újabb szükséges hozzá;
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Ez a modul a következőt biztosítja: :list, amely még telepítve van. Először távolítsa el, majd kapcsolja ki a modult."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "A fiókjóváírásra szóló visszatérítést nem lehet egyúttal a fizetési átjárón keresztül is visszaküldeni."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Először adja meg a PayPal REST API client ID-ját és secretjét."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "A PayPal nem fogadta el a REST API kulcsokat: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "A PayPal nem mondta le a(z) :id előfizetést: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "A PayPal nem térítette vissza a(z) :id befizetést: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Csak rögzítse: a pénzt magam küldöm vissza"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Visszaküldés ezen keresztül: :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Ehhez a számlához nincs olyan befizetés, amely a fizetési átjárón keresztül visszatéríthető."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "A számla egy befizetése legfeljebb :amount összegig téríthető vissza a fizetési átjárón keresztül: térítse vissza ezt, majd rögzítse a maradékot."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Visszaküldés ezen keresztül: :gateway (legfeljebb :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Hagyja üresen teljes visszatérítéshez"

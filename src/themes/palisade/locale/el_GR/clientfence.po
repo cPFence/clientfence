@@ -20768,3 +20768,50 @@ msgstr "Η ενότητα δεν μπορεί να εγκατασταθεί. Α�
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Αυτή η ενότητα παρέχει :list, το οποίο είναι ακόμη εγκατεστημένο. Αφαιρέστε το πρώτα και μετά απενεργοποιήστε την ενότητα."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Μια επιστροφή σε πίστωση λογαριασμού δεν μπορεί να σταλεί ταυτόχρονα πίσω μέσω της πύλης πληρωμών."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Εισαγάγετε πρώτα το client ID και το secret του PayPal REST API."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "Το PayPal δεν αποδέχτηκε τα κλειδιά REST API: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "Το PayPal δεν ακύρωσε τη συνδρομή :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "Το PayPal δεν επέστρεψε τα χρήματα της πληρωμής :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Μόνο καταγραφή: επιστρέφω εγώ τα χρήματα"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Επιστροφή μέσω :gateway"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Αυτό το τιμολόγιο δεν έχει πληρωμή που να μπορεί να επιστραφεί μέσω της πύλης πληρωμών."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Μία πληρωμή αυτού του τιμολογίου μπορεί να επιστραφεί μέσω της πύλης πληρωμών έως :amount: επιστρέψτε αυτό το ποσό και καταγράψτε το υπόλοιπο."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Επιστροφή μέσω :gateway (έως :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Αφήστε κενό για πλήρη επιστροφή"

@@ -21132,3 +21132,50 @@ msgstr "Moduulia ei voi asentaa. Se vaatii :product :min tai uudemman; tässä s
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Tämä moduuli tarjoaa kohteen :list, joka on yhä asennettuna. Poista se ensin ja poista sitten moduuli käytöstä."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Hyvitystä tilin hyvitykseksi ei voi samalla lähettää takaisin maksuyhdyskäytävän kautta."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Anna ensin PayPalin REST API:n client ID ja secret."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal ei hyväksynyt REST API -avaimia: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal ei peruuttanut kestotilausta :id: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal ei hyvittänyt maksua :id: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Vain kirjaus: palautan rahat itse"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Lähetä takaisin :gateway-palvelun kautta"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Tällä laskulla ei ole maksua, joka voitaisiin hyvittää maksuyhdyskäytävän kautta."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Yksi tämän laskun maksuista voidaan hyvittää maksuyhdyskäytävän kautta enintään :amount: hyvitä tämä summa ja kirjaa loput."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Lähetä takaisin :gateway-palvelun kautta (enintään :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Jätä tyhjäksi täyttä hyvitystä varten"

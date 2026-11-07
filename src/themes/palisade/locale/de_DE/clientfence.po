@@ -20141,3 +20141,50 @@ msgstr "Das Modul kann nicht installiert werden. Es erfordert :product :min oder
 #: src/modules/Extension/Service.php
 msgid "This module provides :list, which is still installed. Remove it first, then deactivate the module."
 msgstr "Dieses Modul stellt :list bereit, das noch installiert ist. Entfernen Sie es zuerst und deaktivieren Sie dann das Modul."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A refund to account credit cannot also be sent back through the payment gateway."
+msgstr "Eine Rückerstattung auf das Kontoguthaben kann nicht zusätzlich über das Zahlungs-Gateway zurückgesendet werden."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter the PayPal REST API client ID and secret first."
+msgstr "Geben Sie zuerst die Client-ID und das Secret der PayPal-REST-API ein."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not accept the REST API keys: :error"
+msgstr "PayPal hat die REST-API-Schlüssel nicht akzeptiert: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not cancel subscription :id: :error"
+msgstr "PayPal hat das Abonnement :id nicht gekündigt: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not refund payment :id: :error"
+msgstr "PayPal hat die Zahlung :id nicht zurückerstattet: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Record it only: I send the money back myself"
+msgstr "Nur erfassen: Ich sende das Geld selbst zurück"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway"
+msgstr "Über :gateway zurücksenden"
+
+#: src/modules/Invoice/Service.php
+msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr "Diese Rechnung hat keine Zahlung, die über das Zahlungs-Gateway zurückerstattet werden kann."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "One payment of this invoice can be refunded through the payment gateway up to :amount: refund that, then record the rest."
+msgstr "Eine Zahlung dieser Rechnung kann über das Zahlungs-Gateway bis zu :amount zurückerstattet werden: Erstatten Sie diesen Betrag und erfassen Sie den Rest."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send it back through :gateway (up to :amount)"
+msgstr "Über :gateway zurücksenden (bis zu :amount)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Leave blank for full refund"
+msgstr "Für volle Rückerstattung leer lassen"
