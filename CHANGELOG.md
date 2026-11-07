@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.35 (2026-11-07)
+
+### Added
+
+- Saved PayPal accounts: clients save their PayPal account on the Payment methods page or with "Pay and save my PayPal account", and their invoices are paid with it automatically.
+- When a client saves their PayPal account, their old PayPal subscriptions are cancelled and the saved account pays the renewals.
+- PayPal settings take optional REST API keys: staff send refunds back through PayPal, and ClientFence cancels PayPal subscriptions itself.
+- Automatic payments settings: days between retries and how many retries after a failed charge.
+
+### Changed
+
+- The method marked "Pays invoices automatically" pays a client's invoices: their first saved card, a PayPal account when they save it, or the method they last chose with Use for invoices.
+- The refund window asks whether to send the money back through PayPal, only record the refund, or add it as account credit.
+- An invoice is not charged automatically again after a payment was taken for it or the payment service did not answer.
+- "Charge saved card" on the invoice page is now "Charge saved method" and also charges a saved PayPal account.
+
+### Fixed
+
+- A saved card is no longer charged for an invoice the client already paid by bank transfer and sent the receipt for.
+
 ## 1.0.34 (2026-11-07)
 
 ### Added
