@@ -2696,10 +2696,6 @@
         "done": "<script nonce=\"' . \\ClientFence\\Csp::nonce() . '\" src=\"https://js.stripe.com/v3/\"></script>"
     },
     {
-        "file": "library/Payment/Adapter/ClientBalance.php",
-        "done": "return \"<script nonce=\\\"\" . \\ClientFence\\Csp::nonce()"
-    },
-    {
         "file": "library/Payment/Adapter/PayPalEmail.php",
         "done": "$form .= \"<script nonce=\\\"\" . \\ClientFence\\Csp::nonce()"
     },
@@ -3368,10 +3364,6 @@
         "done": "ClientFence core patch: one-time discounts must not become the recurring payment amount."
     },
     {
-        "file": "library/Payment/Adapter/ClientBalance.php",
-        "done": "ClientFence core patch: the invoice page can select balance without changing the saved gateway."
-    },
-    {
         "file": "modules/Email/Service.php",
         "done": "ClientFence core patch: template previews must never retain sign-in credentials."
     },
@@ -3536,10 +3528,6 @@
         "done": "ClientFence core patch: only shipped modules are always active."
     },
     {
-        "file": "library/ClientFence/SentryHelper.php",
-        "done": "ClientFence core patch: only shipped modules belong to the error-report allowlist."
-    },
-    {
         "file": "library/ClientFence/UpdatePatcher.php",
         "done": "ClientFence core patch: backfill settings access only for modules still shipped."
     },
@@ -3574,10 +3562,6 @@
     {
         "file": "library/Payment/Adapter/PayPalEmail.php",
         "done": "ClientFence core patch: only a full refund of the parent payment refunds its own invoice."
-    },
-    {
-        "file": "library/Payment/Adapter/ClientBalance.php",
-        "done": "ClientFence core patch: spending session credit requires a POST authenticated by the session CSRF token."
     },
     {
         "file": "library/Payment/Adapter/Stripe.php",
@@ -3658,10 +3642,6 @@
     {
         "file": "library/Payment/Adapter/PayPalEmail.php",
         "done": "ClientFence core patch: refunding duplicate payment credit must not refund the settled invoice."
-    },
-    {
-        "file": "library/Payment/Adapter/ClientBalance.php",
-        "done": "ClientFence core patch: the balance callback bypasses the client API's account-user permission gate."
     },
     {
         "file": "modules/Servicelicense/Server.php",
@@ -3778,10 +3758,6 @@
     {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: a service without a gateway subscription ends at its period end too (WHMCS); the"
-    },
-    {
-        "file": "library/Payment/Adapter/ClientBalance.php",
-        "done": "ClientFence core patch: what other unpaid invoices have received is not spendable."
     },
     {
         "file": "library/Payment/Adapter/PayPalEmail.php",

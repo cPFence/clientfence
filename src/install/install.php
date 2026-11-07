@@ -432,12 +432,6 @@ final class ClientFence_Installer
             'currency_code' => $this->session->get('currency_code'),
         ]);
 
-        $stmt = $this->pdo->prepare('INSERT INTO setting (param, value, created_at, updated_at) VALUES (:param, :value, NOW(), NOW())');
-        $stmt->execute([
-            ':param' => 'last_error_reporting_nudge',
-            ':value' => ClientFence\Version::VERSION,
-        ]);
-
         // Copy config templates when applicable
         if (!$this->filesystem->exists(THEME_CONFIG) && $this->filesystem->exists(THEME_CONFIG_TEMPLATE)) {
             $this->filesystem->copy(THEME_CONFIG_TEMPLATE, THEME_CONFIG); // Copy the file instead of renaming it. This allows local dev instances to not need to restore the original file manually.

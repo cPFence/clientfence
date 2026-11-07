@@ -52,14 +52,6 @@ return [
          * How long the stacktrace should be.
          */
         'stacktrace_length' => 25,
-
-        /*
-         * Enables automated error, stability, and performance reporting.
-         * Private information is scrubbed from any info before being sent.
-         * FOSSBilling uses Sentry.io for error reporting which has a full writeup on their security and privacy practices here: https://sentry.io/security/.
-         * Enabling error reporting will help us proactively identify and fix bugs in FOSSBilling as well as provide better technical support.
-         */
-        'report_errors' => false,
     ],
 
     'info' => [

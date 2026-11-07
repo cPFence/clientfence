@@ -458,39 +458,6 @@ class Admin extends \ClientFence\Api\AbstractApi
         return INSTANCE_ID;
     }
 
-    /**
-     * Returns if error reporting is enabled or not on this FOSSBilling instance.
-     */
-    public function error_reporting_enabled(): bool
-    {
-        $this->checkPermissions('system', 'view');
-
-        return (bool) Config::getProperty('debug_and_monitoring.report_errors', false);
-    }
-
-    /**
-     * Toggles error reporting on this FOSSBilling instance.
-     */
-    public function toggle_error_reporting(): bool
-    {
-        $this->checkPermissions('system', 'toggle_error_reporting');
-
-        $current = Config::getProperty('debug_and_monitoring.report_errors', false);
-        Config::setProperty('debug_and_monitoring.report_errors', !$current);
-
-        return true;
-    }
-
-    /**
-     * Returns the last FOSSBilling version number that changed error reporting behavior.
-     */
-    public function last_error_reporting_change(): string
-    {
-        $this->checkPermissions('system', 'view');
-
-        return \ClientFence\SentryHelper::last_change;
-    }
-
     public function get_interface_ips(): array
     {
         $this->checkPermissions('system', 'manage_network_interface');

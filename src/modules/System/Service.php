@@ -16,17 +16,13 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\DeadlockException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use ClientFence\Cache\CacheFactory;
-use ClientFence\Config;
 use ClientFence\Environment;
 use ClientFence\GeoIP\Reader;
 use ClientFence\Sanitizer\BrowserHtmlSanitizer;
-use ClientFence\SentryHelper;
 use ClientFence\Twig\SandboxedStringRenderer;
-use ClientFence\Version;
 use Pimple\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class Service
 {
@@ -91,11 +87,6 @@ class Service
                 'type' => 'bool',
                 'display_name' => __trans('Recheck for Updates'),
                 'description' => __trans('Allows the staff member to clear cached update information and fetch the latest update metadata.'),
-            ],
-            'toggle_error_reporting' => [
-                'type' => 'bool',
-                'display_name' => __trans('Toggle Error Reporting'),
-                'description' => __trans('Allows the staff member to enable or disable error reporting for this ClientFence instance.'),
             ],
             'manage_network_interface' => [
                 'type' => 'bool',
@@ -440,54 +431,6 @@ class Service
                         'link' => $cronUrl,
                         'text' => __trans('Open Cron Settings'),
                         'type' => 'danger',
-                    ]]
-                );
-            }
-        }
-
-        /*
-         * The below logic is to help ensure that we nudge the user when needed about error reporting.
-         */
-        // ClientFence: releases send no error reports (no Sentry DSN), so there is nothing to opt into.
-        if (false && Environment::isProduction()) {
-            // Get the last time we've nudged the user about error reporting
-            $lastErrorReportingNudge = $this->getParamValue('last_error_reporting_nudge');
-
-            $result = $this->di['cache']->get('error_reporting_nudge', function (ItemInterface $item) use ($lastErrorReportingNudge) {
-                $item->expiresAfter(15 * 60);
-                $url = $this->di['url']->adminLink('extension/settings/system');
-                $this->setParamValue('last_error_reporting_nudge', Version::VERSION);
-
-                if (!$lastErrorReportingNudge) {
-                    // The user upgraded from a version that didn't have error reporting functionality, so let's nudge them about it now.
-                    return [
-                        'text' => __trans("We'd appreciate it if you'd consider opting into error reporting for FOSSBilling. Doing so will help us improve the software and provide you with a better experience. (Message will remain for 15 minutes)"),
-                        'url' => $url,
-                    ];
-                } elseif ((version_compare(SentryHelper::last_change, $lastErrorReportingNudge) === 1) && Config::getProperty('debug_and_monitoring.report_errors', false) && !Version::isPreviewVersion()) {
-                    /*
-                     * The installation already had error reporting enabled, but something has changed so we should nudge the user to review the changes.
-                     * This message is cached for a full 24 hours to help ensure it is seen.
-                     */
-                    $item->expiresAfter(60 * 60 * 24);
-
-                    return [
-                        'text' => __trans("Error reporting in FOSSBilling has changed since you last reviewed it. You may want to consider reviewing the changes to see what's been changed. (This message will remain for 24 hours)"),
-                        'url' => $url,
-                    ];
-                }
-
-                return [];
-            });
-
-            if ($result) {
-                $messages[] = $this->createAdminAlert(
-                    'info',
-                    $result['text'],
-                    buttons: [[
-                        'link' => $result['url'],
-                        'text' => __trans('Review Settings'),
-                        'type' => 'primary',
                     ]]
                 );
             }

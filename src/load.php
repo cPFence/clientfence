@@ -18,7 +18,6 @@ use ClientFence\Config;
 use ClientFence\Environment;
 use ClientFence\Http\ExceptionResponseFactory;
 use ClientFence\Http\RequestFactory;
-use ClientFence\SentryHelper;
 use ClientFence\Tools;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -82,8 +81,8 @@ function checkWebServer(): void
     global $filesystem, $request;
 
     // Check for missing required .htaccess on Apache and Apache-compatible web servers.
-    $webServer = SentryHelper::estimateWebServer($request->server->get('SERVER_SOFTWARE', ''));
-    if ($webServer === 'Apache' || $webServer === 'Litespeed') {
+    $serverSoftware = strtolower((string) $request->server->get('SERVER_SOFTWARE', ''));
+    if (function_exists('apache_get_version') || str_contains($serverSoftware, 'apache') || str_contains($serverSoftware, 'litespeed')) {
         if (!$filesystem->exists('.htaccess')) {
             throw new Exception('Missing .htaccess file', 5);
         }
@@ -251,7 +250,6 @@ function preInit(): void
 
     // Load required FOSSBilling libraries.
     require Path::join(PATH_LIBRARY, 'ClientFence', 'ErrorPage.php');
-    require Path::join(PATH_LIBRARY, 'ClientFence', 'SentryHelper.php');
     require Path::join(PATH_LIBRARY, 'ClientFence', 'Environment.php');
     require Path::join(PATH_LIBRARY, 'ClientFence', 'Http', 'ApiResponseFactory.php');
     require Path::join(PATH_LIBRARY, 'ClientFence', 'Http', 'ExceptionResponseFactory.php');
@@ -331,9 +329,6 @@ function init(): void
     if (!Environment::isCLI() && !Environment::isTesting()) {
         $di['update_finalization']->ensureCurrentVersionFinalization();
     }
-
-    // Now that the config file is loaded, we can enable Sentry.
-    SentryHelper::registerSentry($request->server->get('SERVER_SOFTWARE', ''));
 }
 
 /*

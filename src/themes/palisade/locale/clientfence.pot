@@ -2184,10 +2184,6 @@ msgstr ""
 msgid "Allows the staff member to edit settings for this module."
 msgstr ""
 
-#: src/modules/System/Service.php
-msgid "Allows the staff member to enable or disable error reporting for this ClientFence instance."
-msgstr ""
-
 #: src/modules/Client/Service.php
 msgid "Allows the staff member to export client account data."
 msgstr ""
@@ -3496,7 +3492,7 @@ msgstr ""
 msgid "CAPTCHA verification failed. Please try again."
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php src/modules/Api/Controller/Client.php src/modules/Client/Controller/Admin.php …
+#: src/modules/Api/Controller/Client.php src/modules/Client/Controller/Admin.php src/modules/Clientfence/Controller/Admin.php …
 msgid "CSRF token invalid"
 msgstr ""
 
@@ -4582,10 +4578,6 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig
 msgid "Client to Send Test Email"
-msgstr ""
-
-#: src/library/Payment/Adapter/ClientBalance.php
-msgid "ClientBalance gateway is not enabled"
 msgstr ""
 
 #: src/modules/Clientfence/manifest.json src/modules/System/templates/admin/mod_system_update.html.twig
@@ -7784,10 +7776,6 @@ msgstr ""
 msgid "Error message truncated due to length, please check the error log for the complete message: "
 msgstr ""
 
-#: src/modules/System/Service.php
-msgid "Error reporting in FOSSBilling has changed since you last reviewed it. You may want to consider reviewing the changes to see what's been changed. (This message will remain for 24 hours)"
-msgstr ""
-
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Escalation Rules"
 msgstr ""
@@ -9496,7 +9484,7 @@ msgstr ""
 msgid "IPN Notification URL for the payment gateway was not set"
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php src/library/Payment/Adapter/PayPalEmail.php
+#: src/library/Payment/Adapter/PayPalEmail.php
 msgid "IPN is invalid"
 msgstr ""
 
@@ -10180,7 +10168,7 @@ msgstr ""
 msgid "Invoice lines"
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php src/modules/Invoice/Receipts.php src/modules/Invoice/Service.php
+#: src/modules/Invoice/Receipts.php src/modules/Invoice/Service.php
 msgid "Invoice not found"
 msgstr ""
 
@@ -16533,10 +16521,6 @@ msgid "Review IP addresses that are currently rate-limited and reset counters wh
 msgstr ""
 
 #: src/modules/System/Service.php
-msgid "Review Settings"
-msgstr ""
-
-#: src/modules/System/Service.php
 msgid "Review Update"
 msgstr ""
 
@@ -20437,7 +20421,7 @@ msgstr ""
 msgid "This action cannot be retried."
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php src/modules/Api/Controller/Client.php
+#: src/modules/Api/Controller/Client.php
 msgid "This action requires POST"
 msgstr ""
 
@@ -21179,10 +21163,6 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
 msgid "Toggle Company Details"
-msgstr ""
-
-#: src/modules/System/Service.php
-msgid "Toggle Error Reporting"
 msgstr ""
 
 #: src/themes/admin_default/html/layout_default.html.twig
@@ -22925,10 +22905,6 @@ msgstr ""
 msgid "We sent a 6-digit sign-in PIN to %email%. It works for %minutes% minutes."
 msgstr ""
 
-#: src/modules/System/Service.php
-msgid "We'd appreciate it if you'd consider opting into error reporting for FOSSBilling. Doing so will help us improve the software and provide you with a better experience. (Message will remain for 15 minutes)"
-msgstr ""
-
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Webhook address"
 msgstr ""
@@ -23241,10 +23217,6 @@ msgstr ""
 msgid "You are not allowed to login to admin area from this IP address."
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php
-msgid "You are not authorized to pay this invoice with client balance."
-msgstr ""
-
 #: src/themes/palisade/html/partials/guest_dashboard.html.twig
 msgid "You are not signed in."
 msgstr ""
@@ -23361,7 +23333,7 @@ msgstr ""
 msgid "You do not have permission to access the :mod: module"
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php src/modules/Client/Users.php src/modules/Invoice/Api/Guest.php
+#: src/modules/Client/Users.php src/modules/Invoice/Api/Guest.php
 msgid "You do not have permission to do this. Ask the account owner for access."
 msgstr ""
 
@@ -23493,7 +23465,7 @@ msgstr ""
 msgid "You have to complete the CAPTCHA to continue"
 msgstr ""
 
-#: src/library/Payment/Adapter/ClientBalance.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
 msgid "You may not pay a deposit invoice with this payment gateway."
 msgstr ""
 
@@ -23635,10 +23607,6 @@ msgstr ""
 
 #: src/modules/Client/Google.php
 msgid "Your account already has a password. You can change it on your profile page."
-msgstr ""
-
-#: src/library/Payment/Adapter/ClientBalance.php
-msgid "Your account balance is insufficient to cover this invoice."
 msgstr ""
 
 #: src/modules/Client/Google.php

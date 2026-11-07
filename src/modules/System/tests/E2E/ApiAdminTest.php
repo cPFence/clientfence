@@ -90,53 +90,9 @@ function systemResetInterfaceConfiguration(): void
 }
 
 test('clears cache', function (): void {
-    $beforeFirst = ApiClient::request('admin/system/error_reporting_enabled');
-    expect($beforeFirst->wasSuccessful())->toBeTrue()
-        ->and($beforeFirst->getResult())->toBeBool();
-
-    $beforeSecond = ApiClient::request('admin/system/error_reporting_enabled');
-    expect($beforeSecond->wasSuccessful())->toBeTrue()
-        ->and($beforeSecond->getResult())->toBeBool()
-        ->and($beforeSecond->getResult())->toBe($beforeFirst->getResult());
-
     $result = ApiClient::request('admin/system/clear_cache');
     expect($result->wasSuccessful())->toBeTrue()
         ->and($result->getResult())->toBeBool();
-
-    $after = ApiClient::request('admin/system/error_reporting_enabled');
-    expect($after->wasSuccessful())->toBeTrue()
-        ->and($after->getResult())->toBeBool()
-        ->and($after->getResult())->toBe($beforeSecond->getResult());
-});
-
-test('toggles error reporting', function (): void {
-    $beforeResult = ApiClient::request('admin/system/error_reporting_enabled');
-    expect($beforeResult->wasSuccessful())->toBeTrue();
-    $before = $beforeResult->getResult();
-    expect($before)->toBeBool();
-
-    try {
-        $result = ApiClient::request('admin/system/toggle_error_reporting');
-        expect($result->wasSuccessful())->toBeTrue()
-            ->and($result->getResult())->toBeTrue();
-
-        $afterResponse = ApiClient::request('admin/system/error_reporting_enabled');
-        expect($afterResponse->wasSuccessful())->toBeTrue();
-        $after = $afterResponse->getResult();
-        expect($after)->toBeBool()
-            ->not->toBe($before);
-    } finally {
-        $currentResponse = ApiClient::request('admin/system/error_reporting_enabled');
-        expect($currentResponse->wasSuccessful())->toBeTrue();
-        $current = $currentResponse->getResult();
-        expect($current)->toBeBool();
-
-        if ($current !== $before) {
-            $restoreResult = ApiClient::request('admin/system/toggle_error_reporting');
-            expect($restoreResult->wasSuccessful())->toBeTrue()
-                ->and($restoreResult->getResult())->toBeTrue();
-        }
-    }
 });
 
 test('gets and sets network interfaces', function (): void {

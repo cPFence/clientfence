@@ -102,7 +102,6 @@ WORKDIR /app
 
 ARG CLIENTFENCE_BASE_VERSION=0.8.8
 ARG CLIENTFENCE_BASE_VERSION_TRUNCATE=0
-ARG SENTRY_DSN=
 # Translations are in the repository (src/locale: FOSSBilling 0.8.8 catalogues with the ClientFence texts merged by tools/locales.py).
 
 COPY --from=composer:2@sha256:5946476338742b200bb9ff88f8be56275ddae4b3949c72305cb0dbf10cfcb760 /usr/bin/composer /usr/bin/composer
@@ -127,8 +126,7 @@ RUN set -eux; \
   mkdir -p ./src/locale; \
   CLIENTFENCE_BASE_VERSION="${CLIENTFENCE_BASE_VERSION}" \
   CLIENTFENCE_BASE_VERSION_TRUNCATE="${CLIENTFENCE_BASE_VERSION_TRUNCATE}" \
-  SENTRY_DSN="${SENTRY_DSN}" \
-  php -r '$version = getenv("CLIENTFENCE_BASE_VERSION") ?: "0.0.1"; $truncate = (int) (getenv("CLIENTFENCE_BASE_VERSION_TRUNCATE") ?: 0); if ($truncate > 0) { $version = substr($version, 0, $truncate); } $versionFile = "./src/library/ClientFence/Version.php"; $contents = file_get_contents($versionFile); $quote = chr(39); $pattern = "/public const string VERSION = " . $quote . "[^" . $quote . "]+" . $quote . ";/"; $replacement = "public const string VERSION = " . var_export($version, true) . ";"; $contents = preg_replace($pattern, $replacement, $contents, 1, $count); if ($contents === null || $count !== 1) { fwrite(STDERR, "Failed to replace FOSSBilling version.\n"); exit(1); } file_put_contents($versionFile, $contents); $dsn = getenv("SENTRY_DSN"); if ($dsn !== false && $dsn !== "") { $sentryFile = "./src/library/ClientFence/SentryHelper.php"; file_put_contents($sentryFile, str_replace("--replace--this--during--release--process--", $dsn, file_get_contents($sentryFile))); }'; \
+  php -r '$version = getenv("CLIENTFENCE_BASE_VERSION") ?: "0.0.1"; $truncate = (int) (getenv("CLIENTFENCE_BASE_VERSION_TRUNCATE") ?: 0); if ($truncate > 0) { $version = substr($version, 0, $truncate); } $versionFile = "./src/library/ClientFence/Version.php"; $contents = file_get_contents($versionFile); $quote = chr(39); $pattern = "/public const string VERSION = " . $quote . "[^" . $quote . "]+" . $quote . ";/"; $replacement = "public const string VERSION = " . var_export($version, true) . ";"; $contents = preg_replace($pattern, $replacement, $contents, 1, $count); if ($contents === null || $count !== 1) { fwrite(STDERR, "Failed to replace FOSSBilling version.\n"); exit(1); } file_put_contents($versionFile, $contents);'; \
   php -r '$composer = json_decode(file_get_contents("./composer.json"), true, 512, JSON_THROW_ON_ERROR); $composer["autoload"]["psr-4"]["ClientFence\\Mod\\"] = "modules/"; $composer["autoload"]["classmap"] = ["library/"]; $composer["config"]["vendor-dir"] = "vendor"; file_put_contents("./src/composer.json", json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL);'; \
   composer --no-plugins dump-autoload --working-dir=./src --no-dev --optimize --no-interaction; \
   rm ./composer.json ./src/composer.json; \

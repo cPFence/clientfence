@@ -90,9 +90,6 @@ class Client implements InjectionAwareInterface
         } catch (EmailValidationRequiredException $exc) {
             return $this->renderJson(null, new \ClientFence\InformationException($exc->getMessage(), null, 403));
         } catch (\Exception $exc) {
-            // Sentry by default only captures unhandled exceptions, so we need to manually capture these.
-            \Sentry\captureException($exc);
-
             return $this->renderJson(null, $this->sanitizeGuestError($role, $class, $call, $exc));
         }
     }
