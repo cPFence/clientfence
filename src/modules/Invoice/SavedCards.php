@@ -118,9 +118,13 @@ final class SavedCards
     {
         return \ClientFence\Tools::withLock($di, 'cf:card-charge:' . (int) $invoice->id, static function () use ($di, $invoice, $adapter, $byStaff): array {
             $db = $di['dbal'];
-            $status = $db->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $invoice->id]);
-            if ($status !== \Model_Invoice::STATUS_UNPAID) {
+            $row = $db->fetchAssociative('SELECT status, gateway_id FROM invoice WHERE id = ?', [(int) $invoice->id]) ?: [];
+            if (($row['status'] ?? null) !== \Model_Invoice::STATUS_UNPAID) {
                 return ['paid' => false, 'error' => __trans('This invoice is already paid or cancelled.')];
+            }
+            // A cron try leaves an invoice the client chose to pay another way after runDue read it (a receipt sent meanwhile).
+            if (!$byStaff && $row['gateway_id'] !== null && (int) $row['gateway_id'] !== $adapter->gatewayId()) {
+                return ['paid' => false, 'error' => null];
             }
             $attempt = (int) $db->fetchOne('SELECT attempts FROM invoice_card_charge WHERE invoice_id = ?', [(int) $invoice->id]);
             if (!$byStaff && $db->executeStatement('UPDATE invoice_card_charge SET attempts = attempts + 1, last_attempt_at = ? WHERE invoice_id = ?', [date('Y-m-d H:i:s'), (int) $invoice->id]) === 0) {

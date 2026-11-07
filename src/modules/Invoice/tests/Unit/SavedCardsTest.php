@@ -145,3 +145,17 @@ test('a staff charge does not count as a try and emails nobody', function (): vo
         ->and($world->db->fetchOne('SELECT attempts FROM invoice_card_charge WHERE invoice_id = 7'))->toBeFalse()
         ->and($world->emails)->toBe([]);
 });
+
+test('a cron try skips an invoice set to another payment method after the cron read it, staff can still charge it', function (): void {
+    $world = savedCardsWorld();
+    $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
+    $invoice = $world->di['db']->load('Invoice', 1);
+    // The client sends a transfer receipt while the cron is on its way to this invoice.
+    $world->db->executeStatement('UPDATE invoice SET gateway_id = 2 WHERE id = 1');
+
+    expect(SavedCards::charge($world->di, $invoice, SavedCards::stripe($world->di), false))->toBe(['paid' => false, 'error' => null])
+        ->and($world->charged)->toBe([])
+        ->and($world->db->fetchOne('SELECT attempts FROM invoice_card_charge WHERE invoice_id = 1'))->toBeFalse()
+        ->and(SavedCards::charge($world->di, $invoice, SavedCards::stripe($world->di), true)['paid'])->toBeTrue()
+        ->and($world->charged)->toHaveCount(1);
+});

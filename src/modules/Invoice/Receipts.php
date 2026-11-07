@@ -239,6 +239,9 @@ class Receipts
 
             throw $e;
         }
+        // The client pays this invoice by transfer: as in WHMCS, the invoice takes that payment method, so the saved-card cron skips it.
+        // Only these columns of an invoice still unpaid: a full store would write back the status loaded before a payment made meanwhile.
+        $di['dbal']->executeStatement('UPDATE invoice SET gateway_id = ?, updated_at = ? WHERE id = ? AND status = ?', [(int) $gateway->id, date('Y-m-d H:i:s'), (int) $invoice->id, \Model_Invoice::STATUS_UNPAID]);
         $di['logger']->info('Invoice: client #%s sent a receipt for invoice #%s (ticket #%s)', $client->id, $invoice->id, $ticketId);
 
         return (int) $ticketId;

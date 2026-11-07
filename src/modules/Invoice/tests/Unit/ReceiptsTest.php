@@ -46,3 +46,68 @@ test('authorized users with invoices may see payment instructions and send recei
         ->and(Users::CALLS['client'])->not->toHaveKey('payment_details')
         ->and(Users::CALLS['client'])->not->toHaveKey('receipt_send');
 });
+
+test('a sent receipt sets the invoice to the transfer method, so the saved-card cron skips it', function (): void {
+    $dir = sys_get_temp_dir() . '/cf-receipts-' . bin2hex(random_bytes(4));
+    putenv('CLIENTFENCE_RECEIPT_DIR=' . $dir);
+    $png = sys_get_temp_dir() . '/cf-receipt-' . bin2hex(random_bytes(4)) . '.png';
+    file_put_contents($png, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='));
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 7;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 30;
+    $invoice->currency = 'USD';
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $gateway->id = 4;
+    $gateway->name = 'Bank transfer';
+
+    $di = container();
+    $updates = [];
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->allows('executeStatement')->andReturnUsing(function (string $sql, array $params) use (&$updates): int {
+        $updates[] = [$sql, $params[0], $params[2], $params[3]];
+
+        return 1;
+    });
+    $di['dbal'] = $dbal;
+    $di['logger'] = new class {
+        public function __call(string $name, array $arguments): mixed
+        {
+            return $this;
+        }
+    };
+    $di['url'] = new class {
+        public function link(string $path): string
+        {
+            return 'https://example.com/' . $path;
+        }
+    };
+    $di['mod_config'] = $di->protect(fn (string $mod): array => []);
+    $helpdesk = Mockery::mock();
+    $helpdesk->allows('getId')->andReturn(1);
+    $helpdesks = Mockery::mock();
+    $helpdesks->allows('findOneBy')->andReturn($helpdesk);
+    $support = Mockery::mock();
+    $support->allows('getHelpdeskRepository')->andReturn($helpdesks);
+    $support->allows('ticketCreateForClient')->andReturn(55);
+    $invoices = Mockery::mock();
+    $invoices->allows('toApiArray')->andReturn(['serie_nr' => 'INV-30', 'total' => 100]);
+    $di['mod_service'] = $di->protect(fn (string $mod) => strtolower($mod) === 'support' ? $support : $invoices);
+
+    try {
+        $ticket = Receipts::send($di, $client, $invoice, $gateway, new Symfony\Component\HttpFoundation\File\UploadedFile($png, 'receipt.png', 'image/png', null, true));
+    } finally {
+        putenv('CLIENTFENCE_RECEIPT_DIR');
+        array_map('unlink', glob($dir . '/7/*') ?: []);
+        @rmdir($dir . '/7');
+        @rmdir($dir);
+        @unlink($png);
+    }
+
+    // Only gateway_id and updated_at of an invoice still unpaid: a full store could undo a payment made meanwhile.
+    expect($ticket)->toBe(55)
+        ->and($updates)->toBe([['UPDATE invoice SET gateway_id = ?, updated_at = ? WHERE id = ? AND status = ?', 4, 30, 'unpaid']]);
+});
