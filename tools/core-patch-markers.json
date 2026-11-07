@@ -4362,5 +4362,49 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: what ClientFence refunded of a gateway payment: its credit notes carry \"of payment <ID>.\" (refundThroughGateway())."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "private function patch124(): void"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: saved PayPal accounts pay invoices automatically, as saved cards do (Invoice/SavedCards.php)."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: on their own invoice, a signed-in account owner may pay and save their PayPal account,"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: a payment through the REST API (a saved PayPal account, \"Pay and save\"), read back from PayPal."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: a received PayPal payment goes to the client's credit, then pays the invoice (or their open invoices)."
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: saved PayPal accounts (Invoice/SavedCards.php) through the Vault of the REST API. A client"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "auto_pay_at: the card a client saved or chose last pays, also over a saved PayPal account (SavedCards::method())."
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "public function get_paypal_save(\\ClientFence\\App $app): Response"
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "public function paypal_default(): bool"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "$method = SavedCards::method($di, (int) $invoice->client_id)"
+    },
+    {
+        "file": "modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig",
+        "done": "invoice/paypal_default"
     }
 ]

@@ -20892,3 +20892,134 @@ msgstr "Kirim kembali lewat :gateway (maksimal :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "Kosongkan untuk pengembalian dana penuh"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "0 mencoba sekali. Klien menerima email setelah setiap penagihan yang gagal."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "Pembayaran otomatis"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "Pembayaran PayPal ganda tidak dapat diproses"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "Klien dapat menyimpan kartu dengan Stripe, atau akun PayPal mereka (pengaturan PayPal: Saved PayPal accounts), saat membayar atau di halaman Metode pembayaran. Metode yang terakhir disimpan atau dipilih ditagih otomatis untuk tagihan yang belum dibayar yang tidak memiliki metode pembayaran atau memakai salah satunya."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "Hari antar percobaan ulang"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "Hari antar percobaan ulang harus berupa bilangan bulat dari 1 sampai 30."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "Hanya pemilik akun yang dapat menyimpan metode pembayaran."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "Bayar dan simpan akun PayPal saya"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "PayPal tidak menyimpan akun Anda: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "PayPal tidak memulai penyimpanan akun Anda: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "PayPal tidak memulai pembayaran: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "PayPal tidak memproses pembayaran: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "PayPal menolak pembayaran: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "Hapus akun PayPal ini?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "Percobaan ulang setelah penagihan gagal"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "Percobaan ulang harus berupa bilangan bulat dari 0 sampai 5."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "Simpan akun PayPal saya"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "Simpan akun PayPal Anda untuk membayar tagihan secara otomatis."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "Akun PayPal tersimpan tidak tersedia."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "Klien tidak memiliki akun PayPal tersimpan."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "Metode pembayaran bertanda \"Membayar tagihan secara otomatis\" membayar tagihan Anda saat jatuh tempo. Anda juga dapat menyimpannya saat membayar tagihan."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "Pembayaran sudah ditagih tetapi belum selesai. Periksa di layanan pembayaran."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "Anda tidak memiliki akun PayPal tersimpan."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "Akun PayPal Anda tidak tersimpan. Silakan coba lagi."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "PayPal menjawab HTTP :status untuk pembayaran tagihan #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "Pembayaran PayPal :id bukan untuk tagihan ClientFence"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "Pembayaran PayPal :id tidak ditemukan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "Tagih :card?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "Tagih metode tersimpan"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "Metode pembayaran tersimpan tidak tersedia."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "Klien tidak memiliki metode pembayaran tersimpan."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "Pembayaran sudah ditagih."

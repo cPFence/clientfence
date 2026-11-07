@@ -1363,8 +1363,8 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * ClientFence: saves when saved cards are charged (SavedCards.php): `card_days_before` (0-30 days
-     * before the due date) and `card_retries` (try again 7 and 14 days later).
+     * ClientFence: saves when saved cards and PayPal accounts are charged (SavedCards.php): `card_days_before` (0-30
+     * days before the due date), `card_retry_every` (1-30 days between tries) and `card_retry_count` (0-5 retries).
      */
     public function card_settings_update($data): bool
     {
@@ -1390,7 +1390,7 @@ class Admin extends \ClientFence\Api\AbstractApi
         return $result;
     }
 
-    /** ClientFence: the saved card an invoice's client is charged to ("Visa •••• 4242 (12/2028)"), or null. */
+    /** ClientFence: the saved method an invoice's client is charged to ("Visa •••• 4242 (12/2028)", "PayPal name@example.com"), or null. */
     #[RequiredParams(['id' => 'Invoice ID was not passed'])]
     public function card_get($data): ?string
     {
@@ -1400,19 +1400,16 @@ class Admin extends \ClientFence\Api\AbstractApi
         return SavedCards::card($this->getDi(), (int) $invoice->client_id)['card'] ?? null;
     }
 
-    /** ClientFence: charges the client's saved card for an unpaid invoice (`id`) now; a failed charge is an error. */
+    /** ClientFence: charges the client's saved card or PayPal account for an unpaid invoice (`id`) now; a failed charge is an error. */
     #[RequiredParams(['id' => 'Invoice ID was not passed'])]
     public function card_charge($data): bool
     {
         $this->checkPermissions('invoice', 'manage_transactions');
         $di = $this->getDi();
         $invoice = $di['db']->getExistingModelById('Invoice', $data['id'], 'Invoice not found');
-        $adapter = SavedCards::stripe($di) ?? throw new \ClientFence\InformationException('Saved cards are not available.');
-        if ($adapter->savedCard((int) $invoice->client_id) === null) {
-            throw new \ClientFence\InformationException('The client has no saved card.');
-        }
+        $method = SavedCards::method($di, (int) $invoice->client_id) ?? throw new \ClientFence\InformationException('The client has no saved payment method.');
 
-        $result = SavedCards::charge($di, $invoice, $adapter, true);
+        $result = SavedCards::charge($di, $invoice, $method['adapter'], true);
         if (!$result['paid']) {
             throw new InformationException((string) $result['error']);
         }

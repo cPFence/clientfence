@@ -20226,3 +20226,134 @@ msgstr "Terugsturen via :gateway (tot :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "Laat leeg voor volledige terugbetaling"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "0 probeert het één keer. De klant krijgt na elke mislukte afschrijving een e-mail."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "Automatische betalingen"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "Dubbele PayPal-betaling kan niet worden verwerkt"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "Klanten kunnen een kaart opslaan met Stripe, of hun PayPal-account (PayPal-instellingen: Saved PayPal accounts), wanneer ze betalen of op hun pagina Betaalmethodes. De laatst opgeslagen of gekozen methode wordt automatisch belast voor onbetaalde facturen zonder betaalmethode of met een van deze."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "Dagen tussen nieuwe pogingen"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "De dagen tussen nieuwe pogingen moeten een geheel getal van 1 tot 30 zijn."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "Alleen de accounteigenaar kan een betaalmethode opslaan."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "Betalen en mijn PayPal-account opslaan"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "PayPal heeft uw account niet opgeslagen: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "PayPal is niet begonnen met het opslaan van uw account: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "PayPal heeft de betaling niet gestart: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "PayPal heeft de betaling niet afgeschreven: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "PayPal heeft de betaling geweigerd: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "Dit PayPal-account verwijderen?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "Nieuwe pogingen na een mislukte afschrijving"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "Nieuwe pogingen moeten een geheel getal van 0 tot 5 zijn."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "Mijn PayPal-account opslaan"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "Sla uw PayPal-account op om uw facturen automatisch te betalen."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "Opgeslagen PayPal-accounts zijn niet beschikbaar."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "De klant heeft geen opgeslagen PayPal-account."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "De betaalmethode met het label „Betaalt facturen automatisch” betaalt uw facturen wanneer ze vervallen. U kunt er ook een opslaan wanneer u een factuur betaalt."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "De betaling is afgeschreven maar nog niet voltooid. Controleer dit bij de betaaldienst."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "U hebt geen opgeslagen PayPal-account."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "Uw PayPal-account is niet opgeslagen. Probeer het opnieuw."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "PayPal antwoordde HTTP :status op de betaling van factuur #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "PayPal-betaling :id hoort niet bij een ClientFence-factuur"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "PayPal-betaling :id is niet gevonden"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr ":card belasten?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "Opgeslagen methode belasten"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "Opgeslagen betaalmethodes zijn niet beschikbaar."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "De klant heeft geen opgeslagen betaalmethode."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "De betaling is afgeschreven."

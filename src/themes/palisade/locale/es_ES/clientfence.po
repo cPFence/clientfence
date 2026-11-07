@@ -20019,3 +20019,134 @@ msgstr "Devolverlo por :gateway (hasta :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "Déjelo en blanco para un reembolso completo"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "0 lo intenta una vez. El cliente recibe un correo tras cada cobro fallido."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "Pagos automáticos"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "No se puede procesar un pago de PayPal duplicado"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "Los clientes pueden guardar una tarjeta con Stripe, o su cuenta de PayPal (ajustes de PayPal: Saved PayPal accounts), al pagar o en su página de Métodos de pago. El método que guardaron o eligieron por última vez se cobra automáticamente en las facturas impagadas que no tienen método de pago o tienen uno de estos."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "Días entre reintentos"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "Los días entre reintentos deben ser un número entero de 1 a 30."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "Solo el titular de la cuenta puede guardar un método de pago."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "Pagar y guardar mi cuenta de PayPal"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "PayPal no guardó su cuenta: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "PayPal no inició el guardado de su cuenta: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "PayPal no inició el pago: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "PayPal no cobró el pago: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "PayPal rechazó el pago: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "¿Eliminar esta cuenta de PayPal?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "Reintentos tras un cobro fallido"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "Los reintentos deben ser un número entero de 0 a 5."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "Guardar mi cuenta de PayPal"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "Guarde su cuenta de PayPal para pagar sus facturas automáticamente."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "Las cuentas de PayPal guardadas no están disponibles."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "El cliente no tiene ninguna cuenta de PayPal guardada."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "El método de pago marcado como «Paga las facturas automáticamente» paga sus facturas cuando vencen. También puede guardar uno al pagar una factura."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "El pago se cobró pero aún no está completado. Compruébelo en el servicio de pago."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "No tiene ninguna cuenta de PayPal guardada."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "No se guardó su cuenta de PayPal. Inténtelo de nuevo."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "PayPal respondió HTTP :status al pago de la factura #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "El pago de PayPal :id no corresponde a una factura de ClientFence"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "No se encontró el pago de PayPal :id"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "¿Cobrar a :card?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "Cobrar método guardado"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "Los métodos de pago guardados no están disponibles."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "El cliente no tiene ningún método de pago guardado."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "El pago se cobró."

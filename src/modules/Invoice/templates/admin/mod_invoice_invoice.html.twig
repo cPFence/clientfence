@@ -173,14 +173,14 @@
                             </svg>
                             <span>{{ 'Mark as Paid'|trans }}</span>
                         </a>
-                        {# ClientFence core patch: WHMCS "Attempt Capture": charge the client's saved card (Invoice/SavedCards.php). #}
+                        {# ClientFence core patch: WHMCS "Attempt Capture": charge the client's saved card or PayPal account (Invoice/SavedCards.php). #}
                         {% set saved_card = admin.invoice_card_get({ id: invoice.id }) %}
                         {% if saved_card %}
-                        <a class="btn btn-primary" title="{{ saved_card }}" {{ fb_api_link({href: 'invoice/card_charge'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Charge the saved card :card?'|trans({':card': saved_card})}, message: 'The card was charged.'|trans, reload: true}) }}>
+                        <a class="btn btn-primary" title="{{ saved_card }}" {{ fb_api_link({href: 'invoice/card_charge'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Charge :card?'|trans({':card': saved_card})}, message: 'The payment was taken.'|trans, reload: true}) }}>
                             <svg class="icon" width="24" height="24">
                                 <use href="#credit-card" />
                             </svg>
-                            <span>{{ 'Charge saved card'|trans }}</span>
+                            <span>{{ 'Charge saved method'|trans }}</span>
                         </a>
                         {% endif %}
                         {# ClientFence core patch: WHMCS "Apply Credit": part or all of the client's credit. #}

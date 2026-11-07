@@ -20742,3 +20742,134 @@ msgstr "Vrati preko :gateway (do :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "Ostavite prazno za potpuni povraćaj"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "0 pokušava jednom. Klijent dobija e-poštu nakon svake neuspele naplate."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "Automatska plaćanja"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "Duplo PayPal plaćanje ne može se obraditi"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "Klijenti mogu da sačuvaju karticu preko Stripe-a ili svoj PayPal nalog (PayPal podešavanja: Saved PayPal accounts) prilikom plaćanja ili na stranici Opcije plaćanja. Način koji su poslednji sačuvali ili izabrali automatski se naplaćuje za neplaćene račune koji nemaju način plaćanja ili imaju jedan od ovih."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "Dani između ponovnih pokušaja"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "Dani između ponovnih pokušaja moraju biti ceo broj od 1 do 30."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "Samo vlasnik naloga može da sačuva način plaćanja."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "Plati i sačuvaj moj PayPal nalog"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "PayPal nije sačuvao vaš nalog: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "PayPal nije započeo čuvanje vašeg naloga: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "PayPal nije započeo plaćanje: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "PayPal nije naplatio uplatu: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "PayPal je odbio plaćanje: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "Ukloniti ovaj PayPal nalog?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "Ponovni pokušaji nakon neuspele naplate"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "Ponovni pokušaji moraju biti ceo broj od 0 do 5."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "Sačuvaj moj PayPal nalog"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "Sačuvajte svoj PayPal nalog da biste račune plaćali automatski."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "Sačuvani PayPal nalozi nisu dostupni."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "Klijent nema sačuvan PayPal nalog."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "Način plaćanja označen sa „Automatski plaća račune“ plaća vaše račune kada dospeju. Možete ga sačuvati i prilikom plaćanja računa."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "Uplata je naplaćena, ali još nije završena. Proverite je kod platne usluge."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "Nemate sačuvan PayPal nalog."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "Vaš PayPal nalog nije sačuvan. Pokušajte ponovo."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "PayPal je odgovorio HTTP :status na plaćanje računa #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "PayPal uplata :id nije za ClientFence račun"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "PayPal uplata :id nije pronađena"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "Naplatiti :card?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "Naplati sačuvani način"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "Sačuvani načini plaćanja nisu dostupni."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "Klijent nema sačuvan način plaćanja."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "Uplata je naplaćena."

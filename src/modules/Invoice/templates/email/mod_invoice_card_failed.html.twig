@@ -1,4 +1,4 @@
-{% block subject %}[{{ guest.system_company.name }}] Card payment failed: invoice #{{ invoice.serie_nr|default('') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] Automatic payment failed: invoice #{{ invoice.serie_nr|default('') }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -6,10 +6,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Card payment failed</title>
+<title>Automatic payment failed</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
-<div style="display:none; max-height:0; overflow:hidden;">We could not charge your card for invoice #{{ invoice.serie_nr|default('') }}.</div>
+<div style="display:none; max-height:0; overflow:hidden;">We could not charge your saved payment method for invoice #{{ invoice.serie_nr|default('') }}.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
 <tr><td align="center" style="padding:24px 12px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
@@ -21,10 +21,10 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Card payment failed</h1>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Automatic payment failed</h1>
 		<p style="margin:0 0 16px;">Dear {{ c.first_name|default('') }} {{ c.last_name|default('') }},</p>
-		<p style="margin:0 0 16px;">We could not charge your saved card {{ card|default('') }} for invoice <strong>#{{ invoice.serie_nr|default('') }}</strong>. {{ reason|default('') }}</p>
-		<p style="margin:0 0 16px;">{% if retry_at|default('') %}We will try the card again on {{ retry_at|format_date }}. {% endif %}You can pay the invoice now, or change your card on the <a href="{{ 'payment-methods'|url(area: 'client') }}" target="_blank" style="color:#2563eb;">Payment methods</a> page.</p>
+		<p style="margin:0 0 16px;">We could not charge your saved payment method {{ card|default('') }} for invoice <strong>#{{ invoice.serie_nr|default('') }}</strong>. {{ reason|default('') }}</p>
+		<p style="margin:0 0 16px;">{% if retry_at|default('') %}We will try it again on {{ retry_at|format_date }}. {% endif %}You can pay the invoice now, or change your payment method on the <a href="{{ 'payment-methods'|url(area: 'client') }}" target="_blank" style="color:#2563eb;">Payment methods</a> page.</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">

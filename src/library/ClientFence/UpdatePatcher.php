@@ -572,6 +572,7 @@ class UpdatePatcher implements InjectionAwareInterface
             121 => 'patch121',
             122 => 'patch122',
             123 => 'patch123',
+            124 => 'patch124',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2676,6 +2677,15 @@ class UpdatePatcher implements InjectionAwareInterface
                 `last_error` varchar(255) DEFAULT NULL,
                 PRIMARY KEY (`invoice_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
+        }
+    }
+
+    private function patch124(): void
+    {
+        // ClientFence core patch: saved PayPal accounts beside saved cards: the method a client saved or chose last
+        // pays their invoices (Invoice/SavedCards.php).
+        if (!$this->tableHasColumn('pay_gateway_customer', 'auto_pay_at')) {
+            $this->executeSql('ALTER TABLE `pay_gateway_customer` ADD COLUMN `auto_pay_at` datetime DEFAULT NULL');
         }
     }
 

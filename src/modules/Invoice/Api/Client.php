@@ -247,20 +247,54 @@ class Client extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * ClientFence: the client's saved cards at Stripe for the Payment methods page (SavedCards.php):
-     * {available, cards: [{id, card, default}]}. available is false without an enabled Stripe gateway.
+     * ClientFence: the client's saved methods for the Payment methods page (SavedCards.php): {available, cards: [{id,
+     * card, default}], paypal: {account, default} or null}. available is false without an enabled Stripe gateway, paypal
+     * null when clients cannot save PayPal accounts; default marks the method that pays the invoices.
      */
     public function card_list(): array
     {
-        $adapter = SavedCards::stripe($this->getDi());
+        $di = $this->getDi();
+        $clientId = (int) $this->getIdentity()->id;
+        $stripe = SavedCards::stripe($di);
+        $paypal = SavedCards::paypal($di);
+        $paying = SavedCards::method($di, $clientId)['adapter'] ?? null;
+        $cards = $stripe?->cards($clientId) ?? [];
+        foreach ($cards as &$card) {
+            $card['default'] = $card['default'] && $paying instanceof \Payment_Adapter_Stripe;
+        }
+        $account = $paypal?->savedCard($clientId);
 
-        return ['available' => $adapter !== null, 'cards' => $adapter?->cards((int) $this->getIdentity()->id) ?? []];
+        return [
+            'available' => $stripe !== null,
+            'cards' => $cards,
+            'paypal' => $paypal === null ? null : ['account' => $account['card'] ?? null, 'default' => $account !== null && $paying instanceof \Payment_Adapter_PayPalEmail],
+        ];
     }
 
-    /** ClientFence: whether saved cards can be used here (an enabled Stripe gateway), for the client menu. */
+    /** ClientFence: whether saved cards or saved PayPal accounts can be used here, for the client menu. */
     public function card_available(): bool
     {
-        return SavedCards::stripe($this->getDi()) !== null;
+        return SavedCards::adapters($this->getDi()) !== [];
+    }
+
+    /** ClientFence: makes the saved PayPal account the method that pays the client's invoices. */
+    public function paypal_default(): bool
+    {
+        $adapter = $this->paypalAdapter();
+        if ($adapter->savedCard((int) $this->getIdentity()->id) === null) {
+            throw new \ClientFence\InformationException('You have no saved PayPal account.');
+        }
+        SavedCards::choose($this->getDi(), $adapter->gatewayId(), $adapter->testMode(), (int) $this->getIdentity()->id);
+
+        return true;
+    }
+
+    /** ClientFence: removes the saved PayPal account. */
+    public function paypal_remove(): bool
+    {
+        $this->paypalAdapter()->vaultRemove((int) $this->getIdentity()->id);
+
+        return true;
     }
 
     /** ClientFence: starts adding a card: {client_secret, pub_key} for Stripe's card form. */
@@ -294,6 +328,11 @@ class Client extends \ClientFence\Api\AbstractApi
         $this->cardAdapter()->cardRemove((int) $this->getIdentity()->id, (string) $data['id']);
 
         return true;
+    }
+
+    private function paypalAdapter(): \Payment_Adapter_PayPalEmail
+    {
+        return SavedCards::paypal($this->getDi()) ?? throw new \ClientFence\InformationException('Saved PayPal accounts are not available.');
     }
 
     private function cardAdapter(): \Payment_Adapter_Stripe

@@ -1,12 +1,12 @@
-{# ClientFence: saved cards, on the Invoices settings page (Invoice/SavedCards.php). Kept in mod_invoice;
-   saved with invoice/card_settings_update. #}
+{# ClientFence: automatic payments with saved cards and PayPal accounts, on the Invoices settings page
+   (Invoice/SavedCards.php). Kept in mod_invoice; saved with invoice/card_settings_update. #}
 {% set cards = admin.extension_config_get({ 'ext': 'mod_invoice' }) %}
 {% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
 <div class="card mt-3 clientfence-settings" id="saved-cards" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form method="post" action="{{ 'invoice/card_settings_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
 		<div class="clientfence-settings-intro">
-			<h3>{{ 'Saved cards'|trans }}</h3>
-			<p>{{ 'Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe.'|trans }}</p>
+			<h3>{{ 'Automatic payments'|trans }}</h3>
+			<p>{{ 'Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these.'|trans }}</p>
 		</div>
 		<div class="clientfence-setting clientfence-setting-row">
 			<div class="clientfence-setting-label">
@@ -17,20 +17,26 @@
 				<input class="form-control" type="number" min="0" max="30" id="card_days_before" name="card_days_before" value="{{ cards.card_days_before|default(0) }}">
 			</div>
 		</div>
+		{% set retry_count = cards.card_retry_count is defined ? cards.card_retry_count : (cards.card_retries|default('1') == '0' ? 0 : 2) %}
 		<div class="clientfence-setting clientfence-setting-row">
 			<div class="clientfence-setting-label">
-				<label class="form-label" for="card_retries">{{ 'Try again after a failed charge'|trans }}</label>
-				<div class="clientfence-setting-hint">{{ 'A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge.'|trans }}</div>
+				<label class="form-label" for="card_retry_count">{{ 'Retries after a failed charge'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ '0 tries once. The client gets an email after each failed charge.'|trans }}</div>
 			</div>
 			<div class="clientfence-setting-control">
-				<input type="hidden" name="card_retries" value="0">
-				<label class="form-check form-switch">
-					<input class="form-check-input" type="checkbox" id="card_retries" name="card_retries" value="1"{% if cards.card_retries|default('1') != '0' %} checked{% endif %}>
-				</label>
+				<input class="form-control" type="number" min="0" max="5" id="card_retry_count" name="card_retry_count" value="{{ retry_count }}">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="card_retry_every">{{ 'Days between retries'|trans }}</label>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="number" min="1" max="30" id="card_retry_every" name="card_retry_every" value="{{ cards.card_retry_every|default(7) }}">
 			</div>
 		</div>
 		<div class="clientfence-settings-actions">
-			<button type="submit" class="btn btn-primary">{{ 'Save card settings'|trans }}</button>
+			<button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
 		</div>
 	</form>
 	<div class="clientfence-setting clientfence-setting-row" data-cf-card-find data-done-text="{{ 'Checked :checked clients, found :found saved cards.'|trans }}">

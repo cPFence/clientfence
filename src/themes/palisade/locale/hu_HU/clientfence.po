@@ -20728,3 +20728,134 @@ msgstr "Visszaküldés ezen keresztül: :gateway (legfeljebb :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "Hagyja üresen teljes visszatérítéshez"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "A 0 egyszer próbálkozik. Az ügyfél minden sikertelen terhelés után e-mailt kap."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "Automatikus fizetések"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "Az ismételt PayPal-fizetés nem dolgozható fel"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "Az ügyfelek fizetéskor vagy a Fizetési módok oldalon menthetnek kártyát a Stripe-pal, vagy PayPal-fiókot (PayPal-beállítások: Saved PayPal accounts). Az utoljára mentett vagy választott módot automatikusan terheli a rendszer azokért a kifizetetlen számlákért, amelyeknek nincs fizetési módjuk, vagy ezek egyike van beállítva."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "Napok az újrapróbálkozások között"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "Az újrapróbálkozások közötti napoknak 1 és 30 közötti egész számnak kell lenniük."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "Fizetési módot csak a fiók tulajdonosa menthet."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "Fizetés és a PayPal-fiókom mentése"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "A PayPal nem mentette a fiókját: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "A PayPal nem indította el a fiókja mentését: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "A PayPal nem indította el a fizetést: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "A PayPal nem terhelte a fizetést: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "A PayPal elutasította a fizetést: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "Eltávolítja ezt a PayPal-fiókot?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "Újrapróbálkozások sikertelen terhelés után"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "Az újrapróbálkozások számának 0 és 5 közötti egész számnak kell lennie."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "A PayPal-fiókom mentése"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "Mentse el PayPal-fiókját, hogy számláit automatikusan fizesse."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "A mentett PayPal-fiókok nem érhetők el."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "Az ügyfélnek nincs mentett PayPal-fiókja."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "A(z) „Automatikusan fizeti a számlákat” jelölésű fizetési mód esedékességkor kifizeti a számláit. Számla kifizetésekor is menthet egyet."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "A fizetést terhelte a rendszer, de még nem fejeződött be. Ellenőrizze a fizetési szolgáltatónál."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "Nincs mentett PayPal-fiókja."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "A PayPal-fiókját nem sikerült menteni. Kérjük, próbálja újra."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "A PayPal HTTP :status választ adott a(z) #:id számla fizetésére"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "A(z) :id PayPal-fizetés nem ClientFence-számlához tartozik"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "A(z) :id PayPal-fizetés nem található"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "Terheli ezt: :card?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "Mentett mód terhelése"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "A mentett fizetési módok nem érhetők el."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "Az ügyfélnek nincs mentett fizetési módja."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "A fizetést terhelte a rendszer."

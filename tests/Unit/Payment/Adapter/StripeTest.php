@@ -2766,7 +2766,7 @@ test('records a renewal against its renewal invoice when the subscription origin
 describe('saved cards', function (): void {
     beforeEach(function (): void {
         $this->cards = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-        $this->cards->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT)');
+        $this->cards->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT)');
         $this->cards->insert('pay_gateway_customer', ['pay_gateway_id' => 1, 'client_id' => 9, 'test_mode' => 1, 'external_customer_id' => 'cus_9', 'saved_cards' => 1]);
         $invoiceService = Mockery::mock();
         $invoiceService->allows('getBalanceDue')->andReturn(25.50);
@@ -2793,7 +2793,8 @@ describe('saved cards', function (): void {
 
         invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) ($paid + ['setup_future_usage' => 'off_session']), 9]);
         invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) (['payment_method' => 'pm_2', 'setup_future_usage' => 'off_session'] + $paid), 9]);
-        expect($this->adapter->savedCard(9))->toBe(['payment_method' => 'pm_1', 'card' => 'Visa •••• 4242 (03/2030)']);
+        expect($this->adapter->savedCard(9))->toMatchArray(['payment_method' => 'pm_1', 'card' => 'Visa •••• 4242 (03/2030)'])
+            ->and($this->adapter->savedCard(9)['auto_pay_at'])->not->toBe('');
 
         $this->adapter->cardDefault(9, 'pm_2');
         expect($this->adapter->savedCard(9)['payment_method'])->toBe('pm_2');

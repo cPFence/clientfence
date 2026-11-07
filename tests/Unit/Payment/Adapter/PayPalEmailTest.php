@@ -1002,3 +1002,154 @@ test('finds a PayPal subscription it can still cancel', function (int $status, s
     'already cancelled' => [200, 'CANCELLED', false],
     'unknown to the REST API (old S- profile, another account)' => [404, '', false],
 ]);
+
+/** An in-memory pay_gateway_customer table for saved PayPal accounts. */
+function paypalVaultDb(): Doctrine\DBAL\Connection
+{
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT, created_at TEXT, updated_at TEXT)');
+
+    return $db;
+}
+
+/** A sandbox adapter with saved PayPal accounts on (gateway 2) over $db and the given REST answers. */
+function paypalVaultAdapter(array $responses, ?array &$calls, Doctrine\DBAL\Connection $db, ?object $invoices = null, ?object $redbean = null): Payment_Adapter_PayPalEmail
+{
+    $calls = [];
+    $http = new Symfony\Component\HttpClient\MockHttpClient(function (string $method, string $url, array $options) use ($responses, &$calls): Symfony\Component\HttpClient\Response\MockResponse {
+        $path = (string) parse_url($url, PHP_URL_PATH);
+        $headers = implode("\n", $options['headers'] ?? []);
+        $calls[] = [$method, $path, json_decode((string) ($options['body'] ?? ''), true), $headers];
+        [$status, $body] = $responses[$method . ' ' . $path] ?? $responses[$path] ?? [500, []];
+
+        return new Symfony\Component\HttpClient\Response\MockResponse($status === 204 ? '' : (string) json_encode($body), ['http_code' => $status]);
+    });
+    $adapter = new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'test_mode' => true, 'gateway_id' => 2, 'vault' => '1', 'test_api_client_id' => 'sandbox-id', 'test_api_secret' => 'sandbox-secret']);
+    $di = container();
+    $di['http_client'] = $http;
+    $di['dbal'] = $db;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    if ($invoices !== null) {
+        $di['mod_service'] = $di->protect(fn () => $invoices);
+    }
+    if ($redbean !== null) {
+        $di['db'] = $redbean;
+    }
+    $adapter->setDi($di);
+
+    return $adapter;
+}
+
+function paypalVaultInvoice(): Model_Invoice
+{
+    return paypalBean(Model_Invoice::class, ['id' => 16, 'client_id' => 9, 'currency' => 'USD', 'nr' => 42, 'serie' => 'CF', 'approved' => 1]);
+}
+
+function paypalVaultInvoices(): Mockery\MockInterface
+{
+    $invoices = Mockery::mock();
+    $invoices->allows('getBalanceDue')->andReturn(12.5);
+    $invoices->allows('toApiArray')->andReturn(['nr' => 42, 'serie' => 'CF', 'lines' => [['title' => 'Hosting']]]);
+
+    return $invoices;
+}
+
+test('saved PayPal accounts need the setting and the REST API keys', function (): void {
+    $keys = ['email' => 'merchant@example.com', 'test_mode' => false, 'api_client_id' => 'id', 'api_secret' => 'secret'];
+
+    expect((new Payment_Adapter_PayPalEmail($keys + ['vault' => '1']))->canVault())->toBeTrue()
+        ->and((new Payment_Adapter_PayPalEmail($keys + ['vault' => '0']))->canVault())->toBeFalse()
+        ->and((new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'vault' => '1']))->canVault())->toBeFalse();
+});
+
+test('a saved PayPal account is kept from an approved setup, and a newer one replaces it at PayPal too', function (): void {
+    $db = paypalVaultDb();
+    $token = fn (string $id): array => [200, ['id' => $id, 'customer' => ['id' => 'CUST-9'], 'payment_source' => ['paypal' => ['email_address' => 'buyer@example.com']]]];
+    $adapter = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v3/vault/payment-tokens' => $token('TOKEN-1'), 'DELETE /v3/vault/payment-tokens/TOKEN-1' => [204, []]], $calls, $db);
+
+    $adapter->vaultSaved(9, 'SETUP-1');
+    expect($calls[1][2])->toBe(['payment_source' => ['token' => ['id' => 'SETUP-1', 'type' => 'SETUP_TOKEN']]])
+        ->and($adapter->savedCard(9))->toMatchArray(['payment_method' => 'TOKEN-1', 'card' => 'PayPal buyer@example.com']);
+
+    $adapter = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v3/vault/payment-tokens' => $token('TOKEN-2'), 'DELETE /v3/vault/payment-tokens/TOKEN-1' => [204, []]], $calls, $db);
+    $adapter->vaultSaved(9, 'SETUP-2');
+    expect($adapter->savedCard(9)['payment_method'])->toBe('TOKEN-2')
+        ->and(array_column($calls, 1))->toContain('/v3/vault/payment-tokens/TOKEN-1')
+        ->and($db->fetchOne('SELECT COUNT(*) FROM pay_gateway_customer'))->toBe(1);
+
+    $adapter->vaultRemove(9);
+    expect($adapter->savedCard(9))->toBeNull();
+});
+
+test('a saved PayPal account pays the invoice balance with its own request ID per try, and PayPal\'s refusal is the client\'s reason', function (): void {
+    $db = paypalVaultDb();
+    $db->insert('pay_gateway_customer', ['pay_gateway_id' => 2, 'client_id' => 9, 'test_mode' => 1, 'external_customer_id' => 'CUST-9', 'saved_cards' => 1, 'default_payment_method' => 'TOKEN-1', 'default_card' => 'PayPal buyer@example.com']);
+    $paid = [201, ['id' => 'ORDER-1', 'status' => 'COMPLETED', 'purchase_units' => [['payments' => ['captures' => [['id' => 'CAPTURE-1', 'status' => 'COMPLETED']]]]]]];
+    $adapter = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v2/checkout/orders' => $paid], $calls, $db, paypalVaultInvoices());
+
+    expect($adapter->chargeSavedCard(paypalVaultInvoice(), 'attempt_2'))->toBe('CAPTURE-1')
+        ->and($calls[1][2]['payment_source'])->toBe(['paypal' => ['vault_id' => 'TOKEN-1']])
+        ->and($calls[1][2]['purchase_units'][0])->toMatchArray(['custom_id' => 'cf-invoice-16', 'amount' => ['currency_code' => 'USD', 'value' => '12.50']])
+        ->and($calls[1][3])->toContain('PayPal-Request-Id: cf-invoice-16-attempt_2');
+
+    $refused = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v2/checkout/orders' => [422, ['message' => 'The requested action could not be performed.', 'details' => [['issue' => 'INSTRUMENT_DECLINED', 'description' => 'The instrument presented was declined.']]]]], $calls, $db, paypalVaultInvoices());
+    expect(fn () => $refused->chargeSavedCard(paypalVaultInvoice(), 'attempt_1'))
+        ->toThrow(ClientFence\InformationException::class, 'PayPal refused the payment: The requested action could not be performed. (The instrument presented was declined.)');
+
+    // An order made but its capture declined is a refusal too, not a payment taken.
+    $declined = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v2/checkout/orders' => [201, ['id' => 'ORDER-2', 'status' => 'COMPLETED', 'purchase_units' => [['payments' => ['captures' => [['id' => 'CAPTURE-2', 'status' => 'DECLINED']]]]]]]], $calls, $db, paypalVaultInvoices());
+    expect(fn () => $declined->chargeSavedCard(paypalVaultInvoice(), 'attempt_1'))->toThrow(ClientFence\InformationException::class, 'PayPal refused the payment: DECLINED');
+});
+
+test('a REST payment is read back from PayPal and pays only an invoice made here', function (string $customId, string $status, ?string $error, bool $processed = false): void {
+    $capture = ['id' => 'CAPTURE-1', 'status' => $status, 'custom_id' => $customId, 'amount' => ['value' => '12.50', 'currency_code' => 'USD']];
+    $invoices = paypalVaultInvoices();
+    $invoices->allows('isInvoiceTypeDeposit')->andReturnFalse();
+    $invoices->allows('validatePaymentAmount');
+    // The duplicate check finds this very transaction once it was applied ("Process Again").
+    $redbean = paypalDbMocks(fn (string $model, string $sql, array $bindings): ?Model_Transaction => $processed && $model === 'Transaction' && !isset($bindings[':id']) ? new Model_Transaction() : null);
+    $redbean->allows('getExistingModelById')->with('Invoice', 16, 'Invoice not found')->andReturn(paypalVaultInvoice());
+    $adapter = paypalVaultAdapter(PAYPAL_TOKEN + ['GET /v2/payments/captures/CAPTURE-1' => [200, $capture]], $calls, paypalVaultDb(), $invoices, $redbean);
+    $tx = [];
+    $api = Mockery::mock();
+    $api->allows('invoice_transaction_update')->andReturnUsing(function (array $update) use (&$tx): void {
+        $tx = array_replace($tx, $update);
+    });
+    $api->shouldReceive('client_balance_add_funds')->times($error === null && $status === 'COMPLETED' ? 1 : 0)->with(['id' => 9, 'amount' => 12.5, 'description' => 'PayPal transaction CAPTURE-1', 'type' => 'PayPal', 'rel_id' => 'CAPTURE-1']);
+    $api->shouldReceive('invoice_pay_with_credits')->times($error === null && $status === 'COMPLETED' ? 1 : 0)->with(['id' => 16]);
+
+    $run = fn () => $adapter->processTransaction($api, 42, ['get' => ['paypal_capture' => 'CAPTURE-1', 'invoice_id' => 16]], 2);
+    if ($error !== null) {
+        expect($run)->toThrow(Payment_Exception::class, $error);
+
+        return;
+    }
+    $run();
+    expect($tx)->toMatchArray($status === 'COMPLETED'
+        ? ['invoice_id' => 16, 'txn_id' => 'CAPTURE-1', 'txn_status' => 'Completed', 'status' => Model_Transaction::STATUS_PROCESSED]
+        : ['txn_status' => 'Pending', 'status' => Model_Transaction::STATUS_RECEIVED, 'error' => 'PayPal payment not completed: PENDING']);
+})->with([
+    'completed' => ['cf-invoice-16', 'COMPLETED', null],
+    'held by PayPal' => ['cf-invoice-16', 'PENDING', null],
+    'another shop on the same PayPal account' => ['16', 'COMPLETED', 'is not for a ClientFence invoice'],
+    'processed again after it was applied' => ['cf-invoice-16', 'COMPLETED', 'Cannot process duplicate PayPal payment', true],
+]);
+
+test('"Pay and save" takes the approved order\'s payment for its own invoice and keeps the account', function (): void {
+    $db = paypalVaultDb();
+    $order = fn (string $customId): array => [201, [
+        'id' => 'ORDER-1', 'status' => 'COMPLETED',
+        'payment_source' => ['paypal' => ['email_address' => 'buyer@example.com', 'attributes' => ['vault' => ['id' => 'TOKEN-1', 'status' => 'VAULTED', 'customer' => ['id' => 'CUST-9']]]]],
+        'purchase_units' => [['custom_id' => $customId, 'payments' => ['captures' => [['id' => 'CAPTURE-1', 'status' => 'COMPLETED']]]]],
+    ]];
+    $adapter = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v2/checkout/orders/ORDER-1/capture' => $order('cf-invoice-16')], $calls, $db);
+
+    expect($adapter->vaultCapture(paypalVaultInvoice(), 'ORDER-1'))->toBe('CAPTURE-1')
+        ->and($adapter->savedCard(9))->toMatchArray(['payment_method' => 'TOKEN-1', 'card' => 'PayPal buyer@example.com']);
+    // PayPal refuses a capture without the JSON content type (415) and leaves custom_id out of its short reply.
+    $capture = array_values(array_filter($calls, fn (array $call): bool => $call[1] === '/v2/checkout/orders/ORDER-1/capture'))[0];
+    expect($capture[3])->toContain('Content-Type: application/json')->toContain('Prefer: return=representation');
+
+    $other = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v2/checkout/orders/ORDER-1/capture' => $order('cf-invoice-99')], $calls, paypalVaultDb());
+    expect(fn () => $other->vaultCapture(paypalVaultInvoice(), 'ORDER-1'))->toThrow(ClientFence\InformationException::class, 'PayPal did not take the payment');
+});

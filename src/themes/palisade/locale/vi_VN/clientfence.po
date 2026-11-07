@@ -20722,3 +20722,134 @@ msgstr "Gửi lại qua :gateway (tối đa :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "Để trống để hoàn tiền toàn bộ"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "0 là thử một lần. Khách hàng nhận email sau mỗi lần trừ tiền thất bại."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "Thanh toán tự động"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "Không thể xử lý khoản thanh toán PayPal trùng lặp"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "Khách hàng có thể lưu thẻ bằng Stripe, hoặc tài khoản PayPal của họ (cài đặt PayPal: Saved PayPal accounts), khi thanh toán hoặc trên trang Phương thức thanh toán. Phương thức họ lưu hoặc chọn gần nhất được trừ tiền tự động cho các hóa đơn chưa thanh toán không có phương thức thanh toán hoặc dùng một trong số này."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "Số ngày giữa các lần thử lại"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "Số ngày giữa các lần thử lại phải là số nguyên từ 1 đến 30."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "Chỉ chủ tài khoản mới có thể lưu phương thức thanh toán."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "Thanh toán và lưu tài khoản PayPal của tôi"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "PayPal không lưu tài khoản của bạn: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "PayPal không bắt đầu lưu tài khoản của bạn: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "PayPal không bắt đầu khoản thanh toán: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "PayPal không thu khoản thanh toán: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "PayPal từ chối khoản thanh toán: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "Xóa tài khoản PayPal này?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "Số lần thử lại sau khi trừ tiền thất bại"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "Số lần thử lại phải là số nguyên từ 0 đến 5."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "Lưu tài khoản PayPal của tôi"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "Lưu tài khoản PayPal của bạn để tự động thanh toán hóa đơn."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "Tài khoản PayPal đã lưu hiện không khả dụng."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "Khách hàng chưa có tài khoản PayPal đã lưu."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "Phương thức thanh toán được đánh dấu \"Tự động thanh toán hóa đơn\" sẽ thanh toán hóa đơn của bạn khi đến hạn. Bạn cũng có thể lưu một phương thức khi thanh toán hóa đơn."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "Khoản thanh toán đã được thu nhưng chưa hoàn tất. Hãy kiểm tra với dịch vụ thanh toán."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "Bạn chưa có tài khoản PayPal đã lưu."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "Tài khoản PayPal của bạn chưa được lưu. Vui lòng thử lại."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "PayPal trả lời HTTP :status cho khoản thanh toán của hóa đơn #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "Khoản thanh toán PayPal :id không thuộc hóa đơn ClientFence"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "Không tìm thấy khoản thanh toán PayPal :id"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "Trừ tiền :card?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "Trừ tiền phương thức đã lưu"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "Phương thức thanh toán đã lưu hiện không khả dụng."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "Khách hàng chưa có phương thức thanh toán đã lưu."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "Đã thu khoản thanh toán."

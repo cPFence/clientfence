@@ -18554,3 +18554,134 @@ msgstr "ส่งคืนผ่าน :gateway (สูงสุด :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "เว้นว่างเพื่อคืนเงินเต็มจำนวน"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "0 คือลองครั้งเดียว ลูกค้าจะได้รับอีเมลหลังการเรียกเก็บเงินที่ล้มเหลวทุกครั้ง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "การชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "ไม่สามารถประมวลผลการชำระเงิน PayPal ซ้ำได้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "ลูกค้าสามารถบันทึกบัตรกับ Stripe หรือบัญชี PayPal ของตน (การตั้งค่า PayPal: Saved PayPal accounts) ตอนชำระเงินหรือในหน้าวิธีการชำระเงิน ระบบจะเรียกเก็บเงินอัตโนมัติด้วยวิธีที่บันทึกหรือเลือกล่าสุด สำหรับใบแจ้งหนี้ที่ยังไม่ชำระซึ่งไม่มีวิธีการชำระเงินหรือใช้วิธีใดวิธีหนึ่งนี้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "จำนวนวันระหว่างการลองใหม่"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "จำนวนวันระหว่างการลองใหม่ต้องเป็นจำนวนเต็มตั้งแต่ 1 ถึง 30"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "เฉพาะเจ้าของบัญชีเท่านั้นที่บันทึกวิธีการชำระเงินได้"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "ชำระเงินและบันทึกบัญชี PayPal ของฉัน"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "PayPal ไม่ได้บันทึกบัญชีของคุณ: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "PayPal ไม่ได้เริ่มบันทึกบัญชีของคุณ: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "PayPal ไม่ได้เริ่มการชำระเงิน: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "PayPal ไม่ได้เรียกเก็บเงิน: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "PayPal ปฏิเสธการชำระเงิน: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "ลบบัญชี PayPal นี้หรือไม่?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "ลองใหม่หลังการเรียกเก็บเงินล้มเหลว"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "จำนวนครั้งที่ลองใหม่ต้องเป็นจำนวนเต็มตั้งแต่ 0 ถึง 5"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "บันทึกบัญชี PayPal ของฉัน"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "บันทึกบัญชี PayPal ของคุณเพื่อชำระใบแจ้งหนี้โดยอัตโนมัติ"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "ไม่สามารถใช้บัญชี PayPal ที่บันทึกไว้ได้"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "ลูกค้าไม่มีบัญชี PayPal ที่บันทึกไว้"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "วิธีการชำระเงินที่มีเครื่องหมาย \"ชำระใบแจ้งหนี้อัตโนมัติ\" จะชำระใบแจ้งหนี้ของคุณเมื่อถึงกำหนด คุณยังบันทึกวิธีการชำระเงินได้ตอนชำระใบแจ้งหนี้"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "เรียกเก็บเงินแล้วแต่ยังไม่เสร็จสมบูรณ์ โปรดตรวจสอบกับบริการชำระเงิน"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "คุณไม่มีบัญชี PayPal ที่บันทึกไว้"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "ไม่ได้บันทึกบัญชี PayPal ของคุณ โปรดลองอีกครั้ง"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "PayPal ตอบกลับ HTTP :status สำหรับการชำระเงินของใบแจ้งหนี้ #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "การชำระเงิน PayPal :id ไม่ใช่ของใบแจ้งหนี้ ClientFence"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "ไม่พบการชำระเงิน PayPal :id"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "เรียกเก็บเงินจาก :card ใช่หรือไม่?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "เรียกเก็บเงินจากวิธีที่บันทึกไว้"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "ไม่สามารถใช้วิธีการชำระเงินที่บันทึกไว้ได้"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "ลูกค้าไม่มีวิธีการชำระเงินที่บันทึกไว้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "เรียกเก็บเงินแล้ว"

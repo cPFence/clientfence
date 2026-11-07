@@ -51,6 +51,153 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/receipt/:id', 'get_receipt', ['id' => '[a-f0-9]{32}'], static::class);
         // ClientFence: the client's saved cards (SavedCards.php).
         $app->get('/payment-methods', 'get_payment_methods', [], static::class);
+        // ClientFence: saving a PayPal account (Invoice/SavedCards.php): on the Payment methods page, or while paying.
+        $app->get('/payment-methods/paypal', 'get_paypal_save', [], static::class);
+        $app->get('/payment-methods/paypal/saved', 'get_paypal_saved', [], static::class);
+        $app->get('/invoice/paypal-save/:hash', 'get_invoice_paypal_save', ['hash' => '[a-z0-9]+'], static::class);
+        $app->get('/invoice/paypal-paid', 'get_invoice_paypal_paid', [], static::class);
+    }
+
+    /** ClientFence: sends the client to PayPal to save their account. */
+    public function get_paypal_save(\ClientFence\App $app): Response
+    {
+        $adapter = $this->paypalForClient();
+        $setup = $adapter->vaultSetup((string) $this->di['url']->link('payment-methods/paypal/saved'), (string) $this->di['url']->link('payment-methods'));
+        $this->paypalBind($setup['id'], ['client' => (int) $this->di['session']->get('client_id')]);
+
+        return $app->redirectUrl($setup['url']);
+    }
+
+    /** ClientFence: back from PayPal: keeps the approved account for the client who started saving it, in this browser. */
+    public function get_paypal_saved(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $setupId = (string) $app->getRequest()->query->get('approval_token_id');
+        $flow = $this->paypalFlow($setupId);
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::paypal($this->di);
+        if ($flow === null || $adapter === null) {
+            throw new InformationException('Your PayPal account was not saved. Please try again.');
+        }
+        $adapter->vaultSaved((int) $flow['client'], $setupId);
+        $this->di['cache']->deleteItem(self::paypalKey($setupId));
+
+        return $this->movesOn('payment-methods');
+    }
+
+    /** ClientFence: "Pay and save my PayPal account" on the client's own unpaid invoice. */
+    public function get_invoice_paypal_save(\ClientFence\App $app, $hash): Response
+    {
+        $adapter = $this->paypalForClient();
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $hash, (int) $this->di['session']->get('client_id'), \Model_Invoice::STATUS_UNPAID]);
+        if (!$invoice instanceof \Model_Invoice) {
+            return $app->redirect('invoice');
+        }
+        $order = $adapter->vaultOrder($invoice, (string) $this->di['url']->link('invoice/paypal-paid'), (string) $this->di['url']->link('invoice/' . $invoice->hash));
+        $this->paypalBind($order['id'], ['invoice' => (int) $invoice->id]);
+
+        return $app->redirectUrl($order['url']);
+    }
+
+    /** ClientFence: back from PayPal: takes the payment of the approved order, records it and keeps the account. */
+    public function get_invoice_paypal_paid(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $orderId = (string) $app->getRequest()->query->get('token');
+        $flow = $this->paypalFlow($orderId);
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::paypal($this->di);
+        if ($flow === null || $adapter === null) {
+            return $this->movesOn('invoice');
+        }
+        $invoice = $this->di['db']->getExistingModelById('Invoice', (int) $flow['invoice'], 'Invoice not found');
+        // Paid another way meanwhile: the approved order is left to expire, never taken as well.
+        if ($invoice->status !== \Model_Invoice::STATUS_UNPAID) {
+            $this->di['cache']->deleteItem(self::paypalKey($orderId));
+
+            return $this->movesOn('invoice/' . $invoice->hash);
+        }
+        $captureId = $adapter->vaultCapture($invoice, $orderId);
+        // Kept until PayPal took the payment, so that the client can come back again after an error.
+        $this->di['cache']->deleteItem(self::paypalKey($orderId));
+        // Taken: the cron never charges the saved account for it, also while PayPal holds the payment.
+        \ClientFence\Mod\Invoice\SavedCards::hold($this->di, (int) $invoice->id, 'Payment ' . $captureId . ' is not completed yet.');
+        $this->di['mod_service']('Invoice', 'Transaction')->createAndProcess([
+            'invoice_id' => (int) $invoice->id,
+            'gateway_id' => $adapter->gatewayId(),
+            'source' => 'paypal_return',
+            'get' => ['paypal_capture' => $captureId, 'invoice_id' => (int) $invoice->id],
+        ]);
+
+        return $this->movesOn('invoice/thank-you/' . $invoice->hash);
+    }
+
+    /*
+     * The way back from PayPal comes without the SameSite=Strict session cookie (security mode "strict"), as with
+     * Google sign-in (Client/Google.php). So PayPal's token is kept in the cache with the client or invoice and the
+     * hash of a SameSite=Lax cookie that the browser does send then: only the browser that went to PayPal can finish.
+     */
+    private const PAYPAL_COOKIE = 'paypal_return';
+    private const PAYPAL_SECONDS = 10800;
+
+    private static function paypalKey(string $token): string
+    {
+        return 'clientfence_paypal_' . hash('sha256', $token);
+    }
+
+    private function paypalBind(string $token, array $flow): void
+    {
+        $bind = bin2hex(random_bytes(32));
+        $item = $this->di['cache']->getItem(self::paypalKey($token));
+        $item->set($flow + ['bind' => hash('sha256', $bind)]);
+        $item->expiresAfter(self::PAYPAL_SECONDS);
+        $this->di['cache']->save($item);
+        $secure = (bool) \ClientFence\Config::getProperty('security.force_https', true) || $this->di['request']->isSecure();
+        $this->di['cookie_queue']->queue(self::PAYPAL_COOKIE, $bind, time() + self::PAYPAL_SECONDS, '/', null, $secure, true, 'Lax');
+    }
+
+    /** The flow PayPal's token belongs to when this browser started it, or null. */
+    private function paypalFlow(string $token): ?array
+    {
+        $cookie = (string) $this->di['request']->cookies->get(self::PAYPAL_COOKIE, '');
+        $item = $this->di['cache']->getItem(self::paypalKey($token));
+        $flow = $item->isHit() ? $item->get() : null;
+
+        return $token !== '' && $cookie !== '' && is_array($flow) && hash_equals((string) $flow['bind'], hash('sha256', $cookie)) ? $flow : null;
+    }
+
+    /** Without the session cookie this request has a new, empty session: its cookie must not replace the client's. */
+    private function keepSessionCookie(): void
+    {
+        if (!$this->di['request']->cookies->has(session_name())) {
+            header_remove('Set-Cookie');
+        }
+    }
+
+    /** A page that moves on, not a redirect: a redirect would still come from PayPal and again miss the session cookie. */
+    private function movesOn(string $path): Response
+    {
+        $next = (string) $this->di['url']->link($path);
+        $html = htmlspecialchars($next, ENT_QUOTES, 'UTF-8');
+        $js = json_encode($next, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES);
+        $continue = htmlspecialchars(__trans('Continue'), ENT_QUOTES, 'UTF-8');
+
+        return new Response(
+            "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"referrer\" content=\"no-referrer\"><meta http-equiv=\"refresh\" content=\"0;url={$html}\"><title>{$continue}</title></head>"
+            . "<body><p><a href=\"{$html}\">{$continue}</a></p><script nonce=\"" . \ClientFence\Csp::nonce() . "\">location.replace({$js});</script></body></html>",
+            200,
+            ['Content-Type' => 'text/html; charset=utf-8', 'Cache-Control' => 'no-store', 'Referrer-Policy' => 'no-referrer', 'X-Robots-Tag' => 'noindex']
+        );
+    }
+
+    /** The PayPal adapter for a signed-in account owner when clients can save PayPal accounts. */
+    private function paypalForClient(): \Payment_Adapter_PayPalEmail
+    {
+        $this->di['is_client_logged'];
+        $user = \ClientFence\Mod\Client\Users::context($this->di);
+        if ($user !== null && !$user['owner']) {
+            throw new InformationException('Only the account owner can save a payment method.');
+        }
+
+        return \ClientFence\Mod\Invoice\SavedCards::paypal($this->di) ?? throw new InformationException('Saved PayPal accounts are not available.');
     }
 
     public function get_payment_methods(\ClientFence\App $app): string

@@ -1807,14 +1807,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
      */
     public function savedCard(int $clientId): ?array
     {
-        $row = $this->di['dbal']->fetchAssociative(
-            'SELECT default_payment_method, default_card FROM pay_gateway_customer WHERE pay_gateway_id = ? AND client_id = ? AND test_mode = ? AND saved_cards = 1',
-            [(int) $this->config['gateway_id'], $clientId, (int) (bool) $this->config['test_mode']]
-        );
-
-        return is_array($row) && (string) $row['default_payment_method'] !== ''
-            ? ['payment_method' => (string) $row['default_payment_method'], 'card' => (string) $row['default_card']]
-            : null;
+        return ClientFence\Mod\Invoice\SavedCards::saved($this->di, (int) $this->config['gateway_id'], (bool) $this->config['test_mode'], $clientId);
     }
 
     public function gatewayId(): int
@@ -1991,9 +1984,10 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
     {
         $method = $this->stripe->paymentMethods->retrieve($paymentMethodId, []);
         $this->di['dbal']->executeStatement(
-            'UPDATE pay_gateway_customer SET default_payment_method = ?, default_card = ? WHERE pay_gateway_id = ? AND client_id = ? AND test_mode = ? AND saved_cards = 1'
+            // auto_pay_at: the card a client saved or chose last pays, also over a saved PayPal account (SavedCards::method()).
+            'UPDATE pay_gateway_customer SET default_payment_method = ?, default_card = ?, auto_pay_at = ? WHERE pay_gateway_id = ? AND client_id = ? AND test_mode = ? AND saved_cards = 1'
                 . ($makeDefault ? '' : ' AND (default_payment_method IS NULL OR default_payment_method = \'\')'),
-            [$method->id, $this->cardLabel($method), (int) $this->config['gateway_id'], $clientId, (int) (bool) $this->config['test_mode']]
+            [$method->id, $this->cardLabel($method), date('Y-m-d H:i:s'), (int) $this->config['gateway_id'], $clientId, (int) (bool) $this->config['test_mode']]
         );
     }
 

@@ -20249,3 +20249,134 @@ msgstr "از طریق :gateway برگردانده شود (تا سقف :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "برای برگشت کامل خالی بگذارید"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "۰ یک‌بار تلاش می‌کند. مشتری پس از هر برداشت ناموفق یک ایمیل دریافت می‌کند."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "پرداخت‌های خودکار"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "پرداخت تکراری PayPal قابل پردازش نیست"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "مشتریان می‌توانند هنگام پرداخت یا در صفحه روش پرداخت خود، یک کارت را با Stripe یا حساب PayPal خود را ذخیره کنند (تنظیمات PayPal: Saved PayPal accounts). از روشی که آخرین بار ذخیره یا انتخاب کرده‌اند، به‌طور خودکار برای فاکتورهای پرداخت‌نشده‌ای که روش پرداخت ندارند یا یکی از این دو را دارند برداشت می‌شود."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "روزهای بین تلاش‌های مجدد"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "روزهای بین تلاش‌های مجدد باید عددی صحیح از ۱ تا ۳۰ باشد."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "فقط مالک حساب می‌تواند یک روش پرداخت را ذخیره کند."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "پرداخت و ذخیره حساب PayPal من"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "PayPal حساب شما را ذخیره نکرد: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "PayPal ذخیره حساب شما را شروع نکرد: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "PayPal پرداخت را شروع نکرد: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "PayPal پرداخت را برداشت نکرد: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "PayPal پرداخت را رد کرد: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "این حساب PayPal حذف شود؟"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "تلاش مجدد پس از برداشت ناموفق"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "تعداد تلاش‌های مجدد باید عددی صحیح از ۰ تا ۵ باشد."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "ذخیره حساب PayPal من"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "حساب PayPal خود را ذخیره کنید تا فاکتورهایتان خودکار پرداخت شوند."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "حساب‌های PayPal ذخیره‌شده در دسترس نیستند."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "مشتری حساب PayPal ذخیره‌شده ندارد."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "روش پرداختی که با «فاکتورها را خودکار پرداخت می‌کند» مشخص شده است، فاکتورهای شما را در سررسید پرداخت می‌کند. همچنین می‌توانید هنگام پرداخت یک فاکتور، یکی را ذخیره کنید."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "پرداخت برداشت شد اما هنوز کامل نشده است. آن را در سرویس پرداخت بررسی کنید."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "شما حساب PayPal ذخیره‌شده‌ای ندارید."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "حساب PayPal شما ذخیره نشد. لطفاً دوباره تلاش کنید."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "PayPal به پرداخت فاکتور #:id با HTTP :status پاسخ داد"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "پرداخت PayPal :id مربوط به فاکتور ClientFence نیست"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "پرداخت PayPal :id پیدا نشد"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "از :card برداشت شود؟"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "برداشت از روش ذخیره‌شده"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "روش‌های پرداخت ذخیره‌شده در دسترس نیستند."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "مشتری روش پرداخت ذخیره‌شده ندارد."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "پرداخت برداشت شد."

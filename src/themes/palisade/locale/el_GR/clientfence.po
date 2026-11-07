@@ -20815,3 +20815,134 @@ msgstr "Επιστροφή μέσω :gateway (έως :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "Αφήστε κενό για πλήρη επιστροφή"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "Το 0 κάνει μία προσπάθεια. Ο πελάτης λαμβάνει email μετά από κάθε αποτυχημένη χρέωση."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "Αυτόματες πληρωμές"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "Δεν είναι δυνατή η επεξεργασία διπλής πληρωμής PayPal"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "Οι πελάτες μπορούν να αποθηκεύσουν μια κάρτα με το Stripe ή τον λογαριασμό τους στο PayPal (ρυθμίσεις PayPal: Saved PayPal accounts), όταν πληρώνουν ή στη σελίδα Τρόποι πληρωμής. Ο τρόπος που αποθήκευσαν ή επέλεξαν τελευταίος χρεώνεται αυτόματα για απλήρωτα παραστατικά που δεν έχουν τρόπο πληρωμής ή έχουν έναν από αυτούς."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "Ημέρες ανάμεσα στις προσπάθειες"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "Οι ημέρες ανάμεσα στις προσπάθειες πρέπει να είναι ακέραιος αριθμός από 1 έως 30."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "Μόνο ο κάτοχος του λογαριασμού μπορεί να αποθηκεύσει έναν τρόπο πληρωμής."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "Πληρωμή και αποθήκευση του λογαριασμού μου στο PayPal"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "Το PayPal δεν αποθήκευσε τον λογαριασμό σας: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "Το PayPal δεν ξεκίνησε την αποθήκευση του λογαριασμού σας: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "Το PayPal δεν ξεκίνησε την πληρωμή: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "Το PayPal δεν πραγματοποίησε την πληρωμή: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "Το PayPal απέρριψε την πληρωμή: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "Να αφαιρεθεί αυτός ο λογαριασμός PayPal;"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "Επαναλήψεις μετά από αποτυχημένη χρέωση"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "Οι επαναλήψεις πρέπει να είναι ακέραιος αριθμός από 0 έως 5."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "Αποθήκευση του λογαριασμού μου στο PayPal"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "Αποθηκεύστε τον λογαριασμό σας στο PayPal για να πληρώνετε αυτόματα τα παραστατικά σας."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "Οι αποθηκευμένοι λογαριασμοί PayPal δεν είναι διαθέσιμοι."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "Ο πελάτης δεν έχει αποθηκευμένο λογαριασμό PayPal."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "Ο τρόπος πληρωμής με την ένδειξη «Πληρώνει τα παραστατικά αυτόματα» πληρώνει τα παραστατικά σας όταν λήξουν. Μπορείτε επίσης να αποθηκεύσετε έναν όταν πληρώνετε ένα παραστατικό."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "Η πληρωμή εισπράχθηκε αλλά δεν έχει ολοκληρωθεί ακόμη. Ελέγξτε την στην υπηρεσία πληρωμών."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "Δεν έχετε αποθηκευμένο λογαριασμό PayPal."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "Ο λογαριασμός σας στο PayPal δεν αποθηκεύτηκε. Δοκιμάστε ξανά."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "Το PayPal απάντησε HTTP :status στην πληρωμή του παραστατικού #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "Η πληρωμή PayPal :id δεν αφορά παραστατικό του ClientFence"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "Η πληρωμή PayPal :id δεν βρέθηκε"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "Να χρεωθεί :card;"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "Χρέωση αποθηκευμένου τρόπου"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "Οι αποθηκευμένοι τρόποι πληρωμής δεν είναι διαθέσιμοι."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "Ο πελάτης δεν έχει αποθηκευμένο τρόπο πληρωμής."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "Η πληρωμή εισπράχθηκε."

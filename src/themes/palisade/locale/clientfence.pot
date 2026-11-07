@@ -178,6 +178,10 @@ msgstr ""
 msgid "0 suspends on the due date."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "0: no maximum"
 msgstr ""
@@ -738,10 +742,6 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
-msgid "A declined card is tried again 7 and 14 days later. The client gets an email after each failed charge."
 msgstr ""
 
 #: src/modules/Product/Service.php
@@ -3016,6 +3016,10 @@ msgstr ""
 msgid "Automatic Sync Rate"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Automatic reply"
 msgstr ""
@@ -3676,6 +3680,10 @@ msgstr ""
 msgid "Cannot process duplicate IPN"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr ""
+
 #: src/modules/Invoice/Service.php
 msgid "Cannot refund invoice with negative amount"
 msgstr ""
@@ -3912,16 +3920,16 @@ msgstr ""
 msgid "Charge"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
 msgid "Charge days before the due date"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
-msgid "Charge saved card"
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
-msgid "Charge the saved card :card?"
+msgid "Charge saved method"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
@@ -4745,7 +4753,7 @@ msgid "Clients can restore backups"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
-msgid "Clients can save a card with Stripe when they pay, or on their Payment methods page. The card is charged automatically for unpaid invoices that have no payment method or Stripe."
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -5168,7 +5176,7 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
-#: src/modules/Client/Controller/Client.php src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/System/templates/admin/mod_system_update.html.twig …
+#: src/modules/Client/Controller/Client.php src/modules/Invoice/Controller/Client.php src/modules/Order/templates/admin/mod_order_index.html.twig …
 msgid "Continue"
 msgstr ""
 
@@ -6086,6 +6094,14 @@ msgstr ""
 
 #: src/modules/Invoice/SavedCards.php
 msgid "Days before the due date must be a whole number from 0 to 30."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig
@@ -13560,6 +13576,10 @@ msgstr ""
 msgid "Only the account owner can restore backups."
 msgstr ""
 
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_report.html.twig
 msgid "Only the first :count rows are shown. Narrow the filters to see the rest."
 msgstr ""
@@ -14360,6 +14380,10 @@ msgstr ""
 msgid "Pay Now with a One-Time Payment"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Pay by :method"
 msgstr ""
@@ -14385,6 +14409,10 @@ msgid "Pay with"
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal callback signature is invalid"
 msgstr ""
 
@@ -14400,6 +14428,22 @@ msgstr ""
 msgid "PayPal did not refund payment :id: :error"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "PayPal email address"
 msgstr ""
@@ -14409,7 +14453,19 @@ msgid "PayPal invoice reference does not match invoice "
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal payment is missing currency details"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
@@ -16093,6 +16149,10 @@ msgid "Remove the promo code"
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Remove this card?"
 msgstr ""
 
@@ -16438,6 +16498,14 @@ msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_settings.html.twig
 msgid "Retention Period"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig src/modules/Order/templates/admin/mod_order_failed_notice.html.twig
@@ -16816,10 +16884,6 @@ msgstr ""
 msgid "Save card"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
-msgid "Save card settings"
-msgstr ""
-
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
 msgid "Save contact"
 msgstr ""
@@ -16846,6 +16910,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Save mailbox"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_network.html.twig
@@ -16916,6 +16984,10 @@ msgstr ""
 msgid "Save up to :percent%"
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Save your custom plugin in"
 msgstr ""
@@ -16924,12 +16996,20 @@ msgstr ""
 msgid "Saved"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Saved cards"
 msgstr ""
 
-#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
 msgid "Saved cards are not available."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig …
@@ -19264,10 +19344,6 @@ msgstr ""
 msgid "The card order could not be read."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
-msgid "The card was charged."
-msgstr ""
-
 #: src/library/Payment/Adapter/Stripe.php
 msgid "The card was declined: :reason"
 msgstr ""
@@ -19324,8 +19400,16 @@ msgstr ""
 msgid "The client has :amount of credit."
 msgstr ""
 
-#: src/library/Payment/Adapter/Stripe.php src/modules/Invoice/Api/Admin.php
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr ""
+
+#: src/library/Payment/Adapter/Stripe.php
 msgid "The client has no saved card."
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
@@ -19881,8 +19965,20 @@ msgstr ""
 msgid "The payment gateway does not support cancellation at the end of the billing period."
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr ""
+
 #: src/modules/Invoice/SavedCards.php
 msgid "The payment service did not answer. Please try again later."
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -21351,10 +21447,6 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Try again"
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
-msgid "Try again after a failed charge"
 msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_suggestions.html.twig
@@ -23381,6 +23473,10 @@ msgstr ""
 msgid "You have no hosting accounts yet."
 msgstr ""
 
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "You have no saved cards."
 msgstr ""
@@ -23529,6 +23625,10 @@ msgstr ""
 msgid "Your IP address is blacklisted in the Stop Forum Spam database"
 msgstr ""
 
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr ""
+
 #: src/themes/palisade/html/partials/guest_dashboard.html.twig
 msgid "Your account"
 msgstr ""
@@ -23619,10 +23719,6 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your current period ends on %date%; %left% of its %total% days are unused. Their value is credited against the new price."
-msgstr ""
-
-#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
-msgid "Your default card pays your invoices automatically when they are due. You can also save a card when you pay an invoice."
 msgstr ""
 
 #: src/modules/Antispam/Service.php

@@ -819,6 +819,7 @@ CREATE TABLE `pay_gateway_customer` (
   `saved_cards` tinyint(1) NOT NULL DEFAULT 0,
   `default_payment_method` varchar(255) DEFAULT NULL,
   `default_card` varchar(100) DEFAULT NULL,
+  `auto_pay_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `pay_gateway_customer_gateway_client_mode` (`pay_gateway_id`,`client_id`,`test_mode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

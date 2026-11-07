@@ -20159,3 +20159,134 @@ msgstr "أعده عبر :gateway (حتى :amount)"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Leave blank for full refund"
 msgstr "اتركه فارغاً لاسترداد المبلغ كاملاً"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "0 tries once. The client gets an email after each failed charge."
+msgstr "0 تعني محاولة واحدة. يتلقى العميل رسالة بريد إلكتروني بعد كل عملية خصم فاشلة."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Automatic payments"
+msgstr "الدفعات التلقائية"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Cannot process duplicate PayPal payment"
+msgstr "لا يمكن معالجة دفعة PayPal مكررة"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
+msgstr "يمكن للعملاء حفظ بطاقة عبر Stripe، أو حسابهم في PayPal (إعدادات PayPal: Saved PayPal accounts)، عند الدفع أو في صفحة طرق الدفع. يتم الخصم تلقائيًا بالطريقة التي حفظوها أو اختاروها آخر مرة للفواتير غير المدفوعة التي ليس لها طريقة دفع أو التي لها إحدى هاتين الطريقتين."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Days between retries"
+msgstr "الأيام بين المحاولات"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Days between retries must be a whole number from 1 to 30."
+msgstr "يجب أن تكون الأيام بين المحاولات عددًا صحيحًا من 1 إلى 30."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Only the account owner can save a payment method."
+msgstr "يمكن لمالك الحساب فقط حفظ طريقة دفع."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Pay and save my PayPal account"
+msgstr "ادفع واحفظ حسابي في PayPal"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not save your account: :error"
+msgstr "لم يحفظ PayPal حسابك: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start saving your account: :error"
+msgstr "لم يبدأ PayPal حفظ حسابك: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not start the payment: :error"
+msgstr "لم يبدأ PayPal الدفعة: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not take the payment: :error"
+msgstr "لم ينفّذ PayPal الدفعة: :error"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal refused the payment: :error"
+msgstr "رفض PayPal الدفعة: :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this PayPal account?"
+msgstr "هل تريد إزالة حساب PayPal هذا؟"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
+msgid "Retries after a failed charge"
+msgstr "عدد إعادات المحاولة بعد فشل الخصم"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "Retries must be a whole number from 0 to 5."
+msgstr "يجب أن تكون إعادات المحاولة عددًا صحيحًا من 0 إلى 5."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save my PayPal account"
+msgstr "احفظ حسابي في PayPal"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save your PayPal account to pay your invoices automatically."
+msgstr "احفظ حسابك في PayPal لدفع فواتيرك تلقائيًا."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Saved PayPal accounts are not available."
+msgstr "حسابات PayPal المحفوظة غير متاحة."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client has no saved PayPal account."
+msgstr "ليس لدى العميل حساب PayPal محفوظ."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr "طريقة الدفع المعلَّمة بعبارة \"تدفع الفواتير تلقائيًا\" تدفع فواتيرك عند استحقاقها. يمكنك أيضًا حفظ واحدة عند دفع فاتورة."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The payment was taken but is not completed yet. Check it with the payment service."
+msgstr "تم سحب المبلغ لكن الدفعة لم تكتمل بعد. تحقق منها لدى خدمة الدفع."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no saved PayPal account."
+msgstr "ليس لديك حساب PayPal محفوظ."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your PayPal account was not saved. Please try again."
+msgstr "لم يتم حفظ حسابك في PayPal. يرجى المحاولة مرة أخرى."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr "ردّ PayPal بـ HTTP :status على دفع الفاتورة #:id"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id is not for a ClientFence invoice"
+msgstr "دفعة PayPal :id ليست لفاتورة في ClientFence"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal payment :id was not found"
+msgstr "لم يتم العثور على دفعة PayPal :id"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge :card?"
+msgstr "هل تريد الخصم من :card؟"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Charge saved method"
+msgstr "خصم من الطريقة المحفوظة"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved payment methods are not available."
+msgstr "طرق الدفع المحفوظة غير متاحة."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "The client has no saved payment method."
+msgstr "ليس لدى العميل طريقة دفع محفوظة."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The payment was taken."
+msgstr "تم سحب المبلغ."
