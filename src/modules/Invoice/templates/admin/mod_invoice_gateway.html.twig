@@ -147,6 +147,20 @@
                                 <input class="form-check-input" type="checkbox" name="enabled" value="1"{% if gateway.enabled %} checked{% endif %}>
                                 <span class="form-check-label">{{ 'Enabled'|trans }}</span>
                             </label>
+                            {# ClientFence core patch: turning off a gateway with unpaid invoices moves them to another one, as WHMCS (ServicePayGateway::update()). #}
+                            {% if gateway.enabled and gateway.unpaid_invoices > 0 %}
+                                <div class="mt-2" data-bf-when-disabled hidden>
+                                    <label class="form-label" for="gateway-replacement">{{ 'Move unpaid invoices to'|trans }}</label>
+                                    <select class="form-select" id="gateway-replacement" name="replacement_id">
+                                        {% for other in admin.invoice_gateway_get_list({ 'per_page': 100 }).list|filter(other => other.enabled and other.id != gateway.id) %}
+                                            <option value="{{ other.id }}">{{ other.title }}</option>
+                                        {% else %}
+                                            <option value="">{{ 'No other enabled gateway'|trans }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="form-hint">{{ 'Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose.'|trans({ ':count': gateway.unpaid_invoices }) }}</small>
+                                </div>
+                            {% endif %}
                         </div>
 
                         {% if gateway.supports_one_time_payments %}
@@ -201,6 +215,14 @@
 
 {% block js %}
 <script nonce="{{ csp_nonce }}">
+    (function () {
+        // ClientFence: the replacement choice shows while Enabled is off.
+        const enabled = document.querySelector('input[type="checkbox"][name="enabled"]');
+        const replacement = document.querySelector('[data-bf-when-disabled]');
+        if (enabled && replacement) {
+            enabled.addEventListener('change', function () { replacement.hidden = enabled.checked; });
+        }
+    })();
     (function () {
         const enabledCheckbox = document.querySelector('input[type="checkbox"][name="enabled"]');
         const testModeCheckbox = document.querySelector('input[type="checkbox"][name="test_mode"]');

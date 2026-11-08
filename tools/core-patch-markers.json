@@ -4626,5 +4626,13 @@
     {
         "file": "modules/Extension/Service.php",
         "done": "ClientFence core patch: a group left without entries (Support with tickets, knowledge base and network status off) is not shown."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: turning a gateway off moves its unpaid invoices to a replacement, as deleting does."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
+        "done": "ClientFence core patch: turning off a gateway with unpaid invoices moves them to another one, as WHMCS (ServicePayGateway::update())."
     }
 ]

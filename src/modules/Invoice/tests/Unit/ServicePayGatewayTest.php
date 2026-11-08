@@ -166,9 +166,13 @@ test('converts to api array', function (): void {
         'enabled' => null,
         'test_mode' => null,
         'callback' => SYSTEM_URL . 'ipn.php?',
+        'unpaid_invoices' => 0,
     ];
 
     $di = container();
+    $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connectionMock->shouldReceive('fetchOne')->andReturn(0);
+    $di['em']->shouldReceive('getConnection')->andReturn($connectionMock);
 
     $serviceMock->setDi($di);
 
@@ -228,6 +232,40 @@ test('updates a gateway', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('turning a gateway off moves its unpaid invoices to an enabled replacement, and needs one', function (?int $replacementId, bool $moves): void {
+    $service = new ServicePayGateway();
+    $payGatewayModel = new Model_PayGateway();
+    $payGatewayModel->loadBean(new Tests\Helpers\DummyBean());
+    $payGatewayModel->id = 5;
+    $payGatewayModel->enabled = 1;
+    $replacement = new Model_PayGateway();
+    $replacement->loadBean(new Tests\Helpers\DummyBean());
+    $replacement->enabled = 1;
+    $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM invoice/'), [5, 'unpaid'])->andReturn(2);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('load')->with('PayGateway', 6)->andReturn($replacement);
+    if ($moves) {
+        $connectionMock->shouldReceive('executeStatement')->once()->with('UPDATE invoice SET gateway_id = ? WHERE gateway_id = ? AND status = ?', [6, 5, 'unpaid']);
+        $dbMock->shouldReceive('store')->once();
+    } else {
+        $connectionMock->shouldNotReceive('executeStatement');
+        $dbMock->shouldNotReceive('store');
+    }
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['em']->shouldReceive('getConnection')->andReturn($connectionMock);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service->setDi($di);
+
+    $data = ['enabled' => '0', 'replacement_id' => $replacementId === null ? '' : (string) $replacementId];
+    if ($moves) {
+        expect($service->update($payGatewayModel, $data))->toBeTrue()->and((bool) $payGatewayModel->enabled)->toBeFalse();
+    } else {
+        expect(fn () => $service->update($payGatewayModel, $data))->toThrow(ClientFence\InformationException::class, 'Choose an enabled gateway for the unpaid invoices of this gateway.');
+    }
+})->with(['replacement' => [6, true], 'none chosen' => [null, false]]);
+
 test('converts to api array masks secrets for an admin', function (): void {
     $payGatewayModel = new Model_PayGateway();
     $payGatewayModel->loadBean(new Tests\Helpers\DummyBean());
@@ -241,6 +279,9 @@ test('converts to api array masks secrets for an admin', function (): void {
 
     $service = new ServicePayGateway();
     $di = container();
+    $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connectionMock->shouldReceive('fetchOne')->andReturn(0);
+    $di['em']->shouldReceive('getConnection')->andReturn($connectionMock);
     $service->setDi($di);
 
     $result = $service->toApiArray($payGatewayModel, false, new Model_Admin());

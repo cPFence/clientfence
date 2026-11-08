@@ -215,6 +215,8 @@ class ServicePayGateway implements InjectionAwareInterface
             $result['enabled'] = $model->enabled;
             $result['test_mode'] = $model->test_mode;
             $result['callback'] = $this->getCallbackUrl($model);
+            // ClientFence: the edit form asks for a replacement when an enabled gateway with unpaid invoices is turned off.
+            $result['unpaid_invoices'] = (int) $this->di['em']->getConnection()->fetchOne('SELECT COUNT(*) FROM invoice WHERE gateway_id = ? AND status = ?', [$model->id, \Model_Invoice::STATUS_UNPAID]);
         }
 
         return $result;
@@ -298,6 +300,10 @@ class ServicePayGateway implements InjectionAwareInterface
             $model->accepted_currencies = json_encode($data['accepted_currencies']);
         }
 
+        // ClientFence core patch: turning a gateway off moves its unpaid invoices to a replacement, as deleting does.
+        if ($model->enabled && !$newEnabled) {
+            $this->moveUnpaidInvoices((int) $model->id, isset($data['replacement_id']) && $data['replacement_id'] !== '' ? (int) $data['replacement_id'] : null);
+        }
         $model->enabled = $newEnabled;
         $model->allow_single = (bool) ($data['allow_single'] ?? $model->allow_single);
         $model->allow_recurrent = (bool) ($data['allow_recurrent'] ?? $model->allow_recurrent);
@@ -379,14 +385,7 @@ class ServicePayGateway implements InjectionAwareInterface
         if ((int) $db->fetchOne('SELECT COUNT(*) FROM pay_gateway_customer WHERE pay_gateway_id = ? AND saved_cards = 1 AND default_payment_method IS NOT NULL', [$id]) > 0) {
             throw new InformationException('Clients have saved payment methods on this gateway. Disable it instead of deleting it.');
         }
-        $unpaid = (int) $db->fetchOne('SELECT COUNT(*) FROM invoice WHERE gateway_id = ? AND status = ?', [$id, \Model_Invoice::STATUS_UNPAID]);
-        if ($unpaid > 0) {
-            $replacement = $replacementId !== null && $replacementId !== $id ? $this->di['db']->load('PayGateway', $replacementId) : null;
-            if (!$replacement instanceof \Model_PayGateway || !$replacement->enabled) {
-                throw new InformationException('Choose an enabled gateway for the unpaid invoices of this gateway.');
-            }
-            $db->executeStatement('UPDATE invoice SET gateway_id = ? WHERE gateway_id = ? AND status = ?', [$replacementId, $id, \Model_Invoice::STATUS_UNPAID]);
-        }
+        $this->moveUnpaidInvoices($id, $replacementId);
 
         // Customer IDs and product caches mean nothing once the gateway is gone (no foreign keys cascade them).
         $db->executeStatement('DELETE FROM pay_gateway_customer WHERE pay_gateway_id = :id', ['id' => $id]);
@@ -396,6 +395,20 @@ class ServicePayGateway implements InjectionAwareInterface
         $this->di['logger']->info('Removed payment gateway %s', $id);
 
         return true;
+    }
+
+    /** ClientFence: the unpaid invoices of a gateway being deleted or turned off move to an enabled replacement, as WHMCS. */
+    private function moveUnpaidInvoices(int $id, ?int $replacementId): void
+    {
+        $db = $this->di['em']->getConnection();
+        if ((int) $db->fetchOne('SELECT COUNT(*) FROM invoice WHERE gateway_id = ? AND status = ?', [$id, \Model_Invoice::STATUS_UNPAID]) === 0) {
+            return;
+        }
+        $replacement = $replacementId !== null && $replacementId !== $id ? $this->di['db']->load('PayGateway', $replacementId) : null;
+        if (!$replacement instanceof \Model_PayGateway || !$replacement->enabled) {
+            throw new InformationException('Choose an enabled gateway for the unpaid invoices of this gateway.');
+        }
+        $db->executeStatement('UPDATE invoice SET gateway_id = ? WHERE gateway_id = ? AND status = ?', [$replacementId, $id, \Model_Invoice::STATUS_UNPAID]);
     }
 
     /**
