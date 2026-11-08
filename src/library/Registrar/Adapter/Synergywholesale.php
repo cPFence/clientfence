@@ -63,9 +63,13 @@ class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract
         return ['api_key'];
     }
 
-    public static function getDomainFields(string $tld): array
+    public static function getDomainFields(string $tld, string $action = 'register'): array
     {
         $tld = strtolower($tld);
+        // Synergy Wholesale's transfers take no eligibility details (its WHMCS module sends none).
+        if ($action !== 'register') {
+            return [];
+        }
         if ($tld === '.us') {
             return self::usNexusFields();
         }

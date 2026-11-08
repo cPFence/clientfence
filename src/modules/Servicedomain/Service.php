@@ -154,6 +154,8 @@ class Service implements \ClientFence\InjectionAwareInterface
 
             $data['period'] = '1Y';
             $data['quantity'] = 1;
+            // ClientFence core patch: a transfer's own fields (the form sends transfer_fields; a stored order has domain_fields).
+            $data['domain_fields'] = $this->checkDomainFields($tld, $data['transfer_fields'] ?? $data['domain_fields'] ?? [], 'transfer');
         }
 
         if ($action == 'register') {
@@ -199,13 +201,14 @@ class Service implements \ClientFence\InjectionAwareInterface
             $data['period'] = $years . 'Y';
             // ClientFence core patch: the details the TLD's registrar asks for (Registrar_AdapterAbstract::getDomainFields()).
             $data['domain_fields'] = $this->checkDomainFields($tld, $data['domain_fields'] ?? []);
-        } else {
+        } elseif ($action !== 'transfer') {
             unset($data['domain_fields']);
         }
+        unset($data['transfer_fields']);
     }
 
     /** ClientFence: the order form fields the registrar of a TLD or domain declares (Registrar_AdapterAbstract::getDomainFields()). */
-    public function tldDomainFields(\Model_Tld|\Model_ServiceDomain $model): array
+    public function tldDomainFields(\Model_Tld|\Model_ServiceDomain $model, string $action = 'register'): array
     {
         $registrar = $model->tld_registrar_id ? $this->di['db']->load('TldRegistrar', $model->tld_registrar_id) : null;
         if (!$registrar instanceof \Model_TldRegistrar) {
@@ -217,17 +220,20 @@ class Service implements \ClientFence\InjectionAwareInterface
             return []; // a removed registrar must not break the TLD lists
         }
 
-        return $class::getDomainFields((string) $model->tld);
+        return $class::getDomainFields((string) $model->tld, $action);
     }
 
     /** The answers to the TLD's domain fields, checked: unknown names dropped, required ones present, choices from the list. */
-    public function checkDomainFields(\Model_Tld|\Model_ServiceDomain $tld, mixed $values): array
+    public function checkDomainFields(\Model_Tld|\Model_ServiceDomain $tld, mixed $values, string $action = 'register'): array
     {
         $values = is_array($values) ? $values : [];
         $checked = [];
-        foreach ($this->tldDomainFields($tld) as $name => $field) {
+        foreach ($this->tldDomainFields($tld, $action) as $name => $field) {
             $value = is_scalar($values[$name] ?? null) ? trim((string) $values[$name]) : '';
             if ($value === '') {
+                if (($field['required'] ?? false) && $action === 'transfer') {
+                    throw new \ClientFence\InformationException(':field is required to transfer a :tld domain.', [':field' => $field['label'], ':tld' => $tld->tld]);
+                }
                 if ($field['required'] ?? false) {
                     throw new \ClientFence\InformationException(':field is required to register a :tld domain.', [':field' => $field['label'], ':tld' => $tld->tld]);
                 }
@@ -767,6 +773,7 @@ class Service implements \ClientFence\InjectionAwareInterface
             $tldRegistrar = $this->di['db']->load('TldRegistrar', $model->tld_registrar_id);
             $data['registrar'] = $tldRegistrar instanceof \Model_TldRegistrar ? $tldRegistrar->name : null;
             $data['domain_fields'] = $this->tldDomainFields($model);
+            $data['transfer_fields'] = $this->tldDomainFields($model, 'transfer');
         }
 
         return $data;
@@ -1145,6 +1152,7 @@ class Service implements \ClientFence\InjectionAwareInterface
             'min_years' => $model->min_years,
             'periods' => $this->getTldPeriodsArray($model),
             'domain_fields' => $this->tldDomainFields($model),
+            'transfer_fields' => $this->tldDomainFields($model, 'transfer'),
         ];
 
         if ($identity instanceof \Model_Admin) {
@@ -1551,9 +1559,9 @@ class Service implements \ClientFence\InjectionAwareInterface
             $orderService = $this->di['mod_service']('order');
             $order = $orderService->getServiceOrder($s);
             $config = $order instanceof \Model_ClientOrder ? $orderService->getConfig($order) : [];
-            // Only a registration sends them (a transfer has none to correct).
-            if (($config['action'] ?? null) === 'register') {
-                $config['domain_fields'] = $this->checkDomainFields($s, $data['domain_fields']);
+            $action = $config['action'] ?? null;
+            if (in_array($action, ['register', 'transfer'], true)) {
+                $config['domain_fields'] = $this->checkDomainFields($s, $data['domain_fields'], $action);
                 $orderService->updateOrderConfig($order, $config);
             }
         }

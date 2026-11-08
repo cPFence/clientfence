@@ -464,6 +464,10 @@ msgstr ""
 msgid ":domain is already registered!"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid ":domain is in its restore period: restore it at the registrar if it should be kept."
+msgstr ""
+
 #: src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid ":domain is registered with another registrar, so its renewal is handled there. To transfer it to us, open a support ticket."
 msgstr ""
@@ -482,6 +486,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/Service.php
 msgid ":field is required to register a :tld domain."
+msgstr ""
+
+#: src/modules/Servicedomain/Service.php
+msgid ":field is required to transfer a :tld domain."
 msgstr ""
 
 #: src/library/ClientFence/Validation/PriceValidator.php
@@ -572,7 +580,7 @@ msgstr ""
 msgid ":registrar needs the PHP soap extension."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":registrar refused the request: :error"
 msgstr ""
 
@@ -2908,7 +2916,7 @@ msgstr ""
 msgid "At least one of the required fields are empty."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
 msgid "At least two name servers are required."
 msgstr ""
 
@@ -5484,7 +5492,7 @@ msgstr ""
 msgid "Could not load edit history. Please try again."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Could not reach :registrar: :error"
 msgstr ""
 
@@ -6974,6 +6982,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "EU VAT"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "EU country of citizenship of the registrant"
 msgstr ""
 
 #: src/modules/Support/MailImport.php
@@ -12236,6 +12248,18 @@ msgstr ""
 msgid "Name the tax rule, set the rate, and optionally scope it to a country or state."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo did not return a contact ID."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo has emailed the transfer code to the domain's administrative contact."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo returned an unreadable response for :command"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Namecheap.php
 msgid "Namecheap command :command failed with HTTP status :status."
 msgstr ""
@@ -15172,7 +15196,7 @@ msgstr ""
 msgid "Prefix for created users (especially for database)"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namecheap.php
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Namesilo.php
 msgid "Premium domains cannot be registered."
 msgstr ""
 
@@ -20283,6 +20307,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php
 msgid "The registrant contact is missing the :field field"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "The registrant contact is missing."
 msgstr ""
 
 #: src/modules/Servicedomain/Service.php

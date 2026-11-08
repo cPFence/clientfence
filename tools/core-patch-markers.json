@@ -4466,5 +4466,9 @@
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
         "done": "{# ClientFence core patch: also after a failed registration, to correct its domain fields before the retry. #}"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "// ClientFence core patch: a transfer's own fields (the form sends transfer_fields; a stored order has domain_fields)."
     }
 ]

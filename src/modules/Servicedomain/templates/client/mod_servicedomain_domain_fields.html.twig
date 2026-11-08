@@ -1,11 +1,12 @@
 {# ClientFence core patch: the details a TLD's registrar asks for (Registrar_AdapterAbstract::getDomainFields()), one block
    per TLD; only the block of the TLD chosen in the select named tld_select is shown and sent (the server checks
-   required fields: a required input in a hidden tab would block the other tab's order). Takes tlds, prefix (the
+   required fields: a required input in a hidden tab would block the other tab's order). Takes tlds, key (domain_fields, or transfer_fields for the transfer tab), prefix (the
    inputs' name, e.g. domain_fields or domain[domain_fields]) and tld_select. #}
 {% for tld in tlds %}
-    {% if tld.domain_fields is not empty %}
+    {% set fields = tld[key|default('domain_fields')]|default({}) %}
+    {% if fields is not empty %}
         <div class="mt-3" data-domain-fields="{{ tld.tld }}" data-tld-select="{{ tld_select }}" hidden>
-            {% for name, field in tld.domain_fields %}
+            {% for name, field in fields %}
                 {% set id = 'df-' ~ prefix|replace({'[': '-', ']': ''}) ~ '-' ~ tld.tld|replace({'.': ''}) ~ '-' ~ name %}
                 <div class="mb-2" style="max-width: 500px;">
                     <label class="form-label fs-7 mb-1" for="{{ id }}">{{ field.label }}{% if not field.required|default(false) %} {{ '(optional)'|trans }}{% endif %}</label>

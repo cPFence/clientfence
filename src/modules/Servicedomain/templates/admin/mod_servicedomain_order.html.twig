@@ -47,6 +47,7 @@
                 <input class="form-control" type="text" name="config[transfer_code]" value="{{ request.transfer_code }}" placeholder="{{ 'Domain transfer code'|trans }}">
             </div>
         </div>
+        {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: guest.serviceDomain_tlds({ 'allow_transfer': 1 }), key: 'transfer_fields', prefix: 'config[transfer_fields]', tld_select: 'config[transfer_tld]'}) }}
     </div>
 </div>
 

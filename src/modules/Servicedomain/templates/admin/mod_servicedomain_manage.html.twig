@@ -169,8 +169,9 @@
                     </div>
                 </div>
                 {# ClientFence core patch: the registrar's domain fields, saved in the order (correct them before a retry). #}
-                {% if order.config.action|default('') == 'register' %}
-                    {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: [{tld: service.tld, domain_fields: service.domain_fields|default({})}], prefix: 'domain_fields', values: order.config.domain_fields|default({})}) }}
+                {% if order.config.action|default('') in ['register', 'transfer'] %}
+                    {% set fields = order.config.action == 'transfer' ? service.transfer_fields|default({}) : service.domain_fields|default({}) %}
+                    {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: [{tld: service.tld, domain_fields: fields}], prefix: 'domain_fields', values: order.config.domain_fields|default({})}) }}
                 {% endif %}
                 <input type="hidden" name="order_id" value="{{ order.id }}">
             </div>

@@ -139,7 +139,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'notes', 'status', 'action', 'meta', 'invoice_option', 'skip_validation', 'group_id',
         'created_at', 'updated_at', 'activated_at', 'expires_at',
         'domain', 'domain_name', 'sld', 'tld', 'register_sld', 'register_tld', 'register_years',
-        'transfer_sld', 'transfer_tld', 'transfer_code', 'owndomain_sld', 'owndomain_tld', 'domain_fields',
+        'transfer_sld', 'transfer_tld', 'transfer_code', 'owndomain_sld', 'owndomain_tld', 'domain_fields', 'transfer_fields',
         'subdomain_base_domain', 'subdomain_sld', 'free_domain', 'free_transfer', 'free_tlds',
         'server_id', 'hosting_plan_id', 'username', 'password', 'password_confirm', 'reseller',
         'ip', 'assigned_ips', 'import', 'license_key', 'validate_ip', 'validate_host',

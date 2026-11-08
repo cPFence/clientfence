@@ -53,12 +53,13 @@ abstract class Registrar_AdapterAbstract
 
     /**
      * ClientFence core patch: the details a TLD's registry needs at registration (WHMCS "additional domain fields"),
-     * asked for on the order forms and passed on with Registrar_Domain::getFields(). Field name => ['label' => text,
-     * 'required' => bool, optional 'options' => [value sent to the registrar => label]]; empty for none.
+     * asked for on the order forms and passed on with Registrar_Domain::getFields(); $action is register or transfer.
+     * Field name => ['label' => text, 'required' => bool, optional 'options' => [value sent to the registrar => label]];
+     * empty for none.
      *
      * @return array<string, array{label: string, required?: bool, options?: array<string, string>}>
      */
-    public static function getDomainFields(string $tld): array
+    public static function getDomainFields(string $tld, string $action = 'register'): array
     {
         return [];
     }

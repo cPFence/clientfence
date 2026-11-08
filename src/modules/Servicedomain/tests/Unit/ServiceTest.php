@@ -434,6 +434,7 @@ test('creates a transfer service with one year despite client-supplied registrat
         ->atLeast()->once()
         ->andReturn($tldModel);
     $serviceMock->shouldReceive('canBeTransferred')->once()->andReturnTrue();
+    $serviceMock->shouldReceive('tldDomainFields')->andReturn([]);
 
     $client = new Model_Client();
     $client->loadBean(new Tests\Helpers\DummyBean());
@@ -2815,7 +2816,7 @@ test('the registrar domain fields of a registration are checked and kept in the 
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('tldFindOneByTld')->andReturn($tldModel);
     $serviceMock->shouldReceive('isDomainAvailable')->andReturn(true);
-    $serviceMock->shouldReceive('tldDomainFields')->andReturn($fields);
+    $serviceMock->shouldReceive('tldDomainFields')->andReturnUsing(fn ($tld, string $action = 'register') => $action === 'register' ? $fields : ['registrant_name' => ['label' => 'Registrant name', 'required' => true]]);
     $di = container();
     $di['validator'] = $validatorMock;
     $serviceMock->setDi($di);
@@ -2830,25 +2831,30 @@ test('the registrar domain fields of a registration are checked and kept in the 
         expect(fn () => $serviceMock->validateOrderData($data))->toThrow(ClientFence\InformationException::class);
     }
 
-    $data = ['action' => 'transfer', 'transfer_sld' => 'example', 'transfer_tld' => '.com.au', 'domain_fields' => ['registrant_name' => 'X']];
+    // A transfer is checked against its own fields: the form sends transfer_fields, the stored order keeps domain_fields.
+    $data = ['action' => 'transfer', 'transfer_sld' => 'example', 'transfer_tld' => '.com.au', 'transfer_fields' => ['registrant_name' => 'X', 'eligibility_type' => 'Company']];
     $serviceMock->shouldReceive('canBeTransferred')->andReturn(true);
     $serviceMock->validateOrderData($data);
-    expect($data)->not->toHaveKey('domain_fields');
+    expect($data['domain_fields'])->toBe(['registrant_name' => 'X'])->and($data)->not->toHaveKey('transfer_fields');
+    $serviceMock->validateOrderData($data);
+    expect($data['domain_fields'])->toBe(['registrant_name' => 'X']);
+    $data = ['action' => 'transfer', 'transfer_sld' => 'example', 'transfer_tld' => '.com.au'];
+    expect(fn () => $serviceMock->validateOrderData($data))->toThrow(ClientFence\InformationException::class, 'required to transfer');
 });
 
-test('staff saving a transferred domain are not asked for the registration fields', function (): void {
+test('staff saving a transferred domain are checked against the transfer fields, not the registration ones', function (): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $orderService = Mockery::mock();
     $orderService->shouldReceive('getServiceOrder')->andReturn($order);
     $orderService->shouldReceive('getConfig')->andReturn(['action' => 'transfer']);
-    $orderService->shouldNotReceive('updateOrderConfig');
+    $orderService->shouldReceive('updateOrderConfig')->once()->withArgs(fn ($o, array $config) => $config['domain_fields'] === []);
     $di = container();
     $di['db'] = Mockery::mock('ClientFence\Database')->shouldReceive('store')->getMock();
     $di['logger'] = new Tests\Helpers\TestLogger();
     $di['mod_service'] = $di->protect(fn () => $orderService);
     $service = Mockery::mock(Service::class)->makePartial();
-    $service->shouldReceive('tldDomainFields')->andReturn(['registrant_name' => ['label' => 'Registrant name', 'required' => true]]);
+    $service->shouldReceive('tldDomainFields')->andReturnUsing(fn ($m, string $action = 'register') => $action === 'register' ? ['registrant_name' => ['label' => 'Registrant name', 'required' => true]] : []);
     $service->setDi($di);
     $model = new Model_ServiceDomain();
     $model->loadBean(new Tests\Helpers\DummyBean());
