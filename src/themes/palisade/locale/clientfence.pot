@@ -584,7 +584,7 @@ msgstr ""
 msgid ":registrar needs the PHP soap extension."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php …
 msgid ":registrar refused the request: :error"
 msgstr ""
 
@@ -2920,7 +2920,7 @@ msgstr ""
 msgid "At least one of the required fields are empty."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php …
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
 msgid "At least two name servers are required."
 msgstr ""
 
@@ -5496,7 +5496,7 @@ msgstr ""
 msgid "Could not load edit history. Please try again."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php …
 msgid "Could not reach :registrar: :error"
 msgstr ""
 
@@ -6988,7 +6988,7 @@ msgstr ""
 msgid "EU VAT"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namesilo.php
+#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php
 msgid "EU country of citizenship of the registrant"
 msgstr ""
 
@@ -9578,6 +9578,14 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "IMAP server"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "INWX did not return a contact ID."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "INWX returned an unreadable response for :command"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
@@ -15212,8 +15220,12 @@ msgstr ""
 msgid "Prefix for created users (especially for database)"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Namesilo.php …
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namecheap.php …
 msgid "Premium domains cannot be registered."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Premium domains cannot be transferred."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
@@ -19464,6 +19476,10 @@ msgstr ""
 msgid "The HestiaCP server hostname is missing. Please configure it in the server settings."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "The INWX account uses two-factor sign-in: use an account without it for the API."
+msgstr ""
+
 #: src/library/Server/Manager/Enhance.php
 msgid "The IP address of an Enhance website is set on the panel."
 msgstr ""
@@ -20325,7 +20341,7 @@ msgstr ""
 msgid "The registrant contact is missing the :field field"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php
+#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php
 msgid "The registrant contact is missing."
 msgstr ""
 
