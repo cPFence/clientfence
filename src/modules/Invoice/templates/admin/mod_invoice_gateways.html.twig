@@ -169,7 +169,8 @@
                                 <p class="fb-modal-section-description">{{ 'Upload or place a gateway adapter on the server, then install it here and configure it from the gateway list.'|trans }}</p>
                             </div>
                             <ol class="mb-0 ps-3">
-                                <li>{{ 'Download payment gateway extension file and place it to'|trans }} <strong>{{ constant('PATH_LIBRARY') }}Payment/Adapter</strong></li>
+                                {# ClientFence core patch: PATH_LIBRARY has no trailing slash (gateway folder). #}
+                                <li>{{ 'Download payment gateway extension file and place it to'|trans }} <strong>{{ constant('PATH_LIBRARY') }}/Payment/Adapter</strong></li>
                                 <li>{{ 'After file is uploaded in place, reload this page.'|trans }}</li>
                                 <li>{{ 'Select uploaded file name and click on install.'|trans }}</li>
                                 <li>{{ 'Payment gateway will be installed in ClientFence and can be configured in the payment gateway list.'|trans }}</li>

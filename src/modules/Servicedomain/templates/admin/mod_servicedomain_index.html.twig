@@ -348,7 +348,8 @@
                                 <p class="fb-modal-section-description">{{ 'Place a registrar adapter on the server, then install it here before using it for TLD configuration.'|trans }}</p>
                             </div>
                             <ol class="mb-0 ps-3">
-                                <li>{{ 'Download the domain registrar file and place it in'|trans }} <strong>{{ constant('PATH_LIBRARY') }}Registrar/Adapter</strong></li>
+                                {# ClientFence core patch: PATH_LIBRARY has no trailing slash (registrar folder). #}
+                                <li>{{ 'Download the domain registrar file and place it in'|trans }} <strong>{{ constant('PATH_LIBRARY') }}/Registrar/Adapter</strong></li>
                                 <li>{{ 'Reload this page to detect the newly added registrar adapter.'|trans }}</li>
                                 <li>{{ 'Click install to make the registrar available when creating or editing TLDs.'|trans }}</li>
                             </ol>
