@@ -6,12 +6,15 @@
 
 - EU VAT: ClientFence checks a client's EU VAT number with the EU VIES service and refuses a wrong one.
 - An EU business with a valid VAT number in another EU country than yours becomes tax exempt automatically, and its invoices carry a reverse-charge note.
-- Sign-up and the order page ask for an optional company VAT number while EU VAT checks are on.
+- The exemption ends when a later save of the client's profile finds the number no longer valid, when the number is removed, or when the client moves out of the EU.
+- When VIES does not answer, the number is saved, VAT is charged and the number is checked again the next day.
+- Sign-up and the order page ask for an optional company VAT number while EU VAT checks are on; sign-up then also asks for the country.
 
 ### Removed
 
 - The Client Balance payment gateway: account credit is applied with Apply credit on the invoice. If you added this gateway, delete it in Payment Gateways before you update.
-- The unused option to send error reports to Sentry.
+- The unused option to send error reports to Sentry, and the libraries it needed (sentry/sentry and guzzlehttp/psr7).
+- Logos of six payment gateways ClientFence does not have: Client Balance, Alipay, Interkassa, Onebip, 2Checkout and WebMoney.
 
 ### Fixed
 
