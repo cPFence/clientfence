@@ -1452,6 +1452,14 @@ test('syncWhois stores null dates when registrar dates are unavailable', functio
     expect($model->expires_at)->toBeNull()
         ->and($model->registered_at)->toBeNull()
         ->and($model->synced_at)->not->toBeNull();
+
+    // A registrar without a registration date (Enom) keeps the stored one.
+    $model->registered_at = '2024-01-02 10:00:00';
+    $service->shouldReceive('_getD')->andReturn([new Registrar_Domain(), $adapter]);
+    $adapter->shouldReceive('getDomainDetails')->andReturn($whois);
+    $db->shouldReceive('store');
+    $service->syncWhoisPublic($model, $order);
+    expect($model->registered_at)->toBe('2024-01-02 10:00:00');
 });
 
 test('synchronizes domain with registrar', function (): void {

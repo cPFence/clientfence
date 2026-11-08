@@ -498,7 +498,10 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         $model->details = serialize($whois);
         $model->expires_at = $this->formatRegistrarTimestamp($whois->getExpirationTime());
-        $model->registered_at = $this->formatRegistrarTimestamp($whois->getRegistrationTime());
+        // ClientFence core patch: keep the stored registration date when the registrar returns none (Enom).
+        if ($whois->getRegistrationTime()) {
+            $model->registered_at = $this->formatRegistrarTimestamp($whois->getRegistrationTime());
+        }
         $model->synced_at = date('Y-m-d H:i:s');
         $model->updated_at = date('Y-m-d H:i:s');
 

@@ -584,7 +584,7 @@ msgstr ""
 msgid ":registrar needs the PHP soap extension."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php …
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
 msgid ":registrar refused the request: :error"
 msgstr ""
 
@@ -2920,7 +2920,7 @@ msgstr ""
 msgid "At least one of the required fields are empty."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php …
 msgid "At least two name servers are required."
 msgstr ""
 
@@ -5496,7 +5496,7 @@ msgstr ""
 msgid "Could not load edit history. Please try again."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php …
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
 msgid "Could not reach :registrar: :error"
 msgstr ""
 
@@ -7562,6 +7562,14 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Enhance only. The account owner can restore, sub-users only see the backups."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Enom returned an unreadable response for :command"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Enom sells WHOIS privacy as a paid service: turn it on in the Enom control panel."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
@@ -15220,11 +15228,11 @@ msgstr ""
 msgid "Prefix for created users (especially for database)"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namecheap.php …
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php …
 msgid "Premium domains cannot be registered."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
 msgid "Premium domains cannot be transferred."
 msgstr ""
 
@@ -19312,7 +19320,7 @@ msgstr ""
 msgid "Thank you. Sign in with your email and password to continue. If this email already had an account, use that account’s password, or reset it."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Email.php src/library/Registrar/Adapter/Internetbs.php …
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Email.php src/library/Registrar/Adapter/Enom.php …
 msgid "The \":domain_registrar\" domain registrar is not fully configured. Please configure the :missing"
 msgstr ""
 
@@ -20341,7 +20349,7 @@ msgstr ""
 msgid "The registrant contact is missing the :field field"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Openprovider.php
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
 msgid "The registrant contact is missing."
 msgstr ""
 
@@ -20467,6 +20475,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php
 msgid "The transfer authorization code is required."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr ""
 
 #: src/library/ClientFence/Update.php
