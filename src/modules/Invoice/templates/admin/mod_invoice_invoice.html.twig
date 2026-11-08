@@ -79,7 +79,13 @@
                                 </tr>
                                 <tr>
                                     <td class="text-end">{{ 'Status'|trans }}</td>
-                                    <td>{{ mf.status_badge(invoice.status, 'invoice') }}</td>
+                                    <td>{{ mf.status_badge(invoice.status, 'invoice') }}
+                                        {# ClientFence core patch: a bank debit still clearing (Invoice/PendingPayments.php). #}
+                                        {% if invoice.pending_payment|default(null) %}
+                                            <span class="badge bg-info-lt">{{ 'Payment pending'|trans }}</span>
+                                            <div class="text-secondary small">{{ 'A bank payment of :amount from :date is clearing.'|trans({':amount': invoice.pending_payment.amount|format_currency(invoice.pending_payment.currency|upper), ':date': invoice.pending_payment.created_at|format_date}) }}</div>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 {% if invoice.tax %}
                                 <tr>
@@ -175,7 +181,7 @@
                         </a>
                         {# ClientFence core patch: WHMCS "Attempt Capture": charge the client's saved card or PayPal account (Invoice/SavedCards.php). #}
                         {% set saved_card = admin.invoice_card_get({ id: invoice.id }) %}
-                        {% if saved_card %}
+                        {% if saved_card and not invoice.pending_payment|default(null) %}
                         <a class="btn btn-primary" title="{{ saved_card }}" {{ fb_api_link({href: 'invoice/card_charge'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Charge :card?'|trans({':card': saved_card})}, message: 'The payment was taken.'|trans, reload: true}) }}>
                             <svg class="icon" width="24" height="24">
                                 <use href="#credit-card" />

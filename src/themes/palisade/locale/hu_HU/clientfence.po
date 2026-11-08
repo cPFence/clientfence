@@ -21198,3 +21198,48 @@ msgstr "Az Enom a WHOIS adatvédelmet fizetős szolgáltatásként értékesíti
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr "Az átviteli kódot nem sikerült automatikusan lekérni. A megszerzéséhez forduljon az ügyfélszolgálathoz."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "A(z) :date napi, :amount összegű banki fizetés feldolgozás alatt áll."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Az ehhez a számlához tartozó fizetés még feldolgozás alatt áll."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Kártya vagy bankszámla hozzáadása"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "A fizetési mód nem található."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Fizetés függőben"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Eltávolítja ezt a fizetési módot?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Mentett kártyák és bankszámlák"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "A banki terhelés elindult. A számla fizetettként lesz megjelölve, amint a fizetés feldolgozásra kerül."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "A fizetési mód mentése nem sikerült. Kérjük, próbálja újra."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "Nincsenek mentett kártyái vagy bankszámlái."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "A(z) :date napi, :amount összegű banki fizetése feldolgozás alatt áll. A számla fizetettként lesz megjelölve, amint a fizetés feldolgozásra kerül, általában néhány munkanapon belül."

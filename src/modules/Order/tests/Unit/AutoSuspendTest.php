@@ -151,6 +151,7 @@ test('a cancellation scheduled at the period end ends the service on its expiry 
     $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
     $dbal->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, created_at TEXT)');
     $dbal->insert('client_order', ['id' => 1, 'status' => 'active', 'expires_at' => date('Y-m-d H:i:s', strtotime('-1 hour'))]);
     $dbal->insert('client_order', ['id' => 2, 'status' => 'active', 'expires_at' => date('Y-m-d H:i:s', strtotime('-1 year'))]);
     $dbal->insert('client_order_meta', ['client_order_id' => 1, 'name' => Service::META_CANCEL_AT_PERIOD_END, 'value' => '1']);
@@ -216,16 +217,17 @@ test('batchSuspendExpired rechecks renewed orders under the paid-task lock', fun
     'inside the suspension grace period' => [Order::STATUS_ACTIVE, '-1 day'],
 ]);
 
-test('automatic order actions leave paid lines awaiting execution alone', function (string $batch, string $action, string $status): void {
+test('automatic order actions leave paid lines awaiting execution and renewals paid by a bank debit still clearing alone', function (string $batch, string $action, string $status): void {
     $orders = [
         1 => createEntity(Order::class, ['id' => 1, 'status' => $status, 'expiresAt' => new DateTime('-1 year')]),
         2 => createEntity(Order::class, ['id' => 2, 'status' => $status, 'expiresAt' => new DateTime('-1 year')]),
+        3 => createEntity(Order::class, ['id' => 3, 'status' => $status, 'expiresAt' => new DateTime('-1 year')]),
     ];
     $repository = Mockery::mock(OrderRepository::class);
     $repository->shouldReceive('find')->andReturnUsing(fn (int $id): Order => $orders[$id]);
     $repository->shouldReceive('getExpired')->andReturn(array_values($orders));
     $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $connection->shouldReceive('fetchAllAssociative')->andReturn([['id' => 1], ['id' => 2]]);
+    $connection->shouldReceive('fetchAllAssociative')->andReturn([['id' => 1], ['id' => 2], ['id' => 3]]);
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getRepository')->with(Order::class)->andReturn($repository);
     $em->shouldReceive('getRepository')->with(OrderMeta::class)->andReturn(autoSuspendMetaRepository([]));
@@ -235,12 +237,16 @@ test('automatic order actions leave paid lines awaiting execution alone', functi
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
     $dbal->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, created_at TEXT)');
     $dbal->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT, expires_at TEXT)');
     $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
     $dbal->insert('invoice', ['id' => 40, 'status' => 'paid']);
     $dbal->insert('invoice_item', ['invoice_id' => 40, 'type' => 'order', 'rel_id' => '1', 'task' => 'renew', 'status' => 'pending_setup']);
     // A failed first activation never runs again and must not protect the service.
     $dbal->insert('invoice_item', ['invoice_id' => 40, 'type' => 'order', 'rel_id' => '2', 'task' => 'activate', 'status' => 'failed']);
+    $dbal->insert('invoice', ['id' => 41, 'status' => 'unpaid']);
+    $dbal->insert('invoice_item', ['invoice_id' => 41, 'type' => 'order', 'rel_id' => '3', 'task' => 'renew', 'status' => 'pending_payment']);
+    $dbal->insert('`transaction`', ['invoice_id' => 41, 'status' => 'received', 'txn_status' => 'processing', 'created_at' => date('Y-m-d H:i:s')]);
     $di = container();
     $di['em'] = $em;
     $di['dbal'] = $dbal;

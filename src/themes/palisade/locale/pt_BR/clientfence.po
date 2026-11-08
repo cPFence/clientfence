@@ -14100,3 +14100,48 @@ msgstr "Domínios premium não podem ser registrados."
 
 msgid "Registrar"
 msgstr "Registrador"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "Um pagamento bancário de :amount de :date está sendo processado."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Um pagamento desta fatura ainda está sendo processado."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Adicionar um cartão ou conta bancária"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "Forma de pagamento não encontrada."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Pagamento pendente"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Remover esta forma de pagamento?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Cartões e contas bancárias salvos"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "O débito bancário foi iniciado. A fatura é marcada como paga quando for concluído."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "A forma de pagamento não foi salva. Tente novamente."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "Você não tem cartões nem contas bancárias salvos."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "Seu pagamento bancário de :amount de :date está sendo processado. A fatura é marcada como paga quando for concluído, normalmente em poucos dias úteis."

@@ -21736,3 +21736,48 @@ msgstr "無法自動取得轉移碼。請聯絡支援人員取得。"
 # Fixes to FOSSBilling's translation: the same term everywhere.
 msgid "Premium domains cannot be registered."
 msgstr "高級網域無法註冊。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr ":date 的一筆 :amount 銀行付款正在清算中。"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "此發票的一筆付款仍在清算中。"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "新增卡片或銀行帳戶"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "找不到付款方式。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "付款待處理"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "移除此付款方式？"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "已儲存的卡片和銀行帳戶"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "銀行扣款已開始。清算完成後，發票將標記為已付款。"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "付款方式未儲存。請重試。"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "您沒有已儲存的卡片或銀行帳戶。"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "您在 :date 的 :amount 銀行付款正在清算中。清算完成後，發票將標記為已付款，通常在幾個工作日內。"

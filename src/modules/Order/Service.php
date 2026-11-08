@@ -13,6 +13,7 @@ namespace ClientFence\Mod\Order;
 
 use ClientFence\Mod\Client\Entity\Client as ClientEntity;
 use ClientFence\Mod\Currency\Entity\Currency;
+use ClientFence\Mod\Invoice\PendingPayments;
 use ClientFence\Mod\Order\Entity\Order;
 use ClientFence\Mod\Order\Entity\OrderMeta;
 use ClientFence\Mod\Order\Entity\OrderStatus;
@@ -2412,7 +2413,8 @@ class Service implements InjectionAwareInterface
                     if ($order->getStatus() !== Order::STATUS_ACTIVE || $order->getExpiresAt() === null || $order->getExpiresAt() > $before) {
                         return;
                     }
-                    if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId())) {
+                    // ClientFence core patch: an order whose renewal is paid by a bank debit still clearing is not suspended.
+                    if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId()) || PendingPayments::forOrder($this->di, (int) $order->getId())) {
                         return;
                     }
                     $this->suspendFromOrder($order, $reason);
@@ -2468,7 +2470,8 @@ class Service implements InjectionAwareInterface
                     if ($order->getStatus() !== Order::STATUS_SUSPENDED || $order->getExpiresAt() === null || $order->getExpiresAt() > new \DateTime()) {
                         return;
                     }
-                    if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId())) {
+                    // ClientFence core patch: a suspended order whose renewal is paid by a bank debit still clearing is not cancelled.
+                    if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId()) || PendingPayments::forOrder($this->di, (int) $order->getId())) {
                         return;
                     }
                     $this->cancelFromOrder($order, $reason);
@@ -2561,7 +2564,8 @@ class Service implements InjectionAwareInterface
                         $invoice = $invoicesById[$invoiceId] ?? null;
                         $status = $invoice instanceof \Model_Invoice ? $invoice->status : null;
 
-                        if ($status === \Model_Invoice::STATUS_PAID) {
+                        // ClientFence core patch: an invoice with a bank debit still clearing is kept, with its orders.
+                        if ($status === \Model_Invoice::STATUS_PAID || ($status === \Model_Invoice::STATUS_UNPAID && PendingPayments::forInvoice($this->di, (int) $invoiceId) !== null)) {
                             // Paid since getStaleUnpaid() ran - leave every order tied
                             // to it alone instead of deleting one out from under that.
                             $invoiceHandled[$invoiceId] = false;

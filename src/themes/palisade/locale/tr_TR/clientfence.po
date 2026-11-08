@@ -18987,3 +18987,48 @@ msgstr "Enom, WHOIS gizlilik korumasını ücretli bir hizmet olarak satar: Enom
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr "Transfer kodu otomatik olarak alınamadı. Almak için lütfen destek ile iletişime geçin."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr ":date tarihli :amount tutarındaki banka ödemesi işleniyor."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Bu faturaya ait bir ödeme hâlâ işleniyor."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Kart veya banka hesabı ekle"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "Ödeme yöntemi bulunamadı."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Ödeme beklemede"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Bu ödeme yöntemi kaldırılsın mı?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Kayıtlı kartlar ve banka hesapları"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "Banka borçlandırması başlatıldı. Ödeme işlendiğinde fatura ödendi olarak işaretlenir."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "Ödeme yöntemi kaydedilmedi. Lütfen tekrar deneyin."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "Kayıtlı kartınız veya banka hesabınız yok."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr ":date tarihli :amount tutarındaki banka ödemeniz işleniyor. Ödeme işlendiğinde fatura ödendi olarak işaretlenir; bu genellikle birkaç iş günü içinde olur."

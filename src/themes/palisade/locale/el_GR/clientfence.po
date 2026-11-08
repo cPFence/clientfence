@@ -21285,3 +21285,48 @@ msgstr "Το Enom πουλά την προστασία απορρήτου WHOIS 
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr "Ο κωδικός μεταφοράς δεν μπόρεσε να ανακτηθεί αυτόματα. Επικοινωνήστε με την υποστήριξη για να τον λάβετε."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "Μια τραπεζική πληρωμή ύψους :amount από τις :date βρίσκεται σε εκκαθάριση."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Μια πληρωμή για αυτό το παραστατικό βρίσκεται ακόμη σε εκκαθάριση."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Προσθήκη κάρτας ή τραπεζικού λογαριασμού"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "Ο τρόπος πληρωμής δεν βρέθηκε."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Πληρωμή σε εκκρεμότητα"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Να αφαιρεθεί αυτός ο τρόπος πληρωμής;"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Αποθηκευμένες κάρτες και τραπεζικοί λογαριασμοί"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "Η τραπεζική χρέωση ξεκίνησε. Το παραστατικό σημειώνεται ως πληρωμένο όταν ολοκληρωθεί η εκκαθάριση."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "Ο τρόπος πληρωμής δεν αποθηκεύτηκε. Δοκιμάστε ξανά."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "Δεν έχετε αποθηκευμένες κάρτες ή τραπεζικούς λογαριασμούς."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "Η τραπεζική πληρωμή σας ύψους :amount από τις :date βρίσκεται σε εκκαθάριση. Το παραστατικό σημειώνεται ως πληρωμένο όταν ολοκληρωθεί η εκκαθάριση, συνήθως μέσα σε λίγες εργάσιμες ημέρες."

@@ -748,6 +748,10 @@ msgstr ""
 msgid "A balance below zero is the amount due; above zero is account credit."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr ""
+
 #: src/modules/Servicedomain/Service.php
 msgid "A cancelled domain was deleted at the registrar and cannot be brought back here. Order it again (register or transfer)."
 msgstr ""
@@ -886,6 +890,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid "A payment could not be processed (transaction #:id)"
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -1426,6 +1434,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Add a card"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -3802,10 +3814,6 @@ msgstr ""
 
 #: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
 msgid "Card in the bottom corner"
-msgstr ""
-
-#: src/library/Payment/Adapter/Stripe.php
-msgid "Card not found."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -14804,12 +14812,20 @@ msgstr ""
 msgid "Payment method not found"
 msgstr ""
 
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr ""
+
 #: src/modules/Invoice/Api/Guest.php
 msgid "Payment method not found. Missing param gateway_id"
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Payment methods"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_receipts.html.twig
@@ -16412,6 +16428,10 @@ msgstr ""
 msgid "Remove this file? It is deleted for good; the message shows that staff removed it."
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "Remove this user's access to the account?"
 msgstr ""
@@ -17250,6 +17270,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Saved cards"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
 msgstr ""
 
 #: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
@@ -19580,6 +19604,10 @@ msgstr ""
 msgid "The backup of :time failed (:why)."
 msgstr ""
 
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "The basics in a few minutes. Everything can be changed later in System → Settings."
 msgstr ""
@@ -19610,10 +19638,6 @@ msgstr ""
 
 #: src/library/Payment/Adapter/Stripe.php
 msgid "The card was declined: :reason"
-msgstr ""
-
-#: src/library/Payment/Adapter/Stripe.php
-msgid "The card was not saved. Please try again."
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
@@ -20231,6 +20255,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "The payment method marked \"Pays invoices automatically\" pays your invoices when they are due. You can also save one when you pay an invoice."
+msgstr ""
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
 msgstr ""
 
 #: src/modules/Invoice/SavedCards.php
@@ -23770,6 +23798,10 @@ msgid "You have no saved PayPal account."
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "You have no saved cards."
 msgstr ""
 
@@ -23967,6 +23999,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Your balance covers this order, so it is paid from your balance."
+msgstr ""
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig

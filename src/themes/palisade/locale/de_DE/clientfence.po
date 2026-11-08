@@ -20658,3 +20658,48 @@ msgstr "Enom verkauft den WHOIS-Datenschutz als kostenpflichtigen Service: Aktiv
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr "Der Transfercode konnte nicht automatisch abgerufen werden. Bitte wenden Sie sich an den Support, um ihn zu erhalten."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "Eine Banküberweisung von :amount vom :date wird gerade verbucht."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Eine Zahlung für diese Rechnung wird noch verbucht."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Karte oder Bankkonto hinzufügen"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "Zahlungsmethode nicht gefunden."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Zahlung in Bearbeitung"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Diese Zahlungsmethode entfernen?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Gespeicherte Karten und Bankkonten"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "Die Bankabbuchung wurde gestartet. Die Rechnung wird als bezahlt markiert, sobald sie verbucht ist."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "Die Zahlungsmethode wurde nicht gespeichert. Bitte versuchen Sie es erneut."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "Sie haben keine gespeicherten Karten oder Bankkonten."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "Ihre Banklastschrift von :amount vom :date wird gerade verbucht. Die Rechnung wird als bezahlt markiert, sobald sie verbucht ist, in der Regel innerhalb weniger Werktage."

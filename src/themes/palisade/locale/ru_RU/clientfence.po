@@ -18981,3 +18981,48 @@ msgstr "Enom продаёт защиту приватности WHOIS как п�
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr "Не удалось автоматически получить код переноса. Свяжитесь со службой поддержки, чтобы получить его."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "Банковский платёж на сумму :amount от :date обрабатывается."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Платёж по этому счёту всё ещё обрабатывается."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Добавить карту или банковский счёт"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "Способ оплаты не найден."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Платёж в обработке"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Удалить этот способ оплаты?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Сохранённые карты и банковские счета"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "Банковское списание начато. Счёт будет отмечен как оплаченный после зачисления платежа."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "Способ оплаты не был сохранён. Попробуйте ещё раз."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "У вас нет сохранённых карт или банковских счетов."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "Ваш банковский платёж на сумму :amount от :date обрабатывается. Счёт будет отмечен как оплаченный после зачисления платежа, обычно в течение нескольких рабочих дней."

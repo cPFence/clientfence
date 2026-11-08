@@ -21366,3 +21366,48 @@ msgstr "Kode transfer tidak dapat diambil secara otomatis. Silakan hubungi dukun
 # Fixes to FOSSBilling's translation: the same term everywhere.
 msgid "Premium domains cannot be registered."
 msgstr "Domain premium tidak dapat didaftarkan."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "Pembayaran bank sebesar :amount dari :date sedang diproses."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Pembayaran untuk faktur ini masih diproses."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Tambah kartu atau rekening bank"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "Metode pembayaran tidak ditemukan."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Pembayaran tertunda"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Hapus metode pembayaran ini?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Kartu dan rekening bank tersimpan"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "Debit bank telah dimulai. Faktur ditandai lunas setelah pembayaran selesai diproses."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "Metode pembayaran tidak disimpan. Silakan coba lagi."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "Anda tidak memiliki kartu atau rekening bank tersimpan."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "Pembayaran bank Anda sebesar :amount dari :date sedang diproses. Faktur ditandai lunas setelah pembayaran selesai diproses, biasanya dalam beberapa hari kerja."

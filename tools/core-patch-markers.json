@@ -4482,5 +4482,53 @@
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_gateways.html.twig",
         "done": "ClientFence core patch: PATH_LIBRARY has no trailing slash (gateway folder)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: a bank debit still clearing (Invoice/PendingPayments.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "// ClientFence core patch: no reminder before the due date while a bank debit of the invoice is clearing."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "// ClientFence core patch: no overdue reminder while a bank debit of the invoice is clearing."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "// ClientFence core patch: account credit does not pay an invoice whose bank debit is clearing."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "// ClientFence core patch: a bank debit still clearing shows the invoice as \"Payment pending\" (Invoice/PendingPayments.php)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "// ClientFence core patch: an order whose renewal is paid by a bank debit still clearing is not suspended."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "// ClientFence core patch: a suspended order whose renewal is paid by a bank debit still clearing is not cancelled."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "// ClientFence core patch: an invoice with a bank debit still clearing is kept, with its orders."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "// ClientFence core patch: a bank debit that was clearing has cleared (Invoice/PendingPayments.php)."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "// ClientFence core patch: a bank debit that was clearing failed: the invoice is unpaid again, and an automatic one emails the client."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "// ClientFence core patch: saved bank accounts (BECS, SEPA and Bacs Direct Debit) for automatic payments."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "AND NOT ' . PendingPayments::sql('invoice.id'); // ClientFence core patch: nor an invoice whose bank debit is clearing (Invoice/PendingPayments.php)."
     }
 ]

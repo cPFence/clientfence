@@ -362,6 +362,8 @@ class Service implements InjectionAwareInterface
         $result['amount_paid'] = $unpaid ? min($this->getAmountPaid($invoice), round($result['total'], 2)) : (in_array($row['status'], [\Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED], true) ? $result['total'] : 0.0);
         $result['balance_due'] = $unpaid ? max(0.0, round($result['total'] - $result['amount_paid'], 2)) : 0.0;
         $result['credit_applied'] = $unpaid ? round((float) $this->di['dbal']->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM invoice_credit WHERE invoice_id = ?', [$invoice->id]), 2) : 0.0;
+        // ClientFence core patch: a bank debit still clearing shows the invoice as "Payment pending" (Invoice/PendingPayments.php).
+        $result['pending_payment'] = $unpaid ? PendingPayments::forInvoice($this->di, (int) $invoice->id) : null;
         $result['notes'] = $row['notes'] ?? null;
         $result['text_1'] = $row['text_1'] ?? null;
         $result['text_2'] = $row['text_2'] ?? null;
@@ -615,6 +617,10 @@ class Service implements InjectionAwareInterface
             if (!$service->isInvoiceReminderIntervalEnabled('invoice_reminder_before_due_days', (int) ($params['days_left'] ?? 0), '', $params['reminder_intervals'] ?? null)) {
                 return;
             }
+            // ClientFence core patch: no reminder before the due date while a bank debit of the invoice is clearing.
+            if (PendingPayments::forInvoice($di, (int) ($params['id'] ?? 0)) !== null) {
+                return;
+            }
 
             // Atomically claim the invoice before sending anything: this is what stops the same
             // reminder being sent twice when this event is dispatched more than once for the
@@ -684,6 +690,10 @@ class Service implements InjectionAwareInterface
 
         try {
             if (!$service->isInvoiceReminderIntervalEnabled('invoice_reminder_after_due_days', (int) ($params['days_passed'] ?? 0), '5', $params['reminder_intervals'] ?? null)) {
+                return;
+            }
+            // ClientFence core patch: no overdue reminder while a bank debit of the invoice is clearing.
+            if (PendingPayments::forInvoice($di, (int) ($params['id'] ?? 0)) !== null) {
                 return;
             }
 
@@ -1302,6 +1312,10 @@ class Service implements InjectionAwareInterface
                 $this->di['logger']->setChannel('billing')->info("Skipping credit payment for already paid invoice {$invoice->id}.");
             }
 
+            return false;
+        }
+        // ClientFence core patch: account credit does not pay an invoice whose bank debit is clearing.
+        if (PendingPayments::forInvoice($this->di, (int) $invoice->id) !== null) {
             return false;
         }
 
@@ -3086,7 +3100,8 @@ class Service implements InjectionAwareInterface
     {
         // ClientFence core patch: live renewal invoices must survive overdue cleanup to avoid repeated billing emails.
         $conditions = 'status = ? and due_at is not null and DATEDIFF(NOW(), due_at) > ?
-            AND NOT EXISTS (SELECT 1 FROM client_order co WHERE co.unpaid_invoice_id = invoice.id AND co.status IN (?, ?))';
+            AND NOT EXISTS (SELECT 1 FROM client_order co WHERE co.unpaid_invoice_id = invoice.id AND co.status IN (?, ?))
+            AND NOT ' . PendingPayments::sql('invoice.id'); // ClientFence core patch: nor an invoice whose bank debit is clearing (Invoice/PendingPayments.php).
 
         return $this->di['db']->find('Invoice', $conditions, [\Model_Invoice::STATUS_UNPAID, $days, \Model_ClientOrder::STATUS_ACTIVE, \Model_ClientOrder::STATUS_SUSPENDED]);
     }

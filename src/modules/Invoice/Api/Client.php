@@ -266,6 +266,7 @@ class Client extends \ClientFence\Api\AbstractApi
 
         return [
             'available' => $stripe !== null,
+            'bank' => $stripe?->bankDebit($clientId) ?? false,
             'cards' => $cards,
             'paypal' => $paypal === null ? null : ['account' => $account['card'] ?? null, 'default' => $account !== null && $paying instanceof \Payment_Adapter_PayPalEmail],
         ];

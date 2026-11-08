@@ -19024,3 +19024,48 @@ msgstr "Enom ขายการปกป้องความเป็นส่�
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr "ไม่สามารถดึงรหัสโอนได้โดยอัตโนมัติ โปรดติดต่อฝ่ายสนับสนุนเพื่อรับรหัส"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "การชำระเงินผ่านธนาคารจำนวน :amount เมื่อ :date อยู่ระหว่างการเคลียร์"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "การชำระเงินสำหรับใบแจ้งหนี้นี้ยังอยู่ระหว่างการเคลียร์"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "เพิ่มบัตรหรือบัญชีธนาคาร"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "ไม่พบวิธีการชำระเงิน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "รอชำระเงิน"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "ลบวิธีการชำระเงินนี้หรือไม่"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "บัตรและบัญชีธนาคารที่บันทึกไว้"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "การหักบัญชีธนาคารเริ่มต้นแล้ว ใบแจ้งหนี้จะถูกทำเครื่องหมายว่าชำระแล้วเมื่อเคลียร์เสร็จ"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "ไม่ได้บันทึกวิธีการชำระเงิน โปรดลองอีกครั้ง"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "คุณไม่มีบัตรหรือบัญชีธนาคารที่บันทึกไว้"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "การชำระเงินผ่านธนาคารของคุณจำนวน :amount เมื่อ :date อยู่ระหว่างการเคลียร์ ใบแจ้งหนี้จะถูกทำเครื่องหมายว่าชำระแล้วเมื่อเคลียร์เสร็จ โดยปกติภายในไม่กี่วันทำการ"

@@ -22,6 +22,7 @@ function savedCardsWorld(): object
     $db->executeStatement('CREATE TABLE subscription (id INTEGER PRIMARY KEY, client_id INTEGER, pay_gateway_id INTEGER, sid TEXT, rel_type TEXT, rel_id INTEGER, status TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT, created_at TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE invoice_card_charge (invoice_id INTEGER PRIMARY KEY, attempts INTEGER NOT NULL DEFAULT 0, last_attempt_at TEXT, last_error TEXT)');
+    $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, amount TEXT, currency TEXT, created_at TEXT)');
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 1, 'client_id' => 7, 'test_mode' => 0, 'external_customer_id' => 'cus_7', 'saved_cards' => 1, 'default_payment_method' => 'pm_7', 'default_card' => 'Visa •••• 4242 (12/2030)']);
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 1, 'client_id' => 8, 'test_mode' => 0, 'external_customer_id' => 'cus_8', 'saved_cards' => 1]);
     // A subscription customer found by email: its card is not used.
@@ -229,6 +230,42 @@ test('a payment taken but not completed, or maybe taken without an answer, is ne
     'held by the payment service, staff try' => [true, fn (): string => 'pending-12'],
     'no answer, cron try' => [false, fn (): string => throw new RuntimeException('Operation timed out')],
 ]);
+
+test('a bank debit still clearing is neither charged again nor tried by the cron; a debit that starts says so', function (): void {
+    $world = savedCardsWorld();
+    $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
+    $world->db->insert('invoice', ['id' => 2, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
+    $world->db->insert('`transaction`', ['invoice_id' => 1, 'status' => 'received', 'txn_status' => 'processing', 'amount' => '25.50', 'currency' => 'EUR', 'created_at' => date('Y-m-d H:i:s')]);
+    // One Stripe never answered for stops counting after 21 days.
+    $world->db->insert('`transaction`', ['invoice_id' => 2, 'status' => 'received', 'txn_status' => 'processing', 'amount' => '25.50', 'currency' => 'EUR', 'created_at' => date('Y-m-d H:i:s', strtotime('-22 days'))]);
+
+    SavedCards::runDue($world->di);
+    expect($world->charged)->toBe([[2, 'attempt_1']])
+        ->and(SavedCards::charge($world->di, $world->di['db']->load('Invoice', 1), SavedCards::stripe($world->di), true))
+        ->toBe(['paid' => false, 'error' => 'A payment for this invoice is still clearing.']);
+
+    $world->db->insert('invoice', ['id' => 3, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
+    $stripe = SavedCards::stripe($world->di);
+    $stripe->allows('chargeSavedCard')->andReturnUsing(function () use ($world): string {
+        // Recording the processing PaymentIntent leaves a received, processing transaction.
+        $world->db->insert('`transaction`', ['invoice_id' => 3, 'status' => 'received', 'txn_status' => 'processing', 'amount' => '25.50', 'currency' => 'EUR', 'created_at' => date('Y-m-d H:i:s')]);
+
+        return 'pending-3';
+    });
+    expect(SavedCards::charge($world->di, $world->di['db']->load('Invoice', 3), $stripe, false))
+        ->toBe(['paid' => false, 'error' => 'The bank debit has started. The invoice is marked paid when it clears.'])
+        ->and($world->emails)->toBe([]);
+});
+
+test('a failed bank debit emails the client without a retry date', function (): void {
+    $world = savedCardsWorld();
+    $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
+
+    SavedCards::emailDebitFailure($world->di, $world->di['db']->load('Invoice', 1), 'SEPA Direct Debit •••• 3000 (DE)', 'Stripe payment failed: insufficient funds');
+
+    expect($world->emails)->toHaveCount(1)
+        ->and($world->emails[0])->toMatchArray(['code' => 'mod_invoice_card_failed', 'to_client' => 7, 'card' => 'SEPA Direct Debit •••• 3000 (DE)', 'retry_at' => '']);
+});
 
 test('a cron try leaves an invoice held after runDue read it, staff can still charge it', function (): void {
     $world = savedCardsWorld();

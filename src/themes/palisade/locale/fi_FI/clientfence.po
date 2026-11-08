@@ -21649,3 +21649,48 @@ msgstr "Enom myy WHOIS-yksityisyyden suojaa maksullisena palveluna: ota se käyt
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr "Siirtokoodia ei voitu hakea automaattisesti. Ota yhteyttä tukeen saadaksesi sen."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "A bank payment of :amount from :date is clearing."
+msgstr "Pankkimaksu :amount päivämäärältä :date on käsiteltävänä."
+
+#: src/modules/Invoice/SavedCards.php
+msgid "A payment for this invoice is still clearing."
+msgstr "Tämän laskun maksu on vielä käsiteltävänä."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Add a card or bank account"
+msgstr "Lisää kortti tai pankkitili"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Payment method not found."
+msgstr "Maksutapaa ei löytynyt."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Payment pending"
+msgstr "Maksu odottaa"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Remove this payment method?"
+msgstr "Poistetaanko tämä maksutapa?"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved cards and bank accounts"
+msgstr "Tallennetut kortit ja pankkitilit"
+
+#: src/modules/Invoice/SavedCards.php
+msgid "The bank debit has started. The invoice is marked paid when it clears."
+msgstr "Pankin suoraveloitus on alkanut. Lasku merkitään maksetuksi, kun maksu on käsitelty."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "The payment method was not saved. Please try again."
+msgstr "Maksutapaa ei tallennettu. Yritä uudelleen."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "You have no saved cards or bank accounts."
+msgstr "Sinulla ei ole tallennettuja kortteja tai pankkitilejä."
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr "Pankkimaksusi :amount päivämäärältä :date on käsiteltävänä. Lasku merkitään maksetuksi, kun maksu on käsitelty, yleensä muutaman arkipäivän kuluessa."

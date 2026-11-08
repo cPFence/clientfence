@@ -28,19 +28,21 @@
 {% set buyer = invoice.buyer %}
 {% set currency = invoice.currency ?? default_currency %}
 {% set unpaid = invoice.status == 'unpaid' %}
+{# ClientFence: a bank debit still clearing (Invoice/PendingPayments.php): "Payment pending", nothing to pay meanwhile. #}
+{% set pending = unpaid ? invoice.pending_payment|default(null) : null %}
 {# ClientFence: a part-paid invoice asks for its balance due (WHMCS). #}
 {% set due = unpaid ? invoice.balance_due : invoice.total %}
-{% set methods = unpaid ? guest.invoice_payment_methods({ amount: due, currency: currency, subscribable: invoice.subscribable ? 1 : 0 }) : [] %}
+{% set methods = unpaid and not pending ? guest.invoice_payment_methods({ amount: due, currency: currency, subscribable: invoice.subscribable ? 1 : 0 }) : [] %}
 {% set profile = client ? client.profile_get : null %}
 {# The client applies part or all of the account credit (WHMCS "Apply credit"); never to an Add funds invoice. #}
-{% set credit = profile and unpaid and due > 0 and profile.balance|default(0) > 0 and (profile.currency ?: currency) == currency and 'deposit' not in invoice.lines|map(l => l.type) ? min(profile.balance, due) : 0 %}
+{% set credit = profile and unpaid and not pending and due > 0 and profile.balance|default(0) > 0 and (profile.currency ?: currency) == currency and 'deposit' not in invoice.lines|map(l => l.type) ? min(profile.balance, due) : 0 %}
 {# The method the client chose before (the wallet link's ?gateway=, or the one saved on the invoice
    at checkout) is selected first; otherwise the first card. #}
 {% set method_ids = methods|map(m => m.id ~ '') %}
 {% set asked = request.gateway|default('') %}
 {% set saved = (invoice.gateway_id ?? '') ~ '' %}
 {% set picked = asked is not iterable and (asked ~ '') in method_ids ? asked ~ '' : (saved in method_ids ? saved : (method_ids|first ?: '')) %}
-{% set status_chip = { unpaid: ['bf-chip-warn', 'Unpaid'|trans], paid: ['bf-chip-ok', 'Paid'|trans], refunded: ['bf-chip-muted', 'Refunded'|trans], canceled: ['bf-chip-muted', 'Canceled'|trans] }[invoice.status]|default(['bf-chip-muted', invoice.status|capitalize]) %}
+{% set status_chip = pending ? ['bf-chip-muted', 'Payment pending'|trans] : { unpaid: ['bf-chip-warn', 'Unpaid'|trans], paid: ['bf-chip-ok', 'Paid'|trans], refunded: ['bf-chip-muted', 'Refunded'|trans], canceled: ['bf-chip-muted', 'Canceled'|trans] }[invoice.status]|default(['bf-chip-muted', invoice.status|capitalize]) %}
 
 <div class="bf-pay-page" data-bf-invoice
      data-hash="{{ invoice.hash }}" data-total="{{ due }}" data-currency="{{ currency }}"
@@ -78,7 +80,13 @@
                     </form>
                 </section>
             {% endif %}
-            {% if unpaid %}
+            {% if pending %}
+                <section class="card bf-card bf-section" aria-labelledby="bf-h-pending">
+                    <h2 id="bf-h-pending">{{ 'Payment pending'|trans }}</h2>
+                    <p class="mb-0">{{ 'Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days.'|trans({ ':amount': sm.money(pending.amount, pending.currency|upper), ':date': pending.created_at|format_date }) }}</p>
+                </section>
+            {% endif %}
+            {% if unpaid and not pending %}
                 <div data-bf-pay-choose>
                     <section class="card bf-card bf-section" aria-labelledby="bf-h-how">
                         <h2 id="bf-h-how">{{ 'How would you like to pay?'|trans }}</h2>

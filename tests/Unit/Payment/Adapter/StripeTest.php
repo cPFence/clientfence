@@ -415,6 +415,12 @@ test('keeps a failed one-time Stripe payment on its invoice with Stripe\'s answe
         'last_payment_error' => (object) ['message' => 'Your card was declined.'],
     ]]];
 
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->allows('executeStatement')->andReturn(0);
+    $di = container();
+    $di['dbal'] = $dbal;
+    $this->adapter->setDi($di);
+
     expect(invokePrivateMethod($this->adapter, 'handlePaymentIntentFailedWebhook', [Mockery::mock(), $tx, $event]))->toBe($kept);
     if ($kept) {
         expect($tx->invoice_id)->toBe(31)
@@ -422,6 +428,51 @@ test('keeps a failed one-time Stripe payment on its invoice with Stripe\'s answe
             ->and($tx->error)->toBe('Stripe payment failed: Your card was declined.');
     }
 })->with(['one-time payment' => [['invoice_id' => '31', 'client_id' => '5'], true], 'subscription payment' => [[], false]]);
+
+test('a saved bank debit that was clearing and fails ends the wait and emails the client; a one-off payment emails nobody', function (array $metadata, int $emails): void {
+    $tx = buildTransaction();
+    $tx->id = 5;
+    $tx->gateway_id = 1;
+    $event = (object) ['data' => (object) ['object' => (object) [
+        'id' => 'pi_debit', 'status' => 'requires_payment_method', 'metadata' => (object) $metadata,
+        'last_payment_error' => (object) ['message' => 'The account has insufficient funds.', 'payment_method' => (object) ['type' => 'sepa_debit', 'sepa_debit' => (object) ['last4' => '3000', 'country' => 'DE']]],
+    ]]];
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 31;
+    $invoice->client_id = 5;
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('executeStatement')->once()
+        ->with(Mockery::pattern("/txn_status = 'processing'/"), Mockery::on(fn (array $p): bool => $p[0] === 'requires_payment_method' && $p[2] === 'pi_debit' && $p[3] === 1 && $p[4] === 5))
+        ->andReturn(1);
+    $db = Mockery::mock();
+    $db->allows('load')->with('Invoice', 31)->andReturn($invoice);
+    $sent = [];
+    $service = Mockery::mock();
+    $service->allows('toApiArray')->andReturn([]);
+    $service->allows('withBillingRecipient')->andReturnArg(0);
+    $service->allows('getConfig')->andReturn([]);
+    $service->allows('sendTemplate')->andReturnUsing(function (array $email) use (&$sent): bool {
+        $sent[] = $email;
+
+        return true;
+    });
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn (): object => $service);
+    $this->adapter->setDi($di);
+
+    expect(invokePrivateMethod($this->adapter, 'handlePaymentIntentFailedWebhook', [Mockery::mock(), $tx, $event]))->toBeTrue()
+        ->and($tx->status)->toBe(Model_Transaction::STATUS_ERROR)
+        ->and($sent)->toHaveCount($emails);
+    if ($emails) {
+        expect($sent[0])->toMatchArray(['code' => 'mod_invoice_card_failed', 'card' => 'SEPA Direct Debit •••• 3000 (DE)', 'retry_at' => '']);
+    }
+})->with([
+    'automatic payment' => [['invoice_id' => '31', 'client_id' => '5', 'auto_pay' => '1'], 1],
+    'paid by the client' => [['invoice_id' => '31', 'client_id' => '5'], 0],
+]);
 
 test('syncs subscription webhook status through the internal service path', function (): void {
     $stripeSubscription = (object) [
@@ -1193,6 +1244,7 @@ describe('handlePaymentIntentSucceededWebhook', function (): void {
     test('processes one-time payment when not already handled', function (): void {
         $tx = buildTransaction();
         $tx->id = 201;
+        $tx->gateway_id = 1;
 
         $paymentIntent = new stdClass();
         $paymentIntent->id = 'pi_new';
@@ -1214,6 +1266,10 @@ describe('handlePaymentIntentSucceededWebhook', function (): void {
         $dbMock = Mockery::mock('ClientFence\Database');
         $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
         expectPaymentIntentLock($dbalMock, 'pi_new', 1);
+        // A bank debit of the same PaymentIntent that was clearing is marked cleared.
+        $dbalMock->shouldReceive('executeStatement')->once()
+            ->with(Mockery::pattern("/txn_status = 'processing'/"), Mockery::on(fn (array $p): bool => $p[0] === 'succeeded' && $p[2] === 'pi_new' && $p[3] === 1 && $p[4] === 201))
+            ->andReturn(1);
         $dbalMock->shouldReceive('fetchOne')->once()
             ->with('SELECT id FROM client_balance WHERE type = :type AND rel_id = :rel_id LIMIT 1', ['type' => 'transaction', 'rel_id' => 201])->andReturnFalse();
         $dbMock->shouldReceive('findOne')
@@ -2768,6 +2824,8 @@ describe('saved cards', function (): void {
         $this->cards = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
         $this->cards->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT)');
         $this->cards->insert('pay_gateway_customer', ['pay_gateway_id' => 1, 'client_id' => 9, 'test_mode' => 1, 'external_customer_id' => 'cus_9', 'saved_cards' => 1]);
+        $this->cards->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT)');
+        $this->cards->insert('client', ['id' => 9, 'currency' => 'EUR']);
         $invoiceService = Mockery::mock();
         $invoiceService->allows('getBalanceDue')->andReturn(25.50);
         $di = container();
@@ -2803,7 +2861,7 @@ describe('saved cards', function (): void {
         $this->cards->update('pay_gateway_customer', ['saved_cards' => 0], ['client_id' => 9]);
         expect($this->adapter->savedCard(9))->toBeNull()
             ->and($this->adapter->cards(9))->toBe([])
-            ->and(fn () => $this->adapter->cardDefault(9, 'pm_2'))->toThrow(ClientFence\InformationException::class, 'Card not found.');
+            ->and(fn () => $this->adapter->cardDefault(9, 'pm_2'))->toThrow(ClientFence\InformationException::class, 'Payment method not found.');
     });
 
     test('the saved card is charged off session for the balance; a card that needs the client fails', function (string $status, ?string $error): void {
@@ -2811,7 +2869,7 @@ describe('saved cards', function (): void {
         $this->stripe->paymentIntents = Mockery::mock();
         $this->stripe->paymentIntents->shouldReceive('create')->once()
             ->withArgs(fn (array $params, array $options): bool => $params['amount'] === 2550 && $params['customer'] === 'cus_9' && $params['payment_method'] === 'pm_1'
-                && $params['off_session'] === true && $params['confirm'] === true && $params['metadata']['invoice_id'] === '70'
+                && $params['off_session'] === true && $params['confirm'] === true && $params['metadata']['invoice_id'] === '70' && $params['metadata']['auto_pay'] === '1'
                 && $params['automatic_payment_methods'] === ['enabled' => true, 'allow_redirects' => 'never']
                 && str_starts_with($options['idempotency_key'], 'saved_card_invoice_70_attempt_2_'))
             ->andReturn((object) ['id' => 'pi_70', 'status' => $status]);
@@ -2820,6 +2878,61 @@ describe('saved cards', function (): void {
         $error === null ? expect($charge())->toBe('pi_70') : expect($charge)->toThrow(ClientFence\InformationException::class, $error);
     })->with([
         'charged' => ['succeeded', null],
+        'a bank debit started' => ['processing', null],
         'needs the client' => ['requires_action', 'The card needs the client to confirm the payment.'],
     ]);
+
+    test('bank accounts are listed with their bank details', function (object $method, string $label): void {
+        expect(invokePrivateMethod($this->adapter, 'cardLabel', [$method]))->toBe($label);
+    })->with([
+        'BECS' => [(object) ['type' => 'au_becs_debit', 'au_becs_debit' => (object) ['last4' => '3456', 'bsb_number' => '000000']], 'BECS Direct Debit •••• 3456 (000-000)'],
+        'SEPA' => [(object) ['type' => 'sepa_debit', 'sepa_debit' => (object) ['last4' => '3000', 'country' => 'DE']], 'SEPA Direct Debit •••• 3000 (DE)'],
+        'Bacs' => [(object) ['type' => 'bacs_debit', 'bacs_debit' => (object) ['last4' => '2345', 'sort_code' => '108800']], 'Bacs Direct Debit •••• 2345 (10-88-00)'],
+    ]);
+
+    test('with Saved bank accounts on, a client can save the bank debit of their currency besides cards', function (string $setting, string $currency, array $types): void {
+        setPrivateProperty($this->adapter, 'config', ['test_mode' => true, 'test_pub_key' => 'pk_test_dummy', 'gateway_id' => 1, 'bank_debits' => $setting]);
+        $this->cards->update('client', ['currency' => $currency], ['id' => 9]);
+
+        expect(invokePrivateMethod($this->adapter, 'methodTypes', [9]))->toBe($types)
+            ->and($this->adapter->bankDebit(9))->toBe(count($types) > 1);
+    })->with([
+        'off' => ['0', 'EUR', ['card']],
+        'AUD' => ['1', 'AUD', ['card', 'au_becs_debit']],
+        'EUR' => ['1', 'EUR', ['card', 'sepa_debit']],
+        'GBP' => ['1', 'GBP', ['card', 'bacs_debit']],
+        'USD has none' => ['1', 'USD', ['card']],
+    ]);
+
+    test('a bank account saved before Saved bank accounts was turned off stays listed, so the client can remove it', function (): void {
+        $this->cards->update('pay_gateway_customer', ['default_payment_method' => 'pm_sepa', 'default_card' => 'SEPA'], ['client_id' => 9]);
+        $this->stripe->customers = Mockery::mock();
+        $this->stripe->customers->shouldReceive('allPaymentMethods')->once()->with('cus_9', ['type' => 'card', 'limit' => 20])
+            ->andReturn((object) ['data' => [(object) ['id' => 'pm_card', 'type' => 'card', 'card' => (object) ['brand' => 'visa', 'last4' => '4242', 'exp_month' => 3, 'exp_year' => 2030]]]]);
+        $this->stripe->paymentMethods = Mockery::mock();
+        $this->stripe->paymentMethods->shouldReceive('retrieve')->once()->with('pm_sepa', [])
+            ->andReturn((object) ['id' => 'pm_sepa', 'type' => 'sepa_debit', 'customer' => 'cus_9', 'sepa_debit' => (object) ['last4' => '3000', 'country' => 'DE']]);
+
+        expect($this->adapter->cards(9))->toBe([
+            ['id' => 'pm_card', 'card' => 'Visa •••• 4242 (03/2030)', 'default' => false],
+            ['id' => 'pm_sepa', 'card' => 'SEPA Direct Debit •••• 3000 (DE)', 'default' => true],
+        ]);
+    });
+
+    test('a bank debit not turned on in Stripe falls back to cards only', function (): void {
+        setPrivateProperty($this->adapter, 'config', ['test_mode' => true, 'test_pub_key' => 'pk_test_dummy', 'gateway_id' => 1, 'bank_debits' => '1']);
+        $this->adapter->getDi()['logger'] = new class {
+            public function __call(string $name, array $arguments): mixed
+            {
+                return $this;
+            }
+        };
+        $this->stripe->setupIntents = Mockery::mock();
+        $this->stripe->setupIntents->shouldReceive('create')->once()->with(Mockery::on(fn (array $p): bool => $p['payment_method_types'] === ['card', 'sepa_debit']))
+            ->andThrow(new Stripe\Exception\InvalidRequestException('The payment method type "sepa_debit" is invalid.'));
+        $this->stripe->setupIntents->shouldReceive('create')->once()->with(Mockery::on(fn (array $p): bool => $p['payment_method_types'] === ['card'] && $p['customer'] === 'cus_9'))
+            ->andReturn((object) ['client_secret' => 'seti_secret']);
+
+        expect($this->adapter->cardSetup(9))->toBe(['client_secret' => 'seti_secret', 'pub_key' => 'pk_test_dummy']);
+    });
 });

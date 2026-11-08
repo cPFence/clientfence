@@ -2165,6 +2165,27 @@ test('account credit never pays an Add funds invoice', function (): void {
     expect($service->tryPayWithCredits($invoice))->toBeFalse();
 });
 
+test('account credit does not pay an invoice whose bank debit is clearing', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $invoice->client_id = 20;
+    $invoice->approved = 1;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('fetchAssociative')->once()
+        ->with(Mockery::pattern("/txn_status = 'processing'/"), Mockery::on(fn (array $p): bool => $p[0] === 10))
+        ->andReturn(['amount' => '25.50', 'currency' => 'eur', 'created_at' => date('Y-m-d H:i:s')]);
+    $dbalMock->shouldNotReceive('fetchOne');
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->tryPayWithCredits($invoice))->toBeFalse();
+});
+
 test('gets total with tax', function (): void {
     $service = new Service();
     $total = 10.0;
@@ -2189,6 +2210,11 @@ test('gets total with tax', function (): void {
 function expectCreditPaymentLock(Mockery\MockInterface $dbalMock, int $clientId, string $status, array $row = []): void
 {
     $lockName = 'fb:credit_payment:client:' . $clientId;
+    // No bank debit of the invoice is clearing (Invoice/PendingPayments.php).
+    $dbalMock->shouldReceive('fetchAssociative')
+        ->with(Mockery::pattern("/txn_status = 'processing'/"), Mockery::any())
+        ->byDefault()
+        ->andReturn(false);
     $dbalMock->shouldReceive('fetchOne')
         ->once()
         ->with('SELECT GET_LOCK(:lock_name, 10)', ['lock_name' => $lockName])
@@ -4600,17 +4626,19 @@ test('gets unpaid invoices late for', function (): void {
     expect($result[0])->toBeInstanceOf(Model_Invoice::class);
 });
 
-test('old unpaid invoice cleanup keeps live renewals and returns invoices without a live order', function (string $status): void {
+test('old unpaid invoice cleanup keeps live renewals and invoices with a bank debit clearing, and returns invoices without a live order', function (string $status): void {
     $pdo = new PDO('sqlite::memory:');
     $pdo->sqliteCreateFunction('NOW', fn (): string => '2026-10-31 00:00:00', 0);
     $pdo->sqliteCreateFunction('DATEDIFF', fn (string $later, string $earlier): int => (int) floor((strtotime($later) - strtotime($earlier)) / 86400), 2);
     $pdo->exec('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, due_at TEXT)');
     $pdo->exec('CREATE TABLE client_order (id INTEGER PRIMARY KEY, unpaid_invoice_id INTEGER, status TEXT)');
-    $pdo->exec("INSERT INTO invoice VALUES (1, 'unpaid', '2026-09-01'), (2, 'unpaid', '2026-09-01'), (3, 'unpaid', '2026-09-01')");
+    $pdo->exec("INSERT INTO invoice VALUES (1, 'unpaid', '2026-09-01'), (2, 'unpaid', '2026-09-01'), (3, 'unpaid', '2026-09-01'), (4, 'unpaid', '2026-09-01')");
+    $pdo->exec('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, created_at TEXT)');
+    $pdo->prepare("INSERT INTO `transaction` VALUES (1, 4, 'received', 'processing', ?)")->execute([date('Y-m-d H:i:s')]);
     $pdo->prepare('INSERT INTO client_order VALUES (1, 1, ?), (2, 3, ?)')->execute([$status, Model_ClientOrder::STATUS_CANCELED]);
 
     $models = [];
-    foreach ([1, 2, 3] as $id) {
+    foreach ([1, 2, 3, 4] as $id) {
         $models[$id] = new Model_Invoice();
         $models[$id]->loadBean(new Tests\Helpers\DummyBean());
         $models[$id]->id = $id;

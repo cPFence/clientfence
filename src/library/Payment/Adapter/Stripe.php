@@ -55,6 +55,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         'setup_intent.setup_failed',
     ];
 
+    /** ClientFence: the bank debit clients can save for each currency, besides cards (Stripe needs it on in the dashboard). */
+    private const BANK_DEBITS = ['aud' => 'au_becs_debit', 'eur' => 'sepa_debit', 'gbp' => 'bacs_debit'];
+
     public function setDi(Pimple\Container $di): void
     {
         $this->di = $di;
@@ -166,6 +169,14 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                         'label' => 'Test Webhook signing secret:',
                         'required_when' => ['enabled' => true, 'test_mode' => true],
                         'secret' => true,
+                    ],
+                ],
+                // ClientFence core patch: saved bank accounts (BECS, SEPA and Bacs Direct Debit) for automatic payments.
+                'bank_debits' => [
+                    'radio', [
+                        'label' => 'Saved bank accounts:',
+                        'description' => 'Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows "Payment pending".',
+                        'multiOptions' => ['0' => 'Off', '1' => 'On'],
                     ],
                 ],
             ],
@@ -1113,6 +1124,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         if ($paymentIntent->status !== 'succeeded') {
             return false;
         }
+        // ClientFence core patch: a bank debit that was clearing has cleared (Invoice/PendingPayments.php).
+        $this->settleClearing($paymentIntent, $tx);
 
         $invoice = $invoiceId ? $this->di['db']->getExistingModelById('Invoice', (int) $invoiceId) : null;
 
@@ -1167,8 +1180,25 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $tx->txn_status = $paymentIntent->status;
         $tx->status = Model_Transaction::STATUS_ERROR;
         $tx->error = $this->failureReason($paymentIntent);
+        // ClientFence core patch: a bank debit that was clearing failed: the invoice is unpaid again, and an automatic one emails the client.
+        if ($this->settleClearing($paymentIntent, $tx) && $invoiceId && ($paymentIntent->metadata->auto_pay ?? '') === '1') {
+            $invoice = $this->di['db']->load('Invoice', (int) $invoiceId);
+            $method = $paymentIntent->last_payment_error->payment_method ?? null;
+            if ($invoice instanceof Model_Invoice) {
+                ClientFence\Mod\Invoice\SavedCards::emailDebitFailure($this->di, $invoice, is_object($method) ? $this->cardLabel($method) : '', (string) $tx->error);
+            }
+        }
 
         return true;
+    }
+
+    /** ClientFence: Stripe answered for a payment still clearing (Invoice\PendingPayments): true when there was one. */
+    private function settleClearing(object $paymentIntent, Model_Transaction $tx): bool
+    {
+        return $this->di['dbal']->executeStatement(
+            "UPDATE `transaction` SET txn_status = ?, updated_at = ? WHERE txn_id = ? AND gateway_id = ? AND id <> ? AND status = 'received' AND txn_status = 'processing'",
+            [(string) $paymentIntent->status, date('Y-m-d H:i:s'), (string) $paymentIntent->id, (int) $tx->gateway_id, (int) $tx->id]
+        ) > 0;
     }
 
     /**
@@ -1829,22 +1859,42 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         }
         $default = $this->savedCard($clientId)['payment_method'] ?? '';
         $cards = [];
-        foreach ($this->stripe->customers->allPaymentMethods($customerId, ['type' => 'card', 'limit' => 20])->data as $method) {
-            $cards[] = ['id' => $method->id, 'card' => $this->cardLabel($method), 'default' => $method->id === $default];
+        foreach ($this->methodTypes($clientId) as $type) {
+            foreach ($this->stripe->customers->allPaymentMethods($customerId, ['type' => $type, 'limit' => 20])->data as $method) {
+                $cards[] = ['id' => $method->id, 'card' => $this->cardLabel($method), 'default' => $method->id === $default];
+            }
+        }
+        // A bank account saved before Saved bank accounts was turned off still pays: it stays listed, so the client can remove it.
+        if ($default !== '' && !in_array($default, array_column($cards, 'id'), true)) {
+            $method = $this->stripe->paymentMethods->retrieve($default, []);
+            if ($method->customer === $customerId) {
+                $cards[] = ['id' => $method->id, 'card' => $this->cardLabel($method), 'default' => true];
+            }
         }
 
         return $cards;
     }
 
-    /** A Stripe setup for adding a card on the Payment methods page: {client_secret, pub_key}. */
+    /** A Stripe setup for adding a card or bank account on the Payment methods page: {client_secret, pub_key}. */
     public function cardSetup(int $clientId): array
     {
-        $intent = $this->stripe->setupIntents->create([
+        $params = [
             'customer' => $this->clientCustomer($clientId),
             'usage' => 'off_session',
-            'payment_method_types' => ['card'],
+            'payment_method_types' => $this->methodTypes($clientId),
             'metadata' => ['client_id' => (string) $clientId, 'gateway_id' => (string) $this->config['gateway_id']],
-        ]);
+        ];
+
+        try {
+            $intent = $this->stripe->setupIntents->create($params);
+        } catch (Stripe\Exception\InvalidRequestException $e) {
+            if ($params['payment_method_types'] === ['card']) {
+                throw $e;
+            }
+            // The bank debit is not turned on in the Stripe dashboard: cards only.
+            $this->di['logger']->warning('Stripe: %s is not available, saving cards only: %s', $params['payment_method_types'][1], $e->getMessage());
+            $intent = $this->stripe->setupIntents->create(['payment_method_types' => ['card']] + $params);
+        }
 
         return ['client_secret' => $intent->client_secret, 'pub_key' => $this->config['test_mode'] ? $this->config['test_pub_key'] : $this->config['pub_key']];
     }
@@ -1854,8 +1904,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
     {
         $intent = $this->stripe->setupIntents->retrieve($setupIntentId, []);
         $customerId = $this->ownedCustomer($clientId);
-        if ($intent->status !== 'succeeded' || $customerId === null || $intent->customer !== $customerId || empty($intent->payment_method)) {
-            throw new ClientFence\InformationException('The card was not saved. Please try again.');
+        // A Bacs mandate can still be processing: the account is saved and charged once it is accepted.
+        if (!in_array($intent->status, ['succeeded', 'processing'], true) || $customerId === null || $intent->customer !== $customerId || empty($intent->payment_method)) {
+            throw new ClientFence\InformationException('The payment method was not saved. Please try again.');
         }
         $this->rememberCard($clientId, (string) $intent->payment_method, false);
     }
@@ -1905,6 +1956,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 'client_id' => (string) $invoice->client_id,
                 'invoice_id' => (string) $invoice->id,
                 'gateway_id' => (string) $this->config['gateway_id'],
+                // A bank debit that fails days later emails the client (handlePaymentIntentFailedWebhook()).
+                'auto_pay' => '1',
             ],
         ];
 
@@ -1913,7 +1966,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         } catch (Stripe\Exception\CardException $e) {
             throw new ClientFence\InformationException('The card was declined: :reason', [':reason' => $e->getMessage()]);
         }
-        if ($intent->status !== 'succeeded') {
+        // A bank debit stays processing until it clears; Stripe's webhook then marks the invoice paid.
+        if (!in_array($intent->status, ['succeeded', 'processing'], true)) {
             // Off session there is nobody to complete a bank check (3-D Secure): the client pays by hand.
             throw new ClientFence\InformationException('The card needs the client to confirm the payment.');
         }
@@ -1997,18 +2051,40 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $customerId = $this->ownedCustomer($clientId);
         $method = $customerId === null ? null : $this->stripe->paymentMethods->retrieve($paymentMethodId, []);
         if ($method === null || $method->customer !== $customerId) {
-            throw new ClientFence\InformationException('Card not found.');
+            throw new ClientFence\InformationException('Payment method not found.');
         }
     }
 
-    /** "Visa •••• 4242 (12/2028)". */
+    /** "Visa •••• 4242 (12/2028)", "BECS Direct Debit •••• 3456 (000-000)". */
     private function cardLabel(object $method): string
     {
         $card = $method->card ?? null;
+        $bank = $method->{$method->type} ?? null;
 
-        return $card === null
-            ? (string) $method->type
-            : sprintf('%s •••• %s (%02d/%d)', ucfirst((string) $card->brand), (string) $card->last4, (int) $card->exp_month, (int) $card->exp_year);
+        return match (true) {
+            $card !== null => sprintf('%s •••• %s (%02d/%d)', ucfirst((string) $card->brand), (string) $card->last4, (int) $card->exp_month, (int) $card->exp_year),
+            $method->type === 'au_becs_debit' => sprintf('BECS Direct Debit •••• %s (%s)', $bank->last4 ?? '', substr_replace((string) ($bank->bsb_number ?? ''), '-', 3, 0)),
+            $method->type === 'sepa_debit' => sprintf('SEPA Direct Debit •••• %s (%s)', $bank->last4 ?? '', $bank->country ?? ''),
+            $method->type === 'bacs_debit' => sprintf('Bacs Direct Debit •••• %s (%s)', $bank->last4 ?? '', implode('-', str_split((string) ($bank->sort_code ?? ''), 2))),
+            default => (string) $method->type,
+        };
+    }
+
+    /** Whether the client can save a bank account (Saved bank accounts on, and a bank debit for the client's currency). */
+    public function bankDebit(int $clientId): bool
+    {
+        return count($this->methodTypes($clientId)) > 1;
+    }
+
+    /** The payment methods a client can save: cards, and with Saved bank accounts on, the bank debit of the client's currency. */
+    private function methodTypes(int $clientId): array
+    {
+        if ((string) ($this->config['bank_debits'] ?? '') !== '1') {
+            return ['card'];
+        }
+        $currency = strtolower((string) $this->di['dbal']->fetchOne('SELECT currency FROM client WHERE id = ?', [$clientId]));
+
+        return array_filter(['card', self::BANK_DEBITS[$currency] ?? null]);
     }
 
     /** The Stripe customer that holds the client's saved cards (made for them, or linked by staff), or null. */

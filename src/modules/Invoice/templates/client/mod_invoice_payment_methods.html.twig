@@ -48,9 +48,9 @@
     {% endif %}
     {% if cards.available %}
     <div class="card mb-4">
-        <div class="card-header"><h2>{{ 'Saved cards'|trans }}</h2></div>
+        <div class="card-header"><h2>{{ cards.bank ? 'Saved cards and bank accounts'|trans : 'Saved cards'|trans }}</h2></div>
         {% if cards.cards is empty %}
-            <div class="card-body"><p class="mb-0 text-secondary">{{ 'You have no saved cards.'|trans }}</p></div>
+            <div class="card-body"><p class="mb-0 text-secondary">{{ cards.bank ? 'You have no saved cards or bank accounts.'|trans : 'You have no saved cards.'|trans }}</p></div>
         {% else %}
             <ul class="list-group list-group-flush">
                 {% for card in cards.cards %}
@@ -62,7 +62,7 @@
                             {% else %}
                                 <button class="btn btn-sm btn-outline-primary" type="button" data-clientfence-card-call="invoice/card_default" data-id="{{ card.id }}">{{ 'Use for invoices'|trans }}</button>
                             {% endif %}
-                            <button class="btn btn-sm btn-outline-danger" type="button" data-clientfence-card-call="invoice/card_remove" data-id="{{ card.id }}" data-confirm="{{ 'Remove this card?'|trans }}">{{ 'Remove'|trans }}</button>
+                            <button class="btn btn-sm btn-outline-danger" type="button" data-clientfence-card-call="invoice/card_remove" data-id="{{ card.id }}" data-confirm="{{ cards.bank ? 'Remove this payment method?'|trans : 'Remove this card?'|trans }}">{{ 'Remove'|trans }}</button>
                         </span>
                     </li>
                 {% endfor %}
@@ -71,12 +71,12 @@
     </div>
 
     <div class="card">
-        <div class="card-header"><h2>{{ 'Add a card'|trans }}</h2></div>
+        <div class="card-header"><h2>{{ cards.bank ? 'Add a card or bank account'|trans : 'Add a card'|trans }}</h2></div>
         <div class="card-body">
-            <button class="btn btn-primary" type="button" data-clientfence-card-add>{{ 'Add a card'|trans }}</button>
+            <button class="btn btn-primary" type="button" data-clientfence-card-add>{{ cards.bank ? 'Add a card or bank account'|trans : 'Add a card'|trans }}</button>
             <form data-clientfence-card-form hidden>
                 <div class="mb-3" data-clientfence-card-element></div>
-                <button class="btn btn-primary" type="submit">{{ 'Save card'|trans }}</button>
+                <button class="btn btn-primary" type="submit">{{ cards.bank ? 'Save'|trans : 'Save card'|trans }}</button>
             </form>
         </div>
     </div>
