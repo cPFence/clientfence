@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.37 (2026-11-08)
+
+### Added
+
+- Five new domain registrars: Enom, INWX, NameSilo, Openprovider and Synergy Wholesale, for registrations, transfers, renewals, name servers, contacts, the transfer lock and the transfer code.
+- Domain extensions that need registrant details ask for them on the order forms: the .us nexus questions, the .au eligibility details (Synergy Wholesale) and the .eu citizenship (NameSilo, INWX).
+- Staff can correct those answers on the order before retrying a refused registration.
+
+### Changed
+
+- ClientFence renews domains when the invoice is paid: the registrar's own auto-renewal stays off with Enom, INWX and Openprovider, and is off by default with NameSilo. With all five new registrars, a cancelled domain is left to expire. Enom, INWX, NameSilo and Openprovider refuse premium names.
+
+### Fixed
+
+- Bell notifications of a deleted order or invoice are removed (they led to a missing page).
+- A domain sync no longer clears the stored registration date when the registrar returns none.
+- Translations of the premium-domain message (Indonesian, Traditional Chinese, Brazilian Portuguese) and of "Registrar" (Arabic, Brazilian Portuguese).
+
 ## 1.0.36 (2026-11-08)
 
 ### Added
