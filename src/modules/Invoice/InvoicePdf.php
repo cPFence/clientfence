@@ -97,6 +97,9 @@ final class InvoicePdf
             $html .= $total(__trans('Amount paid'), -$invoice['amount_paid']) . $total(__trans('Balance due'), $invoice['balance_due']);
         }
         $html .= '</table>';
+        if ($invoice['reverse_charge'] ?? false) {
+            $html .= '<br>' . $text(__trans('VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC).'));
+        }
         if ($invoice['text_2']) {
             $html .= '<br>' . $note($invoice['text_2']);
         }

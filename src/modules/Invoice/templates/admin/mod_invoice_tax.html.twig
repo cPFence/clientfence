@@ -133,6 +133,24 @@
                                             <span class="form-check-label">{{ 'Prices include tax'|trans }}</span>
                                         </label>
                                         <div class="form-hint">{{ 'Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net).'|trans }}</div>
+                                        {# ClientFence: the EU VAT reverse charge (Invoice/EuVat.php). #}
+                                        <h4 class="mt-4">{{ 'EU VAT'|trans }}</h4>
+                                        <input type="hidden" name="eu_vat_check" value="0">
+                                        <label class="form-check form-switch form-switch-2">
+                                            <input class="form-check-input" id="eu_vat_check" type="checkbox" name="eu_vat_check" value="1"{% if params.eu_vat_check|default(false) %} checked{% endif %}>
+                                            <span class="form-check-label">{{ 'Check EU VAT numbers with VIES'|trans }}</span>
+                                        </label>
+                                        <div class="form-hint">{{ 'The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day.'|trans }}</div>
+                                        <input type="hidden" name="eu_vat_exempt" value="0">
+                                        <label class="form-check form-switch form-switch-2 mt-3">
+                                            <input class="form-check-input" id="eu_vat_exempt" type="checkbox" name="eu_vat_exempt" value="1"{% if params.eu_vat_exempt|default(false) %} checked{% endif %}>
+                                            <span class="form-check-label">{{ 'Make valid businesses outside my country tax exempt'|trans }}</span>
+                                        </label>
+                                        <div class="form-hint">{{ 'An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT.'|trans }}</div>
+                                        <div class="mt-3">
+                                            <label class="form-label" for="tax_home_country">{{ 'Your country (tax home)'|trans }}</label>
+                                            {{ mf.selectbox('tax_home_country', country_names(), params.tax_home_country|default(''), 0, '-- Select Country --'|trans) }}
+                                        </div>
                                     {% endblock %}
 
                                     {% block form_actions %}

@@ -988,6 +988,8 @@ test('handles after admin cron run event', function (): void {
         ->with('remove_after_days')
         ->atLeast()->once()
         ->andReturn($remove_after_days);
+    // The other settings (EU VAT recheck) stay unset.
+    $systemServiceMock->shouldReceive('getParamValue')->withArgs(fn (string $param) => $param !== 'remove_after_days')->andReturnNull();
 
     $invoiceModel = new Model_Invoice();
     $invoiceModel->loadBean(new Tests\Helpers\DummyBean());

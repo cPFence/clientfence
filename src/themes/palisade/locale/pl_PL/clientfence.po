@@ -21051,3 +21051,40 @@ msgstr "Klient nie ma zapisanej metody płatności."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Płatność została pobrana."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Firma z UE z ważnym numerem VAT w innym kraju niż Twój nie płaci VAT, a jej faktury zawierają adnotację o odwrotnym obciążeniu. Firmy z Twojego kraju i klienci prywatni nadal płacą VAT."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Sprawdzaj numery VAT UE w systemie VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Numer VAT firmy (opcjonalnie)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "VAT UE"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Zwolnij z podatku ważne firmy spoza mojego kraju"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "Numer VAT :number jest nieprawidłowy dla wybranego kraju. Sprawdź go lub zostaw pole puste."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Numer VAT zapisany przez klienta z kraju UE jest sprawdzany w unijnym systemie VIES, a błędny numer jest odrzucany. Gdy VIES nie odpowiada, numer jest zapisywany i sprawdzany ponownie następnego dnia."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Odwrotne obciążenie: podatek VAT rozlicza nabywca (art. 196 dyrektywy 2006/112/WE)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Twój kraj (siedziba podatkowa)"

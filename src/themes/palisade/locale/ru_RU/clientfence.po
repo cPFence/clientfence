@@ -18642,3 +18642,40 @@ msgstr "У клиента нет сохранённого способа опл�
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Платёж списан."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Компания из ЕС с действующим номером плательщика НДС в другой стране, не в вашей, не платит НДС, а в её счетах есть пометка об обратном начислении. Компании в вашей стране и частные клиенты продолжают платить НДС."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Проверять номера НДС ЕС через VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Номер плательщика НДС компании (необязательно)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "НДС ЕС"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Освобождать от налога действующие компании за пределами моей страны"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "Номер плательщика НДС :number недействителен для выбранной страны. Проверьте его или оставьте поле пустым."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Номер НДС, который сохраняет клиент из страны ЕС, проверяется через сервис ЕС VIES, а неверный номер отклоняется. Если VIES не отвечает, номер сохраняется и проверяется повторно на следующий день."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Обратное начисление НДС: НДС исчисляет покупатель (статья 196 Директивы 2006/112/ЕС)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Ваша страна (налоговое резидентство)"

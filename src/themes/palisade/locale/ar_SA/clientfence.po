@@ -20290,3 +20290,40 @@ msgstr "ليس لدى العميل طريقة دفع محفوظة."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "تم سحب المبلغ."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "لا تدفع الشركة في الاتحاد الأوروبي التي لديها رقم ضريبي صالح في بلد آخر غير بلدك ضريبة القيمة المضافة، وتحمل فواتيرها ملاحظة الاحتساب العكسي. أما الشركات في بلدك والعملاء الأفراد فيواصلون دفع ضريبة القيمة المضافة."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "التحقق من أرقام ضريبة القيمة المضافة الأوروبية عبر VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "الرقم الضريبي للشركة (اختياري)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "ضريبة القيمة المضافة الأوروبية"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "إعفاء الشركات الصالحة خارج بلدي من الضريبة"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "الرقم الضريبي :number غير صالح للبلد المختار. تحقق منه أو اترك الحقل فارغًا."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "يتم التحقق من الرقم الضريبي الذي يحفظه عميل في بلد أوروبي عبر خدمة VIES التابعة للاتحاد الأوروبي، ويُرفض الرقم الخاطئ. وعندما لا ترد خدمة VIES، يُحفظ الرقم ويُتحقق منه مرة أخرى في اليوم التالي."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "الاحتساب العكسي لضريبة القيمة المضافة: المشتري هو من يحتسب الضريبة (المادة 196 من التوجيه 2006/112/EC)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "بلدك (موطنك الضريبي)"

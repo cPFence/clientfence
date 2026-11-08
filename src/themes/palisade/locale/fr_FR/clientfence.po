@@ -20326,3 +20326,40 @@ msgstr "Le client n'a pas de moyen de paiement enregistré."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Le paiement a été prélevé."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Une entreprise de l'UE disposant d'un numéro de TVA valide dans un autre pays que le vôtre ne paie pas de TVA, et ses factures portent la mention d'autoliquidation. Les entreprises de votre pays et les clients particuliers continuent de payer la TVA."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Vérifier les numéros de TVA de l'UE avec VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Numéro de TVA de l'entreprise (facultatif)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "TVA UE"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Exonérer de taxe les entreprises valides hors de mon pays"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "Le numéro de TVA :number n'est pas valide pour le pays choisi. Vérifiez-le ou laissez le champ vide."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Le numéro de TVA qu'un client d'un pays de l'UE enregistre est vérifié avec le service européen VIES, et un numéro erroné est refusé. Si VIES ne répond pas, le numéro est enregistré et vérifié de nouveau le lendemain."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Autoliquidation de la TVA : l'acquéreur est redevable de la TVA (article 196 de la directive 2006/112/CE)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Votre pays (domicile fiscal)"

@@ -194,6 +194,8 @@ class Service implements InjectionAwareInterface
         $birthday = ClientValidator::validateBirthday($data['birthday'] ?? $client->getBirthday()?->format('Y-m-d'));
         $client->setBirthday($birthday !== null ? new \DateTime($birthday) : null);
         $client->setCompany($data['company'] ?? $client->getCompany());
+        $oldVat = $client->getCompanyVat();
+        $oldCountry = $client->getCountry();
         $client->setCompanyVat($data['company_vat'] ?? $client->getCompanyVat());
         $client->setCompanyNumber($data['company_number'] ?? $client->getCompanyNumber());
         $client->setType($data['type'] ?? $client->getType());
@@ -236,6 +238,8 @@ class Service implements InjectionAwareInterface
         $client->setCustom18($data['custom_18'] ?? $client->getCustom18());
         $client->setCustom19($data['custom_19'] ?? $client->getCustom19());
         $client->setCustom20($data['custom_20'] ?? $client->getCustom20());
+        // ClientFence core patch: EU VAT numbers are checked with VIES and set the tax exemption (Invoice/EuVat.php).
+        \ClientFence\Mod\Invoice\EuVat::apply($this->di, $client, $oldVat, $oldCountry, array_key_exists('company_vat', $data));
 
         $this->di['em']->persist($client);
         $this->di['em']->flush();

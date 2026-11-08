@@ -862,6 +862,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         if (!empty($createdAt)) {
             $client->setCreatedAt(new \DateTime((string) $createdAt));
         }
+        // ClientFence core patch: EU VAT numbers are checked with VIES and set the tax exemption (Invoice/EuVat.php).
+        \ClientFence\Mod\Invoice\EuVat::apply($this->di, $client, null, null, false);
 
         return $client;
     }

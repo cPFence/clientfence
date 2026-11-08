@@ -20853,3 +20853,40 @@ msgstr "Khách hàng chưa có phương thức thanh toán đã lưu."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Đã thu khoản thanh toán."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Doanh nghiệp EU có mã số thuế GTGT hợp lệ ở quốc gia khác với quốc gia của bạn không phải trả thuế GTGT, và hóa đơn của họ có ghi chú tính ngược thuế. Doanh nghiệp trong nước của bạn và khách hàng cá nhân vẫn trả thuế GTGT."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Kiểm tra mã số thuế GTGT EU bằng VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Mã số thuế GTGT của công ty (không bắt buộc)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "Thuế GTGT EU"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Miễn thuế cho doanh nghiệp hợp lệ ở ngoài quốc gia của tôi"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "Mã số thuế GTGT :number không hợp lệ với quốc gia đã chọn. Hãy kiểm tra lại hoặc để trống ô này."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Mã số thuế GTGT mà khách hàng ở một nước EU lưu sẽ được kiểm tra bằng dịch vụ VIES của EU, và mã sai sẽ bị từ chối. Khi VIES không phản hồi, mã được lưu và kiểm tra lại vào ngày hôm sau."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Cơ chế tính ngược thuế GTGT: bên mua tự kê khai thuế GTGT (Điều 196, Chỉ thị 2006/112/EC)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Quốc gia của bạn (nơi cư trú thuế)"

@@ -21393,3 +21393,40 @@ msgstr "該客戶沒有已儲存的付款方式。"
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "款項已扣取。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "在您所在國家以外的其他國家擁有有效加值稅號的歐盟企業無須繳納加值稅，其發票會附上逆向課徵說明。您所在國家的企業和個人客戶仍須繳納加值稅。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "使用 VIES 驗證歐盟加值稅號"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "公司統一編號／加值稅號（選填）"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "歐盟加值稅"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "對我所在國家以外的有效企業免稅"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "加值稅號 :number 對所選國家無效。請檢查，或將此欄留空。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "歐盟國家的客戶儲存的加值稅號會透過歐盟 VIES 服務驗證，錯誤的號碼將被拒絕。VIES 無回應時，號碼會先儲存，並於隔天再次驗證。"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "加值稅逆向課徵：由買方申報加值稅（第 2006/112/EC 號指令第 196 條）。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "您的國家（稅務所在地）"

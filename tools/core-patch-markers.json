@@ -4382,5 +4382,49 @@
     {
         "file": "modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig",
         "done": "invoice/paypal_default"
+    },
+    {
+        "file": "modules/Profile/Service.php",
+        "done": "EuVat::apply($this->di, $client, $oldVat, $oldCountry, array_key_exists('company_vat', $data));"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "EuVat::apply($this->di, $client, null, null, false);"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "EuVat::apply($this->getDi(), $client, $oldVat, $oldCountry, array_key_exists('company_vat', $data));"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "$result['reverse_charge'] = EuVat::reverseCharge($this->di, $row, (float) $tax);"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "EuVat::recheck($di);"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_tax.html.twig",
+        "done": "name=\"eu_vat_check\""
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "{% if invoice.reverse_charge|default(false) %}"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_invoice.html.twig",
+        "done": "{% if invoice.reverse_charge|default(false) %}"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_print.html.twig",
+        "done": "{% if invoice.reverse_charge|default(false) %}"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "{% if guest.clientfence_eu_vat %}"
+    },
+    {
+        "file": "themes/palisade/html/mod_page_signup.html.twig",
+        "done": "{% if guest.clientfence_eu_vat %}"
     }
 ]

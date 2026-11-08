@@ -347,6 +347,8 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $service = $this->getDi()['mod_service']('client');
         $oldEmail = (string) $client->getEmail();
+        $oldVat = $client->getCompanyVat();
+        $oldCountry = $client->getCountry();
 
         // ClientFence core patch: sign-in email changes can redirect password resets.
         if (array_key_exists('email', $data) && strcasecmp((string) $data['email'], $oldEmail) !== 0) {
@@ -507,6 +509,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         if (array_key_exists('billing_email', $data)) {
             $client->setBillingEmail($data['billing_email']);
         }
+        // ClientFence core patch: EU VAT numbers are checked with VIES and set the tax exemption (Invoice/EuVat.php).
+        \ClientFence\Mod\Invoice\EuVat::apply($this->getDi(), $client, $oldVat, $oldCountry, array_key_exists('company_vat', $data));
 
         if ($client->getStatus() !== Client::ACTIVE) {
             $client->setApiToken(null);

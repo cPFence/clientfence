@@ -108,7 +108,7 @@ export default function initCheckout(root) {
     return null;
   };
 
-  const signupMissing = () => !state.signedIn && $$('[data-bf-signup] input, [data-bf-signup] select').some((input) => input.value.trim() === '');
+  const signupMissing = () => !state.signedIn && $$('[data-bf-signup] input, [data-bf-signup] select').some((input) => input.required && input.value.trim() === '');
 
   const selectedMethod = () => form.querySelector('input[name="gateway_id"]:checked');
 
@@ -499,6 +499,8 @@ export default function initCheckout(root) {
           password_confirm: fields.password,
           // ClientFence: the country decides the order's tax.
           country: fields.country,
+          // ClientFence: the EU VAT number (shown when EU VAT numbers are checked) can make the order VAT free.
+          company_vat: fields.company_vat,
         };
         // ClientFence: each CAPTCHA provider posts its own answer field.
         for (const name of ['g-recaptcha-response', 'cf-turnstile-response', 'h-captcha-response']) {

@@ -24546,3 +24546,40 @@ msgstr "ללקוח אין אמצעי תשלום שמור."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "התשלום נגבה."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "עסק באיחוד האירופי עם מספר מע״מ תקף במדינה אחרת מהמדינה שלך אינו משלם מע״מ, והחשבוניות שלו נושאות הערת היפוך חיוב. עסקים במדינה שלך ולקוחות פרטיים ממשיכים לשלם מע״מ."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "בדיקת מספרי מע״מ של האיחוד האירופי באמצעות VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "מספר המע״מ של החברה (לא חובה)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "מע״מ באיחוד האירופי"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "פטור ממס לעסקים תקפים מחוץ למדינה שלי"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "מספר המע״מ :number אינו תקף עבור המדינה שנבחרה. בדוק אותו או השאר את השדה ריק."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "מספר המע״מ שלקוח במדינה באיחוד האירופי שומר נבדק בשירות VIES של האיחוד האירופי, ומספר שגוי נדחה. כאשר VIES אינו משיב, המספר נשמר ונבדק שוב למחרת."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "היפוך חיוב במע״מ: הקונה מדווח על המע״מ (סעיף 196 להנחיה 2006/112/EC)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "המדינה שלך (מדינת המס)"

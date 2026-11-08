@@ -20946,3 +20946,40 @@ msgstr "Ο πελάτης δεν έχει αποθηκευμένο τρόπο π
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Η πληρωμή εισπράχθηκε."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Μια επιχείρηση της ΕΕ με έγκυρο ΑΦΜ σε άλλη χώρα από τη δική σας δεν πληρώνει ΦΠΑ και τα τιμολόγιά της φέρουν τη σημείωση αντίστροφης χρέωσης. Οι επιχειρήσεις της χώρας σας και οι ιδιώτες πελάτες συνεχίζουν να πληρώνουν ΦΠΑ."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Έλεγχος ΑΦΜ ΕΕ με το VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "ΑΦΜ εταιρείας (προαιρετικό)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "ΦΠΑ ΕΕ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Απαλλαγή από φόρο για έγκυρες επιχειρήσεις εκτός της χώρας μου"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "Το ΑΦΜ :number δεν είναι έγκυρο για την επιλεγμένη χώρα. Ελέγξτε το ή αφήστε το πεδίο κενό."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Το ΑΦΜ που αποθηκεύει ένας πελάτης σε χώρα της ΕΕ ελέγχεται με την υπηρεσία VIES της ΕΕ και ένας λανθασμένος αριθμός απορρίπτεται. Όταν το VIES δεν απαντά, ο αριθμός αποθηκεύεται και ελέγχεται ξανά την επόμενη ημέρα."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Αντίστροφη χρέωση ΦΠΑ: ο ΦΠΑ λογίζεται από τον αγοραστή (άρθρο 196 της οδηγίας 2006/112/ΕΚ)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Η χώρα σας (φορολογική κατοικία)"

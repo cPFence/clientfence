@@ -257,6 +257,7 @@
                                 <option value="{{ val }}"{% if guest.system_default_country == val %} selected{% endif %}>{{ title|e }}</option>
                             {% endfor %}
                         </select></label>
+                        {% if guest.clientfence_eu_vat %}<label class="bf-label bf-stack">{{ 'Company VAT number (optional)'|trans }}<input class="form-control" name="company_vat" maxlength="100" autocomplete="off"></label>{% endif %}
                     </div>
                     {% import "macro_functions.html.twig" as mf %}
                     <div class="bf-captcha" data-bf-signup-part>{{ mf.recaptcha }}</div>

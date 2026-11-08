@@ -20357,3 +20357,40 @@ msgstr "De klant heeft geen opgeslagen betaalmethode."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "De betaling is afgeschreven."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Een bedrijf uit de EU met een geldig btw-nummer in een ander land dan het uwe betaalt geen btw, en zijn facturen dragen de vermelding dat de btw is verlegd. Bedrijven in uw land en particuliere klanten blijven btw betalen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "EU-btw-nummers controleren met VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Btw-nummer van het bedrijf (optioneel)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "EU-btw"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Geldige bedrijven buiten mijn land vrijstellen van btw"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "Het btw-nummer :number is niet geldig voor het gekozen land. Controleer het of laat het veld leeg."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Het btw-nummer dat een klant in een EU-land opslaat, wordt gecontroleerd met de EU-dienst VIES, en een onjuist nummer wordt geweigerd. Als VIES niet antwoordt, wordt het nummer opgeslagen en de volgende dag opnieuw gecontroleerd."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "BTW verlegd: de afnemer is de btw verschuldigd (artikel 196 van Richtlijn 2006/112/EG)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Uw land (fiscaal thuisland)"

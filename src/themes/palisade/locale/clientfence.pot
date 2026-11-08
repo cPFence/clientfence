@@ -2524,6 +2524,10 @@ msgstr ""
 msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr ""
+
 #: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig
 msgid "An Error Occurred While Rendering This Widget."
 msgstr ""
@@ -3932,6 +3936,10 @@ msgstr ""
 msgid "Check"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "Check again"
 msgstr ""
@@ -4974,6 +4982,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Company VAT Number"
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -6894,6 +6906,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php
 msgid "Dynadot search failed: :error"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
 msgstr ""
 
 #: src/modules/Support/MailImport.php
@@ -11206,6 +11222,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Make the plan first."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig src/themes/palisade/html/mod_client_profile.html.twig …
@@ -19252,6 +19272,14 @@ msgstr ""
 msgid "The Terms and Privacy Policy addresses are web addresses (https://…)."
 msgstr ""
 
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "The account is removed with its mailbox and every message in it. This cannot be undone."
 msgstr ""
@@ -22445,6 +22473,10 @@ msgstr ""
 msgid "VAT number"
 msgstr ""
 
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "Valid"
 msgstr ""
@@ -23683,6 +23715,10 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Your company name"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig

@@ -20150,3 +20150,40 @@ msgstr "El cliente no tiene ningún método de pago guardado."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "El pago se cobró."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Una empresa de la UE con un número de IVA válido en un país distinto del suyo no paga IVA, y sus facturas llevan la nota de inversión del sujeto pasivo. Las empresas de su país y los clientes particulares siguen pagando IVA."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Comprobar los números de IVA de la UE con VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Número de IVA de la empresa (opcional)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "IVA de la UE"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Eximir de impuestos a las empresas válidas fuera de mi país"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "El número de IVA :number no es válido para el país elegido. Compruébelo o deje el campo vacío."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "El número de IVA que guarda un cliente de un país de la UE se comprueba con el servicio europeo VIES, y se rechaza un número incorrecto. Si VIES no responde, el número se guarda y se vuelve a comprobar al día siguiente."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Inversión del sujeto pasivo: el destinatario liquida el IVA (artículo 196 de la Directiva 2006/112/CE)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Su país (residencia fiscal)"

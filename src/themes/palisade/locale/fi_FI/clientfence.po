@@ -21310,3 +21310,40 @@ msgstr "Asiakkaalla ei ole tallennettua maksutapaa."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Maksu veloitettiin."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "EU-yritys, jolla on voimassa oleva ALV-tunnus muussa maassa kuin teidän, ei maksa ALV:tä, ja sen laskuissa on käännetyn verovelvollisuuden merkintä. Teidän maanne yritykset ja yksityisasiakkaat maksavat ALV:n edelleen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Tarkista EU:n ALV-tunnukset VIES-palvelulla"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Yrityksen ALV-tunnus (valinnainen)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "EU:n ALV"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Vapauta verosta kelvolliset yritykset oman maani ulkopuolella"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "ALV-tunnus :number ei kelpaa valitulle maalle. Tarkista se tai jätä kenttä tyhjäksi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "EU-maassa olevan asiakkaan tallentama ALV-tunnus tarkistetaan EU:n VIES-palvelulla, ja virheellinen tunnus hylätään. Jos VIES ei vastaa, tunnus tallennetaan ja tarkistetaan uudelleen seuraavana päivänä."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Käännetty verovelvollisuus: ostaja tilittää ALV:n (direktiivin 2006/112/EY 196 artikla)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Teidän maanne (verotuskotimaa)"

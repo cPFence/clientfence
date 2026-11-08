@@ -169,6 +169,7 @@
                 </div>
                 {% if invoice.text_1 %}<div class="bf-note">{{ (invoice.text_1 ?? '')|markdown_to_html }}</div>{% endif %}
                 {% if invoice.text_2 %}<div class="bf-note">{{ (invoice.text_2 ?? '')|markdown_to_html }}</div>{% endif %}
+                {% if invoice.reverse_charge|default(false) %}<div class="bf-note">{{ 'VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC).'|trans }}</div>{% endif %}
             </section>
         </div>
 

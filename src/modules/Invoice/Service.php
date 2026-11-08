@@ -354,6 +354,8 @@ class Service implements InjectionAwareInterface
         $result['tax'] = $tax;
         $result['subtotal'] = $total;
         $result['total'] = $total + $tax;
+        // ClientFence core patch: the EU VAT reverse-charge note (Invoice/EuVat.php).
+        $result['reverse_charge'] = EuVat::reverseCharge($this->di, $row, (float) $tax);
         $result['status'] = $row['status'];
         // ClientFence core patch: what an unpaid invoice has received and its balance due (WHMCS).
         $unpaid = $row['status'] === \Model_Invoice::STATUS_UNPAID;
@@ -664,6 +666,12 @@ class Service implements InjectionAwareInterface
             SavedCards::runDue($di);
         } catch (\Throwable $e) {
             $di['logger']->error('Invoice: charging saved cards failed: %s', $e->getMessage());
+        }
+        // ClientFence core patch: EU VAT numbers VIES did not answer for are checked again daily (Invoice/EuVat.php).
+        try {
+            EuVat::recheck($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('Invoice: checking EU VAT numbers again failed: %s', $e->getMessage());
         }
     }
 

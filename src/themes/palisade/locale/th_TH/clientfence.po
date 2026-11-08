@@ -18685,3 +18685,40 @@ msgstr "ลูกค้าไม่มีวิธีการชำระเง
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "เรียกเก็บเงินแล้ว"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "ธุรกิจในสหภาพยุโรปที่มีเลขประจำตัวผู้เสียภาษีมูลค่าเพิ่มที่ใช้ได้ในประเทศอื่นที่ไม่ใช่ประเทศของคุณ จะไม่ต้องจ่ายภาษีมูลค่าเพิ่ม และใบแจ้งหนี้ของธุรกิจนั้นจะมีหมายเหตุ reverse charge ส่วนธุรกิจในประเทศของคุณและลูกค้าบุคคลทั่วไปยังคงต้องจ่ายภาษีมูลค่าเพิ่ม"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "ตรวจสอบเลขภาษีมูลค่าเพิ่มของสหภาพยุโรปด้วย VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "เลขประจำตัวผู้เสียภาษีมูลค่าเพิ่มของบริษัท (ไม่บังคับ)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "ภาษีมูลค่าเพิ่มสหภาพยุโรป"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "ยกเว้นภาษีให้ธุรกิจที่ถูกต้องซึ่งอยู่นอกประเทศของฉัน"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "เลขประจำตัวผู้เสียภาษีมูลค่าเพิ่ม :number ใช้ไม่ได้กับประเทศที่เลือก โปรดตรวจสอบ หรือเว้นช่องนี้ไว้ว่าง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "เลขภาษีมูลค่าเพิ่มที่ลูกค้าในประเทศสหภาพยุโรปบันทึกจะถูกตรวจสอบกับบริการ VIES ของสหภาพยุโรป และเลขที่ไม่ถูกต้องจะถูกปฏิเสธ หาก VIES ไม่ตอบกลับ ระบบจะบันทึกเลขนั้นไว้และตรวจสอบอีกครั้งในวันถัดไป"
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "การกลับภาระภาษีมูลค่าเพิ่ม (reverse charge): ผู้ซื้อเป็นผู้คำนวณภาษีมูลค่าเพิ่ม (ข้อ 196 ของคำสั่ง 2006/112/EC)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "ประเทศของคุณ (ถิ่นที่อยู่ทางภาษี)"

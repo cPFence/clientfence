@@ -20395,3 +20395,40 @@ msgstr "Clientul nu are nicio metodă de plată salvată."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Plata a fost preluată."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "O companie din UE cu un cod TVA valid într-o altă țară decât a dvs. nu plătește TVA, iar facturile sale conțin mențiunea de taxare inversă. Companiile din țara dvs. și clienții persoane fizice plătesc în continuare TVA."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Verifică codurile TVA din UE cu VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Cod TVA al companiei (opțional)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "TVA UE"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Scutește de taxe companiile valide din afara țării mele"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "Codul TVA :number nu este valid pentru țara aleasă. Verificați-l sau lăsați câmpul gol."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Codul TVA salvat de un client dintr-o țară UE este verificat cu serviciul UE VIES, iar un cod greșit este refuzat. Dacă VIES nu răspunde, codul este salvat și verificat din nou a doua zi."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Taxare inversă: TVA este datorat de beneficiar (art. 196 din Directiva 2006/112/CE)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Țara dvs. (domiciliu fiscal)"

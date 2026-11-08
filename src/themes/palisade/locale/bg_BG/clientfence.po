@@ -21373,3 +21373,40 @@ msgstr "Клиентът няма запазен начин на плащане.
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Плащането беше получено."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Фирма от ЕС с валиден ДДС номер в друга държава, а не във вашата, не плаща ДДС, а фактурите ѝ съдържат бележка за обратно начисляване. Фирмите във вашата държава и частните клиенти продължават да плащат ДДС."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Проверка на ДДС номерата от ЕС с VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "ДДС номер на компанията (по избор)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "ДДС в ЕС"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Освобождаване от данък на валидни фирми извън моята държава"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "ДДС номерът :number не е валиден за избраната държава. Проверете го или оставете полето празно."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "ДДС номерът, който клиент от държава на ЕС запазва, се проверява с услугата VIES на ЕС, а грешен номер се отхвърля. Ако VIES не отговори, номерът се запазва и се проверява отново на следващия ден."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Обратно начисляване на ДДС: ДДС се начислява от получателя (чл. 196 от Директива 2006/112/ЕО)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Вашата държава (данъчен произход)"

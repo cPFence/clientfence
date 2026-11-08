@@ -20873,3 +20873,40 @@ msgstr "Klijent nema sačuvan način plaćanja."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Uplata je naplaćena."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Firma iz EU sa važećim PDV brojem u drugoj državi, a ne u vašoj, ne plaća PDV, a njeni računi nose napomenu o obrnutom oporezivanju. Firme u vašoj državi i privatni klijenti i dalje plaćaju PDV."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "Proveri PDV brojeve EU preko VIES-a"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "PIB/PDV broj kompanije (opciono)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "PDV EU"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Oslobodi poreza važeće firme izvan moje države"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "PDV broj :number nije važeći za izabranu državu. Proverite ga ili ostavite polje prazno."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "PDV broj koji klijent iz države EU sačuva proverava se EU servisom VIES, a pogrešan broj se odbija. Ako VIES ne odgovori, broj se sačuva i ponovo proveri sledećeg dana."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "Obrnuto oporezivanje: PDV obračunava kupac (član 196 Direktive 2006/112/EZ)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Vaša država (poreski domicil)"

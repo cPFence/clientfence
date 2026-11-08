@@ -72,6 +72,12 @@ class Guest extends \ClientFence\Api\AbstractApi
         return (bool) $this->getDi()['mod_service']('system')->getParamValue('tax_enabled', false);
     }
 
+    /** Whether EU VAT numbers are checked (sign-up forms then ask for one, Invoice/EuVat.php). */
+    public function eu_vat(): bool
+    {
+        return \ClientFence\Mod\Invoice\EuVat::settings($this->getDi())['check'];
+    }
+
     /**
      * The smallest and largest wallet top-up (FOSSBilling's funds_min_amount and funds_max_amount,
      * in `currency` when given; null when not set).

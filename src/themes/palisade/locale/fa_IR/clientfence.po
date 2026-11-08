@@ -20380,3 +20380,40 @@ msgstr "مشتری روش پرداخت ذخیره‌شده ندارد."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "پرداخت برداشت شد."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "کسب‌وکار اتحادیه اروپا که در کشوری غیر از کشور شما شماره مالیات بر ارزش افزوده معتبر دارد، مالیات بر ارزش افزوده نمی‌پردازد و روی فاکتورهایش یادداشت سازوکار معکوس درج می‌شود. کسب‌وکارهای کشور شما و مشتریان شخصی همچنان مالیات بر ارزش افزوده می‌پردازند."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "بررسی شماره‌های مالیات بر ارزش افزوده اتحادیه اروپا با VIES"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "شماره مالیات بر ارزش افزوده شرکت (اختیاری)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "مالیات بر ارزش افزوده اتحادیه اروپا"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "معاف کردن کسب‌وکارهای معتبر خارج از کشور من از مالیات"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "شماره مالیات بر ارزش افزوده :number برای کشور انتخاب‌شده معتبر نیست. آن را بررسی کنید یا خانه را خالی بگذارید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "شماره مالیات بر ارزش افزوده‌ای که مشتری در یک کشور اتحادیه اروپا ذخیره می‌کند با سرویس VIES اتحادیه اروپا بررسی می‌شود و شمارهٔ اشتباه رد می‌شود. وقتی VIES پاسخ نمی‌دهد، شماره ذخیره می‌شود و روز بعد دوباره بررسی می‌شود."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "سازوکار معکوس مالیات بر ارزش افزوده: خریدار مالیات بر ارزش افزوده را محاسبه می‌کند (ماده 196 دستورالعمل 2006/112/EC)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "کشور شما (محل اقامت مالیاتی)"

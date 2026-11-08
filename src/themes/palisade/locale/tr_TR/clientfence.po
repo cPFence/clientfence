@@ -18648,3 +18648,40 @@ msgstr "Müşterinin kayıtlı ödeme yöntemi yok."
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr "Ödeme tahsil edildi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "An EU business with a valid VAT number in another country than yours pays no VAT, and its invoices carry the reverse-charge note. Businesses in your country and private clients keep paying VAT."
+msgstr "Sizinkinden farklı bir ülkede geçerli KDV numarası olan bir AB şirketi KDV ödemez ve faturalarında ters yükleme notu bulunur. Ülkenizdeki şirketler ve bireysel müşteriler KDV ödemeye devam eder."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Check EU VAT numbers with VIES"
+msgstr "AB KDV numaralarını VIES ile doğrula"
+
+#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+msgid "Company VAT number (optional)"
+msgstr "Şirket KDV numarası (isteğe bağlı)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "EU VAT"
+msgstr "AB KDV"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Make valid businesses outside my country tax exempt"
+msgstr "Ülkem dışındaki geçerli şirketleri vergiden muaf tut"
+
+#: src/modules/Invoice/EuVat.php
+msgid "The VAT number :number is not valid for the chosen country. Check it, or leave the field empty."
+msgstr "KDV numarası :number seçilen ülke için geçerli değil. Kontrol edin veya alanı boş bırakın."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
+msgstr "Bir AB ülkesindeki müşterinin kaydettiği KDV numarası AB'nin VIES hizmetiyle doğrulanır ve yanlış numara reddedilir. VIES yanıt vermezse numara kaydedilir ve ertesi gün yeniden doğrulanır."
+
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
+msgstr "KDV ters yükleme: KDV'yi alıcı hesaplar (2006/112/AT sayılı Direktifin 196. maddesi)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
+msgid "Your country (tax home)"
+msgstr "Ülkeniz (vergi yerleşimi)"

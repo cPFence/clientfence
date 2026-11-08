@@ -54,7 +54,8 @@
                     'address_1': 'Address Line 1', 'address_2': 'Address Line 2', 'city': 'City', 'state': 'State',
                     'postcode': 'Zip/Postal Code', 'country': 'Country'
                 } %}
-                    {% if name in r %}
+                    {# ClientFence: a VAT number is checked against the client's country (Invoice/EuVat.php). #}
+                    {% if name in r or (name == 'country' and guest.clientfence_eu_vat) %}
                         <div class="mb-3">
                             <label class="form-label" for="su-{{ name }}">{{ label|trans }}</label>
                             {% if name == 'country' %}
@@ -83,6 +84,12 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% if guest.clientfence_eu_vat %}
+                    <div class="mb-3">
+                        <label class="form-label" for="su-company-vat">{{ 'Company VAT number (optional)'|trans }}</label>
+                        <input class="form-control" id="su-company-vat" name="company_vat" value="{{ request.company_vat|default('') }}" maxlength="100" autocomplete="off">
+                    </div>
+                {% endif %}
                 {% for name, field in guest.client_custom_fields %}
                     {% if field.active|default(false) %}
                         <div class="mb-3">
