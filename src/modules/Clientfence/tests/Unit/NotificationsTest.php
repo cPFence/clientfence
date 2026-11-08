@@ -194,6 +194,21 @@ test('old notifications are pruned', function (): void {
         ->and(Notifications::unread($di, Notifications::CLIENT, 9))->toBe(1);
 });
 
+test('a deleted order or invoice takes its notifications with it', function (): void {
+    [$di, $db] = notificationsContainer();
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, hash TEXT)');
+    $db->executeStatement("INSERT INTO invoice VALUES (7, 'abc')");
+    Notifications::client($di, 9, 'order_canceled', ['title' => 'VPS'], 'order/service/manage/3');
+    Notifications::staff($di, 'order_new', ['id' => 3, 'title' => 'VPS'], 'order/manage/3', 'order');
+    Notifications::client($di, 9, 'order_active', ['title' => 'Mail'], 'order/service/manage/33');
+    Notifications::client($di, 9, 'invoice_new', ['number' => 'CF-7', 'amount' => '5.00 USD'], 'invoice/abc', 'invoice_new:7');
+
+    Notifications::orderDeleted($di, 3);
+    Notifications::invoiceDeleted($di, 7);
+
+    expect($db->fetchFirstColumn('SELECT url FROM ' . Notifications::TABLE))->toBe(['order/service/manage/33']);
+});
+
 test('every kind has its own text and an unknown kind reads generic', function (): void {
     expect(Notifications::text('ticket_escalated', ['id' => 5, 'rule' => 'No reply in 4 hours']))->toBe('Ticket #5 needs attention: No reply in 4 hours')
         ->and(Notifications::text('credit_added', ['amount' => '3.00 USD']))->toBe('3.00 USD was added to your account credit')

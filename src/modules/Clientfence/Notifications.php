@@ -7,7 +7,7 @@ declare(strict_types=1);
  * recipient (a staff member, or a client account) in mod_clientfence_notification: its kind, the
  * values its text needs and the page it links to. The text is made when it is shown (text()), in
  * the reader's language. Unread ones are counted on the bell; read or not, they are kept
- * KEEP_DAYS days (prune(), daily from the cron). A dismissed one stays until then too, hidden (kind
+ * KEEP_DAYS days (prune(), daily from the cron), or until the order or invoice they link to is deleted. A dismissed one stays until then too, hidden (kind
  * DISMISSED), so its dedupe key keeps the same notice from coming back.
  *
  * Staff get the kinds of their work (orders, payments, tickets, failures…), each only when their
@@ -163,6 +163,19 @@ final class Notifications
         } catch (\Throwable) {
             return 0;
         }
+    }
+
+    /** A deleted order's notifications go: their links would only open a "not found" page. */
+    public static function orderDeleted(\Pimple\Container $di, int $orderId): void
+    {
+        self::forget($di, ['order/service/manage/' . $orderId, 'order/manage/' . $orderId]);
+    }
+
+    /** Called before the delete: the client's link names the invoice's hash. */
+    public static function invoiceDeleted(\Pimple\Container $di, int $invoiceId): void
+    {
+        $hash = (string) self::db($di)->fetchOne('SELECT hash FROM invoice WHERE id = ?', [$invoiceId]);
+        self::forget($di, array_filter(['invoice/manage/' . $invoiceId, $hash === '' ? null : 'invoice/' . $hash]));
     }
 
     /** The text of a notification in the current language; a kind no longer known reads generic. */
@@ -437,6 +450,11 @@ final class Notifications
             Service::ensureTables($di, true);
             $db->insert(self::TABLE, $row);
         }
+    }
+
+    private static function forget(\Pimple\Container $di, array $urls): void
+    {
+        self::db($di)->executeStatement('DELETE FROM ' . self::TABLE . ' WHERE url IN (?)', [array_values($urls)], [\Doctrine\DBAL\ArrayParameterType::STRING]);
     }
 
     private static function db(\Pimple\Container $di): Connection

@@ -702,6 +702,16 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         self::notify($event, static fn (\Pimple\Container $di, int $id) => Notifications::orderChanged($di, $id, 'order_canceled'));
     }
 
+    public static function onAfterAdminOrderDelete(\ClientFence\Event $event): void
+    {
+        self::notify($event, static fn (\Pimple\Container $di, int $id) => Notifications::orderDeleted($di, $id));
+    }
+
+    public static function onBeforeAdminInvoiceDelete(\ClientFence\Event $event): void
+    {
+        self::notify($event, static fn (\Pimple\Container $di, int $id) => Notifications::invoiceDeleted($di, $id));
+    }
+
     public static function onAfterOrderUpgrade(\ClientFence\Event $event): void
     {
         self::notify($event, static fn (\Pimple\Container $di, int $id) => Notifications::orderUpgraded($di, $id));
