@@ -15,6 +15,13 @@ use Twig\Loader\FilesystemLoader;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
+// English amounts ("$9"): the test image's default locale (en_US_POSIX) writes "$ 9" with ICU 76.
+beforeEach(function (): void {
+    $this->locale = Locale::getDefault();
+    Locale::setDefault('en_US');
+});
+afterEach(fn () => Locale::setDefault($this->locale));
+
 final class PalisadeStoreGuestStub
 {
     /** @param array<string, mixed> $values */

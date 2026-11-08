@@ -14,7 +14,8 @@
 {# ClientFence core patch: tabs only for the staff allowed to read them (support staff without order access crashed the page). #}
 {% set can_view_orders = has_permission('order', 'view') %}
 {% set can_view_invoices = has_permission('invoice', 'view') %}
-{% set can_view_tickets = has_permission('support', 'view') %}
+{# ClientFence core patch: no Tickets tab or ticket counts while tickets are off (Support settings). #}
+{% set can_view_tickets = has_permission('support', 'view') and guest.support_tickets_enabled %}
 {% set can_view_transactions = has_permission('invoice', 'manage_transactions') %}
 {% set has_profile_edit_actions = can_edit_profile or can_change_password %}
 

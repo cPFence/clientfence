@@ -21468,3 +21468,61 @@ msgstr "Τα τιμολόγια ανανέωσής σας πληρώνονται
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Μετατροπή σε νόμισμα για επεξεργασία: το :code δεν είναι ένα από τα νομίσματα αυτής της πύλης."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Επιλέξτε μια ενεργή πύλη για τα ανεξόφλητα παραστατικά αυτής της πύλης."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Πελάτες έχουν αποθηκευμένους τρόπους πληρωμής σε αυτή την πύλη. Απενεργοποιήστε την αντί να τη διαγράψετε."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Διαγραφή :name;"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Ενεργοποίηση αιτημάτων"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Τα ανεξόφλητα παραστατικά της μεταφέρονται στην πύλη που θα επιλέξετε. Τα πληρωμένα παραστατικά και οι πληρωμές διατηρούν το ιστορικό τους. Μια πύλη με ενεργές συνδρομές ή αποθηκευμένους τρόπους πληρωμής δεν μπορεί να διαγραφεί: απενεργοποιήστε την."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Μεταφορά ανεξόφλητων παραστατικών στην"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Καμία άλλη ενεργή πύλη"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Διεύθυνση εξωτερικού τμήματος υποστήριξης (προαιρετικό)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Στείλτε την απόδειξη στην υποστήριξή μας. Επιβεβαιώνουμε την πληρωμή και σημειώνουμε το παραστατικό ως πληρωμένο."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Τα αιτήματα υποστήριξης είναι απενεργοποιημένα."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Αυτή η πύλη έχει ενεργές συνδρομές. Απενεργοποιήστε την αντί να τη διαγράψετε."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Απενεργοποιήστε τα αιτήματα αν χρησιμοποιείτε άλλο τμήμα υποστήριξης: οι πελάτες και οι επισκέπτες δεν ανοίγουν, δεν απαντούν και δεν στέλνουν αιτήματα με email, και οι σελίδες, τα μενού και τα πλαίσια αιτημάτων κρύβονται. Τα υπάρχοντα αιτήματα διατηρούνται και επιστρέφουν όταν ενεργοποιήσετε ξανά τα αιτήματα. Η Γνωσιακή Βάση και η κατάσταση δικτύου έχουν δικούς τους διακόπτες."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Όσο τα αιτήματα είναι απενεργοποιημένα, το μενού Υποστήριξη ανοίγει αυτή τη διεύθυνση, για παράδειγμα την πύλη σας FreeScout. Κενό: χωρίς μενού Υποστήριξη."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Ζητήστε από την υποστήριξή μας να διαγράψει τον λογαριασμό σας. Διαγράφουμε τα προσωπικά σας δεδομένα και κρατάμε μόνο ό,τι απαιτεί ο νόμος, όπως τα παραστατικά."

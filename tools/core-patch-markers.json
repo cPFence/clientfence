@@ -4562,5 +4562,69 @@
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
         "done": "ClientFence core patch: a gateway field may show an example value (placeholder)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
+        "done": "ClientFence core patch: an unsaved switch shows its default (\"default\", else the first option, On)."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: the adapter's display name and payment kinds, not the code and \"allow both\"."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: as WHMCS, the unpaid invoices move to a replacement gateway; refused while active"
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: Support settings \"Tickets\" off, as Blesta with its Support Manager turned off:"
+    },
+    {
+        "file": "modules/Support/Controller/Client.php",
+        "done": "ClientFence core patch: with tickets off (Support settings) the ticket pages are not found and"
+    },
+    {
+        "file": "modules/Support/Controller/Admin.php",
+        "done": "ClientFence core patch: with tickets off (Support settings) only the knowledge base and network"
+    },
+    {
+        "file": "modules/Index/Service.php",
+        "done": "ClientFence core patch: no ticket box or reply alerts while tickets are off (Support settings)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: no Tickets tab or ticket counts while tickets are off (Support settings)."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: the receipt upload opens a ticket, so while tickets are off (Support settings) the outside help desk link instead, if any."
+    },
+    {
+        "file": "themes/palisade/html/mod_client_profile.html.twig",
+        "done": "ClientFence core patch: the deletion request opens a ticket, so while tickets are off (Support settings) the outside help desk link instead, if any."
+    },
+    {
+        "file": "themes/palisade/html/partial_menu.html.twig",
+        "done": "ClientFence core patch: tickets off (Support settings): Support opens the outside help desk, or is not shown."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: no ticket count or Open Ticket while tickets are off (Support settings)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "ClientFence core patch: tickets on or off, as Blesta's Support Manager, and the outside help desk (Support\\Service::ticketsEnabled())."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateways.html.twig",
+        "done": "ClientFence core patch: deleting asks for a replacement gateway for the unpaid invoices, as WHMCS (ServicePayGateway::delete())."
+    },
+    {
+        "file": "themes/admin_default/html_custom/mod_index_dashboard.html.twig",
+        "done": "ClientFence core patch: no ticket checks or chart while tickets are off (Support settings)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: a group left without entries (Support with tickets, knowledge base and network status off) is not shown."
     }
 ]

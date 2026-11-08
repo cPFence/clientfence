@@ -21176,3 +21176,61 @@ msgstr "Faktury za prodloužení se pak platí z vašeho účtu PayPal. Můžete
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Převést na měnu pro zpracování: :code není mezi měnami tohoto portálu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Vyberte povolenou bránu pro neuhrazené faktury této brány."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Klienti mají u této brány uložené způsoby platby. Místo odstranění ji zakažte."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Odstranit :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Povolit tikety"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Její neuhrazené faktury se přesunou na bránu, kterou vyberete. Uhrazené faktury a platby si zachovají historii. Bránu s aktivním předplatným nebo uloženými způsoby platby nelze odstranit: zakažte ji."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Přesunout neuhrazené faktury na"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Žádná jiná povolená brána"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Adresa externího helpdesku (volitelné)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Pošlete doklad naší podpoře. Platbu potvrdíme a fakturu označíme jako zaplacenou."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Tikety podpory jsou zakázané."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Tato brána má aktivní předplatné. Místo odstranění ji zakažte."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Zakažte tikety, pokud používáte jiný helpdesk: klienti a návštěvníci pak neotevírají tikety, neodpovídají na ně ani je neposílají e-mailem a stránky, nabídky a boxy tiketů jsou skryté. Stávající tikety zůstanou zachovány a vrátí se, když tikety povolíte. Databáze znalostí a stav sítě mají vlastní přepínače."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Dokud jsou tikety zakázané, nabídka Podpora otevře tuto adresu, například váš portál FreeScout. Prázdné: žádná nabídka Podpora."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Požádejte naši podporu o smazání svého účtu. Vymažeme vaše osobní údaje a ponecháme jen to, co vyžaduje zákon, například faktury."

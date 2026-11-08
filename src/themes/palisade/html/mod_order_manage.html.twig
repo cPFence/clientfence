@@ -106,7 +106,8 @@
                             </tr>
                         {% endif %}
 
-                        {% if order.active_tickets > 0 %}
+                        {# ClientFence core patch: no ticket count or Open Ticket while tickets are off (Support settings). #}
+                        {% if order.active_tickets > 0 and guest.support_tickets_enabled %}
                             <tr>
                                 <td><label>{{ 'Active Support Tickets'|trans }}</label></td>
                                 <td>
@@ -139,7 +140,9 @@
                     {% if upgrade.options_change|default(false) %}
                         <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#options-change-modal">{{ 'Change options'|trans }}</button>
                     {% endif %}
+                    {% if guest.support_tickets_enabled %}
                     <button class="btn btn-outline-secondary btn-sm" type="button" id="open-ticket" data-bs-toggle="modal" data-bs-target="#open-ticket-modal">{{ 'Open Ticket'|trans }}</button>
+                    {% endif %}
                     {% if cancel_request %}
                         <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1 w-100" role="status">
                             <span>{{ cancel_request.type == 'end_of_period'

@@ -194,7 +194,9 @@ class Service implements \ClientFence\InjectionAwareInterface
             $di['logger']->error('Support: removing old ticket files failed: %s', $e->getMessage());
         }
         try {
-            MailImport::run($di);
+            if ($di['mod_service']('support')->ticketsEnabled()) {
+                MailImport::run($di);
+            }
         } catch (\Throwable $e) {
             $di['logger']->error('Support: email import failed: %s', $e->getMessage());
         }
@@ -1138,6 +1140,9 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function ticketReply(SupportTicket $ticket, \Model_Admin|\Model_Client|\ClientFence\Identity\Guest $identity, string $content): int
     {
+        if (!$identity instanceof \Model_Admin && !$this->ticketsEnabled()) {
+            throw new InformationException('Support tickets are turned off.');
+        }
         SupportTicketValidator::validateContent($content);
         $em = $this->di['em'];
         $msg = new SupportTicketMessage();
@@ -1277,7 +1282,24 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         $disableGuestTickets = $config['disable_guest_tickets'] ?? $config['disable_public_tickets'] ?? false;
 
-        return !$disableGuestTickets;
+        return !$disableGuestTickets && $this->ticketsEnabled();
+    }
+
+    /**
+     * ClientFence core patch: Support settings "Tickets" off, as Blesta with its Support Manager turned off:
+     * clients, guests and the mail import open and reply to no tickets; tickets kept are back when turned on.
+     */
+    public function ticketsEnabled(): bool
+    {
+        return Tools::normalizeBoolean($this->di['mod_service']('extension')->getConfig('mod_support')['tickets_enable'] ?? true, true);
+    }
+
+    /** ClientFence: the outside help desk (such as FreeScout) the Support links open while tickets are off. */
+    public function supportUrl(): ?string
+    {
+        $url = trim((string) ($this->di['mod_service']('extension')->getConfig('mod_support')['support_url'] ?? ''));
+
+        return preg_match('#^https?://#i', $url) && filter_var($url, FILTER_VALIDATE_URL) ? $url : null;
     }
 
     public function canClientSubmitNewTicket(\Model_Client $client, array $config): bool
@@ -1305,6 +1327,9 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function ticketCreateForClient(\Model_Client $client, Helpdesk $helpdesk, array $data): int
     {
+        if (!$this->ticketsEnabled()) {
+            throw new InformationException('Support tickets are turned off.');
+        }
         SupportTicketValidator::validateTicketCreation($data);
         SupportTicketValidator::validateContent($data['content'] ?? null);
 

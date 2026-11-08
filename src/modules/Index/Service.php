@@ -41,14 +41,16 @@ class Service implements InjectionAwareInterface
     public function getDashboardData(\Model_Client $client): array
     {
         $data['client_id'] = $client->id;
+        // ClientFence core patch: no ticket box or reply alerts while tickets are off (Support settings).
+        $tickets = $this->di['mod_service']('support')->ticketsEnabled();
 
         return [
             'profile' => $this->getProfile($client),
-            'tickets' => $this->getTicketsData($data),
+            'tickets' => $tickets ? $this->getTicketsData($data) : null,
             'invoices' => $this->getInvoicesData($data),
             'orders' => $this->getOrdersData($data),
             'recent_orders' => $this->getRecentOrders($data),
-            'recent_tickets' => $this->getRecentTickets($data),
+            'recent_tickets' => $tickets ? $this->getRecentTickets($data) : [],
         ];
     }
 

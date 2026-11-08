@@ -111,7 +111,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for gateway in admin.invoice_gateway_get_list({ 'per_page': 100 }|merge(request)).list %}
+                                {% set gateway_list = admin.invoice_gateway_get_list({ 'per_page': 100 }|merge(request)).list %}
+                                {% for gateway in gateway_list %}
                                 <tr>
                                     <td>
                                         <a href='{{ "invoice/gateway/#{gateway.id}"|url }}'>{{ gateway.title }}</a>
@@ -132,8 +133,8 @@
                                                 <use href="#edit" />
                                             </svg>
                                         </a>
-                                        <a class="btn btn-icon" href="{{ 'invoice/gateway_delete'|api_url(query: { 'id': gateway.id }) }}"
-                                            {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'invoice/gateways'|url}) }}>
+                                        {# ClientFence core patch: deleting asks for a replacement gateway for the unpaid invoices, as WHMCS (ServicePayGateway::delete()). #}
+                                        <a class="btn btn-icon" href="#" data-bs-toggle="modal" data-bs-target="#deleteGatewayModal{{ gateway.id }}" title="{{ 'Delete'|trans }}">
                                             <svg class="icon">
                                                 <use href="#trash" />
                                             </svg>
@@ -148,6 +149,34 @@
                                 </tbody>
                             </table>
                         </div>
+                        {% for gateway in gateway_list %}
+                        <div class="modal fade" id="deleteGatewayModal{{ gateway.id }}" tabindex="-1" aria-labelledby="deleteGatewayModalLabel{{ gateway.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form class="modal-content text-wrap" method="post" action="{{ 'invoice/gateway_delete'|api_url }}" {{ fb_api_form({redirect: 'invoice/gateways'|url}) }}>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteGatewayModalLabel{{ gateway.id }}">{{ 'Delete :name?'|trans({ ':name': gateway.title }) }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="{{ gateway.id }}">
+                                        <p>{{ 'Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead.'|trans }}</p>
+                                        <label class="form-label" for="replacement-{{ gateway.id }}">{{ 'Move unpaid invoices to'|trans }}</label>
+                                        <select class="form-select" id="replacement-{{ gateway.id }}" name="replacement_id">
+                                            {% for other in gateway_list|filter(other => other.enabled and other.id != gateway.id) %}
+                                                <option value="{{ other.id }}">{{ other.title }}</option>
+                                            {% else %}
+                                                <option value="">{{ 'No other enabled gateway'|trans }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</a>
+                                        <input type="submit" class="btn btn-danger" value="{{ 'Delete'|trans }}">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

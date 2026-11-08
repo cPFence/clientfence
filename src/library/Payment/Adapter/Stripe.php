@@ -176,7 +176,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                     'radio', [
                         'label' => 'Saved bank accounts:',
                         'description' => 'Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows "Payment pending".',
-                        'multiOptions' => ['0' => 'Off', '1' => 'On'],
+                        'multiOptions' => ['1' => 'On', '0' => 'Off'],
+                        'default' => '0',
                     ],
                 ],
             ],

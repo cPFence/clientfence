@@ -25068,3 +25068,61 @@ msgstr "חשבוניות החידוש שלכם ישולמו אז מחשבון ה
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "המרה למטבע לעיבוד: :code אינו אחד ממטבעות הפורטל הזה."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "בחרו שער תשלום מופעל עבור החשבוניות שלא שולמו של שער זה."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "ללקוחות יש אמצעי תשלום שמורים בשער זה. השביתו אותו במקום למחוק."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "למחוק את :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "הפעלת פניות"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "החשבוניות שלא שולמו שלו יועברו לשער שתבחרו. חשבוניות ששולמו ותשלומים שומרים על ההיסטוריה שלהם. לא ניתן למחוק שער עם מינויים פעילים או אמצעי תשלום שמורים: השביתו אותו במקום."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "העברת חשבוניות שלא שולמו אל"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "אין שער תשלום מופעל אחר"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "כתובת מרכז תמיכה חיצוני (אופציונלי)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "שלחו את הקבלה לתמיכה שלנו. אנחנו מאשרים את התשלום ומסמנים את החשבונית כשולמה."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "פניות התמיכה מושבתות."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "לשער זה יש מינויים פעילים. השביתו אותו במקום למחוק."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "השביתו פניות אם אתם משתמשים במרכז תמיכה אחר: לקוחות ומבקרים לא יפתחו פניות, לא ישיבו להן ולא ישלחו אותן בדוא״ל, ודפי הפניות, התפריטים והתיבות יוסתרו. הפניות הקיימות נשמרות וחוזרות כשתפעילו פניות. למאגר הידע ולמצב הרשת יש מתגים משלהם."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "כל עוד הפניות מושבתות, תפריט התמיכה פותח כתובת זו, למשל פורטל FreeScout שלכם. ריק: אין תפריט תמיכה."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "בקשו מהתמיכה שלנו למחוק את החשבון שלכם. נמחק את המידע האישי שלכם ונשמור רק מידע שהחוק מחייב, כגון חשבוניות."

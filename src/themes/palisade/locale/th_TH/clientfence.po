@@ -19207,3 +19207,61 @@ msgstr "ใบแจ้งหนี้การต่ออายุของค
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "แปลงเป็นสกุลเงินสำหรับการประมวลผล: :code ไม่ใช่สกุลเงินหนึ่งของพอร์ทัลนี้"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "เลือกช่องทางที่เปิดใช้งานสำหรับใบแจ้งหนี้ที่ยังไม่ชำระของช่องทางนี้"
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "ลูกค้ามีวิธีการชำระเงินที่บันทึกไว้ในช่องทางนี้ ให้ปิดใช้งานแทนการลบ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "ลบ :name หรือไม่?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "เปิดใช้งานคำขอสนับสนุน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "ใบแจ้งหนี้ที่ยังไม่ชำระของช่องทางนี้จะย้ายไปยังช่องทางที่คุณเลือก ใบแจ้งหนี้ที่ชำระแล้วและการชำระเงินยังคงมีประวัติเดิม ช่องทางที่มีการสมัครสมาชิกที่ใช้งานอยู่หรือวิธีการชำระเงินที่บันทึกไว้ไม่สามารถลบได้ ให้ปิดใช้งานแทน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "ย้ายใบแจ้งหนี้ที่ยังไม่ชำระไปที่"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "ไม่มีช่องทางอื่นที่เปิดใช้งาน"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "ที่อยู่ศูนย์ช่วยเหลือภายนอก (ไม่บังคับ)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "ส่งใบเสร็จให้ฝ่ายสนับสนุนของเรา เราจะยืนยันการชำระเงินและทำเครื่องหมายใบแจ้งหนี้ว่าชำระแล้ว"
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "คำขอสนับสนุนถูกปิดใช้งานอยู่"
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "ช่องทางนี้มีการสมัครสมาชิกที่ใช้งานอยู่ ให้ปิดใช้งานแทนการลบ"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "ปิดใช้งานคำขอสนับสนุนเมื่อคุณใช้ศูนย์ช่วยเหลืออื่น ลูกค้าและผู้เยี่ยมชมจะไม่เปิด ตอบกลับ หรืออีเมลคำขอสนับสนุน และหน้า เมนู และกล่องของคำขอสนับสนุนจะถูกซ่อน คำขอสนับสนุนที่มีอยู่จะถูกเก็บไว้และกลับมาเมื่อคุณเปิดใช้งานคำขอสนับสนุน คู่มือการใช้งานและสถานะเครือข่ายมีสวิตช์ของตัวเอง"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "ขณะที่ปิดใช้งานคำขอสนับสนุน เมนูช่วยเหลือจะเปิดที่อยู่นี้ เช่น พอร์ทัล FreeScout ของคุณ เว้นว่าง: ไม่มีเมนูช่วยเหลือ"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "แจ้งฝ่ายสนับสนุนของเราให้ลบบัญชีของคุณ เราจะลบข้อมูลส่วนบุคคลของคุณและเก็บไว้เฉพาะสิ่งที่กฎหมายกำหนดให้เก็บ เช่น ใบแจ้งหนี้"

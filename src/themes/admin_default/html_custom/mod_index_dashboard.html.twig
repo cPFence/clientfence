@@ -54,12 +54,13 @@
     {% endfor %}
 
     {# FOSSBilling's calls need the module's "view" permission, not only its "Module access". #}
+    {# ClientFence core patch: no ticket checks or chart while tickets are off (Support settings). #}
     {% set can = {
         'stats': admin.system_is_allowed({ 'mod': 'stats', 'f': 'view' }),
         'client': admin.system_is_allowed({ 'mod': 'client', 'f': 'view' }),
         'order': admin.system_is_allowed({ 'mod': 'order', 'f': 'view' }),
         'invoice': admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }),
-        'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }),
+        'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) and guest.support_tickets_enabled,
         'activity': admin.system_is_allowed({ 'mod': 'activity', 'f': 'view' }),
         'settings': admin.system_is_allowed({ 'mod': 'system', 'f': 'manage_settings' })
     } %}

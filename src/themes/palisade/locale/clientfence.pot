@@ -2905,6 +2905,10 @@ msgid "Ask for an email PIN"
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr ""
+
+#: src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Ask to delete your account?"
 msgstr ""
 
@@ -4240,6 +4244,10 @@ msgstr ""
 msgid "Choose an email address."
 msgstr ""
 
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr ""
+
 #: src/modules/Support/TicketEscalation.php
 msgid "Choose an existing help desk."
 msgstr ""
@@ -4854,6 +4862,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "Clients can’t see the store or order. Staff can still create orders for them in the admin area."
+msgstr ""
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
@@ -6380,6 +6392,10 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr ""
+
 #: src/modules/Client/Service.php
 msgid "Delete Clients"
 msgstr ""
@@ -7538,6 +7554,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Enable or disable this email template and group it under a category."
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
@@ -10492,6 +10512,10 @@ msgstr ""
 msgid "Its MX records point to another mail service, so the mailboxes here do not receive its mail."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr ""
+
 #: src/themes/palisade/config/settings.html.twig
 msgid "JavaScript"
 msgstr ""
@@ -12268,6 +12292,10 @@ msgstr ""
 msgid "Move to help desk"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr ""
+
 #: src/modules/Order/templates/client/mod_order_list.html.twig
 msgid "My Products & Services"
 msgstr ""
@@ -13078,6 +13106,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "No orders yet."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -14258,6 +14290,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issues.html.twig
 msgid "Outages and planned work, shown to clients on the Network Status page. Clients with services on an affected server see a banner while an issue is open or the work is scheduled; you can also email them when you save an issue."
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -17784,6 +17820,10 @@ msgstr ""
 msgid "Send the quote by email?"
 msgstr ""
 
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
 msgid "Send this contact a copy of"
 msgstr ""
@@ -19042,6 +19082,10 @@ msgstr ""
 
 #: src/modules/Client/Contacts.php src/themes/palisade/html/partials/auth_shell.html.twig
 msgid "Support tickets"
+msgstr ""
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
 msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
@@ -20973,6 +21017,10 @@ msgstr ""
 msgid "This free subdomain is provided by us. No domain registration or transfer will be added to this order."
 msgstr ""
 
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
 msgid "This group has no staff members."
 msgstr ""
@@ -21923,6 +21971,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "Turn the preview link off?"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -23547,6 +23599,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "While ticked, the cron neither suspends nor cancels this order, up to and including the date (if set). Staff actions are not affected."
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
 msgstr ""
 
 #: src/modules/System/templates/client/mod_system_maintenance.html.twig src/themes/palisade/html/mod_system_maintenance.html.twig

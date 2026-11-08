@@ -246,10 +246,18 @@
                         <h5 class="card-title mb-1">{{ 'Your Data'|trans }}</h5>
                         <p class="card-text fs-7 text-muted">{{ 'Download a copy of the personal data we keep about you: your profile, orders, invoices, payments, tickets and the emails we sent you.'|trans }}</p>
                         <a class="btn btn-outline-primary mb-4" href="{{ 'my-data'|url }}">{{ 'Download My Data'|trans }}</a>
+                        {# ClientFence core patch: the deletion request opens a ticket, so while tickets are off (Support settings) the outside help desk link instead, if any. #}
+                        {% set outside_support = guest.support_support_url %}
+                        {% if guest.support_tickets_enabled %}
                         <h5 class="card-title mb-1">{{ 'Delete My Account'|trans }}</h5>
                         <p class="card-text fs-7 text-muted">{{ 'Ask us to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices. Services you still have must end first; we will reply in a ticket.'|trans }}</p>
                         <a class="btn btn-outline-danger" href="{{ 'client/privacy_request_deletion'|api_url }}"
                            {{ fb_api_link({modal: {type: 'confirm', title: 'Ask to delete your account?'|trans, content: 'We open a ticket with your request and reply there.'|trans}, message: 'Your request was sent. We will reply in a ticket.'|trans}) }}>{{ 'Request Account Deletion'|trans }}</a>
+                        {% elseif outside_support %}
+                        <h5 class="card-title mb-1">{{ 'Delete My Account'|trans }}</h5>
+                        <p class="card-text fs-7 text-muted">{{ 'Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices.'|trans }}</p>
+                        <a class="btn btn-outline-danger" href="{{ outside_support }}" target="_blank" rel="noopener">{{ 'Request Account Deletion'|trans }}</a>
+                        {% endif %}
                         {% endif %}
                     </div>
                     {% endif %}

@@ -21895,3 +21895,61 @@ msgstr "Фактурите ви за подновяване ще се плаща
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Конвертиране във валута за обработка: :code не е сред валутите на този портал."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Изберете активиран шлюз за неплатените фактури на този шлюз."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Клиенти имат запазени методи за плащане в този шлюз. Деактивирайте го, вместо да го изтривате."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Изтриване на :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Активиране на билетите"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Неплатените му фактури се преместват в шлюза, който изберете. Платените фактури и плащанията запазват историята си. Шлюз с активни абонаменти или запазени методи за плащане не може да бъде изтрит: деактивирайте го."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Преместване на неплатените фактури в"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Няма друг активиран шлюз"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Адрес на външно помощно бюро (по избор)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Изпратете разписката на нашата поддръжка. Потвърждаваме плащането и маркираме фактурата като платена."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Билетите за поддръжка са деактивирани."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Този шлюз има активни абонаменти. Деактивирайте го, вместо да го изтривате."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Деактивирайте билетите, ако използвате друго помощно бюро: клиентите и посетителите тогава не отварят билети, не отговарят на тях и не изпращат билети по имейл, а страниците, менютата и кутиите за билети са скрити. Наличните билети се запазват и се връщат, когато активирате билетите. Базата с знания и състоянието на мрежата имат собствени превключватели."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Докато билетите са деактивирани, менюто Поддръжка отваря този адрес, например вашия портал FreeScout. Празно: без меню Поддръжка."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Помолете нашата поддръжка да изтрие акаунта ви. Изтриваме личните ви данни и запазваме само това, което законът изисква, например фактури."

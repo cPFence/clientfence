@@ -55,6 +55,21 @@
                                 <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'Use these settings to automate default ticket responses, control submission throttling, and manage public support visibility.'|trans }}
                             </div>
 
+                            {# ClientFence core patch: tickets on or off, as Blesta's Support Manager, and the outside help desk (Support\Service::ticketsEnabled()). #}
+                            {% set tickets_on = params.tickets_enable is not defined or params.tickets_enable is same as(true) or params.tickets_enable in [1, '1', 'true', 'on', 'yes'] %}
+                            <h4 class="card-title mb-2">{{ 'Tickets'|trans }}</h4>
+                            <p class="text-secondary mb-3">{{ 'Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches.'|trans }}</p>
+                            <label class="form-check form-switch form-switch-2">
+                                <input name="tickets_enable" type="hidden" value="false">
+                                <input class="form-check-input" name="tickets_enable" type="checkbox" value="true" {% if tickets_on %} checked="checked"{% endif %}>
+                                <span class="form-check-label">{{ 'Enable tickets'|trans }}</span>
+                            </label>
+                            <div class="mb-4 mt-2">
+                                <label class="form-label" for="support_url">{{ 'Outside help desk address (optional)'|trans }}</label>
+                                <input class="form-control col-12 col-xl-8" id="support_url" type="url" name="support_url" maxlength="500" placeholder="https://" value="{{ params.support_url|default('') }}">
+                                <small class="form-hint">{{ 'While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu.'|trans }}</small>
+                            </div>
+
                             <h4 class="card-title mb-2">{{ 'Auto Responder'|trans }}</h4>
                             <p class="text-secondary mb-3">{{ 'Automatically send a canned response when a new ticket is created.'|trans }}</p>
                             <label class="form-check form-switch form-switch-2 mb-3">

@@ -20819,3 +20819,61 @@ msgstr "ستُدفع فواتير التجديد بعد ذلك من حساب Pay
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "التحويل إلى عملة المعالجة: :code ليست من عملات هذه البوابة."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "اختر بوابة ممكّنة للفواتير غير المدفوعة الخاصة بهذه البوابة."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "لدى العملاء طرق دفع محفوظة على هذه البوابة. عطّلها بدل حذفها."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "حذف :name؟"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "تمكين التذاكر"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "تنتقل فواتيرها غير المدفوعة إلى البوابة التي تختارها. تحتفظ الفواتير المدفوعة والمدفوعات بسجلها. لا يمكن حذف بوابة لها اشتراكات نشطة أو طرق دفع محفوظة: عطّلها بدل ذلك."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "نقل الفواتير غير المدفوعة إلى"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "لا توجد بوابة ممكّنة أخرى"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "عنوان مركز مساعدة خارجي (اختياري)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "أرسل الإيصال إلى الدعم الفني لدينا. نؤكد الدفع ونضع علامة «مدفوعة» على الفاتورة."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "تذاكر الدعم معطّلة."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "لهذه البوابة اشتراكات نشطة. عطّلها بدل حذفها."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "عطّل التذاكر إذا كنت تستخدم مركز مساعدة آخر: عندها لا يفتح العملاء والزوار تذاكر ولا يردون عليها ولا يرسلونها بالبريد الإلكتروني، وتُخفى صفحات التذاكر وقوائمها ومربعاتها. تبقى التذاكر الموجودة وتعود عند تمكين التذاكر. لقاعدة المعرفة وحالة الشبكة مفتاحاها الخاصان."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "أثناء تعطيل التذاكر، تفتح قائمة الدعم الفني هذا العنوان، مثل بوابة FreeScout الخاصة بك. فارغ: لا توجد قائمة دعم فني."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "اطلب من الدعم الفني لدينا حذف حسابك. نمحو بياناتك الشخصية ولا نحتفظ إلا بما يلزمنا القانون بحفظه مثل الفواتير."

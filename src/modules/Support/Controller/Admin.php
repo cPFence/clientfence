@@ -103,6 +103,12 @@ class Admin implements \ClientFence\InjectionAwareInterface
                 ];
         }
 
+        // ClientFence core patch: with tickets off (Support settings) only the knowledge base and network
+        // issues stay (other modules' entries, such as Announcements, too; an empty group is dropped).
+        if (!$this->di['mod']('support')->getService()->ticketsEnabled()) {
+            $nav['subpages'] = array_values(array_filter($nav['subpages'], fn (array $page): bool => str_contains($page['uri'], 'support/kb') || str_contains($page['uri'], 'support/network-issues')));
+        }
+
         return $nav;
     }
 

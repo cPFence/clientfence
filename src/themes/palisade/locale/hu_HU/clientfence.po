@@ -21381,3 +21381,61 @@ msgstr "A megújítási számlák ezután a PayPal-fiókjából kerülnek kifize
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Feldolgozási pénznem: :code nem tartozik e portál pénznemei közé."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Válasszon egy engedélyezett átjárót az átjáró ki nem fizetett számláihoz."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Az ügyfeleknek mentett fizetési módjaik vannak ezen az átjárón. Törlés helyett tiltsa le."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr ":name törlése?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Jegyek engedélyezése"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "A ki nem fizetett számlák az Ön által választott átjáróra kerülnek. A kifizetett számlák és a fizetések megőrzik előzményeiket. Az aktív előfizetésekkel vagy mentett fizetési módokkal rendelkező átjáró nem törölhető: tiltsa le helyette."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Ki nem fizetett számlák áthelyezése ide"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Nincs másik engedélyezett átjáró"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Külső help desk címe (nem kötelező)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Küldje el a bizonylatot a támogatásunknak. Megerősítjük a fizetést, és a számlát fizetettnek jelöljük."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "A támogatási jegyek le vannak tiltva."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Ennek az átjárónak aktív előfizetései vannak. Törlés helyett tiltsa le."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Tiltsa le a jegyeket, ha másik help desket használ: az ügyfelek és a látogatók ekkor nem nyitnak jegyet, nem válaszolnak rá és nem küldenek e-mailt, a jegyoldalak, menük és dobozok pedig el vannak rejtve. A meglévő jegyek megmaradnak, és visszatérnek, ha engedélyezi a jegyeket. A tudásbázisnak és a hálózati állapotnak saját kapcsolója van."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Amíg a jegyek le vannak tiltva, a Támogatás menü ezt a címet nyitja meg, például az Ön FreeScout portálját. Üres: nincs Támogatás menü."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Kérje támogatásunkat fiókja törlésére. Töröljük a személyes adatait, és csak azt tartjuk meg, amit a jog előír, például a számlákat."

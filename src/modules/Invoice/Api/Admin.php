@@ -886,7 +886,7 @@ class Admin extends \ClientFence\Api\AbstractApi
         $model = $this->getDi()['db']->getExistingModelById('PayGateway', $data['id'], 'Gateway not found');
         $gatewayService = $this->getDi()['mod_service']('Invoice', 'PayGateway');
 
-        return $gatewayService->delete($model);
+        return $gatewayService->delete($model, isset($data['replacement_id']) && $data['replacement_id'] !== '' ? (int) $data['replacement_id'] : null);
     }
 
     /**

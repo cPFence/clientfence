@@ -307,6 +307,50 @@ test('getAdminNavigation returns admin navigation', function (): void {
     expect($result)->toBeArray();
 });
 
+test('getAdminNavigation drops a group left without entries and keeps one another module fills', function (bool $news): void {
+    $service = new Service();
+    $support = new class {
+        public function fetchNavigation(): array
+        {
+            return ['group' => ['location' => 'support', 'index' => 500, 'label' => 'Support', 'class' => 'headset'], 'subpages' => []];
+        }
+    };
+    $newsNav = new class($news) {
+        public function __construct(private readonly bool $on)
+        {
+        }
+
+        public function fetchNavigation(): array
+        {
+            return $this->on ? ['subpages' => [['location' => 'support', 'label' => 'Announcements', 'uri' => '/admin/news', 'index' => 600, 'class' => '']]] : [];
+        }
+    };
+    $mods = [];
+    foreach (['support' => $support, 'news' => $newsNav] as $name => $controller) {
+        $mods[$name] = Mockery::mock(ClientFence\Module::class);
+        $mods[$name]->shouldReceive('getAdminController')->andReturn($controller);
+    }
+    $mods['extension'] = Mockery::mock(ClientFence\Module::class);
+    $mods['extension']->shouldReceive('getCoreModules')->andReturn(['support', 'news']);
+    $staff = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staff->shouldReceive('hasPermission')->andReturn(true);
+    $extensionRepository = Mockery::mock(ExtensionRepository::class);
+    $extensionRepository->shouldReceive('findInstalledNamesByType')->andReturn([]);
+
+    $di = container();
+    $di['mod'] = $di->protect(fn ($name) => $mods[$name]);
+    $di['mod_service'] = $di->protect(fn () => $staff);
+    $di['tools'] = new ClientFence\Tools();
+    $di['em'] = extensionBuildEm($extensionRepository);
+    $service->setDi($di);
+
+    $nav = $service->getAdminNavigation(new Model_Admin());
+    expect(isset($nav['support']))->toBe($news);
+    if ($news) {
+        expect(array_column($nav['support']['subpages'], 'label'))->toBe(['Announcements']);
+    }
+})->with(['Announcements fills it' => [true], 'nothing left' => [false]]);
+
 test('findExtension finds an extension', function (): void {
     $service = new Service();
     $ext = extensionCreateEntity(1);

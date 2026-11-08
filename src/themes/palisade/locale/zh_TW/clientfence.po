@@ -21919,3 +21919,61 @@ msgstr "之後您的續約發票將從您的 PayPal 帳戶付款。您可以在�
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "處理時轉換為：:code 不是此入口網站的貨幣之一。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "請為此金流的未付發票選擇一個已啟用的金流。"
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "有客戶在此金流儲存了付款方式。請停用它，而不要刪除。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "刪除 :name？"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "啟用支援單"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "其未付發票會移至您選擇的金流。已付發票與付款會保留歷史記錄。有生效訂閱或已儲存付款方式的金流無法刪除：請改為停用。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "將未付發票移至"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "沒有其他已啟用的金流"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "外部服務台位址（選填）"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "請將收據寄給我們的支援服務。我們確認付款後會將發票標記為已付款。"
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "支援單已停用。"
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "此金流有生效訂閱。請停用它，而不要刪除。"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "若您使用其他服務台，請停用支援單：客戶與訪客將無法開立、回覆或以電子郵件寄送支援單，支援單頁面、選單與區塊也會隱藏。現有的支援單會保留，並在您重新啟用支援單後恢復。知識庫與網路狀態有各自的開關。"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "支援單停用期間，「支援服務」選單會開啟此位址，例如您的 FreeScout 入口網站。留空：不顯示「支援服務」選單。"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "請求我們的支援服務刪除您的帳戶。我們會清除您的個人資料，僅保留法律要求保留的內容，例如發票。"

@@ -2176,6 +2176,7 @@ test('ticket create for client', function (): void {
         ->andReturn(new Model_Admin());
 
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('ticketsEnabled')->andReturn(true);
     $serviceMock->shouldReceive('ticketReply')
         ->atLeast()->once()
         ->andReturn(1);
@@ -2575,3 +2576,30 @@ test('can client submit new ticket', function (?SupportTicket $ticket, int $hour
         expect($result)->toBeTrue();
     }
 })->with('canClientSubmitNewTicketProvider');
+
+test('tickets off refuses client tickets and replies, turns guest tickets off and gives the outside help desk address', function (): void {
+    $service = new Service();
+    $extensionService = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extensionService->shouldReceive('getConfig')->with('mod_support')->andReturn(['tickets_enable' => 'false', 'support_url' => ' https://help.example.com/portal ']);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $serviceName, ?string $sub = null): ClientFence\Mod\Extension\Service => $extensionService);
+    $service->setDi($di);
+
+    expect($service->ticketsEnabled())->toBeFalse()
+        ->and($service->guestTicketsEnabled())->toBeFalse()
+        ->and($service->supportUrl())->toBe('https://help.example.com/portal')
+        ->and(fn () => $service->ticketCreateForClient(new Model_Client(), helpdeskFixture(), ['subject' => 'Hi', 'content' => 'Hello there']))->toThrow(ClientFence\InformationException::class, 'Support tickets are turned off.')
+        ->and(fn () => $service->ticketReply(new ClientFence\Mod\Support\Entity\SupportTicket(), new Model_Client(), 'Hello there'))->toThrow(ClientFence\InformationException::class, 'Support tickets are turned off.');
+});
+
+test('the outside help desk address must be a web address', function (string $url): void {
+    $service = new Service();
+    $extensionService = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extensionService->shouldReceive('getConfig')->with('mod_support')->andReturn(['support_url' => $url]);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $serviceName, ?string $sub = null): ClientFence\Mod\Extension\Service => $extensionService);
+    $service->setDi($di);
+
+    expect($service->supportUrl())->toBeNull()
+        ->and($service->ticketsEnabled())->toBeTrue();
+})->with(['javascript:alert(1)', 'help.example.com', '', 'https://']);

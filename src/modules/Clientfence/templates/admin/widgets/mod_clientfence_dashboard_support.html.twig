@@ -1,7 +1,8 @@
 {# Dashboard of staff who cannot see the statistics but work the help desk (Support Staff,
-   Support Lead): ticket counts and the open tickets. Slot admin.index.dashboard, added to the
-   admin dashboard by the ClientFence core patch "dashboard widget slot". #}
-{% if not admin.system_is_allowed({ 'mod': 'stats' }) and admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) %}
+   Support Lead): ticket counts and the open tickets, while tickets are on (Support settings).
+   Slot admin.index.dashboard, added to the admin dashboard by the ClientFence core patch
+   "dashboard widget slot". #}
+{% if not admin.system_is_allowed({ 'mod': 'stats' }) and admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) and guest.support_tickets_enabled %}
     {% set ticketStatuses = admin.support_ticket_get_statuses %}
     {% set openTickets = admin.support_ticket_get_list({ 'status': 'open', 'per_page': 10, 'page': 1 }) %}
     {% set ticketCards = [

@@ -84,7 +84,8 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                     'radio', [
                         'label' => 'Saved PayPal accounts:',
                         'description' => 'Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault ("Save payment methods") on your PayPal REST app, which PayPal offers in some countries only.',
-                        'multiOptions' => ['0' => 'Off', '1' => 'On'],
+                        'multiOptions' => ['1' => 'On', '0' => 'Off'],
+                        'default' => '0',
                     ],
                 ],
                 // ClientFence core patch: the PayPal balance on the admin dashboard (Invoice Api\Admin::paypal_balances()).

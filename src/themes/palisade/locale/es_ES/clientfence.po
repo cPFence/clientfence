@@ -20672,3 +20672,61 @@ msgstr "Sus facturas de renovación se pagan entonces desde su cuenta de PayPal.
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Moneda de procesamiento: :code no es una de las monedas de este portal."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Elija una pasarela habilitada para las facturas impagadas de esta pasarela."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Hay clientes con métodos de pago guardados en esta pasarela. Deshabilítela en lugar de borrarla."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "¿Borrar :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Habilitar tickets"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Sus facturas impagadas pasan a la pasarela que elija. Las facturas pagadas y los pagos conservan su historial. Una pasarela con suscripciones activas o métodos de pago guardados no se puede borrar: deshabilítela en su lugar."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Mover las facturas impagadas a"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Ninguna otra pasarela habilitada"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Dirección del centro de ayuda externo (opcional)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Envíe el comprobante a nuestro soporte. Confirmamos el pago y marcamos la factura como pagada."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Los tickets de soporte están deshabilitados."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Esta pasarela tiene suscripciones activas. Deshabilítela en lugar de borrarla."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Deshabilite los tickets si usa otro centro de ayuda: así los clientes y visitantes no abren tickets, ni responden a ellos ni los envían por correo, y las páginas, menús y cuadros de tickets se ocultan. Los tickets que tiene se conservan y vuelven al habilitar los tickets. La base de conocimientos y el estado de la red tienen sus propios interruptores."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Mientras los tickets estén deshabilitados, el menú Soporte abre esta dirección, por ejemplo su portal de FreeScout. Vacío: sin menú Soporte."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Pida a nuestro soporte que elimine su cuenta. Borramos sus datos personales y conservamos solo lo que la ley nos obliga a guardar, como las facturas."

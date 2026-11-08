@@ -19170,3 +19170,61 @@ msgstr "Yenileme faturalarınız bundan sonra PayPal hesabınızdan ödenir. Bun
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "İşlem için dönüştürülecek para birimi: :code bu portaldaki para birimlerinden biri değil."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Bu ödeme geçidinin ödenmemiş faturaları için etkin bir geçit seçin."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Müşterilerin bu geçitte kayıtlı ödeme yöntemleri var. Silmek yerine devre dışı bırakın."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr ":name silinsin mi?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Talepleri etkinleştir"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Bu geçidin ödenmemiş faturaları seçtiğiniz geçide taşınır. Ödenmiş faturalar ve ödemeler geçmişini korur. Etkin aboneliği veya kayıtlı ödeme yöntemi olan geçit silinemez: bunun yerine devre dışı bırakın."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Ödenmemiş faturaları şuraya taşı"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Etkin başka geçit yok"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Harici yardım masası adresi (isteğe bağlı)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Dekontu desteğimize gönderin. Ödemeyi onaylar ve faturayı ödenmiş olarak işaretleriz."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Destek talepleri devre dışı."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Bu geçidin etkin abonelikleri var. Silmek yerine devre dışı bırakın."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Başka bir yardım masası kullanıyorsanız talepleri devre dışı bırakın: müşteriler ve ziyaretçiler bu durumda talep açmaz, yanıtlamaz ve e-postayla göndermez; talep sayfaları, menüler ve kutular gizlenir. Mevcut talepler korunur ve talepleri etkinleştirdiğinizde geri gelir. Bilgi Bankası ve ağ durumunun kendi anahtarları vardır."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Talepler devre dışıyken Destek menüsü bu adresi açar, örneğin FreeScout portalınızı. Boş: Destek menüsü yok."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Destek ekibimizden hesabınızı silmesini isteyin. Kişisel verilerinizi sileriz ve yalnızca yasanın saklamamızı istediklerini, örneğin faturaları, tutarız."

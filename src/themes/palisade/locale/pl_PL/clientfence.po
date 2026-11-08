@@ -21573,3 +21573,61 @@ msgstr "Faktury za odnowienie są wtedy opłacane z Twojego konta PayPal. Możes
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Przelicz na walutę do przetwarzania: :code nie jest jedną z walut tego portalu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Wybierz włączoną bramkę dla nieopłaconych faktur tej bramki."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Klienci mają zapisane metody płatności w tej bramce. Wyłącz ją zamiast ją usuwać."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Usunąć :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Włącz zgłoszenia"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Jej nieopłacone faktury trafią do wybranej bramki. Opłacone faktury i płatności zachowują swoją historię. Bramki z aktywnymi subskrypcjami lub zapisanymi metodami płatności nie można usunąć: wyłącz ją."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Przenieś nieopłacone faktury do"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Brak innej włączonej bramki"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Adres zewnętrznego centrum pomocy (opcjonalnie)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Wyślij potwierdzenie do naszego wsparcia. Potwierdzimy płatność i oznaczymy fakturę jako opłaconą."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Zgłoszenia do wsparcia są wyłączone."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Ta bramka ma aktywne subskrypcje. Wyłącz ją zamiast ją usuwać."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Wyłącz zgłoszenia, jeśli używasz innego centrum pomocy: klienci i odwiedzający nie otwierają wtedy zgłoszeń, nie odpowiadają na nie ani nie wysyłają ich e-mailem, a strony, menu i pola zgłoszeń są ukryte. Istniejące zgłoszenia są zachowane i wracają po włączeniu zgłoszeń. Baza wiedzy i stan sieci mają własne przełączniki."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Gdy zgłoszenia są wyłączone, menu Wsparcie otwiera ten adres, na przykład Twój portal FreeScout. Puste: brak menu Wsparcie."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Poproś nasze wsparcie o usunięcie konta. Usuwamy Twoje dane osobowe i zachowujemy tylko to, co nakazuje prawo, na przykład faktury."

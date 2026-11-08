@@ -47,7 +47,7 @@ test('guest access: signed-out visitors are gated unless the page or a setting o
     $result = trim(renderPalisade('partials/guest_access.html.twig', [
         'request_path' => $path,
         'settings' => $settings,
-        'guest' => new PalisadeGuestStub(['support_guest_tickets_enabled' => $guestTickets, 'extension_is_on' => true]),
+        'guest' => new PalisadeGuestStub(['support_guest_tickets_enabled' => $guestTickets, 'extension_is_on' => true, 'support_tickets_enabled' => true]),
     ]));
 
     expect($result)->toBe($expected);
@@ -95,7 +95,7 @@ test('guest access: signed-in clients and allow_guest pages are always open', fu
 
 test('side menu: each "Side Menu Items" setting turns its link off', function (): void {
     $client = new PalisadeGuestStub(['client_user_session' => null]);
-    $guest = new PalisadeGuestStub(['clientfence_store_open' => true, 'invoice_funds_enabled' => true, 'extension_is_on' => true, 'custompages_links' => [], 'support_kb_enabled' => true]);
+    $guest = new PalisadeGuestStub(['clientfence_store_open' => true, 'invoice_funds_enabled' => true, 'extension_is_on' => true, 'custompages_links' => [], 'support_kb_enabled' => true, 'support_tickets_enabled' => true]);
     $render = static fn (array $settings): string => renderPalisade('partial_menu.html.twig', [
         'client' => $client, 'guest' => $guest, 'settings' => $settings, 'current_active_menu' => '',
     ]);
@@ -125,7 +125,7 @@ test('side menu: Network Status shows while it is on, for visitors only while it
 });
 
 test('side menu: visitors see the store and news, and the dashboard only while it is open to guests', function (): void {
-    $guest = new PalisadeGuestStub(['clientfence_store_open' => true, 'extension_is_on' => true, 'custompages_links' => [], 'support_kb_enabled' => true, 'support_guest_tickets_enabled' => true]);
+    $guest = new PalisadeGuestStub(['clientfence_store_open' => true, 'extension_is_on' => true, 'custompages_links' => [], 'support_kb_enabled' => true, 'support_guest_tickets_enabled' => true, 'support_tickets_enabled' => true]);
 
     $loginRequired = renderPalisade('partial_menu.html.twig', ['guest' => $guest, 'settings' => ['require_login' => '1'], 'current_active_menu' => '']);
     expect($loginRequired)->toContain('href="/order"')->and($loginRequired)->toContain('href="/news"')

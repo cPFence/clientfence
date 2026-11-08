@@ -144,6 +144,18 @@ class Guest extends \ClientFence\Api\AbstractApi
         return $this->getService()->guestTicketsEnabled();
     }
 
+    /** ClientFence: whether clients and guests can open tickets (Support settings "Tickets"). */
+    public function tickets_enabled(): bool
+    {
+        return $this->getService()->ticketsEnabled();
+    }
+
+    /** ClientFence: the outside help desk address while tickets are off, or null. */
+    public function support_url(): ?string
+    {
+        return $this->getService()->ticketsEnabled() ? null : $this->getService()->supportUrl();
+    }
+
     /**
      * @deprecated use guest_tickets_enabled() instead
      */

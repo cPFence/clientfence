@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Invoice;
 
+use ClientFence\InformationException;
 use ClientFence\InjectionAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -166,8 +167,12 @@ class ServicePayGateway implements InjectionAwareInterface
         }
 
         $new = $this->di['db']->dispense('PayGateway');
-        $new->name = $code;
         $new->gateway = $code;
+        // ClientFence core patch: the adapter's display name and payment kinds, not the code and "allow both".
+        $config = $this->getAdapterConfig($new);
+        $new->name = $config['title'] ?? $code;
+        $new->allow_single = empty($config['supports_one_time_payments']) ? 0 : 1;
+        $new->allow_recurrent = empty($config['supports_subscriptions']) ? 0 : 1;
         $new->enabled = 0;
         $new->accepted_currencies = null;
         $new->test_mode = 0;
@@ -360,17 +365,32 @@ class ServicePayGateway implements InjectionAwareInterface
         return $incoming;
     }
 
-    public function delete(\Model_PayGateway $model): bool
+    public function delete(\Model_PayGateway $model, ?int $replacementId = null): bool
     {
-        $id = $model->id;
+        $id = (int) $model->id;
+        $db = $this->di['em']->getConnection();
 
-        // Invoice/Subscription/Transaction rows referencing this gateway block
-        // deletion above as real business/audit records, but PayGatewayCustomer/
-        // PayGatewayProduct are pure cache with no meaning once the gateway is
-        // gone - no FK constraint exists to cascade this automatically (this
-        // schema has never had real FK constraints), so clean them up explicitly.
-        $this->di['em']->getConnection()->executeStatement('DELETE FROM pay_gateway_customer WHERE pay_gateway_id = :id', ['id' => $id]);
-        $this->di['em']->getConnection()->executeStatement('DELETE FROM pay_gateway_product WHERE pay_gateway_id = :id', ['id' => $id]);
+        // ClientFence core patch: as WHMCS, the unpaid invoices move to a replacement gateway; refused while active
+        // subscriptions or saved payment methods would stop paying (disabling keeps them). Paid invoices and
+        // transactions keep their history.
+        if ((int) $db->fetchOne("SELECT COUNT(*) FROM subscription WHERE pay_gateway_id = ? AND status = 'active'", [$id]) > 0) {
+            throw new InformationException('This gateway has active subscriptions. Disable it instead of deleting it.');
+        }
+        if ((int) $db->fetchOne('SELECT COUNT(*) FROM pay_gateway_customer WHERE pay_gateway_id = ? AND saved_cards = 1 AND default_payment_method IS NOT NULL', [$id]) > 0) {
+            throw new InformationException('Clients have saved payment methods on this gateway. Disable it instead of deleting it.');
+        }
+        $unpaid = (int) $db->fetchOne('SELECT COUNT(*) FROM invoice WHERE gateway_id = ? AND status = ?', [$id, \Model_Invoice::STATUS_UNPAID]);
+        if ($unpaid > 0) {
+            $replacement = $replacementId !== null && $replacementId !== $id ? $this->di['db']->load('PayGateway', $replacementId) : null;
+            if (!$replacement instanceof \Model_PayGateway || !$replacement->enabled) {
+                throw new InformationException('Choose an enabled gateway for the unpaid invoices of this gateway.');
+            }
+            $db->executeStatement('UPDATE invoice SET gateway_id = ? WHERE gateway_id = ? AND status = ?', [$replacementId, $id, \Model_Invoice::STATUS_UNPAID]);
+        }
+
+        // Customer IDs and product caches mean nothing once the gateway is gone (no foreign keys cascade them).
+        $db->executeStatement('DELETE FROM pay_gateway_customer WHERE pay_gateway_id = :id', ['id' => $id]);
+        $db->executeStatement('DELETE FROM pay_gateway_product WHERE pay_gateway_id = :id', ['id' => $id]);
 
         $this->di['db']->trash($model);
         $this->di['logger']->info('Removed payment gateway %s', $id);

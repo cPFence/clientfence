@@ -93,9 +93,9 @@ test('gets available gateways', function (): void {
     expect($result)->toBeArray();
 });
 
-test('installs a pay gateway', function (): void {
+test('installs a pay gateway with its display name and payment kinds', function (): void {
     $service = new ServicePayGateway();
-    $code = 'PP';
+    $code = 'PayPalAutoPay';
 
     $serviceMock = Mockery::mock(ServicePayGateway::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('getAvailable')
@@ -118,7 +118,10 @@ test('installs a pay gateway', function (): void {
     $serviceMock->setDi($di);
 
     $result = $serviceMock->install($code);
-    expect($result)->toBeBool()->toBeTrue();
+    expect($result)->toBeBool()->toBeTrue()
+        ->and($payGatewayModel->name)->toBe('PayPal Auto-Pay')
+        ->and($payGatewayModel->allow_single)->toBe(1)
+        ->and($payGatewayModel->allow_recurrent)->toBe(0);
 });
 
 test('throws exception when installing unavailable gateway', function (): void {
@@ -320,6 +323,7 @@ test('deletes a gateway', function (): void {
         ->atLeast()->once();
 
     $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connectionMock->shouldReceive('fetchOne')->times(3)->andReturn(0);
     $connectionMock->shouldReceive('executeStatement')
         ->once()
         ->with('DELETE FROM pay_gateway_customer WHERE pay_gateway_id = :id', ['id' => 5]);
@@ -337,6 +341,67 @@ test('deletes a gateway', function (): void {
     $result = $service->delete($payGatewayModel);
     expect($result)->toBeTrue();
 });
+
+test('deleting a gateway is refused while subscriptions or saved methods would stop paying', function (int $subscriptions, int $saved, string $message): void {
+    $service = new ServicePayGateway();
+    $payGatewayModel = new Model_PayGateway();
+    $payGatewayModel->loadBean(new Tests\Helpers\DummyBean());
+    $payGatewayModel->id = 5;
+    $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM subscription/'), [5])->andReturn($subscriptions);
+    $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM pay_gateway_customer/'), [5])->andReturn($saved);
+    $connectionMock->shouldNotReceive('executeStatement');
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldNotReceive('trash');
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['em']->shouldReceive('getConnection')->andReturn($connectionMock);
+    $service->setDi($di);
+
+    expect(fn () => $service->delete($payGatewayModel, 6))->toThrow(ClientFence\InformationException::class, $message);
+})->with([
+    'subscriptions' => [1, 0, 'This gateway has active subscriptions. Disable it instead of deleting it.'],
+    'saved methods' => [0, 2, 'Clients have saved payment methods on this gateway. Disable it instead of deleting it.'],
+]);
+
+test('deleting a gateway moves its unpaid invoices to an enabled replacement, and needs one', function (?int $replacementId, bool $enabled, bool $moves): void {
+    $service = new ServicePayGateway();
+    $payGatewayModel = new Model_PayGateway();
+    $payGatewayModel->loadBean(new Tests\Helpers\DummyBean());
+    $payGatewayModel->id = 5;
+    $replacement = new Model_PayGateway();
+    $replacement->loadBean(new Tests\Helpers\DummyBean());
+    $replacement->enabled = $enabled ? 1 : 0;
+    $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM (subscription|pay_gateway_customer)/'), [5])->andReturn(0);
+    $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM invoice/'), [5, 'unpaid'])->andReturn(3);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('load')->with('PayGateway', 6)->andReturn($replacement);
+    if ($moves) {
+        $connectionMock->shouldReceive('executeStatement')->once()->with('UPDATE invoice SET gateway_id = ? WHERE gateway_id = ? AND status = ?', [6, 5, 'unpaid']);
+        $connectionMock->shouldReceive('executeStatement')->twice();
+        $dbMock->shouldReceive('trash')->once();
+    } else {
+        $connectionMock->shouldNotReceive('executeStatement');
+        $dbMock->shouldNotReceive('trash');
+    }
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['em']->shouldReceive('getConnection')->andReturn($connectionMock);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service->setDi($di);
+
+    if ($moves) {
+        expect($service->delete($payGatewayModel, $replacementId))->toBeTrue();
+    } else {
+        expect(fn () => $service->delete($payGatewayModel, $replacementId))->toThrow(ClientFence\InformationException::class, 'Choose an enabled gateway for the unpaid invoices of this gateway.');
+    }
+})->with([
+    'enabled replacement' => [6, true, true],
+    'disabled replacement' => [6, false, false],
+    'no replacement' => [null, true, false],
+    'itself' => [5, true, false],
+]);
 
 test('gets active gateways', function (): void {
     $service = new ServicePayGateway();

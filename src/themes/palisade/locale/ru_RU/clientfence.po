@@ -19164,3 +19164,61 @@ msgstr "Счета за продление будут оплачиваться �
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Конвертировать в валюту для обработки: :code не входит в число валют этого портала."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Выберите включённый шлюз для неоплаченных счетов этого шлюза."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "У клиентов сохранены способы оплаты в этом шлюзе. Отключите его, а не удаляйте."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Удалить :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Включить тикеты"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Его неоплаченные счета переходят на выбранный вами шлюз. Оплаченные счета и платежи сохраняют историю. Шлюз с активными подписками или сохранёнными способами оплаты удалить нельзя: отключите его."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Перенести неоплаченные счета в"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Нет другого включённого шлюза"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Адрес внешней службы поддержки (необязательно)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Отправьте квитанцию в нашу поддержку. Мы подтвердим платёж и отметим счёт как оплаченный."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Тикеты поддержки отключены."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "У этого шлюза есть активные подписки. Отключите его, а не удаляйте."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Отключите тикеты, если используете другую службу поддержки: клиенты и посетители тогда не открывают тикеты, не отвечают на них и не пишут по почте, а страницы, меню и блоки тикетов скрыты. Имеющиеся тикеты сохраняются и возвращаются, когда вы включите тикеты. У базы знаний и состояния сети свои переключатели."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Пока тикеты отключены, меню «Поддержка» открывает этот адрес, например ваш портал FreeScout. Пусто: меню «Поддержка» нет."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Попросите нашу поддержку удалить вашу учётную запись. Мы удалим ваши персональные данные и сохраним только то, что требует закон, например счета."

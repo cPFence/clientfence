@@ -21375,3 +21375,61 @@ msgstr "Hóa đơn gia hạn của bạn khi đó sẽ được thanh toán từ
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Quy đổi sang tiền tệ để xử lý: :code không phải là một trong các loại tiền tệ của cổng này."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Chọn một cổng đang bật cho các hóa đơn chưa thanh toán của cổng này."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Khách hàng có phương thức thanh toán đã lưu trên cổng này. Hãy tắt cổng thay vì xóa."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Xóa :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Bật phiếu hỗ trợ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Các hóa đơn chưa thanh toán của cổng sẽ chuyển sang cổng bạn chọn. Hóa đơn đã thanh toán và các khoản thanh toán giữ nguyên lịch sử. Cổng có thuê bao đang hoạt động hoặc phương thức thanh toán đã lưu không thể xóa: hãy tắt cổng."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Chuyển hóa đơn chưa thanh toán sang"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Không có cổng nào khác đang bật"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Địa chỉ bàn trợ giúp bên ngoài (tùy chọn)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Hãy gửi biên lai cho bộ phận hỗ trợ của chúng tôi. Chúng tôi xác nhận khoản thanh toán và đánh dấu hóa đơn là đã thanh toán."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Phiếu hỗ trợ đã bị tắt."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Cổng này có thuê bao đang hoạt động. Hãy tắt cổng thay vì xóa."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Hãy tắt phiếu hỗ trợ nếu bạn dùng bàn trợ giúp khác: khi đó khách hàng và khách truy cập không mở, không trả lời và không gửi email phiếu hỗ trợ, còn các trang, menu và khung phiếu hỗ trợ bị ẩn. Các phiếu hiện có được giữ lại và quay lại khi bạn bật phiếu hỗ trợ. Cơ sở kiến thức và trạng thái mạng có công tắc riêng."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Khi phiếu hỗ trợ đang tắt, menu Hỗ trợ mở địa chỉ này, ví dụ cổng FreeScout của bạn. Để trống: không có menu Hỗ trợ."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Yêu cầu bộ phận hỗ trợ của chúng tôi xóa tài khoản của bạn. Chúng tôi sẽ xóa dữ liệu cá nhân và chỉ giữ lại những gì pháp luật yêu cầu, chẳng hạn hóa đơn."

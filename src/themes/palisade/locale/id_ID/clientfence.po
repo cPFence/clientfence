@@ -21549,3 +21549,61 @@ msgstr "Tagihan perpanjangan Anda kemudian dibayar dari akun PayPal Anda. Anda d
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Konversi ke mata uang pemrosesan: :code bukan salah satu mata uang portal ini."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Pilih gateway yang aktif untuk faktur belum dibayar milik gateway ini."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Klien menyimpan metode pembayaran di gateway ini. Nonaktifkan, jangan dihapus."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Hapus :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Aktifkan tiket"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Faktur belum dibayar dipindahkan ke gateway yang Anda pilih. Faktur lunas dan pembayaran tetap menyimpan riwayatnya. Gateway dengan langganan aktif atau metode pembayaran tersimpan tidak dapat dihapus: nonaktifkan saja."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Pindahkan faktur belum dibayar ke"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Tidak ada gateway aktif lain"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Alamat help desk eksternal (opsional)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Kirim bukti pembayaran ke dukungan kami. Kami mengonfirmasi pembayaran dan menandai faktur sebagai dibayar."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Tiket dukungan dinonaktifkan."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Gateway ini memiliki langganan aktif. Nonaktifkan, jangan dihapus."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Nonaktifkan tiket jika Anda memakai help desk lain: klien dan pengunjung tidak lagi membuka tiket, membalasnya, atau mengirim email tiket, dan halaman, menu, serta kotak tiket disembunyikan. Tiket yang ada tetap disimpan dan kembali saat Anda mengaktifkan tiket. Dasar pengetahuan dan status jaringan punya sakelar sendiri."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Selama tiket nonaktif, menu Dukungan membuka alamat ini, misalnya portal FreeScout Anda. Kosong: tanpa menu Dukungan."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Minta dukungan kami menghapus akun Anda. Kami menghapus data pribadi Anda dan hanya menyimpan yang diwajibkan hukum, seperti faktur."

@@ -345,7 +345,13 @@ class Service implements InjectionAwareInterface
         }
 
         // submenu sorting
-        foreach ($nav as &$group) {
+        foreach ($nav as $location => &$group) {
+            // ClientFence core patch: a group left without entries (Support with tickets, knowledge base and network status off) is not shown.
+            if (empty($group['subpages'])) {
+                unset($nav[$location]);
+
+                continue;
+            }
             $group['subpages'] = $this->di['tools']->sortByOneKey($group['subpages'], 'index');
             $group['uri'] = $this->resolveNavigationGroupUri($group);
         }

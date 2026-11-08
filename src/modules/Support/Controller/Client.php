@@ -29,14 +29,22 @@ class Client implements \ClientFence\InjectionAwareInterface
 
     public function register(\ClientFence\App &$app): void
     {
-        $app->get('/support', 'get_tickets', [], static::class);
-        // ClientFence: a ticket attachment (TicketFiles.php).
-        $app->get('/ticket-file/:id', 'get_ticket_file', ['id' => '[a-f0-9]{32}'], static::class);
-        $app->get('/support/ticket/:id', 'get_ticket', [], static::class);
-        $app->get('/support/contact-us', 'get_contact_us', [], static::class);
-        $app->get('/support/contact-us/conversation/:hash', 'get_ticket_redirect', ['hash' => '[a-z0-9]+'], static::class);
-        // ClientFence: the feedback form of a feedback email's link, without sign-in, as WHMCS (TicketFeedback).
-        $app->get('/support/feedback/:token', 'get_feedback', ['token' => '[a-f0-9]{64}'], static::class);
+        // ClientFence core patch: with tickets off (Support settings) the ticket pages are not found and
+        // Support opens the outside help desk when one is set.
+        $support = $this->di['mod']('support')->getService();
+        if ($support->ticketsEnabled()) {
+            $app->get('/support', 'get_tickets', [], static::class);
+            // ClientFence: a ticket attachment (TicketFiles.php).
+            $app->get('/ticket-file/:id', 'get_ticket_file', ['id' => '[a-f0-9]{32}'], static::class);
+            $app->get('/support/ticket/:id', 'get_ticket', [], static::class);
+            $app->get('/support/contact-us', 'get_contact_us', [], static::class);
+            $app->get('/support/contact-us/conversation/:hash', 'get_ticket_redirect', ['hash' => '[a-z0-9]+'], static::class);
+            // ClientFence: the feedback form of a feedback email's link, without sign-in, as WHMCS (TicketFeedback).
+            $app->get('/support/feedback/:token', 'get_feedback', ['token' => '[a-f0-9]{64}'], static::class);
+        } elseif ($support->supportUrl() !== null) {
+            $app->get('/support', 'get_outside_support', [], static::class);
+            $app->get('/support/contact-us', 'get_outside_support', [], static::class);
+        }
         // ClientFence: the Network Status page, as WHMCS (NetworkIssues.php), while it is on (off:
         // the theme's page not found, as the knowledge base).
         if (\ClientFence\Mod\Support\NetworkIssues::enabled($this->di)) {
@@ -48,6 +56,12 @@ class Client implements \ClientFence\InjectionAwareInterface
             $app->get('/support/kb/:category', 'get_kb_category', ['category' => '[a-z0-9-]+'], static::class);
             $app->get('/support/kb/:category/:slug', 'get_kb_article', ['category' => '[a-z0-9-]+', 'slug' => '[a-z0-9-]+'], static::class);
         }
+    }
+
+    /** ClientFence: Support while tickets are off: the outside help desk. */
+    public function get_outside_support(\ClientFence\App $app): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        return $app->redirectUrl((string) $this->di['mod']('support')->getService()->supportUrl());
     }
 
     /**

@@ -46,6 +46,7 @@ class Payment_Adapter_PayPalAutoPay implements ClientFence\InjectionAwareInterfa
         $onOff = ['1' => 'On', '0' => 'Off'];
 
         return [
+            'title' => 'PayPal Auto-Pay',
             'supports_one_time_payments' => true,
             'supports_subscriptions' => false,
             'description' => 'PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on).',
@@ -60,10 +61,10 @@ class Payment_Adapter_PayPalAutoPay implements ClientFence\InjectionAwareInterfa
                 'pay_saved' => ['radio', ['label' => 'Pay with the saved agreement:', 'description' => 'On the invoice page, a client with a billing agreement can pay at once without going to PayPal.', 'multiOptions' => $onOff]],
                 'pay_once' => ['radio', ['label' => 'Pay once without an agreement:', 'description' => 'Clients can also pay an invoice with PayPal without setting up automatic payments.', 'multiOptions' => $onOff]],
                 'save_only' => ['radio', ['label' => 'Set up on the Payment methods page:', 'description' => 'Clients can set up automatic payments on their Payment methods page without paying an invoice.', 'multiOptions' => $onOff]],
-                'free_orders' => ['radio', ['label' => 'Free orders:', 'description' => 'After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments.', 'multiOptions' => ['0' => 'Off', '1' => 'On']]],
-                'prefill_email' => ['radio', ['label' => 'Fill in the client\'s email at PayPal:', 'multiOptions' => ['0' => 'Off', '1' => 'On']]],
+                'free_orders' => ['radio', ['label' => 'Free orders:', 'description' => 'After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments.', 'multiOptions' => $onOff]],
+                'prefill_email' => ['radio', ['label' => 'Fill in the client\'s email at PayPal:', 'multiOptions' => $onOff]],
                 'convert_to' => ['text', ['label' => 'Convert to for processing (optional):', 'placeholder' => 'USD', 'description' => 'A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal\'s exchange rates, as WHMCS\'s "Convert To For Processing". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)']],
-                'logo_url' => ['text', ['label' => 'Logo on PayPal\'s pages (optional):', 'description' => 'The address (https) of an image PayPal shows on its checkout pages.']],
+                'logo_url' => ['text', ['label' => 'Logo on PayPal\'s pages (optional):', 'description' => 'The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF.']],
                 'balance' => ['radio', ['label' => 'PayPal balance on the dashboard:', 'multiOptions' => $onOff]],
             ],
         ];
@@ -541,11 +542,13 @@ class Payment_Adapter_PayPalAutoPay implements ClientFence\InjectionAwareInterfa
     private function pageFields(int $clientId, string $returnUrl, string $cancelUrl): array
     {
         $fields = ['RETURNURL' => $returnUrl, 'CANCELURL' => $cancelUrl, 'NOSHIPPING' => '1'];
-        if ($this->option('prefill_email', false)) {
+        if ($this->option('prefill_email')) {
             $fields['EMAIL'] = (string) $this->di['db']->getCell('SELECT email FROM client WHERE id = ?', [$clientId]);
         }
-        if (str_starts_with((string) ($this->config['logo_url'] ?? ''), 'https://')) {
-            $fields['LOGOIMG'] = (string) $this->config['logo_url'];
+        // Empty: the company logo; PayPal takes https images of up to 127 characters, and no SVG.
+        $logo = (string) (($this->config['logo_url'] ?? '') ?: $this->di['mod_service']('system')->getCompany()['logo_url']);
+        if (str_starts_with($logo, 'https://') && strlen($logo) <= 127 && !str_ends_with(strtolower($logo), '.svg')) {
+            $fields['LOGOIMG'] = $logo;
         }
 
         return $fields;

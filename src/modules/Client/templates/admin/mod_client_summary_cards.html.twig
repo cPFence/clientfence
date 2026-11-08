@@ -5,7 +5,7 @@
 {% set can_send_emails = has_permission('email', 'send_emails') %}
 {% set money = client.currency ?? default_currency %}
 <div class="row row-cards mt-1" data-bf-invoice-url="{{ 'invoice/manage'|url }}">
-    {% if can_view_invoices and can_view_orders and can_view_tickets %}
+    {% if can_view_invoices and can_view_orders and has_permission('support', 'view') %}
     {% set summary = admin.client_summary({ 'id': client.id }) %}
     <div class="col-lg-4">
         <div class="card h-100">
@@ -58,7 +58,7 @@
                     {% endfor %}
                     <tr><td>{{ 'Addons'|trans }}</td><td class="text-end">{{ summary.addon_count }}</td></tr>
                     <tr><td>{{ 'Open Quotes'|trans }}</td><td class="text-end">{{ summary.open_quotes }}</td></tr>
-                    <tr><td>{{ 'Open Tickets'|trans }}</td><td class="text-end">{{ summary.open_tickets }}</td></tr>
+                    {% if can_view_tickets %}<tr><td>{{ 'Open Tickets'|trans }}</td><td class="text-end">{{ summary.open_tickets }}</td></tr>{% endif %}
                 </tbody>
             </table>
             <div class="card-footer d-flex flex-wrap gap-2">

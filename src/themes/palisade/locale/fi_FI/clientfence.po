@@ -21832,3 +21832,61 @@ msgstr "Uusintalaskusi maksetaan sen jälkeen PayPal-tililtäsi. Voit lopettaa t
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr "Käsittelyvaluutta: :code ei ole tämän portaalin valuuttoja."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Choose an enabled gateway for the unpaid invoices of this gateway."
+msgstr "Valitse käytössä oleva maksuyhdyskäytävä tämän yhdyskäytävän maksamattomille laskuille."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr "Asiakkailla on tallennettuja maksutapoja tässä yhdyskäytävässä. Poista se käytöstä sen poistamisen sijaan."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Delete :name?"
+msgstr "Poistetaanko :name?"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Enable tickets"
+msgstr "Ota tukipyynnöt käyttöön"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
+msgstr "Sen maksamattomat laskut siirtyvät valitsemaasi yhdyskäytävään. Maksetut laskut ja maksut säilyttävät historiansa. Yhdyskäytävää, jolla on aktiivisia kestotilauksia tai tallennettuja maksutapoja, ei voi poistaa: poista se käytöstä."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "Move unpaid invoices to"
+msgstr "Siirrä maksamattomat laskut tänne"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+msgid "No other enabled gateway"
+msgstr "Ei muuta käytössä olevaa yhdyskäytävää"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Outside help desk address (optional)"
+msgstr "Ulkoisen tukipalvelun osoite (valinnainen)"
+
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Send the receipt to our support. We confirm the payment and mark the invoice paid."
+msgstr "Lähetä kuitti tuellemme. Vahvistamme maksun ja merkitsemme laskun maksetuksi."
+
+#: src/modules/Support/Service.php
+msgid "Support tickets are turned off."
+msgstr "Tukipyynnöt on poistettu käytöstä."
+
+#: src/modules/Invoice/ServicePayGateway.php
+msgid "This gateway has active subscriptions. Disable it instead of deleting it."
+msgstr "Tällä yhdyskäytävällä on aktiivisia kestotilauksia. Poista se käytöstä sen poistamisen sijaan."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Turn tickets off when you use another help desk: clients and visitors then open, reply to and email no tickets, and the ticket pages, menus and boxes are hidden. The tickets you have are kept and come back when you turn tickets on. The knowledge base and network status have their own switches."
+msgstr "Poista tukipyynnöt käytöstä, jos käytät toista tukipalvelua: asiakkaat ja vierailijat eivät silloin avaa tukipyyntöjä, vastaa niihin tai lähetä niitä sähköpostilla, ja tukipyyntöjen sivut, valikot ja laatikot piilotetaan. Olemassa olevat tukipyynnöt säilyvät ja palaavat, kun otat tukipyynnöt käyttöön. Tietopankilla ja verkon tilalla on omat kytkimensä."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "While tickets are off, the Support menu opens this address, for example your FreeScout portal. Empty: no Support menu."
+msgstr "Kun tukipyynnöt ovat pois käytöstä, Tuki-valikko avaa tämän osoitteen, esimerkiksi FreeScout-portaalisi. Tyhjä: ei Tuki-valikkoa."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Ask our support to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices."
+msgstr "Pyydä tukeamme poistamaan tilisi. Poistamme henkilötietosi ja säilytämme vain sen, mitä laki vaatii meidän säilyttämään, kuten laskut."

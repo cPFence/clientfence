@@ -66,10 +66,10 @@
     {% block content_wide %}{% endblock %}
     {% else %}
     {% set navigation = admin.extension_get_navigation({ 'url': guest.system_current_url }) %}
-    {# FOSSBilling's calls need the module's "view" permission, not only its "Module access". #}
+    {# FOSSBilling's calls need the module's "view" permission, not only its "Module access"; no ticket count while tickets are off. #}
     {% set badges = {
         'invoice': admin.system_is_allowed({ 'mod': 'invoice', 'f': 'view' }) ? admin.invoice_get_statuses.unpaid|default(0) : 0,
-        'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) ? admin.support_ticket_get_statuses.open|default(0) : 0
+        'support': admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) and guest.support_tickets_enabled ? admin.support_ticket_get_statuses.open|default(0) : 0
     } %}
     <div class="page bf-shell" dir="{{ frame_dir }}">
         {% block nav %}{% endblock %}
@@ -91,7 +91,7 @@
                     'client': has_permission('client', 'create'),
                     'order': has_permission('order', 'manage'),
                     'invoice': has_permission('invoice', 'manage_invoices'),
-                    'support': has_permission('support', 'manage_tickets')
+                    'support': has_permission('support', 'manage_tickets') and guest.support_tickets_enabled
                 } %}
                 {% if can_new.client or can_new.order or can_new.invoice or can_new.support %}
                 <div class="dropdown">

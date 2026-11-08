@@ -122,17 +122,24 @@
                                 <ol class="bf-steps-list">
                                     <li>{{ 'Send exactly :amount'|trans({ ':amount': '<strong>' ~ (amount_text|e) ~ '</strong>' })|raw }}{% if m.quote %} ({{ 'that is :amount at today’s rate, rounded up'|trans({ ':amount': sm.money(due, currency) }) }}){% endif %}.</li>
                                     <li>{{ 'Use the details below and write :ref as the reference.'|trans({ ':ref': '<strong class="bf-mono" dir="ltr">' ~ (nr|e) ~ '</strong>' })|raw }}</li>
-                                    <li>{{ 'Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid.'|trans }}</li>
+                                    {# ClientFence core patch: the receipt upload opens a ticket, so while tickets are off (Support settings) the outside help desk link instead, if any. #}
+                                    {% set receipt_upload = guest.support_tickets_enabled %}
+                                    <li>{{ receipt_upload ? 'Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid.'|trans : 'Send the receipt to our support. We confirm the payment and mark the invoice paid.'|trans }}</li>
                                 </ol>
                                 {# ClientFence: plain-text instructions keep their line breaks (bank name, IBAN, reference). #}
                                 {% set details = client.invoice_payment_details({ hash: invoice.hash, gateway_id: m.id }) %}
                                 <div class="bf-details{{ '<' in details ? '' : ' bf-details-text' }}">{{ details|raw }}</div>
+                                {% if not receipt_upload and guest.support_support_url %}
+                                <a class="btn btn-primary bf-btn-lg bf-self-start" href="{{ guest.support_support_url }}" target="_blank" rel="noopener">{{ 'Open Support'|trans }}</a>
+                                {% endif %}
+                                {% if receipt_upload %}
                                 <form class="bf-receipt" data-bf-receipt="{{ m.id }}" novalidate>
                                     <label class="bf-label bf-stack" for="bf-receipt-{{ m.id }}">{{ 'Receipt (image or PDF)'|trans }}
                                         <input class="form-control" id="bf-receipt-{{ m.id }}" type="file" name="receipt" accept="image/jpeg,image/png,image/webp,application/pdf" required>
                                     </label>
                                     <button type="submit" class="btn btn-primary bf-btn-lg bf-self-start">{{ 'I have paid, send the receipt'|trans }}</button>
                                 </form>
+                                {% endif %}
                             </section>
                         {% endif %}
                     {% endfor %}

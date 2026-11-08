@@ -14,6 +14,12 @@
     { key: 'invoices', url: 'invoice'|url, icon: 'file-invoice', label: 'Invoices'|trans, setting: 'side_menu_invoices' },
     { key: 'support', url: (guest_tickets ? 'support/contact-us' : 'support')|url, icon: 'headset', label: 'Support'|trans, setting: 'side_menu_support' },
 ] %}
+{# ClientFence core patch: tickets off (Support settings): Support opens the outside help desk, or is not shown. #}
+{% if not guest.support_tickets_enabled %}
+    {% set outside_support = guest.support_support_url %}
+    {% set menu = outside_support ? menu|map(item => item.key == 'support' ? item|merge({ url: outside_support }) : item) : menu|filter(item => item.key != 'support') %}
+    {% set guest_tickets = outside_support is not empty %}
+{% endif %}
 {% if guest.servicehosting_panel_on %}
     {% set menu = menu|merge([{ key: 'hosting', url: 'hosting'|url, icon: 'world', label: 'Hosting accounts'|trans }]) %}
 {% endif %}
