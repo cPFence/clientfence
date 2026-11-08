@@ -90,7 +90,7 @@ msgstr ""
 msgid "(not set)"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig …
+#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_domain_fields.html.twig …
 msgid "(optional)"
 msgstr ""
 
@@ -480,6 +480,10 @@ msgstr ""
 msgid ":field cannot be negative."
 msgstr ""
 
+#: src/modules/Servicedomain/Service.php
+msgid ":field is required to register a :tld domain."
+msgstr ""
+
 #: src/library/ClientFence/Validation/PriceValidator.php
 msgid ":field must be a valid number."
 msgstr ""
@@ -560,6 +564,18 @@ msgstr ""
 msgid ":reason"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid ":registrar has no test system: turn test mode off for this registrar."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid ":registrar needs the PHP soap extension."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid ":registrar refused the request: :error"
+msgstr ""
+
 #: src/modules/Embed/Service.php
 msgid ":site is not a website address such as https://example.com."
 msgstr ""
@@ -574,6 +590,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid ":stars-star rating of your reply on ticket #:id"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid ":state business number"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
@@ -610,6 +630,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/Service.php
 msgid ":tld can only be registered for :periods years"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid ":tld domains have no registrar lock."
 msgstr ""
 
 #: src/library/ClientFence/Api/Dispatcher.php
@@ -2884,7 +2908,7 @@ msgstr ""
 msgid "At least one of the required fields are empty."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Synergywholesale.php
 msgid "At least two name servers are required."
 msgstr ""
 
@@ -2938,6 +2962,10 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig src/modules/Notification/templates/admin/mod_notification_index.html.twig
 msgid "Audience"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Australian citizen or resident"
 msgstr ""
 
 #: src/modules/Api/Controller/Client.php
@@ -3456,8 +3484,16 @@ msgstr ""
 msgid "Business email"
 msgstr ""
 
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Business for profit"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Business name"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Business registration number"
 msgstr ""
 
 #: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
@@ -3932,6 +3968,10 @@ msgstr ""
 msgid "Charge saved method"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Charity"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Check"
 msgstr ""
@@ -3984,6 +4024,10 @@ msgstr ""
 msgid "Check the server certificate"
 msgstr ""
 
+#: src/modules/Servicedomain/Service.php
+msgid "Check the value of :field."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
 msgid "Check your email"
 msgstr ""
@@ -4030,6 +4074,10 @@ msgstr ""
 
 #: src/modules/Security/Checks/dangerousFunctions.php
 msgid "Checks to see if potentially dangerous PHP functions are enabled."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Child care centre"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_steps.html.twig
@@ -4880,6 +4928,10 @@ msgstr ""
 msgid "Cloudflare ranges in the list: %count% of %total%."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Club"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig src/modules/Client/templates/client/mod_client_twofactor_code.html.twig …
 msgid "Code"
 msgstr ""
@@ -4924,6 +4976,10 @@ msgstr ""
 msgid "Comments on how :name handled it (optional)"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Commercial statutory body"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "Committed"
 msgstr ""
@@ -4932,7 +4988,7 @@ msgstr ""
 msgid "Committed Applications"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
+#: src/library/Registrar/Adapter/Synergywholesale.php src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig …
 msgid "Company"
 msgstr ""
 
@@ -5428,6 +5484,10 @@ msgstr ""
 msgid "Could not load edit history. Please try again."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Could not reach :registrar: :error"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Dynadot.php
 msgid "Could not reach Dynadot for :command"
 msgstr ""
@@ -5470,6 +5530,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
 msgid "Country Code"
+msgstr ""
+
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Country of the foreign organisation (two-letter code, for C31 and C32)"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig …
@@ -7000,8 +7064,28 @@ msgstr ""
 msgid "Edited"
 msgstr ""
 
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Education"
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
 msgid "Effective Display:"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Eligibility ID number"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Eligibility ID type"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Eligibility name (if not the registrant)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Eligibility type"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
@@ -8524,6 +8608,14 @@ msgstr ""
 msgid "Force the deletion of the item"
 msgstr ""
 
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Foreign organisation that regularly does business in the US"
+msgstr ""
+
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Foreign organisation with an office in the US"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_user_invite.html.twig src/modules/Page/templates/client/mod_page_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
 msgid "Forgot Password?"
 msgstr ""
@@ -8960,6 +9052,14 @@ msgstr ""
 msgid "Google sign-in was cancelled."
 msgstr ""
 
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Government"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Government school"
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
 msgid "Grant All Permissions"
 msgstr ""
@@ -9218,6 +9318,10 @@ msgstr ""
 
 #: src/modules/Support/NetworkIssues.php src/modules/Support/TicketPriority.php src/modules/Support/templates/admin/mod_support_ticket_priority.html.twig
 msgid "High"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Higher education institution"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
@@ -9708,6 +9812,10 @@ msgstr ""
 msgid "Income this month"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Incorporated association"
+msgstr ""
+
 #: src/modules/Index/manifest.json
 msgid "Index page module"
 msgstr ""
@@ -9722,6 +9830,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Individual"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Industry body"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/toasts.html.twig
@@ -12164,6 +12276,10 @@ msgstr ""
 msgid "Nameservers Updated"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "National body"
+msgstr ""
+
 #: src/modules/Support/templates/client/mod_support_tickets.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
 msgid "Need an answer? We are here to help!"
 msgstr ""
@@ -13026,6 +13142,18 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig src/themes/palisade/html/mod_client_profile.html.twig …
 msgid "Non-binary"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Non-government school"
+msgstr ""
+
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Non-profit business, club, association or religious organisation"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Non-profit organisation"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Staff/templates/admin/mod_staff_group.html.twig …
@@ -13984,8 +14112,12 @@ msgstr ""
 msgid "Orders that failed to renew"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig src/modules/Support/NetworkIssues.php …
+#: src/library/Registrar/Adapter/Synergywholesale.php src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig …
 msgid "Other"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Other (such as an incorporated association number)"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -14274,6 +14406,10 @@ msgstr ""
 
 #: src/modules/Embed/templates/admin/mod_embed_index.html.twig
 msgid "Part"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Partnership"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig
@@ -14684,6 +14820,10 @@ msgstr ""
 msgid "Pending setup"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Pending trademark owner"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig
 msgid "People who get a copy of this account's emails of the kinds chosen for them. They do not sign in."
 msgstr ""
@@ -14724,12 +14864,20 @@ msgstr ""
 msgid "Permanent"
 msgstr ""
 
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Permanent resident of the US"
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
 msgid "Permissions"
 msgstr ""
 
 #: src/modules/Client/Users.php
 msgid "Permissions must be a list."
+msgstr ""
+
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Personal use"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
@@ -14952,6 +15100,10 @@ msgstr ""
 msgid "Policy"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Political party"
+msgstr ""
+
 #: src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "Poor"
 msgstr ""
@@ -14998,6 +15150,10 @@ msgstr ""
 
 #: src/modules/News/templates/admin/mod_news_index.html.twig
 msgid "Posts clients read at /news and on their dashboard. Pinned posts come first."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Pre-school"
 msgstr ""
 
 #: src/modules/Page/templates/client/mod_page_signup.html.twig
@@ -15524,6 +15680,10 @@ msgstr ""
 msgid "Published"
 msgstr ""
 
+#: src/library/Registrar/AdapterAbstract.php
+msgid "Purpose of the domain"
+msgstr ""
+
 #: src/modules/Invoice/QuotePdf.php src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/themes/palisade/html/mod_invoice_quote.html.twig
 msgid "Qty"
 msgstr ""
@@ -15984,12 +16144,28 @@ msgstr ""
 msgid "Register a new domain"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Registered business"
+msgstr ""
+
 #: src/modules/Extension/templates/admin/mod_extension_index.html.twig
 msgid "Registered hooks let extensions integrate with key lifecycle events throughout ClientFence."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "Registered on"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Registrant ID number"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Registrant ID type"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Registrant name (business or person)"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig …
@@ -16090,6 +16266,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "Released Applications"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Religious or church group"
 msgstr ""
 
 #: src/modules/Extension/templates/admin/mod_extension_languages.html.twig
@@ -16362,6 +16542,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Requires the PHP redis (or relay) extension."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Research organisation"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
@@ -18154,6 +18338,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Social sign-in links"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Sole trader"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_tickets.html.twig
@@ -21305,8 +21493,24 @@ msgstr ""
 msgid "Tracks and displays system activity logs for staff, clients, orders, invoices, and other administrative events."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Trade union"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Trademark"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Trademark owner"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
 msgid "Traffic"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Training organisation"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
@@ -21543,6 +21747,18 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Invoice/templates/admin/mod_invoice_failed_items.html.twig …
 msgid "Type"
+msgstr ""
+
+#: src/library/Registrar/AdapterAbstract.php
+msgid "US citizen"
+msgstr ""
+
+#: src/library/Registrar/AdapterAbstract.php
+msgid "US nexus (connection to the United States)"
+msgstr ""
+
+#: src/library/Registrar/AdapterAbstract.php
+msgid "US organisation"
 msgstr ""
 
 #: src/library/Server/Manager/Directadmin.php

@@ -31,6 +31,21 @@ class Registrar_Domain implements Stringable
 
     private ?Registrar_Domain_Contact $_contact_billing = null;
 
+    /** ClientFence core patch: the order's answers to Registrar_AdapterAbstract::getDomainFields(). */
+    private array $_fields = [];
+
+    public function setFields(array $fields): static
+    {
+        $this->_fields = $fields;
+
+        return $this;
+    }
+
+    public function getFields(): array
+    {
+        return $this->_fields;
+    }
+
     public function setRegistrationPeriod($years)
     {
         $this->_period = (int) $years;

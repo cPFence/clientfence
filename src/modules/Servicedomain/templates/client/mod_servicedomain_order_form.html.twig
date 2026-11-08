@@ -60,6 +60,7 @@
                                     <input class="form-control form-control-sm" type="text" name="ns4" value="" placeholder="{{ 'Nameserver 4'|trans }}"/>
                                 </div>
                             </div>
+                            {{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain_fields', tld_select: 'register_tld'}) }}
                         </div>
                     </div>
                 </div>
@@ -316,6 +317,8 @@
                 for (let i = 0; i < registerTldSelect.options.length; i++) {
                     if (registerTldSelect.options[i].value === tldParam) {
                         registerTldSelect.selectedIndex = i;
+                        // ClientFence core patch: shows the chosen TLD's domain fields (mod_servicedomain_domain_fields).
+                        registerTldSelect.dispatchEvent(new Event('change'));
                         break;
                     }
                 }

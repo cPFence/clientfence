@@ -147,7 +147,10 @@
             </div>
         </div>
     </form>
+{% endif %}
 
+{# ClientFence core patch: also after a failed registration, to correct its domain fields before the retry. #}
+{% if order.status in ['active', 'failed_setup'] %}
     <form method="post" action="{{ 'servicedomain/update'|api_url }}" {{ fb_api_form({message: 'Domain Data Updated'|trans}) }}>
         <div class="card mb-4">
             <div class="card-body">
@@ -165,6 +168,10 @@
                         <input class="form-control" type="text" name="period" value="{{ request.period|default(service.period) }}">
                     </div>
                 </div>
+                {# ClientFence core patch: the registrar's domain fields, saved in the order (correct them before a retry). #}
+                {% if order.config.action|default('') == 'register' %}
+                    {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: [{tld: service.tld, domain_fields: service.domain_fields|default({})}], prefix: 'domain_fields', values: order.config.domain_fields|default({})}) }}
+                {% endif %}
                 <input type="hidden" name="order_id" value="{{ order.id }}">
             </div>
             <div class="card-footer d-flex justify-content-end">
@@ -172,7 +179,9 @@
             </div>
         </div>
     </form>
+{% endif %}
 
+{% if order.status == 'active' %}
     <form method="post" action="{{ 'servicedomain/update_contacts'|api_url }}" {{ fb_api_form({message: 'Domain Contact Details Updated'|trans}) }}>
         <div class="card">
             <div class="card-body">

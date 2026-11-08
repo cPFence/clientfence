@@ -2796,3 +2796,63 @@ test('handles domain sync failures without blocking other domains', function (Th
     'registrar exception' => [new Exception('registrar unavailable')],
     'adapter type error' => [new TypeError('broken registrar adapter')],
 ]);
+
+test('the registrar domain fields of a registration are checked and kept in the order data', function (): void {
+    $tldModel = new Model_Tld();
+    $tldModel->loadBean(new Tests\Helpers\DummyBean());
+    $tldModel->tld = '.com.au';
+    $tldModel->min_years = 1;
+    $tldModel->active = true;
+    $fields = [
+        'registrant_name' => ['label' => 'Registrant name', 'required' => true],
+        'eligibility_type' => ['label' => 'Eligibility type', 'required' => true, 'options' => ['Company' => 'Company']],
+        'registrant_id' => ['label' => 'Registrant ID'],
+    ];
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isSldValid')->andReturn(true);
+    $validatorMock->shouldReceive('checkRequiredParamsForArray');
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('tldFindOneByTld')->andReturn($tldModel);
+    $serviceMock->shouldReceive('isDomainAvailable')->andReturn(true);
+    $serviceMock->shouldReceive('tldDomainFields')->andReturn($fields);
+    $di = container();
+    $di['validator'] = $validatorMock;
+    $serviceMock->setDi($di);
+    $order = fn (array $answers) => ['action' => 'register', 'register_sld' => 'example', 'register_tld' => '.com.au', 'register_years' => 1, 'domain_fields' => $answers];
+
+    $data = $order(['registrant_name' => ' Example Pty Ltd ', 'eligibility_type' => 'Company', 'registrant_id' => '', 'price' => 0]);
+    $serviceMock->validateOrderData($data);
+    expect($data['domain_fields'])->toBe(['registrant_name' => 'Example Pty Ltd', 'eligibility_type' => 'Company']);
+
+    foreach ([['eligibility_type' => 'Company'], ['registrant_name' => 'X', 'eligibility_type' => 'Citizen/Resident'], ['registrant_name' => str_repeat('x', 256), 'eligibility_type' => 'Company']] as $answers) {
+        $data = $order($answers);
+        expect(fn () => $serviceMock->validateOrderData($data))->toThrow(ClientFence\InformationException::class);
+    }
+
+    $data = ['action' => 'transfer', 'transfer_sld' => 'example', 'transfer_tld' => '.com.au', 'domain_fields' => ['registrant_name' => 'X']];
+    $serviceMock->shouldReceive('canBeTransferred')->andReturn(true);
+    $serviceMock->validateOrderData($data);
+    expect($data)->not->toHaveKey('domain_fields');
+});
+
+test('staff saving a transferred domain are not asked for the registration fields', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $orderService = Mockery::mock();
+    $orderService->shouldReceive('getServiceOrder')->andReturn($order);
+    $orderService->shouldReceive('getConfig')->andReturn(['action' => 'transfer']);
+    $orderService->shouldNotReceive('updateOrderConfig');
+    $di = container();
+    $di['db'] = Mockery::mock('ClientFence\Database')->shouldReceive('store')->getMock();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('tldDomainFields')->andReturn(['registrant_name' => ['label' => 'Registrant name', 'required' => true]]);
+    $service->setDi($di);
+    $model = new Model_ServiceDomain();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->tld = '.com.au';
+
+    expect($service->updateDomain($model, ['period' => 1, 'domain_fields' => ['registrant_name' => '']]))->toBeTrue();
+});

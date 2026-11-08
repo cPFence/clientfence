@@ -31,6 +31,7 @@
                 </div>
             </div>
         </div>
+        {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: guest.serviceDomain_tlds({ 'allow_register': 1 }), prefix: 'config[domain_fields]', tld_select: 'config[register_tld]'}) }}
     </div>
 
     <div class="col-12 domain-action domain-transfer d-none">

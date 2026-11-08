@@ -52,6 +52,35 @@ abstract class Registrar_AdapterAbstract
     }
 
     /**
+     * ClientFence core patch: the details a TLD's registry needs at registration (WHMCS "additional domain fields"),
+     * asked for on the order forms and passed on with Registrar_Domain::getFields(). Field name => ['label' => text,
+     * 'required' => bool, optional 'options' => [value sent to the registrar => label]]; empty for none.
+     *
+     * @return array<string, array{label: string, required?: bool, options?: array<string, string>}>
+     */
+    public static function getDomainFields(string $tld): array
+    {
+        return [];
+    }
+
+    /** ClientFence: the .us registry's nexus and purpose questions (nexus_category, nexus_country, app_purpose), with its codes as values. */
+    protected static function usNexusFields(): array
+    {
+        return [
+            'nexus_category' => ['label' => __trans('US nexus (connection to the United States)'), 'required' => true, 'options' => [
+                'C11' => __trans('US citizen'), 'C12' => __trans('Permanent resident of the US'),
+                'C21' => __trans('US organisation'), 'C31' => __trans('Foreign organisation that regularly does business in the US'),
+                'C32' => __trans('Foreign organisation with an office in the US'),
+            ]],
+            'nexus_country' => ['label' => __trans('Country of the foreign organisation (two-letter code, for C31 and C32)')],
+            'app_purpose' => ['label' => __trans('Purpose of the domain'), 'required' => true, 'options' => [
+                'P1' => __trans('Business for profit'), 'P2' => __trans('Non-profit business, club, association or religious organisation'),
+                'P3' => __trans('Personal use'), 'P4' => __trans('Education'), 'P5' => __trans('Government'),
+            ]],
+        ];
+    }
+
+    /**
      * Checks if a domain is available for registration.
      *
      * @param Registrar_Domain $domain domain object containing the details of the domain to check

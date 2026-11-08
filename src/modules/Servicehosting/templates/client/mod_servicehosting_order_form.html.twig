@@ -89,6 +89,7 @@
                             <label class="mt-2">
                                 <select class="form-select form-select-sm" name="domain[register_years]" id="registration-years"></select>
                             </label>
+                            {{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain[domain_fields]', tld_select: 'domain[register_tld]'}) }}
                         </div>
                     </div>
                 </div>

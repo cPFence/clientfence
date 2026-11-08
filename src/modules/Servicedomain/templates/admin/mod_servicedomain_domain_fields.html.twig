@@ -1,0 +1,42 @@
+{# ClientFence core patch: the admin side of client/mod_servicedomain_domain_fields.html.twig (the admin area cannot load
+   client templates). Takes tlds, prefix, values (the saved answers) and tld_select; without a tld_select every block shows. #}
+{% for tld in tlds %}
+    {% if tld.domain_fields is not empty %}
+        <div class="row g-3 mt-0" data-domain-fields="{{ tld.tld }}" data-tld-select="{{ tld_select|default('') }}"{% if tld_select|default('') %} hidden{% endif %}>
+            {% for name, field in tld.domain_fields %}
+                {% set id = 'df-' ~ prefix|replace({'[': '-', ']': ''}) ~ '-' ~ tld.tld|replace({'.': ''}) ~ '-' ~ name %}
+                {% set value = values[name]|default('') %}
+                <div class="col-lg-6">
+                    <label class="form-label" for="{{ id }}">{{ field.label }}{% if not field.required|default(false) %} {{ '(optional)'|trans }}{% endif %}</label>
+                    {% if field.options is defined %}
+                        <select class="form-select" id="{{ id }}" name="{{ prefix }}[{{ name }}]"{% if tld_select|default('') %} disabled{% endif %}>
+                            <option value=""></option>
+                            {% for option, label in field.options %}
+                                <option value="{{ option }}"{% if value == option %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input class="form-control" type="text" id="{{ id }}" name="{{ prefix }}[{{ name }}]" value="{{ value }}" maxlength="255"{% if tld_select|default('') %} disabled{% endif %}>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+{% if tld_select|default('') %}
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.querySelector('select[name="{{ tld_select|e('js') }}"]');
+        if (!select) return;
+        const show = function () {
+            document.querySelectorAll('[data-tld-select="{{ tld_select|e('js') }}"]').forEach(function (block) {
+                const on = block.dataset.domainFields === select.value;
+                block.hidden = !on;
+                block.querySelectorAll('input, select').forEach(function (input) { input.disabled = !on; });
+            });
+        };
+        select.addEventListener('change', show);
+        show();
+    });
+</script>
+{% endif %}

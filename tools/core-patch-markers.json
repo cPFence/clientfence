@@ -4426,5 +4426,45 @@
     {
         "file": "themes/palisade/html/mod_page_signup.html.twig",
         "done": "{% if guest.clientfence_eu_vat %}"
+    },
+    {
+        "file": "library/Registrar/AdapterAbstract.php",
+        "done": "ClientFence core patch: the details a TLD's registry needs at registration (WHMCS \"additional domain fields\"),"
+    },
+    {
+        "file": "library/Registrar/Domain.php",
+        "done": "/** ClientFence core patch: the order's answers to Registrar_AdapterAbstract::getDomainFields(). */"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "// ClientFence core patch: the details the TLD's registrar asks for (Registrar_AdapterAbstract::getDomainFields())."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "// ClientFence core patch: staff correct the registrar's domain fields, kept in the order config, before a retry."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
+        "done": "{# ClientFence core patch: the registrar's domain fields, saved in the order (correct them before a retry). #}"
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig",
+        "done": "{{ include('mod_servicedomain_domain_fields.html.twig', {tlds: guest.serviceDomain_tlds({ 'allow_register': 1 }), prefix: 'config[domain_fields]', tld_select: 'config[register_tld]'}) }}"
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig",
+        "done": "{{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain_fields', tld_select: 'register_tld'}) }}"
+    },
+    {
+        "file": "modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig",
+        "done": "{{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain[domain_fields]', tld_select: 'domain[register_tld]'}) }}"
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig",
+        "done": "// ClientFence core patch: shows the chosen TLD's domain fields (mod_servicedomain_domain_fields)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
+        "done": "{# ClientFence core patch: also after a failed registration, to correct its domain fields before the retry. #}"
     }
 ]
