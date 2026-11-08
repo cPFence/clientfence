@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.38-beta.1 (2026-11-08)
+
+### Added
+
+- PayPal Auto-Pay: a new PayPal gateway with billing agreements, for PayPal accounts without saved PayPal accounts (the Vault). Clients agree once at PayPal; renewals are then charged automatically, staff can charge now, and clients can pay at once with the saved agreement.
+- PayPal Auto-Pay follows PayPal's notices: an agreement cancelled at PayPal is removed, a payment PayPal held is marked paid when it completes, and a chargeback refunds the invoice and moves the renewed services' due dates back.
+- "Convert to for processing" in PayPal Auto-Pay charges invoices in other currencies in one PayPal currency, as WHMCS does.
+- The WHMCS import can bring clients' PayPal billing agreements over, so they do not agree again (an import setting, off by default).
+- The admin dashboard shows the PayPal balance of PayPal Auto-Pay and of PayPal with REST API keys (on by default, can be turned off per gateway).
+- Saved bank accounts for Stripe (a new Stripe setting, off by default; turn the method on in your Stripe dashboard too): clients can save a BECS (AUD), SEPA (EUR) or Bacs (GBP) Direct Debit account that pays renewals automatically. A debit still clearing shows "Payment pending" and is not charged again, reminded or suspended meanwhile.
+
+### Fixed
+
+- The Add New Domain Registrar and payment gateway dialogs show the right adapter folder.
+- Arabic: "Registration" is translated.
+
 ## 1.0.37 (2026-11-08)
 
 ### Added
