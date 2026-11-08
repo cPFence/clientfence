@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.36 (2026-11-08)
+
+### Added
+
+- EU VAT: ClientFence checks a client's EU VAT number with the EU VIES service and refuses a wrong one.
+- An EU business with a valid VAT number in another EU country than yours becomes tax exempt automatically, and its invoices carry a reverse-charge note.
+- Sign-up and the order page ask for an optional company VAT number while EU VAT checks are on.
+
+### Removed
+
+- The Client Balance payment gateway: account credit is applied with Apply credit on the invoice. If you added this gateway, delete it in Payment Gateways before you update.
+- The unused option to send error reports to Sentry.
+
+### Fixed
+
+- Brazilian Portuguese showed "ICMS" for the company VAT number.
+
 ## 1.0.35 (2026-11-07)
 
 ### Added
