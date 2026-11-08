@@ -105,6 +105,11 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract
     {
         foreach ($this->request('checkTransferAvailability', ['domains' => $domain->getName()])->reply->available->domain ?? [] as $found) {
             if (strcasecmp(trim((string) $found), $domain->getName()) === 0) {
+                // A premium name costs more than the TLD's transfer price.
+                if ((string) ($found['premium'] ?? '0') === '1') {
+                    throw new Registrar_Exception('Premium domains cannot be transferred.');
+                }
+
                 return true;
             }
         }

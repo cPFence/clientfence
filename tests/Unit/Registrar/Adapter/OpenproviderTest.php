@@ -105,7 +105,9 @@ test('availability: free, taken and premium names', function (): void {
         ->and(openproviderAdapter(['POST /domains/check' => ['results' => [['domain' => 'example.com', 'status' => 'active']]]])->isDomainAvailable(openproviderDomain()))->toBeFalse()
         ->and(openproviderAdapter(['POST /domains/check' => ['results' => [['domain' => 'example.com', 'status' => 'active']]]])->isDomaincanBeTransferred(openproviderDomain()))->toBeTrue()
         ->and(fn () => openproviderAdapter(['POST /domains/check' => ['results' => [['domain' => 'example.com', 'status' => 'free', 'is_premium' => true]]]])->isDomainAvailable(openproviderDomain()))
-        ->toThrow(Registrar_Exception::class, 'Premium');
+        ->toThrow(Registrar_Exception::class, 'Premium')
+        ->and(fn () => openproviderAdapter(['POST /domains/check' => ['results' => [['domain' => 'example.com', 'status' => 'active', 'is_premium' => true]]]])->isDomaincanBeTransferred(openproviderDomain()))
+        ->toThrow(Registrar_Exception::class, 'Premium domains cannot be transferred');
 });
 
 test('the house number comes from either address line; an address without one is refused', function (): void {

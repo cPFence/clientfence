@@ -77,7 +77,13 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract
 
     public function isDomaincanBeTransferred(Registrar_Domain $domain): bool
     {
-        return $this->check($domain)['status'] === 'active';
+        $result = $this->check($domain);
+        // A premium name costs more than the TLD's transfer price.
+        if ($result['status'] === 'active' && !empty($result['is_premium'])) {
+            throw new Registrar_Exception('Premium domains cannot be transferred.');
+        }
+
+        return $result['status'] === 'active';
     }
 
     public function modifyNs(Registrar_Domain $domain): bool

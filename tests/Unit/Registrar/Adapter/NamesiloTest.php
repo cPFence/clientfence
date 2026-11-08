@@ -98,7 +98,10 @@ test('availability: available, taken and premium names', function (): void {
     expect(namesiloAdapter(['checkRegisterAvailability' => '<available><domain price="9.95" premium="0">example.com</domain></available>'])->isDomainAvailable(namesiloDomain('.com')))->toBeTrue()
         ->and(namesiloAdapter(['checkRegisterAvailability' => '<unavailable><domain>example.com</domain></unavailable>'])->isDomainAvailable(namesiloDomain('.com')))->toBeFalse()
         ->and(fn () => namesiloAdapter(['checkRegisterAvailability' => '<available><domain price="900" premium="1">example.com</domain></available>'])->isDomainAvailable(namesiloDomain('.com')))
-        ->toThrow(Registrar_Exception::class, 'Premium');
+        ->toThrow(Registrar_Exception::class, 'Premium')
+        ->and(namesiloAdapter(['checkTransferAvailability' => '<available><domain price="9.99">example.com</domain></available>'])->isDomaincanBeTransferred(namesiloDomain('.com')))->toBeTrue()
+        ->and(fn () => namesiloAdapter(['checkTransferAvailability' => '<available><domain price="9999.99" premium="1">example.com</domain></available>'])->isDomaincanBeTransferred(namesiloDomain('.com')))
+        ->toThrow(Registrar_Exception::class, 'Premium domains cannot be transferred');
 });
 
 test('a contact change makes a new contact for this domain only', function (): void {
