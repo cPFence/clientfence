@@ -21270,3 +21270,141 @@ msgstr "У вас немає збережених карток або банкі
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
 msgstr "Ваш банківський платіж на суму :amount від :date обробляється. Рахунок буде позначено як сплачений після зарахування платежу, зазвичай протягом кількох робочих днів."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Add the REST API keys to PayPal to see its balance."
+msgstr "Додайте ключі REST API до PayPal, щоб бачити баланс."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Agree once at PayPal and your invoices are then paid from your PayPal account automatically."
+msgstr "Погодьтеся один раз у PayPal, і ваші рахунки далі сплачуватимуться автоматично з вашого облікового запису PayPal."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Automatic payments to :company"
+msgstr "Автоматичні платежі для :company"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments were not set up. Please try again."
+msgstr "Автоматичні платежі не налаштовано. Спробуйте ще раз."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments with PayPal are not available."
+msgstr "Автоматичні платежі через PayPal недоступні."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Clients' billing agreements of WHMCS's PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them."
+msgstr "Платіжні угоди клієнтів зі шлюзу WHMCS «PayPal Billing Agreements» (PayPal Auto-Pay) стають їхнім збереженим способом PayPal Auto-Pay, тож продовження оплачуються без нової згоди. Спершу встановіть PayPal Auto-Pay з тими самими даними API PayPal і вимкніть списання в WHMCS."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Do not import"
+msgstr "Не імпортувати"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "No balance."
+msgstr "Немає балансу."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay now with :account"
+msgstr "Сплатити зараз через :account"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once with PayPal"
+msgstr "Сплатити один раз через PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with PayPal and set up automatic payments"
+msgstr "Сплатити через PayPal і налаштувати автоматичні платежі"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "PayPal automatic payments"
+msgstr "Автоматичні платежі PayPal"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "PayPal balance (:gateway)"
+msgstr "Баланс PayPal (:gateway)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal billing agreements"
+msgstr "Платіжні угоди PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method"
+msgstr "PayPal не відповів на :method"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method: :error"
+msgstr "PayPal не відповів на :method: :error"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "PayPal did not answer. Please try again later."
+msgstr "PayPal не відповів. Спробуйте пізніше."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not give the balance: :error"
+msgstr "PayPal не повернув баланс: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not make the refund: :error"
+msgstr "PayPal не виконав повернення коштів: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not set up automatic payments: :error"
+msgstr "PayPal не налаштував автоматичні платежі: :error"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "PayPal is not available."
+msgstr "PayPal недоступний."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal notice is not genuine"
+msgstr "Сповіщення PayPal недостовірне"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id is in :currency, the invoice in :invoice"
+msgstr "Платіж PayPal :id у валюті :currency, рахунок у :invoice"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id was not found: :error"
+msgstr "Платіж PayPal :id не знайдено: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal refused the API details or this account cannot make billing agreements (ask PayPal to turn on Reference Transactions): :error"
+msgstr "PayPal відхилив дані API, або цей обліковий запис не може створювати платіжні угоди (попросіть PayPal увімкнути Reference Transactions): :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up automatic payments with PayPal"
+msgstr "Налаштувати автоматичні платежі через PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sign in as the account owner to pay with PayPal."
+msgstr "Увійдіть як власник облікового запису, щоб сплатити через PayPal."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Stop automatic payments with PayPal?"
+msgstr "Вимкнути автоматичні платежі через PayPal?"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "Test mode"
+msgstr "Тестовий режим"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The client has no PayPal billing agreement."
+msgstr "Клієнт не має платіжної угоди PayPal."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved PayPal account."
+msgstr "Ви не можете сплатити цей рахунок збереженим обліковим записом PayPal."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have not set up automatic payments with PayPal."
+msgstr "Ви не налаштували автоматичні платежі через PayPal."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
+msgstr "Рахунки за продовження тоді сплачуються з вашого облікового запису PayPal. Вимкнути це можна на сторінці «Методи оплати» або в PayPal."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing: :code is not one of the currencies of this portal."
+msgstr "Конвертувати у валюту для обробки: :code не входить до валют цього порталу."

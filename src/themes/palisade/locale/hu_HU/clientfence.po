@@ -21243,3 +21243,141 @@ msgstr "Nincsenek mentett kártyái vagy bankszámlái."
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
 msgstr "A(z) :date napi, :amount összegű banki fizetése feldolgozás alatt áll. A számla fizetettként lesz megjelölve, amint a fizetés feldolgozásra kerül, általában néhány munkanapon belül."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Add the REST API keys to PayPal to see its balance."
+msgstr "Adja hozzá a REST API-kulcsokat a PayPalhoz az egyenleg megtekintéséhez."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Agree once at PayPal and your invoices are then paid from your PayPal account automatically."
+msgstr "Egyszer járuljon hozzá a PayPalnál, és számláit ezután automatikusan kifizeti a PayPal-fiókjából."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Automatic payments to :company"
+msgstr "Automatikus fizetések ennek: :company"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments were not set up. Please try again."
+msgstr "Az automatikus fizetések beállítása nem sikerült. Kérjük, próbálja újra."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments with PayPal are not available."
+msgstr "Az automatikus fizetések PayPallal nem érhetők el."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Clients' billing agreements of WHMCS's PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them."
+msgstr "A WHMCS „PayPal Billing Agreements” átjárójának ügyfél-számlázási megállapodásai (PayPal Auto-Pay) az ügyfelek mentett PayPal Auto-Pay módjává válnak, így a megújításokat új hozzájárulás nélkül terheli meg. Előbb telepítse a PayPal Auto-Pay-t ugyanazokkal a PayPal API-adatokkal, és állítsa le a WHMCS terhelését."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Do not import"
+msgstr "Ne importálja"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "No balance."
+msgstr "Nincs egyenleg."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay now with :account"
+msgstr "Fizetés most ezzel: :account"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once with PayPal"
+msgstr "Egyszeri fizetés PayPallal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with PayPal and set up automatic payments"
+msgstr "Fizetés PayPallal és automatikus fizetések beállítása"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "PayPal automatic payments"
+msgstr "PayPal automatikus fizetések"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "PayPal balance (:gateway)"
+msgstr "PayPal-egyenleg (:gateway)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal billing agreements"
+msgstr "PayPal számlázási megállapodások"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method"
+msgstr "A PayPal nem válaszolt erre: :method"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method: :error"
+msgstr "A PayPal nem válaszolt erre: :method: :error"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "PayPal did not answer. Please try again later."
+msgstr "A PayPal nem válaszolt. Kérjük, próbálja újra később."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not give the balance: :error"
+msgstr "A PayPal nem adta meg az egyenleget: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not make the refund: :error"
+msgstr "A PayPal nem hajtotta végre a visszatérítést: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not set up automatic payments: :error"
+msgstr "A PayPal nem állította be az automatikus fizetéseket: :error"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "PayPal is not available."
+msgstr "A PayPal nem érhető el."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal notice is not genuine"
+msgstr "A PayPal-értesítés nem hiteles"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id is in :currency, the invoice in :invoice"
+msgstr "A(z) :id PayPal-fizetés pénzneme :currency, a számláé :invoice"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id was not found: :error"
+msgstr "A(z) :id PayPal-fizetés nem található: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal refused the API details or this account cannot make billing agreements (ask PayPal to turn on Reference Transactions): :error"
+msgstr "A PayPal elutasította az API-adatokat, vagy ez a fiók nem hozhat létre számlázási megállapodásokat (kérje meg a PayPalt a Reference Transactions bekapcsolására): :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up automatic payments with PayPal"
+msgstr "Automatikus fizetések beállítása PayPallal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sign in as the account owner to pay with PayPal."
+msgstr "Jelentkezzen be fiókjának tulajdonosaként a PayPallal való fizetéshez."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Stop automatic payments with PayPal?"
+msgstr "Leállítja az automatikus fizetéseket PayPallal?"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "Test mode"
+msgstr "Tesztmód"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The client has no PayPal billing agreement."
+msgstr "Az ügyfélnek nincs PayPal számlázási megállapodása."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved PayPal account."
+msgstr "Ezt a számlát nem fizetheti ki mentett PayPal-fiókkal."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have not set up automatic payments with PayPal."
+msgstr "Nem állított be automatikus fizetéseket PayPallal."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
+msgstr "A megújítási számlák ezután a PayPal-fiókjából kerülnek kifizetésre. Ezt leállíthatja a Fizetési módok oldalon vagy a PayPalnál."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing: :code is not one of the currencies of this portal."
+msgstr "Feldolgozási pénznem: :code nem tartozik e portál pénznemei közé."

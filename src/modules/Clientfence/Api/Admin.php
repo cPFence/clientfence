@@ -549,7 +549,7 @@ class Admin extends \ClientFence\Api\AbstractApi
 
     /**
      * Saves and tests the WHMCS database details: host, port, database, username, password and
-     * encryption_key (each empty one keeps the saved one), attachments_dir. Answers {version}.
+     * encryption_key (each empty one keeps the saved one), attachments_dir, paypal_agreements (1 imports WHMCS PayPal billing agreements). Answers {version}.
      */
     public function whmcs_import_save($data): array
     {

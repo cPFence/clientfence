@@ -20534,3 +20534,141 @@ msgstr "No tiene tarjetas ni cuentas bancarias guardadas."
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
 msgstr "Su pago bancario de :amount del :date se está procesando. La factura se marca como pagada cuando se confirma el cobro, normalmente en unos días hábiles."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Add the REST API keys to PayPal to see its balance."
+msgstr "Añada las claves de la API REST a PayPal para ver su saldo."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Agree once at PayPal and your invoices are then paid from your PayPal account automatically."
+msgstr "Acepte una vez en PayPal y sus facturas se pagarán automáticamente desde su cuenta de PayPal."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Automatic payments to :company"
+msgstr "Pagos automáticos a :company"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments were not set up. Please try again."
+msgstr "Los pagos automáticos no se configuraron. Inténtelo de nuevo."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments with PayPal are not available."
+msgstr "Los pagos automáticos con PayPal no están disponibles."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Clients' billing agreements of WHMCS's PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them."
+msgstr "Los acuerdos de facturación de los clientes de la pasarela «PayPal Billing Agreements» de WHMCS (PayPal Auto-Pay) pasan a ser su método PayPal Auto-Pay guardado, de modo que las renovaciones se cobran sin que tengan que aceptar de nuevo. Instale primero PayPal Auto-Pay con los mismos datos de API de PayPal y evite que WHMCS les cobre."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Do not import"
+msgstr "No importar"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "No balance."
+msgstr "Sin saldo."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay now with :account"
+msgstr "Pagar ahora con :account"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once with PayPal"
+msgstr "Pagar una vez con PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with PayPal and set up automatic payments"
+msgstr "Pagar con PayPal y configurar los pagos automáticos"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "PayPal automatic payments"
+msgstr "Pagos automáticos con PayPal"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "PayPal balance (:gateway)"
+msgstr "Saldo de PayPal (:gateway)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal billing agreements"
+msgstr "Acuerdos de facturación de PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method"
+msgstr "PayPal no respondió a :method"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method: :error"
+msgstr "PayPal no respondió a :method: :error"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "PayPal did not answer. Please try again later."
+msgstr "PayPal no respondió. Inténtelo de nuevo más tarde."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not give the balance: :error"
+msgstr "PayPal no devolvió el saldo: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not make the refund: :error"
+msgstr "PayPal no realizó el reembolso: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not set up automatic payments: :error"
+msgstr "PayPal no configuró los pagos automáticos: :error"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "PayPal is not available."
+msgstr "PayPal no está disponible."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal notice is not genuine"
+msgstr "El aviso de PayPal no es auténtico"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id is in :currency, the invoice in :invoice"
+msgstr "El pago de PayPal :id está en :currency y la factura en :invoice"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id was not found: :error"
+msgstr "No se encontró el pago de PayPal :id: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal refused the API details or this account cannot make billing agreements (ask PayPal to turn on Reference Transactions): :error"
+msgstr "PayPal rechazó los datos de API o esta cuenta no puede crear acuerdos de facturación (pida a PayPal que active las Reference Transactions): :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up automatic payments with PayPal"
+msgstr "Configurar pagos automáticos con PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sign in as the account owner to pay with PayPal."
+msgstr "Inicie sesión como propietario de la cuenta para pagar con PayPal."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Stop automatic payments with PayPal?"
+msgstr "¿Detener los pagos automáticos con PayPal?"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "Test mode"
+msgstr "Modo de prueba"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The client has no PayPal billing agreement."
+msgstr "El cliente no tiene ningún acuerdo de facturación de PayPal."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved PayPal account."
+msgstr "No puede pagar esta factura con una cuenta de PayPal guardada."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have not set up automatic payments with PayPal."
+msgstr "No ha configurado los pagos automáticos con PayPal."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
+msgstr "Sus facturas de renovación se pagan entonces desde su cuenta de PayPal. Puede detenerlo en su página de Métodos de Pago o en PayPal."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing: :code is not one of the currencies of this portal."
+msgstr "Moneda de procesamiento: :code no es una de las monedas de este portal."

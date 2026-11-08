@@ -40,7 +40,11 @@ final class Money
         'credits' => ['Credit log', 'tblcredit'],
         'balances' => ['Client credit balances', 'tblclients'],
         'notes' => ['Credit and debit notes', 'tblbillingnotes'],
+        'agreements' => ['PayPal Auto-Pay billing agreements', 'tblpaymethods'],
     ];
+
+    /** WHMCS's PayPal billing agreement gateway (LCWSoft PayPal Billing Agreements, "PayPal Auto-Pay"). */
+    public const AGREEMENT_GATEWAY = 'lcwsoftpaypalbillingagreements';
 
     /**
      * The unit of a line for money received before the invoice came here (a partly paid WHMCS
@@ -81,6 +85,8 @@ final class Money
         private readonly Connection $db,
         private readonly Map $map,
         private readonly string $now,
+        // The import's "PayPal billing agreements" setting (Import::DEFAULTS paypal_agreements).
+        private readonly bool $agreements = false,
     ) {
     }
 
@@ -93,6 +99,9 @@ final class Money
     public function total(string $step): int
     {
         $table = self::STEPS[$step][1];
+        if ($step === 'agreements') {
+            return $this->agreements && $this->source->hasTable($table) ? $this->source->count($table, self::agreementRows()) : 0;
+        }
 
         return $this->source->hasTable($table) ? $this->source->count($table) : 0;
     }
@@ -109,7 +118,10 @@ final class Money
         if (!$this->source->hasTable($table)) {
             return [null, 0];
         }
-        $rows = $this->source->rows('SELECT * FROM ' . $table . ' WHERE id > ? ORDER BY id LIMIT ' . $limit, [$after]);
+        if ($step === 'agreements' && (!$this->agreements || $this->gateway(self::AGREEMENT_GATEWAY) === null)) {
+            return [null, 0];
+        }
+        $rows = $this->source->rows('SELECT * FROM ' . $table . ' WHERE id > ?' . ($step === 'agreements' ? ' AND ' . self::agreementRows() : '') . ' ORDER BY id LIMIT ' . $limit, [$after]);
         if ($rows === []) {
             if ($step === 'invoices' && $this->source->count('tblinvoices') > 0) {
                 $this->numbering();
@@ -125,10 +137,64 @@ final class Money
                 'credits' => $this->credit($row),
                 'balances' => $this->balance($row),
                 'notes' => $this->note($row),
+                'agreements' => $this->agreement($row),
             };
         }
 
         return [(int) end($rows)['id'], $done];
+    }
+
+    /** WHMCS payment methods that are live billing agreements of AGREEMENT_GATEWAY. */
+    private static function agreementRows(): string
+    {
+        return "gateway_name = '" . self::AGREEMENT_GATEWAY . "' AND deleted_at IS NULL";
+    }
+
+    /**
+     * A WHMCS billing agreement becomes the client's saved PayPal Auto-Pay method, so renewals go on without the
+     * client agreeing again (owner decision 2026-11-08). WHMCS keeps the agreement ID encrypted in the payment method;
+     * the gateway's own table (mod_lcwsoftpaypalbillingagreements) has it plain, also for agreements removed since.
+     *
+     * @param array<string, mixed> $row
+     */
+    private function agreement(array $row): int
+    {
+        $id = (int) $row['id'];
+        if ($this->map->has('agreement', $id)) {
+            return 0;
+        }
+        $clientId = $this->map->get('client', (int) ($row['userid'] ?? 0));
+        $gatewayId = (int) $this->gateway(self::AGREEMENT_GATEWAY);
+        if ($clientId === null) {
+            $this->warn(sprintf('WHMCS billing agreement of client #%d was not imported: its client was not imported.', (int) ($row['userid'] ?? 0)));
+
+            return 0;
+        }
+        $ids = $this->source->hasTable('mod_lcwsoftpaypalbillingagreements')
+            ? array_values(array_filter(array_map('strval', array_column($this->source->rows('SELECT agreementID FROM mod_lcwsoftpaypalbillingagreements WHERE userid = ?', [(int) $row['userid']]), 'agreementID')), static fn (string $agreement): bool => str_starts_with($agreement, 'B-')))
+            : [];
+        if ($ids === []) {
+            $this->warn(sprintf('WHMCS billing agreement of client #%d was not imported: its ID is not in WHMCS\'s PayPal billing agreements table.', (int) $row['userid']));
+
+            return 0;
+        }
+        // shortcut: the table has no dates, so with several the last one written is taken; a cancelled one is removed at its first charge.
+        $agreement = end($ids);
+        if (count($ids) > 1) {
+            $this->warn(sprintf('Client #%d had %d PayPal billing agreements in WHMCS: the newest, %s, was kept. Check it on the client\'s payment methods if a charge fails.', (int) $row['userid'], count($ids), $agreement));
+        }
+        $values = ['external_customer_id' => '', 'saved_cards' => 1, 'default_payment_method' => $agreement, 'default_card' => 'PayPal', 'auto_pay_at' => $this->now, 'updated_at' => $this->now];
+        // WHMCS's agreements are live ones, also while the gateway is still in test mode.
+        $existing = $this->db->fetchOne('SELECT id FROM pay_gateway_customer WHERE pay_gateway_id = ? AND client_id = ? AND test_mode = 0', [$gatewayId, $clientId]);
+        if ($existing === false) {
+            $this->db->insert('pay_gateway_customer', $values + ['pay_gateway_id' => $gatewayId, 'client_id' => $clientId, 'test_mode' => 0, 'created_at' => $this->now]);
+            $existing = $this->db->lastInsertId();
+        } else {
+            $this->db->update('pay_gateway_customer', $values, ['id' => (int) $existing]);
+        }
+        $this->map->put('agreement', $id, (int) $existing);
+
+        return 1;
     }
 
     /** @param array<string, mixed> $row */
@@ -615,7 +681,11 @@ final class Money
         if ($known !== null) {
             return $known === 0 ? null : $known;
         }
-        $names = $module === 'paypal' || $module === 'paypalcheckout' ? ['paypalemail', 'paypal'] : [$module];
+        $names = match ($module) {
+            'paypal', 'paypalcheckout' => ['paypalemail', 'paypal'],
+            self::AGREEMENT_GATEWAY => ['paypalautopay'],
+            default => [$module],
+        };
         $id = false;
         foreach ($names as $name) {
             $id = $this->db->fetchOne('SELECT id FROM pay_gateway WHERE LOWER(gateway) = ? OR LOWER(name) = ? ORDER BY id', [$name, $name]);

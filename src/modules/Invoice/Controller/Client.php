@@ -56,6 +56,117 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/payment-methods/paypal/saved', 'get_paypal_saved', [], static::class);
         $app->get('/invoice/paypal-save/:hash', 'get_invoice_paypal_save', ['hash' => '[a-z0-9]+'], static::class);
         $app->get('/invoice/paypal-paid', 'get_invoice_paypal_paid', [], static::class);
+        // ClientFence: PayPal Auto-Pay billing agreements (Payment_Adapter_PayPalAutoPay), the same ways.
+        $app->get('/payment-methods/paypal-autopay', 'get_autopay_save', [], static::class);
+        $app->get('/payment-methods/paypal-autopay/saved', 'get_autopay_saved', [], static::class);
+        $app->get('/invoice/paypal-autopay/:hash', 'get_invoice_autopay', ['hash' => '[a-z0-9]+'], static::class);
+        $app->get('/invoice/paypal-autopay-paid', 'get_invoice_autopay_paid', [], static::class);
+    }
+
+    /** ClientFence: sends the account owner to PayPal to agree to automatic payments; ?next= is where they go after. */
+    public function get_autopay_save(\ClientFence\App $app): Response
+    {
+        $this->ownerSignedIn();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::autopay($this->di);
+        if ($adapter === null || !$adapter->option('save_only')) {
+            throw new InformationException('Automatic payments with PayPal are not available.');
+        }
+        $next = (string) $app->getRequest()->query->get('next', '');
+        $next = preg_match('#^order/service/manage/\d+$#', $next) === 1 ? $next : 'payment-methods';
+        $setup = $adapter->agreementSetup((int) $this->di['session']->get('client_id'), (string) $this->di['url']->link('payment-methods/paypal-autopay/saved'), (string) $this->di['url']->link($next));
+        $this->paypalBind($setup['token'], ['client' => (int) $this->di['session']->get('client_id'), 'next' => $next]);
+
+        return $app->redirectUrl($setup['url']);
+    }
+
+    /** ClientFence: back from PayPal: keeps the agreement for the client who started it, in this browser. */
+    public function get_autopay_saved(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $token = (string) $app->getRequest()->query->get('token');
+        $flow = $this->paypalFlow($token);
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::autopay($this->di);
+        if ($flow === null || $adapter === null) {
+            throw new InformationException('Automatic payments were not set up. Please try again.');
+        }
+        $adapter->agreementSaved((int) $flow['client'], $token);
+        $this->di['cache']->deleteItem(self::paypalKey($token));
+
+        return $this->movesOn((string) $flow['next']);
+    }
+
+    /** ClientFence: pays an unpaid invoice at PayPal: with a billing agreement for its signed-in owner, or once (?once=1). */
+    public function get_invoice_autopay(\ClientFence\App $app, $hash): Response
+    {
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::autopay($this->di) ?? throw new InformationException('PayPal is not available.');
+        $once = (string) $app->getRequest()->query->get('once', '') === '1';
+        if ($once && !$adapter->option('pay_once')) {
+            throw new InformationException('PayPal is not available.');
+        }
+        $clientId = $once ? null : $this->ownerSignedIn();
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
+        if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
+            return $app->redirect('invoice');
+        }
+        $checkout = $adapter->checkout($invoice, !$once, (string) $this->di['url']->link('invoice/paypal-autopay-paid'), (string) $this->di['url']->link('invoice/' . $invoice->hash));
+        $this->paypalBind($checkout['token'], ['invoice' => (int) $invoice->id]);
+
+        return $app->redirectUrl($checkout['url']);
+    }
+
+    /** ClientFence: back from PayPal: takes the approved payment, records it and keeps the agreement. */
+    public function get_invoice_autopay_paid(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $token = (string) $app->getRequest()->query->get('token');
+        $flow = $this->paypalFlow($token);
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::autopay($this->di);
+        if ($flow === null || $adapter === null) {
+            return $this->movesOn('invoice');
+        }
+        $invoice = $this->di['db']->getExistingModelById('Invoice', (int) $flow['invoice'], 'Invoice not found');
+        // Paid another way meanwhile: the approved checkout is left to expire, never taken as well.
+        if ($invoice->status !== \Model_Invoice::STATUS_UNPAID) {
+            $this->di['cache']->deleteItem(self::paypalKey($token));
+
+            return $this->movesOn('invoice/' . $invoice->hash);
+        }
+        // Checked again and held under the charge lock, so a cron charge of the agreement and this payment never both happen.
+        $txnId = \ClientFence\Tools::withLock($this->di, 'cf:card-charge:' . (int) $invoice->id, function () use ($adapter, $invoice, $token): ?string {
+            if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $invoice->id]) !== \Model_Invoice::STATUS_UNPAID
+                || \ClientFence\Mod\Invoice\PendingPayments::forInvoice($this->di, (int) $invoice->id) !== null) {
+                return null;
+            }
+            $txnId = $adapter->checkoutPaid($invoice, $token);
+            // Taken: the cron never charges the agreement for it, also while PayPal holds the payment.
+            \ClientFence\Mod\Invoice\SavedCards::hold($this->di, (int) $invoice->id, 'Payment ' . $txnId . ' is not completed yet.');
+
+            return $txnId;
+        });
+        $this->di['cache']->deleteItem(self::paypalKey($token));
+        if ($txnId === null) {
+            return $this->movesOn('invoice/' . $invoice->hash);
+        }
+        $this->di['mod_service']('Invoice', 'Transaction')->createAndProcess([
+            'invoice_id' => (int) $invoice->id,
+            'gateway_id' => $adapter->gatewayId(),
+            'source' => 'paypal_autopay_return',
+            'get' => ['paypal_txn' => $txnId, 'invoice_id' => (int) $invoice->id],
+        ]);
+
+        return $this->movesOn('invoice/thank-you/' . $invoice->hash);
+    }
+
+    /** The signed-in client's ID when the account owner (not an authorized user) is signed in. */
+    private function ownerSignedIn(): int
+    {
+        $this->di['is_client_logged'];
+        $user = \ClientFence\Mod\Client\Users::context($this->di);
+        if ($user !== null && !$user['owner']) {
+            throw new InformationException('Only the account owner can save a payment method.');
+        }
+
+        return (int) $this->di['session']->get('client_id');
     }
 
     /** ClientFence: sends the client to PayPal to save their account. */

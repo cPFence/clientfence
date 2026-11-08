@@ -4530,5 +4530,37 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "AND NOT ' . PendingPayments::sql('invoice.id'); // ClientFence core patch: nor an invoice whose bank debit is clearing (Invoice/PendingPayments.php)."
+    },
+    {
+        "file": "ipn.php",
+        "done": "ClientFence core patch: PayPal Auto-Pay's notices about a billing agreement (cancelled at PayPal) name no invoice."
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence: PayPal Auto-Pay billing agreements (Payment_Adapter_PayPalAutoPay), the same ways."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence: makes the PayPal billing agreement the method that pays the client's invoices."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "$key = 'clientfence_paypal_balance_' . $gateway->id . '_' . (int) $gateway->test_mode;"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the PayPal balance card on the admin dashboard (getWidgets())."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: as WHMCS's PayPal billing agreement gateways, a free order that renews sends a client"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: the PayPal account's balances through the REST API: [{currency, amount}]."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
+        "done": "ClientFence core patch: a gateway field may show an example value (placeholder)."
     }
 ]

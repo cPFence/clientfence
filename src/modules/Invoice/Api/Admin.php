@@ -1400,6 +1400,34 @@ class Admin extends \ClientFence\Api\AbstractApi
         return SavedCards::card($this->getDi(), (int) $invoice->client_id)['card'] ?? null;
     }
 
+    /**
+     * ClientFence: the balance of each enabled PayPal gateway (PayPal Email with its REST API keys, PayPal Auto-Pay) whose
+     * "PayPal balance on the dashboard" is on, as WHMCS's gateway balance widget: [{gateway, test_mode, balances:
+     * [{currency, amount}], error}]. PayPal is asked at most every 10 minutes.
+     */
+    public function paypal_balances(): array
+    {
+        $this->checkPermissions('invoice', 'view');
+        $di = $this->getDi();
+        $result = [];
+        foreach ($di['db']->find('PayGateway', "enabled = 1 AND gateway IN ('PayPalEmail', 'PayPalAutoPay') ORDER BY id") as $gateway) {
+            if ((string) ((json_decode((string) $gateway->config, true) ?? [])['balance'] ?? '1') === '0') {
+                continue;
+            }
+            $key = 'clientfence_paypal_balance_' . $gateway->id . '_' . (int) $gateway->test_mode;
+            $result[] = ['gateway' => (string) $gateway->name, 'test_mode' => (bool) $gateway->test_mode] + $di['cache']->get($key, function (\Symfony\Contracts\Cache\ItemInterface $item) use ($di, $gateway): array {
+                $item->expiresAfter(600);
+                try {
+                    return ['balances' => $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway)->balances(), 'error' => null];
+                } catch (\Throwable $e) {
+                    return ['balances' => [], 'error' => $e instanceof \ClientFence\InformationException ? $e->getMessage() : __trans('PayPal did not answer. Please try again later.')];
+                }
+            });
+        }
+
+        return $result;
+    }
+
     /** ClientFence: charges the client's saved card or PayPal account for an unpaid invoice (`id`) now; a failed charge is an error. */
     #[RequiredParams(['id' => 'Invoice ID was not passed'])]
     public function card_charge($data): bool

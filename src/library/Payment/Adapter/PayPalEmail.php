@@ -87,6 +87,14 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                         'multiOptions' => ['0' => 'Off', '1' => 'On'],
                     ],
                 ],
+                // ClientFence core patch: the PayPal balance on the admin dashboard (Invoice Api\Admin::paypal_balances()).
+                'balance' => [
+                    'radio', [
+                        'label' => 'PayPal balance on the dashboard:',
+                        'description' => 'Needs the REST API keys, with "Transaction search" turned on for the PayPal REST app.',
+                        'multiOptions' => ['1' => 'On', '0' => 'Off'],
+                    ],
+                ],
             ],
         ];
     }
@@ -889,6 +897,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // PayPal account" (an order stored in the vault when it is paid); the cron then charges it as a saved card.
 
     /** Whether clients can save their PayPal account here: the setting is on and the REST API keys are set. */
+    /** ClientFence core patch: the PayPal account's balances through the REST API: [{currency, amount}]. */
+    public function balances(): array
+    {
+        if (!$this->hasApiKeys()) {
+            throw new ClientFence\InformationException('Add the REST API keys to PayPal to see its balance.');
+        }
+        [$status, $body] = $this->rest('GET', '/v1/reporting/balances');
+        if ($status !== 200) {
+            throw new ClientFence\InformationException('PayPal did not give the balance: :error', [':error' => $this->restError($body, $status)]);
+        }
+
+        return array_map(static fn (array $balance): array => [
+            'currency' => (string) ($balance['currency'] ?? ''),
+            'amount' => (float) ($balance['total_balance']['value'] ?? 0),
+        ], $body['balances'] ?? []);
+    }
+
     public function canVault(): bool
     {
         return (string) ($this->config['vault'] ?? '') === '1' && $this->hasApiKeys();

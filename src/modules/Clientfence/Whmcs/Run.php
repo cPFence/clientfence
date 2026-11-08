@@ -38,7 +38,7 @@ final class Run
         'categories' => 'category', 'servers' => 'server', 'products' => 'product', 'addons' => 'addon', 'options' => 'optiongroup',
         'upgrades' => 'upgrade', 'promotions' => 'promo', 'tlds' => 'tld', 'taxes' => 'tax', 'bundles' => 'bundle',
         'services' => 'service', 'serviceaddons' => 'serviceaddon', 'domains' => 'domain',
-        'invoices' => 'invoice', 'transactions' => 'transaction', 'credits' => 'credit', 'balances' => 'balance', 'notes' => 'note',
+        'invoices' => 'invoice', 'transactions' => 'transaction', 'credits' => 'credit', 'balances' => 'balance', 'notes' => 'note', 'agreements' => 'agreement',
         'staff' => 'staff', 'departments' => 'helpdesk', 'predefined' => 'predefined', 'tickets' => 'ticket', 'replies' => 'reply',
         'ticketnotes' => 'ticketnote', 'feedback' => 'feedback', 'kbcategories' => 'kbcategory', 'kbarticles' => 'kbarticle',
         'announcements' => 'announcement', 'networkissues' => 'networkissue', 'emails' => 'email',
@@ -88,7 +88,7 @@ final class Run
             // Memory, folders, disk space and the like, before anything is written (Preflight.php).
             // Free space only before a run starts: a started run has used some for its files.
             Preflight::assert($di, $source, $state === null);
-            $state ??= self::start($source);
+            $state ??= self::start($source, $settings['paypal_agreements'] === 1);
             $state = self::work($di, $db, $source, $state, $seconds, $batch);
         } finally {
             $source?->close();
@@ -138,7 +138,7 @@ final class Run
                 $runner = match (true) {
                     isset(Accounts::STEPS[$step]) => new Accounts($source, $db, $map, $cipher, $encrypt, $config, $now),
                     isset(Services::STEPS[$step]) => new Services($source, $db, $map, $catalogue, $now),
-                    isset(Money::STEPS[$step]) => new Money($source, $db, $map, $now),
+                    isset(Money::STEPS[$step]) => new Money($source, $db, $map, $now, Import::settings($di)['paypal_agreements'] === 1),
                     isset(Support::STEPS[$step]) => new Support($source, $db, $map, $cipher, $encrypt, $config, $attachments, \ClientFence\Mod\Support\TicketFiles::dir(), $keepDays(), $now),
                     isset(Licensing::STEPS[$step]) => new Licensing($source, $db, $map, $now),
                     isset(Archive::STEPS[$step]) => new Archive($source, $map, $archive),
@@ -197,11 +197,11 @@ final class Run
      *
      * @return array<string, mixed>
      */
-    public static function start(Source $source): array
+    public static function start(Source $source, bool $agreements = false): array
     {
         $steps = [];
         foreach (self::steps() as $step => [$label]) {
-            $steps[$step] = ['label' => $label, 'total' => self::stepTotal($source, $step), 'done' => 0, 'after' => 0, 'finished' => false];
+            $steps[$step] = ['label' => $label, 'total' => self::stepTotal($source, $step, $agreements), 'done' => 0, 'after' => 0, 'finished' => false];
         }
 
         $now = date('Y-m-d H:i:s');
@@ -256,6 +256,8 @@ final class Run
                 $step === 'fields' => $source->count('tblcustomfields', "type = 'client'"),
                 $step === 'contacts' => $source->hasTable('tblusers') ? $source->count('tblcontacts') : $source->count('tblcontacts', 'subaccount = 0'),
                 // Feedback of tickets WHMCS no longer has is not imported (a warning says so).
+                // Billing agreements count only when the run imported them (an import setting).
+                $step === 'agreements' => (int) ($state['steps']['agreements']['total'] ?? 0),
                 $step === 'feedback' => $source->hasTable('tbltickets') ? $source->count('tblticketfeedback', 'ticketid IN (SELECT id FROM tbltickets)') : 0,
                 isset(Catalogue::STEPS[$step]), isset(Services::STEPS[$step]), isset(Money::STEPS[$step]), isset(Support::STEPS[$step]), isset(Licensing::STEPS[$step]), isset(Archive::STEPS[$step]) => self::stepTotal($source, $step),
                 default => $source->count($table),
@@ -317,7 +319,7 @@ final class Run
     }
 
     /** A step's WHMCS row count (nothing is written). */
-    private static function stepTotal(Source $source, string $step): int
+    private static function stepTotal(Source $source, string $step, bool $agreements = false): int
     {
         $map = new Map($source->connection());
         if (isset(Accounts::STEPS[$step])) {
@@ -328,7 +330,7 @@ final class Run
 
         return match (true) {
             isset(Services::STEPS[$step]) => (new Services($source, $source->connection(), $map, $catalogue, ''))->total($step),
-            isset(Money::STEPS[$step]) => (new Money($source, $source->connection(), $map, ''))->total($step),
+            isset(Money::STEPS[$step]) => (new Money($source, $source->connection(), $map, '', $agreements))->total($step),
             isset(Support::STEPS[$step]) => self::support($source)->total($step),
             isset(Licensing::STEPS[$step]) => (new Licensing($source, $source->connection(), $map, ''))->total($step),
             isset(Archive::STEPS[$step]) => (new Archive($source, $map, ''))->total($step),

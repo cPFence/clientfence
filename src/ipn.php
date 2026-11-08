@@ -55,6 +55,11 @@ $ipn = [
     'http_raw_post_data' => $rawBody,
 ];
 
+// ClientFence core patch: PayPal Auto-Pay's notices about a billing agreement (cancelled at PayPal) name no invoice.
+if ($gatewayID !== null && $di['dbal']->fetchOne('SELECT gateway FROM pay_gateway WHERE id = ?', [$gatewayID]) === 'PayPalAutoPay') {
+    $ipn['skip_validation'] = true;
+}
+
 $contentType = $request->headers->get('Content-Type', '');
 $isJsonWebhook = str_contains((string) $contentType, 'application/json') && !empty($rawBody);
 if ($isJsonWebhook) {

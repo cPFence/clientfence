@@ -19364,3 +19364,141 @@ msgstr "Sizda saqlangan kartalar yoki bank hisoblari yo'q."
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
 msgstr "Sizning :date sanasidagi :amount miqdoridagi bank to'lovingiz hisob-kitob qilinmoqda. Hisob-faktura hisob-kitob yakunlangach to'langan deb belgilanadi, odatda bir necha ish kuni ichida."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Add the REST API keys to PayPal to see its balance."
+msgstr "Balansni ko'rish uchun REST API kalitlarini PayPal'ga qo'shing."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Agree once at PayPal and your invoices are then paid from your PayPal account automatically."
+msgstr "PayPal'da bir marta rozilik bering, shundan so'ng hisob-fakturalaringiz PayPal hisobingizdan avtomatik to'lanadi."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Automatic payments to :company"
+msgstr ":company uchun avtomatik to'lovlar"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments were not set up. Please try again."
+msgstr "Avtomatik to'lovlar sozlanmadi. Qayta urinib ko'ring."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments with PayPal are not available."
+msgstr "PayPal orqali avtomatik to'lovlar mavjud emas."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Clients' billing agreements of WHMCS's PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them."
+msgstr "WHMCS'ning \"PayPal Billing Agreements\" shlyuzidagi mijozlarning hisob-kitob kelishuvlari (PayPal Auto-Pay) ularning saqlangan PayPal Auto-Pay usuliga aylanadi, shuning uchun uzaytirishlar qayta rozilik so'ralmasdan yechiladi. Avval PayPal Auto-Pay'ni xuddi shu PayPal API ma'lumotlari bilan o'rnating va WHMCS'ning ulardan pul yechishini to'xtating."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Do not import"
+msgstr "Import qilinmasin"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "No balance."
+msgstr "Balans yo'q."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay now with :account"
+msgstr ":account bilan hozir to'lash"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once with PayPal"
+msgstr "PayPal bilan bir marta to'lash"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with PayPal and set up automatic payments"
+msgstr "PayPal bilan to'lash va avtomatik to'lovlarni sozlash"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "PayPal automatic payments"
+msgstr "PayPal avtomatik to'lovlari"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "PayPal balance (:gateway)"
+msgstr "PayPal balansi (:gateway)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal billing agreements"
+msgstr "PayPal hisob-kitob kelishuvlari"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method"
+msgstr "PayPal :method so'roviga javob bermadi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method: :error"
+msgstr "PayPal :method so'roviga javob bermadi: :error"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "PayPal did not answer. Please try again later."
+msgstr "PayPal javob bermadi. Keyinroq qayta urinib ko'ring."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not give the balance: :error"
+msgstr "PayPal balansni bermadi: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not make the refund: :error"
+msgstr "PayPal pulni qaytarmadi: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not set up automatic payments: :error"
+msgstr "PayPal avtomatik to'lovlarni sozlamadi: :error"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "PayPal is not available."
+msgstr "PayPal mavjud emas."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal notice is not genuine"
+msgstr "PayPal xabarnomasi haqiqiy emas"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id is in :currency, the invoice in :invoice"
+msgstr "PayPal to'lovi :id :currency valyutasida, hisob-faktura esa :invoice valyutasida"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id was not found: :error"
+msgstr "PayPal to'lovi :id topilmadi: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal refused the API details or this account cannot make billing agreements (ask PayPal to turn on Reference Transactions): :error"
+msgstr "PayPal API ma'lumotlarini rad etdi yoki bu hisob hisob-kitob kelishuvlarini yarata olmaydi (PayPal'dan Reference Transactions'ni yoqishni so'rang): :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up automatic payments with PayPal"
+msgstr "PayPal bilan avtomatik to'lovlarni sozlash"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sign in as the account owner to pay with PayPal."
+msgstr "PayPal bilan to'lash uchun hisob egasi sifatida kiring."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Stop automatic payments with PayPal?"
+msgstr "PayPal bilan avtomatik to'lovlar to'xtatilsinmi?"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "Test mode"
+msgstr "Sinov rejimi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The client has no PayPal billing agreement."
+msgstr "Mijozda PayPal hisob-kitob kelishuvi yo'q."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved PayPal account."
+msgstr "Bu hisob-fakturani saqlangan PayPal hisobi bilan to'lay olmaysiz."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have not set up automatic payments with PayPal."
+msgstr "Siz PayPal bilan avtomatik to'lovlarni sozlamagansiz."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
+msgstr "Uzaytirish hisob-fakturalaringiz shundan so'ng PayPal hisobingizdan to'lanadi. Buni To'lov usullari sahifasida yoki PayPal'da to'xtatishingiz mumkin."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing: :code is not one of the currencies of this portal."
+msgstr "Qayta ishlash uchun valyutaga konvertatsiya: :code bu portal valyutalaridan biri emas."

@@ -19069,3 +19069,141 @@ msgstr "คุณไม่มีบัตรหรือบัญชีธนา
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
 msgstr "การชำระเงินผ่านธนาคารของคุณจำนวน :amount เมื่อ :date อยู่ระหว่างการเคลียร์ ใบแจ้งหนี้จะถูกทำเครื่องหมายว่าชำระแล้วเมื่อเคลียร์เสร็จ โดยปกติภายในไม่กี่วันทำการ"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Add the REST API keys to PayPal to see its balance."
+msgstr "เพิ่มคีย์ REST API ใน PayPal เพื่อดูยอดคงเหลือ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Agree once at PayPal and your invoices are then paid from your PayPal account automatically."
+msgstr "ตกลงครั้งเดียวที่ PayPal แล้วใบแจ้งหนี้ของคุณจะถูกชำระจากบัญชี PayPal ของคุณโดยอัตโนมัติ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Automatic payments to :company"
+msgstr "การชำระเงินอัตโนมัติให้ :company"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments were not set up. Please try again."
+msgstr "ไม่ได้ตั้งค่าการชำระเงินอัตโนมัติ โปรดลองอีกครั้ง"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments with PayPal are not available."
+msgstr "ไม่สามารถใช้การชำระเงินอัตโนมัติด้วย PayPal ได้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Clients' billing agreements of WHMCS's PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them."
+msgstr "ข้อตกลงการเรียกเก็บเงินของลูกค้าจากเกตเวย์ \"PayPal Billing Agreements\" ของ WHMCS (PayPal Auto-Pay) จะกลายเป็นวิธี PayPal Auto-Pay ที่บันทึกไว้ของลูกค้า ทำให้การต่ออายุถูกเรียกเก็บโดยไม่ต้องให้ลูกค้าตกลงอีก โปรดติดตั้ง PayPal Auto-Pay ด้วยรายละเอียด API ของ PayPal เดียวกันก่อน และหยุดไม่ให้ WHMCS เรียกเก็บเงินลูกค้า"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Do not import"
+msgstr "ไม่นำเข้า"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "No balance."
+msgstr "ไม่มียอดคงเหลือ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay now with :account"
+msgstr "ชำระเงินเลยด้วย :account"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once with PayPal"
+msgstr "ชำระเงินครั้งเดียวด้วย PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with PayPal and set up automatic payments"
+msgstr "ชำระเงินด้วย PayPal และตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "PayPal automatic payments"
+msgstr "การชำระเงินอัตโนมัติ PayPal"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "PayPal balance (:gateway)"
+msgstr "ยอดคงเหลือ PayPal (:gateway)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal billing agreements"
+msgstr "ข้อตกลงการเรียกเก็บเงิน PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method"
+msgstr "PayPal ไม่ตอบกลับ :method"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method: :error"
+msgstr "PayPal ไม่ตอบกลับ :method: :error"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "PayPal did not answer. Please try again later."
+msgstr "PayPal ไม่ตอบกลับ โปรดลองอีกครั้งในภายหลัง"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not give the balance: :error"
+msgstr "PayPal ไม่ส่งยอดคงเหลือกลับมา: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not make the refund: :error"
+msgstr "PayPal ไม่ได้ทำการคืนเงิน: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not set up automatic payments: :error"
+msgstr "PayPal ไม่ได้ตั้งค่าการชำระเงินอัตโนมัติ: :error"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "PayPal is not available."
+msgstr "PayPal ไม่พร้อมใช้งาน"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal notice is not genuine"
+msgstr "การแจ้งเตือนจาก PayPal ไม่ถูกต้อง"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id is in :currency, the invoice in :invoice"
+msgstr "การชำระเงิน PayPal :id เป็นสกุล :currency ส่วนใบแจ้งหนี้เป็นสกุล :invoice"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id was not found: :error"
+msgstr "ไม่พบการชำระเงิน PayPal :id: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal refused the API details or this account cannot make billing agreements (ask PayPal to turn on Reference Transactions): :error"
+msgstr "PayPal ปฏิเสธรายละเอียด API หรือบัญชีนี้ไม่สามารถสร้างข้อตกลงการเรียกเก็บเงินได้ (ขอให้ PayPal เปิดใช้ Reference Transactions): :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up automatic payments with PayPal"
+msgstr "ตั้งค่าการชำระเงินอัตโนมัติด้วย PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sign in as the account owner to pay with PayPal."
+msgstr "ลงชื่อเข้าใช้ในฐานะเจ้าของบัญชีเพื่อชำระเงินด้วย PayPal"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Stop automatic payments with PayPal?"
+msgstr "หยุดการชำระเงินอัตโนมัติด้วย PayPal หรือไม่"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "Test mode"
+msgstr "โหมดทดสอบ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The client has no PayPal billing agreement."
+msgstr "ลูกค้าไม่มีข้อตกลงการเรียกเก็บเงิน PayPal"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved PayPal account."
+msgstr "คุณไม่สามารถชำระใบแจ้งหนี้นี้ด้วยบัญชี PayPal ที่บันทึกไว้ได้"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have not set up automatic payments with PayPal."
+msgstr "คุณยังไม่ได้ตั้งค่าการชำระเงินอัตโนมัติด้วย PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
+msgstr "ใบแจ้งหนี้การต่ออายุของคุณจะถูกชำระจากบัญชี PayPal ของคุณ คุณหยุดได้ที่หน้าวิธีการชำระเงินหรือใน PayPal"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing: :code is not one of the currencies of this portal."
+msgstr "แปลงเป็นสกุลเงินสำหรับการประมวลผล: :code ไม่ใช่สกุลเงินหนึ่งของพอร์ทัลนี้"

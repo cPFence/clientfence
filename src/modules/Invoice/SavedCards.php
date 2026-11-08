@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * ClientFence: automatic payments with saved cards and saved PayPal accounts, as WHMCS charges a payment method on
  * file (owner decisions 2026-11-06 and 2026-11-07). A client saves a Stripe card or their PayPal account (PayPal
- * Email with its REST API keys and "Saved PayPal accounts" on) when paying an invoice, or on the client area's Payment
- * methods page (/payment-methods). Each gateway keeps the saved method in pay_gateway_customer
+ * Email with its REST API keys and "Saved PayPal accounts" on), or agrees to a PayPal billing agreement (PayPal Auto-Pay),
+ * when paying an invoice or on the client area's Payment methods page (/payment-methods). Each gateway keeps the saved method in pay_gateway_customer
  * (default_payment_method); the one the client saved or chose last (auto_pay_at) pays. The cron charges it for unpaid
  * invoices without a payment method or with one of these gateways: the set number of days before the due date, then
  * every set number of days up to the set number of retries (invoice_card_charge counts the tries). A failed charge
@@ -69,6 +69,14 @@ final class SavedCards
         return $adapter instanceof \Payment_Adapter_Stripe ? $adapter : null;
     }
 
+    /** The enabled PayPal Auto-Pay gateway's adapter (billing agreements), or null. */
+    public static function autopay(\Pimple\Container $di): ?\Payment_Adapter_PayPalAutoPay
+    {
+        $adapter = self::adapter($di, 'PayPalAutoPay');
+
+        return $adapter instanceof \Payment_Adapter_PayPalAutoPay ? $adapter : null;
+    }
+
     /** The enabled PayPal Email gateway's adapter when clients can save their PayPal account, or null. */
     public static function paypal(\Pimple\Container $di): ?\Payment_Adapter_PayPalEmail
     {
@@ -84,10 +92,10 @@ final class SavedCards
         return $gateway instanceof \Model_PayGateway ? $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway) : null;
     }
 
-    /** @return list<\Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail> the gateways that charge saved methods */
+    /** @return list<\Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail|\Payment_Adapter_PayPalAutoPay> the gateways that charge saved methods */
     public static function adapters(\Pimple\Container $di): array
     {
-        return array_values(array_filter([self::stripe($di), self::paypal($di)]));
+        return array_values(array_filter([self::stripe($di), self::paypal($di), self::autopay($di)]));
     }
 
     /**
@@ -230,9 +238,9 @@ final class SavedCards
      * Charges the saved method for the invoice's balance and records the payment: {paid, error}. A try of the cron
      * counts towards the retries and a failure emails the client; staff tries do neither.
      */
-    public static function charge(\Pimple\Container $di, \Model_Invoice $invoice, \Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail $adapter, bool $byStaff): array
+    public static function charge(\Pimple\Container $di, \Model_Invoice $invoice, \Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail|\Payment_Adapter_PayPalAutoPay $adapter, bool $byStaff, bool $byClient = false): array
     {
-        return \ClientFence\Tools::withLock($di, 'cf:card-charge:' . (int) $invoice->id, static function () use ($di, $invoice, $adapter, $byStaff): array {
+        return \ClientFence\Tools::withLock($di, 'cf:card-charge:' . (int) $invoice->id, static function () use ($di, $invoice, $adapter, $byStaff, $byClient): array {
             $db = $di['dbal'];
             $row = $db->fetchAssociative('SELECT status, gateway_id FROM invoice WHERE id = ?', [(int) $invoice->id]) ?: [];
             if (($row['status'] ?? null) !== \Model_Invoice::STATUS_UNPAID) {
@@ -249,6 +257,10 @@ final class SavedCards
             // Held after runDue read it (a staff charge PayPal holds): a cron try would charge twice.
             if (!$byStaff && $attempt >= self::HELD) {
                 return ['paid' => false, 'error' => null];
+            }
+            // The client's own "Pay now" never charges again while a payment may be taken (staff may, on purpose).
+            if ($byClient && $attempt >= self::HELD) {
+                return ['paid' => false, 'error' => __trans('A payment for this invoice is still clearing.')];
             }
             if (!$byStaff && $db->executeStatement('UPDATE invoice_card_charge SET attempts = attempts + 1, last_attempt_at = ? WHERE invoice_id = ?', [date('Y-m-d H:i:s'), (int) $invoice->id]) === 0) {
                 $db->insert('invoice_card_charge', ['invoice_id' => (int) $invoice->id, 'attempts' => 1, 'last_attempt_at' => date('Y-m-d H:i:s')]);
@@ -277,7 +289,11 @@ final class SavedCards
                 'invoice_id' => (int) $invoice->id,
                 'gateway_id' => $adapter->gatewayId(),
                 'source' => 'saved_card',
-                'get' => [$adapter instanceof \Payment_Adapter_Stripe ? 'payment_intent' : 'paypal_capture' => $paymentId, 'invoice_id' => (int) $invoice->id],
+                'get' => [match (true) {
+                    $adapter instanceof \Payment_Adapter_Stripe => 'payment_intent',
+                    $adapter instanceof \Payment_Adapter_PayPalAutoPay => 'paypal_txn',
+                    default => 'paypal_capture',
+                } => $paymentId, 'invoice_id' => (int) $invoice->id],
             ]);
             $di['logger']->info('Invoice #%s: charged the saved method %s (%s)', $invoice->id, $card, $paymentId);
             if ($db->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $invoice->id]) !== \Model_Invoice::STATUS_PAID) {

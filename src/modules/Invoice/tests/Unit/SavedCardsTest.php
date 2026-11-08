@@ -267,7 +267,7 @@ test('a failed bank debit emails the client without a retry date', function (): 
         ->and($world->emails[0])->toMatchArray(['code' => 'mod_invoice_card_failed', 'to_client' => 7, 'card' => 'SEPA Direct Debit •••• 3000 (DE)', 'retry_at' => '']);
 });
 
-test('a cron try leaves an invoice held after runDue read it, staff can still charge it', function (): void {
+test('a cron try or the client\'s Pay now leaves an invoice held after runDue read it, staff can still charge it', function (): void {
     $world = savedCardsWorld();
     $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
     // A staff charge PayPal holds while the cron is on its way to this invoice.
@@ -275,6 +275,7 @@ test('a cron try leaves an invoice held after runDue read it, staff can still ch
     $invoice = $world->di['db']->load('Invoice', 1);
 
     expect(SavedCards::charge($world->di, $invoice, SavedCards::stripe($world->di), false))->toBe(['paid' => false, 'error' => null])
+        ->and(SavedCards::charge($world->di, $invoice, SavedCards::stripe($world->di), true, true))->toBe(['paid' => false, 'error' => 'A payment for this invoice is still clearing.'])
         ->and($world->charged)->toBe([])
         ->and(SavedCards::charge($world->di, $invoice, SavedCards::stripe($world->di), true)['paid'])->toBeTrue();
 });

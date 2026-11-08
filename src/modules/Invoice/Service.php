@@ -27,7 +27,8 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Loader\FilesystemLoader;
 
-class Service implements InjectionAwareInterface
+// ClientFence core patch: the PayPal balance card on the admin dashboard (getWidgets()).
+class Service implements InjectionAwareInterface, \ClientFence\Interfaces\WidgetProviderInterface
 {
     // ClientFence: the line task of a credit note for account credit (creditNote()); the sales tax report counts these.
     public const string CREDIT_NOTE_TASK = 'account_credit';
@@ -75,6 +76,12 @@ class Service implements InjectionAwareInterface
     public function getDi(): ?\Pimple\Container
     {
         return $this->di;
+    }
+
+    /** ClientFence core patch: the PayPal balance of the PayPal gateways (Api\Admin::paypal_balances()). */
+    public function getWidgets(): array
+    {
+        return [['slot' => 'admin.index.dashboard', 'template' => 'mod_invoice_dashboard_paypal_balance']];
     }
 
     public function getModulePermissions(): array

@@ -36,12 +36,15 @@ final class Import
         'password' => '',
         'encryption_key' => '',
         'attachments_dir' => '',
+        // PayPal Auto-Pay billing agreements of WHMCS's lcwsoftpaypalbillingagreements gateway (Money.php): 1 brings
+        // them; off unless chosen (owner decision 2026-11-08).
+        'paypal_agreements' => 0,
     ];
 
     /** ClientFence tables that must be empty: the import keeps WHMCS's ids and numbers. */
     private const TARGET_TABLES = ['client' => 'clients', 'client_order' => 'orders', 'invoice' => 'invoices', 'support_ticket' => 'tickets'];
 
-    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string} */
+    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di, self::SETTINGS) ?? [];
@@ -103,6 +106,7 @@ final class Import
             'password' => (string) ($data['password'] ?? '') !== '' ? (string) $di['crypt']->encrypt((string) $data['password']) : $old['password'],
             'encryption_key' => (string) ($data['encryption_key'] ?? '') !== '' ? (string) $di['crypt']->encrypt(trim((string) $data['encryption_key'])) : $old['encryption_key'],
             'attachments_dir' => self::folder((string) ($data['attachments_dir'] ?? '')),
+            'paypal_agreements' => (string) ($data['paypal_agreements'] ?? '0') === '1' ? 1 : 0,
         ];
         if ($new['host'] === '' || $new['database'] === '' || $new['username'] === '' || $new['password'] === '') {
             throw new InformationException('Enter the WHMCS database host, name, username and password.');

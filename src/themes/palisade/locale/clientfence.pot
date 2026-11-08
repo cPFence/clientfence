@@ -1536,6 +1536,10 @@ msgstr ""
 msgid "Add staff group"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Add the REST API keys to PayPal to see its balance."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Add the amount to the client's credit"
 msgstr ""
@@ -1790,6 +1794,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Aging Invoices"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Agree once at PayPal and your invoices are then paid from your PayPal account automatically."
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Clientfence/Health.php
@@ -3070,6 +3078,18 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
 msgid "Automatic payments"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Automatic payments to :company"
+msgstr ""
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments were not set up. Please try again."
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments with PayPal are not available."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
@@ -4872,6 +4892,10 @@ msgstr ""
 msgid "Clients with an active service"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Clients' billing agreements of WHMCS's PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them."
+msgstr ""
+
 #: src/themes/admin_default/html_custom/partial_admin_auth_card.html.twig
 msgid "Clients, orders, invoices and support in one place."
 msgstr ""
@@ -5378,6 +5402,10 @@ msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
 msgid "Convert To"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr ""
 
 #: src/themes/palisade/html/partials/pay_methods.html.twig
@@ -6594,6 +6622,10 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Do Not Show Form Title"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Do not import"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -10212,7 +10244,7 @@ msgstr ""
 msgid "Invoice #:id not found"
 msgstr ""
 
-#: src/modules/Invoice/Statement.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/modules/Invoice/Statement.php
 msgid "Invoice :number"
 msgstr ""
 
@@ -12828,6 +12860,10 @@ msgstr ""
 msgid "No backups yet."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "No balance."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_index.html.twig
 msgid "No cancellation requests are waiting."
 msgstr ""
@@ -14600,6 +14636,14 @@ msgstr ""
 msgid "Pay now"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay now with :account"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once with PayPal"
+msgstr ""
+
 #: src/themes/palisade/html/partials/pay_methods.html.twig
 msgid "Pay online with :name."
 msgstr ""
@@ -14616,8 +14660,24 @@ msgstr ""
 msgid "Pay with"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with PayPal and set up automatic payments"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal answered HTTP :status to the payment of invoice #:id"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "PayPal automatic payments"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "PayPal balance (:gateway)"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal billing agreements"
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
@@ -14628,8 +14688,28 @@ msgstr ""
 msgid "PayPal did not accept the REST API keys: :error"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method: :error"
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "PayPal did not answer. Please try again later."
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal did not cancel subscription :id: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not give the balance: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not make the refund: :error"
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
@@ -14640,15 +14720,19 @@ msgstr ""
 msgid "PayPal did not save your account: :error"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not set up automatic payments: :error"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal did not start saving your account: :error"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalEmail.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal did not start the payment: :error"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalEmail.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal did not take the payment: :error"
 msgstr ""
 
@@ -14660,7 +14744,19 @@ msgstr ""
 msgid "PayPal invoice reference does not match invoice "
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalEmail.php
+#: src/modules/Invoice/Controller/Client.php
+msgid "PayPal is not available."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal notice is not genuine"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id is in :currency, the invoice in :invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal payment :id is not for a ClientFence invoice"
 msgstr ""
 
@@ -14668,11 +14764,19 @@ msgstr ""
 msgid "PayPal payment :id was not found"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id was not found: :error"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal payment is missing currency details"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalEmail.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal refused the API details or this account cannot make billing agreements (ask PayPal to turn on Reference Transactions): :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
 msgid "PayPal refused the payment: :error"
 msgstr ""
 
@@ -18032,6 +18136,10 @@ msgstr ""
 msgid "Set this price"
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up automatic payments with PayPal"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Set up two-factor sign-in"
 msgstr ""
@@ -18294,6 +18402,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Client/templates/client/mod_client_twofactor_code.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
 msgid "Sign in"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sign in as the account owner to pay with PayPal."
 msgstr ""
 
 #: src/themes/palisade/html/layout_default.html.twig src/themes/palisade/html/layout_public.html.twig src/themes/palisade/html/partials/guest_gate.html.twig
@@ -18710,6 +18822,10 @@ msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Stop Forum Spam"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Stop automatic payments with PayPal?"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_unsubscribe.html.twig
@@ -19292,6 +19408,10 @@ msgstr ""
 msgid "Test emails go to this client, and the preview shows the message as this client sees it."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "Test mode"
+msgstr ""
+
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Text"
 msgstr ""
@@ -19352,7 +19472,7 @@ msgstr ""
 msgid "The \":driver\" cache driver requires an installation identifier (\"info.instance_id\" in the configuration file) so that installations sharing the same server don't collide. Reinstall or update ClientFence to have one generated automatically, or set it manually."
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/Stripe.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/Stripe.php
 msgid "The \":pay_gateway\" payment gateway is not fully configured. Please configure the :missing"
 msgstr ""
 
@@ -19686,6 +19806,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The client has :amount of credit."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The client has no PayPal billing agreement."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
@@ -20913,7 +21037,7 @@ msgstr ""
 msgid "This invoice has no payment that can be refunded through the payment gateway."
 msgstr ""
 
-#: src/modules/Invoice/SavedCards.php
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/SavedCards.php
 msgid "This invoice is already paid or cancelled."
 msgstr ""
 
@@ -23669,6 +23793,10 @@ msgstr ""
 msgid "You cannot manage your own staff account here"
 msgstr ""
 
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved PayPal account."
+msgstr ""
+
 #: src/library/ClientFence/Api/Dispatcher.php
 msgid "You do not have access to the :mod module"
 msgstr ""
@@ -23807,6 +23935,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "You have no services yet."
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have not set up automatic payments with PayPal."
 msgstr ""
 
 #: src/library/ClientFence/Update.php src/modules/System/Api/Admin.php
@@ -24119,6 +24251,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your renewal date stays %date%: %charge% for the %left% days left, less %credit% unused."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
 msgstr ""
 
 #: src/modules/Client/Privacy.php

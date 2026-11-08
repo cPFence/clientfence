@@ -120,7 +120,8 @@
                                     <input class="form-control" id="gateway-config-{{ name }}" type="{{ element[0] }}" name="config[{{ name }}]" value="{{ gateway.config[name]|default('') }}"
                                         {% if is_secret %} autocomplete="new-password"{% endif %}
                                         {% if field_required and not is_set %} required{% endif %}
-                                        {% if is_set %} placeholder="{{ 'Leave blank to keep the saved credential.'|trans }}"{% endif %}
+                                        {# ClientFence core patch: a gateway field may show an example value (placeholder). #}
+                                        {% if is_set %} placeholder="{{ 'Leave blank to keep the saved credential.'|trans }}"{% elseif element[1].placeholder is defined %} placeholder="{{ element[1].placeholder }}"{% endif %}
                                         {% if not is_set and element[1].required_when is defined and element[1].required_when.enabled is defined %} data-required-when-enabled="{{ element[1].required_when.enabled ? 'true' : 'false' }}"{% endif %}
                                         {% if not is_set and element[1].required_when is defined and element[1].required_when.test_mode is defined %} data-required-when-test-mode="{{ element[1].required_when.test_mode ? 'true' : 'false' }}"{% endif %}>
                                     {% if is_set %}<div class="form-text">{{ 'Leave blank to keep the saved credential.'|trans }}</div>{% endif %}

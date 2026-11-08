@@ -21330,3 +21330,141 @@ msgstr "Δεν έχετε αποθηκευμένες κάρτες ή τραπε�
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
 msgstr "Η τραπεζική πληρωμή σας ύψους :amount από τις :date βρίσκεται σε εκκαθάριση. Το παραστατικό σημειώνεται ως πληρωμένο όταν ολοκληρωθεί η εκκαθάριση, συνήθως μέσα σε λίγες εργάσιμες ημέρες."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Add the REST API keys to PayPal to see its balance."
+msgstr "Προσθέστε τα κλειδιά REST API στο PayPal για να δείτε το υπόλοιπο."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Agree once at PayPal and your invoices are then paid from your PayPal account automatically."
+msgstr "Συμφωνήστε μία φορά στο PayPal και τα τιμολόγιά σας θα πληρώνονται στη συνέχεια αυτόματα από τον λογαριασμό σας PayPal."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Automatic payments to :company"
+msgstr "Αυτόματες πληρωμές προς :company"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments were not set up. Please try again."
+msgstr "Οι αυτόματες πληρωμές δεν ρυθμίστηκαν. Δοκιμάστε ξανά."
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Automatic payments with PayPal are not available."
+msgstr "Οι αυτόματες πληρωμές με PayPal δεν είναι διαθέσιμες."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Clients' billing agreements of WHMCS's PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them."
+msgstr "Οι συμφωνίες χρέωσης των πελατών από την πύλη «PayPal Billing Agreements» του WHMCS (PayPal Auto-Pay) γίνονται η αποθηκευμένη μέθοδος PayPal Auto-Pay τους, ώστε οι ανανεώσεις να χρεώνονται χωρίς νέα συμφωνία. Εγκαταστήστε πρώτα το PayPal Auto-Pay με τα ίδια στοιχεία API του PayPal και σταματήστε το WHMCS από το να τους χρεώνει."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Do not import"
+msgstr "Να μην γίνει εισαγωγή"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "No balance."
+msgstr "Κανένα υπόλοιπο."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay now with :account"
+msgstr "Πληρωμή τώρα με :account"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once with PayPal"
+msgstr "Πληρωμή μία φορά με PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with PayPal and set up automatic payments"
+msgstr "Πληρωμή με PayPal και ρύθμιση αυτόματων πληρωμών"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "PayPal automatic payments"
+msgstr "Αυτόματες πληρωμές PayPal"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "PayPal balance (:gateway)"
+msgstr "Υπόλοιπο PayPal (:gateway)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal billing agreements"
+msgstr "Συμφωνίες χρέωσης PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method"
+msgstr "Το PayPal δεν απάντησε στο :method"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not answer :method: :error"
+msgstr "Το PayPal δεν απάντησε στο :method: :error"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "PayPal did not answer. Please try again later."
+msgstr "Το PayPal δεν απάντησε. Δοκιμάστε ξανά αργότερα."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal did not give the balance: :error"
+msgstr "Το PayPal δεν έδωσε το υπόλοιπο: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not make the refund: :error"
+msgstr "Το PayPal δεν έκανε την επιστροφή χρημάτων: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal did not set up automatic payments: :error"
+msgstr "Το PayPal δεν ρύθμισε τις αυτόματες πληρωμές: :error"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "PayPal is not available."
+msgstr "Το PayPal δεν είναι διαθέσιμο."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal notice is not genuine"
+msgstr "Η ειδοποίηση του PayPal δεν είναι αυθεντική"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id is in :currency, the invoice in :invoice"
+msgstr "Η πληρωμή PayPal :id είναι σε :currency, το τιμολόγιο σε :invoice"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal payment :id was not found: :error"
+msgstr "Η πληρωμή PayPal :id δεν βρέθηκε: :error"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal refused the API details or this account cannot make billing agreements (ask PayPal to turn on Reference Transactions): :error"
+msgstr "Το PayPal απέρριψε τα στοιχεία API ή αυτός ο λογαριασμός δεν μπορεί να δημιουργήσει συμφωνίες χρέωσης (ζητήστε από το PayPal να ενεργοποιήσει τα Reference Transactions): :error"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up automatic payments with PayPal"
+msgstr "Ρύθμιση αυτόματων πληρωμών με PayPal"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sign in as the account owner to pay with PayPal."
+msgstr "Συνδεθείτε ως ιδιοκτήτης του λογαριασμού για να πληρώσετε με PayPal."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Stop automatic payments with PayPal?"
+msgstr "Διακοπή των αυτόματων πληρωμών με PayPal;"
+
+#: src/modules/Invoice/templates/admin/widgets/mod_invoice_dashboard_paypal_balance.html.twig
+msgid "Test mode"
+msgstr "Δοκιμαστική λειτουργία"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The client has no PayPal billing agreement."
+msgstr "Ο πελάτης δεν έχει συμφωνία χρέωσης PayPal."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved PayPal account."
+msgstr "Δεν μπορείτε να πληρώσετε αυτό το τιμολόγιο με αποθηκευμένο λογαριασμό PayPal."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have not set up automatic payments with PayPal."
+msgstr "Δεν έχετε ρυθμίσει αυτόματες πληρωμές με PayPal."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
+msgstr "Τα τιμολόγια ανανέωσής σας πληρώνονται τότε από τον λογαριασμό σας PayPal. Μπορείτε να το σταματήσετε στη σελίδα Τρόποι πληρωμής ή στο PayPal."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing: :code is not one of the currencies of this portal."
+msgstr "Μετατροπή σε νόμισμα για επεξεργασία: το :code δεν είναι ένα από τα νομίσματα αυτής της πύλης."

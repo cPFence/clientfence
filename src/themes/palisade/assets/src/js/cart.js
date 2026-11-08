@@ -40,7 +40,9 @@ export default function initCart(root) {
     pay.disabled = true;
     try {
       const result = await api('client', 'cart/checkout', method ? { gateway_id: method.value } : {});
-      if (result?.invoice_hash && method && method.dataset.manual !== '1') {
+      if (result?.redirect) {
+        window.location.assign(result.redirect);
+      } else if (result?.invoice_hash && method && method.dataset.manual !== '1') {
         window.location.assign(`${data.urls.banklink}/${result.invoice_hash}/${method.value}`);
       } else if (result?.invoice_hash) {
         window.location.assign(`${data.urls.invoice}/${result.invoice_hash}`);

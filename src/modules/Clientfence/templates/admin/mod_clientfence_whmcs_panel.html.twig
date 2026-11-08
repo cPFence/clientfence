@@ -91,6 +91,14 @@
                     <input class="form-control" id="wi-attachments" name="attachments_dir" value="{{ settings.attachments_dir }}" maxlength="500" dir="ltr" placeholder="/home/whmcs/attachments">
                     <div class="form-hint">{{ 'Where WHMCS keeps ticket attachments (WHMCS > Storage Settings). If WHMCS runs on another server, copy the folder to this one first. Files not found there are named in the warnings and show as removed.'|trans }}</div>
                 </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label" for="wi-agreements">{{ 'PayPal billing agreements'|trans }}</label>
+                    <select class="form-select" id="wi-agreements" name="paypal_agreements">
+                        <option value="0"{% if not settings.paypal_agreements %} selected{% endif %}>{{ 'Do not import'|trans }}</option>
+                        <option value="1"{% if settings.paypal_agreements %} selected{% endif %}>{{ 'Import'|trans }}</option>
+                    </select>
+                    <div class="form-hint">{{ 'Clients\' billing agreements of WHMCS\'s PayPal Billing Agreements gateway (PayPal Auto-Pay) become their saved PayPal Auto-Pay method, so renewals are charged without them agreeing again. Install PayPal Auto-Pay with the same PayPal API details first, and stop WHMCS from charging them.'|trans }}</div>
+                </div>
             </div>
         </div>
         <div class="card-footer d-flex justify-content-end">
