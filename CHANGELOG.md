@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.38-beta.3 (2026-11-09)
+
+### Changed
+
+- The payment gateway list no longer shows "Allow subscriptions". On the gateway page the switch is now "Offer subscriptions for renewing services", with a note that renewal invoices can always be paid with every gateway.
+
+### Fixed
+
+- After saving a payment gateway, its page shows the new name at once.
+
 ## 1.0.38-beta.2 (2026-11-09)
 
 ### Added
