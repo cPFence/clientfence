@@ -78,6 +78,8 @@ class ClientFenceCKEditor extends ClassicEditor {
 
   static defaultConfig = {
     licenseKey: 'GPL',
+    // The text follows the page language, so Arabic, Persian and Hebrew are typed right to left.
+    language: { ui: 'en', content: document.documentElement.lang.slice(0, 2) || 'en' },
     toolbar: {
       items: [ 'undo', 'redo', '|', 'sourceEditing', '|', 'heading', '|',
         'bold', 'italic', 'underline', 'strikethrough', 'code', '|',

@@ -121,6 +121,8 @@ body { font-family: var(--bf-font); }
 .bf-nowrap { white-space: nowrap; }
 .bf-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 [dir="rtl"] .bf-flip { transform: scaleX(-1); }
+/* FOSSBilling's back/next arrows on the inner pages point the reading way. */
+[dir="rtl"] svg:has(> use[href="#chevron-left"], > use[href="#chevron-right"], > use[href="#arrow-left"], > use[href="#arrow-right"]) { transform: scaleX(-1); }
 .bf-shell .icon { width: 20px; height: 20px; flex: none; }
 
 /* ---- Sidebar */
@@ -643,10 +645,10 @@ a.bf-file-name:hover .icon { color: inherit; }
 
 /* Ticket list "With Selected" bars, above and below the list (mod_support_tickets_bulk). */
 .bf-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem; }
-.bf-bulk-label { margin-right: .25rem; font-size: .8125rem; color: var(--tblr-secondary, #667382); }
+.bf-bulk-label { margin-inline-end: .25rem; font-size: .8125rem; color: var(--tblr-secondary, #667382); }
 .bf-bulk .btn-sm { padding: .125rem .5rem; font-size: .75rem; line-height: 1.4; }
 .bf-bulk-top { padding: .5rem 1rem; border-bottom: 1px solid var(--tblr-border-color, #e6e7e9); }
-.bf-pin { width: 1rem; height: 1rem; margin-right: .25rem; color: var(--tblr-orange, #f76707); vertical-align: -.15em; }
+.bf-pin { width: 1rem; height: 1rem; margin-inline-end: .25rem; color: var(--tblr-orange, #f76707); vertical-align: -.15em; }
 
 /* Quote lines (Invoices > Quotes): number fields sized to their content. */
 .bf-quote-desc { min-width: 16rem; }

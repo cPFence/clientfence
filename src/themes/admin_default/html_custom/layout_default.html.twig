@@ -1,17 +1,16 @@
 {# ClientFence admin frame (installed in themes/admin_default/html_custom/, which FOSSBilling reads
    before html/): FOSSBilling's admin layout with a sidebar menu, a slim header with the Ctrl+K
    search, and a small footer. Every block, widget slot and script of the stock layout stays, so
-   the inner pages render as before. Arabic, Persian and Hebrew: the frame and dashboard read right to left; the
-   inner pages keep FOSSBilling's left-to-right layout. #}
+   the inner pages render as before. Arabic, Persian and Hebrew: every page reads right to left, with Tabler's right-to-left
+   stylesheet. #}
 {% set profile = admin.profile_get %}
 {% set company = guest.system_company %}
 {% set active_locale = guest.system_locale|default('en')|replace({'_': '-'}) %}
 {% set current_active_menu = active_menu|default('') %}
 {% set frame_dir = guest.system_locale|default('en')|lower|slice(0, 2) in ['ar', 'fa', 'he'] ? 'rtl' : 'ltr' %}
-{% set content_dir = current_active_menu == 'dashboard' ? frame_dir : 'ltr' %}
 
 <!DOCTYPE html>
-<html lang="{{ active_locale }}" data-bs-theme="dark">
+<html lang="{{ active_locale }}" dir="{{ frame_dir }}" data-bs-theme="dark">
 
 <head>
     <title>{% block meta_title %}{% endblock %} - {{ company.name }}</title>
@@ -23,7 +22,7 @@
 
     {{ include('partial_bb_meta.html.twig') }}
 
-    <link rel="stylesheet" href="{{ 'build/css/vendor.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    <link rel="stylesheet" href="{{ (frame_dir == 'rtl' ? 'build/css/vendor.rtl.css' : 'build/css/vendor.css') | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
     <link rel="stylesheet" href="{{ 'build/css/clientfence.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
     <link rel="stylesheet" href="{{ 'clientfence/clientfence-admin.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
     {# The brand color (Clientfence Branding.php): admin accents; none with the default color. #}
@@ -148,7 +147,7 @@
                 </div>
             </header>
 
-            <main class="page-body bf-body" dir="{{ content_dir }}">
+            <main class="page-body bf-body">
                 <div class="container-xl">
                     <nav class="mb-3{% if current_active_menu == 'dashboard' %} d-none{% endif %}" aria-label="breadcrumb">
                         {% block breadcrumbs %}

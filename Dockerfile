@@ -120,7 +120,7 @@ RUN set -eux; \
   cp ./src/themes/palisade/assets/src/fonts/*OFL.txt ./src/themes/palisade/assets/build/css/; \
   rm -f ./src/themes/palisade/.gitignore; \
   rm -rf ./src/themes/palisade/assets/src ./src/themes/palisade/locale ./src/themes/palisade/build.mjs ./src/themes/palisade/package.json ./src/themes/palisade/package-lock.json ./src/themes/palisade/icon-manifest.json; \
-  cat ./src/themes/admin_default/assets/clientfence/clientfence-admin.css ./src/themes/admin_default/assets/clientfence/clientfence-admin.js ./src/themes/admin_default/assets/build/js/clientfence.js ./src/themes/admin_default/assets/build/css/vendor.css ./src/themes/admin_default/assets/build/css/clientfence.css | sha256sum | cut -c1-12 > ./src/themes/admin_default/html_custom/partial_clientfence_asset_version.html.twig; \
+  cat ./src/themes/admin_default/assets/clientfence/clientfence-admin.css ./src/themes/admin_default/assets/clientfence/clientfence-admin.js ./src/themes/admin_default/assets/build/js/clientfence.js ./src/themes/admin_default/assets/build/css/vendor.css ./src/themes/admin_default/assets/build/css/vendor.rtl.css ./src/themes/admin_default/assets/build/css/clientfence.css | sha256sum | cut -c1-12 > ./src/themes/admin_default/html_custom/partial_clientfence_asset_version.html.twig; \
   php ./tools/build-pack-manifest.php ./src; \
   rm -rf ./tools; \
   mkdir -p ./src/locale; \

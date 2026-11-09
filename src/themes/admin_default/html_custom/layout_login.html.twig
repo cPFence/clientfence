@@ -3,8 +3,9 @@
    page language and no blue top border. Every block and script of the stock
    layout stays; the split sign-in screen itself is partial_admin_auth_card. #}
 {% set active_locale = guest.system_locale|default('en')|replace({'_': '-'}) %}
+{% set frame_dir = guest.system_locale|default('en')|lower|slice(0, 2) in ['ar', 'fa', 'he'] ? 'rtl' : 'ltr' %}
 <!DOCTYPE html>
-<html lang="{{ active_locale }}" data-bs-theme="dark">
+<html lang="{{ active_locale }}" dir="{{ frame_dir }}" data-bs-theme="dark">
 <head>
     <title>{% block meta_title %}{% endblock %}</title>
     <meta charset="UTF-8">
@@ -15,7 +16,7 @@
 
     {{ include('partial_bb_meta.html.twig') }}
 
-    <link rel="stylesheet" href="{{ 'build/css/vendor.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
+    <link rel="stylesheet" href="{{ (frame_dir == 'rtl' ? 'build/css/vendor.rtl.css' : 'build/css/vendor.css') | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
     <link rel="stylesheet" href="{{ 'build/css/clientfence.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
     <link rel="stylesheet" href="{{ 'clientfence/clientfence-admin.css' | asset_url }}?v={{ include('partial_clientfence_asset_version.html.twig')|trim }}">
     {# The brand color (Clientfence Branding.php): admin accents; none with the default color. #}

@@ -48,18 +48,20 @@ async function build() {
       },
     });
 
-    await buildCssFile({
-      entryPoint: resolve(__dirname, 'assets/css/vendor.css'),
-      outfile: join(paths.cssDir, 'vendor.css'),
-      nodeModulesDir,
-      isProduction,
-      loader: adminLoaders,
-      themePath: __dirname,
-      purge: {
-        area: 'admin',
-        additionalStandardSafelist: [/^flag-country-/, /^clr-/],
-      },
-    });
+    for (const name of ['vendor', 'vendor.rtl']) {
+      await buildCssFile({
+        entryPoint: resolve(__dirname, `assets/css/${name}.css`),
+        outfile: join(paths.cssDir, `${name}.css`),
+        nodeModulesDir,
+        isProduction,
+        loader: adminLoaders,
+        themePath: __dirname,
+        purge: {
+          area: 'admin',
+          additionalStandardSafelist: [/^flag-country-/, /^clr-/],
+        },
+      });
+    }
 
     await buildJsFile({
       entryPoint: resolve(__dirname, 'assets/clientfence.ts'),
@@ -74,6 +76,7 @@ async function build() {
     await writeAssetManifest(paths.buildDir, {
       'build/clientfence.js': '/themes/admin_default/assets/build/js/clientfence.js',
       'build/vendor.css': '/themes/admin_default/assets/build/css/vendor.css',
+      'build/vendor.rtl.css': '/themes/admin_default/assets/build/css/vendor.rtl.css',
       'build/clientfence.css': '/themes/admin_default/assets/build/css/clientfence.css',
       'build/symbol/icons-sprite.svg': '/themes/admin_default/assets/build/symbol/icons-sprite.svg',
     });
