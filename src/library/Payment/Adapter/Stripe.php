@@ -124,7 +124,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return [
             'supports_one_time_payments' => true,
             'supports_subscriptions' => true,
-            'description' => 'You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account.',
+            'description' => __trans('You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account.'),
             'logo' => [
                 'logo' => 'stripe.png',
                 'height' => '30px',
@@ -133,40 +133,40 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             'form' => [
                 'pub_key' => [
                     'text', [
-                        'label' => 'Live Publishable Key:',
+                        'label' => __trans('Live Publishable Key:'),
                         'required_when' => ['enabled' => true, 'test_mode' => false],
                     ],
                 ],
                 'api_key' => [
                     'password', [
-                        'label' => 'Live Secret Key:',
+                        'label' => __trans('Live Secret Key:'),
                         'required_when' => ['enabled' => true, 'test_mode' => false],
                         'secret' => true,
                     ],
                 ],
                 'webhook_secret' => [
                     'password', [
-                        'label' => 'Live Webhook signing secret:',
+                        'label' => __trans('Live Webhook signing secret:'),
                         'required_when' => ['enabled' => true, 'test_mode' => false],
                         'secret' => true,
                     ],
                 ],
                 'test_pub_key' => [
                     'text', [
-                        'label' => 'Test Publishable Key:',
+                        'label' => __trans('Test Publishable Key:'),
                         'required_when' => ['enabled' => true, 'test_mode' => true],
                     ],
                 ],
                 'test_api_key' => [
                     'password', [
-                        'label' => 'Test Secret Key:',
+                        'label' => __trans('Test Secret Key:'),
                         'required_when' => ['enabled' => true, 'test_mode' => true],
                         'secret' => true,
                     ],
                 ],
                 'test_webhook_secret' => [
                     'password', [
-                        'label' => 'Test Webhook signing secret:',
+                        'label' => __trans('Test Webhook signing secret:'),
                         'required_when' => ['enabled' => true, 'test_mode' => true],
                         'secret' => true,
                     ],
@@ -174,9 +174,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 // ClientFence core patch: saved bank accounts (BECS, SEPA and Bacs Direct Debit) for automatic payments.
                 'bank_debits' => [
                     'radio', [
-                        'label' => 'Saved bank accounts:',
-                        'description' => 'Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows "Payment pending".',
-                        'multiOptions' => ['1' => 'On', '0' => 'Off'],
+                        'label' => __trans('Saved bank accounts:'),
+                        'description' => __trans('Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows "Payment pending".'),
+                        'multiOptions' => ['1' => __trans('On'), '0' => __trans('Off')],
                         'default' => '0',
                     ],
                 ],

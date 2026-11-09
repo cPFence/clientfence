@@ -13159,7 +13159,7 @@ msgstr "client_billing_email API üzerinden ayarlanamaz"
 
 # Fixes to FOSSBilling's translation: short labels and the ticket's opening time.
 msgid "Admin"
-msgstr "Admin"
+msgstr "Yönetici"
 
 # To translate (tools/locales.py starter).
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -19233,3 +19233,1511 @@ msgstr "Destek ekibimizden hesabınızı silmesini isteyin. Kişisel verileriniz
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Bu geçidin ödenmemiş faturaları: :count. Müşteriler bunları seçtiğiniz geçitle öder."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "Bu portalın para birimi kodu: USD (ABD doları), EUR (euro) veya GBP (İngiliz sterlini). Diğer para birimlerindeki faturalar, WHMCS'nin \"Convert To For Processing\" ayarı gibi, portalın döviz kurlarıyla bu para biriminde tahsil edilir. Boş: her fatura kendi para biriminde tahsil edilir. [PayPal Auto-Pay nasıl kurulur](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "API anahtarı"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "API belirteci"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash veya API belirteci"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "Erişim anahtarı ID'si"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Sunucuya bağlanmak için Access Hash veya WHM API belirteci"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "Yenilenen ücretsiz bir siparişten (ücretsiz deneme) sonra, kayıtlı ödeme yöntemi olmayan müşteri otomatik ödemeleri kurmak için PayPal'a yönlendirilir."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "Panelden alınan bir erişim belirteci; üzerinde bu sunucunun IP adresine izin verin"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "Bu widget görüntülenirken bir hata oluştu."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "Kartlara ek olarak müşteriler otomatik ödemeler için banka hesabı kaydedebilir: AUD için BECS Direct Debit, EUR için SEPA Direct Debit ve GBP için Bacs Direct Debit. Önce yöntemi Stripe panonuzda açın. Banka ödemesinin tamamlanması birkaç gün sürer: bu sürede fatura \"Ödeme bekliyor\" gösterir."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Paketler (içe aktarılmadı)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Müşteri kredi bakiyeleri"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Müşteriler otomatik ödeme kurmadan faturayı PayPal ile de ödeyebilir."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Müşteriler PayPal hesaplarını ödeme sırasında veya Ödeme Yöntemleri sayfalarında kaydedebilir; faturaları da kayıtlı kartlarda olduğu gibi otomatik ödenir. REST API anahtarlarını ve PayPal REST uygulamanızdaki Vault'u (\"Save payment methods\") gerektirir; PayPal bunu yalnızca bazı ülkelerde sunar."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Müşteriler fatura ödemeden Ödeme Yöntemleri sayfalarında otomatik ödemeleri kurabilir."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Kredisi eşleşen müşteriler"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Onayla"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "İşlem için dönüştür (isteğe bağlı):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Dynadot siparişleri için para birimi, örneğin USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar her zaman olumlu yanıt verir. Başka uygun kayıt operatörü yoksa işe yarar."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Özel sunucu yöneticisi"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Özel ödeme geçidi, müşterinizin faturayı nasıl ödeyeceğine dair talimat vermenizi sağlar. Tüm sistem, müşteri, sipariş ve fatura bilgileri yazdırılabilir. HTML kodu desteklenir."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Alan adı fiyatları"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "E-posta günlüğü"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "Alan adı değişiklik bildirimlerinin gönderileceği e-posta"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Tek seferlik ödeme bilgisi için metninizi girin"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Abonelik bilgisi için metninizi girin"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "PayPal ile ödeme kabul etmeye başlamak için PayPal e-postanızı girin."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "Panoya kopyalama başarısız oldu. Metni seçip elle kopyalayın."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Müşterinin PayPal'daki e-postasını girin:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Ücretsiz siparişler:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "Enom'dan: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "NameSilo'dan: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "Synergy Wholesale portalından: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Aynı sayfadan."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Hosting sunucuları (kapalı)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "Hestia'da oluşturduğunuz erişim anahtarının ID'si."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Internetbs API anahtarı"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Internetbs API parolası"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Geçersiz API yapılandırması"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Bunu kapalı tutun: ClientFence, yenileme faturası ödendiğinde alan adını yeniler. Açıkken NameSilo da alan adını hesabınızdan yeniler."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Lisans yasakları"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "Canlı API parolası:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "Canlı API imzası:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "Canlı API kullanıcı adı:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Yayınlanabilir anahtar (canlı):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "Canlı REST API istemci ID'si (isteğe bağlı):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Canlı REST API gizli anahtarı:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Gizli anahtar (canlı):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Webhook imzalama sırrı (canlı):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "PayPal sayfalarındaki logo (isteğe bağlı):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Alan adlarını Dynadot'ta API3 üzerinden yönetir. Bu sunucunun IP adresini Dynadot'taki API izin listesine ekleyin (Tools > API) ve kayıtlar ile yenilemeler için hesapta yeterli bakiye bulundurun."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Alan adlarını Enom'da bayi API'si üzerinden yönetir. Bu sunucunun IP adresine Enom API ayarlarında izin verin ve kayıtlar ile yenilemeler için hesapta yeterli bakiye bulundurun. Enom otomatik yenilemesi her alan adı için kapalıdır: ClientFence, yenileme faturası ödendiğinde alan adını yeniler. Test modu açıkken Enom test hesabınızın bayi ID'sini ve API belirtecini girin (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Alan adlarını INWX'te DomRobot API'si üzerinden yönetir. İki adımlı girişi olmayan bir INWX hesabı (veya alt hesap) kullanın ve kayıtlar ile yenilemeler için hesapta yeterli bakiye bulundurun. Alan adları, ClientFence yenilemedikçe süresi dolacak şekilde kaydedilir; ClientFence bunu yenileme faturası ödendiğinde yapar. Test modu açıkken INWX OT&E test hesabınızın kullanıcı adını ve parolasını girin."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Alan adlarını Internetbs'te API üzerinden yönetir"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Alan adlarını NameSilo'da API'si üzerinden yönetir. API anahtarını NameSilo'da oluşturun (Account > API Manager), orada bu sunucunun IP adresine izin verin ve kayıtlar ile yenilemeler için hesapta yeterli bakiye bulundurun. API Manager'da renewDomain ile geri almaları da kapatın: ClientFence, geri alma döneminde bir alan adını yenilemeyi reddeder; NameSilo ise aksi halde onu geri alma ücretiyle geri alırdı."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Alan adlarını Namecheap'te API üzerinden yönetir. Namecheap'in çalışması için sunucunuzun IP'sine ihtiyacı vardır."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Alan adlarını NetEarthOne'da API üzerinden yönetir. NetEarthOne'ın çalışması için sunucunuzun IP'sine ihtiyacı vardır. NetEarthOne kontrol paneline giriş yapın (URL, kayıt olurken aldığınız e-postadadır), Settings > API'ye gidin ve API erişimi için yetkilendirmek üzere ClientFence'in kurulu olduğu sunucunun IP adresini girin."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Alan adlarını Openprovider'da API'si üzerinden yönetir. Bir Openprovider API kullanıcısı kullanın, bu kullanıcı için bu sunucunun IP adresine izin verin ve kayıtlar ile yenilemeler için hesapta yeterli bakiye bulundurun. Openprovider otomatik yenilemesi her alan adı için kapalıdır: ClientFence, yenileme faturası ödendiğinde alan adını yeniler. Test modu açıkken Openprovider sandbox hesabınızın kullanıcı adını ve parolasını girin."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Alan adlarını Resell.biz'de API üzerinden yönetir. Resell.biz'in çalışması için sunucunuzun IP'sine ihtiyacı vardır. Resell.biz kontrol paneline giriş yapın (URL, kayıt olurken aldığınız e-postadadır), Settings > API'ye gidin ve API erişimi için yetkilendirmek üzere ClientFence'in kurulu olduğu sunucunun IP adresini girin."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Alan adlarını ResellerClub'da API üzerinden yönetir. ResellerClub'ın çalışması için sunucunuzun IP'sine ihtiyacı vardır. ResellerClub kontrol paneline giriş yapın (URL, kayıt olurken aldığınız e-postadadır), Settings > API'ye gidin ve API erişimi için yetkilendirmek üzere ClientFence'in kurulu olduğu sunucunun IP adresini girin."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Alan adlarını ResellerID'de API üzerinden yönetir. ResellerID'nin çalışması için sunucunuzun IP'sine ihtiyacı vardır. ResellerID kontrol paneline giriş yapın (URL, kayıt olurken aldığınız e-postadadır), Settings > API'ye gidin ve API erişimi için yetkilendirmek üzere ClientFence'in kurulu olduğu sunucunun IP adresini girin."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Alan adlarını Synergy Wholesale'de API'si üzerinden yönetir. Bu sunucunun IP adresini Synergy Wholesale portalındaki izin verilen IP adreslerine ekleyin (Account Settings > API Information) ve kayıtlar ile yenilemeler için hesapta yeterli bakiye bulundurun."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Markdown önizlemesi"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Modül:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "NameSilo otomatik yenileme"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "Namecheap bayi ID'si. Yoksa boş bırakın."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Namecheap kullanıcı adı"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "REST API anahtarlarını gerektirir; PayPal REST uygulamasında \"Transaction search\" açık olmalıdır."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "NetEarthOne API anahtarı"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "NetEarthOne bayi ID'si"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Ağ sorunları"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "Fatura sayfasında, faturalama anlaşması olan müşteri PayPal'a gitmeden hemen ödeyebilir."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "İsteğe bağlı doğrulanmış NameSilo ödeme profili. Boş: hesap bakiyesi öder."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "Kuruluş ID'si"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Parola / giriş anahtarı"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "Sunucuya bağlanmak için kullanılan parola veya giriş anahtarı"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Anlaşma olmadan bir kez öde:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Kayıtlı anlaşmayla öde:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "PayPal Auto-Pay faturalama anlaşmaları"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "Panodaki PayPal bakiyesi:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "PayPal faturalama anlaşmaları: müşteriler bir kez onaylar, ardından faturaları PayPal hesaplarından otomatik ödenir. Reference Transactions açık bir PayPal işletme hesabının NVP/SOAP API bilgilerini gerektirir (PayPal'dan bunları açmasını isteyin)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "Ödemeler için PayPal e-posta adresi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "Ödeme ID'si"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Dynadot'tan üretim anahtarı: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Ürünler ve fiyatlar"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "Bu sunucunun genel IP adresi. Bu IP'nin NameCheap ayarlarınızda izinli olduğundan emin olun."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Resell.biz API anahtarı"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "Resell.biz bayi ID'si"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "Bayi ID'si"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Bayi ID'si. NetEarthOne kontrol panelinde bulabilirsiniz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Bayi ID'si. Resell.biz kontrol panelinde bulabilirsiniz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Bayi ID'si. ResellerClub kontrol panelinde bulabilirsiniz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Bayi ID'si. ResellerID kontrol panelinde bulabilirsiniz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "ResellerClub API anahtarı"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ResellerClub bayi ID'si"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "ResellerID API anahtarı"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ResellerID bayi ID'si"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Sandbox API anahtarı"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Sandbox API parolası:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Sandbox API imzası:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Sandbox API kullanıcı adı:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "Sandbox REST API istemci ID'si (isteğe bağlı):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Sandbox REST API gizli anahtarı:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Kayıtlı PayPal hesapları:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Kayıtlı banka hesapları:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Gizli anahtar"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Hestia'da oluşturduğunuz erişim anahtarının Secret Key'i"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "api-sandbox.dynadot.com için ayrı anahtar; yalnızca test modu açıkken kullanılır."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "sandbox.namesilo.com için ayrı anahtar; yalnızca test modu açıkken kullanılır."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "Sunucunun genel IP adresi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "Ödeme Yöntemleri sayfasında kurulur:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Vergi kuralları"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Şablon:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Yayınlanabilir anahtar (test):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Gizli anahtar (test):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Webhook imzalama sırrı (test):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "PayPal'ın ödeme sayfalarında gösterdiği bir görselin adresi (https). Boş: PNG, JPG veya GIF ise şirket logonuz."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "Bir PayPal REST uygulamasının istemci ID'si ve gizli anahtarı (developer.paypal.com, Apps & Credentials). Bunlarla iadeler PayPal'a gönderilir ve PayPal abonelikleri ClientFence'ten iptal edilir."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "Namecheap kontrol paneline giriş yaptığınız kullanıcı adı."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Bu kayıt operatörü türü, alan adı yönetimi olayları hakkında verilen e-postaya bildirim gönderir. Örneğin müşteri yeni alan adı kaydettiğinde alan adı ayrıntılarını içeren bir e-posta size gönderilir. Alan adını gerçek bir kayıt operatöründe kaydetmek bundan sonra sizin sorumluluğunuzdadır."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Destek talebi ekleri kopyalandı"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Destek talebi geri bildirimleri"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "API belirtecinin ait olduğu kuruluşun UUID'si (panel adresinde)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "Alan adı uygunluğunu denetlemek için RDAP Registry sorgularını kullan"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Sunucuya bağlanmak için kullanıcı adı"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "Sunucuya bağlanmak için kullanılan kullanıcı adı"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "WHMCS lisanslama (lisans anahtarları, denetim günlüğü ve yasaklar)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "Stripe API'sinde, istekte API anahtarlarınızdan birini vererek kimlik doğrularsınız. API anahtarlarınızı hesabınızdan yönetebilirsiniz."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "Namecheap kontrol panelinde bulabilirsiniz."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "NetEarthOne kontrol panelinde bulabilirsiniz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "Resell.biz kontrol panelinde bulabilirsiniz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "ResellerClub kontrol panelinde bulabilirsiniz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "ResellerID kontrol panelinde bulabilirsiniz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "Enom hesap ID'niz (giriş adı)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "INWX kullanıcı adınız."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Openprovider API kullanıcı adınız."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Yorumunuz"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "\"key\" parametresi iletilmedi"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "\"mod\" anahtarı eksik"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "Ek paket ID'si iletilmedi"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "Ek paket dönemi iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Tutar eksik"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Tutar gerekli"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Yeni alan adı mı kaydediyorsunuz, mevcut olanı mı aktarıyorsunuz? action parametresi eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "Makale ID'si iletilmedi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "Makale kategorisi ID'si iletilmedi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "Makale başlığı iletilmedi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "Hazır yanıt kategorisi ID'si eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Hazır yanıt kategorisi başlığı eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "Hazır yanıt ID'si eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "Hazır yanıtın kategori ID'si eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Hazır yanıt başlığı eksik"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "Kart ID'si iletilmedi"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "Sepet öğesi ID'si iletilmedi"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "Kategori ID'si iletilmedi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "Kategori başlığı gerekli"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "Kategori başlığı iletilmedi"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Bir gizli bilgi türü seçin"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Bir puan seçin"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Bir yanıt seçin"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Faturalama dönemini seçin"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Yeni ürünü seçin"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Hizmetin ne zaman biteceğini seçin"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "Müşteri ID'si eksik"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "Müşteri ID'si toplu e-posta ayarlarında yapılandırılmalıdır."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "Müşteri ID'si gerekli"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "Müşteri ID'si iletilmedi"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "Kod gerekli"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "İçerik iletilmedi"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Para birimi kodu eksik"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "Para birimi kodu iletilmedi"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "Mevcut parola gerekli"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "Mevcut parola gerekli"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "Özel sayfa ID'si iletilmedi"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "Özel sayfa ID'leri iletilmedi"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Özel sayfa içeriği iletilmedi"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Özel sayfa slug'ı iletilmedi"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Özel sayfa başlığı iletilmedi"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "Açıklama gerekli"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "Alan adı TLD'si gerekli."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Alan adı işlemi eksik"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "Alan adı uzantısı gerekli."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "Alan adı gerekli."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Alan adı kayıt süresi eksik. Devam etmeden önce alan adının uygunluğunu denetleyin."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Alan adı kaydının sld parametresi eksik."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Alan adı kaydının tld parametresi eksik."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "Düşürme kuralı iletilmedi"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "E-posta ID'si iletilmedi"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "E-posta adresi iletilmedi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "E-posta içeriği gerekli"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "E-posta gerekli"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "E-posta konusu gerekli"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "E-posta şablonu kodu gerekli"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "E-posta şablonu kodu iletilmedi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "E-posta şablonu içeriği gerekli"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "E-posta şablonu konusu gerekli"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "Olay ID'si iletilmedi"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "Eklenti ID'si iletilmedi"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "Eklenti türü iletilmedi"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "Başarısız işlem ID'si iletilmedi"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "Alan ID'si iletilmedi"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "Dosya ID'si eksik"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Ürün yapılandırmasında dosya adı eksik"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "Ad gerekli"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "Ad gerekli"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "Form ID'si iletilmedi"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Form adı iletilmedi"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Form adı verilmedi"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Form türü iletilmedi"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "Biçim gerekli"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "Geçit ID'si iletilmedi"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "Grup ID'si eksik"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "Grup adı iletilmedi"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Grup başlığı eksik"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "Hash gerekli"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "Yardım masası ID'si eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "Yardım masası ID'si iletilmedi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Yardım masası başlığı eksik"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "Hook olayı iletilmedi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "Barındırma planı ID'si iletilmedi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "Barındırma planı adı iletilmedi"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "Hosting ürününde alt alan adları için temel alan adı yapılandırılmış olmalıdır"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "Hosting ürününde register_sld parametresi tanımlı olmalıdır"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "Hosting ürününde register_tld parametresi tanımlı olmalıdır"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "Hosting ürününde transfer_sld parametresi tanımlı olmalıdır"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "Hosting ürününde transfer_tld parametresi tanımlı olmalıdır"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "Hosting ürününde alan adı yapılandırması olmalıdır"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "ID eksik"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "ID gerekli"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "ID iletilmedi"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "ID'ler iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "Fatura ID'si eksik"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "Fatura ID'si iletilmedi"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "Fatura hash'i iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "Fatura kalemi ID'si iletilmedi"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "Dil ID'si iletilmedi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "Günlük kaydı ID'si iletilmedi"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "Mesaj ID'si iletilmedi"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Mesaj konusu iletilmedi"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "Ad iletilmedi"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Yeni parola onayı gerekli"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Yeni parola onayı gerekli"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Yeni parola gerekli"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Yeni parola gerekli"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Hash verilmedi"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "Not ID'si eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Not eksik"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "Bildirim ID'si iletilmedi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "Seçenek ID'si iletilmedi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "Seçenek grubu ID'si iletilmedi"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "Sipariş ID'si (order_id) iletilmedi"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "Sipariş ID'si eksik"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Sipariş ID adı eksik"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "Sipariş ID'si iletilmedi"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "Sipariş ID'leri iletilmedi"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "Sipariş geçmişi satırı ID'si iletilmedi"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "Sipariş ID'si gerekli"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "Sipariş durumu iletilmedi"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "mod parametresi iletilmedi"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "\"ext\" parametresi iletilmedi"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "ext parametresi eksik"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "Parola onayı gerekli"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "Parola gerekli"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "Parola iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "Ödeme geçidi ID'si iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Ödeme geçidi kodu eksik"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Dönem parametresi iletilmedi"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Tarih ve saat seçin"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "\"Sabitlendi\" gerekli"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Konuyu girin"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "E-posta adresinizi girin"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Adınızı girin"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "Gönderi ID'si iletilmedi"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Ön ayar adı eksik"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Önce güncellemenin önizlemesine bakın"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "Ürün ID'si eksik"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "Ürün ID'si iletilmedi"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "Ürün tamamen yapılandırılmamış."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "Promosyon ID'si eksik"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "Promosyon ID'si iletilmedi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Promosyon kodu eksik"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "Promosyon kodu iletilmedi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Promosyon türü eksik"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Promosyon değeri eksik"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Teklif hash'i iletilmedi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "Alıcı e-postası gerekli"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "Alıcı adı gerekli"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "Yönlendirme ID'si iletilmedi"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Yönlendirme yolu iletilmedi"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Yönlendirme hedefi iletilmedi"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "Kayıt operatörü ID'si eksik"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Kayıt operatörü kodu eksik"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Kayıt fiyatı eksik"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Yenileme fiyatı eksik"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "İstek ID'si iletilmedi"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Zorunlu alan address1 eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Zorunlu alan city eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Zorunlu alan contact eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Zorunlu alan country eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Zorunlu alan email eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Zorunlu alan first_name eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Zorunlu alan last_name eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Zorunlu alan phone eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Zorunlu alan phone_cc eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Zorunlu alan postcode eksik"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Zorunlu alan state eksik"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "SLD eksik"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "Kapsam iletilmedi"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "Gizli bilgi ID'si iletilmedi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Destek taleplerini seçin"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Birleştirilecek destek taleplerini seçin"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "Gönderen e-postası gerekli"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "Gönderen adı gerekli"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "Sunucu ID'si iletilmedi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "Sunucu IP'si iletilmedi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "Sunucu yöneticisi belirtilmedi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "Sunucu adı iletilmedi"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "Kurulum ID'si iletilmedi"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "Alışveriş sepeti ID'si eksik"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "Personel grubu ID'si iletilmedi"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "Personel ID'si iletilmedi"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Ürün yapılandırmasında kayıtlı dosya adı eksik"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Alt alan adı gerekli."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "Abonelik ID'si iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Abonelik para birimi iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "Abonelik sID'si iletilmedi"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "TLD eksik"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "TLD kayıt operatörü ID'si eksik"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "Vergi ID'si eksik"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "Vergi ID'si iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Vergi adı eksik"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Vergi oranı eksik"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Vergi oranı eksik veya geçersiz"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "Şablon kodu iletilmedi"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "Tema kodu iletilmedi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "Destek talebi ID'si eksik"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "Destek talebi ID'si iletilmedi"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "Destek talebi içeriği gerekli"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "Destek talebi hash'i gerekli"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "Destek talebi mesaj ID'si eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Destek talebi mesaj içeriği eksik"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "Destek talebi konusu gerekli"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "Destek talebi support_helpdesk_id gerekli"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "Destek talebi support_helpdesk_id gerekli"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "Başlık iletilmedi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "İşlem ID'si eksik"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "İşlem ID'si gerekli"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Aktarılacak alan adı (SLD) gerekli."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Aktarılacak alan adı türü (TLD) gerekli."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Aktarım fiyatı eksik"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "Tür iletilmedi"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "Yükseltme kuralı iletilmedi"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "Çalıştırılacak bir denetim ID'si belirtmelisiniz."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "Bir başlık belirtmelisiniz"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "Aranacak bir IP adresi belirtmelisiniz."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "Sıfırlanacak bir IP adresi belirtmelisiniz."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "plan_id eksik"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "ticket_ID eksik"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "İstek :seconds saniye sonra zaman aşımına uğradı"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Bu özel alanı silmek istediğinizden emin misiniz?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Bu formu silmek istediğinizden emin misiniz?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Form silinsin mi?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Alan silinsin mi?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Callback verisiyle birlikte kaydedilen sunucu değişkenlerini inceleyin."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Sunucuya bağlanmak için parola"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Ödeme geçidinden alınan ham istek gövdesini inceleyin."

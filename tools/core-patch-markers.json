@@ -4634,5 +4634,21 @@
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
         "done": "ClientFence core patch: turning off a gateway with unpaid invoices moves them to another one, as WHMCS (ServicePayGateway::update())."
+    },
+    {
+        "file": "themes/admin_default/html/macro_functions.html.twig",
+        "done": "ClientFence core patch: an unsaved switch shows its default (\"default\", else the first option, Yes)."
+    },
+    {
+        "file": "themes/admin_default/assets/js/ui/modals.ts",
+        "done": "// ClientFence core patch: the default title and buttons in the page language (partial_clientfence_toasts.html.twig)."
+    },
+    {
+        "file": "themes/admin_default/assets/js/clientfence.ts",
+        "done": "// ClientFence core patch: api.js and this theme word some toasts in English; shown in the page language."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: an older config's use_whois is the RDAP switch, so its form and a save keep it."
     }
 ]

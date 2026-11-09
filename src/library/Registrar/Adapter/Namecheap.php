@@ -54,34 +54,34 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on Namecheap via API. Namecheap requires your server IP in order to work.',
+            'label' => __trans('Manages domains on Namecheap via API. Namecheap requires your server IP in order to work.'),
             'form' => [
                 'api-user-id' => [
                     'text', [
-                        'label' => 'Reseller ID',
-                        'description' => 'Namecheap Reseller ID. If you don\'t have one, leave this blank.',
+                        'label' => __trans('Reseller ID'),
+                        'description' => __trans('Namecheap Reseller ID. If you don\'t have one, leave this blank.'),
                         'required' => false,
                     ],
                 ],
                 'api-key' => [
                     'password', [
-                        'label' => 'API Key',
-                        'description' => 'You can get this at Namecheap control panel.',
+                        'label' => __trans('API Key'),
+                        'description' => __trans('You can get this at Namecheap control panel.'),
                         'required' => true,
                         'secret' => true,
                     ],
                 ],
                 'username' => [
                     'text', [
-                        'label' => 'Namecheap Username',
-                        'description' => 'The username you use to login to the Namecheap control panel.',
+                        'label' => __trans('Namecheap Username'),
+                        'description' => __trans('The username you use to login to the Namecheap control panel.'),
                         'required' => true,
                     ],
                 ],
                 'ip' => [
                     'text', [
-                        'label' => 'Server\'s Public IP Address',
-                        'description' => 'Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings.',
+                        'label' => __trans('Server\'s Public IP Address'),
+                        'description' => __trans('Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings.'),
                         'required' => true,
                     ],
                 ],

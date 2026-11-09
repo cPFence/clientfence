@@ -27,23 +27,23 @@ class Server_Manager_Whm extends Server_Manager
     public static function getForm(): array
     {
         return [
-            'label' => 'WHM (cPanel)',
+            'label' => __trans('WHM (cPanel)'),
             'form' => [
                 'credentials' => [
                     'fields' => [
                         [
                             'name' => 'username',
                             'type' => 'text',
-                            'label' => 'Username',
-                            'placeholder' => 'Username to connect to the server',
+                            'label' => __trans('Username'),
+                            'placeholder' => __trans('Username to connect to the server'),
                             'required' => true,
                             'secret' => true,
                         ],
                         [
                             'name' => 'accesshash',
                             'type' => 'text',
-                            'label' => 'Access Hash or API Token',
-                            'placeholder' => 'Access hash or WHM API token to connect to the server',
+                            'label' => __trans('Access Hash or API Token'),
+                            'placeholder' => __trans('Access hash or WHM API token to connect to the server'),
                             'required' => true,
                             'secret' => true,
                         ],

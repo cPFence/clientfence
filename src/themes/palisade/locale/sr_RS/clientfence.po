@@ -3450,7 +3450,7 @@ msgstr "Neaktivno"
 
 #: src/modules/Invoice/Reports.php src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
 msgid "Debit"
-msgstr "Debit"
+msgstr "Zaduženje"
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig
 msgid "Debug"
@@ -21458,3 +21458,1515 @@ msgstr "Zatražite od naše podrške da izbriše vaš nalog. Brišemo vaše lič
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Neplaćeni računi ovog prolaza: :count. Klijenti ih plaćaju preko prolaza koji izaberete."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "Kod valute ovog portala: USD (američki dolar), EUR (evro) ili GBP (britanska funta). Računi u drugim valutama se naplaćuju u njoj po kursevima portala, kao „Convert To For Processing“ u WHMCS-u. Prazno: svaki račun se naplaćuje u sopstvenoj valuti. [Kako podesiti PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "API ključ"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "API token"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash ili API token"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "ID pristupnog ključa"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash ili WHM API token za povezivanje sa serverom"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "Posle besplatne porudžbine koja se obnavlja (besplatan probni period), klijent bez sačuvanog načina plaćanja se šalje na PayPal da podesi automatska plaćanja."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "Pristupni token iz panela; dozvolite u njemu IP adresu ovog servera"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "Došlo je do greške pri prikazivanju ovog widgeta."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "Pored kartica, klijenti mogu da sačuvaju bankovni račun za automatska plaćanja: BECS direktno zaduženje za AUD, SEPA direktno zaduženje za EUR i Bacs direktno zaduženje za GBP. Prvo uključite metod u Stripe kontrolnoj tabli. Bankovnom plaćanju treba nekoliko dana da se završi: dotle račun prikazuje „Plaćanje na čekanju“."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Paketi (nisu uvezeni)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Kreditni saldi klijenata"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Klijenti mogu da plate račun i preko PayPal-a bez podešavanja automatskih plaćanja."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Klijenti mogu da sačuvaju svoj PayPal nalog pri plaćanju ili na stranici „Opcije plaćanja“, a njihovi računi se tada plaćaju automatski, kao sa sačuvanim karticama. Potrebni su REST API ključevi i Vault („Save payment methods“) u vašoj PayPal REST aplikaciji, koju PayPal nudi samo u nekim zemljama."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Klijenti mogu da podese automatska plaćanja na stranici „Opcije plaćanja“ bez plaćanja računa."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Klijenti čiji se kredit poklapa"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Potvrdi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "Konvertuj radi obrade (opciono):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Valuta za Dynadot porudžbine, na primer USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar uvek odgovara pozitivno. Korisno ako nijedan drugi registrar ne odgovara."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Prilagođeni menadžer servera"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Prilagođeni platni prolaz vam omogućava da date uputstva kako klijent može da plati račun. Mogu se štampati svi podaci o sistemu, klijentu, porudžbini i računu. HTML kod je podržan."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Cene domena"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "Evidencija e-pošte"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "E-pošta za slanje obaveštenja o promenama domena"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Unesite tekst za informacije o jednokratnom plaćanju"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Unesite tekst za informacije o pretplati"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "Unesite svoju PayPal e-poštu da biste počeli da primate plaćanja preko PayPal-a."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "Kopiranje u clipboard nije uspelo. Izaberite tekst i kopirajte ga ručno."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Unesite e-poštu klijenta na PayPal-u:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Besplatne porudžbine:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "Sa Enom: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "Sa NameSilo: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "Sa portala Synergy Wholesale: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Sa iste stranice."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Hosting serveri (isključeni)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "ID pristupnog ključa koji ste napravili u Hestia."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Internetbs API ključ"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Internetbs API lozinka"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Nevažeća API konfiguracija"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Ostavite isključeno: ClientFence obnavlja domen kada se plati račun za obnovu. Kada je uključeno, NameSilo ga obnavlja i sa vašeg naloga."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Zabrane licenci"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "API lozinka (produkcija):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "API potpis (produkcija):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "API korisničko ime (produkcija):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Javni ključ (produkcija):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "ID klijenta REST API-ja (produkcija, opciono):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Tajna REST API-ja (produkcija):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Tajni ključ (produkcija):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Tajna potpisa webhook-a (produkcija):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "Logo na PayPal stranicama (opciono):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Upravlja domenima kod Dynadot-a preko API3. Dodajte IP adresu ovog servera na API listu dozvoljenih kod Dynadot-a (Tools > API) i držite dovoljno sredstava na nalogu za registracije i obnove."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Upravlja domenima kod Enom-a preko njegovog API-ja za preprodavce. Dozvolite IP adresu ovog servera u API podešavanjima Enom-a i držite dovoljno sredstava na nalogu za registracije i obnove. Automatska obnova kod Enom-a je isključena za svaki domen: ClientFence obnavlja domen kada se plati račun za obnovu. Sa uključenim probnim režimom unesite ID preprodavca i API token vašeg Enom probnog naloga (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Upravlja domenima kod INWX-a preko njegovog DomRobot API-ja. Koristite INWX nalog (ili podnalog) bez dvostepene prijave i držite dovoljno sredstava na nalogu za registracije i obnove. Domeni se registruju tako da isteknu osim ako ih ClientFence ne obnovi, što radi kada se plati račun za obnovu. Sa uključenim probnim režimom unesite korisničko ime i lozinku vašeg INWX OT&E probnog naloga."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Upravlja domenima kod Internetbs-a preko API-ja"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Upravlja domenima kod NameSilo-a preko njegovog API-ja. Napravite API ključ u NameSilo (Account > API Manager), dozvolite tamo IP adresu ovog servera i držite dovoljno sredstava na nalogu za registracije i obnove. U API Manager-u isključite i vraćanja preko renewDomain: ClientFence odbija da obnovi domen u periodu vraćanja, ali bi ga NameSilo inače vratio uz naknadu za vraćanje."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Upravlja domenima kod Namecheap-a preko API-ja. Namecheap-u je za rad potrebna IP adresa vašeg servera."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Upravlja domenima kod NetEarthOne-a preko API-ja. NetEarthOne-u je za rad potrebna IP adresa vašeg servera. Prijavite se u NetEarthOne kontrolni panel (URL je u e-poruci koju ste dobili pri registraciji), idite na Settings > API i unesite IP adresu servera na kojem je instaliran ClientFence da mu dozvolite pristup API-ju."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Upravlja domenima kod Openprovider-a preko API-ja. Koristite Openprovider API korisnika, dozvolite za njega IP adresu ovog servera i držite dovoljno sredstava na nalogu za registracije i obnove. Automatska obnova kod Openprovider-a je isključena za svaki domen: ClientFence obnavlja domen kada se plati račun za obnovu. Sa uključenim probnim režimom unesite korisničko ime i lozinku vašeg Openprovider sandbox naloga."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Upravlja domenima kod Resell.biz-a preko API-ja. Resell.biz-u je za rad potrebna IP adresa vašeg servera. Prijavite se u Resell.biz kontrolni panel (URL je u e-poruci koju ste dobili pri registraciji), idite na Settings > API i unesite IP adresu servera na kojem je instaliran ClientFence da mu dozvolite pristup API-ju."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Upravlja domenima kod ResellerClub-a preko API-ja. ResellerClub-u je za rad potrebna IP adresa vašeg servera. Prijavite se u ResellerClub kontrolni panel (URL je u e-poruci koju ste dobili pri registraciji), idite na Settings > API i unesite IP adresu servera na kojem je instaliran ClientFence da mu dozvolite pristup API-ju."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Upravlja domenima kod ResellerID-a preko API-ja. ResellerID-u je za rad potrebna IP adresa vašeg servera. Prijavite se u ResellerID kontrolni panel (URL je u e-poruci koju ste dobili pri registraciji), idite na Settings > API i unesite IP adresu servera na kojem je instaliran ClientFence da mu dozvolite pristup API-ju."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Upravlja domenima kod Synergy Wholesale-a preko API-ja. Dodajte IP adresu ovog servera među dozvoljene IP adrese na portalu Synergy Wholesale (Account Settings > API Information) i držite dovoljno sredstava na nalogu za registracije i obnove."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Pregled Markdown-a"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Modul:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "Automatska obnova NameSilo"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "Namecheap ID preprodavca. Ako ga nemate, ostavite prazno."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Namecheap korisničko ime"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "Potrebni su REST API ključevi, sa uključenom opcijom „Transaction search“ za PayPal REST aplikaciju."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "NetEarthOne API ključ"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "NetEarthOne ID preprodavca"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Problemi sa mrežom"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "Na stranici računa, klijent sa sporazumom o naplati može odmah da plati bez odlaska na PayPal."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "Opcioni verifikovani NameSilo profil plaćanja. Prazno: plaćaju sredstva sa naloga."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "ID organizacije"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Lozinka / ključ za prijavu"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "Lozinka ili ključ za prijavu za povezivanje sa serverom"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Plati jednom bez sporazuma:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Plati sačuvanim sporazumom:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "PayPal Auto-Pay sporazumi o naplati"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "PayPal saldo na kontrolnoj tabli:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "PayPal sporazumi o naplati: klijenti pristaju jednom, a njihovi računi se zatim plaćaju automatski sa njihovog PayPal naloga. Potrebni su NVP/SOAP API podaci PayPal poslovnog naloga sa uključenim Reference Transactions (zamolite PayPal da ih uključi)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "PayPal e-adresa za plaćanja"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "ID plaćanja"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Produkcioni ključ sa Dynadot: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Proizvodi i cene"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "Javna IP adresa ovog servera. Uverite se da je ova IP dozvoljena u vašim NameCheap podešavanjima."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Resell.biz API ključ"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "Resell.biz ID preprodavca"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "ID preprodavca"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID preprodavca. Možete ga naći u NetEarthOne kontrolnom panelu: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID preprodavca. Možete ga naći u Resell.biz kontrolnom panelu: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID preprodavca. Možete ga naći u ResellerClub kontrolnom panelu: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID preprodavca. Možete ga naći u ResellerID kontrolnom panelu: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "ResellerClub API ključ"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ResellerClub ID preprodavca"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "ResellerID API ključ"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ResellerID ID preprodavca"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Sandbox API ključ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Sandbox API lozinka:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Sandbox API potpis:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Sandbox API korisničko ime:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "ID klijenta sandbox REST API-ja (opciono):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Tajna sandbox REST API-ja:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Sačuvani PayPal nalozi:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Sačuvani bankovni računi:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Tajni ključ"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key pristupnog ključa koji ste napravili u Hestia"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "Poseban ključ za api-sandbox.dynadot.com, koristi se samo dok je probni režim uključen."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "Poseban ključ za sandbox.namesilo.com, koristi se samo dok je probni režim uključen."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "Javna IP adresa servera"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "Podešava se na stranici „Opcije plaćanja“:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Poreska pravila"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Šablon:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Javni ključ (test):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Tajni ključ (test):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Tajna potpisa webhook-a (test):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "Adresa (https) slike koju PayPal prikazuje na svojim stranicama za plaćanje. Prazno: logo vaše kompanije, ako je PNG, JPG ili GIF."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "ID klijenta i tajna PayPal REST aplikacije (developer.paypal.com, Apps & Credentials). Uz njih se povraćaji šalju PayPal-u, a PayPal pretplate se otkazuju iz ClientFence-a."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "Korisničko ime kojim se prijavljujete u Namecheap kontrolni panel."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Ovaj tip registrara šalje obaveštenja na navedenu e-poštu o događajima upravljanja domenima. Na primer, kada klijent registruje novi domen, dobijate e-poruku sa detaljima domena. Zatim je vaša odgovornost da domen registrujete kod pravog registrara."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Prilozi tiketa kopirani"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Povratne informacije o tiketima"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "UUID organizacije kojoj API token pripada (u adresi panela)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "Koristi RDAP Registry upite za proveru dostupnosti domena"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Korisničko ime za povezivanje sa serverom"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "Korisničko ime koje se koristi za povezivanje sa serverom"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "WHMCS licenciranje (licencni ključevi, evidencija provera i zabrane)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "Autentifikujete se na Stripe API navođenjem jednog od svojih API ključeva u zahtevu. API ključevima upravljate sa svog naloga."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "Možete ga naći u Namecheap kontrolnom panelu."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "Možete ga naći u NetEarthOne kontrolnom panelu: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "Možete ga naći u Resell.biz kontrolnom panelu: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "Možete ga naći u ResellerClub kontrolnom panelu: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "Možete ga naći u ResellerID kontrolnom panelu: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "ID vašeg Enom naloga (korisničko ime)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "Vaše INWX korisničko ime."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Vaše Openprovider API korisničko ime."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Vaš komentar"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "Parametar „key“ nije prosleđen"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "Nedostaje ključ „mod“"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "ID dodatka nije prosleđen"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "Period dodatka nije prosleđen"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Nedostaje iznos"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Unesite iznos"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Registrujete li novi domen ili prenosite postojeći? Nedostaje parametar action"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "ID članka nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "ID kategorije članka nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "Naslov članka nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "Nedostaje ID kategorije gotovih odgovora"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Nedostaje naziv kategorije gotovih odgovora"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "Nedostaje ID gotovog odgovora"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "Nedostaje ID kategorije gotovog odgovora"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Nedostaje naslov gotovog odgovora"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "ID kartice nije prosleđen"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "ID stavke korpe nije prosleđen"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "ID kategorije nije prosleđen"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "Unesite naziv kategorije"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "Naziv kategorije nije prosleđen"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Izaberite vrstu poverljivih podataka"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Izaberite ocenu"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Izaberite odgovor"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Izaberite ciklus naplate"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Izaberite novi proizvod"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Izaberite kada se usluga završava"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "Nedostaje ID klijenta"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "ID klijenta treba podesiti u podešavanjima masovne e-pošte."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "Unesite ID klijenta"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "ID klijenta nije prosleđen"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "Unesite kod"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "Sadržaj nije prosleđen"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Nedostaje kod valute"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "Kod valute nije prosleđen"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "Unesite trenutnu lozinku"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "Unesite trenutnu lozinku"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "ID prilagođene stranice nije prosleđen"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "ID-jevi prilagođenih stranica nisu prosleđeni"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Sadržaj prilagođene stranice nije prosleđen"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Slug prilagođene stranice nije prosleđen"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Naslov prilagođene stranice nije prosleđen"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "Unesite opis"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "Unesite TLD domena."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Nedostaje radnja za domen"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "Unesite ekstenziju domena."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "Unesite ime domena."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Nedostaje period registracije domena. Pre nego što nastavite, proverite dostupnost domena."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Nedostaje parametar sld registracije domena."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Nedostaje parametar tld registracije domena."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "Pravilo za prelazak na niži plan nije prosleđeno"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "ID e-poruke nije prosleđen"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "E-adresa nije prosleđena"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "Unesite sadržaj e-poruke"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "Unesite e-poštu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "Unesite temu e-poruke"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "Unesite kod šablona e-poruke"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "Kod šablona e-poruke nije prosleđen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "Unesite sadržaj šablona e-poruke"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "Unesite temu šablona e-poruke"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "ID događaja nije prosleđen"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "ID ekstenzije nije prosleđen"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "Tip ekstenzije nije prosleđen"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "ID neuspele radnje nije prosleđen"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "ID polja nije prosleđen"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "Nedostaje ID fajla"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Nedostaje ime fajla u konfiguraciji proizvoda"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "Unesite ime"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "Unesite ime"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "ID obrasca nije prosleđen"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Naziv obrasca nije prosleđen"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Naziv obrasca nije naveden"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Tip obrasca nije prosleđen"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "Unesite format"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "ID prolaza nije prosleđen"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "Nedostaje ID grupe"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "Naziv grupe nije prosleđen"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Nedostaje naslov grupe"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "Unesite hash"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "Nedostaje ID help desk-a"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "ID help desk-a nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Nedostaje naslov help desk-a"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "Događaj hook-a nije prosleđen"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "ID hosting plana nije prosleđen"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "Naziv hosting plana nije prosleđen"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "Hosting proizvod mora imati podešen osnovni domen za poddomene"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "Hosting proizvod mora imati definisan parametar register_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "Hosting proizvod mora imati definisan parametar register_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "Hosting proizvod mora imati definisan parametar transfer_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "Hosting proizvod mora imati definisan parametar transfer_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "Hosting proizvod mora imati konfiguraciju domena"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "Nedostaje ID"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "Unesite ID"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "ID nije prosleđen"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "ID-jevi nisu prosleđeni"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "Nedostaje ID računa"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "ID računa nije prosleđen"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "Hash računa nije prosleđen"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "ID stavke računa nije prosleđen"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "ID jezika nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "ID stavke evidencije nije prosleđen"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "ID poruke nije prosleđen"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Tema poruke nije prosleđena"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "Ime nije prosleđeno"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Unesite potvrdu nove lozinke"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Unesite potvrdu nove lozinke"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Unesite novu lozinku"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Unesite novu lozinku"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Hash nije naveden"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "Nedostaje ID napomene"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Nedostaje napomena"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "ID obaveštenja nije prosleđen"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "ID opcije nije prosleđen"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "ID grupe opcija nije prosleđen"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "ID porudžbine (order_id) nije prosleđen"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "Nedostaje ID porudžbine"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Nedostaje ime ID-a porudžbine"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "ID porudžbine nije prosleđen"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "ID-jevi porudžbina nisu prosleđeni"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "ID reda istorije porudžbine nije prosleđen"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "Unesite ID porudžbine"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "Status porudžbine nije prosleđen"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "Parametar mod nije prosleđen"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "Parametar „ext“ nije prosleđen"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "Nedostaje parametar ext"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "Unesite potvrdu lozinke"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "Unesite lozinku"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "Lozinka nije prosleđena"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "ID platnog prolaza nije prosleđen"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Nedostaje kod platnog prolaza"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Parametar perioda nije prosleđen"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Izaberite datum i vreme"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "Unesite vrednost „Zakačeno“"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Unesite temu"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "Unesite svoju e-adresu"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Unesite svoje ime"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "ID objave nije prosleđen"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Nedostaje ime podešavanja"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Prvo pogledajte pregled ažuriranja"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "Nedostaje ID proizvoda"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "ID proizvoda nije prosleđen"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "Proizvod nije u potpunosti podešen."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "Nedostaje ID promocije"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "ID promocije nije prosleđen"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Nedostaje promo kod"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "Promo kod nije prosleđen"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Nedostaje tip promocije"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Nedostaje vrednost promocije"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Hash ponude nije prosleđen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "Unesite e-poštu primaoca"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "Unesite ime primaoca"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "ID preusmeravanja nije prosleđen"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Putanja preusmeravanja nije prosleđena"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Cilj preusmeravanja nije prosleđen"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "Nedostaje ID registrara"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Nedostaje kod registrara"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Nedostaje cena registracije"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Nedostaje cena obnove"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "ID zahteva nije prosleđen"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Nedostaje obavezno polje address1"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Nedostaje obavezno polje city"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Nedostaje obavezno polje contact"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Nedostaje obavezno polje country"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Nedostaje obavezno polje email"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Nedostaje obavezno polje first_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Nedostaje obavezno polje last_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Nedostaje obavezno polje phone"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Nedostaje obavezno polje phone_cc"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Nedostaje obavezno polje postcode"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Nedostaje obavezno polje state"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "Nedostaje SLD"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "Opseg nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "ID poverljivih podataka nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Izaberite tikete"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Izaberite tikete za spajanje"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "Unesite e-poštu pošiljaoca"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "Unesite ime pošiljaoca"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "ID servera nije prosleđen"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "IP servera nije prosleđena"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "Menadžer servera nije naveden"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "Ime servera nije prosleđeno"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "ID podešavanja nije prosleđen"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "Nedostaje ID korpe"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "ID grupe osoblja nije prosleđen"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "ID člana osoblja nije prosleđen"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Nedostaje sačuvano ime fajla u konfiguraciji proizvoda"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Unesite ime poddomena."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "ID pretplate nije prosleđen"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Valuta pretplate nije prosleđena"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "sID pretplate nije prosleđen"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "Nedostaje TLD"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "Nedostaje ID registrara TLD-a"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "Nedostaje ID poreza"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "ID poreza nije prosleđen"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Nedostaje naziv poreza"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Nedostaje poreska stopa"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Poreska stopa nedostaje ili je nevažeća"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "Kod šablona nije prosleđen"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "Kod teme nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "Nedostaje ID tiketa"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "ID tiketa nije prosleđen"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "Unesite sadržaj tiketa"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "Unesite hash tiketa"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "Nedostaje ID poruke tiketa"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Nedostaje sadržaj poruke tiketa"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "Unesite temu tiketa"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "Unesite support_helpdesk_id tiketa"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "Unesite support_helpdesk_id tiketa"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "Naslov nije prosleđen"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "Nedostaje ID transakcije"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "Unesite ID transakcije"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Unesite ime domena za transfer (SLD)."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Unesite tip domena za transfer (TLD)."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Nedostaje cena transfera"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "Tip nije prosleđen"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "Pravilo za nadogradnju nije prosleđeno"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "Morate navesti ID provere za pokretanje."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "Morate navesti naslov"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "Morate navesti IP adresu za pretragu."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "Morate navesti IP adresu za resetovanje."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "Nedostaje plan_id"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "Nedostaje ticket_ID"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "Zahtev je istekao posle :seconds sekundi"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Radio"
+msgstr "Radio dugme"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Da li ste sigurni da želite da izbrišete ovo prilagođeno polje?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Da li ste sigurni da želite da izbrišete ovaj obrazac?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Izbrisati obrazac?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Izbrisati polje?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Pregledajte promenljive servera zabeležene uz callback podatke."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Lozinka za povezivanje sa serverom"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Pregledajte sirovo telo zahteva primljenog od platnog prolaza."

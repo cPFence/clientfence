@@ -44,23 +44,23 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on Dynadot through API3. Add this server\'s IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals.',
+            'label' => __trans('Manages domains on Dynadot through API3. Add this server\'s IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals.'),
             'form' => [
                 'api_key' => ['password', [
-                    'label' => 'API key',
-                    'description' => 'Production key from Dynadot: Tools > API.',
+                    'label' => __trans('API key'),
+                    'description' => __trans('Production key from Dynadot: Tools > API.'),
                     'required' => false,
                     'secret' => true,
                 ]],
                 'sandbox_api_key' => ['password', [
-                    'label' => 'Sandbox API key',
-                    'description' => 'Separate key for api-sandbox.dynadot.com, used only while test mode is on.',
+                    'label' => __trans('Sandbox API key'),
+                    'description' => __trans('Separate key for api-sandbox.dynadot.com, used only while test mode is on.'),
                     'required' => false,
                     'secret' => true,
                 ]],
                 'currency' => ['text', [
-                    'label' => 'Currency',
-                    'description' => 'Currency for Dynadot orders, for example USD.',
+                    'label' => __trans('Currency'),
+                    'description' => __trans('Currency for Dynadot orders, for example USD.'),
                     'required' => false,
                 ]],
             ],

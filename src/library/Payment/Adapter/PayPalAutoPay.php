@@ -43,29 +43,29 @@ class Payment_Adapter_PayPalAutoPay implements ClientFence\InjectionAwareInterfa
 
     public static function getConfig(): array
     {
-        $onOff = ['1' => 'On', '0' => 'Off'];
+        $onOff = ['1' => __trans('On'), '0' => __trans('Off')];
 
         return [
             'title' => 'PayPal Auto-Pay',
             'supports_one_time_payments' => true,
             'supports_subscriptions' => false,
-            'description' => 'PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on).',
+            'description' => __trans('PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on).'),
             'logo' => ['logo' => 'paypal.png', 'height' => '25px', 'width' => '85px'],
             'form' => [
-                'api_username' => ['text', ['label' => 'Live API username:', 'description' => 'PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature.']],
-                'api_password' => ['password', ['label' => 'Live API password:', 'secret' => true]],
-                'api_signature' => ['password', ['label' => 'Live API signature:', 'secret' => true]],
-                'test_api_username' => ['text', ['label' => 'Sandbox API username:', 'description' => 'developer.paypal.com: Sandbox accounts, your business account, API Credentials.']],
-                'test_api_password' => ['password', ['label' => 'Sandbox API password:', 'secret' => true]],
-                'test_api_signature' => ['password', ['label' => 'Sandbox API signature:', 'secret' => true]],
-                'pay_saved' => ['radio', ['label' => 'Pay with the saved agreement:', 'description' => 'On the invoice page, a client with a billing agreement can pay at once without going to PayPal.', 'multiOptions' => $onOff]],
-                'pay_once' => ['radio', ['label' => 'Pay once without an agreement:', 'description' => 'Clients can also pay an invoice with PayPal without setting up automatic payments.', 'multiOptions' => $onOff]],
-                'save_only' => ['radio', ['label' => 'Set up on the Payment methods page:', 'description' => 'Clients can set up automatic payments on their Payment methods page without paying an invoice.', 'multiOptions' => $onOff]],
-                'free_orders' => ['radio', ['label' => 'Free orders:', 'description' => 'After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments.', 'multiOptions' => $onOff]],
-                'prefill_email' => ['radio', ['label' => 'Fill in the client\'s email at PayPal:', 'multiOptions' => $onOff]],
-                'convert_to' => ['text', ['label' => 'Convert to for processing (optional):', 'placeholder' => 'USD', 'description' => 'A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal\'s exchange rates, as WHMCS\'s "Convert To For Processing". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)']],
-                'logo_url' => ['text', ['label' => 'Logo on PayPal\'s pages (optional):', 'description' => 'The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF.']],
-                'balance' => ['radio', ['label' => 'PayPal balance on the dashboard:', 'multiOptions' => $onOff]],
+                'api_username' => ['text', ['label' => __trans('Live API username:'), 'description' => __trans('PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature.')]],
+                'api_password' => ['password', ['label' => __trans('Live API password:'), 'secret' => true]],
+                'api_signature' => ['password', ['label' => __trans('Live API signature:'), 'secret' => true]],
+                'test_api_username' => ['text', ['label' => __trans('Sandbox API username:'), 'description' => __trans('developer.paypal.com: Sandbox accounts, your business account, API Credentials.')]],
+                'test_api_password' => ['password', ['label' => __trans('Sandbox API password:'), 'secret' => true]],
+                'test_api_signature' => ['password', ['label' => __trans('Sandbox API signature:'), 'secret' => true]],
+                'pay_saved' => ['radio', ['label' => __trans('Pay with the saved agreement:'), 'description' => __trans('On the invoice page, a client with a billing agreement can pay at once without going to PayPal.'), 'multiOptions' => $onOff]],
+                'pay_once' => ['radio', ['label' => __trans('Pay once without an agreement:'), 'description' => __trans('Clients can also pay an invoice with PayPal without setting up automatic payments.'), 'multiOptions' => $onOff]],
+                'save_only' => ['radio', ['label' => __trans('Set up on the Payment methods page:'), 'description' => __trans('Clients can set up automatic payments on their Payment methods page without paying an invoice.'), 'multiOptions' => $onOff]],
+                'free_orders' => ['radio', ['label' => __trans('Free orders:'), 'description' => __trans('After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments.'), 'multiOptions' => $onOff]],
+                'prefill_email' => ['radio', ['label' => __trans('Fill in the client\'s email at PayPal:'), 'multiOptions' => $onOff]],
+                'convert_to' => ['text', ['label' => __trans('Convert to for processing (optional):'), 'placeholder' => 'USD', 'description' => __trans('A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal\'s exchange rates, as WHMCS\'s "Convert To For Processing". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)')]],
+                'logo_url' => ['text', ['label' => __trans('Logo on PayPal\'s pages (optional):'), 'description' => __trans('The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF.')]],
+                'balance' => ['radio', ['label' => __trans('PayPal balance on the dashboard:'), 'multiOptions' => $onOff]],
             ],
         ];
     }

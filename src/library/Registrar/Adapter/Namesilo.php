@@ -42,29 +42,30 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server\'s IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee.',
+            'label' => __trans('Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server\'s IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee.'),
             'form' => [
                 'api_key' => ['password', [
-                    'label' => 'API key',
-                    'description' => 'From NameSilo: Account > API Manager.',
+                    'label' => __trans('API key'),
+                    'description' => __trans('From NameSilo: Account > API Manager.'),
                     'required' => false,
                     'secret' => true,
                 ]],
                 'sandbox_api_key' => ['password', [
-                    'label' => 'Sandbox API key',
-                    'description' => 'Separate key for sandbox.namesilo.com, used only while test mode is on.',
+                    'label' => __trans('Sandbox API key'),
+                    'description' => __trans('Separate key for sandbox.namesilo.com, used only while test mode is on.'),
                     'required' => false,
                     'secret' => true,
                 ]],
                 'payment_id' => ['text', [
-                    'label' => 'Payment ID',
-                    'description' => 'Optional verified NameSilo payment profile. Empty: account funds pay.',
+                    'label' => __trans('Payment ID'),
+                    'description' => __trans('Optional verified NameSilo payment profile. Empty: account funds pay.'),
                     'required' => false,
                 ]],
                 'auto_renew' => ['radio', [
-                    'label' => 'NameSilo auto-renewal',
-                    'description' => 'Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account.',
-                    'multiOptions' => ['0' => 'No', '1' => 'Yes'],
+                    'label' => __trans('NameSilo auto-renewal'),
+                    'description' => __trans('Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account.'),
+                    'multiOptions' => ['1' => __trans('Yes'), '0' => __trans('No')],
+                    'default' => '0',
                 ]],
             ],
         ];

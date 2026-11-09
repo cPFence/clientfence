@@ -40,7 +40,7 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
         return [
             'supports_one_time_payments' => true,
             'supports_subscriptions' => true,
-            'description' => 'Enter your PayPal email to start accepting payments by PayPal.',
+            'description' => __trans('Enter your PayPal email to start accepting payments by PayPal.'),
             'logo' => [
                 'logo' => 'paypal.png',
                 'height' => '25px',
@@ -50,7 +50,7 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 'email' => [
                     'text',
                     [
-                        'label' => 'PayPal email address for payments',
+                        'label' => __trans('PayPal email address for payments'),
                         'validators' => ['EmailAddress'],
                     ],
                 ],
@@ -58,42 +58,42 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                 // subscriptions are cancelled from ClientFence, as WHMCS does. Without them PayPal works as before.
                 'api_client_id' => [
                     'text', [
-                        'label' => 'Live REST API client ID (optional):',
-                        'description' => 'The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence.',
+                        'label' => __trans('Live REST API client ID (optional):'),
+                        'description' => __trans('The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence.'),
                     ],
                 ],
                 'api_secret' => [
                     'password', [
-                        'label' => 'Live REST API secret:',
+                        'label' => __trans('Live REST API secret:'),
                         'secret' => true,
                     ],
                 ],
                 'test_api_client_id' => [
                     'text', [
-                        'label' => 'Sandbox REST API client ID (optional):',
+                        'label' => __trans('Sandbox REST API client ID (optional):'),
                     ],
                 ],
                 'test_api_secret' => [
                     'password', [
-                        'label' => 'Sandbox REST API secret:',
+                        'label' => __trans('Sandbox REST API secret:'),
                         'secret' => true,
                     ],
                 ],
                 // ClientFence core patch: saved PayPal accounts pay invoices automatically, as saved cards do (Invoice/SavedCards.php).
                 'vault' => [
                     'radio', [
-                        'label' => 'Saved PayPal accounts:',
-                        'description' => 'Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault ("Save payment methods") on your PayPal REST app, which PayPal offers in some countries only.',
-                        'multiOptions' => ['1' => 'On', '0' => 'Off'],
+                        'label' => __trans('Saved PayPal accounts:'),
+                        'description' => __trans('Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault ("Save payment methods") on your PayPal REST app, which PayPal offers in some countries only.'),
+                        'multiOptions' => ['1' => __trans('On'), '0' => __trans('Off')],
                         'default' => '0',
                     ],
                 ],
                 // ClientFence core patch: the PayPal balance on the admin dashboard (Invoice Api\Admin::paypal_balances()).
                 'balance' => [
                     'radio', [
-                        'label' => 'PayPal balance on the dashboard:',
-                        'description' => 'Needs the REST API keys, with "Transaction search" turned on for the PayPal REST app.',
-                        'multiOptions' => ['1' => 'On', '0' => 'Off'],
+                        'label' => __trans('PayPal balance on the dashboard:'),
+                        'description' => __trans('Needs the REST API keys, with "Transaction search" turned on for the PayPal REST app.'),
+                        'multiOptions' => ['1' => __trans('On'), '0' => __trans('Off')],
                     ],
                 ],
             ],

@@ -12,6 +12,11 @@
 - Turning off or deleting a payment gateway works as in WHMCS: its unpaid invoices move to the gateway you choose. A gateway with active subscriptions or saved payment methods cannot be deleted (turn it off instead).
 - A newly installed gateway takes its proper name ("PayPal Auto-Pay") and allows only the payment kinds it supports.
 - Gateway settings always show On before Off. PayPal Auto-Pay settings are all on by default, and PayPal's pages show your company logo when no logo is set.
+- Every setting of the payment gateways, registrars and server panels, the "missing field" errors and the admin pop-ups and alerts are now in your language, in all 27 languages: about 380 texts per language, including ones FOSSBilling had left in English.
+
+### Fixed
+
+- A registrar setting saved by an older FOSSBilling version (domain lookups on) stays on when you open and save its settings.
 
 ## 1.0.38-beta.1 (2026-11-08)
 

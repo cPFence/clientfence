@@ -276,8 +276,8 @@ final class Run
             : $source->count('tblclients', "authmodule <> ''");
         // One Google account per login (the first linked).
         $google = $source->hasTable('tblauthn_account_links') && $linked !== null ? (int) $source->value("SELECT COUNT(DISTINCT user_id) FROM tblauthn_account_links WHERE provider = 'google_signin' AND user_id " . $linked) : 0;
-        $rows[] = ['step' => 'twofactor', 'label' => 'Two-factor sign-in carried over', 'whmcs' => $twofactor, 'imported' => $map->count('totp')];
-        $rows[] = ['step' => 'google', 'label' => 'Google sign-in links', 'whmcs' => $google, 'imported' => $map->count('google')];
+        $rows[] = ['step' => 'twofactor', 'label' => __trans('Two-factor sign-in carried over'), 'whmcs' => $twofactor, 'imported' => $map->count('totp')];
+        $rows[] = ['step' => 'google', 'label' => __trans('Google sign-in links'), 'whmcs' => $google, 'imported' => $map->count('google')];
         // Money, once its steps ran: each imported client's balance against WHMCS's credit, and
         // the unpaid invoices.
         if (!empty($state['steps']['balances']['finished'])) {
@@ -289,12 +289,12 @@ final class Run
                     ++$matching;
                 }
             }
-            $rows[] = ['step' => 'credit', 'label' => 'Clients whose credit matches', 'whmcs' => count($clientMap), 'imported' => $matching];
+            $rows[] = ['step' => 'credit', 'label' => __trans('Clients whose credit matches'), 'whmcs' => count($clientMap), 'imported' => $matching];
         }
         if (!empty($state['steps']['invoices']['finished']) && $source->hasTable('tblinvoices')) {
             $invoiceIds = array_values($map->all('invoice'));
             $rows[] = [
-                'step' => 'unpaid', 'label' => 'Unpaid invoices',
+                'step' => 'unpaid', 'label' => __trans('Unpaid invoices'),
                 'whmcs' => $source->count('tblinvoices', "status IN ('Unpaid', 'Collections', 'Payment Pending', 'Draft')"),
                 'imported' => $invoiceIds === [] ? 0 : (int) $db->fetchOne("SELECT COUNT(*) FROM invoice WHERE status = 'unpaid' AND id IN (" . implode(',', $invoiceIds) . ')'),
             ];
@@ -304,7 +304,7 @@ final class Run
         // files copied.
         if (!empty($state['steps']['replies']['finished'])) {
             $rows[] = [
-                'step' => 'files', 'label' => 'Ticket attachments copied',
+                'step' => 'files', 'label' => __trans('Ticket attachments copied'),
                 'whmcs' => self::support($source)->attachmentTotal(),
                 'imported' => (int) $db->fetchOne("SELECT COUNT(*) FROM support_ticket_file WHERE uploader_kind IN ('whmcs', 'whmcsstaff') AND removed_at IS NULL"),
             ];

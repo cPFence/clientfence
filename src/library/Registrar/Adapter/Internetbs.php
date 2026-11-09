@@ -30,17 +30,17 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on Internetbs via API',
+            'label' => __trans('Manages domains on Internetbs via API'),
             'form' => [
                 'apikey' => ['password', [
-                    'label' => 'Internetbs API Key',
-                    'description' => 'Internetbs API Key',
+                    'label' => __trans('Internetbs API Key'),
+                    'description' => __trans('Internetbs API Key'),
                     'secret' => true,
                 ],
                 ],
                 'password' => ['password', [
-                    'label' => 'Internetbs API Password',
-                    'description' => 'Internetbs API Password',
+                    'label' => __trans('Internetbs API Password'),
+                    'description' => __trans('Internetbs API Password'),
                     'secret' => true,
                 ],
                 ],

@@ -2170,7 +2170,7 @@ msgstr "หน้าลูกค้า"
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Client secret"
-msgstr "Client secret"
+msgstr "ความลับของไคลเอนต์"
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Client sign-up is off: “Disable New Signups” is on in"
@@ -19270,3 +19270,1535 @@ msgstr "แจ้งฝ่ายสนับสนุนของเราให
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "ใบแจ้งหนี้ที่ยังไม่ชำระของช่องทางนี้: :count ลูกค้าจะชำระผ่านช่องทางที่คุณเลือก"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "รหัสสกุลเงินของพอร์ทัลนี้: USD (ดอลลาร์สหรัฐ), EUR (ยูโร) หรือ GBP (ปอนด์อังกฤษ) ใบแจ้งหนี้ในสกุลเงินอื่นจะถูกเรียกเก็บเป็นสกุลเงินนี้ตามอัตราแลกเปลี่ยนของพอร์ทัล เหมือน \"Convert To For Processing\" ของ WHMCS เว้นว่าง: แต่ละใบแจ้งหนี้จะถูกเรียกเก็บเป็นสกุลเงินของตัวเอง [วิธีตั้งค่า PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "คีย์ API"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "โทเค็น API"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash หรือโทเค็น API"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "ID คีย์การเข้าถึง"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash หรือโทเค็น API ของ WHM สำหรับเชื่อมต่อกับเซิร์ฟเวอร์"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "หลังคำสั่งซื้อฟรีที่ต่ออายุ (ทดลองใช้ฟรี) ลูกค้าที่ไม่มีวิธีการชำระเงินที่บันทึกไว้จะถูกส่งไปที่ PayPal เพื่อตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "โทเค็นการเข้าถึงจากแผงควบคุม อนุญาตที่อยู่ IP ของเซิร์ฟเวอร์นี้บนโทเค็นนั้น"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "เกิดข้อผิดพลาดขณะแสดงวิดเจ็ตนี้"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "นอกจากบัตร ลูกค้ายังบันทึกบัญชีธนาคารสำหรับการชำระเงินอัตโนมัติได้: BECS Direct Debit สำหรับ AUD, SEPA Direct Debit สำหรับ EUR และ Bacs Direct Debit สำหรับ GBP เปิดใช้วิธีนี้ในแดชบอร์ด Stripe ก่อน การชำระเงินผ่านธนาคารใช้เวลาหลายวัน ระหว่างนั้นใบแจ้งหนี้จะแสดง \"รอการชำระเงิน\""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "แพ็กเกจ (ยังไม่นำเข้า)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "ยอดเครดิตคงเหลือของลูกค้า"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "ลูกค้ายังชำระใบแจ้งหนี้ด้วย PayPal ได้โดยไม่ต้องตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "ลูกค้าบันทึกบัญชี PayPal ได้ตอนชำระเงินหรือในหน้า \"วิธีการชำระเงิน\" แล้วใบแจ้งหนี้จะถูกชำระอัตโนมัติ เหมือนบัตรที่บันทึกไว้ ต้องใช้คีย์ REST API และ Vault (\"Save payment methods\") ในแอป PayPal REST ของคุณ ซึ่ง PayPal เปิดให้บริการเฉพาะบางประเทศ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "ลูกค้าตั้งค่าการชำระเงินอัตโนมัติได้ในหน้า \"วิธีการชำระเงิน\" โดยไม่ต้องชำระใบแจ้งหนี้"
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "ลูกค้าที่เครดิตตรงกัน"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "ยืนยัน"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "แปลงสกุลเงินเพื่อประมวลผล (ไม่บังคับ):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "สกุลเงินสำหรับคำสั่งซื้อ Dynadot เช่น USD"
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar ตอบกลับสำเร็จเสมอ มีประโยชน์เมื่อไม่มีผู้รับจดทะเบียนรายอื่นที่เหมาะสม"
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "ตัวจัดการเซิร์ฟเวอร์แบบกำหนดเอง"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "ช่องทางชำระเงินแบบกำหนดเองให้คุณแจ้งวิธีที่ลูกค้าชำระใบแจ้งหนี้ได้ พิมพ์รายละเอียดระบบ ลูกค้า คำสั่งซื้อ และใบแจ้งหนี้ได้ทั้งหมด รองรับโค้ด HTML"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "ราคาโดเมน"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "บันทึกอีเมล"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "อีเมลสำหรับส่งการแจ้งเตือนการเปลี่ยนแปลงโดเมน"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "ใส่ข้อความสำหรับข้อมูลการชำระเงินครั้งเดียว"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "ใส่ข้อความสำหรับข้อมูลการสมัครสมาชิก"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "ใส่อีเมล PayPal ของคุณเพื่อเริ่มรับชำระเงินผ่าน PayPal"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "คัดลอกไปยังคลิปบอร์ดไม่สำเร็จ เลือกข้อความแล้วคัดลอกด้วยตนเอง"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "กรอกอีเมลของลูกค้าที่ PayPal:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "คำสั่งซื้อฟรี:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "จาก Enom: Resellers > API settings"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "จาก NameSilo: Account > API Manager"
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "จากพอร์ทัล Synergy Wholesale: Account Settings > API Information"
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "จากหน้าเดียวกัน"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "เซิร์ฟเวอร์โฮสติ้ง (ปิดอยู่)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "ID ของคีย์การเข้าถึงที่คุณสร้างใน Hestia"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "คีย์ API ของ Internetbs"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "รหัสผ่าน API ของ Internetbs"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "การกำหนดค่า API ไม่ถูกต้อง"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "ปิดไว้: ClientFence จะต่ออายุโดเมนเมื่อใบแจ้งหนี้การต่ออายุถูกชำระแล้ว เมื่อเปิด NameSilo จะต่ออายุโดเมนจากบัญชีของคุณด้วย"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "การแบนไลเซนส์"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "รหัสผ่าน API (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "ลายเซ็น API (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "ชื่อผู้ใช้ API (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "คีย์สาธารณะ (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "ID ไคลเอนต์ REST API (ใช้งานจริง, ไม่บังคับ):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "ความลับ REST API (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "คีย์ลับ (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "ความลับสำหรับลงลายเซ็น Webhook (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "โลโก้ในหน้าของ PayPal (ไม่บังคับ):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "จัดการโดเมนที่ Dynadot ผ่าน API3 เพิ่มที่อยู่ IP ของเซิร์ฟเวอร์นี้ในรายการอนุญาต API ที่ Dynadot (Tools > API) และเก็บยอดเงินในบัญชีให้เพียงพอสำหรับการจดทะเบียนและการต่ออายุ"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "จัดการโดเมนที่ Enom ผ่าน API สำหรับตัวแทนจำหน่าย อนุญาตที่อยู่ IP ของเซิร์ฟเวอร์นี้ในการตั้งค่า API ของ Enom และเก็บเงินในบัญชีให้เพียงพอสำหรับการจดทะเบียนและการต่ออายุ การต่ออายุอัตโนมัติของ Enom ปิดอยู่กับทุกโดเมน: ClientFence จะต่ออายุโดเมนเมื่อใบแจ้งหนี้การต่ออายุถูกชำระแล้ว เมื่อเปิดโหมดทดสอบ ให้ใส่ ID ตัวแทนจำหน่ายและโทเค็น API ของบัญชีทดสอบ Enom (resellertest.enom.com)"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "จัดการโดเมนที่ INWX ผ่าน DomRobot API ใช้บัญชี INWX (หรือบัญชีย่อย) ที่ไม่มีการเข้าสู่ระบบสองขั้นตอน และเก็บเงินในบัญชีให้เพียงพอสำหรับการจดทะเบียนและการต่ออายุ โดเมนจะถูกจดทะเบียนให้หมดอายุ เว้นแต่ ClientFence จะต่ออายุ ซึ่งทำเมื่อใบแจ้งหนี้การต่ออายุถูกชำระแล้ว เมื่อเปิดโหมดทดสอบ ให้ใส่ชื่อผู้ใช้และรหัสผ่านของบัญชีทดสอบ INWX OT&E"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "จัดการโดเมนที่ Internetbs ผ่าน API"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "จัดการโดเมนที่ NameSilo ผ่าน API สร้างคีย์ API ใน NameSilo (Account > API Manager) อนุญาตที่อยู่ IP ของเซิร์ฟเวอร์นี้ที่นั่น และเก็บเงินในบัญชีให้เพียงพอสำหรับการจดทะเบียนและการต่ออายุ ใน API Manager ให้ปิดการกู้คืนผ่าน renewDomain ด้วย: ClientFence ปฏิเสธการต่ออายุโดเมนที่อยู่ในช่วงกู้คืน แต่ NameSilo จะกู้คืนโดเมนนั้นโดยคิดค่าธรรมเนียมการกู้คืน"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "จัดการโดเมนที่ Namecheap ผ่าน API Namecheap ต้องใช้ IP ของเซิร์ฟเวอร์คุณจึงจะทำงานได้"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "จัดการโดเมนที่ NetEarthOne ผ่าน API NetEarthOne ต้องใช้ IP ของเซิร์ฟเวอร์คุณจึงจะทำงานได้ เข้าสู่ระบบแผงควบคุม NetEarthOne (URL อยู่ในอีเมลที่ได้รับตอนสมัคร) แล้วไปที่ Settings > API และใส่ที่อยู่ IP ของเซิร์ฟเวอร์ที่ติดตั้ง ClientFence เพื่ออนุญาตให้เข้าถึง API"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "จัดการโดเมนที่ Openprovider ผ่าน API ใช้ผู้ใช้ API ของ Openprovider อนุญาตที่อยู่ IP ของเซิร์ฟเวอร์นี้ให้ผู้ใช้นั้น และเก็บเงินในบัญชีให้เพียงพอสำหรับการจดทะเบียนและการต่ออายุ การต่ออายุอัตโนมัติของ Openprovider ปิดอยู่กับทุกโดเมน: ClientFence จะต่ออายุโดเมนเมื่อใบแจ้งหนี้การต่ออายุถูกชำระแล้ว เมื่อเปิดโหมดทดสอบ ให้ใส่ชื่อผู้ใช้และรหัสผ่านของบัญชี sandbox Openprovider"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "จัดการโดเมนที่ Resell.biz ผ่าน API Resell.biz ต้องใช้ IP ของเซิร์ฟเวอร์คุณจึงจะทำงานได้ เข้าสู่ระบบแผงควบคุม Resell.biz (URL อยู่ในอีเมลที่ได้รับตอนสมัคร) แล้วไปที่ Settings > API และใส่ที่อยู่ IP ของเซิร์ฟเวอร์ที่ติดตั้ง ClientFence เพื่ออนุญาตให้เข้าถึง API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "จัดการโดเมนที่ ResellerClub ผ่าน API ResellerClub ต้องใช้ IP ของเซิร์ฟเวอร์คุณจึงจะทำงานได้ เข้าสู่ระบบแผงควบคุม ResellerClub (URL อยู่ในอีเมลที่ได้รับตอนสมัคร) แล้วไปที่ Settings > API และใส่ที่อยู่ IP ของเซิร์ฟเวอร์ที่ติดตั้ง ClientFence เพื่ออนุญาตให้เข้าถึง API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "จัดการโดเมนที่ ResellerID ผ่าน API ResellerID ต้องใช้ IP ของเซิร์ฟเวอร์คุณจึงจะทำงานได้ เข้าสู่ระบบแผงควบคุม ResellerID (URL อยู่ในอีเมลที่ได้รับตอนสมัคร) แล้วไปที่ Settings > API และใส่ที่อยู่ IP ของเซิร์ฟเวอร์ที่ติดตั้ง ClientFence เพื่ออนุญาตให้เข้าถึง API"
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "จัดการโดเมนที่ Synergy Wholesale ผ่าน API เพิ่มที่อยู่ IP ของเซิร์ฟเวอร์นี้ในที่อยู่ IP ที่อนุญาตในพอร์ทัล Synergy Wholesale (Account Settings > API Information) และเก็บยอดเงินในบัญชีให้เพียงพอสำหรับการจดทะเบียนและการต่ออายุ"
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "ตัวอย่าง Markdown"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "โมดูล:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "การต่ออายุอัตโนมัติของ NameSilo"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "ID ตัวแทนจำหน่าย Namecheap หากไม่มี ให้เว้นว่าง"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "ชื่อผู้ใช้ Namecheap"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "ต้องใช้คีย์ REST API โดยเปิด \"Transaction search\" ในแอป PayPal REST"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "คีย์ API ของ NetEarthOne"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย NetEarthOne"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "ปัญหาเครือข่าย"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "ในหน้าใบแจ้งหนี้ ลูกค้าที่มีข้อตกลงการเรียกเก็บเงินชำระเงินได้ทันทีโดยไม่ต้องไปที่ PayPal"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "โปรไฟล์การชำระเงิน NameSilo ที่ยืนยันแล้ว (ไม่บังคับ) เว้นว่าง: ใช้เงินในบัญชีชำระ"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "ID องค์กร"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "รหัสผ่าน / คีย์เข้าสู่ระบบ"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "รหัสผ่านหรือคีย์เข้าสู่ระบบที่ใช้เชื่อมต่อกับเซิร์ฟเวอร์"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "ชำระครั้งเดียวโดยไม่ใช้ข้อตกลง:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "ชำระด้วยข้อตกลงที่บันทึกไว้:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "ข้อตกลงการเรียกเก็บเงิน PayPal Auto-Pay"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "ยอดคงเหลือ PayPal บนแดชบอร์ด:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "ข้อตกลงการเรียกเก็บเงิน PayPal: ลูกค้ายอมรับครั้งเดียว แล้วใบแจ้งหนี้จะถูกชำระอัตโนมัติจากบัญชี PayPal ของลูกค้า ต้องใช้ข้อมูล NVP/SOAP API ของบัญชี PayPal ธุรกิจที่เปิด Reference Transactions (ขอให้ PayPal เปิดให้)"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "อีเมล PayPal สำหรับรับชำระเงิน"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "ID การชำระเงิน"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "คีย์ใช้งานจริงจาก Dynadot: Tools > API"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "ผลิตภัณฑ์และราคา"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "ที่อยู่ IP สาธารณะของเซิร์ฟเวอร์นี้ ตรวจสอบว่า IP นี้อยู่ในรายการอนุญาตในการตั้งค่า NameCheap ของคุณ"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "คีย์ API ของ Resell.biz"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย Resell.biz"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย ดูได้ในแผงควบคุม NetEarthOne: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย ดูได้ในแผงควบคุม Resell.biz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย ดูได้ในแผงควบคุม ResellerClub: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย ดูได้ในแผงควบคุม ResellerID: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "คีย์ API ของ ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "คีย์ API ของ ResellerID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ID ตัวแทนจำหน่าย ResellerID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "คีย์ API (sandbox)"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "รหัสผ่าน API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "ลายเซ็น API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "ชื่อผู้ใช้ API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "ID ไคลเอนต์ REST API (sandbox, ไม่บังคับ):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "ความลับ REST API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "บัญชี PayPal ที่บันทึกไว้:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "บัญชีธนาคารที่บันทึกไว้:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "คีย์ลับ"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key ของคีย์การเข้าถึงที่คุณสร้างใน Hestia"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "คีย์แยกสำหรับ api-sandbox.dynadot.com ใช้เฉพาะตอนเปิดโหมดทดสอบ"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "คีย์แยกสำหรับ sandbox.namesilo.com ใช้เฉพาะตอนเปิดโหมดทดสอบ"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "ที่อยู่ IP สาธารณะของเซิร์ฟเวอร์"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "ตั้งค่าในหน้า \"วิธีการชำระเงิน\":"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "สล็อต:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "กฎภาษี"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "เทมเพลต:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "คีย์สาธารณะ (ทดสอบ):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "คีย์ลับ (ทดสอบ):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "ความลับสำหรับลงลายเซ็น Webhook (ทดสอบ):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "ที่อยู่ (https) ของรูปภาพที่ PayPal แสดงในหน้าชำระเงิน เว้นว่าง: โลโก้บริษัทของคุณ หากเป็น PNG, JPG หรือ GIF"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "ID ไคลเอนต์และความลับของแอป PayPal REST (developer.paypal.com, Apps & Credentials) เมื่อมีสิ่งเหล่านี้ การคืนเงินจะถูกส่งไปที่ PayPal และการสมัครสมาชิก PayPal จะถูกยกเลิกจาก ClientFence"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "ชื่อผู้ใช้ที่คุณใช้เข้าสู่ระบบแผงควบคุม Namecheap"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "ผู้รับจดทะเบียนประเภทนี้ส่งการแจ้งเตือนไปยังอีเมลที่ระบุเกี่ยวกับเหตุการณ์การจัดการโดเมน เช่น เมื่อลูกค้าจดทะเบียนโดเมนใหม่ คุณจะได้รับอีเมลพร้อมรายละเอียดโดเมน หลังจากนั้นเป็นหน้าที่ของคุณที่จะจดทะเบียนโดเมนกับผู้รับจดทะเบียนจริง"
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "คัดลอกไฟล์แนบของคำขอสนับสนุนแล้ว"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "ความคิดเห็นเกี่ยวกับคำขอสนับสนุน"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "UUID ขององค์กรที่โทเค็น API เป็นของ (ในที่อยู่ของแผงควบคุม)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "ใช้การค้นหา RDAP Registry เพื่อตรวจสอบว่าโดเมนว่างหรือไม่"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "ชื่อผู้ใช้สำหรับเชื่อมต่อกับเซิร์ฟเวอร์"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "ชื่อผู้ใช้ที่ใช้เชื่อมต่อกับเซิร์ฟเวอร์"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "ไลเซนส์ WHMCS (คีย์ไลเซนส์ บันทึกการตรวจสอบ และการแบน)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "คุณยืนยันตัวตนกับ API ของ Stripe โดยใส่คีย์ API ตัวใดตัวหนึ่งของคุณในคำขอ คุณจัดการคีย์ API ได้จากบัญชีของคุณ"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "ดูได้ในแผงควบคุม Namecheap"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "ดูได้ในแผงควบคุม NetEarthOne: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "ดูได้ในแผงควบคุม Resell.biz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "ดูได้ในแผงควบคุม ResellerClub: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "ดูได้ในแผงควบคุม ResellerID: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "ID บัญชี Enom ของคุณ (ชื่อเข้าสู่ระบบ)"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "ชื่อผู้ใช้ INWX ของคุณ"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "ชื่อผู้ใช้ API Openprovider ของคุณ"
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "ความคิดเห็นของคุณ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials"
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "ไม่ได้ส่งพารามิเตอร์ \"key\""
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "ไม่มีคีย์ \"mod\""
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของส่วนเสริม"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "ไม่ได้ส่งระยะเวลาของส่วนเสริม"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "ไม่มีจำนวนเงิน"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "ต้องระบุจำนวนเงิน"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "คุณกำลังจดทะเบียนโดเมนใหม่หรือโอนโดเมนที่มีอยู่? ไม่มีพารามิเตอร์ action"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของบทความ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของหมวดหมู่บทความ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "ไม่ได้ส่งชื่อบทความ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "ไม่มี ID ของหมวดหมู่คำตอบสำเร็จรูป"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "ไม่มีชื่อของหมวดหมู่คำตอบสำเร็จรูป"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "ไม่มี ID ของคำตอบสำเร็จรูป"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "ไม่มี ID หมวดหมู่ของคำตอบสำเร็จรูป"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "ไม่มีชื่อของคำตอบสำเร็จรูป"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของบัตร"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของรายการในตะกร้า"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของหมวดหมู่"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "ต้องระบุชื่อหมวดหมู่"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "ไม่ได้ส่งชื่อหมวดหมู่"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "เลือกประเภทของข้อมูลลับ"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "เลือกคะแนน"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "เลือกคำตอบ"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "เลือกรอบการเรียกเก็บเงิน"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "เลือกผลิตภัณฑ์ใหม่"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "เลือกว่าบริการสิ้นสุดเมื่อใด"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "ไม่มี ID ของลูกค้า"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "ต้องตั้งค่า ID ลูกค้าในการตั้งค่าการส่งอีเมลจำนวนมาก"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "ต้องระบุ ID ของลูกค้า"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของลูกค้า"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "ต้องระบุรหัส"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "ไม่ได้ส่งเนื้อหา"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "ไม่มีรหัสสกุลเงิน"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "ไม่ได้ส่งรหัสสกุลเงิน"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "ต้องระบุรหัสผ่านปัจจุบัน"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "ต้องระบุรหัสผ่านปัจจุบัน"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของหน้าที่กำหนดเอง"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "ไม่ได้ส่ง ID ของหน้าที่กำหนดเอง"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "ไม่ได้ส่งเนื้อหาของหน้าที่กำหนดเอง"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "ไม่ได้ส่ง slug ของหน้าที่กำหนดเอง"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "ไม่ได้ส่งชื่อของหน้าที่กำหนดเอง"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "ต้องระบุคำอธิบาย"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "ต้องระบุ TLD ของโดเมน"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "ไม่มีการดำเนินการของโดเมน"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "ต้องระบุนามสกุลของโดเมน"
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "ต้องระบุชื่อโดเมน"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "ไม่มีระยะเวลาจดทะเบียนโดเมน ตรวจสอบว่าโดเมนว่างก่อนดำเนินการต่อ"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "ไม่มีพารามิเตอร์ sld ของการจดทะเบียนโดเมน"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "ไม่มีพารามิเตอร์ tld ของการจดทะเบียนโดเมน"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "ไม่ได้ส่งกฎการดาวน์เกรด"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของอีเมล"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "ไม่ได้ส่งที่อยู่อีเมล"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "ต้องระบุเนื้อหาอีเมล"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "ต้องระบุอีเมล"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "ต้องระบุหัวข้ออีเมล"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "ต้องระบุรหัสเทมเพลตอีเมล"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "ไม่ได้ส่งรหัสเทมเพลตอีเมล"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "ต้องระบุเนื้อหาเทมเพลตอีเมล"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "ต้องระบุหัวข้อเทมเพลตอีเมล"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของเหตุการณ์"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของส่วนขยาย"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "ไม่ได้ส่งประเภทของส่วนขยาย"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของการดำเนินการที่ล้มเหลว"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "ไม่ได้ส่ง ID ของฟิลด์"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "ไม่มี ID ของไฟล์"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "ไม่มีชื่อไฟล์ในการกำหนดค่าผลิตภัณฑ์"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "ต้องระบุชื่อ"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "ต้องระบุชื่อ"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของแบบฟอร์ม"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "ไม่ได้ส่งชื่อแบบฟอร์ม"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "ไม่ได้ระบุชื่อแบบฟอร์ม"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "ไม่ได้ส่งประเภทแบบฟอร์ม"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "ต้องระบุรูปแบบ"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของช่องทาง"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "ไม่มี ID ของกลุ่ม"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "ไม่ได้ส่งชื่อกลุ่ม"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "ไม่มีชื่อกลุ่ม"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "ต้องระบุแฮช"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "ไม่มี ID ของศูนย์ช่วยเหลือ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของศูนย์ช่วยเหลือ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "ไม่มีชื่อของศูนย์ช่วยเหลือ"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "ไม่ได้ส่งเหตุการณ์ของฮุก"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของแพ็กเกจโฮสติ้ง"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "ไม่ได้ส่งชื่อแพ็กเกจโฮสติ้ง"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "ผลิตภัณฑ์โฮสติ้งต้องกำหนดค่าโดเมนหลักสำหรับซับโดเมน"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "ผลิตภัณฑ์โฮสติ้งต้องกำหนดพารามิเตอร์ register_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "ผลิตภัณฑ์โฮสติ้งต้องกำหนดพารามิเตอร์ register_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "ผลิตภัณฑ์โฮสติ้งต้องกำหนดพารามิเตอร์ transfer_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "ผลิตภัณฑ์โฮสติ้งต้องกำหนดพารามิเตอร์ transfer_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "ผลิตภัณฑ์โฮสติ้งต้องมีการกำหนดค่าโดเมน"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "ไม่มี ID"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "ต้องระบุ ID"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "ไม่ได้ส่ง ID"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "ไม่ได้ส่ง ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "ไม่มี ID ของใบแจ้งหนี้"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของใบแจ้งหนี้"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "ไม่ได้ส่งแฮชของใบแจ้งหนี้"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของรายการในใบแจ้งหนี้"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของภาษา"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของรายการบันทึก"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของข้อความ"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "ไม่ได้ส่งหัวข้อข้อความ"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "ไม่ได้ส่งชื่อ"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "ต้องระบุการยืนยันรหัสผ่านใหม่"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "ต้องระบุการยืนยันรหัสผ่านใหม่"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "ต้องระบุรหัสผ่านใหม่"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "ต้องระบุรหัสผ่านใหม่"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "ไม่ได้ระบุแฮช"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "ไม่มี ID ของบันทึก"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "ไม่มีบันทึก"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของการแจ้งเตือน"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของตัวเลือก"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของกลุ่มตัวเลือก"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "ไม่ได้ส่ง ID ของคำสั่งซื้อ (order_id)"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "ไม่มี ID ของคำสั่งซื้อ"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "ไม่มีชื่อ ID ของคำสั่งซื้อ"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของคำสั่งซื้อ"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "ไม่ได้ส่ง ID ของคำสั่งซื้อ"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของแถวประวัติคำสั่งซื้อ"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "ต้องระบุ ID ของคำสั่งซื้อ"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "ไม่ได้ส่งสถานะคำสั่งซื้อ"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "ไม่ได้ส่งพารามิเตอร์ mod"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "ไม่ได้ส่งพารามิเตอร์ \"ext\""
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "ไม่มีพารามิเตอร์ ext"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "ต้องระบุการยืนยันรหัสผ่าน"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "ต้องระบุรหัสผ่าน"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "ไม่ได้ส่งรหัสผ่าน"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของช่องทางการชำระเงิน"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "ไม่มีรหัสของช่องทางการชำระเงิน"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "ไม่ได้ส่งพารามิเตอร์ระยะเวลา"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "เลือกวันที่และเวลา"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "ต้องระบุ \"ปักหมุด\""
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "กรุณาใส่หัวข้อ"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "กรุณาใส่ที่อยู่อีเมลของคุณ"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "กรุณาใส่ชื่อของคุณ"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของโพสต์"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "ไม่มีชื่อของค่าที่ตั้งไว้ล่วงหน้า"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "ดูตัวอย่างการอัปเดตก่อน"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "ไม่มี ID ของผลิตภัณฑ์"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของผลิตภัณฑ์"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "ผลิตภัณฑ์ยังกำหนดค่าไม่ครบ"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "ไม่มี ID ของโปรโมชัน"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของโปรโมชัน"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "ไม่มีรหัสโปรโมชัน"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "ไม่ได้ส่งรหัสโปรโมชัน"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "ไม่มีประเภทโปรโมชัน"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "ไม่มีค่าโปรโมชัน"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "ไม่ได้ส่งแฮชของใบเสนอราคา"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "ต้องระบุอีเมลผู้รับ"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "ต้องระบุชื่อผู้รับ"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของการเปลี่ยนเส้นทาง"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "ไม่ได้ส่งเส้นทางของการเปลี่ยนเส้นทาง"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "ไม่ได้ส่งปลายทางของการเปลี่ยนเส้นทาง"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "ไม่มี ID ของผู้รับจดทะเบียน"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "ไม่มีรหัสของผู้รับจดทะเบียน"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "ไม่มีราคาจดทะเบียน"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "ไม่มีราคาต่ออายุ"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของคำขอ"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น address1"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น city"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น contact"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น country"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น email"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น first_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น last_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น phone"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น phone_cc"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น postcode"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "ไม่มีฟิลด์ที่จำเป็น state"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "ไม่มี SLD"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "ไม่ได้ส่งขอบเขต"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของข้อมูลลับ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "เลือกคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "เลือกคำขอสนับสนุนที่จะรวม"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "ต้องระบุอีเมลผู้ส่ง"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "ต้องระบุชื่อผู้ส่ง"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "ไม่ได้ส่ง IP ของเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "ไม่ได้ระบุตัวจัดการเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "ไม่ได้ส่งชื่อเซิร์ฟเวอร์"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของการตั้งค่า"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "ไม่มี ID ของตะกร้าสินค้า"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของกลุ่มพนักงาน"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของพนักงาน"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "ไม่มีชื่อไฟล์ที่จัดเก็บในการกำหนดค่าผลิตภัณฑ์"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "ต้องระบุชื่อซับโดเมน"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของการสมัครสมาชิก"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "ไม่ได้ส่งสกุลเงินของการสมัครสมาชิก"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "ไม่ได้ส่ง sID ของการสมัครสมาชิก"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "ไม่มี TLD"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "ไม่มี ID ผู้รับจดทะเบียนของ TLD"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "ไม่มี ID ของภาษี"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของภาษี"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "ไม่มีชื่อภาษี"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "ไม่มีอัตราภาษี"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "อัตราภาษีหายไปหรือไม่ถูกต้อง"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "ไม่ได้ส่งรหัสเทมเพลต"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "ไม่ได้ส่งรหัสธีม"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "ไม่มี ID ของคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "ไม่ได้ส่ง ID ของคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "ต้องระบุเนื้อหาของคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "ต้องระบุแฮชของคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "ไม่มี ID ของข้อความในคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "ไม่มีเนื้อหาของข้อความในคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "ต้องระบุหัวข้อของคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "ต้องระบุ support_helpdesk_id ของคำขอสนับสนุน"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "ต้องระบุ support_helpdesk_id ของคำขอสนับสนุน"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "ไม่ได้ส่งหัวเรื่อง"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "ไม่มี ID ของธุรกรรม"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "ต้องระบุ ID ของธุรกรรม"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "ต้องระบุชื่อโดเมนที่จะโอน (SLD)"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "ต้องระบุประเภทโดเมนที่จะโอน (TLD)"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "ไม่มีราคาโอน"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "ไม่ได้ส่งประเภท"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "ไม่ได้ส่งกฎการอัปเกรด"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "ต้องระบุ ID ของการตรวจสอบที่จะรัน"
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "ต้องระบุชื่อ"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "ต้องระบุที่อยู่ IP ที่จะค้นหา"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "ต้องระบุที่อยู่ IP ที่จะรีเซ็ต"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "ไม่มี plan_id"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "ไม่มี ticket_ID"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "คำขอหมดเวลาหลังจาก :seconds วินาที"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Details"
+msgstr "รายละเอียด"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Domain Secret"
+msgstr "ความลับของโดเมน"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Hostname"
+msgstr "ชื่อโฮสต์"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Letter"
+msgstr "จดหมาย"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Turnstile Site Key"
+msgstr "คีย์ไซต์ Turnstile"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "hCaptcha Site Key"
+msgstr "คีย์ไซต์ hCaptcha"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "ต้องการลบฟิลด์ที่กำหนดเองนี้ใช่หรือไม่?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "ต้องการลบแบบฟอร์มนี้ใช่หรือไม่?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "ลบแบบฟอร์มหรือไม่?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "ลบฟิลด์หรือไม่?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "ดูตัวแปรของเซิร์ฟเวอร์ที่บันทึกไว้พร้อมข้อมูล callback"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "รหัสผ่านสำหรับเชื่อมต่อกับเซิร์ฟเวอร์"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "ดูเนื้อหาดิบของคำขอที่ได้รับจากช่องทางการชำระเงิน"

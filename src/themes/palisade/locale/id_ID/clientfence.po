@@ -2562,7 +2562,7 @@ msgstr "Halaman klien"
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Client secret"
-msgstr "Client secret"
+msgstr "Rahasia klien"
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Client sign-up is off: “Disable New Signups” is on in"
@@ -5058,7 +5058,7 @@ msgstr "Item Header"
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/modules/Support/templates/client/mod_support_ticket.html.twig …
 msgid "Help Desk"
-msgstr "Help Desk"
+msgstr "Pusat Bantuan"
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Help desk: %name%"
@@ -10030,7 +10030,7 @@ msgstr "Ditampilkan dalam :currency dengan kurs hari ini. Kirimkan bukti pembaya
 
 #: src/themes/palisade/config/settings.html.twig
 msgid "Sidebar"
-msgstr "Sidebar"
+msgstr "Bilah samping"
 
 #: src/themes/palisade/html/layout_default.html.twig
 msgid "Sign Out"
@@ -21612,3 +21612,1527 @@ msgstr "Minta dukungan kami menghapus akun Anda. Kami menghapus data pribadi And
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Faktur belum dibayar milik gateway ini: :count. Klien membayarnya lewat gateway yang Anda pilih."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "Kode mata uang portal ini: USD (dolar AS), EUR (euro) atau GBP (pound Inggris). Faktur dalam mata uang lain ditagihkan dalam mata uang ini dengan kurs portal, seperti \"Convert To For Processing\" milik WHMCS. Kosong: setiap faktur ditagihkan dalam mata uangnya sendiri. [Cara menyiapkan PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "Kunci API"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "Token API"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash atau token API"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "ID kunci akses"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash atau token API WHM untuk terhubung ke server"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "Setelah pesanan gratis yang diperpanjang (uji coba gratis), klien tanpa metode pembayaran tersimpan diarahkan ke PayPal untuk menyiapkan pembayaran otomatis."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "Token akses dari panel; izinkan alamat IP server ini padanya"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "Terjadi kesalahan saat menampilkan widget ini."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "Selain kartu, klien dapat menyimpan rekening bank untuk pembayaran otomatis: BECS Direct Debit untuk AUD, SEPA Direct Debit untuk EUR, dan Bacs Direct Debit untuk GBP. Aktifkan metodenya lebih dulu di dasbor Stripe Anda. Pembayaran bank butuh beberapa hari untuk selesai: sementara itu faktur menampilkan \"Pembayaran tertunda\"."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Bundel (tidak diimpor)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Saldo kredit klien"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Klien juga dapat membayar faktur dengan PayPal tanpa menyiapkan pembayaran otomatis."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Klien dapat menyimpan akun PayPal mereka saat membayar atau di halaman Metode pembayaran, dan faktur mereka lalu dibayar otomatis, seperti dengan kartu tersimpan. Perlu kunci REST API dan Vault (\"Save payment methods\") pada aplikasi REST PayPal Anda, yang hanya ditawarkan PayPal di beberapa negara."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Klien dapat menyiapkan pembayaran otomatis di halaman Metode pembayaran tanpa membayar faktur."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Klien yang kreditnya cocok"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Konfirmasi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "Konversi untuk pemrosesan (opsional):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Mata uang untuk pesanan Dynadot, misalnya USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar selalu merespons dengan hasil positif. Berguna jika tidak ada registrar lain yang cocok."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Manajer server kustom"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Gateway pembayaran kustom memungkinkan Anda memberi petunjuk cara klien membayar faktur. Semua detail sistem, klien, pesanan, dan faktur dapat dicetak. Kode HTML didukung."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Harga domain"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "Log email"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "Email untuk mengirim notifikasi perubahan domain"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Masukkan teks untuk informasi pembayaran tunggal"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Masukkan teks untuk informasi langganan"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "Masukkan email PayPal Anda untuk mulai menerima pembayaran lewat PayPal."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "Gagal menyalin ke papan klip. Pilih teksnya dan salin secara manual."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Isi email klien di PayPal:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Pesanan gratis:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "Dari Enom: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "Dari NameSilo: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "Dari portal Synergy Wholesale: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Dari halaman yang sama."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Server hosting (dimatikan)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "ID kunci akses yang Anda buat di Hestia."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Kunci API Internetbs"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Kata sandi API Internetbs"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Konfigurasi API tidak valid"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Biarkan nonaktif: ClientFence memperpanjang domain saat faktur perpanjangannya dibayar. Jika aktif, NameSilo juga memperpanjangnya dari akun Anda."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Pemblokiran lisensi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "Kata sandi API live:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "Tanda tangan API live:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "Nama pengguna API live:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Kunci publikasi (live):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "ID klien REST API live (opsional):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Rahasia REST API live:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Kunci rahasia (live):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Rahasia penandatanganan webhook (live):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "Logo di halaman PayPal (opsional):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Mengelola domain di Dynadot lewat API3. Tambahkan alamat IP server ini ke daftar izin API di Dynadot (Tools > API) dan jaga saldo akun yang cukup untuk pendaftaran dan perpanjangan."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Mengelola domain di Enom lewat API reseller-nya. Izinkan alamat IP server ini di pengaturan API Enom dan jaga dana akun yang cukup untuk pendaftaran dan perpanjangan. Perpanjangan otomatis Enom nonaktif untuk setiap domain: ClientFence memperpanjang domain saat faktur perpanjangannya dibayar. Dengan mode uji aktif, masukkan ID reseller dan token API akun uji Enom Anda (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Mengelola domain di INWX lewat API DomRobot. Gunakan akun INWX (atau sub-akun) tanpa login dua faktor dan jaga dana akun yang cukup untuk pendaftaran dan perpanjangan. Domain didaftarkan agar kedaluwarsa kecuali diperpanjang ClientFence, yang dilakukannya saat faktur perpanjangan dibayar. Dengan mode uji aktif, masukkan nama pengguna dan kata sandi akun uji INWX OT&E Anda."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Mengelola domain di Internetbs lewat API"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Mengelola domain di NameSilo lewat API-nya. Buat kunci API di NameSilo (Account > API Manager), izinkan alamat IP server ini di sana, dan jaga dana akun yang cukup untuk pendaftaran dan perpanjangan. Di API Manager, matikan juga pemulihan lewat renewDomain: ClientFence menolak memperpanjang domain dalam masa pemulihan, tetapi NameSilo bila tidak akan memulihkannya dengan biaya pemulihan."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Mengelola domain di Namecheap lewat API. Namecheap membutuhkan IP server Anda agar dapat bekerja."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Mengelola domain di NetEarthOne lewat API. NetEarthOne membutuhkan IP server Anda agar dapat bekerja. Masuk ke panel kontrol NetEarthOne (URL ada di email yang Anda terima saat mendaftar), lalu buka Settings > API dan masukkan alamat IP server tempat ClientFence terpasang untuk mengotorisasinya mengakses API."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Mengelola domain di Openprovider lewat API. Gunakan pengguna API Openprovider, izinkan alamat IP server ini untuknya, dan jaga dana akun yang cukup untuk pendaftaran dan perpanjangan. Perpanjangan otomatis Openprovider nonaktif untuk setiap domain: ClientFence memperpanjang domain saat faktur perpanjangannya dibayar. Dengan mode uji aktif, masukkan nama pengguna dan kata sandi akun sandbox Openprovider Anda."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Mengelola domain di Resell.biz lewat API. Resell.biz membutuhkan IP server Anda agar dapat bekerja. Masuk ke panel kontrol Resell.biz (URL ada di email yang Anda terima saat mendaftar), lalu buka Settings > API dan masukkan alamat IP server tempat ClientFence terpasang untuk mengotorisasinya mengakses API."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Mengelola domain di ResellerClub lewat API. ResellerClub membutuhkan IP server Anda agar dapat bekerja. Masuk ke panel kontrol ResellerClub (URL ada di email yang Anda terima saat mendaftar), lalu buka Settings > API dan masukkan alamat IP server tempat ClientFence terpasang untuk mengotorisasinya mengakses API."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Mengelola domain di ResellerID lewat API. ResellerID membutuhkan IP server Anda agar dapat bekerja. Masuk ke panel kontrol ResellerID (URL ada di email yang Anda terima saat mendaftar), lalu buka Settings > API dan masukkan alamat IP server tempat ClientFence terpasang untuk mengotorisasinya mengakses API."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Mengelola domain di Synergy Wholesale lewat API. Tambahkan alamat IP server ini ke alamat IP yang diizinkan di portal Synergy Wholesale (Account Settings > API Information) dan jaga saldo akun yang cukup untuk pendaftaran dan perpanjangan."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Pratinjau Markdown"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Modul:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "Perpanjangan otomatis NameSilo"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "ID reseller Namecheap. Jika tidak punya, biarkan kosong."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Nama pengguna Namecheap"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "Perlu kunci REST API, dengan \"Transaction search\" diaktifkan untuk aplikasi REST PayPal."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "Kunci API NetEarthOne"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "ID reseller NetEarthOne"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Masalah jaringan"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "Di halaman faktur, klien dengan perjanjian penagihan dapat langsung membayar tanpa pergi ke PayPal."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "Profil pembayaran NameSilo terverifikasi, opsional. Kosong: dana akun yang membayar."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "ID organisasi"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Kata sandi / kunci login"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "Kata sandi atau kunci login untuk terhubung ke server"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Bayar sekali tanpa perjanjian:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Bayar dengan perjanjian tersimpan:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "Perjanjian penagihan PayPal Auto-Pay"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "Saldo PayPal di dasbor:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "Perjanjian penagihan PayPal: klien setuju sekali, lalu faktur mereka dibayar otomatis dari akun PayPal mereka. Perlu detail API NVP/SOAP akun bisnis PayPal dengan Reference Transactions aktif (minta PayPal mengaktifkannya)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "Alamat email PayPal untuk pembayaran"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "ID pembayaran"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Kunci produksi dari Dynadot: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Produk dan harga"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "Alamat IP publik server ini. Pastikan IP ini masuk daftar putih di pengaturan NameCheap Anda."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Kunci API Resell.biz"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "ID reseller Resell.biz"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "ID reseller"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID reseller. Anda dapat menemukannya di panel kontrol NetEarthOne: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID reseller. Anda dapat menemukannya di panel kontrol Resell.biz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID reseller. Anda dapat menemukannya di panel kontrol ResellerClub: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID reseller. Anda dapat menemukannya di panel kontrol ResellerID: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "Kunci API ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ID reseller ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "Kunci API ResellerID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ID reseller ResellerID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Kunci API sandbox"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Kata sandi API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Tanda tangan API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Nama pengguna API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "ID klien REST API sandbox (opsional):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Rahasia REST API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Akun PayPal tersimpan:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Rekening bank tersimpan:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Kunci rahasia"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key untuk kunci akses yang Anda buat di Hestia"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "Kunci terpisah untuk api-sandbox.dynadot.com, hanya dipakai saat mode uji aktif."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "Kunci terpisah untuk sandbox.namesilo.com, hanya dipakai saat mode uji aktif."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "Alamat IP publik server"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "Siapkan di halaman Metode pembayaran:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Aturan pajak"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Template:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Kunci publikasi (uji):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Kunci rahasia (uji):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Rahasia penandatanganan webhook (uji):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "Alamat (https) gambar yang ditampilkan PayPal di halaman pembayarannya. Kosong: logo perusahaan Anda, jika berformat PNG, JPG, atau GIF."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "ID klien dan rahasia aplikasi REST PayPal (developer.paypal.com, Apps & Credentials). Dengan keduanya, pengembalian dana dikirim ke PayPal dan langganan PayPal dibatalkan dari ClientFence."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "Nama pengguna yang Anda pakai untuk masuk ke panel kontrol Namecheap."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Tipe registrar ini mengirim notifikasi ke email yang diberikan tentang peristiwa pengelolaan domain. Misalnya, saat klien mendaftarkan domain baru, email berisi detail domain akan dikirim ke Anda. Anda lalu bertanggung jawab mendaftarkan domain di registrar yang sebenarnya."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Lampiran tiket disalin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Umpan balik tiket"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "UUID organisasi tempat token API berada (di alamat panel)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "Gunakan pencarian RDAP Registry untuk memeriksa ketersediaan domain"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Nama pengguna untuk terhubung ke server"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "Nama pengguna yang dipakai untuk terhubung ke server"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "Lisensi WHMCS (kunci lisensi, log pemeriksaan, dan pemblokiran)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "Anda mengautentikasi ke API Stripe dengan menyertakan salah satu kunci API Anda dalam permintaan. Anda dapat mengelola kunci API dari akun Anda."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "Anda dapat menemukannya di panel kontrol Namecheap."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "Anda dapat menemukannya di panel kontrol NetEarthOne: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "Anda dapat menemukannya di panel kontrol Resell.biz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "Anda dapat menemukannya di panel kontrol ResellerClub: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "Anda dapat menemukannya di panel kontrol ResellerID: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "ID akun Enom Anda (nama login)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "Nama pengguna INWX Anda."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Nama pengguna API Openprovider Anda."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Komentar Anda"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "Parameter \"key\" tidak dikirim"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "Kunci \"mod\" tidak ada"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "ID addon tidak dikirim"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "Periode addon tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Jumlah tidak ada"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Jumlah wajib diisi"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Apakah Anda mendaftarkan domain baru atau mentransfer yang sudah ada? Parameter action tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "ID artikel tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "ID kategori artikel tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "Judul artikel tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "ID kategori balasan siap pakai tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Judul kategori balasan siap pakai tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "ID balasan siap pakai tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "ID kategori balasan siap pakai tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Judul balasan siap pakai tidak ada"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "ID kartu tidak dikirim"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "ID item keranjang tidak dikirim"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "ID kategori tidak dikirim"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "Judul kategori wajib diisi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "Judul kategori tidak dikirim"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Pilih jenis data rahasia"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Pilih penilaian"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Pilih balasan"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Pilih siklus penagihan"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Pilih produk baru"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Pilih kapan layanan berakhir"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "ID klien tidak ada"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "ID klien perlu diatur di pengaturan pengirim email massal."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "ID klien wajib diisi"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "ID klien tidak dikirim"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "Kode wajib diisi"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "Konten tidak dikirim"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Kode mata uang tidak ada"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "Kode mata uang tidak dikirim"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "Kata sandi saat ini wajib diisi"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "Kata sandi saat ini wajib diisi"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "ID halaman kustom tidak dikirim"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "ID halaman kustom tidak dikirim"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Konten halaman kustom tidak dikirim"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Slug halaman kustom tidak dikirim"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Judul halaman kustom tidak dikirim"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "Deskripsi wajib diisi"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "TLD domain wajib diisi."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Aksi domain tidak ada"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "Ekstensi domain wajib diisi."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "Nama domain wajib diisi."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Periode registrasi domain tidak ada. Periksa ketersediaan domain sebelum melanjutkan."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Parameter sld registrasi domain tidak ada."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Parameter tld registrasi domain tidak ada."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "Aturan downgrade tidak dikirim"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "ID email tidak dikirim"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "Alamat email tidak dikirim"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "Konten email wajib diisi"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "Email wajib diisi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "Subjek email wajib diisi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "Kode template email wajib diisi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "Kode template email tidak dikirim"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "Konten template email wajib diisi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "Subjek template email wajib diisi"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "ID acara tidak dikirim"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "ID ekstensi tidak dikirim"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "Tipe ekstensi tidak dikirim"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "ID aksi yang gagal tidak dikirim"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "ID bidang tidak dikirim"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "ID file tidak ada"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Nama file tidak ada di konfigurasi produk"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "Nama depan wajib diisi"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "Nama depan wajib diisi"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "ID formulir tidak dikirim"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Nama formulir tidak dikirim"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Nama formulir tidak diberikan"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Tipe formulir tidak dikirim"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "Format wajib diisi"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "ID gateway tidak dikirim"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "ID grup tidak ada"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "Nama grup tidak dikirim"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Judul grup tidak ada"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "Hash wajib diisi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "ID pusat bantuan tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "ID pusat bantuan tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Judul pusat bantuan tidak ada"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "Acara hook tidak dikirim"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "ID paket hosting tidak dikirim"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "Nama paket hosting tidak dikirim"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "Produk hosting harus memiliki domain dasar subdomain yang dikonfigurasi"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "Produk hosting harus memiliki parameter register_sld yang ditentukan"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "Produk hosting harus memiliki parameter register_tld yang ditentukan"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "Produk hosting harus memiliki parameter transfer_sld yang ditentukan"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "Produk hosting harus memiliki parameter transfer_tld yang ditentukan"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "Produk hosting harus memiliki konfigurasi domain"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "ID tidak ada"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "ID wajib diisi"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "ID tidak dikirim"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "ID tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "ID faktur tidak ada"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "ID faktur tidak dikirim"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "Hash faktur tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "ID item faktur tidak dikirim"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "ID bahasa tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "ID entri log tidak dikirim"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "ID pesan tidak dikirim"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Subjek pesan tidak dikirim"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "Nama tidak dikirim"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Konfirmasi kata sandi baru wajib diisi"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Konfirmasi kata sandi baru wajib diisi"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Kata sandi baru wajib diisi"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Kata sandi baru wajib diisi"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Hash tidak diberikan"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "ID catatan tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Catatan tidak ada"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "ID notifikasi tidak dikirim"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "ID opsi tidak dikirim"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "ID grup opsi tidak dikirim"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "ID order (order_id) tidak dikirim"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "ID order tidak ada"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Nama ID order tidak ada"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "ID order tidak dikirim"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "ID order tidak dikirim"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "ID baris riwayat order tidak dikirim"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "ID order wajib diisi"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "Status order tidak dikirim"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "Parameter mod tidak dikirim"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "Parameter \"ext\" tidak dikirim"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "Parameter ext tidak ada"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "Konfirmasi kata sandi wajib diisi"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "Kata sandi wajib diisi"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "Kata sandi tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "ID gateway pembayaran tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Kode gateway pembayaran tidak ada"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Parameter periode tidak dikirim"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Pilih tanggal dan waktu"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "\"Disematkan\" wajib diisi"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Masukkan subjek"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "Masukkan alamat email Anda"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Masukkan nama Anda"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "ID postingan tidak dikirim"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Nama preset tidak ada"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Tinjau pembaruan terlebih dahulu"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "ID produk tidak ada"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "ID produk tidak dikirim"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "Produk belum dikonfigurasi lengkap."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "ID promo tidak ada"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "ID promo tidak dikirim"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Kode promo tidak ada"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "Kode promo tidak dikirim"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Tipe promo tidak ada"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Nilai promo tidak ada"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Hash penawaran tidak dikirim"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "Email penerima wajib diisi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "Nama penerima wajib diisi"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "ID pengalihan tidak dikirim"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Jalur pengalihan tidak dikirim"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Tujuan pengalihan tidak dikirim"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "ID registrar tidak ada"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Kode registrar tidak ada"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Harga registrasi tidak ada"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Harga perpanjangan tidak ada"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "ID permintaan tidak dikirim"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Bidang wajib address1 tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Bidang wajib city tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Bidang wajib contact tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Bidang wajib country tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Bidang wajib email tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Bidang wajib first_name tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Bidang wajib last_name tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Bidang wajib phone tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Bidang wajib phone_cc tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Bidang wajib postcode tidak ada"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Bidang wajib state tidak ada"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "SLD tidak ada"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "Cakupan tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "ID data rahasia tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Pilih tiket"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Pilih tiket yang akan digabung"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "Email pengirim wajib diisi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "Nama pengirim wajib diisi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "ID server tidak dikirim"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "IP server tidak dikirim"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "Manajer server tidak ditentukan"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "Nama server tidak dikirim"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "ID setup tidak dikirim"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "ID keranjang belanja tidak ada"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "ID grup staf tidak dikirim"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "ID anggota staf tidak dikirim"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Nama file tersimpan tidak ada di konfigurasi produk"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Nama subdomain wajib diisi."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "ID langganan tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Mata uang langganan tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "sID langganan tidak dikirim"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "TLD tidak ada"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "ID registrar TLD tidak ada"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "ID pajak tidak ada"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "ID pajak tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Nama pajak tidak ada"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Tarif pajak tidak ada"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Tarif pajak tidak ada atau tidak valid"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "Kode template tidak dikirim"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "Kode tema tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "ID tiket tidak ada"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "ID tiket tidak dikirim"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "Konten tiket wajib diisi"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "Hash tiket wajib diisi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "ID pesan tiket tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Konten pesan tiket tidak ada"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "Subjek tiket wajib diisi"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "support_helpdesk_id tiket wajib diisi"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "support_helpdesk_id tiket wajib diisi"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "Judul tidak dikirim"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "ID transaksi tidak ada"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "ID transaksi wajib diisi"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Nama domain yang ditransfer (SLD) wajib diisi."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Tipe domain yang ditransfer (TLD) wajib diisi."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Harga transfer tidak ada"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "Tipe tidak dikirim"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "Aturan upgrade tidak dikirim"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "Anda harus menentukan ID pemeriksaan untuk dijalankan."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "Anda harus menentukan judul"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "Anda harus menentukan alamat IP untuk dicari."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "Anda harus menentukan alamat IP untuk direset."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "plan_id tidak ada"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "ticket_ID tidak ada"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "Permintaan habis waktu setelah :seconds detik"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Client Area"
+msgstr "Area Klien"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Post"
+msgstr "Postingan"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Radio"
+msgstr "Tombol radio"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Update ClientFence"
+msgstr "Perbarui ClientFence"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Yakin ingin menghapus bidang kustom ini?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Yakin ingin menghapus formulir ini?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Hapus formulir?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Hapus bidang?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Lihat variabel server yang dicatat bersama data callback."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Kata sandi untuk terhubung ke server"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Tinjau isi mentah permintaan yang diterima dari gateway pembayaran."

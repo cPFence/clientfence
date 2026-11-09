@@ -16,23 +16,23 @@ class Server_Manager_Hestia extends Server_Manager
     public static function getForm(): array
     {
         return [
-            'label' => 'Hestia Control Panel',
+            'label' => __trans('Hestia Control Panel'),
             'form' => [
                 'credentials' => [
                     'fields' => [
                         [
                             'name' => 'username',
                             'type' => 'text',
-                            'label' => 'Access Key ID',
-                            'placeholder' => 'ID for the access key you\'ve generated in Hestia.',
+                            'label' => __trans('Access Key ID'),
+                            'placeholder' => __trans('ID for the access key you\'ve generated in Hestia.'),
                             'required' => true,
                             'secret' => true,
                         ],
                         [
                             'name' => 'accesshash',
                             'type' => 'text',
-                            'label' => 'Secret Key',
-                            'placeholder' => 'Secret key for the access key you\'ve generated in Hestia',
+                            'label' => __trans('Secret Key'),
+                            'placeholder' => __trans('Secret key for the access key you\'ve generated in Hestia'),
                             'required' => true,
                             'secret' => true,
                         ],

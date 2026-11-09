@@ -34,22 +34,22 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
     public static function getForm(): array
     {
         return [
-            'label' => 'Enhance (ClientFence)',
+            'label' => __trans('Enhance (ClientFence)'),
             'form' => [
                 'credentials' => [
                     'fields' => [
                         [
                             'name' => 'username',
                             'type' => 'text',
-                            'label' => 'Organization ID',
-                            'placeholder' => 'UUID of the organization the API token belongs to (in the panel address)',
+                            'label' => __trans('Organization ID'),
+                            'placeholder' => __trans('UUID of the organization the API token belongs to (in the panel address)'),
                             'required' => true,
                         ],
                         [
                             'name' => 'accesshash',
                             'type' => 'text',
-                            'label' => 'API token',
-                            'placeholder' => 'An access token from the panel; allow this server\'s IP address on it',
+                            'label' => __trans('API token'),
+                            'placeholder' => __trans('An access token from the panel; allow this server\'s IP address on it'),
                             'required' => true,
                             'secret' => true,
                         ],

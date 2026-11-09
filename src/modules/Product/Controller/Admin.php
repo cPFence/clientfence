@@ -31,7 +31,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
             'group' => [
                 'index' => 401,
                 'location' => 'products',
-                'label' => 'Products',
+                'label' => __trans('Products'),
                 'uri' => $this->di['url']->adminLink('products'),
                 'class' => 'photo',
             ],

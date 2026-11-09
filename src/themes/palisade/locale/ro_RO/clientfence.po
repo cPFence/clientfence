@@ -13303,7 +13303,7 @@ msgstr "Helpdesk-ul nu a fost găsit."
 
 #: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php src/modules/Support/Entity/SupportTicket.php …
 msgid "Helpdesk invalid"
-msgstr "Helpdesk invalid"
+msgstr "Centru de asistență invalid"
 
 #: src/modules/Servicehosting/Panel/Panels.php
 msgid "Hosting account not found"
@@ -20980,3 +20980,1527 @@ msgstr "Cereți suportului nostru să vă șteargă contul. Ștergem datele dvs.
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Facturi neplătite ale acestui gateway: :count. Clienții le plătesc prin gateway-ul ales de dvs."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "Un cod de monedă al acestui portal: USD (dolar american), EUR (euro) sau GBP (liră sterlină). Facturile în alte monede sunt taxate în aceasta la cursurile de schimb ale portalului, ca „Convert To For Processing” din WHMCS. Gol: fiecare factură este taxată în propria monedă. [Cum configurați PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "Cheie API"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "Token API"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash sau token API"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "ID cheie de acces"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash sau token API WHM pentru conectarea la server"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "După o comandă gratuită care se reînnoiește (o perioadă de probă gratuită), un client fără metodă de plată salvată este trimis la PayPal pentru a configura plățile automate."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "Un token de acces din panou; permiteți în el adresa IP a acestui server"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "A apărut o eroare la afișarea acestui widget."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "Pe lângă carduri, clienții pot salva un cont bancar pentru plăți automate: debitare directă BECS pentru AUD, debitare directă SEPA pentru EUR și debitare directă Bacs pentru GBP. Activați mai întâi metoda în tabloul de bord Stripe. O plată bancară durează câteva zile până se finalizează: între timp factura arată „Plată în așteptare”."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Pachete (neimportate)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Solduri de credit ale clienților"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Clienții pot plăti o factură și cu PayPal, fără a configura plăți automate."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Clienții își pot salva contul PayPal la plată sau pe pagina „Metode de plată”, iar facturile lor sunt apoi plătite automat, ca la cardurile salvate. Necesită cheile REST API și Vault („Save payment methods”) în aplicația dvs. PayPal REST, pe care PayPal o oferă doar în unele țări."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Clienții pot configura plăți automate pe pagina „Metode de plată”, fără a plăti o factură."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Clienți al căror credit corespunde"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Confirmă"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "Convertește pentru procesare (opțional):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Moneda pentru comenzile Dynadot, de exemplu USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar răspunde mereu pozitiv. Util dacă niciun alt registrator nu se potrivește."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Manager de server personalizat"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Gateway-ul de plată personalizat vă permite să dați instrucțiuni despre cum poate clientul să plătească factura. Pot fi tipărite toate detaliile de sistem, client, comandă și factură. Codul HTML este acceptat."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Prețuri domenii"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "Jurnal e-mailuri"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "E-mail pentru trimiterea notificărilor de modificare a domeniului"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Introduceți textul pentru informațiile despre plata unică"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Introduceți textul pentru informațiile despre abonament"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "Introduceți e-mailul PayPal pentru a începe să acceptați plăți prin PayPal."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "Copierea în clipboard a eșuat. Selectați textul și copiați-l manual."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Completați e-mailul clientului la PayPal:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Comenzi gratuite:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "De la Enom: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "De la NameSilo: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "Din portalul Synergy Wholesale: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Din aceeași pagină."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Servere de hosting (oprite)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "ID-ul cheii de acces generate în Hestia."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Cheie API Internetbs"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Parolă API Internetbs"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Configurare API nevalidă"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Lăsați dezactivat: ClientFence reînnoiește un domeniu când factura de reînnoire este plătită. Activat, NameSilo îl reînnoiește și din contul dvs."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Interdicții de licență"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "Parolă API live:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "Semnătură API live:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "Nume de utilizator API live:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Cheie publicabilă live:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "ID client REST API live (opțional):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Secret REST API live:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Cheie secretă live:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Secret de semnare webhook live:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "Logo pe paginile PayPal (opțional):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Gestionează domenii la Dynadot prin API3. Adăugați adresa IP a acestui server în lista de permisiuni API de la Dynadot (Tools > API) și păstrați în cont un sold suficient pentru înregistrări și reînnoiri."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Gestionează domenii la Enom prin API-ul pentru revânzători. Permiteți adresa IP a acestui server în setările API Enom și păstrați în cont fonduri suficiente pentru înregistrări și reînnoiri. Reînnoirea automată Enom este dezactivată pentru fiecare domeniu: ClientFence reînnoiește un domeniu când factura de reînnoire este plătită. Cu modul de test activat, introduceți ID-ul de revânzător și tokenul API ale contului dvs. de test Enom (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Gestionează domenii la INWX prin API-ul DomRobot. Folosiți un cont INWX (sau subcont) fără autentificare în doi pași și păstrați în cont fonduri suficiente pentru înregistrări și reînnoiri. Domeniile sunt înregistrate să expire, dacă nu le reînnoiește ClientFence, ceea ce face când factura de reînnoire este plătită. Cu modul de test activat, introduceți numele de utilizator și parola contului dvs. de test INWX OT&E."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Gestionează domenii la Internetbs prin API"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Gestionează domenii la NameSilo prin API. Creați cheia API în NameSilo (Account > API Manager), permiteți acolo adresa IP a acestui server și păstrați în cont fonduri suficiente pentru înregistrări și reînnoiri. În API Manager dezactivați și restaurările prin renewDomain: ClientFence refuză să reînnoiască un domeniu aflat în perioada de restaurare, dar NameSilo l-ar restaura altfel cu taxa de restaurare."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Gestionează domenii la Namecheap prin API. Namecheap are nevoie de IP-ul serverului dvs. pentru a funcționa."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Gestionează domenii la NetEarthOne prin API. NetEarthOne are nevoie de IP-ul serverului dvs. pentru a funcționa. Conectați-vă la panoul de control NetEarthOne (adresa URL e în e-mailul primit la înscriere), mergeți la Settings > API și introduceți adresa IP a serverului pe care este instalat ClientFence, pentru a-l autoriza să acceseze API-ul."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Gestionează domenii la Openprovider prin API. Folosiți un utilizator API Openprovider, permiteți pentru el adresa IP a acestui server și păstrați în cont fonduri suficiente pentru înregistrări și reînnoiri. Reînnoirea automată Openprovider este dezactivată pentru fiecare domeniu: ClientFence reînnoiește un domeniu când factura de reînnoire este plătită. Cu modul de test activat, introduceți numele de utilizator și parola contului dvs. sandbox Openprovider."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Gestionează domenii la Resell.biz prin API. Resell.biz are nevoie de IP-ul serverului dvs. pentru a funcționa. Conectați-vă la panoul de control Resell.biz (adresa URL e în e-mailul primit la înscriere), mergeți la Settings > API și introduceți adresa IP a serverului pe care este instalat ClientFence, pentru a-l autoriza să acceseze API-ul."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Gestionează domenii la ResellerClub prin API. ResellerClub are nevoie de IP-ul serverului dvs. pentru a funcționa. Conectați-vă la panoul de control ResellerClub (adresa URL e în e-mailul primit la înscriere), mergeți la Settings > API și introduceți adresa IP a serverului pe care este instalat ClientFence, pentru a-l autoriza să acceseze API-ul."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Gestionează domenii la ResellerID prin API. ResellerID are nevoie de IP-ul serverului dvs. pentru a funcționa. Conectați-vă la panoul de control ResellerID (adresa URL e în e-mailul primit la înscriere), mergeți la Settings > API și introduceți adresa IP a serverului pe care este instalat ClientFence, pentru a-l autoriza să acceseze API-ul."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Gestionează domenii la Synergy Wholesale prin API. Adăugați adresa IP a acestui server la adresele IP permise din portalul Synergy Wholesale (Account Settings > API Information) și păstrați în cont un sold suficient pentru înregistrări și reînnoiri."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Previzualizare Markdown"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Modul:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "Reînnoire automată NameSilo"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "ID de revânzător Namecheap. Dacă nu aveți unul, lăsați gol."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Nume de utilizator Namecheap"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "Necesită cheile REST API, cu „Transaction search” activat pentru aplicația PayPal REST."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "Cheie API NetEarthOne"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "ID de revânzător NetEarthOne"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Probleme de rețea"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "Pe pagina facturii, un client cu un acord de facturare poate plăti imediat, fără a merge la PayPal."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "Profil de plată NameSilo verificat, opțional. Gol: plătesc fondurile din cont."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "ID organizație"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Parolă / cheie de autentificare"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "Parola sau cheia de autentificare pentru conectarea la server"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Plătiți o dată fără acord:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Plătiți cu acordul salvat:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "Acorduri de facturare PayPal Auto-Pay"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "Sold PayPal în tabloul de bord:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "Acorduri de facturare PayPal: clienții sunt de acord o singură dată, iar facturile lor sunt apoi plătite automat din contul lor PayPal. Necesită datele API NVP/SOAP ale unui cont PayPal business cu Reference Transactions activate (cereți PayPal să le activeze)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "Adresa de e-mail PayPal pentru plăți"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "ID plată"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Cheia de producție de la Dynadot: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Produse și prețuri"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "Adresa IP publică a acestui server. Asigurați-vă că acest IP este permis în setările NameCheap."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Cheie API Resell.biz"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "ID de revânzător Resell.biz"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "ID de revânzător"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID de revânzător. Îl găsiți în panoul de control NetEarthOne: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID de revânzător. Îl găsiți în panoul de control Resell.biz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID de revânzător. Îl găsiți în panoul de control ResellerClub: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID de revânzător. Îl găsiți în panoul de control ResellerID: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "Cheie API ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ID de revânzător ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "Cheie API ResellerID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ID de revânzător ResellerID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Cheie API sandbox"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Parolă API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Semnătură API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Nume de utilizator API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "ID client REST API sandbox (opțional):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Secret REST API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Conturi PayPal salvate:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Conturi bancare salvate:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Cheie secretă"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key al cheii de acces generate în Hestia"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "Cheie separată pentru api-sandbox.dynadot.com, folosită doar cât timp modul de test este activ."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "Cheie separată pentru sandbox.namesilo.com, folosită doar cât timp modul de test este activ."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "Adresa IP publică a serverului"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "Se configurează pe pagina „Metode de plată”:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Reguli de taxare"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Șablon:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Cheie publicabilă de test:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Cheie secretă de test:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Secret de semnare webhook de test:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "Adresa (https) a unei imagini pe care PayPal o afișează pe paginile sale de plată. Gol: logoul companiei dvs., dacă este PNG, JPG sau GIF."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "ID-ul de client și secretul unei aplicații PayPal REST (developer.paypal.com, Apps & Credentials). Cu ele, rambursările sunt trimise la PayPal, iar abonamentele PayPal sunt anulate din ClientFence."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "Numele de utilizator cu care vă conectați la panoul de control Namecheap."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Acest tip de registrator trimite notificări la e-mailul indicat despre evenimentele de gestionare a domeniilor. De exemplu, când un client înregistrează un domeniu nou, primiți un e-mail cu detaliile domeniului. Apoi este responsabilitatea dvs. să înregistrați domeniul la un registrator real."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Atașamente de tichete copiate"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Feedback pentru tichete"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "UUID-ul organizației căreia îi aparține tokenul API (în adresa panoului)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "Folosiți interogări RDAP Registry pentru a verifica disponibilitatea domeniilor"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Nume de utilizator pentru conectarea la server"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "Nume de utilizator folosit pentru conectarea la server"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "Licențiere WHMCS (chei de licență, jurnal de verificări și interdicții)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "Vă autentificați la API-ul Stripe indicând în cerere una dintre cheile dvs. API. Cheile API le gestionați din contul dvs."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "Îl găsiți în panoul de control Namecheap."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "Îl găsiți în panoul de control NetEarthOne: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "Îl găsiți în panoul de control Resell.biz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "Îl găsiți în panoul de control ResellerClub: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "Îl găsiți în panoul de control ResellerID: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "ID-ul contului dvs. Enom (numele de autentificare)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "Numele dvs. de utilizator INWX."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Numele dvs. de utilizator API Openprovider."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Comentariul dvs."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "Parametrul „key” nu a fost transmis"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "Lipsește cheia „mod”"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "ID-ul suplimentului nu a fost transmis"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "Perioada suplimentului nu a fost transmisă"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Lipsește suma"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Suma este obligatorie"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Înregistrați un domeniu nou sau transferați unul existent? Lipsește parametrul action"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "ID-ul articolului nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "ID-ul categoriei articolului nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "Titlul articolului nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "Lipsește ID-ul categoriei de răspunsuri predefinite"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Lipsește titlul categoriei de răspunsuri predefinite"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "Lipsește ID-ul răspunsului predefinit"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "Lipsește ID-ul categoriei răspunsului predefinit"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Lipsește titlul răspunsului predefinit"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "ID-ul cardului nu a fost transmis"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "ID-ul articolului din coș nu a fost transmis"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "ID-ul categoriei nu a fost transmis"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "Titlul categoriei este obligatoriu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "Titlul categoriei nu a fost transmis"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Alegeți un tip de date confidențiale"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Alegeți o evaluare"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Alegeți un răspuns"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Alegeți ciclul de facturare"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Alegeți produsul nou"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Alegeți când se încheie serviciul"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "Lipsește ID-ul clientului"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "ID-ul clientului trebuie configurat în setările trimiterii în masă de e-mailuri."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "ID-ul clientului este obligatoriu"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "ID-ul clientului nu a fost transmis"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "Codul este obligatoriu"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "Conținutul nu a fost transmis"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Lipsește codul monedei"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "Codul monedei nu a fost transmis"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "Parola curentă este obligatorie"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "Parola curentă este obligatorie"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "ID-ul paginii personalizate nu a fost transmis"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "ID-urile paginilor personalizate nu au fost transmise"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Conținutul paginii personalizate nu a fost transmis"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Slug-ul paginii personalizate nu a fost transmis"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Titlul paginii personalizate nu a fost transmis"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "Descrierea este obligatorie"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "TLD-ul domeniului este obligatoriu."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Lipsește acțiunea pentru domeniu"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "Extensia domeniului este obligatorie."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "Numele domeniului este obligatoriu."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Lipsește perioada de înregistrare a domeniului. Verificați disponibilitatea domeniului înainte de a continua."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Lipsește parametrul sld al înregistrării domeniului."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Lipsește parametrul tld al înregistrării domeniului."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "Regula de retrogradare nu a fost transmisă"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "ID-ul e-mailului nu a fost transmis"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "Adresa de e-mail nu a fost transmisă"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "Conținutul e-mailului este obligatoriu"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "E-mailul este obligatoriu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "Subiectul e-mailului este obligatoriu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "Codul șablonului de e-mail este obligatoriu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "Codul șablonului de e-mail nu a fost transmis"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "Conținutul șablonului de e-mail este obligatoriu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "Subiectul șablonului de e-mail este obligatoriu"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "ID-ul evenimentului nu a fost transmis"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "ID-ul extensiei nu a fost transmis"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "Tipul extensiei nu a fost transmis"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "ID-ul acțiunii eșuate nu a fost transmis"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "ID-ul câmpului nu a fost transmis"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "Lipsește ID-ul fișierului"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Lipsește numele fișierului în configurația produsului"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "Prenumele este obligatoriu"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "Prenumele este obligatoriu"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "ID-ul formularului nu a fost transmis"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Numele formularului nu a fost transmis"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Numele formularului nu a fost furnizat"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Tipul formularului nu a fost transmis"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "Formatul este obligatoriu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "ID-ul gateway-ului nu a fost transmis"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "Lipsește ID-ul grupului"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "Numele grupului nu a fost transmis"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Lipsește titlul grupului"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "Hash-ul este obligatoriu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "Lipsește ID-ul centrului de asistență"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "ID-ul centrului de asistență nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Lipsește titlul centrului de asistență"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "Evenimentul hook nu a fost transmis"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "ID-ul planului de hosting nu a fost transmis"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "Numele planului de hosting nu a fost transmis"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "Produsul de hosting trebuie să aibă configurat un domeniu de bază pentru subdomenii"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "Produsul de hosting trebuie să aibă definit parametrul register_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "Produsul de hosting trebuie să aibă definit parametrul register_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "Produsul de hosting trebuie să aibă definit parametrul transfer_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "Produsul de hosting trebuie să aibă definit parametrul transfer_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "Produsul de hosting trebuie să aibă configurația domeniului"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "Lipsește ID-ul"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "ID-ul este obligatoriu"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "ID-ul nu a fost transmis"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "ID-urile nu au fost transmise"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "Lipsește ID-ul facturii"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "ID-ul facturii nu a fost transmis"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "Hash-ul facturii nu a fost transmis"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "ID-ul liniei facturii nu a fost transmis"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "ID-ul limbii nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "ID-ul intrării din jurnal nu a fost transmis"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "ID-ul mesajului nu a fost transmis"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Subiectul mesajului nu a fost transmis"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "Numele nu a fost transmis"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Confirmarea noii parole este obligatorie"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Confirmarea noii parole este obligatorie"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Parola nouă este obligatorie"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Parola nouă este obligatorie"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Nu a fost furnizat niciun hash"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "Lipsește ID-ul notei"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Lipsește nota"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "ID-ul notificării nu a fost transmis"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "ID-ul opțiunii nu a fost transmis"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "ID-ul grupului de opțiuni nu a fost transmis"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "ID-ul comenzii (order_id) nu a fost transmis"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "Lipsește ID-ul comenzii"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Lipsește numele ID-ului comenzii"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "ID-ul comenzii nu a fost transmis"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "ID-urile comenzilor nu au fost transmise"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "ID-ul liniei din istoricul comenzii nu a fost transmis"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "ID-ul comenzii este obligatoriu"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "Starea comenzii nu a fost transmisă"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "Parametrul mod nu a fost transmis"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "Parametrul „ext” nu a fost transmis"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "Lipsește parametrul ext"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "Confirmarea parolei este obligatorie"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "Parola este obligatorie"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "Parola nu a fost transmisă"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "ID-ul gateway-ului de plată nu a fost transmis"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Lipsește codul gateway-ului de plată"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Parametrul perioadei nu a fost transmis"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Alegeți data și ora"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "„Fixat” este obligatoriu"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Introduceți subiectul"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "Introduceți adresa dvs. de e-mail"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Introduceți numele dvs."
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "ID-ul postării nu a fost transmis"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Lipsește numele presetării"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Previzualizați mai întâi actualizarea"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "Lipsește ID-ul produsului"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "ID-ul produsului nu a fost transmis"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "Produsul nu este configurat complet."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "Lipsește ID-ul promoției"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "ID-ul promoției nu a fost transmis"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Lipsește codul promoțional"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "Codul promoțional nu a fost transmis"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Lipsește tipul promoției"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Lipsește valoarea promoției"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Hash-ul ofertei nu a fost transmis"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "E-mailul destinatarului este obligatoriu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "Numele destinatarului este obligatoriu"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "ID-ul redirecționării nu a fost transmis"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Calea redirecționării nu a fost transmisă"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Ținta redirecționării nu a fost transmisă"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "Lipsește ID-ul registratorului"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Lipsește codul registratorului"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Lipsește prețul de înregistrare"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Lipsește prețul de reînnoire"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "ID-ul cererii nu a fost transmis"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Lipsește câmpul obligatoriu address1"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Lipsește câmpul obligatoriu city"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Lipsește câmpul obligatoriu contact"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Lipsește câmpul obligatoriu country"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Lipsește câmpul obligatoriu email"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Lipsește câmpul obligatoriu first_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Lipsește câmpul obligatoriu last_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Lipsește câmpul obligatoriu phone"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Lipsește câmpul obligatoriu phone_cc"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Lipsește câmpul obligatoriu postcode"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Lipsește câmpul obligatoriu state"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "Lipsește SLD"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "Domeniul de acțiune nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "ID-ul datelor confidențiale nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Selectați tichetele"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Selectați tichetele de îmbinat"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "E-mailul expeditorului este obligatoriu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "Numele expeditorului este obligatoriu"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "ID-ul serverului nu a fost transmis"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "IP-ul serverului nu a fost transmis"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "Managerul de server nu a fost specificat"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "Numele serverului nu a fost transmis"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "ID-ul configurării nu a fost transmis"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "Lipsește ID-ul coșului"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "ID-ul grupului de personal nu a fost transmis"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "ID-ul membrului personalului nu a fost transmis"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Lipsește numele de fișier stocat în configurația produsului"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Numele subdomeniului este obligatoriu."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "ID-ul abonamentului nu a fost transmis"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Moneda abonamentului nu a fost transmisă"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "sID-ul abonamentului nu a fost transmis"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "Lipsește TLD"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "Lipsește ID-ul registratorului TLD"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "Lipsește ID-ul taxei"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "ID-ul taxei nu a fost transmis"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Lipsește numele taxei"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Lipsește cota taxei"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Cota taxei lipsește sau este nevalidă"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "Codul șablonului nu a fost transmis"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "Codul temei nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "Lipsește ID-ul tichetului"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "ID-ul tichetului nu a fost transmis"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "Conținutul tichetului este obligatoriu"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "Hash-ul tichetului este obligatoriu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "Lipsește ID-ul mesajului din tichet"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Lipsește conținutul mesajului din tichet"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "Subiectul tichetului este obligatoriu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "Câmpul support_helpdesk_id al tichetului este obligatoriu"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "Câmpul support_helpdesk_id al tichetului este obligatoriu"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "Titlul nu a fost transmis"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "Lipsește ID-ul tranzacției"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "ID-ul tranzacției este obligatoriu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Numele domeniului de transferat (SLD) este obligatoriu."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Tipul domeniului de transferat (TLD) este obligatoriu."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Lipsește prețul de transfer"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "Tipul nu a fost transmis"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "Regula de upgrade nu a fost transmisă"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "Trebuie să specificați un ID de verificare de rulat."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "Trebuie să specificați un titlu"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "Trebuie să specificați o adresă IP de căutat."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "Trebuie să specificați o adresă IP de resetat."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "Lipsește plan_id"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "Lipsește ticket_ID"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "Cererea a expirat după :seconds de secunde"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Active"
+msgstr "Activ"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Footer"
+msgstr "Subsol"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Module"
+msgstr "Modul"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Radio"
+msgstr "Buton radio"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Sigur doriți să ștergeți acest câmp personalizat?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Sigur doriți să ștergeți acest formular?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Ștergeți formularul?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Ștergeți câmpul?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Vedeți variabilele serverului înregistrate împreună cu datele callback-ului."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Parola pentru conectarea la server"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Vedeți corpul brut al cererii primite de la gateway-ul de plată."

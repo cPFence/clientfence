@@ -1,2 +1,24 @@
 {# ClientFence: where ClientFence.message() puts its toasts (clientfence.ts), with the titles and the close label translated. #}
 <div class="toast-container cf-toasts" data-title-success="{{ 'Success'|trans }}" data-title-error="{{ 'Error'|trans }}" data-title-warning="{{ 'Warning'|trans }}" data-title-info="{{ 'Info'|trans }}" data-close="{{ 'Close'|trans }}" aria-live="polite" aria-relevant="additions"></div>
+{# ClientFence: texts of the admin scripts in the page language: modal buttons (modals.ts) and the English toasts of api.js and clientfence.ts, translated when shown. #}
+<script nonce="{{ csp_nonce }}" type="application/json" id="clientfence-i18n">{{ {
+    'modal': {
+        'title': 'Are you sure?'|trans,
+        'closeButton': 'Close'|trans,
+        'cancelButton': 'Cancel'|trans,
+        'confirmButton': 'Confirm'|trans,
+        'promptConfirmButton': 'Confirm'|trans,
+    },
+    'messages': {
+        'Form Updated': 'Form Updated'|trans,
+        'At least one of the required fields are empty.': 'At least one of the required fields are empty.'|trans,
+        'Invalid API configuration': 'Invalid API configuration'|trans,
+        'Network connection error': 'Network connection error'|trans,
+        'Request timed out after :seconds seconds': 'Request timed out after :seconds seconds'|trans,
+        'Unknown API error': 'Unknown API error'|trans,
+        'Unknown error occurred': 'Unknown error occurred'|trans,
+        'Invalid or non-JSON response from server': 'Invalid or non-JSON response from server'|trans,
+        'An unexpected error occurred': 'An unexpected error occurred'|trans,
+        'Failed to copy to clipboard. Please select the text and copy it manually.': 'Failed to copy to clipboard. Please select the text and copy it manually.'|trans,
+    },
+}|json_encode|raw }}</script>

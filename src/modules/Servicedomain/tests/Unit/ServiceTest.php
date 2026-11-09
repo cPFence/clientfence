@@ -2140,6 +2140,15 @@ test('gets registrar configuration', function (): void {
     expect($result)->toBe($config);
 });
 
+test('an older registrar config keeps its use_whois switch as use_rdap', function (): void {
+    $service = new Service();
+    $model = new Model_TldRegistrar();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->config = json_encode(['email' => 'ops@example.com', 'use_whois' => '1']);
+
+    expect($service->registrarGetConfiguration($model))->toBe(['email' => 'ops@example.com', 'use_whois' => '1', 'use_rdap' => '1']);
+});
+
 test('gets registrar adapter config', function (): void {
     $service = new Service();
     $model = new Model_TldRegistrar();

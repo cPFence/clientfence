@@ -20965,3 +20965,1531 @@ msgstr "از پشتیبانی ما بخواهید حساب شما را حذف ک
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "فاکتورهای پرداخت‌نشدهٔ این درگاه: :count. مشتریان آن‌ها را با درگاهی که انتخاب می‌کنید پرداخت می‌کنند."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "کد ارز این پورتال: USD (دلار آمریکا)، EUR (یورو) یا GBP (پوند بریتانیا). فاکتورهای ارزهای دیگر با نرخ‌های تبدیل پورتال به این ارز دریافت می‌شوند، مانند «Convert To For Processing» در WHMCS. خالی: هر فاکتور با ارز خودش دریافت می‌شود. [راه‌اندازی PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "کلید API"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "توکن API"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash یا توکن API"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "شناسهٔ کلید دسترسی"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash یا توکن API در WHM برای اتصال به سرور"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "پس از یک سفارش رایگان که تمدید می‌شود (آزمایش رایگان)، مشتری‌ای که روش پرداخت ذخیره‌شده ندارد برای راه‌اندازی پرداخت خودکار به PayPal هدایت می‌شود."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "یک توکن دسترسی از پنل؛ نشانی IP این سرور را در آن مجاز کنید"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "هنگام نمایش این ابزارک خطایی رخ داد."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "علاوه بر کارت، مشتریان می‌توانند حساب بانکی را برای پرداخت خودکار ذخیره کنند: BECS Direct Debit برای AUD، SEPA Direct Debit برای EUR و Bacs Direct Debit برای GBP. ابتدا این روش را در داشبورد Stripe روشن کنید. تسویه پرداخت بانکی چند روز طول می‌کشد: در این مدت فاکتور «پرداخت در انتظار» را نشان می‌دهد."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "بسته‌ها (وارد نشده)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "مانده اعتبار مشتریان"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "مشتریان می‌توانند بدون راه‌اندازی پرداخت خودکار، فاکتور را با PayPal هم پرداخت کنند."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "مشتریان می‌توانند هنگام پرداخت یا در صفحه «روش‌های پرداخت» حساب PayPal خود را ذخیره کنند و فاکتورهایشان سپس مانند کارت‌های ذخیره‌شده خودکار پرداخت می‌شود. به کلیدهای REST API و Vault («Save payment methods») در برنامه PayPal REST شما نیاز دارد که PayPal فقط در برخی کشورها ارائه می‌کند."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "مشتریان می‌توانند بدون پرداخت فاکتور، پرداخت خودکار را در صفحه «روش‌های پرداخت» راه‌اندازی کنند."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "مشتریانی که اعتبارشان مطابقت دارد"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "تأیید"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "تبدیل برای پردازش (اختیاری):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "ارز سفارش‌های Dynadot، برای مثال USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar همیشه نتیجه مثبت برمی‌گرداند. وقتی ثبت‌کنندهٔ دیگری مناسب نیست مفید است."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "مدیر سرور سفارشی"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "درگاه پرداخت سفارشی به شما اجازه می‌دهد توضیح دهید مشتری چگونه فاکتور را پرداخت کند. همهٔ اطلاعات سیستم، مشتری، سفارش و فاکتور قابل چاپ است. کد HTML پشتیبانی می‌شود."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "قیمت دامنه‌ها"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "گزارش ایمیل"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "ایمیل برای ارسال اعلان‌های تغییر دامنه"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "متن اطلاعات پرداخت یک‌باره را وارد کنید"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "متن اطلاعات اشتراک را وارد کنید"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "برای شروع دریافت پرداخت با PayPal، ایمیل PayPal خود را وارد کنید."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "کپی در کلیپ‌بورد ناموفق بود. متن را انتخاب کنید و به‌صورت دستی کپی کنید."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "ایمیل مشتری را در PayPal وارد کنید:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "سفارش‌های رایگان:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "از Enom: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "از NameSilo: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "از پورتال Synergy Wholesale: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "از همان صفحه."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "سرورهای هاستینگ (خاموش)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "شناسهٔ کلید دسترسی که در Hestia ساخته‌اید."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "کلید API سرویس Internetbs"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "رمز API سرویس Internetbs"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "پیکربندی API نامعتبر است"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "این را خاموش نگه دارید: ClientFence هنگام پرداخت فاکتور تمدید، دامنه را تمدید می‌کند. اگر روشن باشد، NameSilo هم آن را از حساب شما تمدید می‌کند."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "مسدودسازی‌های مجوز"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "رمز API (زنده):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "امضای API (زنده):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "نام کاربری API (زنده):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "کلید عمومی (زنده):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "شناسهٔ کلاینت REST API (زنده، اختیاری):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "کلید محرمانهٔ REST API (زنده):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "کلید محرمانه (زنده):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "رمز امضای وب‌هوک (زنده):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "لوگو در صفحه‌های PayPal (اختیاری):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "دامنه‌ها را در Dynadot از طریق API3 مدیریت می‌کند. نشانی IP این سرور را به فهرست مجاز API در Dynadot اضافه کنید (Tools > API) و موجودی کافی در حساب برای ثبت و تمدید نگه دارید."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "دامنه‌ها را در Enom از طریق API نمایندگان مدیریت می‌کند. نشانی IP این سرور را در تنظیمات API سرویس Enom مجاز کنید و وجه کافی در حساب برای ثبت و تمدید نگه دارید. تمدید خودکار Enom برای همهٔ دامنه‌ها خاموش است: ClientFence هنگام پرداخت فاکتور تمدید، دامنه را تمدید می‌کند. با روشن بودن حالت آزمایشی، شناسهٔ نماینده و توکن API حساب آزمایشی Enom را وارد کنید (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "دامنه‌ها را در INWX از طریق DomRobot API مدیریت می‌کند. از حساب INWX (یا زیرحساب) بدون ورود دومرحله‌ای استفاده کنید و وجه کافی در حساب برای ثبت و تمدید نگه دارید. دامنه‌ها طوری ثبت می‌شوند که منقضی شوند، مگر اینکه ClientFence آن‌ها را تمدید کند، که با پرداخت فاکتور تمدید انجام می‌دهد. با روشن بودن حالت آزمایشی، نام کاربری و رمز حساب آزمایشی INWX OT&E را وارد کنید."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "دامنه‌ها را در Internetbs از طریق API مدیریت می‌کند"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "دامنه‌ها را در NameSilo از طریق API مدیریت می‌کند. کلید API را در NameSilo بسازید (Account > API Manager)، نشانی IP این سرور را در آنجا مجاز کنید و وجه کافی در حساب برای ثبت و تمدید نگه دارید. در API Manager بازیابی از طریق renewDomain را هم خاموش کنید: ClientFence از تمدید دامنه‌ای که در دورهٔ بازیابی است خودداری می‌کند، اما NameSilo در غیر این صورت آن را با هزینهٔ بازیابی بازیابی می‌کرد."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "دامنه‌ها را در Namecheap از طریق API مدیریت می‌کند. Namecheap برای کار کردن به IP سرور شما نیاز دارد."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "دامنه‌ها را در NetEarthOne از طریق API مدیریت می‌کند. NetEarthOne برای کار کردن به IP سرور شما نیاز دارد. وارد پنل کنترل NetEarthOne شوید (نشانی در ایمیلی است که هنگام ثبت‌نام گرفتید)، به Settings > API بروید و نشانی IP سروری را که ClientFence روی آن نصب است وارد کنید تا به API دسترسی داشته باشد."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "دامنه‌ها را در Openprovider از طریق API مدیریت می‌کند. از یک کاربر API در Openprovider استفاده کنید، نشانی IP این سرور را برای آن مجاز کنید و وجه کافی در حساب برای ثبت و تمدید نگه دارید. تمدید خودکار Openprovider برای همهٔ دامنه‌ها خاموش است: ClientFence هنگام پرداخت فاکتور تمدید، دامنه را تمدید می‌کند. با روشن بودن حالت آزمایشی، نام کاربری و رمز حساب sandbox در Openprovider را وارد کنید."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "دامنه‌ها را در Resell.biz از طریق API مدیریت می‌کند. Resell.biz برای کار کردن به IP سرور شما نیاز دارد. وارد پنل کنترل Resell.biz شوید (نشانی در ایمیلی است که هنگام ثبت‌نام گرفتید)، به Settings > API بروید و نشانی IP سروری را که ClientFence روی آن نصب است وارد کنید تا به API دسترسی داشته باشد."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "دامنه‌ها را در ResellerClub از طریق API مدیریت می‌کند. ResellerClub برای کار کردن به IP سرور شما نیاز دارد. وارد پنل کنترل ResellerClub شوید (نشانی در ایمیلی است که هنگام ثبت‌نام گرفتید)، به Settings > API بروید و نشانی IP سروری را که ClientFence روی آن نصب است وارد کنید تا به API دسترسی داشته باشد."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "دامنه‌ها را در ResellerID از طریق API مدیریت می‌کند. ResellerID برای کار کردن به IP سرور شما نیاز دارد. وارد پنل کنترل ResellerID شوید (نشانی در ایمیلی است که هنگام ثبت‌نام گرفتید)، به Settings > API بروید و نشانی IP سروری را که ClientFence روی آن نصب است وارد کنید تا به API دسترسی داشته باشد."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "دامنه‌ها را در Synergy Wholesale از طریق API مدیریت می‌کند. نشانی IP این سرور را به نشانی‌های IP مجاز در پورتال Synergy Wholesale اضافه کنید (Account Settings > API Information) و موجودی کافی در حساب برای ثبت و تمدید نگه دارید."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "پیش‌نمایش Markdown"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "ماژول:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "تمدید خودکار NameSilo"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "شناسهٔ نمایندهٔ Namecheap. اگر ندارید، خالی بگذارید."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "نام کاربری Namecheap"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "به کلیدهای REST API نیاز دارد، با روشن بودن «Transaction search» در برنامهٔ PayPal REST."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "کلید API سرویس NetEarthOne"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "شناسهٔ نمایندهٔ NetEarthOne"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "مشکلات شبکه"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "در صفحهٔ فاکتور، مشتری‌ای که توافق صورتحساب دارد می‌تواند بدون رفتن به PayPal فوراً پرداخت کند."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "نمایهٔ پرداخت تأییدشدهٔ اختیاری NameSilo. خالی: وجه حساب پرداخت می‌کند."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "شناسهٔ سازمان"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "رمز عبور / کلید ورود"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "رمز عبور یا کلید ورود برای اتصال به سرور"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "پرداخت یک‌بار بدون توافق:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "پرداخت با توافق ذخیره‌شده:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "توافق‌های صورتحساب PayPal Auto-Pay"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "مانده PayPal در داشبورد:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "توافق‌های صورتحساب PayPal: مشتریان یک بار موافقت می‌کنند و فاکتورهایشان سپس خودکار از حساب PayPal آن‌ها پرداخت می‌شود. به اطلاعات NVP/SOAP API یک حساب تجاری PayPal با Reference Transactions روشن نیاز دارد (از PayPal بخواهید آن‌ها را روشن کند)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "نشانی ایمیل PayPal برای پرداخت‌ها"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "شناسهٔ پرداخت"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "کلید تولید از Dynadot: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "محصولات و قیمت‌ها"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "نشانی IP عمومی این سرور. مطمئن شوید این IP در تنظیمات NameCheap شما مجاز است."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "کلید API سرویس Resell.biz"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "شناسهٔ نمایندهٔ Resell.biz"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "شناسهٔ نماینده"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "شناسهٔ نماینده. آن را در پنل کنترل NetEarthOne پیدا می‌کنید: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "شناسهٔ نماینده. آن را در پنل کنترل Resell.biz پیدا می‌کنید: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "شناسهٔ نماینده. آن را در پنل کنترل ResellerClub پیدا می‌کنید: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "شناسهٔ نماینده. آن را در پنل کنترل ResellerID پیدا می‌کنید: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "کلید API سرویس ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "شناسهٔ نمایندهٔ ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "کلید API سرویس ResellerID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "شناسهٔ نمایندهٔ ResellerID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "کلید API (sandbox)"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "رمز API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "امضای API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "نام کاربری API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "شناسهٔ کلاینت REST API (sandbox، اختیاری):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "کلید محرمانهٔ REST API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "حساب‌های PayPal ذخیره‌شده:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "حساب‌های بانکی ذخیره‌شده:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "کلید محرمانه"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key کلید دسترسی که در Hestia ساخته‌اید"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "کلید جداگانه برای api-sandbox.dynadot.com که فقط هنگام روشن بودن حالت آزمایشی استفاده می‌شود."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "کلید جداگانه برای sandbox.namesilo.com که فقط هنگام روشن بودن حالت آزمایشی استفاده می‌شود."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "نشانی IP عمومی سرور"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "در صفحهٔ «روش‌های پرداخت» راه‌اندازی کنید:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "اسلات:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "قوانین مالیات"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "قالب:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "کلید عمومی (آزمایشی):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "کلید محرمانه (آزمایشی):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "رمز امضای وب‌هوک (آزمایشی):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "نشانی (https) تصویری که PayPal در صفحه‌های پرداخت خود نشان می‌دهد. خالی: لوگوی شرکت شما، اگر PNG، JPG یا GIF باشد."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "شناسهٔ کلاینت و کلید محرمانهٔ یک برنامهٔ PayPal REST (developer.paypal.com، Apps & Credentials). با آن‌ها بازپرداخت‌ها به PayPal ارسال و اشتراک‌های PayPal از ClientFence لغو می‌شوند."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "نام کاربری‌ای که با آن وارد پنل کنترل Namecheap می‌شوید."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "این نوع ثبت‌کننده دربارهٔ رویدادهای مدیریت دامنه به ایمیل داده‌شده اعلان می‌فرستد. برای مثال وقتی مشتری دامنهٔ جدیدی ثبت می‌کند، ایمیلی با جزئیات دامنه برای شما ارسال می‌شود. سپس ثبت دامنه نزد یک ثبت‌کنندهٔ واقعی بر عهدهٔ شماست."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "پیوست‌های تیکت کپی شد"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "بازخورد تیکت‌ها"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "UUID سازمانی که توکن API به آن تعلق دارد (در نشانی پنل)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "استفاده از پرس‌وجوهای RDAP Registry برای بررسی در دسترس بودن دامنه"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "نام کاربری برای اتصال به سرور"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "نام کاربری مورد استفاده برای اتصال به سرور"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "مجوزدهی WHMCS (کلیدهای مجوز، گزارش بررسی و مسدودسازی‌ها)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "با ارائهٔ یکی از کلیدهای API خود در درخواست، در API سرویس Stripe احراز هویت می‌کنید. کلیدهای API را از حساب خود مدیریت کنید."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "آن را در پنل کنترل Namecheap پیدا می‌کنید."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "آن را در پنل کنترل NetEarthOne پیدا می‌کنید: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "آن را در پنل کنترل Resell.biz پیدا می‌کنید: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "آن را در پنل کنترل ResellerClub پیدا می‌کنید: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "آن را در پنل کنترل ResellerID پیدا می‌کنید: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "شناسهٔ حساب Enom شما (نام ورود)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "نام کاربری INWX شما."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "نام کاربری API شما در Openprovider."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "نظر شما"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "پارامتر \"key\" ارسال نشد"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "کلید \"mod\" وجود ندارد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "شناسهٔ افزونه ارسال نشد"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "دورهٔ افزونه ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "مبلغ وجود ندارد"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "مبلغ الزامی است"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "آیا دامنهٔ جدید ثبت می‌کنید یا دامنهٔ موجود را منتقل می‌کنید؟ پارامتر action وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "شناسهٔ مقاله ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "شناسهٔ دستهٔ مقاله ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "عنوان مقاله ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "شناسهٔ دستهٔ پاسخ‌های آماده وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "عنوان دستهٔ پاسخ‌های آماده وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "شناسهٔ پاسخ آماده وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "شناسهٔ دستهٔ پاسخ آماده وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "عنوان پاسخ آماده وجود ندارد"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "شناسهٔ کارت ارسال نشد"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "شناسهٔ مورد سبد خرید ارسال نشد"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "شناسهٔ دسته ارسال نشد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "عنوان دسته الزامی است"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "عنوان دسته ارسال نشد"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "نوع اطلاعات محرمانه را انتخاب کنید"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "یک امتیاز انتخاب کنید"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "یک پاسخ انتخاب کنید"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "چرخهٔ صورتحساب را انتخاب کنید"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "محصول جدید را انتخاب کنید"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "زمان پایان سرویس را انتخاب کنید"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "شناسهٔ مشتری وجود ندارد"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "شناسهٔ مشتری باید در تنظیمات ایمیل انبوه تنظیم شود."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "شناسهٔ مشتری الزامی است"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "شناسهٔ مشتری ارسال نشد"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "کد الزامی است"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "محتوا ارسال نشد"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "کد ارز وجود ندارد"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "کد ارز ارسال نشد"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "رمز عبور فعلی الزامی است"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "رمز عبور فعلی الزامی است"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "شناسهٔ صفحهٔ سفارشی ارسال نشد"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "شناسهٔ صفحه‌های سفارشی ارسال نشد"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "محتوای صفحهٔ سفارشی ارسال نشد"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "slug صفحهٔ سفارشی ارسال نشد"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "عنوان صفحهٔ سفارشی ارسال نشد"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "توضیحات الزامی است"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "TLD دامنه الزامی است."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "عملیات دامنه وجود ندارد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "پسوند دامنه الزامی است."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "نام دامنه الزامی است."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "مدت ثبت دامنه وجود ندارد. پیش از ادامه، در دسترس بودن دامنه را بررسی کنید."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "پارامتر sld ثبت دامنه وجود ندارد."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "پارامتر tld ثبت دامنه وجود ندارد."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "قاعدهٔ تنزل ارسال نشد"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "شناسهٔ ایمیل ارسال نشد"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "نشانی ایمیل ارسال نشد"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "محتوای ایمیل الزامی است"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "ایمیل الزامی است"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "موضوع ایمیل الزامی است"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "کد قالب ایمیل الزامی است"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "کد قالب ایمیل ارسال نشد"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "محتوای قالب ایمیل الزامی است"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "موضوع قالب ایمیل الزامی است"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "شناسهٔ رویداد ارسال نشد"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "شناسهٔ ماژول ارسال نشد"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "نوع ماژول ارسال نشد"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "شناسهٔ اقدام ناموفق ارسال نشد"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "شناسهٔ فیلد ارسال نشد"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "شناسهٔ فایل وجود ندارد"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "نام فایل در پیکربندی محصول وجود ندارد"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "نام الزامی است"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "نام الزامی است"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "شناسهٔ فرم ارسال نشد"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "نام فرم ارسال نشد"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "نام فرم داده نشد"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "نوع فرم ارسال نشد"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "قالب الزامی است"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "شناسهٔ درگاه ارسال نشد"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "شناسهٔ گروه وجود ندارد"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "نام گروه ارسال نشد"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "عنوان گروه وجود ندارد"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "هش الزامی است"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "شناسهٔ پشتیبانی وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "شناسهٔ پشتیبانی ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "عنوان پشتیبانی وجود ندارد"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "رویداد هوک ارسال نشد"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "شناسهٔ طرح هاستینگ ارسال نشد"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "نام طرح هاستینگ ارسال نشد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "برای محصول هاستینگ باید دامنهٔ پایه برای زیردامنه‌ها پیکربندی شده باشد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "برای محصول هاستینگ باید پارامتر register_sld تعریف شده باشد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "برای محصول هاستینگ باید پارامتر register_tld تعریف شده باشد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "برای محصول هاستینگ باید پارامتر transfer_sld تعریف شده باشد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "برای محصول هاستینگ باید پارامتر transfer_tld تعریف شده باشد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "محصول هاستینگ باید پیکربندی دامنه داشته باشد"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "شناسه وجود ندارد"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "شناسه الزامی است"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "شناسه ارسال نشد"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "شناسه‌ها ارسال نشدند"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "شناسهٔ فاکتور وجود ندارد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "شناسهٔ فاکتور ارسال نشد"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "هش فاکتور ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "شناسهٔ آیتم فاکتور ارسال نشد"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "شناسهٔ زبان ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "شناسهٔ ورودی گزارش ارسال نشد"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "شناسهٔ پیام ارسال نشد"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "موضوع پیام ارسال نشد"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "نام ارسال نشد"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "تأیید رمز عبور جدید الزامی است"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "تأیید رمز عبور جدید الزامی است"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "رمز عبور جدید الزامی است"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "رمز عبور جدید الزامی است"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "هش داده نشد"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "شناسهٔ یادداشت وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "یادداشت وجود ندارد"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "شناسهٔ اعلان ارسال نشد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "شناسهٔ گزینه ارسال نشد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "شناسهٔ گروه گزینه‌ها ارسال نشد"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "شناسهٔ سفارش (order_id) ارسال نشد"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "شناسهٔ سفارش وجود ندارد"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "نام شناسهٔ سفارش وجود ندارد"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "شناسهٔ سفارش ارسال نشد"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "شناسهٔ سفارش‌ها ارسال نشد"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "شناسهٔ ردیف تاریخچهٔ سفارش ارسال نشد"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "شناسهٔ سفارش الزامی است"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "وضعیت سفارش ارسال نشد"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "پارامتر mod ارسال نشد"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "پارامتر \"ext\" ارسال نشد"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "پارامتر ext وجود ندارد"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "تأیید رمز عبور الزامی است"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "رمز عبور الزامی است"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "رمز عبور ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "شناسهٔ درگاه پرداخت ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "کد درگاه پرداخت وجود ندارد"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "پارامتر دوره ارسال نشد"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "تاریخ و ساعت را انتخاب کنید"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "«سنجاق‌شده» الزامی است"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "لطفاً موضوع را وارد کنید"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "لطفاً نشانی ایمیل خود را وارد کنید"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "لطفاً نام خود را وارد کنید"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "شناسهٔ نوشته ارسال نشد"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "نام پیش‌تنظیم وجود ندارد"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "ابتدا پیش‌نمایش به‌روزرسانی را ببینید"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "شناسهٔ محصول وجود ندارد"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "شناسهٔ محصول ارسال نشد"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "محصول به‌طور کامل پیکربندی نشده است."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "شناسهٔ تبلیغ وجود ندارد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "شناسهٔ تبلیغ ارسال نشد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "کد تبلیغاتی وجود ندارد"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "کد تبلیغاتی ارسال نشد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "نوع تبلیغ وجود ندارد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "مقدار تبلیغ وجود ندارد"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "هش پیش‌فاکتور ارسال نشد"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "ایمیل گیرنده الزامی است"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "نام گیرنده الزامی است"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "شناسهٔ تغییر مسیر ارسال نشد"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "مسیر تغییر مسیر ارسال نشد"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "مقصد تغییر مسیر ارسال نشد"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "شناسهٔ ثبت‌کننده وجود ندارد"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "کد ثبت‌کننده وجود ندارد"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "قیمت ثبت وجود ندارد"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "قیمت تمدید وجود ندارد"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "شناسهٔ درخواست ارسال نشد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "فیلد الزامی address1 وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "فیلد الزامی city وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "فیلد الزامی contact وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "فیلد الزامی country وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "فیلد الزامی email وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "فیلد الزامی first_name وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "فیلد الزامی last_name وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "فیلد الزامی phone وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "فیلد الزامی phone_cc وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "فیلد الزامی postcode وجود ندارد"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "فیلد الزامی state وجود ندارد"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "SLD وجود ندارد"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "دامنهٔ کاربرد ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "شناسهٔ اطلاعات محرمانه ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "تیکت‌ها را انتخاب کنید"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "تیکت‌هایی را که می‌خواهید ادغام شوند انتخاب کنید"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "ایمیل فرستنده الزامی است"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "نام فرستنده الزامی است"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "شناسهٔ سرور ارسال نشد"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "IP سرور ارسال نشد"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "مدیر سرور مشخص نشده است"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "نام سرور ارسال نشد"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "شناسهٔ راه‌اندازی ارسال نشد"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "شناسهٔ سبد خرید وجود ندارد"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "شناسهٔ گروه کارکنان ارسال نشد"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "شناسهٔ کارمند ارسال نشد"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "نام فایل ذخیره‌شده در پیکربندی محصول وجود ندارد"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "نام زیردامنه الزامی است."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "شناسهٔ اشتراک ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "ارز اشتراک ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "sID اشتراک ارسال نشد"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "TLD وجود ندارد"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "شناسهٔ ثبت‌کنندهٔ TLD وجود ندارد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "شناسهٔ مالیات وجود ندارد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "شناسهٔ مالیات ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "نام مالیات وجود ندارد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "نرخ مالیات وجود ندارد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "نرخ مالیات وجود ندارد یا نامعتبر است"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "کد قالب ارسال نشد"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "کد پوسته ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "شناسهٔ تیکت وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "شناسهٔ تیکت ارسال نشد"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "محتوای تیکت الزامی است"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "هش تیکت الزامی است"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "شناسهٔ پیام تیکت وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "محتوای پیام تیکت وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "موضوع تیکت الزامی است"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "support_helpdesk_id تیکت الزامی است"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "support_helpdesk_id تیکت الزامی است"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "عنوان ارسال نشد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "شناسهٔ تراکنش وجود ندارد"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "شناسهٔ تراکنش الزامی است"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "نام دامنه‌ای که منتقل می‌شود (SLD) الزامی است."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "نوع دامنه‌ای که منتقل می‌شود (TLD) الزامی است."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "قیمت انتقال وجود ندارد"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "نوع ارسال نشد"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "قاعدهٔ ارتقا ارسال نشد"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "باید شناسهٔ بررسی را برای اجرا مشخص کنید."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "باید یک عنوان مشخص کنید"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "باید یک نشانی IP برای جست‌وجو مشخص کنید."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "باید یک نشانی IP برای بازنشانی مشخص کنید."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "plan_id وجود ندارد"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "ticket_ID وجود ندارد"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "درخواست پس از :seconds ثانیه منقضی شد"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Nameserver 1"
+msgstr "نیم‌سرور 1"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Nameserver 2"
+msgstr "نیم‌سرور 2"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Nameserver 3"
+msgstr "نیم‌سرور 3"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Nameserver 4"
+msgstr "نیم‌سرور 4"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "SMTP Hostname"
+msgstr "نام میزبان SMTP"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "آیا مطمئن هستید که می‌خواهید این فیلد سفارشی را حذف کنید؟"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "آیا مطمئن هستید که می‌خواهید این فرم را حذف کنید؟"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "حذف فرم؟"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "حذف فیلد؟"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "متغیرهای سروری را که همراه داده‌های callback ثبت شده‌اند ببینید."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "رمز عبور برای اتصال به سرور"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "بدنهٔ خام درخواست دریافت‌شده از درگاه پرداخت را بررسی کنید."

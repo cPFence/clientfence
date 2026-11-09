@@ -375,16 +375,16 @@
                     fields: [
                         {
                             name: 'username',
-                            label: 'Username',
+                            label: '{{ 'Username'|trans|e('js') }}',
                             type: 'text',
-                            placeholder: 'Username to connect to the server',
+                            placeholder: '{{ 'Username to connect to the server'|trans|e('js') }}',
                             required: true
                         },
                         {
                             name: 'password',
-                            label: 'Password',
+                            label: '{{ 'Password'|trans|e('js') }}',
                             type: 'password',
-                            placeholder: 'Password to connect to the server',
+                            placeholder: '{{ 'Password to connect to the server'|trans|e('js') }}',
                             required: true
                         }
                     ]

@@ -21444,3 +21444,1535 @@ msgstr "Kérje támogatásunkat fiókja törlésére. Töröljük a személyes a
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Az átjáró ki nem fizetett számlái: :count. Az ügyfelek az Ön által választott átjáróval fizetik ki őket."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "A portál pénznemkódja: USD (amerikai dollár), EUR (euró) vagy GBP (angol font). A más pénznemű számlákat ebben terheli a rendszer a portál árfolyamán, mint a WHMCS „Convert To For Processing” beállítása. Üres: minden számla a saját pénznemében kerül terhelésre. [A PayPal Auto-Pay beállítása](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "API-kulcs"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "API-token"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash vagy API-token"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "Hozzáférési kulcs azonosítója"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash vagy WHM API-token a szerverhez csatlakozáshoz"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "Egy megújuló ingyenes rendelés (ingyenes próba) után a mentett fizetési mód nélküli ügyfelet a rendszer a PayPalra irányítja az automatikus fizetések beállításához."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "A panelből származó hozzáférési token; engedélyezze rajta ennek a szervernek az IP-címét"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "Hiba történt a widget megjelenítésekor."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "A kártyák mellett az ügyfelek bankszámlát is menthetnek automatikus fizetésekhez: BECS csoportos beszedés AUD-hoz, SEPA csoportos beszedés EUR-hoz és Bacs csoportos beszedés GBP-hez. Előbb kapcsolja be a módszert a Stripe-irányítópulton. A banki fizetés néhány napig tart: addig a számlán „Fizetés függőben” látszik."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Csomagok (nincs importálva)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Ügyfelek jóváírási egyenlege"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Az ügyfelek automatikus fizetések beállítása nélkül is kifizethetnek egy számlát PayPallal."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Az ügyfelek fizetéskor vagy a „Fizetési módok” oldalon elmenthetik PayPal-fiókjukat, és számláik ezután automatikusan fizetődnek, mint a mentett kártyáknál. A PayPal REST-alkalmazás REST API-kulcsait és Vaultját („Save payment methods”) igényli, amelyet a PayPal csak néhány országban kínál."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Az ügyfelek számla kifizetése nélkül is beállíthatnak automatikus fizetést a „Fizetési módok” oldalon."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Ügyfelek, akiknek az egyenlege egyezik"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Megerősítés"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "Átváltás feldolgozáshoz (nem kötelező):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "A Dynadot-rendelések pénzneme, például USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "A Custom Registrar mindig pozitív eredménnyel válaszol. Hasznos, ha nincs más megfelelő regisztrátor."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Egyéni szerverkezelő"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Az egyéni fizetési átjáró lehetővé teszi, hogy útmutatót adjon arról, hogyan fizetheti ki ügyfele a számlát. Minden rendszer-, ügyfél-, rendelés- és számlaadat kinyomtatható. A HTML-kód támogatott."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Domainárak"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "E-mail napló"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "E-mail a domainváltozás-értesítések küldéséhez"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Adja meg az egyszeri fizetés információinak szövegét"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Adja meg az előfizetés információinak szövegét"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "Adja meg PayPal e-mail-címét, hogy elkezdhessen PayPalos fizetéseket fogadni."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "A vágólapra másolás nem sikerült. Jelölje ki a szöveget, és másolja kézzel."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Adja meg az ügyfél e-mail-címét a PayPalnál:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Ingyenes rendelések:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "Enomtól: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "NameSilótól: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "A Synergy Wholesale portáljáról: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Ugyanarról az oldalról."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Tárhelyszerverek (kikapcsolva)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "A Hestiában létrehozott hozzáférési kulcs azonosítója."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Internetbs API-kulcs"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Internetbs API-jelszó"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Érvénytelen API-konfiguráció"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Hagyja kikapcsolva: a ClientFence akkor újít meg egy domaint, amikor a megújítási számla ki van fizetve. Bekapcsolva a NameSilo a fiókjából is megújítja."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Licenctiltások"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "Éles API-jelszó:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "Éles API-aláírás:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "Éles API-felhasználónév:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Nyilvános kulcs (éles):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "Éles REST API kliensazonosító (nem kötelező):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Éles REST API titok:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Titkos kulcs (éles):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Webhook aláírási titok (éles):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "Logó a PayPal oldalain (nem kötelező):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Domaineket kezel a Dynadotnál az API3-on keresztül. Adja hozzá a szerver IP-címét a Dynadot API engedélylistájához (Tools > API), és tartson elegendő egyenleget a fiókon a regisztrációkra és megújításokra."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Domaineket kezel az Enomnál a viszonteladói API-n keresztül. Engedélyezze a szerver IP-címét az Enom API-beállításaiban, és tartson elegendő pénzt a fiókon a regisztrációkra és megújításokra. Az Enom automatikus megújítása minden domainnél ki van kapcsolva: a ClientFence akkor újít meg egy domaint, amikor a megújítási számla ki van fizetve. Bekapcsolt tesztmódnál adja meg Enom-tesztfiókja viszonteladói azonosítóját és API-tokenjét (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Domaineket kezel az INWX-nél a DomRobot API-n keresztül. Használjon kétlépcsős bejelentkezés nélküli INWX-fiókot (vagy alfiókot), és tartson elegendő pénzt a fiókon a regisztrációkra és megújításokra. A domainek lejáratra regisztrálódnak, hacsak a ClientFence meg nem újítja őket, amit a megújítási számla kifizetésekor megtesz. Bekapcsolt tesztmódnál adja meg INWX OT&E tesztfiókjának felhasználónevét és jelszavát."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Domaineket kezel az Internetbsnél az API-n keresztül"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Domaineket kezel a NameSilónál az API-n keresztül. Hozza létre az API-kulcsot a NameSilóban (Account > API Manager), engedélyezze ott a szerver IP-címét, és tartson elegendő pénzt a fiókon a regisztrációkra és megújításokra. Az API Managerben kapcsolja ki a renewDomain általi visszaállításokat is: a ClientFence nem újít meg visszaállítási időszakban lévő domaint, de a NameSilo ilyenkor a visszaállítási díjért visszaállítaná."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Domaineket kezel a Namecheapnél az API-n keresztül. A Namecheapnek szüksége van a szerver IP-címére a működéshez."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Domaineket kezel a NetEarthOne-nál az API-n keresztül. A NetEarthOne-nak szüksége van a szerver IP-címére a működéshez. Jelentkezzen be a NetEarthOne vezérlőpultjába (az URL a regisztrációkor kapott e-mailben van), lépjen a Settings > API oldalra, és adja meg annak a szervernek az IP-címét, amelyen a ClientFence telepítve van, hogy hozzáférhessen az API-hoz."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Domaineket kezel az Openprovidernél az API-n keresztül. Használjon Openprovider API-felhasználót, engedélyezze számára a szerver IP-címét, és tartson elegendő pénzt a fiókon a regisztrációkra és megújításokra. Az Openprovider automatikus megújítása minden domainnél ki van kapcsolva: a ClientFence akkor újít meg egy domaint, amikor a megújítási számla ki van fizetve. Bekapcsolt tesztmódnál adja meg Openprovider sandbox-fiókjának felhasználónevét és jelszavát."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Domaineket kezel a Resell.biznél az API-n keresztül. A Resell.biznek szüksége van a szerver IP-címére a működéshez. Jelentkezzen be a Resell.biz vezérlőpultjába (az URL a regisztrációkor kapott e-mailben van), lépjen a Settings > API oldalra, és adja meg annak a szervernek az IP-címét, amelyen a ClientFence telepítve van, hogy hozzáférhessen az API-hoz."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Domaineket kezel a ResellerClubnál az API-n keresztül. A ResellerClubnak szüksége van a szerver IP-címére a működéshez. Jelentkezzen be a ResellerClub vezérlőpultjába (az URL a regisztrációkor kapott e-mailben van), lépjen a Settings > API oldalra, és adja meg annak a szervernek az IP-címét, amelyen a ClientFence telepítve van, hogy hozzáférhessen az API-hoz."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Domaineket kezel a ResellerID-nél az API-n keresztül. A ResellerID-nek szüksége van a szerver IP-címére a működéshez. Jelentkezzen be a ResellerID vezérlőpultjába (az URL a regisztrációkor kapott e-mailben van), lépjen a Settings > API oldalra, és adja meg annak a szervernek az IP-címét, amelyen a ClientFence telepítve van, hogy hozzáférhessen az API-hoz."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Domaineket kezel a Synergy Wholesale-nél az API-n keresztül. Adja hozzá a szerver IP-címét a Synergy Wholesale portál engedélyezett IP-címeihez (Account Settings > API Information), és tartson elegendő egyenleget a fiókon a regisztrációkra és megújításokra."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Markdown-előnézet"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Modul:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "NameSilo automatikus megújítás"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "Namecheap viszonteladói azonosító. Ha nincs, hagyja üresen."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Namecheap felhasználónév"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "REST API-kulcsokat igényel, a PayPal REST-alkalmazásban bekapcsolt „Transaction search” mellett."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "NetEarthOne API-kulcs"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "NetEarthOne viszonteladói azonosító"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Hálózati problémák"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "A számla oldalán a számlázási megállapodással rendelkező ügyfél azonnal fizethet, a PayPalra lépés nélkül."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "Nem kötelező, ellenőrzött NameSilo fizetési profil. Üres: a fiók egyenlege fizet."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "Szervezetazonosító"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Jelszó / bejelentkezési kulcs"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "A szerverhez csatlakozáshoz használt jelszó vagy bejelentkezési kulcs"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Egyszeri fizetés megállapodás nélkül:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Fizetés a mentett megállapodással:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "PayPal Auto-Pay számlázási megállapodások"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "PayPal-egyenleg az irányítópulton:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "PayPal számlázási megállapodások: az ügyfelek egyszer beleegyeznek, és számláik ezután automatikusan fizetődnek PayPal-fiókjukból. A bekapcsolt Reference Transactions funkcióval rendelkező PayPal üzleti fiók NVP/SOAP API-adatait igényli (kérje meg a PayPalt a bekapcsolásukra)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "PayPal e-mail-cím a fizetésekhez"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "Fizetési azonosító"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Éles kulcs a Dynadotból: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Termékek és árak"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "A szerver nyilvános IP-címe. Győződjön meg róla, hogy ez az IP engedélyezett a NameCheap beállításaiban."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Resell.biz API-kulcs"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "Resell.biz viszonteladói azonosító"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "Viszonteladói azonosító"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Viszonteladói azonosító. A NetEarthOne vezérlőpultjában találja: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Viszonteladói azonosító. A Resell.biz vezérlőpultjában találja: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Viszonteladói azonosító. A ResellerClub vezérlőpultjában találja: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Viszonteladói azonosító. A ResellerID vezérlőpultjában találja: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "ResellerClub API-kulcs"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ResellerClub viszonteladói azonosító"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "ResellerID API-kulcs"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ResellerID viszonteladói azonosító"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Sandbox API-kulcs"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Sandbox API-jelszó:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Sandbox API-aláírás:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Sandbox API-felhasználónév:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "Sandbox REST API kliensazonosító (nem kötelező):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Sandbox REST API titok:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Mentett PayPal-fiókok:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Mentett bankszámlák:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Titkos kulcs"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "A Hestiában létrehozott hozzáférési kulcs Secret Keyje"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "Külön kulcs az api-sandbox.dynadot.com-hoz, csak bekapcsolt tesztmódban használatos."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "Külön kulcs a sandbox.namesilo.com-hoz, csak bekapcsolt tesztmódban használatos."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "A szerver nyilvános IP-címe"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "A „Fizetési módok” oldalon állítható be:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Adószabályok"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Sablon:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Nyilvános kulcs (teszt):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Titkos kulcs (teszt):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Webhook aláírási titok (teszt):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "A PayPal fizetési oldalain megjelenő kép címe (https). Üres: a cége logója, ha PNG, JPG vagy GIF."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "Egy PayPal REST-alkalmazás kliensazonosítója és titka (developer.paypal.com, Apps & Credentials). Ezekkel a visszatérítések a PayPalhoz kerülnek, a PayPal-előfizetések pedig a ClientFence-ből mondhatók le."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "A felhasználónév, amellyel a Namecheap vezérlőpultjába bejelentkezik."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Ez a regisztrátortípus értesítéseket küld a megadott e-mail-címre a domainkezelési eseményekről. Például amikor egy ügyfél új domaint regisztrál, e-mailt kap a domain adataival. Ezután az Ön felelőssége a domain regisztrálása egy valódi regisztrátornál."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Jegymellékletek másolva"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Jegyvisszajelzések"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "Annak a szervezetnek az UUID-ja, amelyhez az API-token tartozik (a panel címében)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "RDAP Registry-lekérdezések használata a domainek elérhetőségének ellenőrzéséhez"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Felhasználónév a szerverhez csatlakozáshoz"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "A szerverhez csatlakozáshoz használt felhasználónév"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "WHMCS-licencelés (licenckulcsok, ellenőrzési napló és tiltások)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "Az API-kulcsainak egyikét a kérésben megadva hitelesít a Stripe API-nál. API-kulcsait a fiókjában kezelheti."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "A Namecheap vezérlőpultjában találja."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "A NetEarthOne vezérlőpultjában találja: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "A Resell.biz vezérlőpultjában találja: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "A ResellerClub vezérlőpultjában találja: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "A ResellerID vezérlőpultjában találja: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "Az Enom-fiók azonosítója (bejelentkezési név)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "Az INWX felhasználóneve."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Az Openprovider API-felhasználóneve."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Az Ön megjegyzése"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "A „key” paraméter nincs megadva"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "Hiányzik a „mod” kulcs"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "A kiegészítő azonosítója nincs megadva"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "A kiegészítő időszaka nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Hiányzik az összeg"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Az összeg kötelező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Új domaint regisztrál, vagy meglévőt visz át? Hiányzik az action paraméter"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "A cikk azonosítója nincs megadva"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "A cikkkategória azonosítója nincs megadva"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "A cikk címe nincs megadva"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "Hiányzik a sablonválasz-kategória azonosítója"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Hiányzik a sablonválasz-kategória címe"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "Hiányzik a sablonválasz azonosítója"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "Hiányzik a sablonválasz kategóriájának azonosítója"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Hiányzik a sablonválasz címe"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "A kártya azonosítója nincs megadva"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "A kosárelem azonosítója nincs megadva"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "A kategória azonosítója nincs megadva"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "A kategória címe kötelező"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "A kategória címe nincs megadva"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Válassza ki a bizalmas adat fajtáját"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Válasszon értékelést"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Válasszon választ"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Válassza ki a számlázási ciklust"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Válassza ki az új terméket"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Válassza ki, mikor ér véget a szolgáltatás"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "Hiányzik az ügyfél azonosítója"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "Az ügyfélazonosítót a tömeges levelezés beállításaiban kell megadni."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "Az ügyfél azonosítója kötelező"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "Az ügyfél azonosítója nincs megadva"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "A kód kötelező"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "A tartalom nincs megadva"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Hiányzik a pénznemkód"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "A pénznemkód nincs megadva"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "A jelenlegi jelszó kötelező"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "A jelenlegi jelszó kötelező"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "Az egyéni oldal azonosítója nincs megadva"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "Az egyéni oldalak azonosítói nincsenek megadva"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Az egyéni oldal tartalma nincs megadva"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Az egyéni oldal slugja nincs megadva"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Az egyéni oldal címe nincs megadva"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "A leírás kötelező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "A domain TLD-je kötelező."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Hiányzik a domainművelet"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "A domain kiterjesztése kötelező."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "A domainnév kötelező."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Hiányzik a domain regisztrációs időtartama. Folytatás előtt ellenőrizze a domain elérhetőségét."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Hiányzik a domainregisztráció sld paramétere."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Hiányzik a domainregisztráció tld paramétere."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "A visszaminősítési szabály nincs megadva"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "Az e-mail azonosítója nincs megadva"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "Az e-mail-cím nincs megadva"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "Az e-mail tartalma kötelező"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "Az e-mail kötelező"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "Az e-mail tárgya kötelező"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "Az e-mail-sablon kódja kötelező"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "Az e-mail-sablon kódja nincs megadva"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "Az e-mail-sablon tartalma kötelező"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "Az e-mail-sablon tárgya kötelező"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "Az esemény azonosítója nincs megadva"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "A bővítmény azonosítója nincs megadva"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "A bővítmény típusa nincs megadva"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "A sikertelen művelet azonosítója nincs megadva"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "A mező azonosítója nincs megadva"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "Hiányzik a fájl azonosítója"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Hiányzik a fájlnév a termékkonfigurációból"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "A vezetéknév kötelező"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "A vezetéknév kötelező"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "Az űrlap azonosítója nincs megadva"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Az űrlap neve nincs megadva"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Az űrlap neve nincs megadva"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Az űrlap típusa nincs megadva"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "A formátum kötelező"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "Az átjáró azonosítója nincs megadva"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "Hiányzik a csoport azonosítója"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "A csoport neve nincs megadva"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Hiányzik a csoport címe"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "A hash kötelező"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "Hiányzik a help desk azonosítója"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "A help desk azonosítója nincs megadva"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Hiányzik a help desk címe"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "A hook eseménye nincs megadva"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "A tárhelycsomag azonosítója nincs megadva"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "A tárhelycsomag neve nincs megadva"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "A tárhelytermékhez alap domaint kell beállítani az aldomainekhez"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "A tárhelytermékhez meg kell adni a register_sld paramétert"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "A tárhelytermékhez meg kell adni a register_tld paramétert"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "A tárhelytermékhez meg kell adni a transfer_sld paramétert"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "A tárhelytermékhez meg kell adni a transfer_tld paramétert"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "A tárhelytermékhez domainkonfiguráció szükséges"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "Hiányzik az azonosító"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "Az azonosító kötelező"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "Az azonosító nincs megadva"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "Az azonosítók nincsenek megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "Hiányzik a számla azonosítója"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "A számla azonosítója nincs megadva"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "A számla hashe nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "A számlatétel azonosítója nincs megadva"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "A nyelv azonosítója nincs megadva"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "A naplóbejegyzés azonosítója nincs megadva"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "Az üzenet azonosítója nincs megadva"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Az üzenet tárgya nincs megadva"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "A név nincs megadva"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Az új jelszó megerősítése kötelező"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Az új jelszó megerősítése kötelező"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Az új jelszó kötelező"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Az új jelszó kötelező"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Nincs hash megadva"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "Hiányzik a megjegyzés azonosítója"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Hiányzik a megjegyzés"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "Az értesítés azonosítója nincs megadva"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "Az opció azonosítója nincs megadva"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "Az opciócsoport azonosítója nincs megadva"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "A megrendelés azonosítója (order_id) nincs megadva"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "Hiányzik a megrendelés azonosítója"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Hiányzik a megrendelés-azonosító neve"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "A megrendelés azonosítója nincs megadva"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "A megrendelések azonosítói nincsenek megadva"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "A megrendelés előzménysorának azonosítója nincs megadva"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "A megrendelés azonosítója kötelező"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "A megrendelés állapota nincs megadva"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "A mod paraméter nincs megadva"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "Az „ext” paraméter nincs megadva"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "Hiányzik az ext paraméter"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "A jelszó megerősítése kötelező"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "A jelszó kötelező"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "A jelszó nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "A fizetési átjáró azonosítója nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Hiányzik a fizetési átjáró kódja"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Az időszak paraméter nincs megadva"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Válasszon dátumot és időpontot"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "A „Kitűzve” kötelező"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Adja meg a tárgyat"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "Adja meg az e-mail-címét"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Adja meg a nevét"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "A bejegyzés azonosítója nincs megadva"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Hiányzik az előbeállítás neve"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Előbb tekintse meg a frissítés előnézetét"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "Hiányzik a termék azonosítója"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "A termék azonosítója nincs megadva"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "A termék nincs teljesen beállítva."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "Hiányzik a promóció azonosítója"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "A promóció azonosítója nincs megadva"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Hiányzik a promóciós kód"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "A promóciós kód nincs megadva"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Hiányzik a promóció típusa"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Hiányzik a promóció értéke"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Az árajánlat hashe nincs megadva"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "A címzett e-mail-címe kötelező"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "A címzett neve kötelező"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "Az átirányítás azonosítója nincs megadva"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Az átirányítás útvonala nincs megadva"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Az átirányítás célja nincs megadva"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "Hiányzik a regisztrátor azonosítója"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Hiányzik a regisztrátor kódja"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Hiányzik a regisztrációs ár"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Hiányzik a megújítási ár"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "A kérés azonosítója nincs megadva"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Hiányzik a kötelező address1 mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Hiányzik a kötelező city mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Hiányzik a kötelező contact mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Hiányzik a kötelező country mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Hiányzik a kötelező email mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Hiányzik a kötelező first_name mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Hiányzik a kötelező last_name mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Hiányzik a kötelező phone mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Hiányzik a kötelező phone_cc mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Hiányzik a kötelező postcode mező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Hiányzik a kötelező state mező"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "Hiányzik az SLD"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "A hatókör nincs megadva"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "A bizalmas adat azonosítója nincs megadva"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Jelölje ki a jegyeket"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Jelölje ki az egyesítendő jegyeket"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "A feladó e-mail-címe kötelező"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "A feladó neve kötelező"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "A szerver azonosítója nincs megadva"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "A szerver IP-címe nincs megadva"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "A szerverkezelő nincs megadva"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "A szerver neve nincs megadva"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "A beállítás azonosítója nincs megadva"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "Hiányzik a kosár azonosítója"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "A személyzeti csoport azonosítója nincs megadva"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "A munkatárs azonosítója nincs megadva"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Hiányzik a tárolt fájlnév a termékkonfigurációból"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Az aldomain neve kötelező."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "Az előfizetés azonosítója nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Az előfizetés pénzneme nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "Az előfizetés sID-ja nincs megadva"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "Hiányzik a TLD"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "Hiányzik a TLD regisztrátorának azonosítója"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "Hiányzik az adó azonosítója"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "Az adó azonosítója nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Hiányzik az adó neve"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Hiányzik az adókulcs"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Az adókulcs hiányzik vagy érvénytelen"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "A sablon kódja nincs megadva"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "A téma kódja nincs megadva"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "Hiányzik a jegy azonosítója"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "A jegy azonosítója nincs megadva"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "A jegy tartalma kötelező"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "A jegy hashe kötelező"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "Hiányzik a jegyüzenet azonosítója"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Hiányzik a jegyüzenet tartalma"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "A jegy tárgya kötelező"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "A jegy support_helpdesk_id mezője kötelező"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "A jegy support_helpdesk_id mezője kötelező"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "A cím nincs megadva"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "Hiányzik a tranzakció azonosítója"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "A tranzakció azonosítója kötelező"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Az átviendő domain neve (SLD) kötelező."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Az átviendő domain típusa (TLD) kötelező."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Hiányzik az átviteli ár"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "A típus nincs megadva"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "A frissítési szabály nincs megadva"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "Meg kell adnia a futtatandó ellenőrzés azonosítóját."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "Meg kell adnia egy címet"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "Meg kell adnia a lekérdezendő IP-címet."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "Meg kell adnia a visszaállítandó IP-címet."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "Hiányzik a plan_id"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "Hiányzik a ticket_ID"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "A kérés időtúllépés miatt megszakadt :seconds másodperc után"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Checkbox"
+msgstr "Jelölőnégyzet"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Custom"
+msgstr "Egyéni"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Dropdown"
+msgstr "Legördülő lista"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Gender"
+msgstr "Nem"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Textarea"
+msgstr "Szövegmező"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "To (Email)"
+msgstr "Címzett (e-mail)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Biztosan törli ezt az egyéni mezőt?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Biztosan törli ezt az űrlapot?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Törli az űrlapot?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Törli a mezőt?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Tekintse meg a callback adatai mellett naplózott szerverváltozókat."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Jelszó a szerverhez csatlakozáshoz"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Tekintse meg a fizetési átjárótól kapott nyers kérés törzsét."

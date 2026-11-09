@@ -24,16 +24,16 @@ class Registrar_Adapter_Resellerid extends Registrar_Adapter_Resellerclub
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access.',
+            'label' => __trans('Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access.'),
             'form' => [
                 'userid' => ['text', [
-                    'label' => 'Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID',
-                    'description' => 'ResellerID Reseller ID',
+                    'label' => __trans('Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID'),
+                    'description' => __trans('ResellerID Reseller ID'),
                 ],
                 ],
                 'api-key' => ['password', [
-                    'label' => 'ResellerID API Key',
-                    'description' => 'You can get this at ResellerID control panel, go to Settings -> API',
+                    'label' => __trans('ResellerID API Key'),
+                    'description' => __trans('You can get this at ResellerID control panel, go to Settings -> API'),
                     'required' => false,
                     'secret' => true,
                 ],

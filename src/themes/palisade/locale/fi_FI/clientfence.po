@@ -15809,7 +15809,7 @@ msgstr "rel_new_value:n on oltava kelvollinen positiivinen kokonaislukutuotteen 
 
 # Fixes to FOSSBilling's translation: short labels and the ticket's opening time.
 msgid "Admin"
-msgstr "Admin"
+msgstr "Ylläpitäjä"
 
 # To translate (tools/locales.py starter).
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -21895,3 +21895,1519 @@ msgstr "Pyydä tukeamme poistamaan tilisi. Poistamme henkilötietosi ja säilyt�
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Tämän yhdyskäytävän maksamattomat laskut: :count. Asiakkaat maksavat ne valitsemallasi yhdyskäytävällä."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "Tämän portaalin valuuttakoodi: USD (Yhdysvaltain dollari), EUR (euro) tai GBP (Englannin punta). Muunvaluuttaiset laskut veloitetaan tässä valuutassa portaalin vaihtokursseilla, kuten WHMCS:n \"Convert To For Processing\". Tyhjä: jokainen lasku veloitetaan omassa valuutassaan. [PayPal Auto-Payn käyttöönotto](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "API-avain"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "API-tunnus"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash tai API-tunnus"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "Pääsyavaimen ID"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash tai WHM-API-tunnus palvelimeen yhdistämiseen"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "Uusiutuvan ilmaistilauksen (ilmainen kokeilu) jälkeen asiakas, jolla ei ole tallennettua maksutapaa, ohjataan PayPaliin automaattisten maksujen määrittämiseksi."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "Paneelin pääsytunnus; salli siinä tämän palvelimen IP-osoite"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "Tämän widgetin näyttämisessä tapahtui virhe."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "Korttien lisäksi asiakkaat voivat tallentaa pankkitilin automaattisia maksuja varten: BECS-suoraveloitus AUD:lle, SEPA-suoraveloitus EUR:lle ja Bacs-suoraveloitus GBP:lle. Ota tapa ensin käyttöön Stripe-hallintapaneelissa. Pankkimaksun vahvistuminen kestää muutaman päivän: sillä välin lasku näyttää \"Maksu odottaa\"."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Paketit (ei tuotu)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Asiakkaiden hyvityssaldot"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Asiakkaat voivat maksaa laskun myös PayPalilla ilman automaattisten maksujen määrittämistä."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Asiakkaat voivat tallentaa PayPal-tilinsä maksaessaan tai Maksutavat-sivullaan, ja heidän laskunsa maksetaan sen jälkeen automaattisesti, kuten tallennetuilla korteilla. Vaatii REST API -avaimet ja Vaultin (\"Save payment methods\") PayPal REST -sovelluksessasi, jota PayPal tarjoaa vain joissakin maissa."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Asiakkaat voivat määrittää automaattiset maksut Maksutavat-sivullaan maksamatta laskua."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Asiakkaat, joiden hyvitys täsmää"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Vahvista"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "Muunna käsittelyä varten (valinnainen):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Dynadot-tilausten valuutta, esimerkiksi USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar vastaa aina myönteisesti. Hyödyllinen, jos mikään muu rekisteröijä ei sovi."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Oma palvelinhallinta"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Oma maksuyhdyskäytävä antaa sinun kertoa, miten asiakas voi maksaa laskun. Kaikki järjestelmän, asiakkaan, tilauksen ja laskun tiedot voidaan tulostaa. HTML-koodi on tuettu."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Verkkotunnusten hinnat"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "Sähköpostiloki"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "Sähköposti verkkotunnuksen muutosilmoituksille"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Kirjoita teksti kertamaksun tiedoille"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Kirjoita teksti kestotilauksen tiedoille"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "Kirjoita PayPal-sähköpostisi, niin voit alkaa vastaanottaa PayPal-maksuja."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "Leikepöydälle kopiointi epäonnistui. Valitse teksti ja kopioi se käsin."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Täytä asiakkaan sähköposti PayPalissa:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Ilmaistilaukset:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "Enomista: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "NameSilosta: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "Synergy Wholesalen portaalista: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Samalta sivulta."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Hosting-palvelimet (pois päältä)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "Hestiassa luomasi pääsyavaimen ID."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Internetbs API-avain"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Internetbs API-salasana"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Virheellinen API-määritys"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Pidä tämä pois päältä: ClientFence uusii verkkotunnuksen, kun sen uusintalasku on maksettu. Päällä NameSilo uusii sen myös tililtäsi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Lisenssikiellot"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "Live API -salasana:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "Live API -allekirjoitus:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "Live API -käyttäjätunnus:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Julkinen avain (tuotanto):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "Live REST API -asiakastunnus (valinnainen):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Live REST API -salaisuus:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Salainen avain (tuotanto):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Webhookin allekirjoitussalaisuus (tuotanto):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "Logo PayPalin sivuilla (valinnainen):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Hallinnoi verkkotunnuksia Dynadotissa API3:n kautta. Lisää tämän palvelimen IP-osoite Dynadotin API-sallittujen listaan (Tools > API) ja pidä tilillä riittävästi saldoa rekisteröinteihin ja uusintoihin."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Hallinnoi verkkotunnuksia Enomissa jälleenmyyjärajapinnan kautta. Salli tämän palvelimen IP-osoite Enomin API-asetuksissa ja pidä tilillä riittävästi varoja rekisteröinteihin ja uusintoihin. Enomin automaattinen uusinta on pois päältä jokaiselta verkkotunnukselta: ClientFence uusii verkkotunnuksen, kun sen uusintalasku on maksettu. Kun testitila on päällä, anna Enom-testitilisi jälleenmyyjätunnus ja API-tunnus (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Hallinnoi verkkotunnuksia INWX:ssä DomRobot-rajapinnan kautta. Käytä INWX-tiliä (tai alitiliä) ilman kaksivaiheista kirjautumista ja pidä tilillä riittävästi varoja rekisteröinteihin ja uusintoihin. Verkkotunnukset rekisteröidään vanhenemaan, ellei ClientFence uusi niitä, minkä se tekee, kun uusintalasku on maksettu. Kun testitila on päällä, anna INWX OT&E -testitilisi käyttäjätunnus ja salasana."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Hallinnoi verkkotunnuksia Internetbs:ssä API:n kautta"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Hallinnoi verkkotunnuksia NameSilossa API:n kautta. Luo API-avain NameSilossa (Account > API Manager), salli siellä tämän palvelimen IP-osoite ja pidä tilillä riittävästi varoja rekisteröinteihin ja uusintoihin. Poista API Managerissa käytöstä myös renewDomain-palautukset: ClientFence ei uusi verkkotunnusta sen palautusjaksolla, mutta NameSilo palauttaisi sen muuten palautusmaksulla."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Hallinnoi verkkotunnuksia Namecheapissa API:n kautta. Namecheap tarvitsee palvelimesi IP-osoitteen toimiakseen."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Hallinnoi verkkotunnuksia NetEarthOnessa API:n kautta. NetEarthOne tarvitsee palvelimesi IP-osoitteen toimiakseen. Kirjaudu NetEarthOnen hallintapaneeliin (URL on rekisteröitymisen yhteydessä saamassasi sähköpostissa), siirry kohtaan Settings > API ja anna sen palvelimen IP-osoite, jolle ClientFence on asennettu, jotta se saa pääsyn API:in."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Hallinnoi verkkotunnuksia Openproviderissa API:n kautta. Käytä Openprovider API -käyttäjää, salli sille tämän palvelimen IP-osoite ja pidä tilillä riittävästi varoja rekisteröinteihin ja uusintoihin. Openproviderin automaattinen uusinta on pois päältä jokaiselta verkkotunnukselta: ClientFence uusii verkkotunnuksen, kun sen uusintalasku on maksettu. Kun testitila on päällä, anna Openprovider-sandbox-tilisi käyttäjätunnus ja salasana."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Hallinnoi verkkotunnuksia Resell.bizissä API:n kautta. Resell.biz tarvitsee palvelimesi IP-osoitteen toimiakseen. Kirjaudu Resell.bizin hallintapaneeliin (URL on rekisteröitymisen yhteydessä saamassasi sähköpostissa), siirry kohtaan Settings > API ja anna sen palvelimen IP-osoite, jolle ClientFence on asennettu, jotta se saa pääsyn API:in."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Hallinnoi verkkotunnuksia ResellerClubissa API:n kautta. ResellerClub tarvitsee palvelimesi IP-osoitteen toimiakseen. Kirjaudu ResellerClubin hallintapaneeliin (URL on rekisteröitymisen yhteydessä saamassasi sähköpostissa), siirry kohtaan Settings > API ja anna sen palvelimen IP-osoite, jolle ClientFence on asennettu, jotta se saa pääsyn API:in."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Hallinnoi verkkotunnuksia ResellerID:ssä API:n kautta. ResellerID tarvitsee palvelimesi IP-osoitteen toimiakseen. Kirjaudu ResellerID:n hallintapaneeliin (URL on rekisteröitymisen yhteydessä saamassasi sähköpostissa), siirry kohtaan Settings > API ja anna sen palvelimen IP-osoite, jolle ClientFence on asennettu, jotta se saa pääsyn API:in."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Hallinnoi verkkotunnuksia Synergy Wholesalessa API:n kautta. Lisää tämän palvelimen IP-osoite Synergy Wholesalen portaalin sallittuihin IP-osoitteisiin (Account Settings > API Information) ja pidä tilillä riittävästi saldoa rekisteröinteihin ja uusintoihin."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Markdown-esikatselu"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Moduuli:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "NameSilon automaattinen uusinta"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "Namecheapin jälleenmyyjätunnus. Jos sinulla ei ole sellaista, jätä tyhjäksi."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Namecheapin käyttäjätunnus"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "Vaatii REST API -avaimet, ja PayPal REST -sovelluksessa \"Transaction search\" on oltava päällä."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "NetEarthOnen API-avain"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "NetEarthOnen jälleenmyyjätunnus"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Verkko-ongelmat"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "Laskusivulla asiakas, jolla on laskutussopimus, voi maksaa heti menemättä PayPaliin."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "Valinnainen vahvistettu NameSilon maksuprofiili. Tyhjä: tilin varat maksavat."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "Organisaation ID"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Salasana / kirjautumisavain"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "Salasana tai kirjautumisavain palvelimeen yhdistämiseen"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Maksa kerran ilman sopimusta:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Maksa tallennetulla sopimuksella:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "PayPal Auto-Pay -laskutussopimukset"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "PayPal-saldo hallintapaneelissa:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "PayPal-laskutussopimukset: asiakkaat hyväksyvät kerran, ja heidän laskunsa maksetaan sen jälkeen automaattisesti heidän PayPal-tililtään. Vaatii sellaisen PayPal-yritystilin NVP/SOAP API -tiedot, jossa Reference Transactions on käytössä (pyydä PayPalia ottamaan ne käyttöön)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "PayPal-sähköpostiosoite maksuja varten"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "Maksun ID"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Tuotantoavain Dynadotista: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Tuotteet ja hinnat"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "Tämän palvelimen julkinen IP-osoite. Varmista, että tämä IP on sallittu NameCheapin asetuksissa."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Resell.biz API-avain"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "Resell.bizin jälleenmyyjätunnus"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "Jälleenmyyjätunnus"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Jälleenmyyjätunnus. Löydät sen NetEarthOnen hallintapaneelista: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Jälleenmyyjätunnus. Löydät sen Resell.bizin hallintapaneelista: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Jälleenmyyjätunnus. Löydät sen ResellerClubin hallintapaneelista: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Jälleenmyyjätunnus. Löydät sen ResellerID:n hallintapaneelista: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "ResellerClubin API-avain"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ResellerClubin jälleenmyyjätunnus"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "ResellerID:n API-avain"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ResellerID:n jälleenmyyjätunnus"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Sandbox API -avain"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Sandbox API -salasana:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Sandbox API -allekirjoitus:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Sandbox API -käyttäjätunnus:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "Sandbox REST API -asiakastunnus (valinnainen):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Sandbox REST API -salaisuus:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Tallennetut PayPal-tilit:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Tallennetut pankkitilit:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Salainen avain"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Hestiassa luomasi pääsyavaimen Secret Key"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "Erillinen avain osoitteelle api-sandbox.dynadot.com, käytössä vain kun testitila on päällä."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "Erillinen avain osoitteelle sandbox.namesilo.com, käytössä vain kun testitila on päällä."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "Palvelimen julkinen IP-osoite"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "Määritä Maksutavat-sivulla:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Paikka:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Verosäännöt"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Pohja:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Julkinen avain (testi):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Salainen avain (testi):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Webhookin allekirjoitussalaisuus (testi):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "Sen kuvan osoite (https), jonka PayPal näyttää kassasivuillaan. Tyhjä: yrityksesi logo, jos se on PNG, JPG tai GIF."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "PayPal REST -sovelluksen asiakastunnus ja salaisuus (developer.paypal.com, Apps & Credentials). Niillä hyvitykset lähetetään PayPaliin ja PayPal-kestotilaukset peruutetaan ClientFencestä."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "Käyttäjätunnus, jolla kirjaudut Namecheapin hallintapaneeliin."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Tämä rekisteröijätyyppi lähettää annettuun sähköpostiin ilmoituksia verkkotunnusten hallinnan tapahtumista. Esimerkiksi kun asiakas rekisteröi uuden verkkotunnuksen, saat sähköpostin verkkotunnuksen tiedoilla. Sen jälkeen verkkotunnuksen rekisteröinti oikealla rekisteröijällä on sinun vastuullasi."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Tukipyyntöjen liitteet kopioitu"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Tukipyyntöjen palaute"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "Sen organisaation UUID, johon API-tunnus kuuluu (paneelin osoitteessa)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "Käytä RDAP Registry -hakuja verkkotunnusten saatavuuden tarkistamiseen"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Käyttäjätunnus palvelimeen yhdistämiseen"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "Palvelimeen yhdistämiseen käytettävä käyttäjätunnus"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "WHMCS-lisensointi (lisenssiavaimet, tarkistusloki ja kiellot)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "Todennat itsesi Stripe API:lle antamalla pyynnössä yhden API-avaimistasi. API-avaimia hallitaan tililtäsi."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "Löydät sen Namecheapin hallintapaneelista."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "Löydät sen NetEarthOnen hallintapaneelista: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "Löydät sen Resell.bizin hallintapaneelista: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "Löydät sen ResellerClubin hallintapaneelista: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "Löydät sen ResellerID:n hallintapaneelista: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "Enom-tilisi ID (kirjautumisnimi)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "INWX-käyttäjätunnuksesi."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Openprovider API -käyttäjätunnuksesi."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Kommenttisi"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "Parametri \"key\" ei ole mukana pyynnössä"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "Avain \"mod\" puuttuu"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "Lisäosan ID ei ole mukana pyynnössä"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "Lisäosan jakso ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Summa puuttuu"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Summa on pakollinen"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Rekisteröitkö uuden verkkotunnuksen vai siirrätkö olemassa olevan? Parametri action puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "Artikkelin ID ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "Artikkelikategorian ID ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "Artikkelin otsikko ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "Valmiiden vastausten kategorian ID puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Valmiiden vastausten kategorian otsikko puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "Valmiin vastauksen ID puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "Valmiin vastauksen kategorian ID puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Valmiin vastauksen otsikko puuttuu"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "Kortin ID ei ole mukana pyynnössä"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "Ostoskorin tuotteen ID ei ole mukana pyynnössä"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "Kategorian ID ei ole mukana pyynnössä"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "Kategorian otsikko on pakollinen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "Kategorian otsikko ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Valitse salaisen tiedon laji"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Valitse arvosana"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Valitse vastaus"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Valitse laskutuskausi"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Valitse uusi tuote"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Valitse, milloin palvelu päättyy"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "Asiakkaan ID puuttuu"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "Asiakkaan ID on määritettävä massasähköpostin asetuksissa."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "Asiakkaan ID on pakollinen"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "Asiakkaan ID ei ole mukana pyynnössä"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "Koodi on pakollinen"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "Sisältö ei ole mukana pyynnössä"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Valuuttakoodi puuttuu"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "Valuuttakoodi ei ole mukana pyynnössä"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "Nykyinen salasana on pakollinen"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "Nykyinen salasana on pakollinen"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "Mukautetun sivun ID ei ole mukana pyynnössä"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "Mukautettujen sivujen ID:t eivät ole mukana pyynnössä"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Mukautetun sivun sisältö ei ole mukana pyynnössä"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Mukautetun sivun slug ei ole mukana pyynnössä"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Mukautetun sivun otsikko ei ole mukana pyynnössä"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "Kuvaus on pakollinen"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "Verkkotunnuksen TLD on pakollinen."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Verkkotunnuksen toiminto puuttuu"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "Verkkotunnuksen pääte on pakollinen."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "Verkkotunnuksen nimi on pakollinen."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Verkkotunnuksen rekisteröintijakso puuttuu. Tarkista verkkotunnuksen saatavuus ennen jatkamista."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Verkkotunnuksen rekisteröinnin sld-parametri puuttuu."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Verkkotunnuksen rekisteröinnin tld-parametri puuttuu."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "Alennussääntö ei ole mukana pyynnössä"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "Sähköpostin ID ei ole mukana pyynnössä"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "Sähköpostiosoite ei ole mukana pyynnössä"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "Sähköpostin sisältö on pakollinen"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "Sähköposti on pakollinen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "Sähköpostin aihe on pakollinen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "Sähköpostipohjan koodi on pakollinen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "Sähköpostipohjan koodi ei ole mukana pyynnössä"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "Sähköpostipohjan sisältö on pakollinen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "Sähköpostipohjan aihe on pakollinen"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "Tapahtuman ID ei ole mukana pyynnössä"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "Laajennuksen ID ei ole mukana pyynnössä"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "Laajennuksen tyyppi ei ole mukana pyynnössä"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "Epäonnistuneen toiminnon ID ei ole mukana pyynnössä"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "Kentän ID ei ole mukana pyynnössä"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "Tiedoston ID puuttuu"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Tiedostonimi puuttuu tuotteen määrityksistä"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "Etunimi on pakollinen"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "Etunimi on pakollinen"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "Lomakkeen ID ei ole mukana pyynnössä"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Lomakkeen nimi ei ole mukana pyynnössä"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Lomakkeen nimeä ei annettu"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Lomakkeen tyyppi ei ole mukana pyynnössä"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "Muoto on pakollinen"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "Yhdyskäytävän ID ei ole mukana pyynnössä"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "Ryhmän ID puuttuu"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "Ryhmän nimi ei ole mukana pyynnössä"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Ryhmän otsikko puuttuu"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "Hash on pakollinen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "Tukipalvelun ID puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "Tukipalvelun ID ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Tukipalvelun otsikko puuttuu"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "Koukun tapahtuma ei ole mukana pyynnössä"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "Webhotellipaketin ID ei ole mukana pyynnössä"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "Webhotellipaketin nimi ei ole mukana pyynnössä"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "Hosting-tuotteelle on määritettävä alidomainien perusverkkotunnus"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "Hosting-tuotteelle on määritettävä parametri register_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "Hosting-tuotteelle on määritettävä parametri register_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "Hosting-tuotteelle on määritettävä parametri transfer_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "Hosting-tuotteelle on määritettävä parametri transfer_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "Hosting-tuotteella on oltava verkkotunnuksen määritys"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "ID puuttuu"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "ID on pakollinen"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "ID ei ole mukana pyynnössä"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "ID:t eivät ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "Laskun ID puuttuu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "Laskun ID ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "Laskun hash ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "Laskurivin ID ei ole mukana pyynnössä"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "Kielen ID ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "Lokimerkinnän ID ei ole mukana pyynnössä"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "Viestin ID ei ole mukana pyynnössä"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Viestin aihe ei ole mukana pyynnössä"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "Nimi ei ole mukana pyynnössä"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Uuden salasanan vahvistus on pakollinen"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Uuden salasanan vahvistus on pakollinen"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Uusi salasana on pakollinen"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Uusi salasana on pakollinen"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Hashia ei annettu"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "Muistiinpanon ID puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Muistiinpano puuttuu"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "Ilmoituksen ID ei ole mukana pyynnössä"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "Vaihtoehdon ID ei ole mukana pyynnössä"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "Vaihtoehtoryhmän ID ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "Tilauksen ID (order_id) ei ole mukana pyynnössä"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "Tilauksen ID puuttuu"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Tilauksen ID:n nimi puuttuu"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "Tilauksen ID ei ole mukana pyynnössä"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "Tilausten ID:t eivät ole mukana pyynnössä"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "Tilaushistorian rivin ID ei ole mukana pyynnössä"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "Tilauksen ID on pakollinen"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "Tilauksen tila ei ole mukana pyynnössä"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "Parametri mod ei ole mukana pyynnössä"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "Parametri \"ext\" ei ole mukana pyynnössä"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "Parametri ext puuttuu"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "Salasanan vahvistus on pakollinen"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "Salasana on pakollinen"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "Salasana ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "Maksuyhdyskäytävän ID ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Maksuyhdyskäytävän koodi puuttuu"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Jaksoparametri ei ole mukana pyynnössä"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Valitse päivämäärä ja kellonaika"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "\"Kiinnitetty\" on pakollinen"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Kirjoita aihe"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "Kirjoita sähköpostiosoitteesi"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Kirjoita nimesi"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "Julkaisun ID ei ole mukana pyynnössä"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Esiasetuksen nimi puuttuu"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Esikatsele päivitys ensin"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "Tuotteen ID puuttuu"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "Tuotteen ID ei ole mukana pyynnössä"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "Tuotetta ei ole määritetty kokonaan."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "Kampanjan ID puuttuu"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "Kampanjan ID ei ole mukana pyynnössä"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Tarjouskoodi puuttuu"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "Tarjouskoodi ei ole mukana pyynnössä"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Kampanjan tyyppi puuttuu"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Kampanjan arvo puuttuu"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Tarjouksen hash ei ole mukana pyynnössä"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "Vastaanottajan sähköposti on pakollinen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "Vastaanottajan nimi on pakollinen"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "Uudelleenohjauksen ID ei ole mukana pyynnössä"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Uudelleenohjauksen polku ei ole mukana pyynnössä"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Uudelleenohjauksen kohde ei ole mukana pyynnössä"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "Rekisteröijän ID puuttuu"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Rekisteröijän koodi puuttuu"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Rekisteröintihinta puuttuu"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Uusintahinta puuttuu"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "Pyynnön ID ei ole mukana pyynnössä"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Pakollinen kenttä address1 puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Pakollinen kenttä city puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Pakollinen kenttä contact puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Pakollinen kenttä country puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Pakollinen kenttä email puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Pakollinen kenttä first_name puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Pakollinen kenttä last_name puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Pakollinen kenttä phone puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Pakollinen kenttä phone_cc puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Pakollinen kenttä postcode puuttuu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Pakollinen kenttä state puuttuu"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "SLD puuttuu"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "Laajuus ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "Salaisen tiedon ID ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Valitse tukipyynnöt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Valitse yhdistettävät tukipyynnöt"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "Lähettäjän sähköposti on pakollinen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "Lähettäjän nimi on pakollinen"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "Palvelimen ID ei ole mukana pyynnössä"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "Palvelimen IP ei ole mukana pyynnössä"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "Palvelinhallintaa ei ole määritetty"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "Palvelimen nimi ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "Asennuksen ID ei ole mukana pyynnössä"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "Ostoskorin ID puuttuu"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "Henkilöstöryhmän ID ei ole mukana pyynnössä"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "Henkilöstön jäsenen ID ei ole mukana pyynnössä"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Tallennettu tiedostonimi puuttuu tuotteen määrityksistä"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Alidomainin nimi on pakollinen."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "Kestotilauksen ID ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Kestotilauksen valuutta ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "Kestotilauksen sID ei ole mukana pyynnössä"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "TLD puuttuu"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "TLD:n rekisteröijän ID puuttuu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "Veron ID puuttuu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "Veron ID ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Veron nimi puuttuu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Verokanta puuttuu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Verokanta puuttuu tai on virheellinen"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "Pohjan koodi ei ole mukana pyynnössä"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "Teeman koodi ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "Tukipyynnön ID puuttuu"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "Tukipyynnön ID ei ole mukana pyynnössä"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "Tukipyynnön sisältö on pakollinen"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "Tukipyynnön hash on pakollinen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "Tukipyynnön viestin ID puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Tukipyynnön viestin sisältö puuttuu"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "Tukipyynnön aihe on pakollinen"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "Tukipyynnön support_helpdesk_id on pakollinen"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "Tukipyynnön support_helpdesk_id on pakollinen"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "Otsikko ei ole mukana pyynnössä"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "Maksutapahtuman ID puuttuu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "Maksutapahtuman ID on pakollinen"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Siirrettävän verkkotunnuksen nimi (SLD) on pakollinen."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Siirrettävän verkkotunnuksen tyyppi (TLD) on pakollinen."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Siirtohinta puuttuu"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "Tyyppi ei ole mukana pyynnössä"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "Päivityssääntö ei ole mukana pyynnössä"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "Anna suoritettavan tarkistuksen ID."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "Anna otsikko"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "Anna haettava IP-osoite."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "Anna nollattava IP-osoite."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "plan_id puuttuu"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "ticket_ID puuttuu"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "Pyyntö aikakatkaistiin :seconds sekunnin jälkeen"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "IPN Callback URL"
+msgstr "IPN-paluukutsun URL"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Radio"
+msgstr "Valintanappi"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Haluatko varmasti poistaa tämän mukautetun kentän?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Haluatko varmasti poistaa tämän lomakkeen?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Poistetaanko lomake?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Poistetaanko kenttä?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Tarkastele palvelinmuuttujia, jotka on kirjattu callback-tietojen mukana."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Salasana palvelimeen yhdistämiseen"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Tarkastele maksuyhdyskäytävältä saatua pyynnön raakasisältöä."

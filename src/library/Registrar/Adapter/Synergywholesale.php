@@ -41,16 +41,16 @@ class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on Synergy Wholesale through its API. Add this server\'s IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals.',
+            'label' => __trans('Manages domains on Synergy Wholesale through its API. Add this server\'s IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals.'),
             'form' => [
                 'reseller_id' => ['text', [
-                    'label' => 'Reseller ID',
-                    'description' => 'From the Synergy Wholesale portal: Account Settings > API Information.',
+                    'label' => __trans('Reseller ID'),
+                    'description' => __trans('From the Synergy Wholesale portal: Account Settings > API Information.'),
                     'required' => true,
                 ]],
                 'api_key' => ['password', [
-                    'label' => 'API key',
-                    'description' => 'From the same page.',
+                    'label' => __trans('API key'),
+                    'description' => __trans('From the same page.'),
                     'required' => true,
                     'secret' => true,
                 ]],

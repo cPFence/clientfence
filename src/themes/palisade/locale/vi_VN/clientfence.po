@@ -2510,7 +2510,7 @@ msgstr "Trang khách hàng"
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Client secret"
-msgstr "Client secret"
+msgstr "Khóa bí mật của khách"
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Client sign-up is off: “Disable New Signups” is on in"
@@ -5910,7 +5910,7 @@ msgstr "Cho phép khách truy cập kiểm tra tên miền còn trống ngay tr�
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Letter"
-msgstr "Letter"
+msgstr "Thư"
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "License Configuration"
@@ -21438,3 +21438,1551 @@ msgstr "Yêu cầu bộ phận hỗ trợ của chúng tôi xóa tài khoản c�
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Hóa đơn chưa thanh toán của cổng này: :count. Khách hàng thanh toán chúng qua cổng bạn chọn."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "Mã tiền tệ của cổng này: USD (đô la Mỹ), EUR (euro) hoặc GBP (bảng Anh). Hóa đơn bằng tiền tệ khác được tính bằng loại này theo tỷ giá của cổng, như \"Convert To For Processing\" của WHMCS. Để trống: mỗi hóa đơn được tính theo tiền tệ của chính nó. [Cách thiết lập PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "Khóa API"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "Token API"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash hoặc token API"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "ID khóa truy cập"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash hoặc token API của WHM để kết nối với máy chủ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "Sau một đơn hàng miễn phí được gia hạn (dùng thử miễn phí), khách hàng chưa lưu phương thức thanh toán sẽ được chuyển sang PayPal để thiết lập thanh toán tự động."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "Token truy cập từ bảng điều khiển; hãy cho phép địa chỉ IP của máy chủ này trên đó"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "Đã xảy ra lỗi khi hiển thị widget này."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "Ngoài thẻ, khách hàng có thể lưu tài khoản ngân hàng để thanh toán tự động: ghi nợ trực tiếp BECS cho AUD, ghi nợ trực tiếp SEPA cho EUR và ghi nợ trực tiếp Bacs cho GBP. Hãy bật phương thức này trong bảng điều khiển Stripe trước. Thanh toán ngân hàng mất vài ngày để hoàn tất: trong lúc đó hóa đơn hiển thị \"Đang chờ thanh toán\"."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Gói (chưa nhập)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Số dư tín dụng của khách hàng"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Khách hàng cũng có thể thanh toán hóa đơn bằng PayPal mà không cần thiết lập thanh toán tự động."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Khách hàng có thể lưu tài khoản PayPal khi thanh toán hoặc trên trang Phương thức thanh toán, và hóa đơn của họ sau đó được thanh toán tự động, như với thẻ đã lưu. Cần khóa REST API và Vault (\"Save payment methods\") trên ứng dụng PayPal REST của bạn; PayPal chỉ cung cấp ở một số quốc gia."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Khách hàng có thể thiết lập thanh toán tự động trên trang Phương thức thanh toán mà không cần thanh toán hóa đơn."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Khách hàng có tín dụng khớp"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Xác nhận"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "Quy đổi để xử lý (tùy chọn):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Tiền tệ cho đơn hàng Dynadot, ví dụ USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar luôn trả về kết quả thành công. Hữu ích khi không có nhà đăng ký nào khác phù hợp."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Trình quản lý máy chủ tùy chỉnh"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Cổng thanh toán tùy chỉnh cho phép bạn hướng dẫn khách hàng cách thanh toán hóa đơn. Mọi thông tin hệ thống, khách hàng, đơn hàng và hóa đơn đều có thể được in ra. Hỗ trợ mã HTML."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Giá tên miền"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "Nhật ký email"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "Email nhận thông báo thay đổi tên miền"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Nhập nội dung cho thông tin thanh toán một lần"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Nhập nội dung cho thông tin thuê bao"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "Nhập email PayPal của bạn để bắt đầu nhận thanh toán qua PayPal."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "Sao chép vào bộ nhớ tạm không thành công. Hãy chọn văn bản và sao chép thủ công."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Điền email của khách hàng tại PayPal:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Đơn hàng miễn phí:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "Từ Enom: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "Từ NameSilo: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "Từ cổng Synergy Wholesale: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Từ cùng trang đó."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Máy chủ hosting (đã tắt)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "ID của khóa truy cập bạn đã tạo trong Hestia."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Khóa API Internetbs"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Mật khẩu API Internetbs"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Cấu hình API không hợp lệ"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Hãy để tắt: ClientFence gia hạn tên miền khi hóa đơn gia hạn được thanh toán. Khi bật, NameSilo cũng gia hạn nó từ tài khoản của bạn."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Lệnh cấm giấy phép"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "Mật khẩu API chính thức:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "Chữ ký API chính thức:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "Tên đăng nhập API chính thức:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Khóa công khai (chính thức):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "ID khách REST API chính thức (tùy chọn):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Khóa bí mật REST API chính thức:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Khóa bí mật (chính thức):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Bí mật chữ ký webhook (chính thức):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "Logo trên các trang của PayPal (tùy chọn):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Quản lý tên miền tại Dynadot qua API3. Thêm địa chỉ IP của máy chủ này vào danh sách cho phép API tại Dynadot (Tools > API) và giữ đủ số dư tài khoản cho đăng ký và gia hạn."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Quản lý tên miền tại Enom qua API đại lý. Cho phép địa chỉ IP của máy chủ này trong cài đặt API của Enom và giữ đủ tiền trong tài khoản cho đăng ký và gia hạn. Tự động gia hạn của Enom bị tắt cho mọi tên miền: ClientFence gia hạn tên miền khi hóa đơn gia hạn được thanh toán. Khi bật chế độ thử nghiệm, hãy nhập ID đại lý và token API của tài khoản thử nghiệm Enom (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Quản lý tên miền tại INWX qua API DomRobot. Dùng tài khoản INWX (hoặc tài khoản phụ) không có đăng nhập hai yếu tố và giữ đủ tiền trong tài khoản cho đăng ký và gia hạn. Tên miền được đăng ký để hết hạn trừ khi ClientFence gia hạn, việc này diễn ra khi hóa đơn gia hạn được thanh toán. Khi bật chế độ thử nghiệm, hãy nhập tên đăng nhập và mật khẩu của tài khoản thử nghiệm INWX OT&E."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Quản lý tên miền tại Internetbs qua API"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Quản lý tên miền tại NameSilo qua API. Tạo khóa API trong NameSilo (Account > API Manager), cho phép địa chỉ IP của máy chủ này tại đó và giữ đủ tiền trong tài khoản cho đăng ký và gia hạn. Trong API Manager, hãy tắt cả việc khôi phục qua renewDomain: ClientFence từ chối gia hạn tên miền trong thời gian khôi phục, nhưng nếu không NameSilo sẽ khôi phục nó với phí khôi phục."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Quản lý tên miền tại Namecheap qua API. Namecheap cần IP máy chủ của bạn để hoạt động."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Quản lý tên miền tại NetEarthOne qua API. NetEarthOne cần IP máy chủ của bạn để hoạt động. Đăng nhập bảng điều khiển NetEarthOne (URL có trong email bạn nhận khi đăng ký), vào Settings > API và nhập địa chỉ IP của máy chủ cài ClientFence để cấp quyền truy cập API cho nó."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Quản lý tên miền tại Openprovider qua API. Dùng người dùng API Openprovider, cho phép địa chỉ IP của máy chủ này cho người dùng đó và giữ đủ tiền trong tài khoản cho đăng ký và gia hạn. Tự động gia hạn của Openprovider bị tắt cho mọi tên miền: ClientFence gia hạn tên miền khi hóa đơn gia hạn được thanh toán. Khi bật chế độ thử nghiệm, hãy nhập tên đăng nhập và mật khẩu của tài khoản sandbox Openprovider."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Quản lý tên miền tại Resell.biz qua API. Resell.biz cần IP máy chủ của bạn để hoạt động. Đăng nhập bảng điều khiển Resell.biz (URL có trong email bạn nhận khi đăng ký), vào Settings > API và nhập địa chỉ IP của máy chủ cài ClientFence để cấp quyền truy cập API cho nó."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Quản lý tên miền tại ResellerClub qua API. ResellerClub cần IP máy chủ của bạn để hoạt động. Đăng nhập bảng điều khiển ResellerClub (URL có trong email bạn nhận khi đăng ký), vào Settings > API và nhập địa chỉ IP của máy chủ cài ClientFence để cấp quyền truy cập API cho nó."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Quản lý tên miền tại ResellerID qua API. ResellerID cần IP máy chủ của bạn để hoạt động. Đăng nhập bảng điều khiển ResellerID (URL có trong email bạn nhận khi đăng ký), vào Settings > API và nhập địa chỉ IP của máy chủ cài ClientFence để cấp quyền truy cập API cho nó."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Quản lý tên miền tại Synergy Wholesale qua API. Thêm địa chỉ IP của máy chủ này vào các địa chỉ IP được phép trong cổng Synergy Wholesale (Account Settings > API Information) và giữ đủ số dư tài khoản cho đăng ký và gia hạn."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Xem trước Markdown"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Mô-đun:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "Tự động gia hạn NameSilo"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "ID đại lý Namecheap. Nếu bạn không có, hãy để trống."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Tên đăng nhập Namecheap"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "Cần khóa REST API, với \"Transaction search\" được bật cho ứng dụng PayPal REST."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "Khóa API NetEarthOne"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "ID đại lý NetEarthOne"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Sự cố mạng"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "Trên trang hóa đơn, khách hàng có thỏa thuận thanh toán có thể thanh toán ngay mà không cần sang PayPal."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "Hồ sơ thanh toán NameSilo đã xác minh, tùy chọn. Để trống: tiền trong tài khoản sẽ thanh toán."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "ID tổ chức"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Mật khẩu / khóa đăng nhập"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "Mật khẩu hoặc khóa đăng nhập dùng để kết nối với máy chủ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Thanh toán một lần không cần thỏa thuận:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Thanh toán bằng thỏa thuận đã lưu:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "Thỏa thuận thanh toán PayPal Auto-Pay"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "Số dư PayPal trên bảng điều khiển:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "Thỏa thuận thanh toán PayPal: khách hàng đồng ý một lần và hóa đơn của họ sau đó được thanh toán tự động từ tài khoản PayPal. Cần thông tin API NVP/SOAP của tài khoản PayPal doanh nghiệp đã bật Reference Transactions (hãy nhờ PayPal bật)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "Địa chỉ email PayPal để nhận thanh toán"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "ID thanh toán"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Khóa chính thức từ Dynadot: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Sản phẩm và giá"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "Địa chỉ IP công khai của máy chủ này. Hãy bảo đảm IP này được cho phép trong cài đặt NameCheap của bạn."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Khóa API Resell.biz"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "ID đại lý Resell.biz"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "ID đại lý"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID đại lý. Bạn có thể tìm trong bảng điều khiển NetEarthOne: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID đại lý. Bạn có thể tìm trong bảng điều khiển Resell.biz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID đại lý. Bạn có thể tìm trong bảng điều khiển ResellerClub: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "ID đại lý. Bạn có thể tìm trong bảng điều khiển ResellerID: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "Khóa API ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ID đại lý ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "Khóa API ResellerID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ID đại lý ResellerID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Khóa API sandbox"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Mật khẩu API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Chữ ký API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Tên đăng nhập API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "ID khách REST API sandbox (tùy chọn):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Khóa bí mật REST API sandbox:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Tài khoản PayPal đã lưu:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Tài khoản ngân hàng đã lưu:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Khóa bí mật"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key của khóa truy cập bạn đã tạo trong Hestia"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "Khóa riêng cho api-sandbox.dynadot.com, chỉ dùng khi chế độ thử nghiệm đang bật."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "Khóa riêng cho sandbox.namesilo.com, chỉ dùng khi chế độ thử nghiệm đang bật."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "Địa chỉ IP công khai của máy chủ"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "Thiết lập trên trang Phương thức thanh toán:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Quy tắc thuế"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Mẫu:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Khóa công khai (thử nghiệm):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Khóa bí mật (thử nghiệm):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Bí mật chữ ký webhook (thử nghiệm):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "Địa chỉ (https) của hình ảnh PayPal hiển thị trên các trang thanh toán. Để trống: logo công ty của bạn, nếu là PNG, JPG hoặc GIF."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "ID khách và khóa bí mật của ứng dụng PayPal REST (developer.paypal.com, Apps & Credentials). Nhờ chúng, tiền hoàn được gửi đến PayPal và thuê bao PayPal được hủy từ ClientFence."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "Tên đăng nhập bạn dùng để vào bảng điều khiển Namecheap."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Loại nhà đăng ký này gửi thông báo đến email đã cho về các sự kiện quản lý tên miền. Ví dụ, khi khách hàng đăng ký tên miền mới, bạn sẽ nhận email kèm chi tiết tên miền. Sau đó bạn có trách nhiệm đăng ký tên miền tại một nhà đăng ký thật."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Tệp đính kèm phiếu hỗ trợ đã sao chép"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Phản hồi về phiếu hỗ trợ"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "UUID của tổ chức mà token API thuộc về (trong địa chỉ bảng điều khiển)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "Dùng truy vấn RDAP Registry để kiểm tra tên miền còn trống hay không"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Tên đăng nhập để kết nối với máy chủ"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "Tên đăng nhập dùng để kết nối với máy chủ"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "Cấp phép WHMCS (khóa giấy phép, nhật ký kiểm tra và lệnh cấm)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "Bạn xác thực với API Stripe bằng cách cung cấp một trong các khóa API của bạn trong yêu cầu. Bạn có thể quản lý khóa API từ tài khoản của mình."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "Bạn có thể tìm trong bảng điều khiển Namecheap."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "Bạn có thể tìm trong bảng điều khiển NetEarthOne: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "Bạn có thể tìm trong bảng điều khiển Resell.biz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "Bạn có thể tìm trong bảng điều khiển ResellerClub: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "Bạn có thể tìm trong bảng điều khiển ResellerID: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "ID tài khoản Enom của bạn (tên đăng nhập)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "Tên đăng nhập INWX của bạn."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Tên đăng nhập API Openprovider của bạn."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Bình luận của bạn"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "Chưa truyền tham số \"key\""
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "Thiếu khóa \"mod\""
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "Chưa truyền ID tiện ích bổ sung"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "Chưa truyền chu kỳ tiện ích bổ sung"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Thiếu số tiền"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Cần có số tiền"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Bạn đang đăng ký tên miền mới hay chuyển tên miền hiện có? Thiếu tham số action"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "Chưa truyền ID bài viết"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "Chưa truyền ID danh mục bài viết"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "Chưa truyền tiêu đề bài viết"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "Thiếu ID danh mục câu trả lời soạn sẵn"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Thiếu tiêu đề danh mục câu trả lời soạn sẵn"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "Thiếu ID câu trả lời soạn sẵn"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "Thiếu ID danh mục của câu trả lời soạn sẵn"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Thiếu tiêu đề câu trả lời soạn sẵn"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "Chưa truyền ID thẻ"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "Chưa truyền ID mục trong giỏ hàng"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "Chưa truyền ID danh mục"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "Cần có tiêu đề danh mục"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "Chưa truyền tiêu đề danh mục"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Chọn loại thông tin bí mật"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Chọn một đánh giá"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Chọn một câu trả lời"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Chọn chu kỳ thanh toán"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Chọn sản phẩm mới"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Chọn thời điểm dịch vụ kết thúc"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "Thiếu ID khách hàng"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "Cần thiết lập ID khách hàng trong cài đặt gửi email hàng loạt."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "Cần có ID khách hàng"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "Chưa truyền ID khách hàng"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "Cần có mã"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "Chưa truyền nội dung"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Thiếu mã tiền tệ"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "Chưa truyền mã tiền tệ"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "Cần có mật khẩu hiện tại"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "Cần có mật khẩu hiện tại"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "Chưa truyền ID trang tùy chỉnh"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "Chưa truyền ID các trang tùy chỉnh"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Chưa truyền nội dung trang tùy chỉnh"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Chưa truyền slug trang tùy chỉnh"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Chưa truyền tiêu đề trang tùy chỉnh"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "Cần có mô tả"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "Cần có TLD của tên miền."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Thiếu thao tác tên miền"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "Cần có phần mở rộng tên miền."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "Cần có tên miền."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Thiếu thời hạn đăng ký tên miền. Hãy kiểm tra tên miền còn trống không trước khi tiếp tục."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Thiếu tham số sld của đăng ký tên miền."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Thiếu tham số tld của đăng ký tên miền."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "Chưa truyền quy tắc hạ cấp"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "Chưa truyền ID email"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "Chưa truyền địa chỉ email"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "Cần có nội dung email"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "Cần có email"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "Cần có tiêu đề email"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "Cần có mã mẫu email"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "Chưa truyền mã mẫu email"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "Cần có nội dung mẫu email"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "Cần có tiêu đề mẫu email"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "Chưa truyền ID sự kiện"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "Chưa truyền ID mở rộng"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "Chưa truyền loại mở rộng"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "Chưa truyền ID thao tác thất bại"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "Chưa truyền ID trường"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "Thiếu ID tệp"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Thiếu tên tệp trong cấu hình sản phẩm"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "Cần có tên"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "Cần có tên"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "Chưa truyền ID biểu mẫu"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Chưa truyền tên biểu mẫu"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Chưa cung cấp tên biểu mẫu"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Chưa truyền loại biểu mẫu"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "Cần có định dạng"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "Chưa truyền ID cổng"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "Thiếu ID nhóm"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "Chưa truyền tên nhóm"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Thiếu tiêu đề nhóm"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "Cần có hash"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "Thiếu ID bàn trợ giúp"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "Chưa truyền ID bàn trợ giúp"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Thiếu tiêu đề bàn trợ giúp"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "Chưa truyền sự kiện hook"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "Chưa truyền ID gói hosting"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "Chưa truyền tên gói hosting"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "Sản phẩm hosting phải được cấu hình tên miền gốc cho tên miền phụ"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "Sản phẩm hosting phải được định nghĩa tham số register_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "Sản phẩm hosting phải được định nghĩa tham số register_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "Sản phẩm hosting phải được định nghĩa tham số transfer_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "Sản phẩm hosting phải được định nghĩa tham số transfer_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "Sản phẩm hosting phải có cấu hình tên miền"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "Thiếu ID"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "Cần có ID"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "Chưa truyền ID"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "Chưa truyền các ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "Thiếu ID hóa đơn"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "Chưa truyền ID hóa đơn"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "Chưa truyền hash hóa đơn"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "Chưa truyền ID mục hóa đơn"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "Chưa truyền ID ngôn ngữ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "Chưa truyền ID mục nhật ký"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "Chưa truyền ID tin nhắn"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Chưa truyền chủ đề tin nhắn"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "Chưa truyền tên"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Cần có xác nhận mật khẩu mới"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Cần có xác nhận mật khẩu mới"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Cần có mật khẩu mới"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Cần có mật khẩu mới"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Chưa cung cấp hash"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "Thiếu ID ghi chú"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Thiếu ghi chú"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "Chưa truyền ID thông báo"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "Chưa truyền ID tùy chọn"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "Chưa truyền ID nhóm tùy chọn"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "Chưa truyền ID đơn hàng (order_id)"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "Thiếu ID đơn hàng"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Thiếu tên ID đơn hàng"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "Chưa truyền ID đơn hàng"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "Chưa truyền các ID đơn hàng"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "Chưa truyền ID dòng lịch sử đơn hàng"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "Cần có ID đơn hàng"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "Chưa truyền trạng thái đơn hàng"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "Chưa truyền tham số mod"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "Chưa truyền tham số \"ext\""
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "Thiếu tham số ext"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "Cần có xác nhận mật khẩu"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "Cần có mật khẩu"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "Chưa truyền mật khẩu"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "Chưa truyền ID cổng thanh toán"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Thiếu mã cổng thanh toán"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Chưa truyền tham số chu kỳ"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Chọn ngày và giờ"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "Cần có giá trị \"Đã ghim\""
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Nhập chủ đề"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "Nhập địa chỉ email của bạn"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Nhập tên của bạn"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "Chưa truyền ID bài đăng"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Thiếu tên cấu hình sẵn"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Hãy xem trước bản cập nhật trước"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "Thiếu ID sản phẩm"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "Chưa truyền ID sản phẩm"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "Sản phẩm chưa được cấu hình đầy đủ."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "Thiếu ID khuyến mãi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "Chưa truyền ID khuyến mãi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Thiếu mã khuyến mãi"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "Chưa truyền mã khuyến mãi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Thiếu loại khuyến mãi"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Thiếu giá trị khuyến mãi"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Chưa truyền hash báo giá"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "Cần có email người nhận"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "Cần có tên người nhận"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "Chưa truyền ID chuyển hướng"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Chưa truyền đường dẫn chuyển hướng"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Chưa truyền đích chuyển hướng"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "Thiếu ID nhà đăng ký"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Thiếu mã nhà đăng ký"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Thiếu giá đăng ký"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Thiếu giá gia hạn"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "Chưa truyền ID yêu cầu"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Thiếu trường bắt buộc address1"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Thiếu trường bắt buộc city"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Thiếu trường bắt buộc contact"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Thiếu trường bắt buộc country"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Thiếu trường bắt buộc email"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Thiếu trường bắt buộc first_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Thiếu trường bắt buộc last_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Thiếu trường bắt buộc phone"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Thiếu trường bắt buộc phone_cc"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Thiếu trường bắt buộc postcode"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Thiếu trường bắt buộc state"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "Thiếu SLD"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "Chưa truyền phạm vi"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "Chưa truyền ID thông tin bí mật"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Chọn các phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Chọn các phiếu hỗ trợ để gộp"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "Cần có email người gửi"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "Cần có tên người gửi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "Chưa truyền ID máy chủ"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "Chưa truyền IP máy chủ"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "Chưa chỉ định trình quản lý máy chủ"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "Chưa truyền tên máy chủ"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "Chưa truyền ID thiết lập"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "Thiếu ID giỏ hàng"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "Chưa truyền ID nhóm nhân viên"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "Chưa truyền ID nhân viên"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Thiếu tên tệp đã lưu trong cấu hình sản phẩm"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Cần có tên miền phụ."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "Chưa truyền ID thuê bao"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Chưa truyền tiền tệ thuê bao"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "Chưa truyền sID thuê bao"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "Thiếu TLD"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "Thiếu ID nhà đăng ký của TLD"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "Thiếu ID thuế"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "Chưa truyền ID thuế"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Thiếu tên thuế"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Thiếu thuế suất"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Thuế suất bị thiếu hoặc không hợp lệ"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "Chưa truyền mã mẫu"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "Chưa truyền mã giao diện"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "Thiếu ID phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "Chưa truyền ID phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "Cần có nội dung phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "Cần có hash phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "Thiếu ID tin nhắn của phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Thiếu nội dung tin nhắn của phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "Cần có chủ đề phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "Cần có support_helpdesk_id của phiếu hỗ trợ"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "Cần có support_helpdesk_id của phiếu hỗ trợ"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "Chưa truyền tiêu đề"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "Thiếu ID giao dịch"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "Cần có ID giao dịch"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Cần có tên tên miền cần chuyển (SLD)."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Cần có loại tên miền cần chuyển (TLD)."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Thiếu giá chuyển"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "Chưa truyền loại"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "Chưa truyền quy tắc nâng cấp"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "Bạn phải chỉ định ID kiểm tra để chạy."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "Bạn phải chỉ định tiêu đề"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "Bạn phải chỉ định địa chỉ IP để tra cứu."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "Bạn phải chỉ định địa chỉ IP để đặt lại."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "Thiếu plan_id"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "Thiếu ticket_ID"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "Yêu cầu hết thời gian chờ sau :seconds giây"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "IPN Callback URL"
+msgstr "URL gọi lại IPN"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Icon URL"
+msgstr "URL biểu tượng"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Icon/Image URL"
+msgstr "URL biểu tượng/hình ảnh"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Logo URL"
+msgstr "URL logo"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Logo URL (dark mode)"
+msgstr "URL logo (chế độ tối)"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Meta Description"
+msgstr "Mô tả meta"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Meta Keywords"
+msgstr "Từ khóa meta"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "SendGrid API Key"
+msgstr "Khóa API SendGrid"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Switch to a predefined set of theme settings from the dropdown. Adjust each section and apply the changes once you're done."
+msgstr "Chuyển sang một bộ cài đặt giao diện định sẵn từ danh sách thả xuống. Hãy điều chỉnh từng phần và áp dụng thay đổi một lần khi xong."
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Validate IPN"
+msgstr "Xác thực IPN"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Bạn có chắc muốn xóa trường tùy chỉnh này không?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Bạn có chắc muốn xóa biểu mẫu này không?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Xóa biểu mẫu?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Xóa trường?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Xem các biến máy chủ được ghi cùng dữ liệu callback."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Mật khẩu để kết nối với máy chủ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Xem nội dung thô của yêu cầu nhận từ cổng thanh toán."

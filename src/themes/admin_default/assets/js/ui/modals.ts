@@ -52,7 +52,7 @@ globalThis.Modals = {
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">{{ title }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ closeButton }}"></button>
               </div>
               <div class="modal-body">
                 {{ content }}
@@ -110,7 +110,7 @@ globalThis.Modals = {
     emphasis: `<div class="modal modal-blur fade {{ extraClasses }}" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
           <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ closeButton }}"></button>
             <div class="modal-status bg-{{ emphasis }}"></div>
             <div class="modal-body text-center py-4">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-{{ textColor }} icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -286,3 +286,8 @@ globalThis.Modals = {
     });
   },
 };
+
+// ClientFence core patch: the default title and buttons in the page language (partial_clientfence_toasts.html.twig).
+try {
+  Object.assign(globalThis.Modals.defaultOptions, JSON.parse(document.getElementById("clientfence-i18n")?.textContent || "{}").modal);
+} catch { /* English defaults */ }

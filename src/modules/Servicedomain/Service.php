@@ -1291,7 +1291,13 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function registrarGetConfiguration(\Model_TldRegistrar $model): array
     {
-        return json_decode($model->config ?? '', true) ?? [];
+        $config = json_decode($model->config ?? '', true) ?? [];
+        // ClientFence core patch: an older config's use_whois is the RDAP switch, so its form and a save keep it.
+        if (is_array($config) && !array_key_exists('use_rdap', $config) && array_key_exists('use_whois', $config)) {
+            $config['use_rdap'] = $config['use_whois'];
+        }
+
+        return $config;
     }
 
     public function registrarGetRegistrarAdapterConfig(\Model_TldRegistrar $model)

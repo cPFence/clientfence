@@ -16,7 +16,7 @@ LANG may be "all": every locale with a ClientFence catalogue.
 Files:
 - src/themes/palisade/locale/clientfence.pot  the template: every text in `'…'|trans`,
   `__trans('…')`, `__pluralTrans('…', '…')` and the message of a translating exception
-  (`new InformationException('…')` and the like), made by `extract`; commit it.
+  (`new InformationException('…')` and the like) and the required-parameter messages, made by `extract`; commit it.
 - translations/LANG/fossbilling.po  FOSSBilling's own catalogue as released with 0.8.8.
 - src/themes/palisade/locale/LANG/clientfence.po  the ClientFence catalogue: the texts
   FOSSBilling's catalogue lacks, plus fixes to its translations. It wins where both have a text.
@@ -165,6 +165,10 @@ PHP_HEALTH = re.compile(r'\b(?:self|Health)::msg\(\s*' + LITERAL, re.S)
 PHP_PLURAL = re.compile(r'\b__pluralTrans\(\s*' + LITERAL + r'\s*,\s*' + LITERAL, re.S)
 # Exceptions whose constructor translates the message (ClientFence\Exception and its subclasses).
 PHP_THROW = re.compile(r'\bnew\s+(\\?[A-Za-z_][A-Za-z0-9_\\]*)\(\s*' + LITERAL, re.S)
+# Required-parameter messages, thrown as InformationException (translated) when a field is empty:
+# #[RequiredParams([...])] on API methods and the arrays given to checkRequiredParamsForArray().
+PHP_REQUIRED = re.compile(r'(?:#\[RequiredParams\(|\$required\s*=\s*|checkRequiredParamsForArray\()\[(.*?)\]', re.S)
+PHP_REQUIRED_VALUE = re.compile(r'=>\s*' + LITERAL, re.S)
 TRANSLATING_EXCEPTIONS = {
     'ClientFence\\Exception', 'ClientFence\\InformationException', 'Server_Exception', 'Registrar_Exception',
     'Payment_Exception', 'ClientFence\\Mod\\Support\\Mail\\MailException',
@@ -214,6 +218,8 @@ def extract(destination=TEMPLATE):
                 hits += [(literal(m, 1, True), None) for m in PHP_SINGLE.finditer(text)]
                 hits += [(literal(m, 1, True), literal(m, 3, True)) for m in PHP_PLURAL.finditer(text)]
                 hits += [(literal(m, 1, True), None) for m in PHP_HEALTH.finditer(text)]
+                hits += [(literal(v, 1, True), None) for m in PHP_REQUIRED.finditer(text)
+                         for v in PHP_REQUIRED_VALUE.finditer(m.group(1))]
                 hits += [(literal(m, 2, True), None) for m in PHP_THROW.finditer(text)
                          if resolve_class(m.group(1), text) in TRANSLATING_EXCEPTIONS]
             for msgid, plural in hits:

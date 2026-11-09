@@ -319,7 +319,7 @@
 
                     {% embed 'partial_admin_form_card.html.twig' with {
                         title: 'Server Parameters'|trans,
-                        subtitle: 'Inspect the server variables logged alongside the callback payload.',
+                        subtitle: 'Inspect the server variables logged alongside the callback payload.'|trans,
                         card_class: 'mb-0'
                     } %}
                         {% block form_content %}
@@ -344,7 +344,7 @@
 
                     {% embed 'partial_admin_form_card.html.twig' with {
                         title: 'Raw POST Payload'|trans,
-                        subtitle: 'Review the raw request body received from the payment gateway.',
+                        subtitle: 'Review the raw request body received from the payment gateway.'|trans,
                         card_class: 'mb-0'
                     } %}
                         {% block form_content %}

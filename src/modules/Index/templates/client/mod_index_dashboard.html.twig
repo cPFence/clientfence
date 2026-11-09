@@ -42,7 +42,7 @@
                     {% for ticket in dashboard.recent_tickets %}
                         {% if ticket.status == 'on_hold' %}
                             <div class="alert alert-info d-flex justify-content-between" role="alert">
-                                <span>Ticket <strong>#{{ ticket.id }}</strong> was replied to {{ ticket.updated_at|timeago }} {{ 'ago'|trans }}.</span>
+                                <span>{{ 'Ticket #:id has a new reply.'|trans({ ':id': ticket.id }) }}</span>
                                 <a href='{{ "support/ticket/#{ticket.id}"|url }}'
                                    class="alert-link">{{ 'Reply'|trans }}</a>
                             </div>

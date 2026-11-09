@@ -24,7 +24,7 @@ class Server_Manager_CWP extends Server_Manager
     public static function getForm(): array
     {
         return [
-            'label' => 'CWP',
+            'label' => __trans('CWP'),
             'form' => [
                 'credentials' => [
                     'fields' => [

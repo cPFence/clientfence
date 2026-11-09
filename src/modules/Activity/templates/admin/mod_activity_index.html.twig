@@ -221,21 +221,21 @@
                 </td>
                 <td class="text-nowrap">
                     {% if event.priority == 0 %}
-                        <span class="badge bg-red" title="Emergency">EMERG</span>
+                        <span class="badge bg-red" title="{{ 'Emergency'|trans }}">EMERG</span>
                     {% elseif event.priority == 1 %}
-                        <span class="badge bg-red-lt" title="Alert">ALERT</span>
+                        <span class="badge bg-red-lt" title="{{ 'Alert'|trans }}">ALERT</span>
                     {% elseif event.priority == 2 %}
-                        <span class="badge bg-orange" title="Critical">CRIT</span>
+                        <span class="badge bg-orange" title="{{ 'Critical'|trans }}">CRIT</span>
                     {% elseif event.priority == 3 %}
-                        <span class="badge bg-orange-lt" title="Error">ERR</span>
+                        <span class="badge bg-orange-lt" title="{{ 'Error'|trans }}">ERR</span>
                     {% elseif event.priority == 4 %}
-                        <span class="badge bg-yellow" title="Warning">WARN</span>
+                        <span class="badge bg-yellow" title="{{ 'Warning'|trans }}">WARN</span>
                     {% elseif event.priority == 5 %}
-                        <span class="badge bg-blue" title="Notice">NOTICE</span>
+                        <span class="badge bg-blue" title="{{ 'Notice'|trans }}">NOTICE</span>
                     {% elseif event.priority == 6 %}
-                        <span class="badge bg-cyan-lt" title="Info">INFO</span>
+                        <span class="badge bg-cyan-lt" title="{{ 'Info'|trans }}">INFO</span>
                     {% elseif event.priority == 7 %}
-                        <span class="badge bg-gray" title="Debug">DEBUG</span>
+                        <span class="badge bg-gray" title="{{ 'Debug'|trans }}">DEBUG</span>
                     {% else %}
                         <span class="badge bg-secondary">N/A</span>
                     {% endif %}

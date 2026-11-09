@@ -22,7 +22,7 @@ class Server_Manager_Plesk extends Server_Manager
     public static function getForm(): array
     {
         return [
-            'label' => 'Plesk',
+            'label' => __trans('Plesk'),
         ];
     }
 

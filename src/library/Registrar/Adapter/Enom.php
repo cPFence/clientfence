@@ -35,16 +35,16 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on Enom through its reseller API. Allow this server\'s IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com).',
+            'label' => __trans('Manages domains on Enom through its reseller API. Allow this server\'s IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com).'),
             'form' => [
                 'uid' => ['text', [
-                    'label' => 'Reseller ID',
-                    'description' => 'Your Enom account ID (login name).',
+                    'label' => __trans('Reseller ID'),
+                    'description' => __trans('Your Enom account ID (login name).'),
                     'required' => true,
                 ]],
                 'pw' => ['password', [
-                    'label' => 'API token',
-                    'description' => 'From Enom: Resellers > API settings.',
+                    'label' => __trans('API token'),
+                    'description' => __trans('From Enom: Resellers > API settings.'),
                     'required' => true,
                     'secret' => true,
                 ]],

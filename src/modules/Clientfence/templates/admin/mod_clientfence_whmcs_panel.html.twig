@@ -198,7 +198,7 @@
                     <tbody>
                         {% for module in plan.modules %}
                         <tr>
-                            <td>{{ module.label }}{% if not module.active %} <span class="badge bg-secondary-lt ms-1">{{ 'Not switched on'|trans }}</span>{% endif %}</td>
+                            <td>{{ module.handling == 'import' and module.module == 'licensing' ? 'WHMCS Licensing (licence keys, check log and bans)'|trans : module.label }}{% if not module.active %} <span class="badge bg-secondary-lt ms-1">{{ 'Not switched on'|trans }}</span>{% endif %}</td>
                             <td><span class="badge {{ module.handling == 'import' ? 'bg-success-lt' : 'bg-secondary-lt' }}">{{ handling[module.handling]|default(module.handling) }}</span></td>
                             <td class="text-end">{{ module.rows }}</td>
                             <td class="text-secondary small">{% for table in module.tables %}{{ table.table }} ({{ table.rows }}){% if not loop.last %}, {% endif %}{% endfor %}</td>
@@ -262,7 +262,11 @@
         {% set step_labels = {
             currencies: 'Currencies'|trans, groups: 'Client groups'|trans, fields: 'Client custom fields'|trans,
             clients: 'Clients and their owner logins'|trans, users: 'Authorized users'|trans, contacts: 'Contacts'|trans,
-            twofactor: 'Two-factor sign-in carried over'|trans, google: 'Google sign-in links'|trans
+            twofactor: 'Two-factor sign-in carried over'|trans, google: 'Google sign-in links'|trans,
+            servers: 'Hosting servers (switched off)'|trans, products: 'Products and prices'|trans, tlds: 'Domain prices'|trans,
+            taxes: 'Tax rules'|trans, bundles: 'Bundles (not imported)'|trans, licencebans: 'Licence bans'|trans,
+            balances: 'Client credit balances'|trans, agreements: 'PayPal Auto-Pay billing agreements'|trans,
+            feedback: 'Ticket feedback'|trans, networkissues: 'Network issues'|trans, emails: 'Email log'|trans
         } %}
         {% if not plan %}
             <p class="text-secondary mb-0">{{ 'Make the plan first.'|trans }}</p>

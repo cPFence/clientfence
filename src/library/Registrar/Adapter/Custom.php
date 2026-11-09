@@ -22,11 +22,12 @@ class Registrar_Adapter_Custom extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Custom Registrar always responds with positive results. Useful if no other registrar is suitable.',
+            'label' => __trans('Custom Registrar always responds with positive results. Useful if no other registrar is suitable.'),
             'form' => [
                 'use_rdap' => ['radio', [
-                    'multiOptions' => ['1' => 'Yes', '0' => 'No'],
-                    'label' => 'Use RDAP Registry Lookups to Check for Domain Availability',
+                    'multiOptions' => ['1' => __trans('Yes'), '0' => __trans('No')],
+                    'default' => '0',
+                    'label' => __trans('Use RDAP Registry Lookups to Check for Domain Availability'),
                 ],
                 ],
             ],

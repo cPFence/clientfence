@@ -28,16 +28,17 @@ class Registrar_Adapter_Email extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar.',
+            'label' => __trans('This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar.'),
             'form' => [
                 'email' => ['text', [
-                    'label' => 'Email Address',
-                    'description' => 'Email to Send Domain Change Notifications',
+                    'label' => __trans('Email Address'),
+                    'description' => __trans('Email to Send Domain Change Notifications'),
                 ],
                 ],
                 'use_rdap' => ['radio', [
-                    'multiOptions' => ['1' => 'Yes', '0' => 'No'],
-                    'label' => 'Use RDAP Registry Lookups to Check for Domain Availability',
+                    'multiOptions' => ['1' => __trans('Yes'), '0' => __trans('No')],
+                    'default' => '0',
+                    'label' => __trans('Use RDAP Registry Lookups to Check for Domain Availability'),
                 ],
                 ],
             ],

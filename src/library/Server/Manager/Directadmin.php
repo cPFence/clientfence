@@ -29,23 +29,23 @@ class Server_Manager_Directadmin extends Server_Manager
     public static function getForm(): array
     {
         return [
-            'label' => 'DirectAdmin',
+            'label' => __trans('DirectAdmin'),
             'form' => [
                 'credentials' => [
                     'fields' => [
                         [
                             'name' => 'username',
                             'type' => 'text',
-                            'label' => 'Username',
-                            'placeholder' => 'Username used to connect to the server',
+                            'label' => __trans('Username'),
+                            'placeholder' => __trans('Username used to connect to the server'),
                             'required' => true,
                             'secret' => true,
                         ],
                         [
                             'name' => 'password',
                             'type' => 'text',
-                            'label' => 'Password / Login Key',
-                            'placeholder' => 'Password or login key used to connect to the server',
+                            'label' => __trans('Password / Login Key'),
+                            'placeholder' => __trans('Password or login key used to connect to the server'),
                             'required' => true,
                             'secret' => true,
                         ],

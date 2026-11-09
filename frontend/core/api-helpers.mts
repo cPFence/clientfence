@@ -150,23 +150,32 @@ function interpretResponse(payload: ApiErrorPayload | null) {
   return payload.result;
 }
 
+// ClientFence core patch: these errors in the page language, from the theme's texts (#clientfence-i18n).
+function pageText(text: string): string {
+  try {
+    return JSON.parse(globalThis.document?.getElementById('clientfence-i18n')?.textContent || '{}').messages?.[text] ?? text;
+  } catch {
+    return text;
+  }
+}
+
 function normalizeApiError(error: ApiErrorLike, { timeoutMs = 30000, timeoutMessage = null }: ApiTimeoutOptions = {}) {
   if (error.name === 'AbortError') {
     return {
-      message: timeoutMessage || `Request timed out after ${timeoutMs / 1000} seconds`,
+      message: timeoutMessage || pageText('Request timed out after :seconds seconds').replace(':seconds', String(timeoutMs / 1000)),
       code: 'timeout_error',
     };
   }
 
   if (error.name === 'TypeError' && /NetworkError|Failed to fetch|Load failed/i.test(error.message)) {
     return {
-      message: 'Network connection error',
+      message: pageText('Network connection error'),
       code: 'network_error',
     };
   }
 
   return {
-    message: error.message || 'Unknown error occurred',
+    message: error.message || pageText('Unknown error occurred'),
     code: error.code || 'unknown_error',
   };
 }

@@ -20942,3 +20942,1539 @@ msgstr "Vraag onze support om uw account te verwijderen. Wij wissen uw persoonsg
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "Onbetaalde facturen van deze gateway: :count. Klanten betalen ze met de gateway die u kiest."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "Een valutacode van dit portaal: USD (Amerikaanse dollar), EUR (euro) of GBP (Britse pond). Facturen in andere valuta's worden in deze valuta in rekening gebracht tegen de wisselkoersen van het portaal, zoals de „Convert To For Processing” van WHMCS. Leeg: elke factuur wordt in haar eigen valuta in rekening gebracht. [PayPal Auto-Pay instellen](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "API-sleutel"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "API-token"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash of API-token"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "Toegangssleutel-ID"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash of WHM API-token om met de server te verbinden"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "Na een gratis bestelling die wordt verlengd (een gratis proefperiode) wordt een klant zonder opgeslagen betaalmethode naar PayPal gestuurd om automatische betalingen in te stellen."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "Een toegangstoken uit het paneel; sta daar het IP-adres van deze server toe"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "Er is een fout opgetreden bij het weergeven van deze widget."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "Naast kaarten kunnen klanten een bankrekening opslaan voor automatische betalingen: BECS-incasso voor AUD, SEPA-incasso voor EUR en Bacs-incasso voor GBP. Schakel de methode eerst in in uw Stripe-dashboard. Een bankbetaling duurt enkele dagen voordat ze is verwerkt: tot die tijd toont de factuur „Betaling in behandeling”."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "Bundels (niet geïmporteerd)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "Tegoeden van klanten"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "Klanten kunnen een factuur ook met PayPal betalen zonder automatische betalingen in te stellen."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "Klanten kunnen hun PayPal-account opslaan bij het betalen of op hun pagina „Betaalmethodes”; hun facturen worden dan automatisch betaald, net als met opgeslagen kaarten. Vereist de REST API-sleutels en de Vault („Save payment methods”) in uw PayPal REST-app, die PayPal alleen in sommige landen aanbiedt."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "Klanten kunnen automatische betalingen instellen op hun pagina „Betaalmethodes” zonder een factuur te betalen."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "Klanten van wie het tegoed overeenkomt"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "Omzetten voor verwerking (optioneel):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Valuta voor Dynadot-bestellingen, bijvoorbeeld USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar antwoordt altijd positief. Handig als geen andere registrar geschikt is."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "Aangepaste servermanager"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "Met de aangepaste betalingsgateway kunt u uitleggen hoe uw klant de factuur kan betalen. Alle systeem-, klant-, bestel- en factuurgegevens kunnen worden afgedrukt. HTML-code wordt ondersteund."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "Domeinprijzen"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "E-maillogboek"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "E-mailadres voor meldingen over domeinwijzigingen"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "Voer uw tekst in voor de informatie over eenmalige betaling"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "Voer uw tekst in voor de abonnementsinformatie"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "Voer uw PayPal-e-mailadres in om betalingen via PayPal te accepteren."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "Kopiëren naar het klembord is mislukt. Selecteer de tekst en kopieer die handmatig."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "Vul het e-mailadres van de klant bij PayPal in:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "Gratis bestellingen:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "Van Enom: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "Van NameSilo: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "Uit het Synergy Wholesale-portaal: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "Van dezelfde pagina."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "Hostingservers (uitgeschakeld)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "ID van de toegangssleutel die u in Hestia hebt gegenereerd."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Internetbs API-sleutel"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Internetbs API-wachtwoord"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "Ongeldige API-configuratie"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "Laat dit uit: ClientFence verlengt een domein wanneer de verlengingsfactuur is betaald. Ingeschakeld verlengt NameSilo het ook vanaf uw account."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "Licentieblokkades"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "Live API-wachtwoord:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "Live API-handtekening:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "Live API-gebruikersnaam:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Live publiceerbare sleutel:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "Live REST API-client-ID (optioneel):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "Live REST API-secret:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Live geheime sleutel:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Live webhook-ondertekeningsgeheim:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "Logo op de pagina's van PayPal (optioneel):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "Beheert domeinen bij Dynadot via API3. Voeg het IP-adres van deze server toe aan de API-toelatingslijst bij Dynadot (Tools > API) en houd genoeg saldo op het account voor registraties en verlengingen."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "Beheert domeinen bij Enom via de reseller-API. Sta het IP-adres van deze server toe in de API-instellingen van Enom en houd genoeg saldo op het account voor registraties en verlengingen. Automatisch verlengen bij Enom staat voor elk domein uit: ClientFence verlengt een domein wanneer de verlengingsfactuur is betaald. Voer bij ingeschakelde testmodus het reseller-ID en het API-token van uw Enom-testaccount in (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "Beheert domeinen bij INWX via de DomRobot-API. Gebruik een INWX-account (of subaccount) zonder tweestapsaanmelding en houd genoeg saldo op het account voor registraties en verlengingen. Domeinen worden geregistreerd om te verlopen, tenzij ClientFence ze verlengt, wat gebeurt wanneer de verlengingsfactuur is betaald. Voer bij ingeschakelde testmodus de gebruikersnaam en het wachtwoord van uw INWX OT&E-testaccount in."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "Beheert domeinen bij Internetbs via de API"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "Beheert domeinen bij NameSilo via de API. Maak de API-sleutel aan in NameSilo (Account > API Manager), sta daar het IP-adres van deze server toe en houd genoeg saldo op het account voor registraties en verlengingen. Schakel in de API Manager ook herstel via renewDomain uit: ClientFence weigert een domein in de herstelperiode te verlengen, maar NameSilo zou het anders herstellen tegen het hersteltarief."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "Beheert domeinen bij Namecheap via de API. Namecheap heeft het IP-adres van uw server nodig om te werken."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Beheert domeinen bij NetEarthOne via de API. NetEarthOne heeft het IP-adres van uw server nodig om te werken. Log in op het NetEarthOne-controlepaneel (de URL staat in de e-mail die u bij uw aanmelding kreeg), ga naar Settings > API en voer het IP-adres in van de server waarop ClientFence is geïnstalleerd om die toegang tot de API te geven."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "Beheert domeinen bij Openprovider via de API. Gebruik een Openprovider-API-gebruiker, sta daarvoor het IP-adres van deze server toe en houd genoeg saldo op het account voor registraties en verlengingen. Automatisch verlengen bij Openprovider staat voor elk domein uit: ClientFence verlengt een domein wanneer de verlengingsfactuur is betaald. Voer bij ingeschakelde testmodus de gebruikersnaam en het wachtwoord van uw Openprovider-sandboxaccount in."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Beheert domeinen bij Resell.biz via de API. Resell.biz heeft het IP-adres van uw server nodig om te werken. Log in op het Resell.biz-controlepaneel (de URL staat in de e-mail die u bij uw aanmelding kreeg), ga naar Settings > API en voer het IP-adres in van de server waarop ClientFence is geïnstalleerd om die toegang tot de API te geven."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Beheert domeinen bij ResellerClub via de API. ResellerClub heeft het IP-adres van uw server nodig om te werken. Log in op het ResellerClub-controlepaneel (de URL staat in de e-mail die u bij uw aanmelding kreeg), ga naar Settings > API en voer het IP-adres in van de server waarop ClientFence is geïnstalleerd om die toegang tot de API te geven."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "Beheert domeinen bij ResellerID via de API. ResellerID heeft het IP-adres van uw server nodig om te werken. Log in op het ResellerID-controlepaneel (de URL staat in de e-mail die u bij uw aanmelding kreeg), ga naar Settings > API en voer het IP-adres in van de server waarop ClientFence is geïnstalleerd om die toegang tot de API te geven."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "Beheert domeinen bij Synergy Wholesale via de API. Voeg het IP-adres van deze server toe aan de toegestane IP-adressen in het Synergy Wholesale-portaal (Account Settings > API Information) en houd genoeg saldo op het account voor registraties en verlengingen."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Markdown-voorbeeld"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "Module:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "NameSilo automatisch verlengen"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "Namecheap reseller-ID. Hebt u er geen, laat het dan leeg."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Namecheap-gebruikersnaam"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "Vereist de REST API-sleutels, met „Transaction search” ingeschakeld voor de PayPal REST-app."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "NetEarthOne API-sleutel"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "NetEarthOne reseller-ID"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "Netwerkproblemen"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "Op de factuurpagina kan een klant met een factureringsovereenkomst meteen betalen zonder naar PayPal te gaan."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "Optioneel geverifieerd NameSilo-betaalprofiel. Leeg: het saldo van het account betaalt."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "Organisatie-ID"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "Wachtwoord / inlogsleutel"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "Wachtwoord of inlogsleutel om met de server te verbinden"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "Eenmalig betalen zonder overeenkomst:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "Betalen met de opgeslagen overeenkomst:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "PayPal Auto-Pay-factureringsovereenkomsten"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "PayPal-saldo op het dashboard:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "PayPal-factureringsovereenkomsten: klanten stemmen één keer in en hun facturen worden daarna automatisch vanaf hun PayPal-account betaald. Vereist de NVP/SOAP API-gegevens van een zakelijk PayPal-account met Reference Transactions ingeschakeld (vraag PayPal ze in te schakelen)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "PayPal-e-mailadres voor betalingen"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "Betalings-ID"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "Productiesleutel van Dynadot: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "Producten en prijzen"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "Openbaar IP-adres van deze server. Zorg dat dit IP is toegestaan in uw NameCheap-instellingen."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Resell.biz API-sleutel"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "Resell.biz reseller-ID"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "Reseller-ID"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Reseller-ID. U vindt die in het NetEarthOne-controlepaneel onder Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Reseller-ID. U vindt die in het Resell.biz-controlepaneel onder Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Reseller-ID. U vindt die in het ResellerClub-controlepaneel onder Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "Reseller-ID. U vindt die in het ResellerID-controlepaneel onder Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "ResellerClub API-sleutel"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ResellerClub reseller-ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "ResellerID API-sleutel"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ResellerID reseller-ID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "Sandbox API-sleutel"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "Sandbox API-wachtwoord:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "Sandbox API-handtekening:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "Sandbox API-gebruikersnaam:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "Sandbox REST API-client-ID (optioneel):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "Sandbox REST API-secret:"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "Opgeslagen PayPal-accounts:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "Opgeslagen bankrekeningen:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "Geheime sleutel"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key van de toegangssleutel die u in Hestia hebt gegenereerd"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "Aparte sleutel voor api-sandbox.dynadot.com, alleen gebruikt zolang de testmodus aan staat."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "Aparte sleutel voor sandbox.namesilo.com, alleen gebruikt zolang de testmodus aan staat."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "Openbaar IP-adres van de server"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "Instellen op de pagina „Betaalmethodes”:"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "Belastingregels"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "Template:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Test publiceerbare sleutel:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Test geheime sleutel:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Test webhook-ondertekeningsgeheim:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "Het adres (https) van een afbeelding die PayPal op zijn afrekenpagina's toont. Leeg: uw bedrijfslogo, als het een PNG, JPG of GIF is."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "De client-ID en het secret van een PayPal REST-app (developer.paypal.com, Apps & Credentials). Hiermee worden terugbetalingen naar PayPal gestuurd en PayPal-abonnementen vanuit ClientFence opgezegd."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "De gebruikersnaam waarmee u inlogt op het Namecheap-controlepaneel."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "Dit registrartype stuurt meldingen over domeinbeheergebeurtenissen naar het opgegeven e-mailadres. Wanneer een klant bijvoorbeeld een nieuw domein registreert, ontvangt u een e-mail met de domeingegevens. Het is dan uw verantwoordelijkheid om het domein bij een echte registrar te registreren."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "Ticketbijlagen gekopieerd"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "Ticketfeedback"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "UUID van de organisatie waartoe het API-token behoort (in het adres van het paneel)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "RDAP Registry-opzoekingen gebruiken om de beschikbaarheid van domeinen te controleren"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "Gebruikersnaam om met de server te verbinden"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "Gebruikersnaam waarmee met de server wordt verbonden"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "WHMCS-licenties (licentiesleutels, controlelogboek en blokkades)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "U authenticeert bij de Stripe API door een van uw API-sleutels in het verzoek mee te sturen. U beheert uw API-sleutels in uw account."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "U vindt dit in het Namecheap-controlepaneel."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "U vindt dit in het NetEarthOne-controlepaneel onder Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "U vindt dit in het Resell.biz-controlepaneel onder Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "U vindt dit in het ResellerClub-controlepaneel onder Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "U vindt dit in het ResellerID-controlepaneel onder Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "Uw Enom-account-ID (inlognaam)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "Uw INWX-gebruikersnaam."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "Uw Openprovider-API-gebruikersnaam."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "Uw opmerking"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "Parameter „key” is niet doorgegeven"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "Sleutel „mod” ontbreekt"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "Add-on-ID is niet doorgegeven"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "Add-onperiode is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "Bedrag ontbreekt"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "Bedrag is verplicht"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "Registreert u een nieuw domein of verhuist u een bestaand domein? Parameter action ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "Artikel-ID is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "Artikelcategorie-ID is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "Artikeltitel is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "ID van de categorie voor standaardantwoorden ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "Titel van de categorie voor standaardantwoorden ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "ID van het standaardantwoord ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "Categorie-ID van het standaardantwoord ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "Titel van het standaardantwoord ontbreekt"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "Kaart-ID is niet doorgegeven"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "Winkelwagenitem-ID is niet doorgegeven"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "Categorie-ID is niet doorgegeven"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "Categorietitel is verplicht"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "Categorietitel is niet doorgegeven"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "Kies een soort vertrouwelijke gegevens"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "Kies een beoordeling"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "Kies een antwoord"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "Kies de factuurperiode"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "Kies het nieuwe product"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "Kies wanneer de dienst eindigt"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "Klant-ID ontbreekt"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "Het klant-ID moet worden ingesteld in de instellingen van de massamailer."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "Klant-ID is verplicht"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "Klant-ID is niet doorgegeven"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "Code is verplicht"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "Inhoud is niet doorgegeven"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "Valutacode ontbreekt"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "Valutacode is niet doorgegeven"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "Huidig wachtwoord is verplicht"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "Huidig wachtwoord is verplicht"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "ID van de aangepaste pagina is niet doorgegeven"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "ID's van de aangepaste pagina's zijn niet doorgegeven"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "Inhoud van de aangepaste pagina is niet doorgegeven"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "Slug van de aangepaste pagina is niet doorgegeven"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "Titel van de aangepaste pagina is niet doorgegeven"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "Omschrijving is verplicht"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "Domein-TLD is verplicht."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "Domeinactie ontbreekt"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "Domeinextensie is verplicht."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "Domeinnaam is verplicht."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "Registratieperiode van het domein ontbreekt. Controleer de beschikbaarheid van het domein voordat u verdergaat."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "Parameter sld van de domeinregistratie ontbreekt."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "Parameter tld van de domeinregistratie ontbreekt."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "Downgraderegel is niet doorgegeven"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "E-mail-ID is niet doorgegeven"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "E-mailadres is niet doorgegeven"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "E-mailinhoud is verplicht"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "E-mail is verplicht"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "E-mailonderwerp is verplicht"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "Code van de e-mailtemplate is verplicht"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "Code van de e-mailtemplate is niet doorgegeven"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "Inhoud van de e-mailtemplate is verplicht"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "Onderwerp van de e-mailtemplate is verplicht"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "Gebeurtenis-ID is niet doorgegeven"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "Uitbreidings-ID is niet doorgegeven"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "Uitbreidingstype is niet doorgegeven"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "ID van de mislukte actie is niet doorgegeven"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "Veld-ID is niet doorgegeven"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "Bestands-ID ontbreekt"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "Bestandsnaam ontbreekt in de productconfiguratie"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "Voornaam is verplicht"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "Voornaam is verplicht"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "Formulier-ID is niet doorgegeven"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "Formuliernaam is niet doorgegeven"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "Formuliernaam is niet opgegeven"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "Formuliertype is niet doorgegeven"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "Formaat is verplicht"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "Gateway-ID is niet doorgegeven"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "Groeps-ID ontbreekt"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "Groepsnaam is niet doorgegeven"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "Groepstitel ontbreekt"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "Hash is verplicht"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "Helpdesk-ID ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "Helpdesk-ID is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "Helpdesktitel ontbreekt"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "Hook-gebeurtenis is niet doorgegeven"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "Hostingpakket-ID is niet doorgegeven"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "Hostingpakketnaam is niet doorgegeven"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "Voor het hostingproduct moet een basisdomein voor subdomeinen zijn ingesteld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "Voor het hostingproduct moet de parameter register_sld zijn ingesteld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "Voor het hostingproduct moet de parameter register_tld zijn ingesteld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "Voor het hostingproduct moet de parameter transfer_sld zijn ingesteld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "Voor het hostingproduct moet de parameter transfer_tld zijn ingesteld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "Het hostingproduct moet een domeinconfiguratie hebben"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "ID ontbreekt"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "ID is verplicht"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "ID is niet doorgegeven"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "ID's zijn niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "Factuur-ID ontbreekt"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "Factuur-ID is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "Factuurhash is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "Factuurregel-ID is niet doorgegeven"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "Taal-ID is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "Logboekregel-ID is niet doorgegeven"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "Bericht-ID is niet doorgegeven"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "Berichtonderwerp is niet doorgegeven"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "Naam is niet doorgegeven"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "Bevestiging van het nieuwe wachtwoord is verplicht"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "Bevestiging van het nieuwe wachtwoord is verplicht"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "Nieuw wachtwoord is verplicht"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "Nieuw wachtwoord is verplicht"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "Geen hash opgegeven"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "Notitie-ID ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "Notitie ontbreekt"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "Meldings-ID is niet doorgegeven"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "Optie-ID is niet doorgegeven"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "Optiegroep-ID is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "Bestel-ID (order_id) is niet doorgegeven"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "Bestel-ID ontbreekt"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "Naam van het bestel-ID ontbreekt"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "Bestel-ID is niet doorgegeven"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "Bestel-ID's zijn niet doorgegeven"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "ID van de bestelgeschiedenisregel is niet doorgegeven"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "Bestel-ID is verplicht"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "Bestelstatus is niet doorgegeven"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "Parameter mod is niet doorgegeven"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "Parameter „ext” is niet doorgegeven"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "Parameter ext ontbreekt"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "Wachtwoordbevestiging is verplicht"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "Wachtwoord is verplicht"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "Wachtwoord is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "Betalingsgateway-ID is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "Code van de betalingsgateway ontbreekt"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "Periodeparameter is niet doorgegeven"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "Kies een datum en tijd"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "„Vastgezet” is verplicht"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "Voer het onderwerp in"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "Voer uw e-mailadres in"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "Voer uw naam in"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "Post-ID is niet doorgegeven"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "Naam van de preset ontbreekt"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "Bekijk eerst het voorbeeld van de update"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "Product-ID ontbreekt"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "Product-ID is niet doorgegeven"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "Het product is niet volledig geconfigureerd."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "Actie-ID ontbreekt"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "Actie-ID is niet doorgegeven"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "Actiecode ontbreekt"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "Actiecode is niet doorgegeven"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "Actietype ontbreekt"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "Actiewaarde ontbreekt"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "Offertehash is niet doorgegeven"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "E-mailadres van de ontvanger is verplicht"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "Naam van de ontvanger is verplicht"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "Omleidings-ID is niet doorgegeven"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "Omleidingspad is niet doorgegeven"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "Omleidingsdoel is niet doorgegeven"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "Registrar-ID ontbreekt"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "Registrarcode ontbreekt"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "Registratieprijs ontbreekt"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "Verlengingsprijs ontbreekt"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "Verzoek-ID is niet doorgegeven"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "Verplicht veld address1 ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "Verplicht veld city ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "Verplicht veld contact ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "Verplicht veld country ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "Verplicht veld email ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "Verplicht veld first_name ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "Verplicht veld last_name ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "Verplicht veld phone ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "Verplicht veld phone_cc ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "Verplicht veld postcode ontbreekt"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "Verplicht veld state ontbreekt"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "SLD ontbreekt"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "Bereik is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "ID van de vertrouwelijke gegevens is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "Selecteer de tickets"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "Selecteer de tickets om samen te voegen"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "E-mailadres van de afzender is verplicht"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "Naam van de afzender is verplicht"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "Server-ID is niet doorgegeven"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "Server-IP is niet doorgegeven"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "Servermanager is niet opgegeven"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "Servernaam is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "Setup-ID is niet doorgegeven"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "Winkelwagen-ID ontbreekt"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "ID van de medewerkersgroep is niet doorgegeven"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "Medewerker-ID is niet doorgegeven"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "Opgeslagen bestandsnaam ontbreekt in de productconfiguratie"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "Subdomeinnaam is verplicht."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "Abonnements-ID is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "Abonnementsvaluta is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "Abonnements-sID is niet doorgegeven"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "TLD ontbreekt"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "TLD-registrar-ID ontbreekt"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "Belasting-ID ontbreekt"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "Belasting-ID is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "Belastingnaam ontbreekt"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "Belastingtarief ontbreekt"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "Belastingtarief ontbreekt of is ongeldig"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "Templatecode is niet doorgegeven"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "Themacode is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "Ticket-ID ontbreekt"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "Ticket-ID is niet doorgegeven"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "Ticketinhoud is verplicht"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "Tickethash is verplicht"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "Ticketbericht-ID ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "Inhoud van het ticketbericht ontbreekt"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "Ticketonderwerp is verplicht"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "Ticket support_helpdesk_id is verplicht"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "Ticket support_helpdesk_id is verplicht"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "Titel is niet doorgegeven"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "Transactie-ID ontbreekt"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "Transactie-ID is verplicht"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "Naam van het te verhuizen domein (SLD) is verplicht."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "Type van het te verhuizen domein (TLD) is verplicht."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "Verhuisprijs ontbreekt"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "Type is niet doorgegeven"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "Upgraderegel is niet doorgegeven"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "U moet een controle-ID opgeven om uit te voeren."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "U moet een titel opgeven"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "U moet een IP-adres opgeven om op te zoeken."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "U moet een IP-adres opgeven om te resetten."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "plan_id ontbreekt"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "ticket_ID ontbreekt"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "Time-out van het verzoek na :seconds seconden"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Emails"
+msgstr "E-mails"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "IPN Callback URL"
+msgstr "IPN-callback-URL"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Logo URL"
+msgstr "Logo-URL"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Order ID"
+msgstr "Bestel-ID"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Post"
+msgstr "Bericht"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "SendGrid API Key"
+msgstr "SendGrid API-sleutel"
+
+#. ClientFence: FOSSBilling left this text in English.
+msgid "Validate IPN"
+msgstr "IPN valideren"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "Weet u zeker dat u dit aangepaste veld wilt verwijderen?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "Weet u zeker dat u dit formulier wilt verwijderen?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "Formulier verwijderen?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "Veld verwijderen?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "Bekijk de servervariabelen die samen met de callback-gegevens zijn gelogd."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "Wachtwoord om met de server te verbinden"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "Bekijk de ruwe request-body die van de betalingsgateway is ontvangen."

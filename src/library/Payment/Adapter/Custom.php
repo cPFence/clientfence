@@ -28,7 +28,7 @@ class Payment_Adapter_Custom
             'can_load_in_iframe' => true,
             'supports_one_time_payments' => true,
             'supports_subscriptions' => true,
-            'description' => 'Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported.',
+            'description' => __trans('Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported.'),
             'logo' => [
                 'logo' => 'custom.png',
                 'height' => '50px',
@@ -37,12 +37,12 @@ class Payment_Adapter_Custom
             'form' => [
                 'single' => [
                     'textarea', [
-                        'label' => 'Enter Your Text for Single Payment Information',
+                        'label' => __trans('Enter Your Text for Single Payment Information'),
                     ],
                 ],
                 'recurrent' => [
                     'textarea', [
-                        'label' => 'Enter Your Text for Subscription Information',
+                        'label' => __trans('Enter Your Text for Subscription Information'),
                     ],
                 ],
             ],

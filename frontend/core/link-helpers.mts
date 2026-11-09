@@ -51,7 +51,8 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
       type: modal.type === 'confirm' ? 'small-confirm' : modal.type,
       title: modal.title,
       content: modal.content ?? '',
-      confirmButton: modal.button ?? 'Confirm',
+      // ClientFence core patch: without a button text, the modal's own default (in the page language).
+      confirmButton: modal.button ?? modalsLib.defaultOptions?.confirmButton ?? 'Confirm',
       confirmButtonColor: modal.buttonColor ?? 'primary',
       confirmCallback: () => {
         onRequest('GET', rawHref);

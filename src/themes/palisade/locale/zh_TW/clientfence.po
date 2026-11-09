@@ -6038,7 +6038,7 @@ msgstr "允許訪客直接在您的網站上查詢網域是否可註冊。"
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Letter"
-msgstr "Letter"
+msgstr "信件"
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "License Configuration"
@@ -21982,3 +21982,1511 @@ msgstr "請求我們的支援服務刪除您的帳戶。我們會清除您的個
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "此金流的未付發票：:count。客戶將透過您選擇的金流付款。"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "此入口網站的幣別代碼：USD（美元）、EUR（歐元）或 GBP（英鎊）。其他幣別的發票會依入口網站匯率以該幣別收款，類似 WHMCS 的「Convert To For Processing」。留空：每張發票以其自身幣別收款。[如何設定 PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "API 金鑰"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "API 權杖"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash 或 API 權杖"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "存取金鑰 ID"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "用於連線至伺服器的 Access Hash 或 WHM API 權杖"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "續約的免費訂單（免費試用）結束後，沒有已儲存付款方式的客戶會被導向 PayPal 設定自動付款。"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "來自面板的存取權杖；請在其中允許此伺服器的 IP 位址"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "顯示此小工具時發生錯誤。"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "除了信用卡，客戶還可以儲存銀行帳戶用於自動付款：AUD 使用 BECS 直接扣款，EUR 使用 SEPA 直接扣款，GBP 使用 Bacs 直接扣款。請先在 Stripe 儀表板中啟用該方式。銀行付款需要數天才能入帳：在此期間發票會顯示「付款待處理」。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "組合包（未匯入）"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "客戶餘額"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "客戶也可以用 PayPal 支付發票，無需設定自動付款。"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "客戶可以在付款時或在「付款方式」頁面儲存其 PayPal 帳戶，之後發票會自動支付，與已儲存的信用卡相同。需要 REST API 金鑰，以及您的 PayPal REST 應用程式上的 Vault（「Save payment methods」），PayPal 僅在部分國家提供。"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "客戶可以在「付款方式」頁面設定自動付款，無需支付發票。"
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "餘額相符的客戶"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "確認"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "轉換後處理（選填）："
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "Dynadot 訂單的幣別，例如 USD。"
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar 一律回傳成功結果。在沒有其他合適的註冊商時很有用。"
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "自訂伺服器管理員"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "自訂金流可讓您說明客戶如何支付發票。可輸出所有系統、客戶、訂單和發票資訊。支援 HTML 程式碼。"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "網域價格"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "電子郵件記錄"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "接收網域變更通知的電子郵件"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "輸入一次性付款資訊的文字"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "輸入訂閱資訊的文字"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "輸入您的 PayPal 電子郵件以開始透過 PayPal 收款。"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "複製到剪貼簿失敗。請選取文字後手動複製。"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "填寫客戶在 PayPal 的電子郵件："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "免費訂單："
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "來自 Enom：Resellers > API settings。"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "來自 NameSilo：Account > API Manager。"
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "來自 Synergy Wholesale 入口網站：Account Settings > API Information。"
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "來自同一頁面。"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "主機伺服器（已關閉）"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "您在 Hestia 中產生的存取金鑰 ID。"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "Internetbs API 金鑰"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "Internetbs API 密碼"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "API 設定無效"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "請保持關閉：ClientFence 會在續約發票付清後續約網域。開啟後，NameSilo 也會從您的帳戶續約。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "授權封鎖"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "正式環境 API 密碼："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "正式環境 API 簽章："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "正式環境 API 使用者名稱："
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "Live Publishable Key："
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "正式環境 REST API 用戶端 ID（選填）："
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "正式環境 REST API 密鑰："
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "Live Secret Key："
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "Live Webhook signing secret："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "PayPal 頁面上的標誌（選填）："
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "透過 API3 在 Dynadot 管理網域。請將此伺服器的 IP 位址加入 Dynadot 的 API 允許清單（Tools > API），並保持帳戶有足夠餘額用於註冊和續約。"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "透過其經銷商 API 在 Enom 管理網域。請在 Enom 的 API 設定中允許此伺服器的 IP 位址，並保持帳戶有足夠資金用於註冊和續約。每個網域都已關閉 Enom 自動續約：ClientFence 會在續約發票付清後續約網域。開啟測試模式時，請輸入 Enom 測試帳戶的經銷商 ID 和 API 權杖（resellertest.enom.com）。"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "透過 DomRobot API 在 INWX 管理網域。請使用未啟用兩步驟驗證的 INWX 帳戶（或子帳戶），並保持帳戶有足夠資金用於註冊和續約。網域註冊後會到期，除非 ClientFence 續約，而它會在續約發票付清時續約。開啟測試模式時，請輸入 INWX OT&E 測試帳戶的使用者名稱和密碼。"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "透過 API 在 Internetbs 管理網域"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "透過 API 在 NameSilo 管理網域。請在 NameSilo 建立 API 金鑰（Account > API Manager），在那裡允許此伺服器的 IP 位址，並保持帳戶有足夠資金用於註冊和續約。在 API Manager 中還要關閉透過 renewDomain 的贖回：ClientFence 拒絕續約處於贖回期的網域，否則 NameSilo 會依贖回費用贖回它。"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "透過 API 在 Namecheap 管理網域。Namecheap 需要您的伺服器 IP 才能運作。"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "透過 API 在 NetEarthOne 管理網域。NetEarthOne 需要您的伺服器 IP 才能運作。登入 NetEarthOne 控制面板（網址在您註冊時收到的郵件中），前往 Settings > API，輸入安裝 ClientFence 的伺服器的 IP 位址，授權其存取 API。"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "透過 API 在 Openprovider 管理網域。請使用 Openprovider API 使用者，為其允許此伺服器的 IP 位址，並保持帳戶有足夠資金用於註冊和續約。每個網域都已關閉 Openprovider 自動續約：ClientFence 會在續約發票付清後續約網域。開啟測試模式時，請輸入 Openprovider 沙盒帳戶的使用者名稱和密碼。"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "透過 API 在 Resell.biz 管理網域。Resell.biz 需要您的伺服器 IP 才能運作。登入 Resell.biz 控制面板（網址在您註冊時收到的郵件中），前往 Settings > API，輸入安裝 ClientFence 的伺服器的 IP 位址，授權其存取 API。"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "透過 API 在 ResellerClub 管理網域。ResellerClub 需要您的伺服器 IP 才能運作。登入 ResellerClub 控制面板（網址在您註冊時收到的郵件中），前往 Settings > API，輸入安裝 ClientFence 的伺服器的 IP 位址，授權其存取 API。"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "透過 API 在 ResellerID 管理網域。ResellerID 需要您的伺服器 IP 才能運作。登入 ResellerID 控制面板（網址在您註冊時收到的郵件中），前往 Settings > API，輸入安裝 ClientFence 的伺服器的 IP 位址，授權其存取 API。"
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "透過 API 在 Synergy Wholesale 管理網域。請將此伺服器的 IP 位址加入 Synergy Wholesale 入口網站的允許 IP 位址（Account Settings > API Information），並保持帳戶有足夠餘額用於註冊和續約。"
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "Markdown 預覽"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "模組："
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "NameSilo 自動續約"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "Namecheap 經銷商 ID。如果沒有，請留空。"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "Namecheap 使用者名稱"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "需要 REST API 金鑰，並在 PayPal REST 應用程式中開啟「Transaction search」。"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "NetEarthOne API 金鑰"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "NetEarthOne 經銷商 ID"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "網路問題"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "在發票頁面，有帳單協議的客戶可以直接付款，無需跳轉到 PayPal。"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "選填的已驗證 NameSilo 付款資料。留空：使用帳戶資金付款。"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "組織 ID"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "密碼 / 登入金鑰"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "用於連線至伺服器的密碼或登入金鑰"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "不使用協議，單次付款："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "使用已儲存的協議付款："
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "PayPal Auto-Pay 帳單協議"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "儀表板上的 PayPal 餘額："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "PayPal 帳單協議：客戶同意一次後，其發票會從其 PayPal 帳戶自動支付。需要已開啟 Reference Transactions 的 PayPal 商業帳戶的 NVP/SOAP API 資訊（請 PayPal 為您開啟）。"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "用於收款的 PayPal 電子郵件地址"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal：Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature。"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "付款 ID"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "來自 Dynadot 的正式金鑰：Tools > API。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "產品與價格"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "此伺服器的公開 IP 位址。請確認此 IP 已在您的 NameCheap 設定中加入白名單。"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "Resell.biz API 金鑰"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "Resell.biz 經銷商 ID"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "經銷商 ID"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "經銷商 ID。您可以在 NetEarthOne 控制面板中找到：Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "經銷商 ID。您可以在 Resell.biz 控制面板中找到：Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "經銷商 ID。您可以在 ResellerClub 控制面板中找到：Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "經銷商 ID。您可以在 ResellerID 控制面板中找到：Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "ResellerClub API 金鑰"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "ResellerClub 經銷商 ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "ResellerID API 金鑰"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "ResellerID 經銷商 ID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "沙盒 API 金鑰"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "沙盒 API 密碼："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "沙盒 API 簽章："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "沙盒 API 使用者名稱："
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "沙盒 REST API 用戶端 ID（選填）："
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "沙盒 REST API 密鑰："
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "已儲存的 PayPal 帳戶："
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "已儲存的銀行帳戶："
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "密鑰"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "您在 Hestia 中產生的存取金鑰的 Secret Key"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "api-sandbox.dynadot.com 的獨立金鑰，僅在測試模式開啟時使用。"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "sandbox.namesilo.com 的獨立金鑰，僅在測試模式開啟時使用。"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "伺服器的公開 IP 位址"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "在「付款方式」頁面設定："
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "Slot："
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "稅金規則"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "範本："
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "Test Publishable Key："
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "Test Secret Key："
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "Test Webhook signing secret："
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "PayPal 在其結帳頁面顯示的圖片網址（https）。留空：您公司的標誌（若為 PNG、JPG 或 GIF）。"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "PayPal REST 應用程式的用戶端 ID 和密鑰（developer.paypal.com，Apps & Credentials）。有了它們，退款會傳送到 PayPal，PayPal 訂閱會從 ClientFence 取消。"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "您登入 Namecheap 控制面板所用的使用者名稱。"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "此類註冊商會向指定電子郵件傳送網域管理事件的通知。例如，客戶註冊新網域時，您會收到一封含網域詳細資料的郵件。之後需要由您在真正的註冊商處註冊該網域。"
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "已複製服務單附件"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "服務單意見回饋"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "API 權杖所屬組織的 UUID（在面板網址中）"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "使用 RDAP Registry 查詢檢查網域可用性"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "用於連線至伺服器的使用者名稱"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "用於連線至伺服器的使用者名稱"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "WHMCS 授權（授權金鑰、檢查記錄和封鎖）"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "在請求中提供您的一個 API 金鑰，即可向 Stripe API 進行身分驗證。您可以在帳戶中管理 API 金鑰。"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "您可以在 Namecheap 控制面板中找到。"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "您可以在 NetEarthOne 控制面板中找到：Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "您可以在 Resell.biz 控制面板中找到：Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "您可以在 ResellerClub 控制面板中找到：Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "您可以在 ResellerID 控制面板中找到：Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "您的 Enom 帳戶 ID（登入名稱）。"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "您的 INWX 使用者名稱。"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "您的 Openprovider API 使用者名稱。"
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "您的留言"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com：Sandbox accounts, your business account, API Credentials。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "未傳入參數「key」"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "缺少「mod」鍵"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "未傳入附加元件 ID"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "未傳入附加元件週期"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "缺少金額"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "必須填寫金額"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "您是註冊新網域還是轉入現有網域？缺少參數 action"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "未傳入文章 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "未傳入文章分類 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "未傳入文章標題"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "缺少預設回覆分類 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "缺少預設回覆分類標題"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "缺少預設回覆 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "缺少預設回覆的分類 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "缺少預設回覆標題"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "未傳入信用卡 ID"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "未傳入購物車項目 ID"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "未傳入分類 ID"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "必須填寫分類標題"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "未傳入分類標題"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "選擇機密資料的類型"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "選擇評分"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "選擇回覆"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "選擇計費週期"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "選擇新產品"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "選擇服務結束時間"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "缺少客戶 ID"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "必須在群發郵件設定中設定客戶 ID。"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "必須填寫客戶 ID"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "未傳入客戶 ID"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "必須填寫代碼"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "未傳入內容"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "缺少幣別代碼"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "未傳入幣別代碼"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "必須填寫目前的密碼"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "必須填寫目前的密碼"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "未傳入自訂頁面 ID"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "未傳入自訂頁面 ID 清單"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "未傳入自訂頁面內容"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "未傳入自訂頁面 slug"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "未傳入自訂頁面標題"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "必須填寫說明"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "必須填寫網域 TLD。"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "缺少網域操作"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "必須填寫網域副檔名。"
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "必須填寫網域名稱。"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "缺少網域註冊期限。請在繼續前檢查網域可用性。"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "缺少網域註冊的 sld 參數。"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "缺少網域註冊的 tld 參數。"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "未傳入降級規則"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "未傳入電子郵件 ID"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "未傳入電子郵件地址"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "必須填寫電子郵件內容"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "必須填寫電子郵件"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "必須填寫電子郵件主旨"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "必須填寫電子郵件範本代碼"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "未傳入電子郵件範本代碼"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "必須填寫電子郵件範本內容"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "必須填寫電子郵件範本主旨"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "未傳入事件 ID"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "未傳入擴充套件 ID"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "未傳入擴充套件類型"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "未傳入失敗操作 ID"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "未傳入欄位 ID"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "缺少檔案 ID"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "產品設定中缺少檔案名稱"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "必須填寫名字"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "必須填寫名字"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "未傳入表單 ID"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "未傳入表單名稱"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "未提供表單名稱"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "未傳入表單類型"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "必須填寫格式"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "未傳入金流 ID"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "缺少群組 ID"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "未傳入群組名稱"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "缺少群組標題"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "必須填寫雜湊值"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "缺少服務台 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "未傳入服務台 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "缺少服務台標題"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "未傳入掛勾事件"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "未傳入主機方案 ID"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "未傳入主機方案名稱"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "主機產品必須設定子網域的基礎網域"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "主機產品必須定義 register_sld 參數"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "主機產品必須定義 register_tld 參數"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "主機產品必須定義 transfer_sld 參數"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "主機產品必須定義 transfer_tld 參數"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "主機產品必須有網域設定"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "缺少 ID"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "必須填寫 ID"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "未傳入 ID"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "未傳入 ID 清單"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "缺少發票 ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "未傳入發票 ID"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "未傳入發票雜湊值"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "未傳入發票項目 ID"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "未傳入語言 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "未傳入記錄項目 ID"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "未傳入訊息 ID"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "未傳入訊息主旨"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "未傳入名稱"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "必須填寫新密碼確認"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "必須填寫新密碼確認"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "必須填寫新密碼"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "必須填寫新密碼"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "未提供雜湊值"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "缺少備註 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "缺少備註"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "未傳入通知 ID"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "未傳入選項 ID"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "未傳入選項群組 ID"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "未傳入訂單 ID（order_id）"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "缺少訂單 ID"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "缺少訂單 ID 名稱"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "未傳入訂單 ID"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "未傳入訂單 ID 清單"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "未傳入訂單歷史列 ID"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "必須填寫訂單 ID"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "未傳入訂單狀態"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "未傳入參數 mod"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "未傳入參數「ext」"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "缺少參數 ext"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "必須填寫密碼確認"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "必須填寫密碼"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "未傳入密碼"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "未傳入金流 ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "缺少金流代碼"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "未傳入週期參數"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "選擇日期與時間"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "必須填寫「置頂」"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "請輸入主旨"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "請輸入您的電子郵件地址"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "請輸入您的姓名"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "未傳入貼文 ID"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "缺少預設組合名稱"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "請先預覽更新"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "缺少產品 ID"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "未傳入產品 ID"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "產品尚未完整設定。"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "缺少促銷 ID"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "未傳入促銷 ID"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "缺少優惠碼"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "未傳入優惠碼"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "缺少促銷類型"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "缺少促銷值"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "未傳入報價雜湊值"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "必須填寫收件人電子郵件"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "必須填寫收件人姓名"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "未傳入重新導向 ID"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "未傳入重新導向路徑"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "未傳入重新導向目標"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "缺少註冊商 ID"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "缺少註冊商代碼"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "缺少註冊價格"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "缺少續約價格"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "未傳入請求 ID"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "缺少必填欄位 address1"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "缺少必填欄位 city"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "缺少必填欄位 contact"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "缺少必填欄位 country"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "缺少必填欄位 email"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "缺少必填欄位 first_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "缺少必填欄位 last_name"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "缺少必填欄位 phone"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "缺少必填欄位 phone_cc"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "缺少必填欄位 postcode"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "缺少必填欄位 state"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "缺少 SLD"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "未傳入範圍"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "未傳入機密資料 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "選擇服務單"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "選擇要合併的服務單"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "必須填寫寄件人電子郵件"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "必須填寫寄件人姓名"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "未傳入伺服器 ID"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "未傳入伺服器 IP"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "未指定伺服器管理員"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "未傳入伺服器名稱"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "未傳入設定 ID"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "缺少購物車 ID"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "未傳入員工群組 ID"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "未傳入員工 ID"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "產品設定中缺少已儲存的檔案名稱"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "必須填寫子網域名稱。"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "未傳入訂閱 ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "未傳入訂閱幣別"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "未傳入訂閱 sID"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "缺少 TLD"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "缺少 TLD 註冊商 ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "缺少稅金 ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "未傳入稅金 ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "缺少稅金名稱"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "缺少稅率"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "稅率缺失或無效"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "未傳入範本代碼"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "未傳入佈景主題代碼"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "缺少服務單 ID"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "未傳入服務單 ID"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "必須填寫服務單內容"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "必須填寫服務單雜湊值"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "缺少服務單訊息 ID"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "缺少服務單訊息內容"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "必須填寫服務單主旨"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "必須填寫服務單 support_helpdesk_id"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "必須填寫服務單 support_helpdesk_id"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "未傳入標題"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "缺少交易 ID"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "必須填寫交易 ID"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "必須填寫要轉入的網域名稱（SLD）。"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "必須填寫要轉入的網域類型（TLD）。"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "缺少轉移價格"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "未傳入類型"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "未傳入升級規則"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "您必須指定要執行的檢查 ID。"
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "您必須指定標題"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "您必須指定要查詢的 IP 位址。"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "您必須指定要重設的 IP 位址。"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "缺少 plan_id"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "缺少 ticket_ID"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "請求在 :seconds 秒後逾時"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "確定要刪除此自訂欄位嗎？"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "確定要刪除此表單嗎？"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "刪除表單？"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "刪除欄位？"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "查看與回呼資料一併記錄的伺服器變數。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "用於連線至伺服器的密碼"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "查看從金流收到的原始請求內文。"

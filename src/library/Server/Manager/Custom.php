@@ -18,7 +18,7 @@ class Server_Manager_Custom extends Server_Manager
     public static function getForm(): array
     {
         return [
-            'label' => 'Custom Server Manager',
+            'label' => __trans('Custom Server Manager'),
         ];
     }
 

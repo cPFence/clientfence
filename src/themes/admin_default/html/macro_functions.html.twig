@@ -42,12 +42,13 @@
             {% endfor %}
             </select>
         {% elseif element[0] == 'radio' %}
+            {# ClientFence core patch: an unsaved switch shows its default ("default", else the first option, Yes). #}
             <label class="form-label d-block">{{ element[1].label }}</label>
             {% if element[1].description is defined and element[1].description %}<div class="form-text mt-0 mb-2">{{ element[1].description|markdown_to_html }}</div>{% endif %}
             <div class="d-flex flex-wrap gap-3">
             {% for k, v in element[1].multiOptions %}
                 <label class="form-check">
-                    <input class="form-check-input" id="el-{{ name ~ k }}" type="radio" name="config[{{ name }}]" value="{{ k }}"{% if k == values[name]|default('') %}checked{% endif %}>
+                    <input class="form-check-input" id="el-{{ name ~ k }}" type="radio" name="config[{{ name }}]" value="{{ k }}"{% if k == (values[name] ?? element[1].default ?? element[1].multiOptions|keys|first) %} checked{% endif %}>
                     <span class="form-check-label">{{ v }}</span>
                 </label>
             {% endfor %}

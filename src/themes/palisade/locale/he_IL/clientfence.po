@@ -25131,3 +25131,1515 @@ msgstr "בקשו מהתמיכה שלנו למחוק את החשבון שלכם. 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gateway you choose."
 msgstr "החשבוניות שלא שולמו של שער זה: :count. הלקוחות ישלמו אותן דרך השער שתבחרו."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+msgstr "קוד מטבע של הפורטל הזה: USD (דולר אמריקאי), EUR (אירו) או GBP (לירה שטרלינג). חשבוניות במטבעות אחרים מחויבות בו לפי שערי ההמרה של הפורטל, כמו \"Convert To For Processing\" של WHMCS. ריק: כל חשבונית מחויבת במטבע שלה. [איך מגדירים PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "API key"
+msgstr "מפתח API"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
+msgid "API token"
+msgstr "טוקן API"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access Hash or API Token"
+msgstr "Access Hash או טוקן API"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Access Key ID"
+msgstr "מזהה מפתח גישה"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Access hash or WHM API token to connect to the server"
+msgstr "Access Hash או טוקן API של WHM להתחברות לשרת"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr "אחרי הזמנה חינמית שמתחדשת (ניסיון חינם), לקוח בלי אמצעי תשלום שמור מועבר ל-PayPal כדי להגדיר תשלומים אוטומטיים."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "An access token from the panel; allow this server's IP address on it"
+msgstr "טוקן גישה מהלוח; אפשרו בו את כתובת ה-IP של השרת הזה"
+
+#: src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "An error occurred while rendering this widget."
+msgstr "אירעה שגיאה בהצגת הווידג'ט הזה."
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Besides cards, clients can save a bank account for automatic payments: BECS Direct Debit for AUD, SEPA Direct Debit for EUR and Bacs Direct Debit for GBP. Turn the method on in your Stripe dashboard first. A bank payment takes a few days to clear: meanwhile the invoice shows \"Payment pending\"."
+msgstr "מלבד כרטיסים, לקוחות יכולים לשמור חשבון בנק לתשלומים אוטומטיים: חיוב ישיר BECS עבור AUD, חיוב ישיר SEPA עבור EUR וחיוב ישיר Bacs עבור GBP. הפעילו את השיטה קודם בלוח הבקרה של Stripe. תשלום בנקאי לוקח כמה ימים להתבצע: בינתיים החשבונית מציגה \"תשלום ממתין\"."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Bundles (not imported)"
+msgstr "חבילות (לא יובאו)"
+
+#: src/library/Server/Manager/CWP.php
+msgid "CWP"
+msgstr "CWP"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Client credit balances"
+msgstr "יתרות זכות של לקוחות"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
+msgstr "לקוחות יכולים גם לשלם חשבונית ב-PayPal בלי להגדיר תשלומים אוטומטיים."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr "לקוחות יכולים לשמור את חשבון ה-PayPal שלהם בזמן התשלום או בעמוד \"אמצעי תשלום\", והחשבוניות שלהם ישולמו אז אוטומטית, כמו בכרטיסים שמורים. נדרשים מפתחות REST API ו-Vault (\"Save payment methods\") באפליקציית PayPal REST שלכם, ש-PayPal מציעה רק בחלק מהמדינות."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Clients can set up automatic payments on their Payment methods page without paying an invoice."
+msgstr "לקוחות יכולים להגדיר תשלומים אוטומטיים בעמוד \"אמצעי תשלום\" בלי לשלם חשבונית."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Clients whose credit matches"
+msgstr "לקוחות שהזכות שלהם תואמת"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Confirm"
+msgstr "אישור"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Convert to for processing (optional):"
+msgstr "המרה לצורך עיבוד (אופציונלי):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Currency for Dynadot orders, for example USD."
+msgstr "מטבע להזמנות Dynadot, למשל USD."
+
+#: src/library/Registrar/Adapter/Custom.php
+msgid "Custom Registrar always responds with positive results. Useful if no other registrar is suitable."
+msgstr "Custom Registrar תמיד מחזיר תוצאה חיובית. שימושי כשאין רשם אחר מתאים."
+
+#: src/library/Server/Manager/Custom.php
+msgid "Custom Server Manager"
+msgstr "מנהל שרתים מותאם אישית"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Custom payment gateway allows you to give instructions how can your client pay invoice. All system, client, order and invoice details can be printed. HTML code is supported."
+msgstr "שער התשלום המותאם אישית מאפשר לכם להסביר ללקוח איך לשלם את החשבונית. אפשר להדפיס את כל פרטי המערכת, הלקוח, ההזמנה והחשבונית. קוד HTML נתמך."
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "DirectAdmin"
+msgstr "DirectAdmin"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Domain prices"
+msgstr "מחירי דומיינים"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Email log"
+msgstr "יומן דוא״ל"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "Email to Send Domain Change Notifications"
+msgstr "כתובת דוא״ל לשליחת התראות על שינויי דומיין"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Enhance (ClientFence)"
+msgstr "Enhance (ClientFence)"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Single Payment Information"
+msgstr "הזינו את הטקסט למידע על תשלום חד-פעמי"
+
+#: src/library/Payment/Adapter/Custom.php
+msgid "Enter Your Text for Subscription Information"
+msgstr "הזינו את הטקסט למידע על מינוי"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Enter your PayPal email to start accepting payments by PayPal."
+msgstr "הזינו את כתובת הדוא״ל שלכם ב-PayPal כדי להתחיל לקבל תשלומים דרך PayPal."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig
+msgid "Failed to copy to clipboard. Please select the text and copy it manually."
+msgstr "ההעתקה ללוח נכשלה. סמנו את הטקסט והעתיקו אותו ידנית."
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Fill in the client's email at PayPal:"
+msgstr "מלאו את כתובת הדוא״ל של הלקוח ב-PayPal:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Free orders:"
+msgstr "הזמנות חינמיות:"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "From Enom: Resellers > API settings."
+msgstr "מ-Enom: Resellers > API settings."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "From NameSilo: Account > API Manager."
+msgstr "מ-NameSilo: Account > API Manager."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the Synergy Wholesale portal: Account Settings > API Information."
+msgstr "מהפורטל של Synergy Wholesale: Account Settings > API Information."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "From the same page."
+msgstr "מאותו עמוד."
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Hestia Control Panel"
+msgstr "Hestia Control Panel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting servers (switched off)"
+msgstr "שרתי אחסון (כבויים)"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "ID for the access key you've generated in Hestia."
+msgstr "המזהה של מפתח הגישה שיצרתם ב-Hestia."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Key"
+msgstr "מפתח API של Internetbs"
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Internetbs API Password"
+msgstr "סיסמת API של Internetbs"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Invalid API configuration"
+msgstr "הגדרת API לא תקינה"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Keep this off: ClientFence renews a domain when its renewal invoice is paid. On, NameSilo also renews it from your account."
+msgstr "השאירו כבוי: ClientFence מחדש דומיין כשחשבונית החידוש שלו משולמת. כשזה פועל, NameSilo מחדש אותו גם מהחשבון שלכם."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence bans"
+msgstr "חסימות רישיון"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API password:"
+msgstr "סיסמת API (חי):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API signature:"
+msgstr "חתימת API (חי):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Live API username:"
+msgstr "שם משתמש API (חי):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Publishable Key:"
+msgstr "מפתח ציבורי (חי):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API client ID (optional):"
+msgstr "מזהה לקוח REST API (חי, אופציונלי):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Live REST API secret:"
+msgstr "סוד REST API (חי):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Secret Key:"
+msgstr "מפתח סודי (חי):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Live Webhook signing secret:"
+msgstr "סוד חתימת Webhook (חי):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Logo on PayPal's pages (optional):"
+msgstr "לוגו בעמודים של PayPal (אופציונלי):"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Manages domains on Dynadot through API3. Add this server's IP address to the API allow list in Dynadot (Tools > API) and keep enough account balance for registrations and renewals."
+msgstr "מנהל דומיינים ב-Dynadot דרך API3. הוסיפו את כתובת ה-IP של השרת הזה לרשימת ההיתרים של ה-API ב-Dynadot (Tools > API) והחזיקו בחשבון יתרה מספקת לרישומים ולחידושים."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Manages domains on Enom through its reseller API. Allow this server's IP address in the Enom API settings and keep enough account funds for registrations and renewals. Enom auto-renewal is off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the reseller ID and API token of your Enom test account (resellertest.enom.com)."
+msgstr "מנהל דומיינים ב-Enom דרך ה-API למפיצים. אפשרו את כתובת ה-IP של השרת הזה בהגדרות ה-API של Enom והחזיקו בחשבון כספים מספיקים לרישומים ולחידושים. החידוש האוטומטי של Enom כבוי לכל דומיין: ClientFence מחדש דומיין כשחשבונית החידוש שלו משולמת. כשמצב הבדיקה פועל, הזינו את מזהה המפיץ ואת טוקן ה-API של חשבון הבדיקה שלכם ב-Enom (resellertest.enom.com)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account."
+msgstr "מנהל דומיינים ב-INWX דרך ה-API של DomRobot. השתמשו בחשבון INWX (או בחשבון משנה) בלי התחברות דו-שלבית והחזיקו בחשבון כספים מספיקים לרישומים ולחידושים. דומיינים נרשמים כך שיפוגו, אלא אם ClientFence מחדש אותם, מה שהוא עושה כשחשבונית החידוש משולמת. כשמצב הבדיקה פועל, הזינו את שם המשתמש והסיסמה של חשבון הבדיקה שלכם ב-INWX OT&E."
+
+#: src/library/Registrar/Adapter/Internetbs.php
+msgid "Manages domains on Internetbs via API"
+msgstr "מנהל דומיינים ב-Internetbs דרך ה-API"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Manages domains on NameSilo through its API. Create the API key in NameSilo (Account > API Manager), allow this server's IP address there, and keep enough account funds for registrations and renewals. In the API Manager, also turn off restorations by renewDomain: ClientFence refuses to renew a domain in its restore period, but NameSilo would otherwise restore it at the restoration fee."
+msgstr "מנהל דומיינים ב-NameSilo דרך ה-API שלו. צרו את מפתח ה-API ב-NameSilo (Account > API Manager), אפשרו שם את כתובת ה-IP של השרת הזה והחזיקו בחשבון כספים מספיקים לרישומים ולחידושים. ב-API Manager כבו גם שחזורים דרך renewDomain: ClientFence מסרב לחדש דומיין בתקופת השחזור, אבל NameSilo היה משחזר אותו אחרת בעמלת שחזור."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Manages domains on Namecheap via API. Namecheap requires your server IP in order to work."
+msgstr "מנהל דומיינים ב-Namecheap דרך ה-API. Namecheap צריך את ה-IP של השרת שלכם כדי לעבוד."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "מנהל דומיינים ב-NetEarthOne דרך ה-API. NetEarthOne צריך את ה-IP של השרת שלכם כדי לעבוד. התחברו ללוח הבקרה של NetEarthOne (הכתובת בדוא״ל שקיבלתם בהרשמה), עברו אל Settings > API והזינו את כתובת ה-IP של השרת שבו מותקן ClientFence כדי להרשות לו גישה ל-API."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr "מנהל דומיינים ב-Openprovider דרך ה-API. השתמשו במשתמש API של Openprovider, אפשרו עבורו את כתובת ה-IP של השרת הזה והחזיקו בחשבון כספים מספיקים לרישומים ולחידושים. החידוש האוטומטי של Openprovider כבוי לכל דומיין: ClientFence מחדש דומיין כשחשבונית החידוש שלו משולמת. כשמצב הבדיקה פועל, הזינו את שם המשתמש והסיסמה של חשבון ה-sandbox שלכם ב-Openprovider."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Manages domains on Resell.biz via API. Resell.biz requires your server IP in order to work. Login to the Resell.biz control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "מנהל דומיינים ב-Resell.biz דרך ה-API. Resell.biz צריך את ה-IP של השרת שלכם כדי לעבוד. התחברו ללוח הבקרה של Resell.biz (הכתובת בדוא״ל שקיבלתם בהרשמה), עברו אל Settings > API והזינו את כתובת ה-IP של השרת שבו מותקן ClientFence כדי להרשות לו גישה ל-API."
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Manages domains on ResellerClub via API. ResellerClub requires your server IP in order to work. Login to the ResellerClub control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "מנהל דומיינים ב-ResellerClub דרך ה-API. ResellerClub צריך את ה-IP של השרת שלכם כדי לעבוד. התחברו ללוח הבקרה של ResellerClub (הכתובת בדוא״ל שקיבלתם בהרשמה), עברו אל Settings > API והזינו את כתובת ה-IP של השרת שבו מותקן ClientFence כדי להרשות לו גישה ל-API."
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Manages domains on ResellerID via API. ResellerID requires your server IP in order to work. Login to the ResellerID control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
+msgstr "מנהל דומיינים ב-ResellerID דרך ה-API. ResellerID צריך את ה-IP של השרת שלכם כדי לעבוד. התחברו ללוח הבקרה של ResellerID (הכתובת בדוא״ל שקיבלתם בהרשמה), עברו אל Settings > API והזינו את כתובת ה-IP של השרת שבו מותקן ClientFence כדי להרשות לו גישה ל-API."
+
+#: src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Manages domains on Synergy Wholesale through its API. Add this server's IP address to the allowed IP addresses in the Synergy Wholesale portal (Account Settings > API Information) and keep enough account balance for registrations and renewals."
+msgstr "מנהל דומיינים ב-Synergy Wholesale דרך ה-API. הוסיפו את כתובת ה-IP של השרת הזה לכתובות ה-IP המותרות בפורטל של Synergy Wholesale (Account Settings > API Information) והחזיקו בחשבון יתרה מספקת לרישומים ולחידושים."
+
+#: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
+msgid "Markdown preview"
+msgstr "תצוגה מקדימה של Markdown"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Module:"
+msgstr "מודול:"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "NameSilo auto-renewal"
+msgstr "חידוש אוטומטי ב-NameSilo"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
+msgstr "מזהה מפיץ ב-Namecheap. אם אין לכם, השאירו ריק."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Namecheap Username"
+msgstr "שם משתמש ב-Namecheap"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Needs the REST API keys, with \"Transaction search\" turned on for the PayPal REST app."
+msgstr "נדרשים מפתחות REST API, כשהאפשרות \"Transaction search\" מופעלת באפליקציית PayPal REST."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne API Key"
+msgstr "מפתח API של NetEarthOne"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "NetEarthOne Reseller ID"
+msgstr "מזהה מפיץ ב-NetEarthOne"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Network issues"
+msgstr "בעיות רשת"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr "בעמוד החשבונית, לקוח עם הסכם חיוב יכול לשלם מיד בלי לעבור ל-PayPal."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr "פרופיל תשלום מאומת של NameSilo, אופציונלי. ריק: כספי החשבון משלמים."
+
+#: src/library/Server/Manager/Enhance.php
+msgid "Organization ID"
+msgstr "מזהה ארגון"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password / Login Key"
+msgstr "סיסמה / מפתח התחברות"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Password or login key used to connect to the server"
+msgstr "סיסמה או מפתח התחברות להתחברות לשרת"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay once without an agreement:"
+msgstr "תשלום חד-פעמי בלי הסכם:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Pay with the saved agreement:"
+msgstr "תשלום עם ההסכם השמור:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "PayPal Auto-Pay billing agreements"
+msgstr "הסכמי חיוב של PayPal Auto-Pay"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal balance on the dashboard:"
+msgstr "יתרת PayPal בלוח הבקרה:"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal billing agreements: clients agree once and their invoices are then paid from their PayPal account automatically. Needs the NVP/SOAP API details of a PayPal business account with Reference Transactions turned on (ask PayPal to turn them on)."
+msgstr "הסכמי חיוב של PayPal: לקוחות מסכימים פעם אחת והחשבוניות שלהם משולמות אחר כך אוטומטית מחשבון ה-PayPal שלהם. נדרשים פרטי NVP/SOAP API של חשבון PayPal עסקי עם Reference Transactions מופעל (בקשו מ-PayPal להפעיל אותם)."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "PayPal email address for payments"
+msgstr "כתובת דוא״ל של PayPal לתשלומים"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+
+#: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
+msgid "Payment"
+msgstr "תשלום"
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Payment ID"
+msgstr "מזהה תשלום"
+
+#: src/library/Server/Manager/Plesk.php
+msgid "Plesk"
+msgstr "Plesk"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Production key from Dynadot: Tools > API."
+msgstr "מפתח ייצור מ-Dynadot: Tools > API."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products and prices"
+msgstr "מוצרים ומחירים"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Public IP address of this server. Ensure that this IP is whitelisted under your NameCheap settings."
+msgstr "כתובת ה-IP הציבורית של השרת הזה. ודאו שה-IP הזה מותר בהגדרות NameCheap שלכם."
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz API Key"
+msgstr "מפתח API של Resell.biz"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Resell.biz Reseller ID"
+msgstr "מזהה מפיץ ב-Resell.biz"
+
+#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Synergywholesale.php
+msgid "Reseller ID"
+msgstr "מזהה מפיץ"
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "Reseller ID. You can get this at NetEarthOne control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "מזהה מפיץ. אפשר למצוא אותו בלוח הבקרה של NetEarthOne: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "Reseller ID. You can get this at Resell.biz control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "מזהה מפיץ. אפשר למצוא אותו בלוח הבקרה של Resell.biz: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "Reseller ID. You can get this at ResellerClub control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "מזהה מפיץ. אפשר למצוא אותו בלוח הבקרה של ResellerClub: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "Reseller ID. You can get this at ResellerID control panel Settings > Personal information > Primary profile > Reseller ID"
+msgstr "מזהה מפיץ. אפשר למצוא אותו בלוח הבקרה של ResellerID: Settings > Personal information > Primary profile > Reseller ID"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub API Key"
+msgstr "מפתח API של ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "ResellerClub Reseller ID"
+msgstr "מזהה מפיץ ב-ResellerClub"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID API Key"
+msgstr "מפתח API של ResellerID"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "ResellerID Reseller ID"
+msgstr "מזהה מפיץ ב-ResellerID"
+
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php
+msgid "Sandbox API key"
+msgstr "מפתח API (sandbox)"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API password:"
+msgstr "סיסמת API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API signature:"
+msgstr "חתימת API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Sandbox API username:"
+msgstr "שם משתמש API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API client ID (optional):"
+msgstr "מזהה לקוח REST API (sandbox, אופציונלי):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Sandbox REST API secret:"
+msgstr "סוד REST API (sandbox):"
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "Saved PayPal accounts:"
+msgstr "חשבונות PayPal שמורים:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Saved bank accounts:"
+msgstr "חשבונות בנק שמורים:"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret Key"
+msgstr "מפתח סודי"
+
+#: src/library/Server/Manager/Hestia.php
+msgid "Secret key for the access key you've generated in Hestia"
+msgstr "Secret Key של מפתח הגישה שיצרתם ב-Hestia"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
+msgstr "מפתח נפרד ל-api-sandbox.dynadot.com, בשימוש רק כשמצב הבדיקה פועל."
+
+#: src/library/Registrar/Adapter/Namesilo.php
+msgid "Separate key for sandbox.namesilo.com, used only while test mode is on."
+msgstr "מפתח נפרד ל-sandbox.namesilo.com, בשימוש רק כשמצב הבדיקה פועל."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "Server's Public IP Address"
+msgstr "כתובת ה-IP הציבורית של השרת"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "Set up on the Payment methods page:"
+msgstr "מגדירים בעמוד \"אמצעי תשלום\":"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Slot:"
+msgstr "משבצת:"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Tax rules"
+msgstr "כללי מס"
+
+#: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig src/modules/Widgets/templates/client/widgets/mod_widgets_error.html.twig
+msgid "Template:"
+msgstr "תבנית:"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Publishable Key:"
+msgstr "מפתח ציבורי (בדיקה):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Secret Key:"
+msgstr "מפתח סודי (בדיקה):"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Test Webhook signing secret:"
+msgstr "סוד חתימת Webhook (בדיקה):"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "The address (https) of an image PayPal shows on its checkout pages. Empty: your company logo, if it is a PNG, JPG or GIF."
+msgstr "הכתובת (https) של תמונה ש-PayPal מציגה בעמודי התשלום שלה. ריק: הלוגו של החברה שלכם, אם הוא PNG, JPG או GIF."
+
+#: src/library/Payment/Adapter/PayPalEmail.php
+msgid "The client ID and secret of a PayPal REST app (developer.paypal.com, Apps & Credentials). With them, refunds are sent to PayPal and PayPal subscriptions are cancelled from ClientFence."
+msgstr "מזהה הלקוח והסוד של אפליקציית PayPal REST (developer.paypal.com, Apps & Credentials). איתם, החזרים נשלחים ל-PayPal ומינויי PayPal מבוטלים מתוך ClientFence."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "The username you use to login to the Namecheap control panel."
+msgstr "שם המשתמש שבו אתם מתחברים ללוח הבקרה של Namecheap."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar."
+msgstr "סוג רשם זה שולח התראות לכתובת הדוא״ל שצוינה על אירועי ניהול דומיינים. לדוגמה, כשלקוח רושם דומיין חדש, נשלחת אליכם הודעת דוא״ל עם פרטי הדומיין. אחר כך באחריותכם לרשום את הדומיין אצל רשם אמיתי."
+
+#: src/modules/Clientfence/Whmcs/Run.php
+msgid "Ticket attachments copied"
+msgstr "קבצים מצורפים של פניות הועתקו"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Ticket feedback"
+msgstr "משוב על פניות"
+
+#: src/library/Server/Manager/Enhance.php
+msgid "UUID of the organization the API token belongs to (in the panel address)"
+msgstr "ה-UUID של הארגון שאליו שייך טוקן ה-API (בכתובת הלוח)"
+
+#: src/library/Registrar/Adapter/Custom.php src/library/Registrar/Adapter/Email.php
+msgid "Use RDAP Registry Lookups to Check for Domain Availability"
+msgstr "שימוש בשאילתות RDAP Registry לבדיקת זמינות דומיינים"
+
+#: src/library/Server/Manager/Whm.php
+msgid "Username to connect to the server"
+msgstr "שם משתמש להתחברות לשרת"
+
+#: src/library/Server/Manager/Directadmin.php
+msgid "Username used to connect to the server"
+msgstr "שם משתמש שמשמש להתחברות לשרת"
+
+#: src/library/Server/Manager/Whm.php
+msgid "WHM (cPanel)"
+msgstr "WHM (cPanel)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "WHMCS Licensing (licence keys, check log and bans)"
+msgstr "רישוי WHMCS (מפתחות רישיון, יומן בדיקות וחסימות)"
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "You authenticate to the Stripe API by providing one of your API keys in the request. You can manage your API keys from your account."
+msgstr "אתם מזדהים ב-API של Stripe על ידי מסירת אחד ממפתחות ה-API שלכם בבקשה. את מפתחות ה-API מנהלים מהחשבון שלכם."
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid "You can get this at Namecheap control panel."
+msgstr "אפשר למצוא זאת בלוח הבקרה של Namecheap."
+
+#: src/library/Registrar/Adapter/Netearthone.php
+msgid "You can get this at NetEarthOne control panel, go to Settings -> API"
+msgstr "אפשר למצוא זאת בלוח הבקרה של NetEarthOne: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellbiz.php
+msgid "You can get this at Resell.biz control panel, go to Settings -> API"
+msgstr "אפשר למצוא זאת בלוח הבקרה של Resell.biz: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerclub.php
+msgid "You can get this at ResellerClub control panel, go to Settings -> API"
+msgstr "אפשר למצוא זאת בלוח הבקרה של ResellerClub: Settings -> API"
+
+#: src/library/Registrar/Adapter/Resellerid.php
+msgid "You can get this at ResellerID control panel, go to Settings -> API"
+msgstr "אפשר למצוא זאת בלוח הבקרה של ResellerID: Settings -> API"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid "Your Enom account ID (login name)."
+msgstr "מזהה חשבון Enom שלכם (שם התחברות)."
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid "Your INWX username."
+msgstr "שם המשתמש שלכם ב-INWX."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid "Your Openprovider API username."
+msgstr "שם משתמש ה-API שלכם ב-Openprovider."
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
+msgid "Your comment"
+msgstr "התגובה שלכם"
+
+#: src/library/Payment/Adapter/PayPalAutoPay.php
+msgid "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+msgstr "developer.paypal.com: Sandbox accounts, your business account, API Credentials."
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Guest.php
+msgid "\"key\" parameter was not passed"
+msgstr "הפרמטר \"key\" לא התקבל"
+
+#: src/modules/System/Api/Admin.php
+msgid "\"mod\" key is missing"
+msgstr "המפתח \"mod\" חסר"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Addon ID was not passed"
+msgstr "מזהה התוסף לא התקבל"
+
+#: src/modules/Product/Service.php
+msgid "Addon period parameter not passed"
+msgstr "תקופת התוסף לא התקבלה"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is missing"
+msgstr "הסכום חסר"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
+msgid "Amount is required"
+msgstr "נדרש סכום"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Are you registering new domain or transferring existing? Action parameter missing"
+msgstr "האם אתם רושמים דומיין חדש או מעבירים דומיין קיים? הפרמטר action חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article ID was not passed"
+msgstr "מזהה המאמר לא התקבל"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article category ID was not passed"
+msgstr "מזהה קטגוריית המאמר לא התקבל"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Article title not passed"
+msgstr "כותרת המאמר לא התקבלה"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category ID is missing"
+msgstr "מזהה קטגוריית התשובות המוכנות חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned category title is missing"
+msgstr "כותרת קטגוריית התשובות המוכנות חסרה"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply ID is missing"
+msgstr "מזהה התשובה המוכנה חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply category ID is missing"
+msgstr "מזהה הקטגוריה של התשובה המוכנה חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Canned reply title is missing"
+msgstr "כותרת התשובה המוכנה חסרה"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Card ID was not passed"
+msgstr "מזהה הכרטיס לא התקבל"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Cart item ID was not passed"
+msgstr "מזהה פריט העגלה לא התקבל"
+
+#: src/modules/Product/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Category ID was not passed"
+msgstr "מזהה הקטגוריה לא התקבל"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Category title is required"
+msgstr "נדרשת כותרת לקטגוריה"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Category title not passed"
+msgstr "כותרת הקטגוריה לא התקבלה"
+
+#: src/modules/Support/Api/Client.php
+msgid "Choose a kind of secret"
+msgstr "בחרו סוג של פרטים סודיים"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a rating"
+msgstr "בחרו דירוג"
+
+#: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
+msgid "Choose a reply"
+msgstr "בחרו תשובה"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the billing cycle"
+msgstr "בחרו את מחזור החיוב"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose the new product"
+msgstr "בחרו את המוצר החדש"
+
+#: src/modules/Order/Api/Client.php
+msgid "Choose when the service ends"
+msgstr "בחרו מתי השירות מסתיים"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Client ID is missing"
+msgstr "מזהה הלקוח חסר"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Client ID needs to be configured in mass mailer settings."
+msgstr "יש להגדיר את מזהה הלקוח בהגדרות הדיוור ההמוני."
+
+#: src/modules/Client/Api/Admin.php
+msgid "Client ID required"
+msgstr "נדרש מזהה לקוח"
+
+#: src/modules/Client/Api/Admin.php src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php …
+msgid "Client ID was not passed"
+msgstr "מזהה הלקוח לא התקבל"
+
+#: src/modules/Staff/Api/Guest.php
+msgid "Code required"
+msgstr "נדרש קוד"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Content was not passed"
+msgstr "התוכן לא התקבל"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php src/modules/Currency/Api/Admin.php
+msgid "Currency code is missing"
+msgstr "קוד המטבע חסר"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Currency code was not passed"
+msgstr "קוד המטבע לא התקבל"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "Current password is required"
+msgstr "נדרשת הסיסמה הנוכחית"
+
+#: src/modules/Profile/Api/Client.php
+msgid "Current password required"
+msgstr "נדרשת הסיסמה הנוכחית"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page ID was not passed"
+msgstr "מזהה העמוד המותאם אישית לא התקבל"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page IDs were not passed"
+msgstr "מזהי העמודים המותאמים אישית לא התקבלו"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page content was not passed"
+msgstr "תוכן העמוד המותאם אישית לא התקבל"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page slug was not passed"
+msgstr "ה-slug של העמוד המותאם אישית לא התקבל"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Custom page title was not passed"
+msgstr "כותרת העמוד המותאם אישית לא התקבלה"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Description is required"
+msgstr "נדרש תיאור"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain TLD is required."
+msgstr "נדרש TLD של הדומיין."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain action is missing"
+msgstr "פעולת הדומיין חסרה"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Domain extension is required."
+msgstr "נדרשת סיומת של הדומיין."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
+msgid "Domain name is required."
+msgstr "נדרש שם דומיין."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration period is missing. Please check domain availability before proceeding."
+msgstr "תקופת רישום הדומיין חסרה. בדקו את זמינות הדומיין לפני שממשיכים."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration sld parameter missing."
+msgstr "הפרמטר sld של רישום הדומיין חסר."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Domain registration tld parameter missing."
+msgstr "הפרמטר tld של רישום הדומיין חסר."
+
+#: src/modules/Order/Api/Admin.php
+msgid "Downgrade rule was not passed"
+msgstr "כלל ההורדה בתוכנית לא התקבל"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Api/Client.php
+msgid "Email ID was not passed"
+msgstr "מזהה הדוא״ל לא התקבל"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Email address was not passed"
+msgstr "כתובת הדוא״ל לא התקבלה"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email content is required"
+msgstr "נדרש תוכן לדוא״ל"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Guest.php
+msgid "Email required"
+msgstr "נדרש דוא״ל"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email subject is required"
+msgstr "נדרש נושא לדוא״ל"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code is required"
+msgstr "נדרש קוד לתבנית הדוא״ל"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template code was not passed"
+msgstr "קוד תבנית הדוא״ל לא התקבל"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template content is required"
+msgstr "נדרש תוכן לתבנית הדוא״ל"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Email template subject is required"
+msgstr "נדרש נושא לתבנית הדוא״ל"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Event ID was not passed"
+msgstr "מזהה האירוע לא התקבל"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension ID was not passed"
+msgstr "מזהה ההרחבה לא התקבל"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Extension type was not passed"
+msgstr "סוג ההרחבה לא התקבל"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Failed action ID was not passed"
+msgstr "מזהה הפעולה שנכשלה לא התקבל"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Field id was not passed"
+msgstr "מזהה השדה לא התקבל"
+
+#: src/modules/Client/Api/Admin.php
+msgid "File ID is missing"
+msgstr "מזהה הקובץ חסר"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Filename is missing in product config"
+msgstr "שם הקובץ חסר בהגדרות המוצר"
+
+#: src/modules/Client/Api/Admin.php
+msgid "First name is required"
+msgstr "נדרש שם פרטי"
+
+#: src/modules/Client/Api/Guest.php
+msgid "First name required"
+msgstr "נדרש שם פרטי"
+
+#: src/modules/Formbuilder/Api/Guest.php
+msgid "Form ID was not passed"
+msgstr "מזהה הטופס לא התקבל"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not passed"
+msgstr "שם הטופס לא התקבל"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form name was not provided"
+msgstr "שם הטופס לא סופק"
+
+#: src/modules/Formbuilder/Api/Admin.php
+msgid "Form type was not passed"
+msgstr "סוג הטופס לא התקבל"
+
+#: src/library/ClientFence/Validation/Api/RequiredParams.php
+msgid "Format is required"
+msgstr "נדרש פורמט"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Gateway ID was not passed"
+msgstr "מזהה השער לא התקבל"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group ID is missing"
+msgstr "מזהה הקבוצה חסר"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Group name was not passed"
+msgstr "שם הקבוצה לא התקבל"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Group title is missing"
+msgstr "כותרת הקבוצה חסרה"
+
+#: src/modules/Client/Service.php
+msgid "Hash required"
+msgstr "נדרש hash"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID is missing"
+msgstr "מזהה מרכז התמיכה חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk ID was not passed"
+msgstr "מזהה מרכז התמיכה לא התקבל"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Help desk title is missing"
+msgstr "כותרת מרכז התמיכה חסרה"
+
+#: src/modules/Hook/Service.php
+msgid "Hook event not passed"
+msgstr "אירוע ה-hook לא התקבל"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan ID was not passed"
+msgstr "מזהה תוכנית האחסון לא התקבל"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Hosting plan name was not passed"
+msgstr "שם תוכנית האחסון לא התקבל"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have a subdomain base domain configured"
+msgstr "במוצר האחסון חייב להיות מוגדר דומיין בסיס לתת-דומיינים"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_sld parameter"
+msgstr "במוצר האחסון חייב להיות מוגדר הפרמטר register_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined register_tld parameter"
+msgstr "במוצר האחסון חייב להיות מוגדר הפרמטר register_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_sld parameter"
+msgstr "במוצר האחסון חייב להיות מוגדר הפרמטר transfer_sld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have defined transfer_tld parameter"
+msgstr "במוצר האחסון חייב להיות מוגדר הפרמטר transfer_tld"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Hosting product must have domain configuration"
+msgstr "במוצר האחסון חייבת להיות הגדרת דומיין"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "ID is missing"
+msgstr "המזהה חסר"
+
+#: src/modules/Client/Api/Admin.php
+msgid "ID required"
+msgstr "נדרש מזהה"
+
+#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+msgid "ID was not passed"
+msgstr "המזהה לא התקבל"
+
+#: src/modules/Client/Api/Admin.php src/modules/Email/Api/Admin.php src/modules/Invoice/Api/Admin.php …
+msgid "IDs were not passed"
+msgstr "המזהים לא התקבלו"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID is missing"
+msgstr "מזהה החשבונית חסר"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice ID was not passed"
+msgstr "מזהה החשבונית לא התקבל"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+msgid "Invoice hash was not passed"
+msgstr "ה-hash של החשבונית לא התקבל"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Invoice item ID was not passed"
+msgstr "מזהה פריט החשבונית לא התקבל"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Locale ID was not passed"
+msgstr "מזהה השפה לא התקבל"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Log entry ID was not passed"
+msgstr "מזהה רשומת היומן לא התקבל"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message ID was not passed"
+msgstr "מזהה ההודעה לא התקבל"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Message subject was not passed"
+msgstr "נושא ההודעה לא התקבל"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Name was not passed"
+msgstr "השם לא התקבל"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password confirmation is required"
+msgstr "נדרש אישור הסיסמה החדשה"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password confirmation required"
+msgstr "נדרש אישור הסיסמה החדשה"
+
+#: src/modules/Profile/Api/Admin.php
+msgid "New password is required"
+msgstr "נדרשת סיסמה חדשה"
+
+#: src/modules/Profile/Api/Client.php
+msgid "New password required"
+msgstr "נדרשת סיסמה חדשה"
+
+#: src/modules/Client/Api/Guest.php
+msgid "No Hash provided"
+msgstr "לא סופק hash"
+
+#: src/modules/Client/Api/Admin.php src/modules/Support/Api/Admin.php
+msgid "Note ID is missing"
+msgstr "מזהה ההערה חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Note is missing"
+msgstr "ההערה חסרה"
+
+#: src/modules/Notification/Api/Admin.php
+msgid "Notification ID was not passed"
+msgstr "מזהה ההתראה לא התקבל"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option ID was not passed"
+msgstr "מזהה האפשרות לא התקבל"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Option group ID was not passed"
+msgstr "מזהה קבוצת האפשרויות לא התקבל"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Servicedownloadable/Api/Admin.php
+msgid "Order ID (order_id) was not passed"
+msgstr "מזהה ההזמנה (order_id) לא התקבל"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Order ID is missing"
+msgstr "מזהה ההזמנה חסר"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Order ID name is missing"
+msgstr "שם מזהה ההזמנה חסר"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Order/Api/Admin.php
+msgid "Order ID was not passed"
+msgstr "מזהה ההזמנה לא התקבל"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order IDs were not passed"
+msgstr "מזהי ההזמנות לא התקבלו"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order history line ID was not passed"
+msgstr "מזהה שורת היסטוריית ההזמנה לא התקבל"
+
+#: src/modules/Order/Api/Client.php
+msgid "Order id required"
+msgstr "נדרש מזהה הזמנה"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Order status was not passed"
+msgstr "סטטוס ההזמנה לא התקבל"
+
+#: src/modules/Hook/Service.php
+msgid "Param mod not passed"
+msgstr "הפרמטר mod לא התקבל"
+
+#: src/modules/Extension/Api/Admin.php
+msgid "Parameter \"ext\" was not passed"
+msgstr "הפרמטר \"ext\" לא התקבל"
+
+#: src/modules/Extension/Api/Guest.php
+msgid "Parameter ext is missing"
+msgstr "הפרמטר ext חסר"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password confirmation required"
+msgstr "נדרש אישור הסיסמה"
+
+#: src/modules/Client/Api/Admin.php src/modules/Client/Api/Guest.php src/modules/Staff/Api/Admin.php …
+msgid "Password required"
+msgstr "נדרשת סיסמה"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Password was not passed"
+msgstr "הסיסמה לא התקבלה"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway ID was not passed"
+msgstr "מזהה שער התשלום לא התקבל"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Payment gateway code is missing"
+msgstr "קוד שער התשלום חסר"
+
+#: src/modules/Cart/Service.php
+msgid "Period parameter not passed"
+msgstr "פרמטר התקופה לא התקבל"
+
+#: src/modules/Massmailer/Api/Admin.php
+msgid "Pick a date and time"
+msgstr "בחרו תאריך ושעה"
+
+#: src/modules/Client/Api/Admin.php
+msgid "Pinned is required"
+msgstr "נדרש הערך \"מוצמד\""
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter the subject"
+msgstr "הזינו את הנושא"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your email address"
+msgstr "הזינו את כתובת הדוא״ל שלכם"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Please enter your name"
+msgstr "הזינו את שמכם"
+
+#: src/modules/News/Api/Admin.php
+msgid "Post ID was not passed"
+msgstr "מזהה הפוסט לא התקבל"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Preset name is missing"
+msgstr "שם ההגדרה המוגדרת מראש חסר"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the update first"
+msgstr "צפו קודם בתצוגה המקדימה של העדכון"
+
+#: src/modules/Servicehosting/Api/Guest.php
+msgid "Product ID is missing"
+msgstr "מזהה המוצר חסר"
+
+#: src/modules/Cart/Api/Guest.php src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php …
+msgid "Product ID was not passed"
+msgstr "מזהה המוצר לא התקבל"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Product is not configured completely."
+msgstr "המוצר לא הוגדר במלואו."
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID is missing"
+msgstr "מזהה המבצע חסר"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo ID was not passed"
+msgstr "מזהה המבצע לא התקבל"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo code is missing"
+msgstr "קוד המבצע חסר"
+
+#: src/modules/Cart/Api/Guest.php
+msgid "Promo code was not passed"
+msgstr "קוד המבצע לא התקבל"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo type is missing"
+msgstr "סוג המבצע חסר"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Promo value is missing"
+msgstr "ערך המבצע חסר"
+
+#: src/modules/Invoice/Api/Guest.php
+msgid "Quote hash was not passed"
+msgstr "ה-hash של הצעת המחיר לא התקבל"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver email is required"
+msgstr "נדרשת כתובת דוא״ל של הנמען"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Receiver name is required"
+msgstr "נדרש שם הנמען"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect ID was not passed"
+msgstr "מזהה ההפניה לא התקבל"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect path was not passed"
+msgstr "נתיב ההפניה לא התקבל"
+
+#: src/modules/Redirect/Api/Admin.php
+msgid "Redirect target was not passed"
+msgstr "יעד ההפניה לא התקבל"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar ID is missing"
+msgstr "מזהה הרשם חסר"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registrar code is missing"
+msgstr "קוד הרשם חסר"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Registration price is missing"
+msgstr "מחיר הרישום חסר"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Renewal price is missing"
+msgstr "מחיר החידוש חסר"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Request ID was not passed"
+msgstr "מזהה הבקשה לא התקבל"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field address1 is missing"
+msgstr "שדה החובה address1 חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field city is missing"
+msgstr "שדה החובה city חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field contact is missing"
+msgstr "שדה החובה contact חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field country is missing"
+msgstr "שדה החובה country חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field email is missing"
+msgstr "שדה החובה email חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field first_name is missing"
+msgstr "שדה החובה first_name חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field last_name is missing"
+msgstr "שדה החובה last_name חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone is missing"
+msgstr "שדה החובה phone חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field phone_cc is missing"
+msgstr "שדה החובה phone_cc חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field postcode is missing"
+msgstr "שדה החובה postcode חסר"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Required field state is missing"
+msgstr "שדה החובה state חסר"
+
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "SLD is missing"
+msgstr "SLD חסר"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Scope was not passed"
+msgstr "ההיקף לא התקבל"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Secret ID was not passed"
+msgstr "מזהה הפרטים הסודיים לא התקבל"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets"
+msgstr "בחרו את הפניות"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Select the tickets to merge"
+msgstr "בחרו את הפניות למיזוג"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender email is required"
+msgstr "נדרשת כתובת דוא״ל של השולח"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Sender name is required"
+msgstr "נדרש שם השולח"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server ID was not passed"
+msgstr "מזהה השרת לא התקבל"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server IP was not passed"
+msgstr "ה-IP של השרת לא התקבל"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server manager was not specified"
+msgstr "מנהל השרתים לא צוין"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server name was not passed"
+msgstr "שם השרת לא התקבל"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "Setup ID was not passed"
+msgstr "מזהה ההתקנה לא התקבל"
+
+#: src/modules/Cart/Api/Admin.php
+msgid "Shopping cart ID is missing"
+msgstr "מזהה עגלת הקניות חסר"
+
+#: src/modules/Email/Api/Admin.php
+msgid "Staff group ID was not passed"
+msgstr "מזהה קבוצת הצוות לא התקבל"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Staff member ID was not passed"
+msgstr "מזהה איש הצוות לא התקבל"
+
+#: src/modules/Servicedownloadable/Service.php
+msgid "Stored filename is missing in product config"
+msgstr "שם הקובץ השמור חסר בהגדרות המוצר"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Subdomain name is required."
+msgstr "נדרש שם תת-דומיין."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription ID was not passed"
+msgstr "מזהה המינוי לא התקבל"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription currency was not passed"
+msgstr "מטבע המינוי לא התקבל"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Subscription sID was not passed"
+msgstr "ה-sID של המינוי לא התקבל"
+
+#: src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php
+msgid "TLD is missing"
+msgstr "TLD חסר"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "TLD registrar ID is missing"
+msgstr "מזהה הרשם של ה-TLD חסר"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID is missing"
+msgstr "מזהה המס חסר"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax ID was not passed"
+msgstr "מזהה המס לא התקבל"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax name is missing"
+msgstr "שם המס חסר"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing"
+msgstr "שיעור המס חסר"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Tax rate is missing or is invalid"
+msgstr "שיעור המס חסר או לא תקין"
+
+#: src/modules/Email/Api/Admin.php src/modules/Email/Service.php
+msgid "Template code not passed"
+msgstr "קוד התבנית לא התקבל"
+
+#: src/modules/Theme/Api/Admin.php
+msgid "Theme code was not passed"
+msgstr "קוד ערכת הנושא לא התקבל"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket ID is missing"
+msgstr "מזהה הפנייה חסר"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket ID was not passed"
+msgstr "מזהה הפנייה לא התקבל"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket content required"
+msgstr "נדרש תוכן לפנייה"
+
+#: src/modules/Support/Api/Guest.php
+msgid "Ticket hash required"
+msgstr "נדרש hash לפנייה"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message ID is missing"
+msgstr "מזהה הודעת הפנייה חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket message content is missing"
+msgstr "תוכן הודעת הפנייה חסר"
+
+#: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
+msgid "Ticket subject required"
+msgstr "נדרש נושא לפנייה"
+
+#: src/modules/Support/Api/Admin.php
+msgid "Ticket support_helpdesk_id is required"
+msgstr "נדרש support_helpdesk_id של הפנייה"
+
+#: src/modules/Support/Api/Client.php
+msgid "Ticket support_helpdesk_id required"
+msgstr "נדרש support_helpdesk_id של הפנייה"
+
+#: src/modules/Custompages/Api/Admin.php
+msgid "Title was not passed"
+msgstr "הכותרת לא התקבלה"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is missing"
+msgstr "מזהה העסקה חסר"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Transaction ID is required"
+msgstr "נדרש מזהה עסקה"
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain name (SLD) is required."
+msgstr "נדרש שם הדומיין להעברה (SLD)."
+
+#: src/modules/Servicedomain/Service.php
+msgid "Transfer domain type (TLD) is required."
+msgstr "נדרש סוג הדומיין להעברה (TLD)."
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Transfer price is missing"
+msgstr "מחיר ההעברה חסר"
+
+#: src/modules/Product/Api/Admin.php
+msgid "Type was not passed"
+msgstr "הסוג לא התקבל"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Upgrade rule was not passed"
+msgstr "כלל השדרוג לא התקבל"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify a check ID to run."
+msgstr "יש לציין מזהה בדיקה להרצה."
+
+#: src/modules/Product/Api/Admin.php
+msgid "You must specify a title"
+msgstr "יש לציין כותרת"
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to lookup."
+msgstr "יש לציין כתובת IP לחיפוש."
+
+#: src/modules/Security/Api/Admin.php
+msgid "You must specify an IP address to reset."
+msgstr "יש לציין כתובת IP לאיפוס."
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "plan_id is missing"
+msgstr "plan_id חסר"
+
+#: src/modules/Support/Api/Admin.php
+msgid "ticket_ID is missing"
+msgstr "ticket_ID חסר"
+
+# To translate (tools/locales.py starter).
+#: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
+msgid "Request timed out after :seconds seconds"
+msgstr "הבקשה חרגה ממגבלת הזמן אחרי :seconds שניות"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this custom field?"
+msgstr "האם אתם בטוחים שברצונכם למחוק את השדה המותאם אישית הזה?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Are you sure you want to delete this form?"
+msgstr "האם אתם בטוחים שברצונכם למחוק את הטופס הזה?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete Form?"
+msgstr "למחוק את הטופס?"
+
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+msgid "Delete field?"
+msgstr "למחוק את השדה?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Inspect the server variables logged alongside the callback payload."
+msgstr "עיינו במשתני השרת שנרשמו יחד עם נתוני ה-callback."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Password to connect to the server"
+msgstr "סיסמה להתחברות לשרת"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
+msgid "Review the raw request body received from the payment gateway."
+msgstr "עיינו בגוף הגולמי של הבקשה שהתקבלה משער התשלום."

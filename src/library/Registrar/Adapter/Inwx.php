@@ -40,15 +40,15 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account.',
+            'label' => __trans('Manages domains on INWX through its DomRobot API. Use an INWX account (or sub-account) without two-factor sign-in, and keep enough account funds for registrations and renewals. Domains are registered to expire unless ClientFence renews them, which it does when the renewal invoice is paid. With test mode on, enter the username and password of your INWX OT&E test account.'),
             'form' => [
                 'username' => ['text', [
-                    'label' => 'Username',
-                    'description' => 'Your INWX username.',
+                    'label' => __trans('Username'),
+                    'description' => __trans('Your INWX username.'),
                     'required' => true,
                 ]],
                 'password' => ['password', [
-                    'label' => 'Password',
+                    'label' => __trans('Password'),
                     'required' => true,
                     'secret' => true,
                 ]],

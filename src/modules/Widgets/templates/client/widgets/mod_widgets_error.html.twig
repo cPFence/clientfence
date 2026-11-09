@@ -1,10 +1,10 @@
 <div class="alert alert-danger" role="alert">
-    <h5 class="alert-heading">An error occurred while rendering this widget.</h5>
+    <h5 class="alert-heading">{{ 'An error occurred while rendering this widget.'|trans }}</h5>
     
     <ul class="mb-1">
-        <li><strong>Slot:</strong> {{ widget.slot|default('')|e }}</li>
-        <li><strong>Module:</strong> {{ widget.mod_name|default('')|e }}</li>
-        <li><strong>Template:</strong> {{ widget.template|default('')|e }}.html.twig</li>
+        <li><strong>{{ 'Slot:'|trans }}</strong> {{ widget.slot|default('')|e }}</li>
+        <li><strong>{{ 'Module:'|trans }}</strong> {{ widget.mod_name|default('')|e }}</li>
+        <li><strong>{{ 'Template:'|trans }}</strong> {{ widget.template|default('')|e }}.html.twig</li>
     </ul>
 
     {% if error %}

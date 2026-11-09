@@ -124,6 +124,16 @@ describe('API response helpers', () => {
     );
   });
 
+  test('words timeout errors in the page language', () => {
+    const texts = { messages: { 'Request timed out after :seconds seconds': 'انتهت المهلة بعد :seconds ثانية' } };
+    globalThis.document = { getElementById: () => ({ textContent: JSON.stringify(texts) }) } as any;
+    try {
+      assert.equal(normalizeApiError({ name: 'AbortError' }, { timeoutMs: 60000 }).message, 'انتهت المهلة بعد 60 ثانية');
+    } finally {
+      delete (globalThis as any).document;
+    }
+  });
+
   test('normalizes timeout, network, and generic errors', () => {
     assert.deepEqual(
       normalizeApiError({ name: 'AbortError' }, { timeoutMs: 5000 }),

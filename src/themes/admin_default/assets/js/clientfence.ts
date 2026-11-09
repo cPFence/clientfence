@@ -9,6 +9,11 @@ globalThis.ClientFence = Object.assign(globalThis.ClientFence || {}, {
   // ClientFence: toasts as cards with a tinted icon, a title, the message and a countdown bar
   // (clientfence-admin.css, .cf-toast). Titles come translated from the container's data-title-*.
   message: (message, type = "info") => {
+    // ClientFence core patch: api.js and this theme word some toasts in English; shown in the page language.
+    try {
+      const messages = JSON.parse(document.getElementById("clientfence-i18n")?.textContent || "{}").messages || {};
+      message = Object.hasOwn(messages, message) ? messages[message] : message;
+    } catch { /* shown as given */ }
     const kind = ["error", "warning", "success"].includes(type) ? type : "info";
     const icons = { error: "alert-circle", warning: "alert-triangle", success: "circle-check", info: "info-circle" };
     const fallback = { error: "Error", warning: "Warning", success: "Success", info: "Info" };

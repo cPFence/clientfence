@@ -38,15 +38,15 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract
     public static function getConfig(): array
     {
         return [
-            'label' => 'Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server\'s IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account.',
+            'label' => __trans('Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server\'s IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account.'),
             'form' => [
                 'username' => ['text', [
-                    'label' => 'Username',
-                    'description' => 'Your Openprovider API username.',
+                    'label' => __trans('Username'),
+                    'description' => __trans('Your Openprovider API username.'),
                     'required' => true,
                 ]],
                 'password' => ['password', [
-                    'label' => 'Password',
+                    'label' => __trans('Password'),
                     'required' => true,
                     'secret' => true,
                 ]],
