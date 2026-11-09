@@ -584,6 +584,30 @@ class Admin extends \ClientFence\Api\AbstractApi
         return WhmcsImport::fetchUpmind($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
     }
 
+    /**
+     * Imports from a Blesta database instead of WHMCS: saves and tests its details and system key,
+     * blesta_key (empty password or key keeps the saved one). Answers {version, clients}.
+     */
+    public function whmcs_import_blesta_save($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+        $result = WhmcsImport::saveBlesta($this->getDi(), (array) $data);
+        $this->getDi()['logger']->info('ClientFence: Blesta import database details saved (%d clients)', $result['clients']);
+
+        return $result;
+    }
+
+    /**
+     * Reads Blesta for a few seconds (Blesta/Snapshot.php) and answers how far it got; restart = 1
+     * reads it again from the start. The tab calls it until it finishes.
+     */
+    public function whmcs_import_blesta_fetch($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+
+        return WhmcsImport::fetchBlesta($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
+    }
+
     /** Reads WHMCS (read only) and stores the import plan: what WHMCS holds and what happens to it. */
     public function whmcs_import_plan(): array
     {

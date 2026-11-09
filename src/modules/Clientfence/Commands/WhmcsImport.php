@@ -40,8 +40,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
 
     protected function configure(): void
     {
-        $this->addArgument('step', InputArgument::REQUIRED, 'upmind (read Upmind first, with the token saved on the admin tab), plan, apply or verify');
-        $this->addOption('restart', null, InputOption::VALUE_NONE, 'upmind: read Upmind again from the start');
+        $this->addArgument('step', InputArgument::REQUIRED, 'upmind or blesta (read Upmind or Blesta first, with the details saved on the admin tab), plan, apply or verify');
+        $this->addOption('restart', null, InputOption::VALUE_NONE, 'upmind, blesta: read it again from the start');
         $this->addOption('json', null, InputOption::VALUE_NONE, 'Print the result as JSON');
         $this->addOption('attachments', null, InputOption::VALUE_REQUIRED, 'WHMCS\'s ticket attachments folder on this server (saved for the import, as on the admin tab)');
     }
@@ -49,8 +49,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $step = (string) $input->getArgument('step');
-        if (!in_array($step, ['upmind', 'plan', 'apply', 'verify'], true)) {
-            $output->writeln('<error>Unknown step "' . $step . '". Steps: upmind, plan, apply, verify</error>');
+        if (!in_array($step, ['upmind', 'blesta', 'plan', 'apply', 'verify'], true)) {
+            $output->writeln('<error>Unknown step "' . $step . '". Steps: upmind, blesta, plan, apply, verify</error>');
 
             return Command::INVALID;
         }
@@ -64,8 +64,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
             }
             $output->writeln($folder === '' ? 'Attachments folder: none' : 'Attachments folder: ' . $folder);
         }
-        if ($step === 'upmind') {
-            return $this->readUpmind((bool) $input->getOption('restart'), $output);
+        if ($step === 'upmind' || $step === 'blesta') {
+            return $this->readSnapshot($step, (bool) $input->getOption('restart'), $output);
         }
         if ($step !== 'plan') {
             return $this->runStep($step, (bool) $input->getOption('json'), $output);
@@ -129,12 +129,12 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
         return Command::SUCCESS;
     }
 
-    /** Reads Upmind into the import's snapshot (Upmind/Snapshot.php), a line per page. */
-    private function readUpmind(bool $restart, OutputInterface $output): int
+    /** Reads Upmind or Blesta into the import's snapshot (Snapshot.php), a line per page. */
+    private function readSnapshot(string $step, bool $restart, OutputInterface $output): int
     {
         try {
             do {
-                $state = Import::fetchUpmind($this->di, 20.0, $restart);
+                $state = $step === 'blesta' ? Import::fetchBlesta($this->di, 20.0, $restart) : Import::fetchUpmind($this->di, 20.0, $restart);
                 $restart = false;
                 $current = $state['steps'][$state['step'] ?? ''] ?? null;
                 if ($current !== null) {
@@ -146,8 +146,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
 
             return Command::FAILURE;
         }
-        $output->writeln('<info>Upmind read. Next: php console.php clientfence:whmcs-import plan</info>');
-        foreach ($this->di['em']->getConnection()->fetchFirstColumn('SELECT message FROM ' . Run::WARNINGS . " WHERE step = 'upmind' ORDER BY id") as $warning) {
+        $output->writeln('<info>' . ucfirst($step) . ' read. Next: php console.php clientfence:whmcs-import plan</info>');
+        foreach ($this->di['em']->getConnection()->fetchFirstColumn('SELECT message FROM ' . Run::WARNINGS . ' WHERE step = ? ORDER BY id', [$step]) as $warning) {
             $output->writeln('<comment>' . $warning . '</comment>');
         }
 

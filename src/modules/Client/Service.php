@@ -1136,6 +1136,10 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         }
 
         $authorized = $this->di['auth']->authorizeUser($authUser, $plainTextPassword);
+        // ClientFence core patch: a password kept from the Blesta import is checked with Blesta's key once, then rehashed.
+        if (!$authorized && $legacyClient && \ClientFence\Mod\Clientfence\Whmcs\Import::blestaPassword($this->di, $legacyClient, $plainTextPassword)) {
+            $authorized = $legacyClient;
+        }
         if (!$authorized) {
             return null;
         }

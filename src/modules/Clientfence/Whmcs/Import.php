@@ -42,12 +42,16 @@ final class Import
         // 1: import from Upmind instead (Upmind/Snapshot.php, read with this API token, encrypted).
         'upmind' => 0,
         'upmind_token' => '',
+        // 1: import from a Blesta database (the database fields above; Blesta/Snapshot.php) with Blesta's system
+        // key (encrypted), which checks the passwords kept from Blesta (blestaPassword()).
+        'blesta' => 0,
+        'blesta_key' => '',
     ];
 
     /** ClientFence tables that must be empty: the import keeps WHMCS's ids and numbers. */
     private const TARGET_TABLES = ['client' => 'clients', 'client_order' => 'orders', 'invoice' => 'invoices', 'support_ticket' => 'tickets'];
 
-    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int, upmind: int, upmind_token: string} */
+    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int, upmind: int, upmind_token: string, blesta: int, blesta_key: string} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di, self::SETTINGS) ?? [];
@@ -73,7 +77,8 @@ final class Import
         $settings['has_password'] = $settings['password'] !== '';
         $settings['has_encryption_key'] = $settings['encryption_key'] !== '';
         $settings['has_upmind_token'] = $settings['upmind_token'] !== '';
-        unset($settings['password'], $settings['encryption_key'], $settings['upmind_token']);
+        $settings['has_blesta_key'] = $settings['blesta_key'] !== '';
+        unset($settings['password'], $settings['encryption_key'], $settings['upmind_token'], $settings['blesta_key']);
 
         $run = Run::state($di);
         // The add-on module archive file (Archive.php), once the run wrote to it.
@@ -84,7 +89,7 @@ final class Import
             $archive = ['name' => $name, 'dir' => dirname($path), 'bytes' => (int) filesize($path)];
         }
 
-        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di)];
+        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di), 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::state($di)];
     }
 
     /**
@@ -98,25 +103,12 @@ final class Import
     public static function save(\Pimple\Container $di, #[\SensitiveParameter] array $data): array
     {
         $old = self::settings($di);
-        $port = (int) ($data['port'] ?? 3306);
-        if ($port < 1 || $port > 65535) {
-            throw new InformationException('Enter a port from 1 to 65535.');
-        }
-        $new = [
-            'host' => self::text($data['host'] ?? '', 255, 'Host'),
-            'port' => $port,
-            'database' => self::text($data['database'] ?? '', 64, 'Database name'),
-            'username' => self::text($data['username'] ?? '', 80, 'Username'),
-            'password' => (string) ($data['password'] ?? '') !== '' ? (string) $di['crypt']->encrypt((string) $data['password']) : $old['password'],
+        $new = self::database($di, $data, $old, 'WHMCS') + [
             'encryption_key' => (string) ($data['encryption_key'] ?? '') !== '' ? (string) $di['crypt']->encrypt(trim((string) $data['encryption_key'])) : $old['encryption_key'],
-            'attachments_dir' => self::folder((string) ($data['attachments_dir'] ?? '')),
             'paypal_agreements' => (string) ($data['paypal_agreements'] ?? '0') === '1' ? 1 : 0,
             'upmind' => 0,
-            'upmind_token' => $old['upmind_token'],
-        ];
-        if ($new['host'] === '' || $new['database'] === '' || $new['username'] === '' || $new['password'] === '') {
-            throw new InformationException('Enter the WHMCS database host, name, username and password.');
-        }
+            'blesta' => 0,
+        ] + $old;
 
         $source = Source::open($di, $new);
         try {
@@ -151,7 +143,7 @@ final class Import
             throw new InformationException('Enter the Upmind API token.');
         }
         [, $clients] = (new \ClientFence\Mod\Clientfence\Upmind\Api($di, $token))->page('clients', 0, 1);
-        self::saveSettings($di, $old, ['upmind' => 1, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
+        self::saveSettings($di, $old, ['upmind' => 1, 'blesta' => 0, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
 
         return ['clients' => $clients];
     }
@@ -169,10 +161,85 @@ final class Import
             throw new InformationException('Save the Upmind API token first.');
         }
         if (Run::state($di) !== null) {
-            throw new InformationException('The import has started: Upmind can no longer be read again.');
+            throw new InformationException('The import has started: :name can no longer be read again.', [':name' => 'Upmind']);
         }
 
         return \ClientFence\Mod\Clientfence\Upmind\Snapshot::fetch($di, (string) $di['crypt']->decrypt($settings['upmind_token']), $seconds, $restart);
+    }
+
+    /**
+     * Imports from a Blesta database instead (Blesta/Snapshot.php): saves its details, the folder of
+     * its ticket attachments and its system key (empty keeps the saved one) once the database
+     * answers as Blesta's. Answers {version, clients}.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array{version: string, clients: int}
+     */
+    public static function saveBlesta(\Pimple\Container $di, #[\SensitiveParameter] array $data): array
+    {
+        $old = self::settings($di);
+        $key = trim((string) ($data['blesta_key'] ?? ''));
+        if (preg_match('/[\x00-\x20]/', $key) === 1) {
+            throw new InformationException('Enter Blesta\'s system key as config/blesta.php shows it.');
+        }
+        $new = self::database($di, $data, $old, 'Blesta') + [
+            'upmind' => 0,
+            'blesta' => 1,
+            'blesta_key' => $key !== '' ? (string) $di['crypt']->encrypt($key) : $old['blesta_key'],
+        ] + $old;
+
+        $source = Source::mysql($di, $new, 'Blesta');
+        try {
+            if (!\ClientFence\Mod\Clientfence\Blesta\Snapshot::isBlesta($source)) {
+                throw new InformationException('This database has no Blesta tables. Check the database name.');
+            }
+            $version = (string) $source->value("SELECT value FROM settings WHERE `key` = 'database_version'");
+            $clients = $source->count('clients');
+        } finally {
+            $source->close();
+        }
+        self::saveSettings($di, $old, $new);
+
+        return ['version' => $version, 'clients' => $clients];
+    }
+
+    /**
+     * Reads Blesta into the import's snapshot for up to $seconds (Blesta/Snapshot.php); $restart
+     * reads it again from the start.
+     *
+     * @return array<string, mixed>
+     */
+    public static function fetchBlesta(\Pimple\Container $di, float $seconds, bool $restart = false): array
+    {
+        $settings = self::settings($di);
+        if ($settings['blesta'] !== 1) {
+            throw new InformationException('Save the Blesta database details first.');
+        }
+        if (Run::state($di) !== null) {
+            throw new InformationException('The import has started: :name can no longer be read again.', [':name' => 'Blesta']);
+        }
+
+        return \ClientFence\Mod\Clientfence\Blesta\Snapshot::fetch($di, $settings, $seconds, $restart);
+    }
+
+    /**
+     * The client sign-in, after a wrong password: whether it is the client's password kept from
+     * Blesta, which hashes an HMAC of it made with its system key. A match is rehashed, so each
+     * client's first sign-in is the only one that takes this path.
+     */
+    public static function blestaPassword(\Pimple\Container $di, object $client, #[\SensitiveParameter] string $password): bool
+    {
+        $hash = (string) ($client->pass ?? '');
+        $key = str_starts_with($hash, '$2y$') ? self::settings($di)['blesta_key'] : '';
+        if ($key === '' || !password_verify(hash_hmac('sha256', $password, (string) $di['crypt']->decrypt($key)), $hash)) {
+            return false;
+        }
+        $client->pass = $di['password']->hashIt($password);
+        $client->updated_at = date('Y-m-d H:i:s');
+        $di['db']->store($client);
+
+        return true;
     }
 
     /**
@@ -234,6 +301,35 @@ final class Import
         return ['fresh' => array_sum($counts) === 0, 'counts' => $counts];
     }
 
+    /**
+     * The database fields of a save: WHMCS's or Blesta's. An empty password keeps the saved one.
+     *
+     * @param array<string, mixed>      $data
+     * @param array<string, int|string> $old
+     *
+     * @return array<string, int|string>
+     */
+    private static function database(\Pimple\Container $di, #[\SensitiveParameter] array $data, array $old, string $system): array
+    {
+        $port = (int) ($data['port'] ?? 3306);
+        if ($port < 1 || $port > 65535) {
+            throw new InformationException('Enter a port from 1 to 65535.');
+        }
+        $new = [
+            'host' => self::text($data['host'] ?? '', 255, 'Host'),
+            'port' => $port,
+            'database' => self::text($data['database'] ?? '', 64, 'Database name'),
+            'username' => self::text($data['username'] ?? '', 80, 'Username'),
+            'password' => (string) ($data['password'] ?? '') !== '' ? (string) $di['crypt']->encrypt((string) $data['password']) : $old['password'],
+            'attachments_dir' => self::folder((string) ($data['attachments_dir'] ?? '')),
+        ];
+        if ($new['host'] === '' || $new['database'] === '' || $new['username'] === '' || $new['password'] === '') {
+            throw new InformationException('Enter the :name database host, name, username and password.', [':name' => $system]);
+        }
+
+        return $new;
+    }
+
     private static function text(mixed $value, int $max, string $what): string
     {
         $value = trim(is_scalar($value) ? (string) $value : '');
@@ -278,7 +374,7 @@ final class Import
     {
         self::saveState($di, self::SETTINGS, $new);
         // A plan describes the system it was made from: moving to the other one needs a new plan.
-        if ($old['upmind'] !== $new['upmind']) {
+        if ($old['upmind'] !== $new['upmind'] || $old['blesta'] !== $new['blesta']) {
             $di['em']->getConnection()->executeStatement('DELETE FROM mod_clientfence_state WHERE name = ?', [self::PLAN]);
         }
     }

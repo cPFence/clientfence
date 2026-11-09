@@ -23873,3 +23873,120 @@ msgstr ":source 中有什麼以及匯入會如何處理。建立計畫不會變�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
 msgstr "下方的計畫是根據 :old 建立的。儲存這些資訊會把匯入切換到 :new 並刪除該計畫；之後你需要重新建立計畫。要繼續嗎？"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Blesta was read on :date. Make the plan below."
+msgstr "Blesta 已於 :date 讀取。請制定下列計畫。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Blesta.system_key in Blesta's config/blesta.php. With it, clients sign in with their Blesta passwords; without it, they set a new one with \"Forgot password\"."
+msgstr "Blesta 的 config/blesta.php 中的 Blesta.system_key。有了它，客戶可用其 Blesta 密碼登入；沒有它，客戶透過\"忘記密碼\"設定新密碼。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Connected to Blesta."
+msgstr "已連線到 Blesta。"
+
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Could not connect to the :name database: :error"
+msgstr "無法連線到 :name 資料庫::error"
+
+#: src/modules/Clientfence/Blesta/Snapshot.php
+msgid "Could not copy the Blesta attachment :file."
+msgstr "無法複製 Blesta 附件 :file。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Currencies, taxes, groups and gateways"
+msgstr "貨幣、稅金、群組和金流"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Enter Blesta's system key as config/blesta.php shows it."
+msgstr "請依 config/blesta.php 顯示的內容輸入 Blesta 的系統金鑰。"
+
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Enter the :name database host, name and username first."
+msgstr "請先輸入 :name 資料庫的主機、名稱和使用者名稱。"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Enter the :name database host, name, username and password."
+msgstr "請輸入 :name 資料庫的主機、名稱、使用者名稱和密碼。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Go on reading Blesta"
+msgstr "繼續讀取 Blesta"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from Blesta"
+msgstr "從 Blesta 匯入"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Only if Blesta runs on another server: a copy of its support_manager_files folder on this one (Blesta > Settings > System > General > Uploads Directory). Files not found are named in the warnings and show as removed."
+msgstr "僅當 Blesta 執行於另一台伺服器時：在本伺服器上放一份它的 support_manager_files 資料夾副本(Blesta > Settings > System > General > Uploads Directory)。找不到的檔案會在警告中列出，並顯示為已移除。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Packages and domain prices"
+msgstr "套餐與網域價格"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Prices billed in days, weeks or terms ClientFence has no name for: the warnings name each one."
+msgstr "依天、依週或 ClientFence 沒有對應名稱的週期計費的價格：警告會列出每一項。"
+
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Read :name first, until it finishes."
+msgstr "請先讀取 :name，直到完成。"
+
+#: src/modules/Clientfence/Whmcs/Snapshot.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read :name first."
+msgstr "請先讀取 :name。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta"
+msgstr "讀取 Blesta"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta again"
+msgstr "重新讀取 Blesta"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta, then make the plan below. Keep this page open while it reads."
+msgstr "讀取 Blesta，然後制定下列計畫。讀取期間請保持此頁面開啟。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Reading Blesta stopped. Fix the cause, then go on reading."
+msgstr "讀取 Blesta 已停止。請排除原因，然後繼續讀取。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Reading Blesta… keep this page open."
+msgstr "正在讀取 Blesta… 請保持此頁面開啟。"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Save the Blesta database details first."
+msgstr "請先儲存 Blesta 資料庫詳細資料。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Saved cards and bank accounts (Blesta encrypts them with its own key), two-factor sign-in, coupons, recurring invoices, package options and custom client fields: the warnings name what was found."
+msgstr "已儲存的卡片和銀行帳戶(Blesta 以自己的金鑰加密)、雙重驗證登入、優惠券、定期發票、套餐選項和自訂客戶欄位：警告會列出找到的內容。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "System key"
+msgstr "系統金鑰"
+
+#: src/modules/Clientfence/Whmcs/Snapshot.php
+msgid "The :name import needs PHP's pdo_sqlite extension. Turn it on for this site's PHP version, then try again."
+msgstr ":name 匯入需要 PHP 的 pdo_sqlite 擴充功能。請為本站的 PHP 版本啟用它，然後再試一次。"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The import has started: :name can no longer be read again."
+msgstr "匯入已開始：無法再重新讀取 :name。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import reads Blesta's database directly and only reads it: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Blesta. The password and system key are kept encrypted and are not shown again; leave them empty to keep the saved ones."
+msgstr "匯入會直接讀取 Blesta 的資料庫，而且只讀取：它把所需內容複製到本伺服器上的私人檔案，再以下列步驟匯入該檔案。Blesta 中不會有任何變更。密碼和系統金鑰會加密保存，不會再次顯示；留空即可保留已儲存的值。"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "This database has no Blesta tables. Check the database name."
+msgstr "此資料庫中沒有 Blesta 資料表。請檢查資料庫名稱。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What is not imported from Blesta"
+msgstr "不會從 Blesta 匯入的內容"

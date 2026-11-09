@@ -135,3 +135,22 @@ test('a WHMCS currency without a three-letter code stops it', function (): void 
     expect($checks['WHMCS currency codes'])->toMatchArray(['ok' => false, 'detail' => 'Not a three-letter code: #2 "CA$".'])
         ->and($checks)->not->toHaveKey('WHMCS table encoding')->not->toHaveKey('WHMCS text encoding');
 });
+
+test('a Blesta import checks the attachments its read copied, not the folder setting', function (): void {
+    $root = whmcsPreflightRoot();
+    $di = whmcsPreflightDi($root);
+    $di['em']->getConnection()->update('mod_clientfence_state', ['value' => json_encode(['blesta' => 1, 'attachments_dir' => ''])], ['name' => ClientFence\Mod\Clientfence\Whmcs\Import::SETTINGS]);
+    $snapshot = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $snapshot->executeStatement("CREATE TABLE tbltickets (id INTEGER PRIMARY KEY, attachment TEXT DEFAULT '')");
+    $snapshot->insert('tbltickets', ['id' => 1, 'attachment' => '7_shot.png']);
+
+    // Blesta on this server: no folder entered, and none needed.
+    expect(array_column(Preflight::checks($di, new Source($snapshot)), null, 'check'))->not->toHaveKey('WHMCS attachments folder');
+
+    $copies = ClientFence\Mod\Clientfence\Blesta\Snapshot::files();
+    mkdir($copies, 0700, true);
+    file_put_contents($copies . '/7_shot.png', 'PNG');
+    $checks = array_column(Preflight::checks($di, new Source($snapshot)), null, 'check');
+    expect($checks['WHMCS attachments folder']['ok'])->toBeTrue()
+        ->and($checks['WHMCS attachments folder']['detail'])->toContain($copies);
+});

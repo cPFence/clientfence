@@ -55,7 +55,10 @@ final class Preflight
                 : self::fail('Database max_allowed_packet', self::size($packet) . ': some of the import\'s statements are larger.', 'Raise max_allowed_packet to ' . self::size(self::PACKET) . ' or more in the database server\'s settings.');
         }
 
-        $attachments = trim($settings['attachments_dir']);
+        // A Blesta import reads the attachments its read copied (Run::work()); none were copied when the folder is missing.
+        $blesta = $settings['blesta'] === 1;
+        $copies = \ClientFence\Mod\Clientfence\Blesta\Snapshot::files();
+        $attachments = $blesta ? (is_dir($copies) ? $copies : '') : trim($settings['attachments_dir']);
         $attachmentBytes = 0;
         if ($attachments !== '') {
             if (!is_dir($attachments) || !is_readable($attachments)) {
@@ -64,7 +67,7 @@ final class Preflight
                 $attachmentBytes = self::folderSize($attachments);
                 $checks[] = self::pass('WHMCS attachments folder', $attachments . ' (' . self::size($attachmentBytes) . ').');
             }
-        } elseif ($source !== null && self::namesAttachments($source)) {
+        } elseif (!$blesta && $source !== null && self::namesAttachments($source)) {
             $checks[] = self::fail('WHMCS attachments folder', 'Not entered, and WHMCS tickets have attachments: their messages would come over without the files.', 'Enter WHMCS\'s attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose.');
         }
 

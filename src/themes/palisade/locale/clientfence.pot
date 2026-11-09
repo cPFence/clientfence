@@ -3488,6 +3488,14 @@ msgstr ""
 msgid "Birthday"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Blesta was read on :date. Make the plan below."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Blesta.system_key in Blesta's config/blesta.php. With it, clients sign in with their Blesta passwords; without it, they set a new one with \"Forgot password\"."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "Block"
 msgstr ""
@@ -5461,6 +5469,10 @@ msgid "Confirm that you want to restore this backup."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Connected to Blesta."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Connected to Upmind."
 msgstr ""
 
@@ -5748,16 +5760,20 @@ msgstr ""
 msgid "Could not connect to :host::port: :error"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Could not connect to the :name database: :error"
+msgstr ""
+
 #: src/library/Server/Manager/CWP.php
 msgid "Could not connect to the CWP server. Check the server address, port and API configuration."
 msgstr ""
 
-#: src/modules/Clientfence/Whmcs/Source.php
-msgid "Could not connect to the WHMCS database: :error"
-msgstr ""
-
 #: src/library/ClientFence/Cache/CacheFactory.php
 msgid "Could not connect to the configured \":driver\" cache backend: :message"
+msgstr ""
+
+#: src/modules/Clientfence/Blesta/Snapshot.php
+msgid "Could not copy the Blesta attachment :file."
 msgstr ""
 
 #: src/modules/Product/Service.php
@@ -5788,7 +5804,7 @@ msgstr ""
 msgid "Could not load edit history. Please try again."
 msgstr ""
 
-#: src/modules/Clientfence/Upmind/Snapshot.php
+#: src/modules/Clientfence/Blesta/Snapshot.php src/modules/Clientfence/Whmcs/Snapshot.php
 msgid "Could not make the folder :dir."
 msgstr ""
 
@@ -6086,6 +6102,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Currencies, countries and gateways"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Currencies, taxes, groups and gateways"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
@@ -8036,6 +8056,10 @@ msgstr ""
 msgid "Enom sells WHOIS privacy as a paid service: turn it on in the Enom control panel."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Enter Blesta's system key as config/blesta.php shows it."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Enter Custom Transaction ID"
 msgstr ""
@@ -8192,6 +8216,14 @@ msgstr ""
 msgid "Enter the 6-digit code the app shows, and your password."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Enter the :name database host, name and username first."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Enter the :name database host, name, username and password."
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "Enter the PayPal REST API client ID and secret first."
 msgstr ""
@@ -8210,14 +8242,6 @@ msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php
 msgid "Enter the Upmind API token."
-msgstr ""
-
-#: src/modules/Clientfence/Whmcs/Source.php
-msgid "Enter the WHMCS database host, name and username first."
-msgstr ""
-
-#: src/modules/Clientfence/Whmcs/Import.php
-msgid "Enter the WHMCS database host, name, username and password."
 msgstr ""
 
 #: src/modules/Clientfence/Setup.php
@@ -9545,6 +9569,10 @@ msgid "Go Back to Home"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Go on reading Blesta"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Go on reading Upmind"
 msgstr ""
 
@@ -10434,6 +10462,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from Blesta"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -14648,6 +14680,10 @@ msgstr ""
 msgid "Only custom email templates can be deleted"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Only if Blesta runs on another server: a copy of its support_manager_files folder on this one (Blesta > Settings > System > General > Uploads Directory). Files not found are named in the warnings and show as removed."
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Only needed if the Redis server's certificate isn't signed by a CA your system already trusts."
 msgstr ""
@@ -15338,6 +15374,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Pack manifest"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Packages and domain prices"
 msgstr ""
 
 #: src/modules/Page/manifest.json
@@ -16592,6 +16632,10 @@ msgstr ""
 msgid "Prices as sold, in the default currency, for each unit of the service."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Prices billed in days, weeks or terms ClientFence has no name for: the warnings name each one."
+msgstr ""
+
 #: src/modules/Order/Proration.php
 msgid "Prices cannot be negative."
 msgstr ""
@@ -17240,20 +17284,32 @@ msgstr ""
 msgid "Read"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Read :name first, until it finishes."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Snapshot.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read :name first."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta again"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta, then make the plan below. Keep this page open while it reads."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Read Upmind"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Read Upmind again"
-msgstr ""
-
-#: src/modules/Clientfence/Whmcs/Source.php
-msgid "Read Upmind first, until it finishes."
-msgstr ""
-
-#: src/modules/Clientfence/Upmind/Snapshot.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "Read Upmind first."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -17274,6 +17330,14 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
 msgid "Read only"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Reading Blesta stopped. Fix the cause, then go on reading."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Reading Blesta… keep this page open."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -18737,6 +18801,10 @@ msgid "Save store settings"
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php
+msgid "Save the Blesta database details first."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Import.php
 msgid "Save the Upmind API token first."
 msgstr ""
 
@@ -18798,6 +18866,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Saved cards and bank accounts"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Saved cards and bank accounts (Blesta encrypts them with its own key), two-factor sign-in, coupons, recurring invoices, package options and custom client fields: the warnings name what was found."
 msgstr ""
 
 #: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
@@ -20736,6 +20808,10 @@ msgstr ""
 msgid "System health: a check needs attention"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "System key"
+msgstr ""
+
 #: src/themes/palisade/html/partials/toasts.html.twig
 msgid "System message"
 msgstr ""
@@ -21116,6 +21192,10 @@ msgstr ""
 msgid "The :field is too long (:max characters at most)."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Snapshot.php
+msgid "The :name import needs PHP's pdo_sqlite extension. Turn it on for this site's PHP version, then try again."
+msgstr ""
+
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: login for :email: could not be created."
 msgstr ""
@@ -21270,10 +21350,6 @@ msgstr ""
 
 #: src/modules/Client/Google.php
 msgid "The Terms and Privacy Policy addresses are web addresses (https://…)."
-msgstr ""
-
-#: src/modules/Clientfence/Upmind/Snapshot.php
-msgid "The Upmind import needs PHP's pdo_sqlite extension. Turn it on for this site's PHP version, then try again."
 msgstr ""
 
 #: src/modules/Invoice/EuVat.php
@@ -21730,11 +21806,15 @@ msgid "The import has started from :source, so the system cannot change."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php
-msgid "The import has started: Upmind can no longer be read again."
+msgid "The import has started: :name can no longer be read again."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Run.php
 msgid "The import is already running (another tab or the console). Wait for it to finish."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import reads Blesta's database directly and only reads it: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Blesta. The password and system key are kept encrypted and are not shown again; leave them empty to keep the saved ones."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -22555,6 +22635,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "This code cannot be used for this order."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "This database has no Blesta tables. Check the database name."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/Whmcs/Run.php
@@ -25267,6 +25351,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "What is new in ClientFence %version%"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What is not imported from Blesta"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig

@@ -1,6 +1,7 @@
 {# ClientFence: the "Migration" tab of System > Settings (core patch in mod_system_settings;
    Whmcs/Import.php). A picker of the system to move from, its details (Upmind: the API token and the
-   read, Upmind/Snapshot.php; WHMCS: the database details (read only; the password and encryption key are
+   read, Upmind/Snapshot.php; Blesta: its database details and system key and the read,
+   Blesta/Snapshot.php; WHMCS: the database details (read only; the password and encryption key are
    encrypted and never shown again), then the plan: what WHMCS holds and what the import does with
    it, then the import itself (Whmcs/Run.php): the tab runs it a few seconds at a time and shows the
    progress, the warnings and the check against WHMCS. Super Administrators only; `whmcs` is
@@ -53,9 +54,12 @@
 {% set handling = { 'import': 'Imported'|trans, 'archive': 'Archived, not imported'|trans, 'settings': 'Settings only'|trans } %}
 
 {% set upmind = whmcs.upmind %}
+{% set blesta = whmcs.blesta %}
 {# The plan and import use the source saved last; the picker shows the cards of one source. #}
-{% set chosen = settings.upmind ? 'upmind' : 'whmcs' %}
-{% set source = settings.upmind ? 'Upmind' : 'WHMCS' %}
+{% set chosen = settings.upmind ? 'upmind' : (settings.blesta ? 'blesta' : 'whmcs') %}
+{% set source = { 'upmind': 'Upmind', 'blesta': 'Blesta', 'whmcs': 'WHMCS' }[chosen] %}
+{# Upmind and Blesta are read into a snapshot first (the read state, or null before the first read). #}
+{% set snapshot = { 'upmind': upmind, 'blesta': blesta }[chosen]|default(null) %}
 <div class="card mb-3" id="clientfence-migration">
     <div class="card-header">
         <div>
@@ -66,7 +70,7 @@
     <div class="card-body">
         <p class="form-label" id="wi-source-label">{{ 'Move from'|trans }}</p>
         <div class="btn-group" role="radiogroup" aria-labelledby="wi-source-label">
-            {% for key, name in { 'whmcs': 'WHMCS', 'upmind': 'Upmind' } %}
+            {% for key, name in { 'whmcs': 'WHMCS', 'upmind': 'Upmind', 'blesta': 'Blesta' } %}
             <input type="radio" class="btn-check" name="wi-source" id="wi-source-{{ key }}" value="{{ key }}" autocomplete="off"{% if chosen == key %} checked{% endif %}{% if run %} disabled{% endif %}>
             <label class="btn" for="wi-source-{{ key }}">{{ name }}</label>
             {% endfor %}
@@ -90,7 +94,7 @@
     }, true);
 </script>
 
-<div class="card mb-3{% if chosen != 'upmind' %} d-none{% endif %}" id="clientfence-upmind-import" data-migration-source="upmind">
+<div class="card mb-3{% if chosen != 'upmind' %} d-none{% endif %}" id="clientfence-upmind-import" data-migration-source="upmind" data-snapshot-fetch="clientfence/whmcs_import_upmind_fetch" data-running="{{ 'Reading Upmind… keep this page open.'|trans }}" data-stopped="{{ 'Reading Upmind stopped. Fix the cause, then go on reading.'|trans }}">
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Import from Upmind'|trans }}</h3>
@@ -119,22 +123,22 @@
         </div>
         <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
             {% if settings.upmind and not run %}
-            <button type="button" class="btn btn-outline-primary" data-upmind-read{% if upmind and upmind.finished_at %} data-restart="1"{% endif %}>{{ upmind and upmind.finished_at ? 'Read Upmind again'|trans : (upmind ? 'Go on reading Upmind'|trans : 'Read Upmind'|trans) }}</button>
+            <button type="button" class="btn btn-outline-primary" data-snapshot-read{% if upmind and upmind.finished_at %} data-restart="1"{% endif %}>{{ upmind and upmind.finished_at ? 'Read Upmind again'|trans : (upmind ? 'Go on reading Upmind'|trans : 'Read Upmind'|trans) }}</button>
             {% endif %}
             <button class="btn btn-primary" type="submit">{{ 'Save and test'|trans }}</button>
         </div>
     </form>
     {% if settings.upmind %}
     <div class="card-body border-top">
-        <p class="mb-2" data-upmind-status>{{ upmind and upmind.finished_at ? 'Upmind was read on :date. Make the plan below.'|trans({ ':date': upmind.finished_at }) : 'Read Upmind, then make the plan below. Keep this page open while it reads.'|trans }}</p>
-        <div class="alert alert-danger d-none" data-upmind-error></div>
-        <div class="table-responsive{% if not upmind %} d-none{% endif %}" data-upmind-progress>
+        <p class="mb-2" data-snapshot-status>{{ upmind and upmind.finished_at ? 'Upmind was read on :date. Make the plan below.'|trans({ ':date': upmind.finished_at }) : 'Read Upmind, then make the plan below. Keep this page open while it reads.'|trans }}</p>
+        <div class="alert alert-danger d-none" data-snapshot-error></div>
+        <div class="table-responsive{% if not upmind %} d-none{% endif %}" data-snapshot-progress>
             <table class="table table-sm table-vcenter mb-0">
                 <thead><tr><th>{{ 'Step'|trans }}</th><th class="text-end">{{ 'Read'|trans }}</th><th class="text-end"></th></tr></thead>
                 <tbody>
                     {% for step, label in { 'setup': 'Currencies, countries and gateways'|trans, 'products': 'Products and domain prices'|trans, 'clients': 'Clients'|trans, 'services': 'Services and domains'|trans, 'invoices': 'Invoices'|trans, 'payments': 'Payments'|trans, 'tickets': 'Tickets'|trans } %}
                     {% set s = upmind.steps[step]|default({}) %}
-                    <tr data-upmind-step="{{ step }}"><td>{{ label }}</td><td class="text-end" data-done>{{ s.done|default('') }}</td><td class="text-end" data-state>{{ s.finished|default(false) ? '✓' : '' }}</td></tr>
+                    <tr data-snapshot-step="{{ step }}"><td>{{ label }}</td><td class="text-end" data-done>{{ s.done|default('') }}</td><td class="text-end" data-state>{{ s.finished|default(false) ? '✓' : '' }}</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -142,22 +146,94 @@
     </div>
     {% endif %}
 </div>
+
+<div class="card mb-3{% if chosen != 'blesta' %} d-none{% endif %}" id="clientfence-blesta-import" data-migration-source="blesta" data-snapshot-fetch="clientfence/whmcs_import_blesta_fetch" data-running="{{ 'Reading Blesta… keep this page open.'|trans }}" data-stopped="{{ 'Reading Blesta stopped. Fix the cause, then go on reading.'|trans }}">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Import from Blesta'|trans }}</h3>
+            <p class="card-subtitle">{{ 'The import reads Blesta\'s database directly and only reads it: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Blesta. The password and system key are kept encrypted and are not shown again; leave them empty to keep the saved ones.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/whmcs_import_blesta_save'|api_url }}" {{ fb_api_form({ message: 'Connected to Blesta.'|trans, reload: true }) }}{% if plan and chosen != 'blesta' %} data-switch-confirm="{{ 'The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?'|trans({ ':old': source, ':new': 'Blesta' }) }}"{% endif %} autocomplete="off">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label class="form-label required" for="wb-host">{{ 'Host'|trans }}</label>
+                    <input class="form-control" id="wb-host" name="host" value="{{ settings.host }}" maxlength="255" required dir="ltr">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label" for="wb-port">{{ 'Port'|trans }}</label>
+                    <input class="form-control" id="wb-port" name="port" type="number" min="1" max="65535" value="{{ settings.port }}" dir="ltr">
+                </div>
+                <div class="col-6 col-md-4">
+                    <label class="form-label required" for="wb-database">{{ 'Database name'|trans }}</label>
+                    <input class="form-control" id="wb-database" name="database" value="{{ settings.database }}" maxlength="64" required dir="ltr">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label required" for="wb-username">{{ 'Username'|trans }}</label>
+                    <input class="form-control" id="wb-username" name="username" value="{{ settings.username }}" maxlength="80" required dir="ltr" autocomplete="off">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label{{ settings.has_password ? '' : ' required' }}" for="wb-password">{{ 'Password'|trans }}</label>
+                    <input class="form-control" id="wb-password" name="password" type="password" {{ settings.has_password ? '' : 'required' }} placeholder="{{ settings.has_password ? 'Saved: leave empty to keep it'|trans : '' }}" dir="ltr" autocomplete="new-password">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label" for="wb-key">{{ 'System key'|trans }}</label>
+                    <input class="form-control" id="wb-key" name="blesta_key" type="password" placeholder="{{ settings.has_blesta_key ? 'Saved: leave empty to keep it'|trans : '' }}" dir="ltr" autocomplete="off">
+                    <div class="form-hint">{{ 'Blesta.system_key in Blesta\'s config/blesta.php. With it, clients sign in with their Blesta passwords; without it, they set a new one with "Forgot password".'|trans }}</div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label" for="wb-attachments">{{ 'Attachments folder'|trans }}</label>
+                    <input class="form-control" id="wb-attachments" name="attachments_dir" value="{{ settings.attachments_dir }}" maxlength="500" dir="ltr" placeholder="/home/blesta/uploads/1/support_manager_files">
+                    <div class="form-hint">{{ 'Only if Blesta runs on another server: a copy of its support_manager_files folder on this one (Blesta > Settings > System > General > Uploads Directory). Files not found are named in the warnings and show as removed.'|trans }}</div>
+                </div>
+                <div class="col-12">
+                    <p class="form-label mb-1">{{ 'What is not imported from Blesta'|trans }}</p>
+                    <ul class="text-secondary small mb-0">
+                        <li>{{ 'Saved cards and bank accounts (Blesta encrypts them with its own key), two-factor sign-in, coupons, recurring invoices, package options and custom client fields: the warnings name what was found.'|trans }}</li>
+                        <li>{{ 'Prices billed in days, weeks or terms ClientFence has no name for: the warnings name each one.'|trans }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if settings.blesta and not run %}
+            <button type="button" class="btn btn-outline-primary" data-snapshot-read{% if blesta and blesta.finished_at %} data-restart="1"{% endif %}>{{ blesta and blesta.finished_at ? 'Read Blesta again'|trans : (blesta ? 'Go on reading Blesta'|trans : 'Read Blesta'|trans) }}</button>
+            {% endif %}
+            <button class="btn btn-primary" type="submit">{{ 'Save and test'|trans }}</button>
+        </div>
+    </form>
+    {% if settings.blesta %}
+    <div class="card-body border-top">
+        <p class="mb-2" data-snapshot-status>{{ blesta and blesta.finished_at ? 'Blesta was read on :date. Make the plan below.'|trans({ ':date': blesta.finished_at }) : 'Read Blesta, then make the plan below. Keep this page open while it reads.'|trans }}</p>
+        <div class="alert alert-danger d-none" data-snapshot-error></div>
+        <div class="table-responsive{% if not blesta %} d-none{% endif %}" data-snapshot-progress>
+            <table class="table table-sm table-vcenter mb-0">
+                <thead><tr><th>{{ 'Step'|trans }}</th><th class="text-end">{{ 'Read'|trans }}</th><th class="text-end"></th></tr></thead>
+                <tbody>
+                    {% for step, label in { 'setup': 'Currencies, taxes, groups and gateways'|trans, 'packages': 'Packages and domain prices'|trans, 'clients': 'Clients'|trans, 'services': 'Services and domains'|trans, 'invoices': 'Invoices'|trans, 'payments': 'Payments'|trans, 'tickets': 'Tickets'|trans } %}
+                    {% set s = blesta.steps[step]|default({}) %}
+                    <tr data-snapshot-step="{{ step }}"><td>{{ label }}</td><td class="text-end" data-done>{{ s.done|default('') }}</td><td class="text-end" data-state>{{ s.finished|default(false) ? '✓' : '' }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
 <script nonce="{{ csp_nonce }}">
-    (() => {
-        const card = document.getElementById('clientfence-upmind-import');
-        const button = card?.querySelector('[data-upmind-read]');
+    // Reads Upmind or Blesta into the snapshot a few seconds a call, until it finishes (Whmcs/Snapshot.php); after both cards, so it binds both buttons.
+    document.querySelectorAll('[data-snapshot-fetch]').forEach((card) => {
+        const button = card.querySelector('[data-snapshot-read]');
         if (!button) return;
-        const status = card.querySelector('[data-upmind-status]');
-        const error = card.querySelector('[data-upmind-error]');
-        const text = {
-            running: {{ 'Reading Upmind… keep this page open.'|trans|json_encode|raw }},
-            stopped: {{ 'Reading Upmind stopped. Fix the cause, then go on reading.'|trans|json_encode|raw }},
-        };
+        const status = card.querySelector('[data-snapshot-status]');
+        const error = card.querySelector('[data-snapshot-error]');
         const read = (restart) => {
-            ClientFence.api.admin.post('clientfence/whmcs_import_upmind_fetch', { restart: restart ? 1 : 0 }, (state) => {
-                card.querySelector('[data-upmind-progress]').classList.remove('d-none');
+            ClientFence.api.admin.post(card.dataset.snapshotFetch, { restart: restart ? 1 : 0 }, (state) => {
+                card.querySelector('[data-snapshot-progress]').classList.remove('d-none');
                 Object.entries(state.steps || {}).forEach(([step, s]) => {
-                    const row = card.querySelector(`[data-upmind-step="${step}"]`);
+                    const row = card.querySelector(`[data-snapshot-step="${step}"]`);
                     if (!row) return;
                     row.querySelector('[data-done]').textContent = s.done;
                     row.querySelector('[data-state]').textContent = s.finished ? '✓' : (state.step === step ? '…' : '');
@@ -168,19 +244,19 @@
                     read(false);
                 }
             }, (e) => {
-                error.textContent = (e && e.message) || text.stopped;
+                error.textContent = (e && e.message) || card.dataset.stopped;
                 error.classList.remove('d-none');
-                status.textContent = text.stopped;
+                status.textContent = card.dataset.stopped;
                 button.disabled = false;
             }, false);
         };
         button.addEventListener('click', () => {
             button.disabled = true;
             error.classList.add('d-none');
-            status.textContent = text.running;
+            status.textContent = card.dataset.running;
             read(button.dataset.restart === '1');
         });
-    })();
+    });
 </script>
 
 <div class="card{% if chosen != 'whmcs' %} d-none{% endif %}" data-migration-source="whmcs">
@@ -245,7 +321,7 @@
             <h3 class="card-title">{{ 'Import plan'|trans }}</h3>
             <p class="card-subtitle">{{ 'What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan'|trans({ ':source': source }) }}</p>
         </div>
-        {% if settings.upmind ? (upmind and upmind.finished_at) : settings.has_password %}
+        {% if chosen != 'whmcs' ? (snapshot and snapshot.finished_at) : settings.has_password %}
         <div class="card-actions">
             <a class="btn btn-primary" href="{{ 'clientfence/whmcs_import_plan'|api_url }}" {{ fb_api_link({ message: 'Plan made.'|trans, reload: true }) }}>{{ plan ? 'Make the plan again'|trans : 'Make the plan'|trans }}</a>
         </div>
@@ -256,10 +332,10 @@
             <div class="alert alert-warning">{{ 'This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install.'|trans({ ':source': source, '%counts%': target.counts|map((n, what) => n ~ ' ' ~ what|trans)|join(', ') }) }}</div>
         {% endif %}
         {% if not plan %}
-            <p class="text-secondary mb-0">{{ settings.upmind and not (upmind and upmind.finished_at) ? 'Read Upmind first.'|trans : (settings.has_password or settings.upmind ? 'No plan yet. Make one to see what :source holds.'|trans({ ':source': source }) : 'Save the WHMCS database details first.'|trans) }}</p>
+            <p class="text-secondary mb-0">{{ chosen != 'whmcs' and not (snapshot and snapshot.finished_at) ? 'Read :name first.'|trans({ ':name': source }) : (chosen != 'whmcs' or settings.has_password ? 'No plan yet. Make one to see what :source holds.'|trans({ ':source': source }) : 'Save the WHMCS database details first.'|trans) }}</p>
         {% else %}
             <p class="mb-3">
-                <strong>{{ settings.upmind ? 'Upmind' : 'WHMCS ' ~ (plan.version ?: '?') }}</strong>
+                <strong>{{ chosen == 'whmcs' ? 'WHMCS ' ~ (plan.version ?: '?') : source }}</strong>
                 <span class="text-secondary">· {{ 'Plan made %date%'|trans({ '%date%': plan.made_at|format_datetime }) }}</span>
             </p>
             {% for warning in plan.warnings %}

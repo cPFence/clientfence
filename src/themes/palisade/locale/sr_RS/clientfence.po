@@ -23353,3 +23353,120 @@ msgstr "Šta sadrži sistem :source i šta uvoz radi sa tim. Pravljenje plana ne
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
 msgstr "Plan ispod je napravljen iz sistema :old. Čuvanjem ovih podataka uvoz prelazi na sistem :new i taj plan se briše; zatim pravite novi. Nastaviti?"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Blesta was read on :date. Make the plan below."
+msgstr "Podaci iz sistema Blesta su pročitani :date. Napravite plan ispod."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Blesta.system_key in Blesta's config/blesta.php. With it, clients sign in with their Blesta passwords; without it, they set a new one with \"Forgot password\"."
+msgstr "Blesta.system_key u datoteci config/blesta.php u Blesta. Uz njega se klijenti prijavljuju svojim Blesta lozinkama; bez njega postavljaju novu preko \"Zaboravljena lozinka\"."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Connected to Blesta."
+msgstr "Povezano sa sistemom Blesta."
+
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Could not connect to the :name database: :error"
+msgstr "Povezivanje sa bazom podataka sistema :name nije uspelo: :error"
+
+#: src/modules/Clientfence/Blesta/Snapshot.php
+msgid "Could not copy the Blesta attachment :file."
+msgstr "Nije uspelo kopiranje priloga :file iz Blesta."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Currencies, taxes, groups and gateways"
+msgstr "Valute, porezi, grupe i prolazi"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Enter Blesta's system key as config/blesta.php shows it."
+msgstr "Unesite sistemski ključ Blesta onako kako ga prikazuje config/blesta.php."
+
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Enter the :name database host, name and username first."
+msgstr "Prvo unesite host, ime i korisnika baze podataka sistema :name."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Enter the :name database host, name, username and password."
+msgstr "Unesite host, ime, korisnika i lozinku baze podataka sistema :name."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Go on reading Blesta"
+msgstr "Nastavi čitanje Blesta"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from Blesta"
+msgstr "Uvoz iz Blesta"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Only if Blesta runs on another server: a copy of its support_manager_files folder on this one (Blesta > Settings > System > General > Uploads Directory). Files not found are named in the warnings and show as removed."
+msgstr "Samo ako Blesta radi na drugom serveru: kopija njegove fascikle support_manager_files na ovom (Blesta > Settings > System > General > Uploads Directory). Datoteke koje nisu pronađene navedene su u upozorenjima i prikazuju se kao uklonjene."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Packages and domain prices"
+msgstr "Paketi i cene domena"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Prices billed in days, weeks or terms ClientFence has no name for: the warnings name each one."
+msgstr "Cene koje se naplaćuju po danima, nedeljama ili periodima za koje ClientFence nema naziv: upozorenja navode svaku od njih."
+
+#: src/modules/Clientfence/Whmcs/Source.php
+msgid "Read :name first, until it finishes."
+msgstr "Prvo pročitajte :name do kraja."
+
+#: src/modules/Clientfence/Whmcs/Snapshot.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read :name first."
+msgstr "Prvo pročitajte :name."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta"
+msgstr "Pročitaj Blesta"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta again"
+msgstr "Pročitaj Blesta ponovo"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Read Blesta, then make the plan below. Keep this page open while it reads."
+msgstr "Pročitajte Blesta, pa napravite plan ispod. Ostavite ovu stranicu otvorenu dok čita."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Reading Blesta stopped. Fix the cause, then go on reading."
+msgstr "Čitanje Blesta je stalo. Otklonite uzrok, pa nastavite čitanje."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Reading Blesta… keep this page open."
+msgstr "Čitanje Blesta… ostavite ovu stranicu otvorenom."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Save the Blesta database details first."
+msgstr "Prvo sačuvajte podatke o bazi podataka Blesta."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Saved cards and bank accounts (Blesta encrypts them with its own key), two-factor sign-in, coupons, recurring invoices, package options and custom client fields: the warnings name what was found."
+msgstr "Sačuvane kartice i bankovni računi (Blesta ih šifruje svojim ključem), dvofaktorska prijava, kuponi, ponavljajuće fakture, opcije paketa i prilagođena polja klijenata: upozorenja navode šta je pronađeno."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "System key"
+msgstr "Sistemski ključ"
+
+#: src/modules/Clientfence/Whmcs/Snapshot.php
+msgid "The :name import needs PHP's pdo_sqlite extension. Turn it on for this site's PHP version, then try again."
+msgstr "Uvoz iz sistema :name zahteva PHP ekstenziju pdo_sqlite. Uključite je za PHP verziju ovog sajta, pa pokušajte ponovo."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The import has started: :name can no longer be read again."
+msgstr "Uvoz je počeo: :name više ne može da se čita ponovo."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import reads Blesta's database directly and only reads it: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Blesta. The password and system key are kept encrypted and are not shown again; leave them empty to keep the saved ones."
+msgstr "Uvoz čita bazu podataka Blesta direktno i samo je čita: kopira ono što mu treba u privatnu datoteku na ovom serveru, pa tu datoteku uvozi koracima ispod. U Blesta se ništa ne menja. Lozinka i sistemski ključ čuvaju se šifrovani i ne prikazuju se ponovo; ostavite ih praznim da zadržite sačuvane."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "This database has no Blesta tables. Check the database name."
+msgstr "Ova baza podataka nema Blesta tabele. Proverite ime baze podataka."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What is not imported from Blesta"
+msgstr "Šta se ne uvozi iz Blesta"

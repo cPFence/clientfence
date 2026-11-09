@@ -32,26 +32,40 @@ final class Source
     }
 
     /**
-     * Connects with the saved settings (Import::settings(): host, port, database, username and the
-     * encrypted password) and starts a read-only transaction.
+     * The import's source (Import::settings()): a finished snapshot of another system, else the
+     * WHMCS database.
      *
      * @param array<string, mixed> $settings
      */
     public static function open(\Pimple\Container $di, array $settings): self
     {
-        // The Upmind import: what was read from Upmind, laid out as WHMCS's tables (Upmind/Snapshot.php).
-        if ((int) ($settings['upmind'] ?? 0) === 1) {
-            if (empty(\ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di)['finished_at'])) {
-                throw new InformationException('Read Upmind first, until it finishes.');
-            }
+        // An import through a snapshot: what was read from the other system, laid out as WHMCS's tables (Snapshot.php).
+        foreach (['upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::class, 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::class] as $key => $snapshot) {
+            if ((int) ($settings[$key] ?? 0) === 1) {
+                if (empty($snapshot::state($di)['finished_at'])) {
+                    throw new InformationException('Read :name first, until it finishes.', [':name' => $snapshot::NAME]);
+                }
 
-            return new self(\ClientFence\Mod\Clientfence\Upmind\Snapshot::open());
+                return new self($snapshot::open());
+            }
         }
+
+        return self::mysql($di, $settings, 'WHMCS');
+    }
+
+    /**
+     * A MySQL database of the import settings (host, port, database, username and the encrypted
+     * password) in a read-only transaction: WHMCS's, or Blesta's for its snapshot.
+     *
+     * @param array<string, mixed> $settings
+     */
+    public static function mysql(\Pimple\Container $di, array $settings, string $system): self
+    {
         $host = trim((string) ($settings['host'] ?? ''));
         $name = trim((string) ($settings['database'] ?? ''));
         $user = trim((string) ($settings['username'] ?? ''));
         if ($host === '' || $name === '' || $user === '') {
-            throw new InformationException('Enter the WHMCS database host, name and username first.');
+            throw new InformationException('Enter the :name database host, name and username first.', [':name' => $system]);
         }
         $port = (int) ($settings['port'] ?? 3306) ?: 3306;
         // "localhost" means the MySQL socket, whose path PHP may not know: TCP to 127.0.0.1 works
@@ -79,7 +93,7 @@ final class Source
             }
         }
 
-        throw new InformationException('Could not connect to the WHMCS database: :error', [':error' => $error]);
+        throw new InformationException('Could not connect to the :name database: :error', [':name' => $system, ':error' => $error]);
     }
 
     /** The connection (tests hand in their own). */
