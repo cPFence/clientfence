@@ -177,12 +177,14 @@
                         {% endif %}
 
                         {% if gateway.supports_subscriptions %}
+                        {# ClientFence core patch: the subscription switch says what it does; renewals never depend on it. #}
                         <div class="col-lg-6">
                             <input type="hidden" name="allow_recurrent" value="0">
                             <label class="form-check form-switch form-switch-2">
                                 <input class="form-check-input" type="checkbox" name="allow_recurrent" value="1"{% if gateway.allow_recurrent %} checked{% endif %}>
-                                <span class="form-check-label">{{ 'Allow Subscription Payments'|trans }}</span>
+                                <span class="form-check-label">{{ 'Offer subscriptions for renewing services'|trans }}</span>
                             </label>
+                            <small class="form-hint">{{ 'The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway.'|trans }}</small>
                         </div>
                         {% else %}
                         <input type="hidden" name="allow_recurrent" value="0">

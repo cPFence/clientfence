@@ -68,16 +68,6 @@
                                     </div>
                                     <div class="col-md-6 col-xl-3">
                                         <div>
-                                            <label class="form-label text-muted small mb-1" for="gateway-allow-recurrent">{{ 'Allow Subscriptions'|trans }}</label>
-                                            <select class="form-select" id="gateway-allow-recurrent" name="allow_recurrent">
-                                                <option value="">{{ 'All Gateways'|trans }}</option>
-                                                <option value="1"{% if request.allow_recurrent == '1' %} selected{% endif %}>{{ 'Yes'|trans }}</option>
-                                                <option value="0"{% if request.allow_recurrent == '0' %} selected{% endif %}>{{ 'No'|trans }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-xl-3">
-                                        <div>
                                             <label class="form-label text-muted small mb-1" for="gateway-test-mode">{{ 'Test Mode'|trans }}</label>
                                             <select class="form-select" id="gateway-test-mode" name="test_mode">
                                                 <option value="">{{ 'All Gateways'|trans }}</option>
@@ -102,11 +92,11 @@
                             <table class="table card-table table-vcenter table-striped text-nowrap sortable">
                                 <thead>
                                     <tr>
+                                        {# ClientFence core patch: no subscriptions column or filter; the gateway page explains that switch. #}
                                         <th>{{ 'Title'|trans }}</th>
                                         <th>{{ 'Code'|trans }}</th>
                                         <th>{{ 'Enabled'|trans }}</th>
                                         <th>{{ 'Allow One-Time Payments'|trans }}</th>
-                                        <th>{{ 'Allow Subscriptions'|trans }}</th>
                                         <th class="w-1 no-sort"></th>
                                     </tr>
                                 </thead>
@@ -120,7 +110,6 @@
                                     <td>{{ gateway.code }}</td>
                                     <td>{{ mf.boolean_badge(gateway.enabled, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                                     <td>{{ mf.boolean_badge(gateway.allow_single, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
-                                    <td>{{ mf.boolean_badge(gateway.allow_recurrent, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                                     <td>
                                         <a class="btn btn-icon" href="{{ 'invoice/gateway_copy'|api_url(query: { 'id': gateway.id }) }}" title="{{ 'Copy'|trans }}"
                                             {{ fb_api_link({redirect: 'invoice/gateways'|url}) }}>
@@ -143,7 +132,7 @@
                                 </tr>
                                 {% else %}
                                     <tr>
-                                        <td class="text-muted" colspan="6">{{ 'The list is empty'|trans }}</td>
+                                        <td class="text-muted" colspan="5">{{ 'The list is empty'|trans }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
