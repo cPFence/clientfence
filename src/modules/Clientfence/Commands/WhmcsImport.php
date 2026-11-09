@@ -40,7 +40,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
 
     protected function configure(): void
     {
-        $this->addArgument('step', InputArgument::REQUIRED, 'plan, apply or verify');
+        $this->addArgument('step', InputArgument::REQUIRED, 'upmind (read Upmind first, with the token saved on the admin tab), plan, apply or verify');
+        $this->addOption('restart', null, InputOption::VALUE_NONE, 'upmind: read Upmind again from the start');
         $this->addOption('json', null, InputOption::VALUE_NONE, 'Print the result as JSON');
         $this->addOption('attachments', null, InputOption::VALUE_REQUIRED, 'WHMCS\'s ticket attachments folder on this server (saved for the import, as on the admin tab)');
     }
@@ -48,8 +49,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $step = (string) $input->getArgument('step');
-        if (!in_array($step, ['plan', 'apply', 'verify'], true)) {
-            $output->writeln('<error>Unknown step "' . $step . '". Steps: plan, apply, verify</error>');
+        if (!in_array($step, ['upmind', 'plan', 'apply', 'verify'], true)) {
+            $output->writeln('<error>Unknown step "' . $step . '". Steps: upmind, plan, apply, verify</error>');
 
             return Command::INVALID;
         }
@@ -62,6 +63,9 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
                 return Command::FAILURE;
             }
             $output->writeln($folder === '' ? 'Attachments folder: none' : 'Attachments folder: ' . $folder);
+        }
+        if ($step === 'upmind') {
+            return $this->readUpmind((bool) $input->getOption('restart'), $output);
         }
         if ($step !== 'plan') {
             return $this->runStep($step, (bool) $input->getOption('json'), $output);
@@ -120,6 +124,31 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
         }
         if (!$target['fresh']) {
             $output->writeln('<comment>This install already has data (' . implode(', ', array_map(static fn (string $k, int $v): string => $v . ' ' . $k, array_keys($target['counts']), $target['counts'])) . '): the import needs a fresh install.</comment>');
+        }
+
+        return Command::SUCCESS;
+    }
+
+    /** Reads Upmind into the import's snapshot (Upmind/Snapshot.php), a line per page. */
+    private function readUpmind(bool $restart, OutputInterface $output): int
+    {
+        try {
+            do {
+                $state = Import::fetchUpmind($this->di, 20.0, $restart);
+                $restart = false;
+                $current = $state['steps'][$state['step'] ?? ''] ?? null;
+                if ($current !== null) {
+                    $output->writeln(sprintf('  %-36s %7d', $current['label'], $current['done']));
+                }
+            } while (empty($state['finished_at']));
+        } catch (\ClientFence\InformationException $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+
+            return Command::FAILURE;
+        }
+        $output->writeln('<info>Upmind read. Next: php console.php clientfence:whmcs-import plan</info>');
+        foreach ($this->di['em']->getConnection()->fetchFirstColumn('SELECT message FROM ' . Run::WARNINGS . " WHERE step = 'upmind' ORDER BY id") as $warning) {
+            $output->writeln('<comment>' . $warning . '</comment>');
         }
 
         return Command::SUCCESS;

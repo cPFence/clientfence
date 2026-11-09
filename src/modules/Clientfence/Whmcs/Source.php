@@ -39,6 +39,14 @@ final class Source
      */
     public static function open(\Pimple\Container $di, array $settings): self
     {
+        // The Upmind import: what was read from Upmind, laid out as WHMCS's tables (Upmind/Snapshot.php).
+        if ((int) ($settings['upmind'] ?? 0) === 1) {
+            if (empty(\ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di)['finished_at'])) {
+                throw new InformationException('Read Upmind first, until it finishes.');
+            }
+
+            return new self(\ClientFence\Mod\Clientfence\Upmind\Snapshot::open());
+        }
         $host = trim((string) ($settings['host'] ?? ''));
         $name = trim((string) ($settings['database'] ?? ''));
         $user = trim((string) ($settings['username'] ?? ''));

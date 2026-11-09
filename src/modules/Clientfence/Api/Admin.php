@@ -560,6 +560,30 @@ class Admin extends \ClientFence\Api\AbstractApi
         return $result;
     }
 
+    /**
+     * Imports from Upmind instead of WHMCS: saves and tests the API token, upmind_token (empty keeps
+     * the saved one). Answers {clients}.
+     */
+    public function whmcs_import_upmind_save($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+        $result = WhmcsImport::saveUpmind($this->getDi(), (array) $data);
+        $this->getDi()['logger']->info('ClientFence: Upmind import token saved (%d clients)', $result['clients']);
+
+        return $result;
+    }
+
+    /**
+     * Reads Upmind for a few seconds (Upmind/Snapshot.php) and answers how far it got; restart = 1
+     * reads it again from the start. The tab calls it until it finishes.
+     */
+    public function whmcs_import_upmind_fetch($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+
+        return WhmcsImport::fetchUpmind($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
+    }
+
     /** Reads WHMCS (read only) and stores the import plan: what WHMCS holds and what happens to it. */
     public function whmcs_import_plan(): array
     {

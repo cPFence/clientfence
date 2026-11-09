@@ -51,6 +51,100 @@
 } %}
 {% set handling = { 'import': 'Imported'|trans, 'archive': 'Archived, not imported'|trans, 'settings': 'Settings only'|trans } %}
 
+{% set upmind = whmcs.upmind %}
+<div class="card mb-3" id="clientfence-upmind-import">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Import from Upmind'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Moving from Upmind instead of WHMCS? Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind. Where the steps below say WHMCS, they mean what was read from Upmind.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/whmcs_import_upmind_save'|api_url }}" {{ fb_api_form({ message: 'Connected to Upmind.'|trans, reload: true }) }} autocomplete="off">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label class="form-label{{ settings.has_upmind_token ? '' : ' required' }}" for="wi-upmind-token">{{ 'Upmind API token'|trans }}</label>
+                    <input class="form-control" id="wi-upmind-token" name="upmind_token" type="password" {{ settings.has_upmind_token ? '' : 'required' }} placeholder="{{ settings.has_upmind_token ? 'Saved: leave empty to keep it'|trans : '' }}" dir="ltr" autocomplete="off">
+                    <div class="form-hint">{{ 'In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server\'s IP address to its IP whitelist.'|trans }}</div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <p class="form-label mb-1">{{ 'What Upmind does not give, so it is not imported'|trans }}</p>
+                    <ul class="small text-secondary mb-0 ps-3">
+                        <li>{{ 'Passwords: clients set a new one with "Forgot password".'|trans }}</li>
+                        <li>{{ 'Two-factor sign-in, saved cards and other stored payment methods. Stripe cards can be found again with "Find saved cards in Stripe".'|trans }}</li>
+                        <li>{{ 'Ticket attachments.'|trans }}</li>
+                        <li>{{ 'Invoices with a zero total (Upmind makes one for each service it imported) and credit top-ups: the client\'s credit balance carries them.'|trans }}</li>
+                        <li>{{ 'Fixed and regional taxes, other tax rates for companies, domain transfer prices, exchange rates and billing periods other than 1, 3, 6, 12, 24 or 36 months: the warnings name them. Tax rates by country come over with tax switched off.'|trans }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if settings.upmind and not run %}
+            <button type="button" class="btn btn-outline-primary" data-upmind-read{% if upmind and upmind.finished_at %} data-restart="1"{% endif %}>{{ upmind and upmind.finished_at ? 'Read Upmind again'|trans : (upmind ? 'Go on reading Upmind'|trans : 'Read Upmind'|trans) }}</button>
+            {% endif %}
+            <button class="btn btn-primary" type="submit">{{ 'Save and test'|trans }}</button>
+        </div>
+    </form>
+    {% if settings.upmind %}
+    <div class="card-body border-top">
+        <p class="mb-2" data-upmind-status>{{ upmind and upmind.finished_at ? 'Upmind was read on :date. Make the plan below.'|trans({ ':date': upmind.finished_at }) : 'Read Upmind, then make the plan below. Keep this page open while it reads.'|trans }}</p>
+        <div class="alert alert-danger d-none" data-upmind-error></div>
+        <div class="table-responsive{% if not upmind %} d-none{% endif %}" data-upmind-progress>
+            <table class="table table-sm table-vcenter mb-0">
+                <thead><tr><th>{{ 'Step'|trans }}</th><th class="text-end">{{ 'Read'|trans }}</th><th class="text-end"></th></tr></thead>
+                <tbody>
+                    {% for step, label in { 'setup': 'Currencies, countries and gateways'|trans, 'products': 'Products and domain prices'|trans, 'clients': 'Clients'|trans, 'services': 'Services and domains'|trans, 'invoices': 'Invoices'|trans, 'payments': 'Payments'|trans, 'tickets': 'Tickets'|trans } %}
+                    {% set s = upmind.steps[step]|default({}) %}
+                    <tr data-upmind-step="{{ step }}"><td>{{ label }}</td><td class="text-end" data-done>{{ s.done|default('') }}</td><td class="text-end" data-state>{{ s.finished|default(false) ? '✓' : '' }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const card = document.getElementById('clientfence-upmind-import');
+        const button = card?.querySelector('[data-upmind-read]');
+        if (!button) return;
+        const status = card.querySelector('[data-upmind-status]');
+        const error = card.querySelector('[data-upmind-error]');
+        const text = {
+            running: {{ 'Reading Upmind… keep this page open.'|trans|json_encode|raw }},
+            stopped: {{ 'Reading Upmind stopped. Fix the cause, then go on reading.'|trans|json_encode|raw }},
+        };
+        const read = (restart) => {
+            ClientFence.api.admin.post('clientfence/whmcs_import_upmind_fetch', { restart: restart ? 1 : 0 }, (state) => {
+                card.querySelector('[data-upmind-progress]').classList.remove('d-none');
+                Object.entries(state.steps || {}).forEach(([step, s]) => {
+                    const row = card.querySelector(`[data-upmind-step="${step}"]`);
+                    if (!row) return;
+                    row.querySelector('[data-done]').textContent = s.done;
+                    row.querySelector('[data-state]').textContent = s.finished ? '✓' : (state.step === step ? '…' : '');
+                });
+                if (state.finished_at) {
+                    window.location.reload();
+                } else {
+                    read(false);
+                }
+            }, (e) => {
+                error.textContent = (e && e.message) || text.stopped;
+                error.classList.remove('d-none');
+                status.textContent = text.stopped;
+                button.disabled = false;
+            }, false);
+        };
+        button.addEventListener('click', () => {
+            button.disabled = true;
+            error.classList.add('d-none');
+            status.textContent = text.running;
+            read(button.dataset.restart === '1');
+        });
+    })();
+</script>
+
 <div class="card">
     <div class="card-header">
         <div>
@@ -113,7 +207,7 @@
             <h3 class="card-title">{{ 'Import plan'|trans }}</h3>
             <p class="card-subtitle">{{ 'What WHMCS holds and what the import does with it. Making the plan only reads WHMCS. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan'|trans }}</p>
         </div>
-        {% if settings.has_password %}
+        {% if settings.upmind ? (upmind and upmind.finished_at) : settings.has_password %}
         <div class="card-actions">
             <a class="btn btn-primary" href="{{ 'clientfence/whmcs_import_plan'|api_url }}" {{ fb_api_link({ message: 'Plan made.'|trans, reload: true }) }}>{{ plan ? 'Make the plan again'|trans : 'Make the plan'|trans }}</a>
         </div>
@@ -124,7 +218,7 @@
             <div class="alert alert-warning">{{ 'This install already has data (%counts%). The import keeps WHMCS\'s ids and invoice numbers, so it needs a fresh install.'|trans({ '%counts%': target.counts|map((n, what) => n ~ ' ' ~ what|trans)|join(', ') }) }}</div>
         {% endif %}
         {% if not plan %}
-            <p class="text-secondary mb-0">{{ settings.has_password ? 'No plan yet. Make one to see what WHMCS holds.'|trans : 'Save the WHMCS database details first.'|trans }}</p>
+            <p class="text-secondary mb-0">{{ settings.upmind and not (upmind and upmind.finished_at) ? 'Read Upmind first.'|trans : (settings.has_password or settings.upmind ? 'No plan yet. Make one to see what WHMCS holds.'|trans : 'Save the WHMCS database details first.'|trans) }}</p>
         {% else %}
             <p class="mb-3">
                 <strong>WHMCS {{ plan.version ?: '?' }}</strong>

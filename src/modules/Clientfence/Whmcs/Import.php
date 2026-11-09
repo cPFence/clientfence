@@ -39,12 +39,15 @@ final class Import
         // PayPal Auto-Pay billing agreements of WHMCS's lcwsoftpaypalbillingagreements gateway (Money.php): 1 brings
         // them; off unless chosen (owner decision 2026-11-08).
         'paypal_agreements' => 0,
+        // 1: import from Upmind instead (Upmind/Snapshot.php, read with this API token, encrypted).
+        'upmind' => 0,
+        'upmind_token' => '',
     ];
 
     /** ClientFence tables that must be empty: the import keeps WHMCS's ids and numbers. */
     private const TARGET_TABLES = ['client' => 'clients', 'client_order' => 'orders', 'invoice' => 'invoices', 'support_ticket' => 'tickets'];
 
-    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int} */
+    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int, upmind: int, upmind_token: string} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di, self::SETTINGS) ?? [];
@@ -69,7 +72,8 @@ final class Import
         $settings = self::settings($di);
         $settings['has_password'] = $settings['password'] !== '';
         $settings['has_encryption_key'] = $settings['encryption_key'] !== '';
-        unset($settings['password'], $settings['encryption_key']);
+        $settings['has_upmind_token'] = $settings['upmind_token'] !== '';
+        unset($settings['password'], $settings['encryption_key'], $settings['upmind_token']);
 
         $run = Run::state($di);
         // The add-on module archive file (Archive.php), once the run wrote to it.
@@ -80,7 +84,7 @@ final class Import
             $archive = ['name' => $name, 'dir' => dirname($path), 'bytes' => (int) filesize($path)];
         }
 
-        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500)];
+        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di)];
     }
 
     /**
@@ -107,6 +111,8 @@ final class Import
             'encryption_key' => (string) ($data['encryption_key'] ?? '') !== '' ? (string) $di['crypt']->encrypt(trim((string) $data['encryption_key'])) : $old['encryption_key'],
             'attachments_dir' => self::folder((string) ($data['attachments_dir'] ?? '')),
             'paypal_agreements' => (string) ($data['paypal_agreements'] ?? '0') === '1' ? 1 : 0,
+            'upmind' => 0,
+            'upmind_token' => $old['upmind_token'],
         ];
         if ($new['host'] === '' || $new['database'] === '' || $new['username'] === '' || $new['password'] === '') {
             throw new InformationException('Enter the WHMCS database host, name, username and password.');
@@ -124,6 +130,49 @@ final class Import
         self::saveState($di, self::SETTINGS, $new);
 
         return ['version' => $version];
+    }
+
+    /**
+     * Imports from Upmind instead of a WHMCS database: saves the API token (empty keeps the saved
+     * one) once Upmind accepts it. Answers {clients}: how many clients Upmind holds.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array{clients: int}
+     */
+    public static function saveUpmind(\Pimple\Container $di, #[\SensitiveParameter] array $data): array
+    {
+        $old = self::settings($di);
+        $token = trim((string) ($data['upmind_token'] ?? ''));
+        if ($token === '' && $old['upmind_token'] !== '') {
+            $token = (string) $di['crypt']->decrypt($old['upmind_token']);
+        }
+        if ($token === '' || preg_match('/[\x00-\x20]/', $token) === 1) {
+            throw new InformationException('Enter the Upmind API token.');
+        }
+        [, $clients] = (new \ClientFence\Mod\Clientfence\Upmind\Api($di, $token))->page('clients', 0, 1);
+        self::saveState($di, self::SETTINGS, ['upmind' => 1, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
+
+        return ['clients' => $clients];
+    }
+
+    /**
+     * Reads Upmind into the import's snapshot for up to $seconds (Upmind/Snapshot.php); $restart
+     * reads it again from the start.
+     *
+     * @return array<string, mixed>
+     */
+    public static function fetchUpmind(\Pimple\Container $di, float $seconds, bool $restart = false): array
+    {
+        $settings = self::settings($di);
+        if ($settings['upmind'] !== 1 || $settings['upmind_token'] === '') {
+            throw new InformationException('Save the Upmind API token first.');
+        }
+        if (Run::state($di) !== null) {
+            throw new InformationException('The import has started: Upmind can no longer be read again.');
+        }
+
+        return \ClientFence\Mod\Clientfence\Upmind\Snapshot::fetch($di, (string) $di['crypt']->decrypt($settings['upmind_token']), $seconds, $restart);
     }
 
     /**

@@ -115,6 +115,8 @@ final class Run
         $secretFields = static fn (string $manager): array => $di['mod_service']('servicehosting')->getServerManagerSecretFields($manager);
         $registrars = self::registrars();
         $attachments = Import::settings($di)['attachments_dir'];
+        // The steps word their warnings for WHMCS; an Upmind import's data came from Upmind.
+        $upmind = Import::settings($di)['upmind'] === 1;
         $keepDays = static function () use ($di): int {
             try {
                 $setting = trim((string) ($di['mod_config']('support')['ticket_files_days'] ?? ''));
@@ -150,6 +152,9 @@ final class Run
                 try {
                     [$after, $done] = $runner->batch($step, (int) ($state['steps'][$step]['after'] ?? 0), $batch * (self::BULK[$step] ?? 1));
                     $warnings = $runner->warnings();
+                    if ($upmind) {
+                        $warnings = str_replace('WHMCS', 'Upmind', $warnings);
+                    }
                     self::addWarnings($db, $step, $warnings);
                     $state['steps'][$step]['done'] = (int) ($state['steps'][$step]['done'] ?? 0) + $done;
                     $state['steps'][$step]['after'] = $after;
