@@ -4971,7 +4971,7 @@ test('generateRenewalInvoiceForSubscriptionPayment still renews an order the bat
     'failed renew' => Model_ClientOrder::STATUS_FAILED_RENEW,
 ]);
 
-test('markAsPaid transitions a deposit invoice to paid status', function (): void {
+test('markAsPaid transitions a deposit invoice to paid status', function (string $paidSeries): void {
     $service = new Service();
 
     $depositInvoice = new Model_Invoice();
@@ -4980,6 +4980,7 @@ test('markAsPaid transitions a deposit invoice to paid status', function (): voi
     $depositInvoice->status = Model_Invoice::STATUS_UNPAID;
     $depositInvoice->approved = true;
     $depositInvoice->currency = 'USD';
+    $depositInvoice->serie = 'PROFORMA-';
 
     $depositItem = new Model_InvoiceItem();
     $depositItem->loadBean(new Tests\Helpers\DummyBean());
@@ -5002,7 +5003,7 @@ test('markAsPaid transitions a deposit invoice to paid status', function (): voi
     $systemService = Mockery::mock(SystemService::class);
     $systemService->shouldReceive('getParamValue')
         ->with('invoice_series_paid')
-        ->andReturn('CF');
+        ->andReturn($paidSeries);
 
     $currencyService = Mockery::mock(CurrencyService::class);
     $currencyService->shouldReceive('toBaseCurrency')
@@ -5044,7 +5045,9 @@ test('markAsPaid transitions a deposit invoice to paid status', function (): voi
     expect($result)->toBeTrue();
     expect($depositInvoice->status)->toBe(Model_Invoice::STATUS_PAID);
     expect($depositInvoice->paid_at)->not->toBeNull();
-});
+    // The paid prefix replaces the invoice prefix, an empty one included (issue #4).
+    expect($depositInvoice->serie)->toBe($paidSeries);
+})->with(['paid prefix' => 'CF', 'no paid prefix' => '']);
 
 test('getInvoicePdfAttachment returns null when the setting is disabled', function (): void {
     $service = new Service();

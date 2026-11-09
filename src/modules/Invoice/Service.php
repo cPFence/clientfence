@@ -814,11 +814,7 @@ class Service implements InjectionAwareInterface
         /** @var \ClientFence\Mod\Currency\Repository\CurrencyRepository $currencyRepository */
         $currencyRepository = $currencyService->getCurrencyRepository();
 
-        // ClientFence core patch: the paid series only when one is set; an empty one dropped the number's prefix (FOSS00020 became 00020).
-        $paidSeries = (string) $systemService->getParamValue('invoice_series_paid');
-        if ($paidSeries !== '') {
-            $invoice->serie = $paidSeries;
-        }
+        $invoice->serie = (string) $systemService->getParamValue('invoice_series_paid');
         $invoice->approved = true;
 
         $currencyRate = $currencyRepository->getRateByCode((string) $invoice->currency);

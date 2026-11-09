@@ -573,6 +573,7 @@ class UpdatePatcher implements InjectionAwareInterface
             122 => 'patch122',
             123 => 'patch123',
             124 => 'patch124',
+            125 => 'patch125',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2678,6 +2679,23 @@ class UpdatePatcher implements InjectionAwareInterface
                 PRIMARY KEY (`invoice_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
         }
+    }
+
+    private function patch125(): void
+    {
+        // ClientFence core patch: an empty paid invoice prefix means no prefix again (as in FOSSBilling); installs
+        // that left it empty kept the invoice prefix on payment, so they get it written in and keep their numbers.
+        $series = (string) $this->fetchOne("SELECT value FROM setting WHERE param = 'invoice_series'");
+        $paid = (string) $this->fetchOne("SELECT value FROM setting WHERE param = 'invoice_series_paid'");
+        if ($series === '' || $paid !== '') {
+            return;
+        }
+        $now = date('Y-m-d H:i:s');
+        $this->executeSql(
+            'INSERT INTO setting (param, value, public, created_at, updated_at) VALUES (:param, :value, 0, :created_at, :updated_at)
+             ON DUPLICATE KEY UPDATE value = :value, updated_at = :updated_at',
+            ['param' => 'invoice_series_paid', 'value' => $series, 'created_at' => $now, 'updated_at' => $now]
+        );
     }
 
     private function patch124(): void

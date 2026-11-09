@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(11)
+    expect($patches)->toHaveCount(12)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -45,8 +45,43 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches[121][1])->toBe('patch121')
         ->and($patches[122][1])->toBe('patch122')
         ->and($patches[123][1])->toBe('patch123')
-        ->and($patches[124][1])->toBe('patch124');
+        ->and($patches[124][1])->toBe('patch124')
+        ->and($patches[125][1])->toBe('patch125');
 });
+
+test('paid invoice prefix patch keeps the numbers of installs that left it empty', function (string $series, string|false $paid, ?string $written): void {
+    $settings = ['invoice_series' => $series, 'invoice_series_paid' => $paid];
+    $writes = [];
+    $pdo = Mockery::mock(PDO::class);
+    $pdo->shouldReceive('prepare')->andReturnUsing(function (string $sql) use ($settings, &$writes): PDOStatement {
+        $statement = Mockery::mock(PDOStatement::class);
+        if (preg_match("/param = '(\\w+)'/", $sql, $m) === 1) {
+            $statement->shouldReceive('execute')->andReturnTrue();
+            $statement->shouldReceive('fetchColumn')->andReturn($settings[$m[1]]);
+        } else {
+            $statement->shouldReceive('execute')->andReturnUsing(function (array $params) use (&$writes): bool {
+                $writes[] = [$params['param'], $params['value']];
+
+                return true;
+            });
+        }
+
+        return $statement;
+    });
+    $di = new Pimple\Container();
+    $di['pdo'] = $pdo;
+    $patcher = new UpdatePatcher();
+    $patcher->setDi($di);
+
+    (new ReflectionMethod($patcher, 'patch125'))->invoke($patcher);
+
+    expect($writes)->toBe($written === null ? [] : [['invoice_series_paid', $written]]);
+})->with([
+    'empty paid prefix' => ['CF', '', 'CF'],
+    'no paid prefix row' => ['PROFORMA-', false, 'PROFORMA-'],
+    'paid prefix set' => ['PROFORMA-', 'INV-', null],
+    'no invoice prefix' => ['', '', null],
+]);
 
 test('hosting subscription patch adds both panel identifiers for existing installs', function (): void {
     $columns = Mockery::mock(PDOStatement::class);
