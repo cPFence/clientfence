@@ -4181,7 +4181,7 @@ msgid "Check again"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "Check against WHMCS"
+msgid "Check against :source"
 msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
@@ -4582,6 +4582,10 @@ msgstr ""
 
 #: src/modules/Support/NetworkIssues.php
 msgid "Choose the status."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
@@ -10429,11 +10433,11 @@ msgid "Import existing"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "Import from Upmind"
+msgid "Import from :source into this install now? Keep this page open until it finishes."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "Import from WHMCS into this install now? Keep this page open until it finishes."
+msgid "Import from Upmind"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -10472,6 +10476,10 @@ msgstr ""
 msgid "In 7 Days"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "In Google Cloud Console (APIs & Services → Credentials), create an OAuth client ID of type “Web application”, add the address below under “Authorized redirect URIs”, then paste the client ID and secret Google gives you here."
 msgstr ""
@@ -10486,10 +10494,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
-msgstr ""
-
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "In WHMCS"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -12876,6 +12880,10 @@ msgstr ""
 msgid "Methods"
 msgstr ""
 
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "Minimum"
 msgstr ""
@@ -13056,6 +13064,14 @@ msgstr ""
 msgid "Move :card up"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Move this account onto a different hosting plan available on the current server."
 msgstr ""
@@ -13066,10 +13082,6 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "Move unpaid invoices to"
-msgstr ""
-
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "Moving from Upmind instead of WHMCS? Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind. Where the steps below say WHMCS, they mean what was read from Upmind."
 msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_list.html.twig
@@ -13957,7 +13969,7 @@ msgid "No permissions"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "No plan yet. Make one to see what WHMCS holds."
+msgid "No plan yet. Make one to see what :source holds."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_network_status.html.twig
@@ -21713,6 +21725,10 @@ msgstr ""
 msgid "The import did not start: fix these first, then start it again. :problems"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Import.php
 msgid "The import has started: Upmind can no longer be read again."
 msgstr ""
@@ -22023,6 +22039,10 @@ msgstr ""
 
 #: src/modules/Client/Contacts.php
 msgid "The phone country code is not valid."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
@@ -22646,7 +22666,7 @@ msgid "This install already has clients, orders, invoices or tickets. The WHMCS 
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "This install already has data (%counts%). The import keeps WHMCS's ids and invoice numbers, so it needs a fresh install."
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -24453,6 +24473,10 @@ msgstr ""
 msgid "Upmind did not answer: :error"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr ""
+
 #: src/modules/Clientfence/Upmind/Snapshot.php
 msgid "Upmind named no currency for its brand."
 msgstr ""
@@ -25033,10 +25057,6 @@ msgstr ""
 msgid "WHMCS Licensing (licence keys, check log and bans)"
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "WHMCS and Upmind import"
-msgstr ""
-
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "WHMCS database"
 msgstr ""
@@ -25230,11 +25250,11 @@ msgid "What"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "What Upmind does not give, so it is not imported"
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "What WHMCS holds and what the import does with it. Making the plan only reads WHMCS. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgid "What Upmind does not give, so it is not imported"
 msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_index.html.twig

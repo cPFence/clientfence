@@ -23819,3 +23819,57 @@ msgstr "固定稅和地區稅、公司的其他稅率、網域轉移價格、匯
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "在 Upmind 中開啟 Settings > API Tokens > Create API Token。允許它檢視客戶、產品、合約、收據、付款、支援單和稅金，並將本伺服器的 IP 位址加入它的 IP 白名單。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "與 :source 核對"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "選擇你要遷出的系統並儲存其連線資訊。ClientFence 只讀取它：該系統中不會有任何變動，也不會寄送郵件或扣款。下方的計畫和匯入使用最後儲存的系統：:source。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "現在從 :source 匯入到本系統嗎？完成前請保持此頁面開啟。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "在 :source 中"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "遷移"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "遷移來源"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "從其他計費系統遷移"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "尚無計畫。請建立一個，查看 :source 中有什麼。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "已開始從 :source 匯入，因此無法變更系統。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "本系統已有資料(%counts%)。匯入會保留 :source 的 ID 和收據編號，因此需要全新安裝。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind 是代管服務，因此匯入透過其 API 讀取：把需要的內容複製到本伺服器上的一個私有檔案，再用下方的步驟匯入該檔案。Upmind 中不會有任何變動。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr ":source 中有什麼以及匯入會如何處理。建立計畫不會變動 :source 中的任何內容。對於非常大的安裝，主控台可執行相同的步驟：php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "下方的計畫是根據 :old 建立的。儲存這些資訊會把匯入切換到 :new 並刪除該計畫；之後你需要重新建立計畫。要繼續嗎？"

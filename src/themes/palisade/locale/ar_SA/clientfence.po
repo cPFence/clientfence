@@ -22691,3 +22691,57 @@ msgstr "الضرائب الثابتة والإقليمية، ومعدلات ضر
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "في Upmind، افتح Settings > API Tokens > Create API Token. اسمح له بعرض العملاء والمنتجات والعقود والفواتير والمدفوعات وتذاكر الدعم والضرائب، وأضف عنوان IP لهذا الخادم إلى القائمة البيضاء لعناوين IP الخاصة به."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "التحقق مقابل :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "اختر النظام الذي تنتقل منه واحفظ بياناته. يقرأ ClientFence هذا النظام فقط: لا يتغير فيه شيء، ولا يُرسل أي بريد ولا تُحتسب أي رسوم. تستخدم الخطة والاستيراد أدناه النظام المحفوظ آخرًا: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "هل تريد الاستيراد من :source إلى هذا التثبيت الآن؟ أبقِ هذه الصفحة مفتوحة حتى ينتهي."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "في :source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "الترحيل"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "الانتقال من"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "الانتقال من نظام فوترة آخر"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "لا خطة بعد. أنشئ واحدة لترى ما يحتويه :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "بدأ الاستيراد من :source، لذا لا يمكن تغيير النظام."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "يحتوي هذا التثبيت بالفعل على بيانات (%counts%). يحتفظ الاستيراد بمعرّفات :source وأرقام فواتيره، لذا يتطلب تثبيتًا جديدًا."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind خدمة مستضافة، لذا يقرأها الاستيراد عبر واجهة API الخاصة بها: ينسخ ما يحتاجه إلى ملف خاص على هذا الخادم، ثم يستورد ذلك الملف بالخطوات أدناه. لا يتغير شيء في Upmind."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "ما يحتويه :source وما يفعله الاستيراد به. إنشاء الخطة لا يغيّر شيئًا في :source. للتثبيتات الكبيرة جدًا، تشغّل وحدة التحكم الخطوات نفسها: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "أُنشئت الخطة أدناه من :old. سيؤدي حفظ هذه البيانات إلى نقل الاستيراد إلى :new وحذف تلك الخطة، ثم تنشئ خطة جديدة. هل تريد المتابعة؟"

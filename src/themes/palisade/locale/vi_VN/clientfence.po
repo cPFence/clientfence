@@ -23315,3 +23315,57 @@ msgstr "Thuế cố định và thuế theo vùng, các mức thuế khác cho c
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "Trong Upmind, mở Settings > API Tokens > Create API Token. Cho phép token xem khách hàng, sản phẩm, hợp đồng, hóa đơn, thanh toán, phiếu hỗ trợ và thuế, rồi thêm địa chỉ IP của máy chủ này vào danh sách IP được phép của token."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "Đối chiếu với :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "Chọn hệ thống bạn chuyển từ đó đi và lưu thông tin của nó. ClientFence chỉ đọc hệ thống đó: không có gì thay đổi ở đó, không có email nào được gửi và không có khoản nào bị tính phí. Kế hoạch và việc nhập bên dưới dùng hệ thống được lưu gần nhất: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "Nhập từ :source vào bản cài đặt này ngay bây giờ? Hãy giữ trang này mở cho đến khi hoàn tất."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "Trong :source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "Di chuyển dữ liệu"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "Chuyển từ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "Chuyển từ hệ thống lập hóa đơn khác"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "Chưa có kế hoạch. Hãy lập một kế hoạch để xem :source có gì."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "Việc nhập từ :source đã bắt đầu, nên không thể đổi hệ thống."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "Bản cài đặt này đã có dữ liệu (%counts%). Việc nhập giữ nguyên ID và số hóa đơn của :source, nên cần một bản cài đặt mới."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind là dịch vụ được lưu trữ, nên việc nhập đọc nó qua API: nó sao chép những gì cần vào một tệp riêng trên máy chủ này, rồi nhập tệp đó bằng các bước bên dưới. Không có gì thay đổi trong Upmind."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "Trong :source có gì và việc nhập xử lý chúng ra sao. Lập kế hoạch không thay đổi gì trong :source. Với bản cài đặt rất lớn, bảng điều khiển dòng lệnh chạy cùng các bước: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "Kế hoạch bên dưới được lập từ :old. Lưu các thông tin này sẽ chuyển việc nhập sang :new và xóa kế hoạch đó; sau đó bạn lập kế hoạch mới. Tiếp tục?"

@@ -153,6 +153,9 @@ function findSetting() {
   const shown = (el) => el.getClientRects().length > 0;
   const el = exact.find(shown) || exact[0] || loose.find(shown) || loose[0];
   if (!el) return;
+  // In the card of a system not picked (Settings > Migration): pick it, so the card shows.
+  const source = el.closest('[data-migration-source].d-none');
+  if (source) document.getElementById(`wi-source-${source.dataset.migrationSource}`)?.click();
   // On another tab of the page (the index can be wrong about the tab): open that tab first.
   const pane = el.closest('.tab-pane');
   if (pane && !shown(el) && pane.id) document.querySelector(`[data-bs-toggle="tab"][href="#${pane.id}"], [data-bs-toggle="tab"][data-bs-target="#${pane.id}"]`)?.click();

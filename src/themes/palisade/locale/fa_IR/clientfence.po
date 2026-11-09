@@ -22822,3 +22822,57 @@ msgstr "مالیات‌های ثابت و منطقه‌ای، نرخ‌های م
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "در Upmind، Settings > API Tokens > Create API Token را باز کنید. به آن اجازه دهید کاربران، محصولات، قراردادها، فاکتورها، پرداخت‌ها، تیکت‌ها و مالیات‌ها را ببیند و نشانی IP این سرور را به فهرست سفید IP آن اضافه کنید."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "بررسی با :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "سامانه‌ای را که از آن منتقل می‌شوید انتخاب کنید و اطلاعات آن را ذخیره کنید. ClientFence فقط آن را می‌خواند: چیزی در آن تغییر نمی‌کند و ایمیلی فرستاده یا مبلغی دریافت نمی‌شود. طرح و درون‌ریزی زیر از سامانه‌ای استفاده می‌کنند که آخر ذخیره شده است: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "اکنون از :source به این نصب درون‌ریزی شود؟ تا پایان کار این صفحه را باز نگه دارید."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "در :source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "انتقال داده"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "انتقال از"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "انتقال از سامانه صورتحساب دیگر"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "هنوز طرحی نیست. برای دیدن آنچه :source دارد، یک طرح بسازید."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "درون‌ریزی از :source شروع شده است، پس سامانه را نمی‌توان تغییر داد."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "این نصب از قبل داده دارد (%counts%). درون‌ریزی شناسه‌ها و شماره فاکتورهای :source را نگه می‌دارد، پس به نصب تازه نیاز دارد."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind میزبانی‌شده است، پس درون‌ریزی آن را از راه API می‌خواند: آنچه لازم دارد را در یک فایل خصوصی روی این سرور کپی می‌کند و سپس آن فایل را با مراحل زیر درون‌ریزی می‌کند. چیزی در Upmind تغییر نمی‌کند."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "آنچه :source دارد و کاری که درون‌ریزی با آن می‌کند. ساخت طرح چیزی را در :source تغییر نمی‌دهد. برای نصب‌های بسیار بزرگ، کنسول همین مراحل را اجرا می‌کند: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "طرح زیر از :old ساخته شده است. با ذخیرهٔ این اطلاعات، درون‌ریزی به :new منتقل و آن طرح حذف می‌شود؛ سپس باید طرح تازه‌ای بسازید. ادامه می‌دهید؟"

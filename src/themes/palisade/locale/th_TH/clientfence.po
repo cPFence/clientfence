@@ -21131,3 +21131,57 @@ msgstr "ภาษีแบบคงที่และภาษีระดับ
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "ใน Upmind ให้เปิด Settings > API Tokens > Create API Token อนุญาตให้ดูลูกค้า สินค้า สัญญา ใบแจ้งหนี้ การชำระเงิน คำขอสนับสนุน และภาษีได้ และเพิ่มที่อยู่ IP ของเซิร์ฟเวอร์นี้ในรายการ IP ที่อนุญาตของโทเคน"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "ตรวจเทียบกับ :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "เลือกระบบที่คุณย้ายมา แล้วบันทึกรายละเอียดของระบบนั้น ClientFence อ่านข้อมูลอย่างเดียว: ไม่มีอะไรเปลี่ยนในระบบนั้น และไม่มีการส่งอีเมลหรือเรียกเก็บเงินใด ๆ แผนและการนำเข้าด้านล่างใช้ระบบที่บันทึกล่าสุด: :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "นำเข้าจาก :source มายังระบบนี้ตอนนี้เลยหรือไม่ โปรดเปิดหน้านี้ไว้จนกว่าจะเสร็จ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "ใน :source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "การย้ายข้อมูล"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "ย้ายจาก"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "ย้ายจากระบบเรียกเก็บเงินอื่น"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "ยังไม่มีแผน สร้างแผนเพื่อดูว่า :source มีอะไรอยู่"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "การนำเข้าจาก :source เริ่มแล้ว จึงเปลี่ยนระบบไม่ได้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "ระบบนี้มีข้อมูลอยู่แล้ว (%counts%) การนำเข้าคง ID และเลขที่ใบแจ้งหนี้ของ :source ไว้ จึงต้องใช้ระบบที่ติดตั้งใหม่"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind เป็นบริการที่โฮสต์ไว้ให้ การนำเข้าจึงอ่านผ่าน API ของ Upmind: คัดลอกสิ่งที่ต้องใช้ไปไว้ในไฟล์ส่วนตัวบนเซิร์ฟเวอร์นี้ แล้วนำเข้าไฟล์นั้นด้วยขั้นตอนด้านล่าง ไม่มีอะไรเปลี่ยนใน Upmind"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "สิ่งที่ :source มีและสิ่งที่การนำเข้าทำกับสิ่งเหล่านั้น การสร้างแผนไม่เปลี่ยนแปลงอะไรใน :source สำหรับระบบขนาดใหญ่มาก คอนโซลรันขั้นตอนเดียวกันได้: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "แผนด้านล่างสร้างจาก :old การบันทึกรายละเอียดเหล่านี้จะเปลี่ยนการนำเข้าไปเป็น :new และลบแผนนั้น จากนั้นคุณสร้างแผนใหม่ ดำเนินการต่อหรือไม่"

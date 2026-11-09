@@ -1,5 +1,6 @@
-{# ClientFence: the "WHMCS import" tab of System > Settings (core patch in mod_system_settings;
-   Whmcs/Import.php). The WHMCS database details (read only; the password and encryption key are
+{# ClientFence: the "Migration" tab of System > Settings (core patch in mod_system_settings;
+   Whmcs/Import.php). A picker of the system to move from, its details (Upmind: the API token and the
+   read, Upmind/Snapshot.php; WHMCS: the database details (read only; the password and encryption key are
    encrypted and never shown again), then the plan: what WHMCS holds and what the import does with
    it, then the import itself (Whmcs/Run.php): the tab runs it a few seconds at a time and shows the
    progress, the warnings and the check against WHMCS. Super Administrators only; `whmcs` is
@@ -52,14 +53,51 @@
 {% set handling = { 'import': 'Imported'|trans, 'archive': 'Archived, not imported'|trans, 'settings': 'Settings only'|trans } %}
 
 {% set upmind = whmcs.upmind %}
-<div class="card mb-3" id="clientfence-upmind-import">
+{# The plan and import use the source saved last; the picker shows the cards of one source. #}
+{% set chosen = settings.upmind ? 'upmind' : 'whmcs' %}
+{% set source = settings.upmind ? 'Upmind' : 'WHMCS' %}
+<div class="card mb-3" id="clientfence-migration">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Move from another billing system'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source.'|trans({ ':source': source }) }}</p>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="form-label" id="wi-source-label">{{ 'Move from'|trans }}</p>
+        <div class="btn-group" role="radiogroup" aria-labelledby="wi-source-label">
+            {% for key, name in { 'whmcs': 'WHMCS', 'upmind': 'Upmind' } %}
+            <input type="radio" class="btn-check" name="wi-source" id="wi-source-{{ key }}" value="{{ key }}" autocomplete="off"{% if chosen == key %} checked{% endif %}{% if run %} disabled{% endif %}>
+            <label class="btn" for="wi-source-{{ key }}">{{ name }}</label>
+            {% endfor %}
+        </div>
+        {% if run %}
+        <div class="form-hint mt-2">{{ 'The import has started from :source, so the system cannot change.'|trans({ ':source': source }) }}</div>
+        {% endif %}
+    </div>
+</div>
+<script nonce="{{ csp_nonce }}">
+    document.querySelectorAll('input[name="wi-source"]').forEach((radio) => radio.addEventListener('change', () => {
+        document.querySelectorAll('[data-migration-source]').forEach((card) => card.classList.toggle('d-none', card.dataset.migrationSource !== radio.value));
+    }));
+    // Saving the other system's details deletes the plan (Whmcs/Import.php saveSettings): ask first, before the form is sent.
+    document.addEventListener('submit', (event) => {
+        const text = event.target.dataset?.switchConfirm;
+        if (text && !window.confirm(text)) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+    }, true);
+</script>
+
+<div class="card mb-3{% if chosen != 'upmind' %} d-none{% endif %}" id="clientfence-upmind-import" data-migration-source="upmind">
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Import from Upmind'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Moving from Upmind instead of WHMCS? Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind. Where the steps below say WHMCS, they mean what was read from Upmind.'|trans }}</p>
+            <p class="card-subtitle">{{ 'Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind.'|trans }}</p>
         </div>
     </div>
-    <form method="post" action="{{ 'clientfence/whmcs_import_upmind_save'|api_url }}" {{ fb_api_form({ message: 'Connected to Upmind.'|trans, reload: true }) }} autocomplete="off">
+    <form method="post" action="{{ 'clientfence/whmcs_import_upmind_save'|api_url }}" {{ fb_api_form({ message: 'Connected to Upmind.'|trans, reload: true }) }}{% if plan and chosen != 'upmind' %} data-switch-confirm="{{ 'The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?'|trans({ ':old': source, ':new': 'Upmind' }) }}"{% endif %} autocomplete="off">
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12 col-md-6">
@@ -145,14 +183,14 @@
     })();
 </script>
 
-<div class="card">
+<div class="card{% if chosen != 'whmcs' %} d-none{% endif %}" data-migration-source="whmcs">
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'WHMCS database'|trans }}</h3>
             <p class="card-subtitle">{{ 'The import reads WHMCS\'s database directly and only reads it: nothing changes in WHMCS, and WHMCS does not need to run. Use a database user that can read it from this server. The password and encryption key are kept encrypted and are not shown again; leave them empty to keep the saved ones.'|trans }}</p>
         </div>
     </div>
-    <form method="post" action="{{ 'clientfence/whmcs_import_save'|api_url }}" {{ fb_api_form({ message: 'Connected to WHMCS.'|trans, reload: true }) }} autocomplete="off">
+    <form method="post" action="{{ 'clientfence/whmcs_import_save'|api_url }}" {{ fb_api_form({ message: 'Connected to WHMCS.'|trans, reload: true }) }}{% if plan and chosen != 'whmcs' %} data-switch-confirm="{{ 'The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?'|trans({ ':old': source, ':new': 'WHMCS' }) }}"{% endif %} autocomplete="off">
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-12 col-md-6">
@@ -201,11 +239,11 @@
     </form>
 </div>
 
-<div class="card mt-3">
+<div class="card mt-3" data-migration-source="{{ chosen }}">
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Import plan'|trans }}</h3>
-            <p class="card-subtitle">{{ 'What WHMCS holds and what the import does with it. Making the plan only reads WHMCS. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan'|trans }}</p>
+            <p class="card-subtitle">{{ 'What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan'|trans({ ':source': source }) }}</p>
         </div>
         {% if settings.upmind ? (upmind and upmind.finished_at) : settings.has_password %}
         <div class="card-actions">
@@ -215,13 +253,13 @@
     </div>
     <div class="card-body">
         {% if not target.fresh %}
-            <div class="alert alert-warning">{{ 'This install already has data (%counts%). The import keeps WHMCS\'s ids and invoice numbers, so it needs a fresh install.'|trans({ '%counts%': target.counts|map((n, what) => n ~ ' ' ~ what|trans)|join(', ') }) }}</div>
+            <div class="alert alert-warning">{{ 'This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install.'|trans({ ':source': source, '%counts%': target.counts|map((n, what) => n ~ ' ' ~ what|trans)|join(', ') }) }}</div>
         {% endif %}
         {% if not plan %}
-            <p class="text-secondary mb-0">{{ settings.upmind and not (upmind and upmind.finished_at) ? 'Read Upmind first.'|trans : (settings.has_password or settings.upmind ? 'No plan yet. Make one to see what WHMCS holds.'|trans : 'Save the WHMCS database details first.'|trans) }}</p>
+            <p class="text-secondary mb-0">{{ settings.upmind and not (upmind and upmind.finished_at) ? 'Read Upmind first.'|trans : (settings.has_password or settings.upmind ? 'No plan yet. Make one to see what :source holds.'|trans({ ':source': source }) : 'Save the WHMCS database details first.'|trans) }}</p>
         {% else %}
             <p class="mb-3">
-                <strong>WHMCS {{ plan.version ?: '?' }}</strong>
+                <strong>{{ settings.upmind ? 'Upmind' : 'WHMCS ' ~ (plan.version ?: '?') }}</strong>
                 <span class="text-secondary">· {{ 'Plan made %date%'|trans({ '%date%': plan.made_at|format_datetime }) }}</span>
             </p>
             {% for warning in plan.warnings %}
@@ -336,7 +374,7 @@
     </div>
 </div>
 
-<div class="card mt-3" id="clientfence-whmcs-import">
+<div class="card mt-3" id="clientfence-whmcs-import" data-migration-source="{{ chosen }}">
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Import'|trans }}</h3>
@@ -344,11 +382,11 @@
         </div>
         {% if plan and (run or target.fresh) and not run.finished_at|default(false) %}
         <div class="card-actions">
-            <button type="button" class="btn btn-primary" data-whmcs-import-run data-confirm="{{ run ? '' : 'Import from WHMCS into this install now? Keep this page open until it finishes.'|trans }}">{{ run ? 'Go on with the import'|trans : 'Start the import'|trans }}</button>
+            <button type="button" class="btn btn-primary" data-whmcs-import-run data-confirm="{{ run ? '' : 'Import from :source into this install now? Keep this page open until it finishes.'|trans({ ':source': source }) }}">{{ run ? 'Go on with the import'|trans : 'Start the import'|trans }}</button>
         </div>
         {% elseif run.finished_at|default(false) %}
         <div class="card-actions">
-            <button type="button" class="btn btn-outline-primary" data-whmcs-import-verify>{{ 'Check against WHMCS'|trans }}</button>
+            <button type="button" class="btn btn-outline-primary" data-whmcs-import-verify>{{ 'Check against :source'|trans({ ':source': source }) }}</button>
         </div>
         {% endif %}
     </div>
@@ -373,7 +411,7 @@
                 {% if run.finished_at|default(false) %}{{ 'Finished :date.'|trans({ ':date': run.finished_at|format_datetime }) }}{% elseif run %}{{ 'Started :date; not finished.'|trans({ ':date': run.started_at|format_datetime }) }}{% endif %}
             </p>
             <table class="table table-sm table-vcenter mb-0">
-                <thead><tr><th>{{ 'Step'|trans }}</th><th class="text-end">{{ 'In WHMCS'|trans }}</th><th class="text-end">{{ 'Imported'|trans }}</th><th></th></tr></thead>
+                <thead><tr><th>{{ 'Step'|trans }}</th><th class="text-end">{{ 'In :source'|trans({ ':source': source }) }}</th><th class="text-end">{{ 'Imported'|trans }}</th><th></th></tr></thead>
                 <tbody>
                     {% for step, s in run.steps|default({}) %}
                         <tr data-whmcs-import-step="{{ step }}">
@@ -390,9 +428,9 @@
             {% endif %}
         </div>
         <div class="mt-3 d-none" data-whmcs-import-verify-out>
-            <h4 class="mb-2">{{ 'Check against WHMCS'|trans }}</h4>
+            <h4 class="mb-2">{{ 'Check against :source'|trans({ ':source': source }) }}</h4>
             <table class="table table-sm table-vcenter mb-0">
-                <thead><tr><th>{{ 'What'|trans }}</th><th class="text-end">{{ 'In WHMCS'|trans }}</th><th class="text-end">{{ 'Imported'|trans }}</th></tr></thead>
+                <thead><tr><th>{{ 'What'|trans }}</th><th class="text-end">{{ 'In :source'|trans({ ':source': source }) }}</th><th class="text-end">{{ 'Imported'|trans }}</th></tr></thead>
                 <tbody></tbody>
             </table>
             <p class="small text-secondary mt-2 mb-0" data-whmcs-import-verify-note></p>

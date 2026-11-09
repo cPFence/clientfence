@@ -22752,3 +22752,57 @@ msgstr "Taxes fixes et régionales, autres taux de taxe pour les sociétés, pri
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "Dans Upmind, ouvrez Settings > API Tokens > Create API Token. Autorisez-le à consulter les clients, produits, contrats, factures, paiements, tickets et taxes, et ajoutez l'adresse IP de ce serveur à sa liste blanche d'adresses IP."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "Comparer avec :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "Choisissez le système que vous quittez et enregistrez ses informations. ClientFence ne fait que le lire : rien n'y change, et rien n'est envoyé par e-mail ni facturé. Le plan et l'import ci-dessous utilisent le système enregistré en dernier : :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "Importer maintenant depuis :source dans cette installation ? Gardez cette page ouverte jusqu'à la fin."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "Dans :source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "Migration"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "Migrer depuis"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "Migrer depuis un autre système de facturation"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "Pas encore de plan. Établissez-en un pour voir ce que contient le système :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "L'import depuis :source a commencé : le système ne peut donc plus changer."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "Cette installation contient déjà des données (%counts%). L'import conserve les identifiants et les numéros de facture du système :source : il a donc besoin d'une nouvelle installation."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind est hébergé : l'import le lit donc par son API. Il copie ce dont il a besoin dans un fichier privé sur ce serveur, puis importe ce fichier avec les étapes ci-dessous. Rien ne change dans Upmind."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "Ce que contient le système :source et ce que l'import en fait. Établir le plan ne change rien dans :source. Pour les très grandes installations, la console exécute les mêmes étapes : php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "Le plan ci-dessous a été établi à partir du système :old. Enregistrer ces informations fait passer l'import au système :new et supprime ce plan ; vous en établissez ensuite un nouveau. Continuer ?"

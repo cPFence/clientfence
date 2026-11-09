@@ -127,7 +127,7 @@ final class Import
         } finally {
             $source->close();
         }
-        self::saveState($di, self::SETTINGS, $new);
+        self::saveSettings($di, $old, $new);
 
         return ['version' => $version];
     }
@@ -151,7 +151,7 @@ final class Import
             throw new InformationException('Enter the Upmind API token.');
         }
         [, $clients] = (new \ClientFence\Mod\Clientfence\Upmind\Api($di, $token))->page('clients', 0, 1);
-        self::saveState($di, self::SETTINGS, ['upmind' => 1, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
+        self::saveSettings($di, $old, ['upmind' => 1, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
 
         return ['clients' => $clients];
     }
@@ -268,6 +268,19 @@ final class Import
         $value = is_string($row) ? json_decode($row, true) : null;
 
         return is_array($value) ? $value : null;
+    }
+
+    /**
+     * @param array<string, int|string> $old
+     * @param array<string, int|string> $new
+     */
+    private static function saveSettings(\Pimple\Container $di, array $old, array $new): void
+    {
+        self::saveState($di, self::SETTINGS, $new);
+        // A plan describes the system it was made from: moving to the other one needs a new plan.
+        if ($old['upmind'] !== $new['upmind']) {
+            $di['em']->getConnection()->executeStatement('DELETE FROM mod_clientfence_state WHERE name = ?', [self::PLAN]);
+        }
     }
 
     private static function saveState(\Pimple\Container $di, string $name, array $value): void

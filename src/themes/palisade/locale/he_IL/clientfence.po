@@ -26972,3 +26972,57 @@ msgstr "מסים קבועים ואזוריים, שיעורי מס אחרים ל�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "ב-Upmind פתחו Settings > API Tokens > Create API Token. אפשרו לו לצפות בלקוחות, מוצרים, חוזים, חשבוניות, תשלומים, פניות ומסים, והוסיפו את כתובת ה-IP של שרת זה לרשימת ההיתרים של כתובות ה-IP שלו."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "בדקו מול :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "בחרו את המערכת שמעבירים ממנה ושמרו את פרטיה. ClientFence רק קורא אותה: שום דבר בה לא משתנה, ושום דבר לא נשלח במייל או מחויב. התוכנית והייבוא שלמטה משתמשים במערכת שנשמרה אחרונה: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "לייבא עכשיו מ-:source להתקנה הזו? השאירו את הדף פתוח עד לסיום."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "ב-:source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "הגירה"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "מקור ההעברה"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "העברה ממערכת חיוב אחרת"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "עדיין אין תוכנית. צרו תוכנית כדי לראות מה יש ב-:source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "הייבוא מ-:source התחיל, ולכן אי אפשר לשנות את המערכת."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "בהתקנה הזו כבר יש נתונים (%counts%). הייבוא שומר על המזהים ומספרי החשבוניות של :source, ולכן דורש התקנה חדשה."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind הוא שירות מתארח, ולכן הייבוא קורא אותו דרך ה-API שלו: הוא מעתיק את מה שהוא צריך לקובץ פרטי בשרת הזה, ואז מייבא את הקובץ בשלבים שלמטה. שום דבר ב-Upmind לא משתנה."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "מה יש ב-:source ומה הייבוא עושה עם זה. יצירת התוכנית לא משנה דבר ב-:source. בהתקנות גדולות מאוד, המסוף מפעיל את אותם השלבים: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "התוכנית שלמטה נוצרה מהמערכת :old. שמירת הפרטים האלה מעבירה את הייבוא למערכת :new ומוחקת את התוכנית הזו; לאחר מכן תיצרו תוכנית חדשה. להמשיך?"

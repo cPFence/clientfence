@@ -21268,3 +21268,57 @@ msgstr "Фиксированные и региональные налоги, д�
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "В Upmind откройте Settings > API Tokens > Create API Token. Разрешите ему просматривать клиентов, продукты, договоры, счета, платежи, заявки и налоги и добавьте IP-адрес этого сервера в его белый список IP."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "Сверка с :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "Выберите систему, из которой вы переходите, и сохраните её данные. ClientFence только читает её: там ничего не меняется, письма не отправляются, платежи не списываются. План и импорт ниже используют последнюю сохранённую систему: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "Импортировать из :source в эту установку сейчас? Не закрывайте эту страницу до завершения."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "В :source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "Миграция"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "Перенос из"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "Перенос из другой биллинговой системы"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "Плана пока нет. Составьте его, чтобы увидеть, что хранит :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "Импорт из :source уже начался, поэтому систему нельзя сменить."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "В этой установке уже есть данные (%counts%). Импорт сохраняет идентификаторы и номера счетов из :source, поэтому нужна чистая установка."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind работает как облачный сервис, поэтому импорт читает его через API: копирует нужное в закрытый файл на этом сервере, а затем импортирует этот файл по шагам ниже. В Upmind ничего не меняется."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "Что хранит :source и что с этим делает импорт. Составление плана ничего не меняет в :source. Для очень больших установок консоль выполняет те же шаги: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "План ниже составлен из :old. Сохранение этих данных переключит импорт на :new и удалит этот план; затем вы составите новый. Продолжить?"

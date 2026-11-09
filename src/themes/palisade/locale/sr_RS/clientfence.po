@@ -23299,3 +23299,57 @@ msgstr "Fiksni i regionalni porezi, druge poreske stope za firme, cene transfera
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "U Upmind-u otvorite Settings > API Tokens > Create API Token. Dozvolite mu da vidi klijente, proizvode, ugovore, račune, plaćanja, tikete i poreze i dodajte IP adresu ovog servera na njegovu belu listu IP adresa."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "Provera prema sistemu :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "Izaberite sistem iz kog prelazite i sačuvajte njegove podatke. ClientFence ga samo čita: tamo se ništa ne menja, i ništa se ne šalje e-poštom niti naplaćuje. Plan i uvoz ispod koriste poslednji sačuvani sistem: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "Uvesti iz sistema :source u ovu instalaciju sada? Ostavite ovu stranicu otvorenom dok se ne završi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "U sistemu :source"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "Migracija"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "Prelazak iz"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "Prelazak iz drugog sistema za naplatu"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "Još nema plana. Napravite ga da vidite šta sadrži sistem :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "Uvoz iz sistema :source je počeo, pa se sistem ne može promeniti."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "Ova instalacija već ima podatke (%counts%). Uvoz zadržava ID-ove i brojeve računa iz sistema :source, pa zahteva čistu instalaciju."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Upmind je hostovan, pa ga uvoz čita preko njegovog API-ja: kopira ono što mu treba u privatnu datoteku na ovom serveru, a zatim uvozi tu datoteku koracima ispod. U sistemu Upmind se ništa ne menja."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "Šta sadrži sistem :source i šta uvoz radi sa tim. Pravljenje plana ne menja ništa u sistemu :source. Za veoma velike instalacije konzola izvršava iste korake: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "Plan ispod je napravljen iz sistema :old. Čuvanjem ovih podataka uvoz prelazi na sistem :new i taj plan se briše; zatim pravite novi. Nastaviti?"

@@ -23305,3 +23305,57 @@ msgstr "Fix és regionális adók, a cégekre vonatkozó egyéb adókulcsok, dom
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
 msgstr "Az Upmindban nyisd meg a Settings > API Tokens > Create API Token menüpontot. Engedélyezd, hogy lássa az ügyfeleket, termékeket, szerződéseket, számlákat, fizetéseket, jegyeket és adókat, és add hozzá ennek a szervernek az IP-címét az IP-engedélylistájához."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Check against :source"
+msgstr "Összevetés a(z) :source rendszerrel"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Choose the system you are moving from and save its details. ClientFence only reads it: nothing changes there, and nothing is emailed or charged. The plan and the import below use the system saved last: :source."
+msgstr "Válassza ki a rendszert, ahonnan költözik, és mentse el az adatait. A ClientFence csak olvassa: semmi sem változik benne, és semmit nem küld e-mailben, sem számláz ki. Az alábbi terv és import a legutóbb mentett rendszert használja: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import from :source into this install now? Keep this page open until it finishes."
+msgstr "Importálja most a(z) :source rendszerből ebbe a telepítésbe? Tartsa nyitva ezt az oldalt, amíg be nem fejeződik."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "In :source"
+msgstr "A(z) :source rendszerben"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Migration"
+msgstr "Migráció"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from"
+msgstr "Költözés innen"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Move from another billing system"
+msgstr "Költözés másik számlázórendszerből"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No plan yet. Make one to see what :source holds."
+msgstr "Még nincs terv. Készítsen egyet, hogy lássa, mit tartalmaz a(z) :source rendszer."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started from :source, so the system cannot change."
+msgstr "Az import a(z) :source rendszerből elindult, ezért a rendszer nem módosítható."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "This install already has data (%counts%). The import keeps the ids and invoice numbers of :source, so it needs a fresh install."
+msgstr "Ebben a telepítésben már vannak adatok (%counts%). Az import megtartja a(z) :source rendszer azonosítóit és számlaszámait, ezért új telepítést igényel."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Upmind is hosted, so the import reads it through its API: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in Upmind."
+msgstr "Az Upmind felhőalapú szolgáltatás, ezért az import az API-ján keresztül olvassa: a szükséges adatokat egy privát fájlba másolja ezen a szerveren, majd az alábbi lépésekkel importálja a fájlt. Semmi sem változik az Upmind rendszerében."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr "Mit tartalmaz a(z) :source rendszer, és mit tesz vele az import. A terv elkészítése semmit nem módosít a(z) :source rendszerben. Nagyon nagy telepítéseknél a konzol ugyanezeket a lépéseket futtatja: php console.php clientfence:whmcs-import plan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr "Az alábbi terv a(z) :old rendszerből készült. Ezeknek az adatoknak a mentése az importot a(z) :new rendszerre állítja át, és törli ezt a tervet; utána újat készít. Folytatja?"
