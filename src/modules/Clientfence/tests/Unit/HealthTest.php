@@ -216,3 +216,40 @@ test('the proxy check warns only when the forwarded address is not the connectin
     'web server already resolved it' => ['203.0.113.9', ['X-Forwarded-For' => '203.0.113.9', 'CF-Connecting-IP' => '203.0.113.9'], 'ok', 'The web server already reads'],
     'untrusted proxy' => ['10.0.0.5', ['X-Forwarded-For' => '203.0.113.9'], 'warn', 'Requests come through a proxy'],
 ]);
+
+test('a served data folder shows under private paths (Nginx without the rules)', function (): void {
+    $saved = null;
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('fetchOne')->andReturn(false);
+    $connection->shouldReceive('executeStatement')->andReturnUsing(function (string $sql, array $params) use (&$saved): int {
+        $saved = json_decode($params[1], true);
+
+        return 1;
+    });
+    $connection->shouldReceive('fetchAssociative')->andReturn(['waiting' => 0, 'failed' => 0, 'oldest' => null]);
+    $connection->shouldReceive('fetchAllAssociative')->andReturn([]);
+    $connection->shouldReceive('fetchFirstColumn')->andReturn([1]);
+    $schema = Mockery::mock(Doctrine\DBAL\Schema\AbstractSchemaManager::class);
+    $schema->shouldReceive('listTableNames')->andReturn(array_keys(ClientFence\Mod\Clientfence\Service::tables()));
+    $connection->shouldReceive('createSchemaManager')->andReturn($schema);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($connection);
+    $service = Mockery::mock();
+    $service->shouldReceive('getAllChecks', 'getMessages', 'getConfig')->andReturn([]);
+    $service->shouldReceive('getParamValue')->andReturn(date('Y-m-d H:i:s'));
+    $service->shouldReceive('isSuperAdministrator')->andReturnTrue();
+    $service->shouldReceive('sendTemplate')->andReturnTrue();
+    $di = new Pimple\Container();
+    $di['em'] = $em;
+    $di['db'] = Mockery::mock();
+    $di['db']->shouldReceive('load')->andReturn(new stdClass());
+    $di['logger'] = Mockery::mock()->shouldIgnoreMissing();
+    $di['mod_service'] = $di->protect(fn () => $service);
+    $di['http_client'] = new Symfony\Component\HttpClient\MockHttpClient(static fn (string $method, string $url): Symfony\Component\HttpClient\Response\MockResponse => new Symfony\Component\HttpClient\Response\MockResponse('', ['http_code' => str_ends_with($url, '/data/index.html') ? 200 : 404]));
+
+    Health::run($di);
+
+    $check = array_column($saved['checks'], null, 'id')['sec_private_paths'];
+    expect($check['state'])->toBe('bad')
+        ->and($check['params'][':list'])->toBe('/data/index.html');
+});

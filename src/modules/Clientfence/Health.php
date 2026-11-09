@@ -368,7 +368,9 @@ final class Health
             params: [':count' => count($blocked), ':list' => implode('; ', array_map(static fn (array $e): string => $e['blocked'] . ' (' . ($e['page'] !== '' ? $e['page'] : '/') . ($e['source'] !== '' ? ', ' . $e['source'] . ':' . $e['line'] : '') . ')', array_slice($blocked, 0, 3)))]);
         $served = [];
         $answered = 0;
-        foreach (['locale/ar_SA/LC_MESSAGES/messages.mo', 'vendor/composer/installed.json', 'modules/Clientfence/manifest.json', 'api/client/servicehosting/change_domain'] as $path) {
+        // The last three catch the Nginx rules (Running on Nginx docs): the data folder, templates, and PHP outside the
+        // entry points (Version.php only defines a class, so running it is harmless).
+        foreach (['locale/ar_SA/LC_MESSAGES/messages.mo', 'vendor/composer/installed.json', 'modules/Clientfence/manifest.json', 'api/client/servicehosting/change_domain', 'data/index.html', 'themes/palisade/html/layout_default.html.twig', 'library/ClientFence/Version.php'] as $path) {
             $response = self::fetch($di, $base . $path);
             $answered += $response !== null ? 1 : 0;
             if ($response !== null && $response['status'] === 200) {
