@@ -23158,3 +23158,164 @@ msgstr "Tawarkan langganan untuk layanan yang diperpanjang"
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway."
 msgstr "Klien dapat berlangganan sekali dengan gateway ini alih-alih membayar setiap faktur perpanjangan. Menonaktifkan ini tidak menghentikan perpanjangan: faktur perpanjangan selalu dapat dibayar dengan gateway mana pun."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr "Kode mata uang portal ini yang diterima profil PayTabs Anda. Faktur dalam mata uang lain ditagihkan dalam mata uang ini dengan kurs portal, seperti \"Convert To For Processing\" milik WHMCS. Kosong: setiap faktur ditagihkan dalam mata uangnya sendiri. [Cara menyiapkan PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
+msgstr "Setelah pesanan gratis yang diperpanjang (uji coba gratis), klien tanpa metode pembayaran tersimpan diarahkan ke PayTabs untuk menyimpan kartu."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr "Kartu untuk pembayaran otomatis ke :company"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr "Pembayaran kartu di halaman pembayaran PayTabs. Klien dapat menyimpan kartunya di sana dan tagihannya kemudian dibebankan ke kartu itu secara otomatis (minta PayTabs mengaktifkan mode Recurring untuk profil)."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
+msgstr "Kartu tersimpan di PayTabs"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr "Klien juga dapat membayar tagihan dengan kartu tanpa menyiapkan pembayaran otomatis."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr "Klien dapat menyimpan kartu di halaman Metode pembayaran tanpa membayar tagihan (PayTabs memeriksa kartu tanpa menagihnya)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr "ID profil live:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
+msgstr "Kunci server live:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr "Di halaman tagihan, klien dengan kartu tersimpan dapat langsung membayar tanpa pergi ke PayTabs."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr "Bayar sekarang dengan :card"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr "Bayar sekali dengan kartu"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
+msgstr "Bayar sekali tanpa menyimpan kartu:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr "Bayar dengan kartu dan atur pembayaran otomatis"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
+msgstr "Bayar dengan kartu tersimpan:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr "PayTabs tidak menjawab :path: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr "PayTabs tidak melakukan pengembalian dana: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr "PayTabs tidak menyimpan kartu: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr "PayTabs tidak memulai pembayaran: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr "PayTabs tidak tersedia."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr "Pemberitahuan PayTabs tidak menyebut pembayaran apa pun"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr "Pembayaran PayTabs :id dalam :currency, sedangkan faktur dalam :invoice"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr "Pembayaran PayTabs :id bukan untuk faktur ClientFence"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr "Pembayaran PayTabs :id tidak ditemukan: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr "PayTabs menolak pembayaran: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr "PayTabs menolak ID profil atau kunci server (periksa juga wilayahnya): :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr "PayTabs: Profile. Kunci server: Developers, Key management (kunci API)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr "Wilayah:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr "Simpan kartu di PayTabs dan tagihan Anda akan dibebankan ke kartu itu secara otomatis."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr "Simpan kartu untuk pembayaran otomatis"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
+msgstr "Menyimpan kartu dengan PayTabs tidak tersedia."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
+msgstr "Masuk sebagai pemilik akun untuk membayar dengan kartu."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr "ID profil uji:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr "Kunci server uji:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr "Penerbit kartu meminta pemegang kartu mengonfirmasi pembayaran ini: klien harus membayar tagihan di halaman pembayaran."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
+msgstr "Wilayah akun PayTabs Anda (alamat dasbor PayTabs Anda)."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr "Anda tidak dapat membayar tagihan ini dengan kartu tersimpan."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
+msgstr "Anda tidak memiliki kartu yang tersimpan di PayTabs."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr "Kartu Anda tidak tersimpan. Silakan coba lagi."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr "Tagihan perpanjangan Anda kemudian dibebankan ke kartu ini. Anda dapat menghapusnya di halaman Metode pembayaran."

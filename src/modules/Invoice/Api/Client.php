@@ -248,9 +248,10 @@ class Client extends \ClientFence\Api\AbstractApi
 
     /**
      * ClientFence: the client's saved methods for the Payment methods page (SavedCards.php): {available, cards: [{id,
-     * card, default}], paypal: {account, default} or null, autopay: {account, default, add} or null}. available is false
-     * without an enabled Stripe gateway, paypal null when clients cannot save PayPal accounts, autopay null without PayPal
-     * Auto-Pay (add: the client may set it up here); default marks the method that pays the invoices.
+     * card, default}], paypal: {account, default} or null, autopay: {account, default, add} or null, paytabs: {account,
+     * default, add} or null}. available is false without an enabled Stripe gateway, paypal null when clients cannot save PayPal
+     * accounts, autopay null without PayPal Auto-Pay (add: the client may set it up here), paytabs null without PayTabs (add: the same);
+     * default marks the method that pays the invoices.
      */
     public function card_list(): array
     {
@@ -266,6 +267,8 @@ class Client extends \ClientFence\Api\AbstractApi
         $account = $paypal?->savedCard($clientId);
         $autopay = SavedCards::autopay($di);
         $agreement = $autopay?->savedCard($clientId);
+        $paytabs = SavedCards::paytabs($di);
+        $paytabsCard = $paytabs?->savedCard($clientId);
 
         return [
             'available' => $stripe !== null,
@@ -273,6 +276,7 @@ class Client extends \ClientFence\Api\AbstractApi
             'cards' => $cards,
             'paypal' => $paypal === null ? null : ['account' => $account['card'] ?? null, 'default' => $account !== null && $paying instanceof \Payment_Adapter_PayPalEmail],
             'autopay' => $autopay === null ? null : ['account' => $agreement['card'] ?? null, 'default' => $agreement !== null && $paying instanceof \Payment_Adapter_PayPalAutoPay, 'add' => $autopay->option('save_only')],
+            'paytabs' => $paytabs === null ? null : ['account' => $paytabsCard['card'] ?? null, 'default' => $paytabsCard !== null && $paying instanceof \Payment_Adapter_PayTabs, 'add' => $paytabs->option('save_only')],
         ];
     }
 
@@ -343,6 +347,44 @@ class Client extends \ClientFence\Api\AbstractApi
         return ['paid' => $result['paid'], 'message' => (string) ($result['error'] ?? '')];
     }
 
+    /** ClientFence: makes the card saved at PayTabs the method that pays the client's invoices. */
+    public function paytabs_default(): bool
+    {
+        $adapter = $this->paytabsAdapter();
+        if ($adapter->savedCard((int) $this->getIdentity()->id) === null) {
+            throw new \ClientFence\InformationException('You have no card saved with PayTabs.');
+        }
+        SavedCards::choose($this->getDi(), $adapter->gatewayId(), $adapter->testMode(), (int) $this->getIdentity()->id);
+
+        return true;
+    }
+
+    /** ClientFence: removes the card saved at PayTabs (deleted at PayTabs too). */
+    public function paytabs_remove(): bool
+    {
+        $this->paytabsAdapter()->cardRemove((int) $this->getIdentity()->id);
+
+        return true;
+    }
+
+    /** ClientFence: pays the client's own unpaid invoice (`hash`) at once with their card saved at PayTabs, as autopay_pay. */
+    #[RequiredParams(['hash' => 'Invoice hash was not passed'])]
+    public function paytabs_pay($data): array
+    {
+        $di = $this->getDi();
+        $adapter = $this->paytabsAdapter();
+        $clientId = (int) $this->getIdentity()->id;
+        $user = \ClientFence\Mod\Client\Users::context($di);
+        if (($user !== null && !$user['owner']) || !$adapter->option('pay_saved') || $adapter->savedCard($clientId) === null) {
+            throw new \ClientFence\InformationException('You cannot pay this invoice with a saved card.');
+        }
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+            ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
+        $result = SavedCards::charge($di, $invoice, $adapter, true, true);
+
+        return ['paid' => $result['paid'], 'message' => (string) ($result['error'] ?? '')];
+    }
+
     /** ClientFence: starts adding a card: {client_secret, pub_key} for Stripe's card form. */
     public function card_setup(): array
     {
@@ -384,6 +426,11 @@ class Client extends \ClientFence\Api\AbstractApi
     private function autopayAdapter(): \Payment_Adapter_PayPalAutoPay
     {
         return SavedCards::autopay($this->getDi()) ?? throw new \ClientFence\InformationException('Automatic payments with PayPal are not available.');
+    }
+
+    private function paytabsAdapter(): \Payment_Adapter_PayTabs
+    {
+        return SavedCards::paytabs($this->getDi()) ?? throw new \ClientFence\InformationException('PayTabs is not available.');
     }
 
     private function cardAdapter(): \Payment_Adapter_Stripe

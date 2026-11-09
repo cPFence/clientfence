@@ -22482,3 +22482,164 @@ msgstr "Abonnements für sich verlängernde Services anbieten"
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway."
 msgstr "Der Kunde kann mit diesem Gateway einmal ein Abonnement abschließen, statt jede Verlängerungsrechnung zu bezahlen. Wenn Sie dies ausschalten, enden die Verlängerungen nicht: Verlängerungsrechnungen können immer mit jedem Gateway bezahlt werden."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr "Ein Währungscode dieses Portals, den Ihr PayTabs-Profil akzeptiert. Rechnungen in anderen Währungen werden zu den Wechselkursen des Portals in dieser Währung belastet, wie bei WHMCS „Convert To For Processing“. Leer: Jede Rechnung wird in ihrer eigenen Währung belastet. [So richten Sie PayTabs ein](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
+msgstr "Nach einer kostenlosen Bestellung, die sich verlängert (eine kostenlose Testphase), wird ein Kunde ohne gespeicherte Zahlungsmethode zu PayTabs geleitet, um eine Karte zu speichern."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr "Karte für automatische Zahlungen an :company"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr "Kartenzahlungen auf der Zahlungsseite von PayTabs. Kunden können dort ihre Karte speichern, und ihre Rechnungen werden danach automatisch von dieser Karte abgebucht (bitten Sie PayTabs, den Recurring-Modus für das Profil zu aktivieren)."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
+msgstr "Bei PayTabs gespeicherte Karte"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr "Kunden können eine Rechnung auch mit einer Karte bezahlen, ohne automatische Zahlungen einzurichten."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr "Kunden können auf ihrer Seite „Zahlungsmethoden“ eine Karte speichern, ohne eine Rechnung zu bezahlen (PayTabs prüft die Karte, ohne sie zu belasten)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr "Live-Profil-ID:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
+msgstr "Live-Server-Key:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr "Auf der Rechnungsseite kann ein Kunde mit gespeicherter Karte sofort bezahlen, ohne zu PayTabs zu gehen."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr "Jetzt mit :card bezahlen"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr "Einmalig mit einer Karte bezahlen"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
+msgstr "Einmal ohne Speichern der Karte bezahlen:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr "Mit einer Karte bezahlen und automatische Zahlungen einrichten"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
+msgstr "Mit der gespeicherten Karte bezahlen:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr "PayTabs hat :path nicht beantwortet: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr "PayTabs hat die Rückerstattung nicht ausgeführt: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr "PayTabs hat die Karte nicht gespeichert: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr "PayTabs hat die Zahlung nicht gestartet: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr "PayTabs ist nicht verfügbar."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr "Die PayTabs-Benachrichtigung nennt keine Zahlung"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr "Die PayTabs-Zahlung :id ist in :currency, die Rechnung in :invoice"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr "Die PayTabs-Zahlung :id gehört nicht zu einer ClientFence-Rechnung"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr "PayTabs-Zahlung :id wurde nicht gefunden: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr "PayTabs hat die Zahlung abgelehnt: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr "PayTabs hat die Profil-ID oder den Server-Key abgelehnt (prüfen Sie auch die Region): :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr "PayTabs: Profile. Der Server-Key: Developers, Key management (ein API-Schlüssel)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr "Region:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr "Speichern Sie eine Karte bei PayTabs, und Ihre Rechnungen werden danach automatisch von dieser Karte abgebucht."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr "Karte für automatische Zahlungen speichern"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
+msgstr "Das Speichern einer Karte bei PayTabs ist nicht verfügbar."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
+msgstr "Melden Sie sich als Kontoinhaber an, um mit einer Karte zu bezahlen."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr "Test-Profil-ID:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr "Test-Server-Key:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr "Der Kartenaussteller bittet den Karteninhaber, diese Zahlung zu bestätigen: Der Kunde muss die Rechnung auf der Zahlungsseite bezahlen."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
+msgstr "Die Region Ihres PayTabs-Kontos (die Adresse Ihres PayTabs-Dashboards)."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr "Sie können diese Rechnung nicht mit einer gespeicherten Karte bezahlen."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
+msgstr "Sie haben keine Karte bei PayTabs gespeichert."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr "Ihre Karte wurde nicht gespeichert. Bitte versuchen Sie es erneut."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr "Ihre Verlängerungsrechnungen werden danach von dieser Karte abgebucht. Sie können sie auf Ihrer Seite „Zahlungsmethoden“ entfernen."

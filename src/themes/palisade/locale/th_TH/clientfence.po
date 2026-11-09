@@ -20824,3 +20824,164 @@ msgstr "เสนอการสมัครสมาชิกสำหรับ
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway."
 msgstr "ลูกค้าสมัครสมาชิกผ่านช่องทางนี้ครั้งเดียวแทนการชำระใบแจ้งหนี้การต่ออายุทุกครั้งได้ การปิดตัวเลือกนี้ไม่ได้หยุดการต่ออายุ ใบแจ้งหนี้การต่ออายุยังชำระได้เสมอด้วยทุกช่องทาง"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr "รหัสสกุลเงินของพอร์ทัลนี้ที่โปรไฟล์ PayTabs ของคุณรองรับ ใบแจ้งหนี้ในสกุลเงินอื่นจะถูกเรียกเก็บเป็นสกุลเงินนี้ตามอัตราแลกเปลี่ยนของพอร์ทัล เหมือน \"Convert To For Processing\" ของ WHMCS เว้นว่าง: แต่ละใบแจ้งหนี้จะถูกเรียกเก็บเป็นสกุลเงินของตัวเอง [วิธีตั้งค่า PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
+msgstr "หลังคำสั่งซื้อฟรีที่ต่ออายุ (ทดลองใช้ฟรี) ลูกค้าที่ไม่มีวิธีการชำระเงินที่บันทึกไว้จะถูกส่งไปที่ PayTabs เพื่อบันทึกบัตร"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr "บัตรสำหรับการชำระเงินอัตโนมัติให้ :company"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr "การชำระเงินด้วยบัตรบนหน้าชำระเงินของ PayTabs ลูกค้าบันทึกบัตรของตนที่นั่นได้ และใบแจ้งหนี้จะถูกเรียกเก็บจากบัตรนั้นโดยอัตโนมัติ (ขอให้ PayTabs เปิดโหมด Recurring สำหรับโปรไฟล์)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
+msgstr "บัตรที่บันทึกไว้กับ PayTabs"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr "ลูกค้ายังชำระใบแจ้งหนี้ด้วยบัตรได้โดยไม่ต้องตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr "ลูกค้าบันทึกบัตรในหน้า \"วิธีการชำระเงิน\" ได้โดยไม่ต้องชำระใบแจ้งหนี้ (PayTabs ตรวจสอบบัตรโดยไม่เรียกเก็บเงิน)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr "ID โปรไฟล์ (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
+msgstr "คีย์เซิร์ฟเวอร์ (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr "ในหน้าใบแจ้งหนี้ ลูกค้าที่มีบัตรที่บันทึกไว้ชำระเงินได้ทันทีโดยไม่ต้องไปที่ PayTabs"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr "ชำระเงินเลยด้วย :card"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr "ชำระเงินครั้งเดียวด้วยบัตร"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
+msgstr "ชำระเงินครั้งเดียวโดยไม่บันทึกบัตร:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr "ชำระเงินด้วยบัตรและตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
+msgstr "ชำระด้วยบัตรที่บันทึกไว้:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr "PayTabs ไม่ตอบกลับ :path: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr "PayTabs ไม่ได้คืนเงิน: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr "PayTabs ไม่ได้บันทึกบัตร: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr "PayTabs ไม่ได้เริ่มการชำระเงิน: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr "PayTabs ไม่พร้อมใช้งาน"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr "การแจ้งเตือนจาก PayTabs ไม่ระบุการชำระเงิน"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr "การชำระเงิน PayTabs :id เป็นสกุลเงิน :currency ส่วนใบแจ้งหนี้เป็นสกุลเงิน :invoice"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr "การชำระเงิน PayTabs :id ไม่ใช่ของใบแจ้งหนี้ ClientFence"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr "ไม่พบการชำระเงิน PayTabs :id: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr "PayTabs ปฏิเสธการชำระเงิน: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr "PayTabs ปฏิเสธ ID โปรไฟล์หรือคีย์เซิร์ฟเวอร์ (ตรวจสอบภูมิภาคด้วย): :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr "PayTabs: Profile. คีย์เซิร์ฟเวอร์: Developers, Key management (คีย์ API)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr "ภูมิภาค:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr "บันทึกบัตรกับ PayTabs แล้วใบแจ้งหนี้ของคุณจะถูกเรียกเก็บจากบัตรนั้นโดยอัตโนมัติ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr "บันทึกบัตรสำหรับการชำระเงินอัตโนมัติ"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
+msgstr "การบันทึกบัตรกับ PayTabs ไม่พร้อมใช้งาน"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
+msgstr "เข้าสู่ระบบในฐานะเจ้าของบัญชีเพื่อชำระเงินด้วยบัตร"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr "ID โปรไฟล์ (ทดสอบ):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr "คีย์เซิร์ฟเวอร์ (ทดสอบ):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr "ผู้ออกบัตรขอให้ผู้ถือบัตรยืนยันการชำระเงินนี้: ลูกค้าต้องชำระใบแจ้งหนี้ในหน้าชำระเงิน"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
+msgstr "ภูมิภาคของบัญชี PayTabs ของคุณ (ที่อยู่ของแดชบอร์ด PayTabs ของคุณ)"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr "คุณไม่สามารถชำระใบแจ้งหนี้นี้ด้วยบัตรที่บันทึกไว้ได้"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
+msgstr "คุณไม่มีบัตรที่บันทึกไว้กับ PayTabs"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr "บัตรของคุณไม่ได้ถูกบันทึก โปรดลองอีกครั้ง"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr "ใบแจ้งหนี้การต่ออายุของคุณจะถูกเรียกเก็บจากบัตรนี้ คุณลบบัตรได้ที่หน้าวิธีการชำระเงิน"

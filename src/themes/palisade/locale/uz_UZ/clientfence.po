@@ -21095,3 +21095,164 @@ msgstr "Yangilanadigan xizmatlar uchun obunalarni taklif qilish"
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway."
 msgstr "Mijoz har bir yangilash hisob-fakturasini to'lash o'rniga ushbu shlyuz orqali bir marta obuna bo'lishi mumkin. Buni o'chirish yangilanishlarni to'xtatmaydi: yangilash hisob-fakturalarini har doim istalgan shlyuz orqali to'lash mumkin."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr "Ushbu portalning PayTabs profilingiz qabul qiladigan valyuta kodi. Boshqa valyutadagi hisob-fakturalar portal kurslari bo'yicha shu valyutada undiriladi, WHMCS'dagi \"Convert To For Processing\" kabi. Bo'sh: har bir hisob-faktura o'z valyutasida undiriladi. [PayTabs'ni qanday sozlash](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
+msgstr "Yangilanadigan bepul buyurtmadan (bepul sinov) keyin saqlangan to'lov usuli yo'q mijoz kartani saqlash uchun PayTabs'ga yo'naltiriladi."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr ":company uchun avtomatik to'lovlar kartasi"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr "PayTabs to'lov sahifasida karta bilan to'lov. Mijozlar kartasini o'sha yerda saqlashi mumkin va hisob-fakturalari keyin shu kartadan avtomatik undiriladi (PayTabs'dan profil uchun Recurring rejimini yoqishni so'rang)."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
+msgstr "PayTabs'da saqlangan karta"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr "Mijozlar avtomatik to'lovlarni sozlamasdan hisob-fakturani karta bilan ham to'lashi mumkin."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr "Mijozlar hisob-fakturani to'lamasdan \"To'lov usullari\" sahifasida kartani saqlashi mumkin (PayTabs kartani pul yechmasdan tekshiradi)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr "Jonli profil ID:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
+msgstr "Jonli server kaliti:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr "Hisob-faktura sahifasida saqlangan kartasi bor mijoz PayTabs'ga o'tmasdan darhol to'lashi mumkin."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr ":card bilan hozir to'lash"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr "Karta bilan bir marta to'lash"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
+msgstr "Kartani saqlamasdan bir marta to'lash:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr "Karta bilan to'lash va avtomatik to'lovlarni sozlash"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
+msgstr "Saqlangan karta bilan to'lash:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr "PayTabs :path so'roviga javob bermadi: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr "PayTabs pulni qaytarmadi: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr "PayTabs kartani saqlamadi: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr "PayTabs to'lovni boshlamadi: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr "PayTabs mavjud emas."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr "PayTabs xabarnomasida hech qanday to'lov ko'rsatilmagan"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr "PayTabs to'lovi :id :currency valyutasida, hisob-faktura esa :invoice valyutasida"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr "PayTabs to'lovi :id ClientFence hisob-fakturasi uchun emas"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr "PayTabs to'lovi :id topilmadi: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr "PayTabs to'lovni rad etdi: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr "PayTabs profil ID yoki server kalitini rad etdi (hududni ham tekshiring): :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr "PayTabs: Profile. Server kaliti: Developers, Key management (API kaliti)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr "Hudud:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr "PayTabs'da kartani saqlang, shundan so'ng hisob-fakturalaringiz shu kartadan avtomatik undiriladi."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr "Avtomatik to'lovlar uchun kartani saqlash"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
+msgstr "PayTabs bilan kartani saqlash mavjud emas."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
+msgstr "Karta bilan to'lash uchun hisob egasi sifatida kiring."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr "Test profil ID:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr "Test server kaliti:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr "Karta chiqaruvchisi karta egasidan ushbu to'lovni tasdiqlashni so'ramoqda: mijoz hisob-fakturani to'lov sahifasida to'lashi kerak."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
+msgstr "PayTabs hisobingiz hududi (PayTabs boshqaruv panelingiz manzili)."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr "Bu hisob-fakturani saqlangan karta bilan to'lay olmaysiz."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
+msgstr "Sizda PayTabs'da saqlangan karta yo'q."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr "Kartangiz saqlanmadi. Qayta urinib ko'ring."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr "Uzaytirish hisob-fakturalaringiz shundan so'ng shu kartadan undiriladi. Uni To'lov usullari sahifasida o'chirishingiz mumkin."

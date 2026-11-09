@@ -792,6 +792,10 @@ msgstr ""
 msgid "A credit note records the refund. Send money back through the payment method yourself, unless it goes to credit."
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "A currency code of this portal: USD (US dollar), EUR (euro) or GBP (British pound). Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayPal Auto-Pay](https://clientfence.com/docs/clients-and-billing/paypal-auto-pay/)"
 msgstr ""
@@ -1806,6 +1810,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayPal to set up automatic payments."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
@@ -3952,8 +3960,20 @@ msgstr ""
 msgid "Card ID was not passed"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr ""
+
 #: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
 msgid "Card in the bottom corner"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -5020,12 +5040,20 @@ msgstr ""
 msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Clients can move an active service to another product or billing cycle from its page. The price is prorated: the unused part of the current period is credited, an upgrade is invoiced and applied when paid, and a downgrade credit goes to the client's account balance. Each product, and each service, can also allow or block them."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Clients can restore backups"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
@@ -5620,11 +5648,11 @@ msgstr ""
 msgid "Convert To"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
 msgid "Convert to for processing (optional):"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
 msgid "Convert to for processing: :code is not one of the currencies of this portal."
 msgstr ""
 
@@ -9260,7 +9288,7 @@ msgstr ""
 msgid "Free disk space"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
 msgid "Free orders:"
 msgstr ""
 
@@ -10832,7 +10860,7 @@ msgstr ""
 msgid "Invoice #:id not found"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/modules/Invoice/Statement.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php src/modules/Invoice/Statement.php
 msgid "Invoice :number"
 msgstr ""
 
@@ -11754,6 +11782,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Live preview"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
@@ -14272,7 +14308,7 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/Stripe.php …
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/PayTabs.php …
 msgid "Off"
 msgstr ""
 
@@ -14316,7 +14352,7 @@ msgstr ""
 msgid "Offer subscriptions for renewing services"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/Stripe.php …
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/PayTabs.php …
 msgid "On"
 msgstr ""
 
@@ -14334,6 +14370,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -15532,12 +15572,24 @@ msgstr ""
 msgid "Pay now with :account"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Pay once with PayPal"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Pay once without an agreement:"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
 msgstr ""
 
 #: src/themes/palisade/html/partials/pay_methods.html.twig
@@ -15560,8 +15612,16 @@ msgstr ""
 msgid "Pay with PayPal and set up automatic payments"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Pay with the saved agreement:"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -15702,6 +15762,54 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "PayPal: Account Settings, Website payments, API access, NVP/SOAP API integration (Classic), API signature."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
@@ -17360,6 +17468,10 @@ msgstr ""
 msgid "Regenerate built-in templates?"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr ""
+
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig …
 msgid "Register"
 msgstr ""
@@ -18428,6 +18540,14 @@ msgstr ""
 msgid "Save Rule"
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Save access"
 msgstr ""
@@ -18602,6 +18722,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Saved; the connection works."
+msgstr ""
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
@@ -19404,7 +19528,7 @@ msgstr ""
 msgid "Set up automatic payments with PayPal"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
 msgid "Set up on the Payment methods page:"
 msgstr ""
 
@@ -19682,6 +19806,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Sign in as the account owner to pay with PayPal."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
 msgstr ""
 
 #: src/themes/palisade/html/layout_default.html.twig src/themes/palisade/html/layout_public.html.twig src/themes/palisade/html/partials/guest_gate.html.twig
@@ -20776,6 +20904,14 @@ msgstr ""
 msgid "Test mode"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr ""
+
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Text"
 msgstr ""
@@ -20836,7 +20972,7 @@ msgstr ""
 msgid "The \":driver\" cache driver requires an installation identifier (\"info.instance_id\" in the configuration file) so that installations sharing the same server don't collide. Reinstall or update ClientFence to have one generated automatically, or set it manually."
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/Stripe.php
+#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/PayTabs.php …
 msgid "The \":pay_gateway\" payment gateway is not fully configured. Please configure the :missing"
 msgstr ""
 
@@ -21116,6 +21252,10 @@ msgstr ""
 msgid "The button text can be up to 40 characters."
 msgstr ""
 
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr ""
+
 #: src/library/Payment/Adapter/Stripe.php
 msgid "The card needs the client to confirm the payment."
 msgstr ""
@@ -21192,7 +21332,7 @@ msgstr ""
 msgid "The client has no saved PayPal account."
 msgstr ""
 
-#: src/library/Payment/Adapter/Stripe.php
+#: src/library/Payment/Adapter/PayTabs.php src/library/Payment/Adapter/Stripe.php
 msgid "The client has no saved card."
 msgstr ""
 
@@ -21867,6 +22007,10 @@ msgstr ""
 
 #: src/modules/Invoice/Receipts.php src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "The receipt must be smaller than 5 MB."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php
@@ -25329,6 +25473,10 @@ msgstr ""
 msgid "You cannot pay this invoice with a saved PayPal account."
 msgstr ""
 
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr ""
+
 #: src/library/ClientFence/Api/Dispatcher.php
 msgid "You do not have access to the :mod module"
 msgstr ""
@@ -25447,6 +25595,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You have no backup code left: make a new one."
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
@@ -25701,6 +25853,10 @@ msgstr ""
 msgid "Your business"
 msgstr ""
 
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr ""
+
 #: src/themes/palisade/html/mod_cart_index.html.twig
 msgid "Your cart"
 msgstr ""
@@ -25815,6 +25971,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your renewal date stays %date%: %charge% for the %left% days left, less %credit% unused."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php

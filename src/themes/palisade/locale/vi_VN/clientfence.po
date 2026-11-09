@@ -23008,3 +23008,164 @@ msgstr "Cung cấp thuê bao cho dịch vụ được gia hạn"
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway."
 msgstr "Khách hàng có thể đăng ký một lần với cổng này thay vì thanh toán từng hóa đơn gia hạn. Tắt tùy chọn này không dừng việc gia hạn: hóa đơn gia hạn luôn có thể được thanh toán bằng bất kỳ cổng nào."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr "Mã một loại tiền tệ của cổng này mà hồ sơ PayTabs của bạn chấp nhận. Hóa đơn bằng tiền tệ khác được tính bằng loại này theo tỷ giá của cổng, như \"Convert To For Processing\" của WHMCS. Để trống: mỗi hóa đơn được tính theo tiền tệ của chính nó. [Cách thiết lập PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
+msgstr "Sau một đơn hàng miễn phí được gia hạn (dùng thử miễn phí), khách hàng chưa lưu phương thức thanh toán sẽ được chuyển sang PayTabs để lưu thẻ."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr "Thẻ cho thanh toán tự động cho :company"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr "Thanh toán bằng thẻ trên trang thanh toán của PayTabs. Khách hàng có thể lưu thẻ tại đó và hóa đơn của họ sau đó sẽ được tự động trừ vào thẻ này (hãy nhờ PayTabs bật chế độ Recurring cho hồ sơ)."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
+msgstr "Thẻ đã lưu với PayTabs"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr "Khách hàng cũng có thể thanh toán hóa đơn bằng thẻ mà không cần thiết lập thanh toán tự động."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr "Khách hàng có thể lưu thẻ trên trang Phương thức thanh toán mà không cần thanh toán hóa đơn (PayTabs kiểm tra thẻ mà không trừ tiền)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr "ID hồ sơ chính thức:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
+msgstr "Khóa máy chủ chính thức:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr "Trên trang hóa đơn, khách hàng có thẻ đã lưu có thể thanh toán ngay mà không cần sang PayTabs."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr "Thanh toán ngay bằng :card"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr "Thanh toán một lần bằng thẻ"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
+msgstr "Thanh toán một lần không lưu thẻ:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr "Thanh toán bằng thẻ và thiết lập thanh toán tự động"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
+msgstr "Thanh toán bằng thẻ đã lưu:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr "PayTabs không phản hồi :path: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr "PayTabs không thực hiện hoàn tiền: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr "PayTabs không lưu thẻ: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr "PayTabs không bắt đầu thanh toán: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr "PayTabs không khả dụng."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr "Thông báo của PayTabs không nêu khoản thanh toán nào"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr "Khoản thanh toán PayTabs :id bằng :currency, còn hóa đơn bằng :invoice"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr "Khoản thanh toán PayTabs :id không dành cho hóa đơn ClientFence"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr "Không tìm thấy khoản thanh toán PayTabs :id: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr "PayTabs đã từ chối khoản thanh toán: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr "PayTabs đã từ chối ID hồ sơ hoặc khóa máy chủ (hãy kiểm tra cả khu vực): :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr "PayTabs: Profile. Khóa máy chủ: Developers, Key management (một khóa API)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr "Khu vực:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr "Lưu thẻ với PayTabs, sau đó hóa đơn của bạn sẽ được tự động trừ vào thẻ này."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr "Lưu thẻ cho thanh toán tự động"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
+msgstr "Lưu thẻ với PayTabs không khả dụng."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
+msgstr "Đăng nhập với tư cách chủ tài khoản để thanh toán bằng thẻ."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr "ID hồ sơ thử nghiệm:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr "Khóa máy chủ thử nghiệm:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr "Bên phát hành thẻ yêu cầu chủ thẻ xác nhận khoản thanh toán này: khách hàng phải thanh toán hóa đơn trên trang thanh toán."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
+msgstr "Khu vực của tài khoản PayTabs của bạn (địa chỉ bảng điều khiển PayTabs của bạn)."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr "Bạn không thể thanh toán hóa đơn này bằng thẻ đã lưu."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
+msgstr "Bạn chưa lưu thẻ nào với PayTabs."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr "Thẻ của bạn chưa được lưu. Vui lòng thử lại."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr "Hóa đơn gia hạn của bạn khi đó sẽ được trừ vào thẻ này. Bạn có thể xóa thẻ trên trang Phương thức thanh toán."

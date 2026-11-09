@@ -23433,3 +23433,164 @@ msgstr "Tarjoa kestotilauksia uusiutuville palveluille"
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway."
 msgstr "Asiakas voi tehdä kestotilauksen kerran tällä yhdyskäytävällä sen sijaan, että maksaisi jokaisen uusintalaskun. Tämän poistaminen käytöstä ei pysäytä uusintoja: uusintalaskut voi aina maksaa millä tahansa yhdyskäytävällä."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr "Tämän portaalin valuuttakoodi, jonka PayTabs-profiilisi hyväksyy. Muunvaluuttaiset laskut veloitetaan tässä valuutassa portaalin vaihtokursseilla, kuten WHMCS:n \"Convert To For Processing\". Tyhjä: jokainen lasku veloitetaan omassa valuutassaan. [PayTabsin käyttöönotto](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
+msgstr "Uusiutuvan ilmaistilauksen (ilmainen kokeilu) jälkeen asiakas, jolla ei ole tallennettua maksutapaa, ohjataan PayTabsiin kortin tallentamista varten."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr "Kortti automaattisia maksuja varten yritykselle :company"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr "Korttimaksut PayTabsin maksusivulla. Asiakkaat voivat tallentaa korttinsa siellä, ja heidän laskunsa veloitetaan sen jälkeen automaattisesti kortilta (pyydä PayTabsia ottamaan profiilille käyttöön Recurring-tila)."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
+msgstr "PayTabsiin tallennettu kortti"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr "Asiakkaat voivat myös maksaa laskun kortilla ottamatta automaattisia maksuja käyttöön."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr "Asiakkaat voivat tallentaa kortin Maksutavat-sivullaan maksamatta laskua (PayTabs tarkistaa kortin veloittamatta sitä)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr "Live-profiilin tunnus:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
+msgstr "Live-palvelinavain:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr "Laskusivulla asiakas, jolla on tallennettu kortti, voi maksaa heti menemättä PayTabsiin."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr "Maksa nyt kortilla :card"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr "Maksa kerran kortilla"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
+msgstr "Maksa kerran tallentamatta korttia:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr "Maksa kortilla ja ota automaattiset maksut käyttöön"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
+msgstr "Maksa tallennetulla kortilla:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr "PayTabs ei vastannut kutsuun :path: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr "PayTabs ei tehnyt hyvitystä: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr "PayTabs ei tallentanut korttia: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr "PayTabs ei aloittanut maksua: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr "PayTabs ei ole käytettävissä."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr "PayTabsin ilmoituksessa ei ole maksua"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr "PayTabs-maksu :id on valuutassa :currency, lasku valuutassa :invoice"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr "PayTabs-maksu :id ei kuulu ClientFence-laskulle"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr "PayTabs-maksua :id ei löytynyt: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr "PayTabs hylkäsi maksun: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr "PayTabs hylkäsi profiilin tunnuksen tai palvelinavaimen (tarkista myös alue): :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr "PayTabs: Profile. Palvelinavain: Developers, Key management (API-avain)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr "Alue:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr "Tallenna kortti PayTabsiin, niin laskusi veloitetaan sen jälkeen automaattisesti kortilta."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr "Tallenna kortti automaattisia maksuja varten"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
+msgstr "Kortin tallentaminen PayTabsiin ei ole käytettävissä."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
+msgstr "Kirjaudu sisään tilin omistajana maksaaksesi kortilla."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr "Testiprofiilin tunnus:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr "Testipalvelinavain:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr "Kortin myöntäjä pyytää kortinhaltijaa vahvistamaan tämän maksun: asiakkaan on maksettava lasku maksusivulla."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
+msgstr "PayTabs-tilisi alue (PayTabs-hallintapaneelisi osoite)."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr "Et voi maksaa tätä laskua tallennetulla kortilla."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
+msgstr "Sinulla ei ole PayTabsiin tallennettua korttia."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr "Korttiasi ei tallennettu. Yritä uudelleen."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr "Uusintalaskusi veloitetaan sen jälkeen tältä kortilta. Voit poistaa kortin Maksutavat-sivullasi."

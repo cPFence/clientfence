@@ -23097,3 +23097,164 @@ msgstr "Προσφορά συνδρομών για υπηρεσίες που α�
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "The client can subscribe once with this gateway instead of paying each renewal invoice. Turning this off does not stop renewals: renewal invoices can always be paid with every gateway."
 msgstr "Ο πελάτης μπορεί να εγγραφεί μία φορά με αυτή την πύλη αντί να πληρώνει κάθε παραστατικό ανανέωσης. Η απενεργοποίηση δεν σταματά τις ανανεώσεις: τα παραστατικά ανανέωσης μπορούν πάντα να πληρωθούν με οποιαδήποτε πύλη."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "A currency code of this portal that your PayTabs profile accepts. Invoices in other currencies are charged in it at the portal's exchange rates, as WHMCS's \"Convert To For Processing\". Empty: each invoice is charged in its own currency. [How to set up PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+msgstr "Ένας κωδικός νομίσματος αυτής της πύλης που δέχεται το προφίλ σας στο PayTabs. Τα τιμολόγια σε άλλα νομίσματα χρεώνονται σε αυτό με τις ισοτιμίες της πύλης, όπως το «Convert To For Processing» του WHMCS. Κενό: κάθε τιμολόγιο χρεώνεται στο δικό του νόμισμα. [Πώς να ρυθμίσετε το PayTabs](https://clientfence.com/docs/clients-and-billing/paytabs/)"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
+msgstr "Μετά από μια δωρεάν παραγγελία που ανανεώνεται (δωρεάν δοκιμή), ένας πελάτης χωρίς αποθηκευμένο τρόπο πληρωμής μεταφέρεται στο PayTabs για να αποθηκεύσει μια κάρτα."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card for automatic payments to :company"
+msgstr "Κάρτα για αυτόματες πληρωμές προς :company"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
+msgstr "Πληρωμές με κάρτα στη σελίδα πληρωμής του PayTabs. Οι πελάτες μπορούν να αποθηκεύσουν εκεί την κάρτα τους και τα τιμολόγιά τους χρεώνονται στη συνέχεια αυτόματα σε αυτήν (ζητήστε από το PayTabs να ενεργοποιήσει τη λειτουργία Recurring για το προφίλ)."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with PayTabs"
+msgstr "Κάρτα αποθηκευμένη στο PayTabs"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can also pay an invoice with a card without setting up automatic payments."
+msgstr "Οι πελάτες μπορούν επίσης να πληρώσουν ένα τιμολόγιο με κάρτα χωρίς να ρυθμίσουν αυτόματες πληρωμές."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr "Οι πελάτες μπορούν να αποθηκεύσουν μια κάρτα στη σελίδα «Τρόποι πληρωμής» χωρίς να πληρώσουν τιμολόγιο (το PayTabs ελέγχει την κάρτα χωρίς να τη χρεώσει)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live profile ID:"
+msgstr "ID προφίλ (παραγωγή):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Live server key:"
+msgstr "Κλειδί διακομιστή (παραγωγή):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr "Στη σελίδα του τιμολογίου, ένας πελάτης με αποθηκευμένη κάρτα μπορεί να πληρώσει αμέσως χωρίς να μεταβεί στο PayTabs."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay now with :card"
+msgstr "Πληρωμή τώρα με :card"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once with a card"
+msgstr "Πληρωμή μία φορά με κάρτα"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay once without saving the card:"
+msgstr "Εφάπαξ πληρωμή χωρίς αποθήκευση της κάρτας:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with a card and set up automatic payments"
+msgstr "Πληρωμή με κάρτα και ρύθμιση αυτόματων πληρωμών"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Pay with the saved card:"
+msgstr "Πληρωμή με την αποθηκευμένη κάρτα:"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not answer :path: :error"
+msgstr "Το PayTabs δεν απάντησε στο :path: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not make the refund: :error"
+msgstr "Το PayTabs δεν έκανε την επιστροφή χρημάτων: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not save the card: :error"
+msgstr "Το PayTabs δεν αποθήκευσε την κάρτα: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs did not start the payment: :error"
+msgstr "Το PayTabs δεν ξεκίνησε την πληρωμή: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "PayTabs is not available."
+msgstr "Το PayTabs δεν είναι διαθέσιμο."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs notice names no payment"
+msgstr "Η ειδοποίηση του PayTabs δεν αναφέρει καμία πληρωμή"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is in :currency, the invoice in :invoice"
+msgstr "Η πληρωμή PayTabs :id είναι σε :currency, το τιμολόγιο σε :invoice"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id is not for a ClientFence invoice"
+msgstr "Η πληρωμή PayTabs :id δεν αφορά τιμολόγιο του ClientFence"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs payment :id was not found: :error"
+msgstr "Η πληρωμή PayTabs :id δεν βρέθηκε: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the payment: :error"
+msgstr "Το PayTabs απέρριψε την πληρωμή: :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs refused the profile ID or server key (check the region too): :error"
+msgstr "Το PayTabs απέρριψε το ID προφίλ ή το κλειδί διακομιστή (ελέγξτε και την περιοχή): :error"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr "PayTabs: Profile. Το κλειδί διακομιστή: Developers, Key management (ένα κλειδί API)."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Region:"
+msgstr "Περιοχή:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr "Αποθηκεύστε μια κάρτα στο PayTabs και τα τιμολόγιά σας θα χρεώνονται στη συνέχεια αυτόματα σε αυτήν."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card for automatic payments"
+msgstr "Αποθήκευση κάρτας για αυτόματες πληρωμές"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with PayTabs is not available."
+msgstr "Η αποθήκευση κάρτας στο PayTabs δεν είναι διαθέσιμη."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Sign in as the account owner to pay with a card."
+msgstr "Συνδεθείτε ως ιδιοκτήτης του λογαριασμού για να πληρώσετε με κάρτα."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test profile ID:"
+msgstr "ID προφίλ (δοκιμή):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Test server key:"
+msgstr "Κλειδί διακομιστή (δοκιμή):"
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The card issuer asks the cardholder to confirm this payment: the client has to pay the invoice on the payment page."
+msgstr "Ο εκδότης της κάρτας ζητά από τον κάτοχο να επιβεβαιώσει αυτή την πληρωμή: ο πελάτης πρέπει να πληρώσει το τιμολόγιο στη σελίδα πληρωμής."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "The region of your PayTabs account (the address of your PayTabs dashboard)."
+msgstr "Η περιοχή του λογαριασμού σας στο PayTabs (η διεύθυνση του πίνακα ελέγχου του PayTabs)."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice with a saved card."
+msgstr "Δεν μπορείτε να πληρώσετε αυτό το τιμολόγιο με αποθηκευμένη κάρτα."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with PayTabs."
+msgstr "Δεν έχετε αποθηκευμένη κάρτα στο PayTabs."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your card was not saved. Please try again."
+msgstr "Η κάρτα σας δεν αποθηκεύτηκε. Δοκιμάστε ξανά."
+
+#: src/library/Payment/Adapter/PayTabs.php
+msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr "Τα τιμολόγια ανανέωσής σας χρεώνονται τότε σε αυτήν την κάρτα. Μπορείτε να την αφαιρέσετε στη σελίδα Τρόποι πληρωμής."

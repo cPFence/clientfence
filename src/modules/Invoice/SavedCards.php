@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * ClientFence: automatic payments with saved cards and saved PayPal accounts, as WHMCS charges a payment method on
  * file (owner decisions 2026-11-06 and 2026-11-07). A client saves a Stripe card or their PayPal account (PayPal
- * Email with its REST API keys and "Saved PayPal accounts" on), or agrees to a PayPal billing agreement (PayPal Auto-Pay),
- * when paying an invoice or on the client area's Payment methods page (/payment-methods). Each gateway keeps the saved method in pay_gateway_customer
+ * Email with its REST API keys and "Saved PayPal accounts" on), agrees to a PayPal billing agreement (PayPal Auto-Pay),
+ * or saves a card on PayTabs' payment page (PayTabs), when paying an invoice or on the client area's Payment methods page (/payment-methods). Each gateway keeps the saved method in pay_gateway_customer
  * (default_payment_method); the one the client saved or chose last (auto_pay_at) pays. The cron charges it for unpaid
  * invoices without a payment method or with one of these gateways: the set number of days before the due date, then
  * every set number of days up to the set number of retries (invoice_card_charge counts the tries). A failed charge
@@ -77,6 +77,14 @@ final class SavedCards
         return $adapter instanceof \Payment_Adapter_PayPalAutoPay ? $adapter : null;
     }
 
+    /** The enabled PayTabs gateway's adapter (cards saved on PayTabs' page), or null. */
+    public static function paytabs(\Pimple\Container $di): ?\Payment_Adapter_PayTabs
+    {
+        $adapter = self::adapter($di, 'PayTabs');
+
+        return $adapter instanceof \Payment_Adapter_PayTabs ? $adapter : null;
+    }
+
     /** The enabled PayPal Email gateway's adapter when clients can save their PayPal account, or null. */
     public static function paypal(\Pimple\Container $di): ?\Payment_Adapter_PayPalEmail
     {
@@ -92,10 +100,10 @@ final class SavedCards
         return $gateway instanceof \Model_PayGateway ? $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway) : null;
     }
 
-    /** @return list<\Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail|\Payment_Adapter_PayPalAutoPay> the gateways that charge saved methods */
+    /** @return list<\Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail|\Payment_Adapter_PayPalAutoPay|\Payment_Adapter_PayTabs> the gateways that charge saved methods */
     public static function adapters(\Pimple\Container $di): array
     {
-        return array_values(array_filter([self::stripe($di), self::paypal($di), self::autopay($di)]));
+        return array_values(array_filter([self::stripe($di), self::paypal($di), self::autopay($di), self::paytabs($di)]));
     }
 
     /**
@@ -238,7 +246,7 @@ final class SavedCards
      * Charges the saved method for the invoice's balance and records the payment: {paid, error}. A try of the cron
      * counts towards the retries and a failure emails the client; staff tries do neither.
      */
-    public static function charge(\Pimple\Container $di, \Model_Invoice $invoice, \Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail|\Payment_Adapter_PayPalAutoPay $adapter, bool $byStaff, bool $byClient = false): array
+    public static function charge(\Pimple\Container $di, \Model_Invoice $invoice, \Payment_Adapter_Stripe|\Payment_Adapter_PayPalEmail|\Payment_Adapter_PayPalAutoPay|\Payment_Adapter_PayTabs $adapter, bool $byStaff, bool $byClient = false): array
     {
         return \ClientFence\Tools::withLock($di, 'cf:card-charge:' . (int) $invoice->id, static function () use ($di, $invoice, $adapter, $byStaff, $byClient): array {
             $db = $di['dbal'];
@@ -292,6 +300,7 @@ final class SavedCards
                 'get' => [match (true) {
                     $adapter instanceof \Payment_Adapter_Stripe => 'payment_intent',
                     $adapter instanceof \Payment_Adapter_PayPalAutoPay => 'paypal_txn',
+                    $adapter instanceof \Payment_Adapter_PayTabs => 'paytabs_tran',
                     default => 'paypal_capture',
                 } => $paymentId, 'invoice_id' => (int) $invoice->id],
             ]);
