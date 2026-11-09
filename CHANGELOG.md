@@ -1,35 +1,6 @@
 # Changelog
 
-## 1.0.38-beta.3 (2026-11-09)
-
-### Changed
-
-- The payment gateway list no longer shows "Allow subscriptions". On the gateway page the switch is now "Offer subscriptions for renewing services", with a note that renewal invoices can always be paid with every gateway.
-
-### Fixed
-
-- After saving a payment gateway, its page shows the new name at once.
-
-## 1.0.38-beta.2 (2026-11-09)
-
-### Added
-
-- Support settings can turn tickets off, as Blesta can, for companies that use another help desk: clients and visitors then cannot open or reply to tickets, emails no longer become tickets, and ticket pages, menus and boxes are hidden. Tickets are kept for when tickets are turned on again. The knowledge base and network status keep their own switches.
-- An optional outside help desk address (for example FreeScout): while tickets are off, the Support menu, the receipt upload on invoices and Request Account Deletion link to it.
-
-### Changed
-
-- Turning off or deleting a payment gateway works as in WHMCS: its unpaid invoices move to the gateway you choose. A gateway with active subscriptions or saved payment methods cannot be deleted (turn it off instead).
-- A newly installed gateway takes its proper name ("PayPal Auto-Pay") and allows only the payment kinds it supports.
-- Gateway settings always show On before Off. PayPal Auto-Pay settings are all on by default, and PayPal's pages show your company logo when no logo is set.
-- The PayPal balance on the dashboard is now a card you can move with Arrange cards (under Billing by default). It shows the balance in your main currency and the gateway's proper name.
-- Every setting of the payment gateways, registrars and server panels, the "missing field" errors and the admin pop-ups and alerts are now in your language, in all 27 languages: about 380 texts per language, including ones FOSSBilling had left in English.
-
-### Fixed
-
-- A registrar setting saved by an older FOSSBilling version (domain lookups on) stays on when you open and save its settings.
-
-## 1.0.38-beta.1 (2026-11-08)
+## 1.0.38 (2026-11-09)
 
 ### Added
 
@@ -37,11 +8,22 @@
 - PayPal Auto-Pay follows PayPal's notices: an agreement cancelled at PayPal is removed, a payment PayPal held is marked paid when it completes, and a chargeback refunds the invoice and moves the renewed services' due dates back.
 - "Convert to for processing" in PayPal Auto-Pay charges invoices in other currencies in one PayPal currency, as WHMCS does.
 - The WHMCS import can bring clients' PayPal billing agreements over, so they do not agree again (an import setting, off by default).
-- The admin dashboard shows the PayPal balance of PayPal Auto-Pay and of PayPal with REST API keys (on by default, can be turned off per gateway).
+- A PayPal balance card on the admin dashboard for PayPal Auto-Pay and for PayPal with REST API keys, in your main currency. You can move it with Arrange cards (under Billing by default) and turn it off per gateway.
 - Saved bank accounts for Stripe (a new Stripe setting, off by default; turn the method on in your Stripe dashboard too): clients can save a BECS (AUD), SEPA (EUR) or Bacs (GBP) Direct Debit account that pays renewals automatically. A debit still clearing shows "Payment pending" and is not charged again, reminded or suspended meanwhile.
+- Support settings can turn tickets off, as Blesta can, for companies that use another help desk: clients and visitors then cannot open or reply to tickets, emails no longer become tickets, and ticket pages, menus and boxes are hidden. Tickets are kept for when tickets are turned on again. The knowledge base and network status keep their own switches.
+- An optional outside help desk address (for example FreeScout): while tickets are off, the Support menu, the receipt upload on invoices and Request Account Deletion link to it.
+
+### Changed
+
+- Turning off or deleting a payment gateway works as in WHMCS: its unpaid invoices move to the gateway you choose. A gateway with active subscriptions or saved payment methods cannot be deleted (turn it off instead).
+- A newly installed gateway takes its proper name and allows only the payment kinds it supports.
+- Gateway settings always show On before Off. PayPal Auto-Pay settings are all on by default, and PayPal's pages show your company logo when no logo is set.
+- The payment gateway list no longer shows "Allow subscriptions". On the gateway page the switch is now "Offer subscriptions for renewing services", with a note that renewal invoices can always be paid with every gateway.
+- Every setting of the payment gateways, registrars and server panels, the "missing field" errors and the admin pop-ups and alerts are now in your language, in all 27 languages: about 380 texts per language, including ones FOSSBilling had left in English.
 
 ### Fixed
 
+- After saving a payment gateway, its page shows the new name at once.
 - The Add New Domain Registrar and payment gateway dialogs show the right adapter folder.
 - Arabic: "Registration" is translated.
 

@@ -15,7 +15,7 @@ final class Version
 {
     public const string VERSION = '0.0.1';
     /** The ClientFence release; VERSION stays the FOSSBilling release it is based on (update patches use it). */
-    public const string CLIENTFENCE = '1.0.38-beta.3';
+    public const string CLIENTFENCE = '1.0.38';
     // ClientFence core patch: the FOSSBilling release ClientFence is based on; extension manifests' minimum_fossbilling_version is checked against it (VERSION is a placeholder).
     public const string FOSSBILLING = '0.8.8';
     public const int PATCH = 0;
