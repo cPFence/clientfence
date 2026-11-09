@@ -40,7 +40,7 @@ final class Source
     public static function open(\Pimple\Container $di, array $settings): self
     {
         // An import through a snapshot: what was read from the other system, laid out as WHMCS's tables (Snapshot.php).
-        foreach (['upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::class, 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::class] as $key => $snapshot) {
+        foreach (['upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::class, 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::class, 'clientexec' => \ClientFence\Mod\Clientfence\Clientexec\Snapshot::class] as $key => $snapshot) {
             if ((int) ($settings[$key] ?? 0) === 1) {
                 if (empty($snapshot::state($di)['finished_at'])) {
                     throw new InformationException('Read :name first, until it finishes.', [':name' => $snapshot::NAME]);
@@ -55,7 +55,7 @@ final class Source
 
     /**
      * A MySQL database of the import settings (host, port, database, username and the encrypted
-     * password) in a read-only transaction: WHMCS's, or Blesta's for its snapshot.
+     * password) in a read-only transaction: WHMCS's, or Blesta's or ClientExec's for its snapshot.
      *
      * @param array<string, mixed> $settings
      */

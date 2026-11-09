@@ -28,7 +28,7 @@ final class SettingsIndex
         'system#tab-backups' => 'backup dump SFTP FTP',
         'system#tab-health' => 'health status check problems',
         'system#tab-licences' => 'license licence ban',
-        'system#tab-whmcs' => 'import migrate migration Upmind Blesta',
+        'system#tab-whmcs' => 'import migrate migration Upmind Blesta ClientExec',
         'system#tab-localization' => 'language locale translation',
         'antispam' => 'captcha reCAPTCHA hCaptcha Turnstile spam bots honeypot block IP',
         'email' => 'SMTP mail sendmail mailer sender DKIM',

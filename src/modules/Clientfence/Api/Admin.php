@@ -608,6 +608,27 @@ class Admin extends \ClientFence\Api\AbstractApi
         return WhmcsImport::fetchBlesta($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
     }
 
+    /** Imports from a ClientExec database instead of WHMCS: saves and tests its details. Answers {version, clients}. */
+    public function whmcs_import_clientexec_save($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+        $result = WhmcsImport::saveClientexec($this->getDi(), (array) $data);
+        $this->getDi()['logger']->info('ClientFence: ClientExec import database details saved (%d clients)', $result['clients']);
+
+        return $result;
+    }
+
+    /**
+     * Reads ClientExec for a few seconds (Clientexec/Snapshot.php) and answers how far it got;
+     * restart = 1 reads it again from the start. The tab calls it until it finishes.
+     */
+    public function whmcs_import_clientexec_fetch($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+
+        return WhmcsImport::fetchClientexec($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
+    }
+
     /** Reads WHMCS (read only) and stores the import plan: what WHMCS holds and what happens to it. */
     public function whmcs_import_plan(): array
     {

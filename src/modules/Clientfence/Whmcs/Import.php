@@ -46,12 +46,14 @@ final class Import
         // key (encrypted), which checks the passwords kept from Blesta (blestaPassword()).
         'blesta' => 0,
         'blesta_key' => '',
+        // 1: import from a ClientExec database (the database fields above; Clientexec/Snapshot.php).
+        'clientexec' => 0,
     ];
 
     /** ClientFence tables that must be empty: the import keeps WHMCS's ids and numbers. */
     private const TARGET_TABLES = ['client' => 'clients', 'client_order' => 'orders', 'invoice' => 'invoices', 'support_ticket' => 'tickets'];
 
-    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int, upmind: int, upmind_token: string, blesta: int, blesta_key: string} */
+    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int, upmind: int, upmind_token: string, blesta: int, blesta_key: string, clientexec: int} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di, self::SETTINGS) ?? [];
@@ -89,7 +91,7 @@ final class Import
             $archive = ['name' => $name, 'dir' => dirname($path), 'bytes' => (int) filesize($path)];
         }
 
-        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di), 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::state($di)];
+        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di), 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::state($di), 'clientexec' => \ClientFence\Mod\Clientfence\Clientexec\Snapshot::state($di)];
     }
 
     /**
@@ -108,6 +110,7 @@ final class Import
             'paypal_agreements' => (string) ($data['paypal_agreements'] ?? '0') === '1' ? 1 : 0,
             'upmind' => 0,
             'blesta' => 0,
+            'clientexec' => 0,
         ] + $old;
 
         $source = Source::open($di, $new);
@@ -143,7 +146,7 @@ final class Import
             throw new InformationException('Enter the Upmind API token.');
         }
         [, $clients] = (new \ClientFence\Mod\Clientfence\Upmind\Api($di, $token))->page('clients', 0, 1);
-        self::saveSettings($di, $old, ['upmind' => 1, 'blesta' => 0, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
+        self::saveSettings($di, $old, ['upmind' => 1, 'blesta' => 0, 'clientexec' => 0, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
 
         return ['clients' => $clients];
     }
@@ -174,7 +177,12 @@ final class Import
      */
     public static function system(array $settings): string
     {
-        return $settings['upmind'] === 1 ? 'Upmind' : ($settings['blesta'] === 1 ? 'Blesta' : 'WHMCS');
+        return match (1) {
+            $settings['upmind'] => 'Upmind',
+            $settings['blesta'] => 'Blesta',
+            $settings['clientexec'] => 'ClientExec',
+            default => 'WHMCS',
+        };
     }
 
     /**
@@ -196,6 +204,7 @@ final class Import
         $new = self::database($di, $data, $old, 'Blesta') + [
             'upmind' => 0,
             'blesta' => 1,
+            'clientexec' => 0,
             'blesta_key' => $key !== '' ? (string) $di['crypt']->encrypt($key) : $old['blesta_key'],
         ] + $old;
 
@@ -231,6 +240,53 @@ final class Import
         }
 
         return \ClientFence\Mod\Clientfence\Blesta\Snapshot::fetch($di, $settings, $seconds, $restart);
+    }
+
+    /**
+     * Imports from a ClientExec database instead (Clientexec/Snapshot.php): saves its details once
+     * the database answers as ClientExec's. Answers {version, clients}.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array{version: string, clients: int}
+     */
+    public static function saveClientexec(\Pimple\Container $di, #[\SensitiveParameter] array $data): array
+    {
+        $old = self::settings($di);
+        $new = self::database($di, $data, $old, 'ClientExec') + ['upmind' => 0, 'blesta' => 0, 'clientexec' => 1] + $old;
+
+        $source = Source::mysql($di, $new, 'ClientExec');
+        try {
+            if (!\ClientFence\Mod\Clientfence\Clientexec\Snapshot::isClientexec($source)) {
+                throw new InformationException('This database has no ClientExec tables. Check the database name.');
+            }
+            $version = (string) $source->value("SELECT value FROM setting WHERE name = 'ClientExec Version'");
+            $clients = $source->count('users', 'groupid IN (SELECT id FROM `groups` WHERE isadmin = 0)');
+        } finally {
+            $source->close();
+        }
+        self::saveSettings($di, $old, $new);
+
+        return ['version' => $version, 'clients' => $clients];
+    }
+
+    /**
+     * Reads ClientExec into the import's snapshot for up to $seconds (Clientexec/Snapshot.php);
+     * $restart reads it again from the start.
+     *
+     * @return array<string, mixed>
+     */
+    public static function fetchClientexec(\Pimple\Container $di, float $seconds, bool $restart = false): array
+    {
+        $settings = self::settings($di);
+        if ($settings['clientexec'] !== 1) {
+            throw new InformationException('Save the ClientExec database details first.');
+        }
+        if (Run::state($di) !== null) {
+            throw new InformationException('The import has started: :name can no longer be read again.', [':name' => 'ClientExec']);
+        }
+
+        return \ClientFence\Mod\Clientfence\Clientexec\Snapshot::fetch($di, $settings, $seconds, $restart);
     }
 
     /**
@@ -384,7 +440,7 @@ final class Import
     {
         self::saveState($di, self::SETTINGS, $new);
         // A plan describes the system it was made from: moving to the other one needs a new plan.
-        if ($old['upmind'] !== $new['upmind'] || $old['blesta'] !== $new['blesta']) {
+        if (self::system($old) !== self::system($new)) {
             $di['em']->getConnection()->executeStatement('DELETE FROM mod_clientfence_state WHERE name = ?', [self::PLAN]);
         }
     }

@@ -1,7 +1,7 @@
 {# ClientFence: the "Migration" tab of System > Settings (core patch in mod_system_settings;
    Whmcs/Import.php). A picker of the system to move from, its details (Upmind: the API token and the
    read, Upmind/Snapshot.php; Blesta: its database details and system key and the read,
-   Blesta/Snapshot.php; WHMCS: the database details (read only; the password and encryption key are
+   Blesta/Snapshot.php; ClientExec: its database details and the read, Clientexec/Snapshot.php; WHMCS: the database details (read only; the password and encryption key are
    encrypted and never shown again), then the plan: what WHMCS holds and what the import does with
    it, then the import itself (Whmcs/Run.php): the tab runs it a few seconds at a time and shows the
    progress, the warnings and the check against WHMCS. Super Administrators only; `whmcs` is
@@ -55,11 +55,12 @@
 
 {% set upmind = whmcs.upmind %}
 {% set blesta = whmcs.blesta %}
+{% set clientexec = whmcs.clientexec %}
 {# The plan and import use the source saved last; the picker shows the cards of one source. #}
-{% set chosen = settings.upmind ? 'upmind' : (settings.blesta ? 'blesta' : 'whmcs') %}
-{% set source = { 'upmind': 'Upmind', 'blesta': 'Blesta', 'whmcs': 'WHMCS' }[chosen] %}
-{# Upmind and Blesta are read into a snapshot first (the read state, or null before the first read). #}
-{% set snapshot = { 'upmind': upmind, 'blesta': blesta }[chosen]|default(null) %}
+{% set chosen = settings.upmind ? 'upmind' : (settings.blesta ? 'blesta' : (settings.clientexec ? 'clientexec' : 'whmcs')) %}
+{% set source = { 'upmind': 'Upmind', 'blesta': 'Blesta', 'clientexec': 'ClientExec', 'whmcs': 'WHMCS' }[chosen] %}
+{# Upmind, Blesta and ClientExec are read into a snapshot first (the read state, or null before the first read). #}
+{% set snapshot = { 'upmind': upmind, 'blesta': blesta, 'clientexec': clientexec }[chosen]|default(null) %}
 <div class="card mb-3" id="clientfence-migration">
     <div class="card-header">
         <div>
@@ -69,8 +70,8 @@
     </div>
     <div class="card-body">
         <p class="form-label" id="wi-source-label">{{ 'Move from'|trans }}</p>
-        <div class="btn-group" role="radiogroup" aria-labelledby="wi-source-label">
-            {% for key, name in { 'whmcs': 'WHMCS', 'upmind': 'Upmind', 'blesta': 'Blesta' } %}
+        <div class="btn-group flex-wrap" role="radiogroup" aria-labelledby="wi-source-label">
+            {% for key, name in { 'whmcs': 'WHMCS', 'upmind': 'Upmind', 'blesta': 'Blesta', 'clientexec': 'ClientExec' } %}
             <input type="radio" class="btn-check" name="wi-source" id="wi-source-{{ key }}" value="{{ key }}" autocomplete="off"{% if chosen == key %} checked{% endif %}{% if run %} disabled{% endif %}>
             <label class="btn" for="wi-source-{{ key }}">{{ name }}</label>
             {% endfor %}
@@ -222,8 +223,74 @@
     {% endif %}
 </div>
 
+<div class="card mb-3{% if chosen != 'clientexec' %} d-none{% endif %}" id="clientfence-clientexec-import" data-migration-source="clientexec" data-snapshot-fetch="clientfence/whmcs_import_clientexec_fetch" data-running="{{ 'Reading ClientExec… keep this page open.'|trans }}" data-stopped="{{ 'Reading ClientExec stopped. Fix the cause, then go on reading.'|trans }}">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Import from ClientExec'|trans }}</h3>
+            <p class="card-subtitle">{{ 'The import reads ClientExec\'s database directly and only reads it: it copies what it needs into a private file on this server, then imports that file with the steps below. Nothing changes in ClientExec. The password is kept encrypted and is not shown again; leave it empty to keep the saved one.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/whmcs_import_clientexec_save'|api_url }}" {{ fb_api_form({ message: 'Connected to ClientExec.'|trans, reload: true }) }}{% if plan and chosen != 'clientexec' %} data-switch-confirm="{{ 'The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?'|trans({ ':old': source, ':new': 'ClientExec' }) }}"{% endif %} autocomplete="off">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label class="form-label required" for="wc-host">{{ 'Host'|trans }}</label>
+                    <input class="form-control" id="wc-host" name="host" value="{{ settings.host }}" maxlength="255" required dir="ltr">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label" for="wc-port">{{ 'Port'|trans }}</label>
+                    <input class="form-control" id="wc-port" name="port" type="number" min="1" max="65535" value="{{ settings.port }}" dir="ltr">
+                </div>
+                <div class="col-6 col-md-4">
+                    <label class="form-label required" for="wc-database">{{ 'Database name'|trans }}</label>
+                    <input class="form-control" id="wc-database" name="database" value="{{ settings.database }}" maxlength="64" required dir="ltr">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label required" for="wc-username">{{ 'Username'|trans }}</label>
+                    <input class="form-control" id="wc-username" name="username" value="{{ settings.username }}" maxlength="80" required dir="ltr" autocomplete="off">
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label{{ settings.has_password ? '' : ' required' }}" for="wc-password">{{ 'Password'|trans }}</label>
+                    <input class="form-control" id="wc-password" name="password" type="password" {{ settings.has_password ? '' : 'required' }} placeholder="{{ settings.has_password ? 'Saved: leave empty to keep it'|trans : '' }}" dir="ltr" autocomplete="new-password">
+                </div>
+                <div class="col-12">
+                    <p class="form-label mb-1">{{ 'What is not imported from ClientExec'|trans }}</p>
+                    <ul class="text-secondary small mb-0">
+                        <li>{{ 'Saved cards, two-factor sign-in, coupons, package add-ons, ticket attachments and refunds: the warnings name what was found.'|trans }}</li>
+                        <li>{{ 'Packages other than domains billed weekly or every 4 years or more: the warnings name each one.'|trans }}</li>
+                        <li>{{ 'Passwords ClientExec kept in a form PHP cannot check: those clients set a new one with "Forgot password", and the warnings name them.'|trans }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if settings.clientexec and not run %}
+            <button type="button" class="btn btn-outline-primary" data-snapshot-read{% if clientexec and clientexec.finished_at %} data-restart="1"{% endif %}>{{ clientexec and clientexec.finished_at ? 'Read ClientExec again'|trans : (clientexec ? 'Go on reading ClientExec'|trans : 'Read ClientExec'|trans) }}</button>
+            {% endif %}
+            <button class="btn btn-primary" type="submit">{{ 'Save and test'|trans }}</button>
+        </div>
+    </form>
+    {% if settings.clientexec %}
+    <div class="card-body border-top">
+        <p class="mb-2" data-snapshot-status>{{ clientexec and clientexec.finished_at ? 'ClientExec was read on :date. Make the plan below.'|trans({ ':date': clientexec.finished_at }) : 'Read ClientExec, then make the plan below. Keep this page open while it reads.'|trans }}</p>
+        <div class="alert alert-danger d-none" data-snapshot-error></div>
+        <div class="table-responsive{% if not clientexec %} d-none{% endif %}" data-snapshot-progress>
+            <table class="table table-sm table-vcenter mb-0">
+                <thead><tr><th>{{ 'Step'|trans }}</th><th class="text-end">{{ 'Read'|trans }}</th><th class="text-end"></th></tr></thead>
+                <tbody>
+                    {% for step, label in { 'setup': 'Currencies, taxes, groups and departments'|trans, 'packages': 'Packages and domain prices'|trans, 'clients': 'Clients'|trans, 'services': 'Services and domains'|trans, 'invoices': 'Invoices'|trans, 'payments': 'Payments'|trans, 'tickets': 'Tickets'|trans } %}
+                    {% set s = clientexec.steps[step]|default({}) %}
+                    <tr data-snapshot-step="{{ step }}"><td>{{ label }}</td><td class="text-end" data-done>{{ s.done|default('') }}</td><td class="text-end" data-state>{{ s.finished|default(false) ? '✓' : '' }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
 <script nonce="{{ csp_nonce }}">
-    // Reads Upmind or Blesta into the snapshot a few seconds a call, until it finishes (Whmcs/Snapshot.php); after both cards, so it binds both buttons.
+    // Reads Upmind, Blesta or ClientExec into the snapshot a few seconds a call, until it finishes (Whmcs/Snapshot.php); after the cards, so it binds every button.
     document.querySelectorAll('[data-snapshot-fetch]').forEach((card) => {
         const button = card.querySelector('[data-snapshot-read]');
         if (!button) return;
