@@ -36,7 +36,8 @@
             </div>
         {% endif %}
 
-        <form method="post" action="{{ 'invoice/gateway_update'|api_url }}" {{ fb_api_form({message: 'Gateway Updated'|trans}) }}>
+        {# ClientFence core patch: the page reloads after a save, so a new title shows in the heading and breadcrumb. #}
+        <form method="post" action="{{ 'invoice/gateway_update'|api_url }}" {{ fb_api_form({message: 'Gateway Updated'|trans, reload: true}) }}>
             {% embed 'partial_admin_form_card.html.twig' with {
                 title: 'Gateway Basics'|trans,
                 subtitle: 'Define the display title and choose which currencies can use this gateway.'|trans,
