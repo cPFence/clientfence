@@ -168,6 +168,16 @@ final class Import
     }
 
     /**
+     * The system the import reads: WHMCS, or the one read into its snapshot (Snapshot.php).
+     *
+     * @param array<string, int|string> $settings Import::settings()
+     */
+    public static function system(array $settings): string
+    {
+        return $settings['upmind'] === 1 ? 'Upmind' : ($settings['blesta'] === 1 ? 'Blesta' : 'WHMCS');
+    }
+
+    /**
      * Imports from a Blesta database instead (Blesta/Snapshot.php): saves its details, the folder of
      * its ticket attachments and its system key (empty keeps the saved one) once the database
      * answers as Blesta's. Answers {version, clients}.

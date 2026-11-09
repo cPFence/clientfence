@@ -78,7 +78,10 @@ final class Preflight
         $checks[] = self::folder('Ticket files folder', \ClientFence\Mod\Support\TicketFiles::dir(), $starting ? $attachmentBytes : null);
         $checks[] = self::folder('Backups folder (add-on module archive)', \ClientFence\Mod\Clientfence\Backups::localDir(), $starting ? 0 : null);
 
-        return $checks;
+        // The checks are worded for WHMCS; a snapshot import's data came from the other system.
+        $system = Import::system($settings);
+
+        return $system === 'WHMCS' ? $checks : array_map(static fn (array $c): array => ['check' => str_replace('WHMCS', $system, $c['check']), 'detail' => str_replace('WHMCS', $system, $c['detail']), 'fix' => str_replace('WHMCS', $system, $c['fix'])] + $c, $checks);
     }
 
     /**

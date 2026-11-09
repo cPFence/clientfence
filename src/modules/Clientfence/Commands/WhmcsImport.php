@@ -84,7 +84,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
             return Command::SUCCESS;
         }
 
-        $output->writeln(sprintf('WHMCS %s', $plan['version'] !== '' ? $plan['version'] : '(version unknown)'));
+        $system = Import::system(Import::settings($this->di));
+        $output->writeln($system === 'WHMCS' ? sprintf('WHMCS %s', $plan['version'] !== '' ? $plan['version'] : '(version unknown)') : $system);
         foreach (\ClientFence\Mod\Clientfence\Whmcs\Inventory::GROUPS as $group => $label) {
             $output->writeln('');
             $output->writeln('<info>' . $label . '</info>');
@@ -182,8 +183,9 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
             return Command::SUCCESS;
         }
         if ($step === 'verify') {
+            $system = Import::system(Import::settings($this->di));
             foreach ($result['rows'] as $row) {
-                $output->writeln(sprintf('  %-32s WHMCS %7d  imported %7d%s', $row['label'], $row['whmcs'], $row['imported'], $row['whmcs'] !== $row['imported'] ? '  (see the warnings)' : ''));
+                $output->writeln(sprintf('  %-32s %s %7d  imported %7d%s', $row['label'], $system, $row['whmcs'], $row['imported'], $row['whmcs'] !== $row['imported'] ? '  (see the warnings)' : ''));
             }
             $output->writeln(sprintf('Missing imported clients: %d. Warnings: %d.', $result['missing_clients'], $result['warnings']));
 

@@ -145,12 +145,14 @@ test('a Blesta import checks the attachments its read copied, not the folder set
     $snapshot->insert('tbltickets', ['id' => 1, 'attachment' => '7_shot.png']);
 
     // Blesta on this server: no folder entered, and none needed.
-    expect(array_column(Preflight::checks($di, new Source($snapshot)), null, 'check'))->not->toHaveKey('WHMCS attachments folder');
+    expect(array_column(Preflight::checks($di, new Source($snapshot)), null, 'check'))->not->toHaveKey('Blesta attachments folder');
 
     $copies = ClientFence\Mod\Clientfence\Blesta\Snapshot::files();
     mkdir($copies, 0700, true);
     file_put_contents($copies . '/7_shot.png', 'PNG');
     $checks = array_column(Preflight::checks($di, new Source($snapshot)), null, 'check');
-    expect($checks['WHMCS attachments folder']['ok'])->toBeTrue()
-        ->and($checks['WHMCS attachments folder']['detail'])->toContain($copies);
+    expect($checks['Blesta attachments folder']['ok'])->toBeTrue()
+        ->and($checks['Blesta attachments folder']['detail'])->toContain($copies)
+        // Named for the system read, not for WHMCS.
+        ->and(json_encode($checks))->not->toContain('WHMCS');
 });

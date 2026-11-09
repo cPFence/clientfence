@@ -118,7 +118,7 @@ final class Run
         // A Blesta import reads the attachments its snapshot copied (Blesta/Snapshot.php).
         $attachments = $settings['blesta'] === 1 ? \ClientFence\Mod\Clientfence\Blesta\Snapshot::files() : $settings['attachments_dir'];
         // The steps word their warnings for WHMCS; a snapshot import's data came from the other system.
-        $system = $settings['upmind'] === 1 ? 'Upmind' : ($settings['blesta'] === 1 ? 'Blesta' : '');
+        $system = Import::system($settings);
         $keepDays = static function () use ($di): int {
             try {
                 $setting = trim((string) ($di['mod_config']('support')['ticket_files_days'] ?? ''));
@@ -154,7 +154,7 @@ final class Run
                 try {
                     [$after, $done] = $runner->batch($step, (int) ($state['steps'][$step]['after'] ?? 0), $batch * (self::BULK[$step] ?? 1));
                     $warnings = $runner->warnings();
-                    if ($system !== '') {
+                    if ($system !== 'WHMCS') {
                         $warnings = str_replace('WHMCS', $system, $warnings);
                     }
                     self::addWarnings($db, $step, $warnings);
