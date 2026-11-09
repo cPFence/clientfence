@@ -14,7 +14,8 @@ payments, orders, domains, hosting accounts and support tickets in one client ar
 - **Download:** the latest release from [GitHub Releases](https://github.com/cPFence/clientfence/releases/latest)
   (the zip and its SHA-256).
 - **Documentation:** [clientfence.com/docs](https://clientfence.com/docs/), from installing to
-  [moving from WHMCS](https://clientfence.com/docs/getting-started/import-from-whmcs/).
+  moving from [WHMCS](https://clientfence.com/docs/getting-started/import-from-whmcs/) or
+  [Upmind](https://clientfence.com/docs/getting-started/import-from-upmind/).
 - **Demo:** [demo.clientfence.com](https://demo.clientfence.com/login) (changes are not saved).
 - **Community:** [ClientFence forum](https://community.cpfence.app/t/clientfence), for setup help
   and usage questions.
@@ -34,8 +35,8 @@ payments, orders, domains, hosting accounts and support tickets in one client ar
   registrar.
 - **Support:** tickets with file attachments, and ticket secrets: server logins a client adds
   to a ticket, stored encrypted and opened only by staff with that permission.
-- **Moving from WHMCS:** an import of clients, products, services, invoices and tickets
-  from a WHMCS database.
+- **Moving from WHMCS or Upmind:** an import of clients, products, services, invoices and tickets
+  from a WHMCS database, or from Upmind through its API.
 - **Security and health:** security hardening and a system health page, built in.
 - **Updates:** a daily check of the ClientFence release list on clientfence.com (it sends
   nothing about your site, and System → Update turns it off), a dashboard notice and a staff
