@@ -1415,7 +1415,9 @@ class Admin extends \ClientFence\Api\AbstractApi
                 continue;
             }
             $key = 'clientfence_paypal_balance_' . $gateway->id . '_' . (int) $gateway->test_mode;
-            $result[] = ['gateway' => (string) $gateway->name, 'test_mode' => (bool) $gateway->test_mode] + $di['cache']->get($key, function (\Symfony\Contracts\Cache\ItemInterface $item) use ($di, $gateway): array {
+            // A gateway installed under its code ("PayPalAutoPay") shows its proper name.
+            $name = (string) $gateway->name === $gateway->gateway ? (('Payment_Adapter_' . $gateway->gateway)::getConfig()['title'] ?? $gateway->gateway) : (string) $gateway->name;
+            $result[] = ['gateway' => $name, 'test_mode' => (bool) $gateway->test_mode] + $di['cache']->get($key, function (\Symfony\Contracts\Cache\ItemInterface $item) use ($di, $gateway): array {
                 $item->expiresAfter(600);
                 try {
                     return ['balances' => $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway)->balances(), 'error' => null];

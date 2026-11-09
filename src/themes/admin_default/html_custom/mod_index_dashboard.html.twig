@@ -372,6 +372,33 @@
         </div>
         {% endset %}{% set cards = cards|merge({ 'billing': card }) %}
         {% endif %}
+        {# The PayPal balance of each enabled PayPal gateway whose "PayPal balance on the dashboard" is on
+           (invoice_paypal_balances asks PayPal at most every 10 minutes), as WHMCS's gateway balance widget. #}
+        {% set paypals = can.invoice ? admin.invoice_paypal_balances : [] %}
+        {% if paypals %}
+        {% set card %}
+        <div class="bf-card bf-paypal">
+            <div class="bf-card-head">
+                <h2 class="bf-h bf-card-title">{{ 'PayPal balance'|trans }}</h2>
+                <a class="bf-link" href="{{ 'invoice/gateways'|url }}">{{ 'Payment gateways'|trans }}</a>
+            </div>
+            {% for paypal in paypals %}
+            {# One amount: the balance in the portal's default currency, else the first one PayPal lists. #}
+            {% set main = paypal.balances|filter(b => b.currency == currency.code)|first ?: paypal.balances|first %}
+            <div class="bf-row bf-row-static">
+                <span class="bf-tile" aria-hidden="true"><svg class="icon"><use href="#currency-dollar" /></svg></span>
+                <span class="bf-row-main">
+                    <span class="bf-strong">{{ paypal.gateway }}</span>
+                    <span class="bf-muted bf-small">{{ paypal.error ?: (main ? 'Available balance'|trans : 'No balance.'|trans) }}</span>
+                </span>
+                {% if paypal.test_mode %}<span class="bf-chip bf-tone-warn">{{ 'Test mode'|trans }}</span>{% endif %}
+                {% if main %}<span class="bf-h bf-paypal-amount" dir="ltr">{{ main.amount|format_currency(main.currency) }}</span>{% endif %}
+            </div>
+            {% endfor %}
+            <p class="bf-muted bf-small bf-paypal-note">{{ 'Updated from PayPal every 10 minutes.'|trans }}</p>
+        </div>
+        {% endset %}{% set cards = cards|merge({ 'paypal': card }) %}
+        {% endif %}
         {% if seen %}
         {% set card %}
         <div class="bf-card bf-seen">
@@ -605,7 +632,7 @@
              }|json_encode|e('html_attr') }}"{% endif %}>
         {% set labels = {
             'income': 'Income'|trans, 'products': 'Top products'|trans, 'billing': 'Billing'|trans,
-            'health': 'System health'|trans, 'orders': 'Latest orders'|trans, 'invoices': 'Latest invoices'|trans,
+            'health': 'System health'|trans, 'paypal': 'PayPal balance'|trans, 'orders': 'Latest orders'|trans, 'invoices': 'Latest invoices'|trans,
             'activity': 'Recent activity'|trans, 'clients': 'Client activity'|trans
         } %}
         {% for col in layout.cols %}

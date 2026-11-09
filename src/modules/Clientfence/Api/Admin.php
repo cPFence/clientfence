@@ -423,12 +423,12 @@ class Admin extends \ClientFence\Api\AbstractApi
      * The dashboard cards below the key figures in their default columns (as WHMCS: each
      * card right under the one above it). The template names the same ids.
      */
-    private const DASHBOARD_CARDS = [['income', 'billing', 'orders', 'activity'], ['products', 'health', 'invoices', 'clients']];
+    private const DASHBOARD_CARDS = [['income', 'billing', 'paypal', 'orders', 'activity'], ['products', 'health', 'invoices', 'clients']];
 
     /**
      * The signed-in staff member's dashboard card order: `cols`, two columns of card ids; the order
      * a Super Administrator saved (dashboard_layout_save) or the default. A card the saved order
-     * lacks (added by a later pack) joins its default column; an unknown id is left out.
+     * lacks (added by a later pack) joins its default column after the card it follows there; an unknown id is left out.
      * `can_arrange`: a Super Administrator with ClientFence on; `saved`: an order of their own.
      *
      * @return array{cols: list<list<string>>, can_arrange: bool, saved: bool}
@@ -687,8 +687,8 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Two columns of known card ids, each once: the given order, then every card it lacks in its
-     * default column.
+     * Two columns of known card ids, each once: the given order, with every card it lacks put in its
+     * default column after the card it follows by default (first when it comes first).
      *
      * @return list<list<string>>
      */
@@ -706,9 +706,11 @@ class Admin extends \ClientFence\Api\AbstractApi
             }
         }
         foreach (self::DASHBOARD_CARDS as $col => $cards) {
-            foreach ($cards as $card) {
+            foreach ($cards as $i => $card) {
                 if (!isset($placed[$card])) {
-                    $out[$col][] = $card;
+                    $after = $i > 0 ? array_search($cards[$i - 1], $out[$col], true) : -1;
+                    array_splice($out[$col], $after === false ? count($out[$col]) : $after + 1, 0, [$card]);
+                    $placed[$card] = true;
                 }
             }
         }

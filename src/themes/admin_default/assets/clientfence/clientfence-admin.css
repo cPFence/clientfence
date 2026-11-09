@@ -424,6 +424,10 @@ a.bf-row:hover { background: var(--bf-surface-2); color: var(--bf-ink); text-dec
 .bf-tone-ok { background: var(--bf-ok-soft); color: var(--bf-ok); }
 .bf-tone-warn { background: var(--bf-warn-soft); color: var(--bf-warn); }
 .bf-tone-bad { background: var(--bf-bad-soft); color: var(--bf-bad); }
+/* PayPal balance card: the tile in the brand colour, the amount at the end of each gateway row. */
+.bf-paypal .bf-tile { background: var(--bf-soft); color: var(--bf-brand); }
+.bf-paypal-amount { flex: none; font-size: 20px; font-weight: 800; line-height: 1.25; }
+.bf-paypal-note { margin: 0; padding: 10px 20px 14px; border-top: 1px solid var(--bf-line); }
 .bf-state { display: inline-flex; align-items: center; gap: 6px; background: none; font-size: 12px; font-weight: 700; white-space: nowrap; }
 .bf-state-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 /* The activity dot sits at the middle of its row. */
