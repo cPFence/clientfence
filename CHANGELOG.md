@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.39-beta.1 (2026-11-09)
+
+### Added
+
+- [PayTabs](https://paytabs.com/en/) payment gateway, with saved cards for renewals. PayTabs is the number 1 payment gateway in the MENA region.
+- Import from Upmind: clients, products, services, invoices, payments, tickets and tax rates, read through Upmind's API ([#3](https://github.com/cPFence/clientfence/issues/3)).
+
+### Changed
+
+- System Health's private paths check also tests the data folder, theme templates and library files, so a server without .htaccess support (Nginx) is caught.
+
+### Fixed
+
+- An empty Paid Invoice Prefix means no prefix again: paid invoices no longer keep the unpaid prefix. The update fills an empty paid prefix with the invoice prefix, so your numbers do not change ([#4](https://github.com/cPFence/clientfence/issues/4)).
+
 ## 1.0.38 (2026-11-09)
 
 ### Added
