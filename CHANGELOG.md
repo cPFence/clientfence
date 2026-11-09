@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.38-beta.2 (2026-11-09)
+
+### Added
+
+- Support settings can turn tickets off, as Blesta can, for companies that use another help desk: clients and visitors then cannot open or reply to tickets, emails no longer become tickets, and ticket pages, menus and boxes are hidden. Tickets are kept for when tickets are turned on again. The knowledge base and network status keep their own switches.
+- An optional outside help desk address (for example FreeScout): while tickets are off, the Support menu, the receipt upload on invoices and Request Account Deletion link to it.
+
+### Changed
+
+- Turning off or deleting a payment gateway works as in WHMCS: its unpaid invoices move to the gateway you choose. A gateway with active subscriptions or saved payment methods cannot be deleted (turn it off instead).
+- A newly installed gateway takes its proper name ("PayPal Auto-Pay") and allows only the payment kinds it supports.
+- Gateway settings always show On before Off. PayPal Auto-Pay settings are all on by default, and PayPal's pages show your company logo when no logo is set.
+
 ## 1.0.38-beta.1 (2026-11-08)
 
 ### Added
