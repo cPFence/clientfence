@@ -303,6 +303,50 @@ test('createAndProcess marks transaction as error when processing throws', funct
         ->and($transactionModel->error_code)->toBe(1234);
 });
 
+test('failed ipn requests of one gateway make one staff bell notice an hour', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement("CREATE TABLE admin (id INTEGER PRIMARY KEY, status TEXT, system_name TEXT)");
+    $db->executeStatement("INSERT INTO admin VALUES (1, 'active', NULL)");
+    $db->executeStatement('CREATE TABLE ' . ClientFence\Mod\Clientfence\Notifications::TABLE . ' (id INTEGER PRIMARY KEY AUTOINCREMENT, audience TEXT NOT NULL, recipient_id INTEGER NOT NULL, kind TEXT NOT NULL, params TEXT NOT NULL, url TEXT NOT NULL, dedupe TEXT, created_at TEXT NOT NULL, read_at TEXT, UNIQUE (audience, recipient_id, dedupe))');
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+
+    $txs = [];
+    foreach ([1, 2, 3] as $id) {
+        $txs[$id] = new Model_Transaction();
+        $txs[$id]->loadBean(new Tests\Helpers\DummyBean());
+        $txs[$id]->id = $id;
+        $txs[$id]->gateway_id = $id === 3 ? 6 : 5;
+        $txs[$id]->status = Model_Transaction::STATUS_RECEIVED;
+    }
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->andReturnUsing(fn ($type, $id) => $txs[$id]);
+    $dbMock->shouldReceive('load')->andReturnUsing(fn ($type, $id) => $type === 'Admin' ? new Model_Admin() : $txs[$id]);
+    $dbMock->shouldReceive('store');
+    $staff = Mockery::mock();
+    $staff->shouldReceive('hasPermission')->andReturnTrue();
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['em'] = $em;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(fn () => $staff);
+
+    $service = Mockery::mock(ServiceTransaction::class)->makePartial();
+    $service->shouldReceive('create')->andReturn(1, 2, 3);
+    $service->shouldReceive('processTransaction')->andThrow(new RuntimeException('Invalid signature'));
+    $service->setDi($di);
+    foreach ([1, 2, 3] as $ignored) {
+        try {
+            $service->createAndProcess([]);
+        } catch (RuntimeException) {
+        }
+    }
+
+    expect($txs[2]->status)->toBe(Model_Transaction::STATUS_ERROR)
+        ->and(ClientFence\Mod\Clientfence\Notifications::unread($di, ClientFence\Mod\Clientfence\Notifications::STAFF, 1))->toBe(2);
+});
+
 test('createAndProcess skips processing when transaction is already processed', function (): void {
     $transactionModel = new Model_Transaction();
     $transactionModel->loadBean(new Tests\Helpers\DummyBean());

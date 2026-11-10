@@ -586,8 +586,9 @@ class ServiceTransaction implements InjectionAwareInterface
         $this->di['db']->store($tx);
 
         $this->di['logger']->error('Failed to process transaction #%s: %s', $id, $e->getMessage());
-        // ClientFence core patch: staff who see invoices get a bell notification of a failed payment.
-        \ClientFence\Mod\Clientfence\Notifications::staff($this->di, 'payment_failed', ['id' => $id], 'invoice/transactions', 'invoice', null, 'payment_failed:' . $id);
+        // ClientFence core patch: staff who see invoices get a bell notification of a failed payment, one per gateway an
+        // hour (each unsigned ipn.php request made an error transaction and a notice for every staff member).
+        \ClientFence\Mod\Clientfence\Notifications::staff($this->di, 'payment_failed', ['id' => $id], 'invoice/transactions', 'invoice', null, 'payment_failed:' . (int) $tx->gateway_id . ':' . date('YmdH'));
     }
 
     /**
@@ -661,8 +662,8 @@ class ServiceTransaction implements InjectionAwareInterface
             $transaction->error_code = $e->getCode();
             $transaction->updated_at = date('Y-m-d H:i:s');
             $this->di['db']->store($transaction);
-            // ClientFence core patch: a bell notification of this failed payment too.
-            \ClientFence\Mod\Clientfence\Notifications::staff($this->di, 'payment_failed', ['id' => (int) $transaction->id], 'invoice/transactions', 'invoice', null, 'payment_failed:' . $transaction->id);
+            // ClientFence core patch: a bell notification of this failed payment too, one per gateway an hour.
+            \ClientFence\Mod\Clientfence\Notifications::staff($this->di, 'payment_failed', ['id' => (int) $transaction->id], 'invoice/transactions', 'invoice', null, 'payment_failed:' . (int) $transaction->gateway_id . ':' . date('YmdH'));
 
             if (defined('DEBUG')) {
                 error_log($e->getMessage());

@@ -1893,11 +1893,11 @@
     },
     {
         "file": "modules/Invoice/ServiceTransaction.php",
-        "done": "ClientFence core patch: staff who see invoices get a bell notification of a failed payment."
+        "done": "ClientFence core patch: staff who see invoices get a bell notification of a failed payment, one per gateway an"
     },
     {
         "file": "modules/Invoice/ServiceTransaction.php",
-        "done": "ClientFence core patch: a bell notification of this failed payment too."
+        "done": "ClientFence core patch: a bell notification of this failed payment too, one per gateway an hour."
     },
     {
         "file": "modules/Email/Service.php",
@@ -4750,5 +4750,21 @@
     {
         "file": "modules/Product/Service.php",
         "done": "ClientFence core patch: a staff order (Cart\\Service::staffOrder()) keeps staff fields (hosting import,"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: a first-period promotion lowered what the first period was paid, so its days are credited at"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a period code holds at most 5 years, so a longer registration failed at checkout."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: as staff funds invoices, a client's needs a positive amount (with no minimum set, -50 passed)."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: the days left are credited at the price, so they must have been paid at it: after a full refund"
     }
 ]

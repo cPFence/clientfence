@@ -43,7 +43,7 @@ function upgradesDb(): Connection
         'CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, service_id INTEGER, service_type TEXT, title TEXT, status TEXT, period TEXT, price REAL, quantity INTEGER DEFAULT 1,'
             . ' discount REAL, currency TEXT, expires_at TEXT, unpaid_invoice_id INTEGER, config TEXT, updated_at TEXT)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, hash TEXT, serie TEXT, nr TEXT, updated_at TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0, paid_at TEXT, created_at TEXT)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, hash TEXT, serie TEXT, nr TEXT, updated_at TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0, refund REAL DEFAULT 0, paid_at TEXT, created_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, task TEXT, rel_id TEXT, title TEXT, price REAL, quantity INTEGER, unit TEXT, period TEXT, taxed INTEGER)',
         'CREATE TABLE subscription (id INTEGER PRIMARY KEY, rel_type TEXT, rel_id INTEGER, status TEXT, sid TEXT, pay_gateway_id INTEGER)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, amount REAL, description TEXT, type TEXT, rel_id TEXT)',
@@ -1489,6 +1489,87 @@ test('a recurring promotion credits the days left at the discounted recurring am
 
     // 45 less the 9 off each renewal, 36 x 31/31, less 5 x 31/31 for Starter.
     expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -31.0]);
+});
+
+test('a first-period promotion credits the first period at what was paid, the full price after a renewal', function (array $paid, bool $planChanged, float $amount): void {
+    $db = upgradesDb();
+    foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
+        $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
+    }
+    $di = upgradesContainer($db);
+    // 45 a month, 20 off the first month only.
+    $db->update('client_order', ['expires_at' => '2027-03-03 12:00:00', 'activated_at' => '2027-01-31 12:00:00', 'promo_id' => 7, 'promo_recurring' => 0, 'discount' => 20], ['id' => 3]);
+    $db->executeStatement('DELETE FROM invoice_item WHERE rel_id = ?', ['3']);
+    foreach ($paid as $i => $task) {
+        $db->insert('invoice', ['id' => 901 + $i, 'client_id' => 5, 'status' => 'paid']);
+        $db->insert('invoice_item', ['invoice_id' => 901 + $i, 'type' => 'order', 'task' => $task, 'rel_id' => '3', 'price' => 45, 'quantity' => 1]);
+    }
+    if ($planChanged) {
+        $db->insert(Upgrades::TABLE, ['order_id' => 3, 'client_id' => 5, 'kind' => 'upgrade', 'from_product_id' => 1, 'from_period' => '1M', 'from_price' => 5, 'from_expires_at' => '2027-03-03 12:00:00',
+            'to_product_id' => 2, 'to_period' => '1M', 'to_price' => 45, 'to_expires_at' => '2027-03-03 12:00:00', 'days_left' => 31, 'days_total' => 31, 'credit' => 0, 'charge' => 0, 'amount' => 0,
+            'status' => 'applied', 'created_at' => '2027-01-31 12:30:00', 'applied_at' => '2027-01-31 12:30:00']);
+    }
+
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => $amount]);
+})->with([
+    // 45 less the 20 off, 25 x 31/31, less 5 x 31/31 for Starter.
+    'first period' => [['activate'], false, -20.0],
+    'free first period, no invoice' => [[], false, -20.0],
+    // Renewed at the full price: 45 less 5.
+    'renewed' => [['activate', 'renew'], false, -40.0],
+    'free first period, then renewed' => [['renew'], false, -40.0],
+    // A plan change in the first period was charged at the new plan's full price.
+    'plan changed in the first period' => [['activate'], true, -40.0],
+]);
+
+test('a plan change of a service refunded or repriced after its last payment goes to staff', function (array $invoice, float $price, bool $changeSince, bool $blocked, bool $inclusive = false, ?float $changedTo = null, ?string $changeInvoice = null, ?float $optionsFrom = null): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db, [], ['inclusive' => $inclusive]);
+    // With prices that include tax the paid line holds the net price: 45 at 20% is 37.50.
+    $inclusive && $db->update('invoice_item', ['price' => 37.5], ['invoice_id' => 9003]);
+    $invoice === [] || $db->update('invoice', $invoice, ['id' => 9003]);
+    $db->update('client_order', ['price' => $price], ['id' => 3]);
+    if ($changeSince) {
+        // An options change keeps the product and cycle.
+        $db->insert(Upgrades::TABLE, ['order_id' => 3, 'client_id' => 5, 'kind' => 'upgrade', 'from_product_id' => $optionsFrom === null ? 1 : 2, 'from_period' => '1M', 'from_price' => $optionsFrom ?? 5, 'from_expires_at' => '2026-11-10 00:00:00',
+            'to_product_id' => 2, 'to_period' => '1M', 'to_price' => $changedTo ?? $price, 'to_expires_at' => '2026-11-10 00:00:00', 'days_left' => 20, 'days_total' => 31, 'credit' => 3, 'charge' => 29, 'amount' => 26,
+            'invoice_id' => $changeInvoice === null ? null : 8000, 'status' => 'applied', 'created_at' => '2026-10-20 09:00:00', 'applied_at' => '2026-10-20 09:00:00']);
+        $changeInvoice === null || $db->insert('invoice', ['id' => 8000, 'client_id' => 5, 'status' => $changeInvoice, 'paid_at' => '2026-10-20 09:00:00']);
+    }
+
+    $options = Upgrades::options($di, upgradesOrder($di, 3), UPGRADES_NOW);
+    expect($options['available'])->toBe(!$blocked)
+        ->and($options['reason'])->toBe($blocked ? 'This service was refunded or its price changed after its last payment, so our staff change it. Please contact us.' : '');
+})->with([
+    'paid at the price' => [[], 45, false, false],
+    'refunded' => [['status' => 'refunded'], 45, false, true],
+    // One invoice often holds several services: a part refund may be another one's.
+    'part refunded' => [['refund' => 10], 45, false, false],
+    'prices include tax, paid at the price' => [['taxrate' => 20], 45, false, false, true],
+    'prices include tax, price raised' => [['taxrate' => 20], 60, false, true, true],
+    'price raised after the payment' => [[], 60, false, true],
+    'price raised by a change applied since' => [[], 60, true, false],
+    'price lowered' => [[], 30, false, false],
+    'price raised after a change applied since' => [[], 80, true, true, false, 60.0],
+    'a change applied since was refunded' => [[], 60, true, true, false, null, 'refunded'],
+    'a change applied since was paid' => [[], 60, true, false, false, null, 'paid'],
+    // Paid 45; options for 10 more: 55 paid.
+    'an options change since' => [[], 55, true, false, false, null, 'paid', 45.0],
+    // Paid 45; staff raised it to 90, then options for 10 more: 55 paid, not 100.
+    'an options change after a staff price raise' => [[], 100, true, true, false, null, 'paid', 90.0],
+]);
+
+test('a refund of an older period does not stop a plan change in a newer paid one', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    // February (9003) refunded with a refund document (9100, the lines at negative prices); March (9101) paid.
+    $db->update('invoice', ['status' => 'refunded'], ['id' => 9003]);
+    $db->insert('invoice', ['id' => 9101, 'client_id' => 5, 'status' => 'paid', 'paid_at' => '2026-10-10 00:00:00']);
+    $db->insert('invoice_item', ['invoice_id' => 9101, 'type' => 'order', 'task' => 'renew', 'rel_id' => '3', 'price' => 45, 'quantity' => 1]);
+    $db->insert('invoice', ['id' => 9100 + 2, 'client_id' => 5, 'status' => 'refunded', 'paid_at' => '2026-10-12 00:00:00']);
+    $db->insert('invoice_item', ['invoice_id' => 9102, 'type' => 'order', 'task' => 'activate', 'rel_id' => '3', 'price' => -45, 'quantity' => 1]);
+
+    expect(Upgrades::options($di, upgradesOrder($di, 3), UPGRADES_NOW)['available'])->toBeTrue();
 });
 
 test('after a change of cycle the periods are walked from that change, not from the activation (D-01)', function (): void {

@@ -183,6 +183,10 @@ class Service implements \ClientFence\InjectionAwareInterface
             if ($years === false || $years < 1) {
                 throw new \ClientFence\InformationException('Domain registration period must be a positive integer');
             }
+            // ClientFence core patch: a period code holds at most 5 years, so a longer registration failed at checkout.
+            if ($years > 5) {
+                throw new \ClientFence\InformationException(':tld can be registered for at most :years years', [':tld' => $tld->tld, ':years' => 5]);
+            }
 
             $allowedPeriods = $this->getTldPeriodsArray($tld);
             if ($allowedPeriods !== null) {

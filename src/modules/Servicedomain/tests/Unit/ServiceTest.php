@@ -338,6 +338,31 @@ test('rejects a registration period outside the tld allowed periods list', funct
         ->toThrow(ClientFence\Exception::class);
 });
 
+test('rejects a registration longer than five years, which no period code can hold', function (?string $periods): void {
+    $tldModel = new Model_Tld();
+    $tldModel->loadBean(new Tests\Helpers\DummyBean());
+    $tldModel->tld = '.com';
+    $tldModel->min_years = 1;
+    $tldModel->periods = $periods;
+    $tldModel->active = true;
+
+    $data = ['action' => 'register', 'register_sld' => 'example', 'register_years' => 10, 'register_tld' => '.com'];
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isSldValid')->andReturn(true);
+    $validatorMock->shouldReceive('checkRequiredParamsForArray')->zeroOrMoreTimes();
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('tldFindOneByTld')->andReturn($tldModel);
+    $serviceMock->shouldReceive('isDomainAvailable')->never();
+
+    $di = container();
+    $di['validator'] = $validatorMock;
+    $serviceMock->setDi($di);
+
+    expect(fn () => $serviceMock->validateOrderData($data))->toThrow(ClientFence\InformationException::class, 'at most');
+})->with(['no periods set' => [null], 'ten years listed' => ['1,10']]);
+
 test('accepts a registration period within the tld allowed periods list', function (): void {
     $tldModel = new Model_Tld();
     $tldModel->loadBean(new Tests\Helpers\DummyBean());

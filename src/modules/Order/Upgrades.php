@@ -28,7 +28,7 @@ use ClientFence\Mod\Product\Options;
  *
  * Who may: Orders settings turn upgrades and downgrades on or off for everyone; a product, and a
  * single service, can allow or block each of them (client_order_upgrade_rule; a service's rule
- * wins over its product's, the default allows). A service needs no unpaid invoice, no discount,
+ * wins over its product's, the default allows). A service needs no unpaid invoice,
  * the client's currency and no other upgrade waiting for payment.
  *
  * Configurable options (Product/Options.php): a service keeps the options its new product also has
@@ -225,6 +225,9 @@ final class Upgrades
 
         if ($reason !== null) {
             return $none($reason, null, [], $options !== []);
+        }
+        if (self::repricedSincePaid($di, $db, $order)) {
+            return $none(__trans('This service was refunded or its price changed after its last payment, so our staff change it. Please contact us.'), null, $offered);
         }
 
         return $options === []
@@ -1396,6 +1399,55 @@ final class Upgrades
         $di['mod_service']('servicehosting')->changeAccountPlan($order, $service, $hp);
     }
 
+    /**
+     * ClientFence core patch: the days left are credited at the price, so they must have been paid at it: after a full refund
+     * of the service's last invoice or of a change applied since, or a price raised above what was last paid, staff make a
+     * plan change.
+     * A part refund does not count: one invoice often holds several services.
+     */
+    private static function repricedSincePaid(\Pimple\Container $di, Connection $db, \Model_ClientOrder $order): bool
+    {
+        $last = $db->fetchAssociative(
+            'SELECT i.status, i.taxrate, i.paid_at, ii.price * ii.quantity AS amount FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
+             WHERE ii.type = ? AND ii.rel_id = ? AND ii.price >= 0 AND i.status IN (?, ?) ORDER BY i.id DESC LIMIT 1',
+            [\Model_InvoiceItem::TYPE_ORDER, (string) $order->id, \Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED],
+        );
+        // (A refund document copies the lines at negative prices: the invoice it refunds counts, not the document.)
+        if ($last !== false && $last['status'] === \Model_Invoice::STATUS_REFUNDED) {
+            return true;
+        }
+        $paid = null;
+        if ($last !== false) {
+            // With prices that include tax the line holds the net price (Invoice Service::applyInclusiveTax(), same rate).
+            $rate = 0.0;
+            if ($di['mod_service']('invoice')->pricesIncludeTax()) {
+                $rate = (float) $last['taxrate'];
+                if ($rate <= 0) {
+                    $client = $di['db']->load('Client', (int) $order->client_id);
+                    $rate = $client instanceof \Model_Client ? (float) $di['mod_service']('Invoice', 'Tax')->getLocationTaxRate($client) : 0.0;
+                }
+            }
+            $paid = (float) $last['amount'] * (100 + max(0.0, $rate)) / 100;
+        }
+        // A plan or cycle change applied since was paid at its new price, an options change only at the options' difference.
+        $changes = $db->fetchAllAssociative(
+            'SELECT u.from_product_id, u.from_period, u.from_price, u.to_product_id, u.to_period, u.to_price, i.status FROM ' . self::TABLE . ' u
+             LEFT JOIN invoice i ON i.id = u.invoice_id WHERE u.order_id = ? AND u.status = ? AND u.applied_at >= ? ORDER BY u.applied_at, u.id',
+            [(int) $order->id, self::STATUS_APPLIED, $last === false ? '' : (string) $last['paid_at']],
+        );
+        foreach ($changes as $change) {
+            if ($change['status'] === \Model_Invoice::STATUS_REFUNDED) {
+                return true;
+            }
+            $paid = (int) $change['to_product_id'] === (int) $change['from_product_id'] && $change['to_period'] === $change['from_period']
+                ? ($paid === null ? null : $paid + (float) $change['to_price'] - (float) $change['from_price'])
+                : (float) $change['to_price'];
+        }
+
+        // Unit prices are rounded per line, so two cents per unit are not a price change.
+        return $paid !== null && round($paid, 2) < self::orderTotal($order) - 0.02 * max(1, (int) ($order->quantity ?? 1));
+    }
+
     private static function orderTotal(\Model_ClientOrder $order): float
     {
         return round((float) $order->price * max(1, (int) ($order->quantity ?? 1)), 2);
@@ -1410,8 +1462,16 @@ final class Upgrades
         $promo = $order->promo_recurring && $order->promo_id
             ? $di['mod_service']('Product')->getRenewalPromoAdjustment($order, (float) $order->price, (float) max(1, (int) ($order->quantity ?? 1)))
             : null;
+        // ClientFence core patch: a first-period promotion lowered what the first period was paid, so its days are credited at
+        // that until a renewal or a change of plan or cycle is paid (a downgrade gave the discount back as credit).
+        // shortcut: a renewal paid early credits the first period's last days at the full price, upgrade to per-period amounts if it matters.
+        $db = self::db($di);
+        $firstDiscount = !$order->promo_recurring && (float) $order->discount > 0
+            && $db->fetchOne('SELECT 1 FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.task = ? AND ii.rel_id = ?', [\Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, \Model_InvoiceItem::TASK_RENEW, (string) $order->id]) === false
+            && $db->fetchOne('SELECT 1 FROM ' . self::TABLE . ' WHERE order_id = ? AND status = ? AND (to_product_id <> from_product_id OR to_period <> from_period)', [(int) $order->id, self::STATUS_APPLIED]) === false
+            ? (float) $order->discount : 0.0;
 
-        return max(0.0, round(self::orderTotal($order) - (float) ($promo['discount_amount'] ?? 0), 2));
+        return max(0.0, round(self::orderTotal($order) - (float) ($promo['discount_amount'] ?? 0) - $firstDiscount, 2));
     }
 
     private static function rate(Connection $db, string $currency): ?float

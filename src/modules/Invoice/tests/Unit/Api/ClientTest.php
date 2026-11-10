@@ -353,6 +353,16 @@ test('creates funds invoice', function (): void {
     expect($result)->toBeString()->toBe($generatedHash);
 });
 
+test('refuses a funds invoice for an amount that is not above zero', function (mixed $amount): void {
+    $api = apiEndpoint(new Client());
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('generateFundsInvoice')->never();
+    $api->setService($serviceMock);
+
+    expect(fn () => $api->funds_invoice(['amount' => $amount]))
+        ->toThrow(ClientFence\InformationException::class, 'positive numeric value');
+})->with(['negative' => [-50], 'zero' => ['0'], 'infinite' => ['INF']]);
+
 test('gets transaction list', function (): void {
     $api = apiEndpoint(new Client());
     $transactionService = Mockery::mock(ServiceTransaction::class);

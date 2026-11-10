@@ -135,8 +135,9 @@ class Client extends \ClientFence\Api\AbstractApi
     #[RequiredParams(['amount' => 'Amount is required'])]
     public function funds_invoice($data)
     {
-        if (!is_numeric($data['amount'])) {
-            throw new \ClientFence\InformationException('You need to enter numeric value');
+        // ClientFence core patch: as staff funds invoices, a client's needs a positive amount (with no minimum set, -50 passed).
+        if (!is_numeric($data['amount']) || !is_finite((float) $data['amount']) || (float) $data['amount'] <= 0) {
+            throw new \ClientFence\InformationException('You need to enter a positive numeric value');
         }
 
         $service = $this->getService();
