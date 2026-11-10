@@ -125,10 +125,12 @@
                         <button type="button" class="bf-linkbtn" data-bf-cart-promo-remove>{{ 'Remove'|trans }}</button>
                     </div>
                 {% else %}
-                    <form class="bf-promo" data-bf-cart-promo novalidate>
+                    {# ClientFence core patch: a store link's ?promo= code (order_configure.html.twig) is applied once by cart.js through this box. #}
+                    {% set link_promo = request.promo is iterable ? '' : request.promo|default('') %}
+                    <form class="bf-promo" data-bf-cart-promo{% if link_promo %} data-bf-cart-promo-auto{% endif %} novalidate>
                         <label class="bf-label" for="bf-cart-promo">{{ 'Promo code'|trans }}</label>
                         <div class="bf-promo-row">
-                            <input class="form-control" id="bf-cart-promo" name="promocode" autocomplete="off" required>
+                            <input class="form-control" id="bf-cart-promo" name="promocode" value="{{ link_promo }}" autocomplete="off" required>
                             <button type="submit" class="btn bf-btn-ghost">{{ 'Apply'|trans }}</button>
                         </div>
                     </form>

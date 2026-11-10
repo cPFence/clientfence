@@ -49,6 +49,10 @@
     {% endfor %}
 {% endif %}
 {% set period = request.period|default('') in prices|keys ? request.period : ('1M' in prices|keys ? '1M' : (prices|keys|first ?: '')) %}
+{# ClientFence core patch: a store link's ?promo= code goes through the promo box (checkout.js) and back here after a sign-in, as WHMCS's promocode link. #}
+{% set link_promo = request.promo is iterable ? '' : request.promo|default('') %}
+{% set back_query = { period: period, promo: link_promo }|filter(v => v) %}
+{% set back = 'order/' ~ product.slug ~ (back_query ? '?' ~ back_query|url_encode : '') %}
 {# ClientFence core patch: the sign-up here asks name, email, password and country; a store requiring more (also a required custom field) signs up on its sign-up page. #}
 {% set signup_page = store.signup|default(false) and (guest.client_required|filter(n => n not in ['first_name', 'last_name', 'email', 'password', 'country'])|length > 0
     or guest.client_custom_fields|default({})|filter(f => f.active and f.required)|length > 0) %}
@@ -66,6 +70,9 @@
         quantity: addon.allow_quantity_select,
     }]) %}
 {% endfor %}
+{# ClientFence core patch: the cart holds only this plan with the link's code (applied here before a sign-in or a reload): the link applies it again without asking. #}
+{% set link_cart = link_promo ? guest.cart_get : {} %}
+{% set link_redo = link_promo and link_cart.items|default([])|length == 1 and link_cart.items[0].product_id == product.id and link_cart.promocode|default('')|upper == link_promo|upper %}
 {# ClientFence: data.tax is the tax the invoice adds, so "Due today" is what the invoice asks for. #}
 {% set data = {
     product: {
@@ -75,10 +82,12 @@
     },
     addons: addons,
     period: period,
+    promo: link_promo,
     currency: cart_currency.code,
     rate: cart_currency.conversion_rate,
     signedIn: client ? true : false,
     cartCount: guest.cart_count,
+    linkRedo: link_redo,
     signup: store.signup|default(false) and not signup_page,
     balance: profile ? (profile.balance|default(0)) : 0,
     tax: client ? client.clientfence_tax : { name: '', rate: 0 },
@@ -238,7 +247,7 @@
                         </div>
                     </div>
                 {% elseif signup_page %}
-                    <p class="mb-0">{{ 'Create your account first, then come back to this page.'|trans }} <a href="{{ 'signup'|url }}">{{ 'Sign up'|trans }}</a> · <a href="{{ 'login'|url({back: '/order/' ~ product.slug ~ (period ? '?period=' ~ period : '')}) }}">{{ 'Sign in'|trans }}</a></p>
+                    <p class="mb-0">{{ 'Create your account first, then come back to this page.'|trans }} <a href="{{ 'signup'|url }}">{{ 'Sign up'|trans }}</a> · <a href="{{ 'login'|url({back: '/' ~ back}) }}">{{ 'Sign in'|trans }}</a></p>
                 {% elseif store.signup|default(false) %}
                     {# Shown once the account is made but the sign-up did not sign in (checkout.js). #}
                     <div class="alert alert-info" role="status" tabindex="-1" data-bf-account-ready hidden>
@@ -261,9 +270,9 @@
                     </div>
                     {% import "macro_functions.html.twig" as mf %}
                     <div class="bf-captcha" data-bf-signup-part>{{ mf.recaptcha }}</div>
-                    <span class="bf-hint" data-bf-signup-part>{{ 'Already a client?'|trans }} <a href="{{ 'login'|url({back: '/order/' ~ product.slug ~ (period ? '?period=' ~ period : '')}) }}">{{ 'Sign in'|trans }}</a> {{ 'and your details fill in.'|trans }}</span>
+                    <span class="bf-hint" data-bf-signup-part>{{ 'Already a client?'|trans }} <a href="{{ 'login'|url({back: '/' ~ back}) }}">{{ 'Sign in'|trans }}</a> {{ 'and your details fill in.'|trans }}</span>
                     {# ClientFence: "Continue with Google" (Google sign-up), back to this checkout and its period. #}
-                    <div data-bf-signup-part>{{ render_widgets('client.page.signup.form.after', {google_return: 'order/' ~ product.slug ~ (period ? '?period=' ~ period : '')}) }}</div>
+                    <div data-bf-signup-part>{{ render_widgets('client.page.signup.form.after', {google_return: back}) }}</div>
                 {% else %}
                     <p class="mb-0">{{ 'Please sign in to order.'|trans }} <a href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a></p>
                 {% endif %}

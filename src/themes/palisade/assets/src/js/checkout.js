@@ -377,7 +377,7 @@ export default function initCheckout(root) {
       return;
     }
     // The code is checked on this plan alone: cart/add_item without `multiple` empties the cart.
-    if (Number(data.cartCount) > 0 && !window.confirm(fill(t.promoOthers, { count: data.cartCount }))) {
+    if (Number(data.cartCount) > 0 && !data.linkRedo && !window.confirm(fill(t.promoOthers, { count: data.cartCount }))) {
       return;
     }
     promoMessage('');
@@ -412,7 +412,15 @@ export default function initCheckout(root) {
   // The account is made but not signed in ("auto login after sign-up" off, or the email had an
   // account, which FOSSBilling never says): sign in, then back to this order and its cycle.
   const showAccountReady = () => {
-    const back = window.location.pathname + (state.cycle ? `?period=${encodeURIComponent(state.cycle)}` : '');
+    const query = new URLSearchParams();
+    if (state.cycle) {
+      query.set('period', state.cycle);
+    }
+    // An applied promo code comes back too, as from a store link's ?promo=.
+    if (state.promo) {
+      query.set('promo', state.promo.code);
+    }
+    const back = window.location.pathname + (query.toString() ? `?${query}` : '');
     const login = new URL(data.urls.login, window.location.href);
     login.searchParams.set('back', back);
     const ready = $('[data-bf-account-ready]');
@@ -550,4 +558,21 @@ export default function initCheckout(root) {
   });
 
   render();
+  // A store link's ?promo= code goes through the promo box, with all its checks and messages. It waits in the
+  // box while the cart holds other items (applying it here empties the cart; not this link's own plan and code,
+  // data.linkRedo), and is applied once the required order questions are answered (the cart refuses the plan
+  // without them).
+  if (data.promo) {
+    $('[data-bf-promo-input]').value = data.promo;
+    const required = [...root.querySelectorAll('[data-bf-field] [required]')];
+    let pending = !(Number(data.cartCount) > 0) || data.linkRedo;
+    const applyLink = () => {
+      if (pending && required.every((input) => input.checkValidity())) {
+        pending = false;
+        applyPromo();
+      }
+    };
+    required.forEach((input) => input.addEventListener('change', applyLink));
+    applyLink();
+  }
 }

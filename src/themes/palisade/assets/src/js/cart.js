@@ -16,13 +16,19 @@ export default function initCart(root) {
     }
   }));
 
-  root.querySelector('[data-bf-cart-promo]')?.addEventListener('submit', (event) => {
+  const promoForm = root.querySelector('[data-bf-cart-promo]');
+  promoForm?.addEventListener('submit', (event) => {
     event.preventDefault();
     const input = event.target.elements.promocode;
     if (input.reportValidity()) {
       api('guest', 'cart/apply_promo', { promocode: input.value.trim() }).then(() => window.location.reload(), fail);
     }
   });
+  // A store link's ?promo= code is applied once through the box; the address loses it so a reload or removal does not re-apply it.
+  if (promoForm?.hasAttribute('data-bf-cart-promo-auto')) {
+    window.history.replaceState(null, '', window.location.pathname);
+    promoForm.dispatchEvent(new Event('submit', { cancelable: true }));
+  }
   root.querySelector('[data-bf-cart-promo-remove]')?.addEventListener('click', () => {
     api('guest', 'cart/remove_promo').then(() => window.location.reload(), fail);
   });

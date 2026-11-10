@@ -36,8 +36,9 @@
 
 <a class="bf-linkbtn" href="{{ 'order'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back to the store'|trans }}</a>
 <h1 class="bf-page-title mt-2 mb-4">{{ product.title }}</h1>
+{# ClientFence core patch: a store link's ?promo= code goes on to the cart page, which applies it with its promo box. #}
 <form class="card bf-card bf-section bf-configure" method="post" action="{{ 'cart/add_item'|api_url(role: 'guest') }}"
-    {{ fb_api_form({ message: 'Added to your cart'|trans, redirect: 'cart'|url }) }}>
+    {{ fb_api_form({ message: 'Added to your cart'|trans, redirect: 'cart'|url(request.promo is iterable or not request.promo ? {} : { promo: request.promo }) }) }}>
     {% set tpl = 'mod_service' ~ product.type ~ '_order_form.html.twig' %}
     {{ include(tpl, product) }}
     {{ include('mod_order_addons.html.twig', product) }}
