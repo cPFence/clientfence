@@ -144,6 +144,10 @@ class Admin extends \ClientFence\Api\AbstractApi
             \ClientFence\Mod\Product\CurrencyPrices::ensure($this->getDi());
             \ClientFence\Mod\Product\CurrencyPrices::save($this->getDi()['em']->getConnection(), 'product', (int) $model->getId(), $data['currency_prices']);
         }
+        // ClientFence core patch: names and descriptions per language (Product/Translations.php), saved with the form.
+        if (is_array($data['translations'] ?? null)) {
+            \ClientFence\Mod\Product\Translations::save($this->getDi(), 'product', (int) $model->getId(), $data['translations']);
+        }
 
         return $service->updateProduct($model, $data);
     }
@@ -352,6 +356,10 @@ class Admin extends \ClientFence\Api\AbstractApi
         $icon_url = $data['icon_url'] ?? null;
 
         $service = $this->getService();
+        // ClientFence core patch: the category's names and descriptions per language (Product/Translations.php).
+        if (is_array($data['translations'] ?? null)) {
+            \ClientFence\Mod\Product\Translations::save($this->getDi(), 'category', (int) $model->getId(), $data['translations']);
+        }
 
         return $service->updateCategory($model, $title, $description, $icon_url);
     }
@@ -735,6 +743,28 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->di['logger']->info('Saved the option groups of product #%s', (int) $product->getId());
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch: names and descriptions per language (Product/Translations.php) for the item's
+     * page: `kind` (product, which includes add-ons, category, field or helpdesk), `id`. The default language and lang => {title, description}.
+     *
+     * @return array{default_locale: string, translations: array<string, array{title: ?string, description: ?string}>}
+     */
+    #[RequiredParams(['id' => 'ID was not passed'])]
+    public function translations_get($data): array
+    {
+        $kind = (string) ($data['kind'] ?? '');
+        if (!in_array($kind, \ClientFence\Mod\Product\Translations::KINDS, true)) {
+            throw new \ClientFence\InformationException('Unknown item.');
+        }
+        // Each kind is read by the staff who edit it.
+        $this->checkPermissions(['field' => 'formbuilder', 'helpdesk' => 'support'][$kind] ?? 'product', 'view');
+
+        return [
+            'default_locale' => (string) \ClientFence\Config::getProperty('i18n.locale', 'en_US'),
+            'translations' => \ClientFence\Mod\Product\Translations::forItem($this->getDi(), $kind, (int) $data['id']),
+        ];
     }
 
     #[RequiredParams(['id' => 'Product ID was not passed'])]

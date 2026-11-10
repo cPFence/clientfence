@@ -83,7 +83,8 @@ class Service implements \ClientFence\InjectionAwareInterface
             return __trans('Domain :domain transfer', [':domain' => $data['transfer_sld'] . $data['transfer_tld']]);
         }
 
-        return $product->getTitle();
+        // ClientFence core patch: the product's name in the page language (Product/Translations.php).
+        return \ClientFence\Mod\Product\Translations::title($this->di, $product);
     }
 
     public function validateOrderData(&$data, ?Product $product = null): void

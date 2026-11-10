@@ -1,15 +1,15 @@
-{% block subject %}[{{ guest.system_company.name }}] Welcome to {{ guest.system_company.name }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Welcome to %company%'|trans({'%company%': guest.system_company.name}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Welcome</title>
+<title>{{ 'Welcome'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
-<div style="display:none; max-height:0; overflow:hidden;">Your account is ready.</div>
+<div style="display:none; max-height:0; overflow:hidden;">{{ 'Your account is ready.'|trans }}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
 <tr><td align="center" style="padding:24px 12px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
@@ -21,35 +21,35 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Welcome to {{ guest.system_company.name }}</h1>
-		<p style="margin:0 0 16px;">Dear {{ c.first_name|default('') }} {{ c.last_name|default('') }},</p>
-		<p style="margin:0 0 16px;">Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team.</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Welcome to %company%'|trans({'%company%': guest.system_company.name}) }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Dear %first_name% %last_name%,'|trans({'%first_name%': c.first_name|default(''), '%last_name%': c.last_name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team.'|trans }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Sign-in email</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ c.email|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Sign-in email'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ c.email|default('') }}</td></tr>
 				</table>
 			</td></tr>
 		</table>
 {# ClientFence core patch: Google sign-up, the welcome email of an account made with Google (ClientFence). #}
 {% if clientfence_google.google|default(false) and clientfence_google.password_step|default(false) %}
-		<p style="margin:0 0 16px;">You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password.</p>
+		<p style="margin:0 0 16px;">{{ 'You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password.'|trans }}</p>
 {% elseif clientfence_google.google|default(false) %}
-		<p style="margin:0 0 16px;">You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account.</p>
+		<p style="margin:0 0 16px;">{{ 'You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account.'|trans }}</p>
 {% else %}
-		<p style="margin:0 0 16px;">Please sign in with the password you chose when you signed up.</p>
+		<p style="margin:0 0 16px;">{{ 'Please sign in with the password you chose when you signed up.'|trans }}</p>
 {% endif %}
 {% if require_email_confirmation|default(false) %}
-		<p style="margin:0 0 16px;">Please confirm your email address to finish setting up your account.</p>
+		<p style="margin:0 0 16px;">{{ 'Please confirm your email address to finish setting up your account.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ email_confirmation_link|default('#') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Confirm email address</a>
+				<a href="{{ email_confirmation_link|default('#') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Confirm email address'|trans }}</a>
 			</td></tr>
 		</table>
 {% else %}
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Sign in to client area</a>
+				<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Sign in to client area'|trans }}</a>
 			</td></tr>
 		</table>
 {% endif %}
@@ -57,7 +57,7 @@
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">Client area</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">Profile</a>{% if guest.system_company.email|default('') %} &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
+		<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Client area'|trans }}</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Profile'|trans }}</a>{% if guest.system_company.email|default('') %} &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
 	</td></tr>
 </table>
 </td></tr>

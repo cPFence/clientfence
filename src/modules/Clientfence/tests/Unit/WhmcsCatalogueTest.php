@@ -259,6 +259,42 @@ test('licence, custom, one-time and free products; add-ons and upgrade paths', f
         ->toContain('Bundle "Starter pack" was not imported');
 });
 
+test('Dynamic Field Translation texts become the items\' texts in other languages', function (): void {
+    $source = whmcsCatalogueSource();
+    $source->executeStatement('CREATE TABLE tbldynamic_translations (id INTEGER PRIMARY KEY, related_type TEXT, related_id INTEGER, language TEXT, translation TEXT)');
+    $source->executeStatement("CREATE TABLE tblemailtemplates (id INTEGER PRIMARY KEY, name TEXT, language TEXT DEFAULT '')");
+    foreach ([
+        ['product.{id}.name', 1, 'german', 'Einsteiger'], ['product.{id}.description', 1, 'german', 'Kleine Seiten'],
+        // The default language keeps the item's own text; a language this install does not ship is named once.
+        ['product.{id}.name', 1, 'english', 'Beginner'], ['product.{id}.name', 1, 'klingon', 'Qapla'], ['product.{id}.name', 2, 'klingon', 'Qapla'],
+        ['product_addon.{id}.name', 1, 'french', 'Sauvegardes'],
+        ['product_group.{id}.headline', 1, 'german', 'Schnelles Hosting'],
+        // A product's custom field is an order form question; a client custom field is not imported.
+        ['custom_field.{id}.name', 7, 'german', 'Paketgröße'], ['custom_field.{id}.description', 7, 'german', 'Bitte wählen'], ['custom_field.{id}.name', 9, 'german', 'Kein Produktfeld'],
+    ] as [$type, $id, $language, $text]) {
+        $source->insert('tbldynamic_translations', ['related_type' => $type, 'related_id' => $id, 'language' => $language, 'translation' => $text]);
+    }
+    $source->executeStatement("INSERT INTO tblemailtemplates (name, language) VALUES ('Invoice Created', ''), ('Invoice Created', 'german'), ('Invoice Created', 'french')");
+    $target = whmcsCatalogueTarget();
+    $target->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT, UNIQUE (kind, ref_id, lang))');
+    $catalogue = whmcsCatalogueAll($source, $target, null);
+
+    $starter = whmcsProductByTitle($target, 'Starter');
+    $backups = whmcsProductByTitle($target, 'Backups', 1);
+    $hosting = (int) $target->fetchOne("SELECT id FROM product_category WHERE title = 'Hosting'");
+    $size = (int) $target->fetchOne("SELECT id FROM form_field WHERE name = 'whmcs_field_7'");
+    expect($target->fetchAllAssociative('SELECT kind, ref_id, lang, title, description FROM product_translation ORDER BY id'))->toBe([
+        // A group's translated headline with its own tagline, as its description is made.
+        ['kind' => 'category', 'ref_id' => $hosting, 'lang' => 'de_DE', 'title' => null, 'description' => "Schnelles Hosting\n\nFrom \$10"],
+        ['kind' => 'product', 'ref_id' => (int) $starter['id'], 'lang' => 'de_DE', 'title' => 'Einsteiger', 'description' => 'Kleine Seiten'],
+        ['kind' => 'field', 'ref_id' => $size, 'lang' => 'de_DE', 'title' => 'Paketgröße', 'description' => 'Bitte wählen'],
+        ['kind' => 'product', 'ref_id' => (int) $backups['id'], 'lang' => 'fr_FR', 'title' => 'Sauvegardes', 'description' => null],
+    ]);
+    $warnings = $catalogue->warnings();
+    expect(array_values(array_filter($warnings, fn (string $w): bool => str_starts_with($w, 'Product texts in'))))->toBe(['Product texts in 1 language were not imported: it is not installed (klingon).'])
+        ->and($warnings)->toContain('2 translated email templates in WHMCS were not imported; ClientFence sends its own translated templates.');
+});
+
 test('promotions and domain prices', function (): void {
     $target = whmcsCatalogueTarget();
     $catalogue = whmcsCatalogueAll(whmcsCatalogueSource(), $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));

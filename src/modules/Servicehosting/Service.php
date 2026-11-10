@@ -90,13 +90,14 @@ class Service implements InjectionAwareInterface
             $data = array_merge(json_decode($product->getConfig() ?? '', true) ?? [], $data);
             [$sld, $tld] = $this->_getDomainTuple($data);
 
-            return __trans(':hosting for :domain', [':hosting' => $product->getTitle(), ':domain' => $sld . $tld]);
+            // ClientFence core patch: the plan's name in the page language (Product/Translations.php).
+            return __trans(':hosting for :domain', [':hosting' => \ClientFence\Mod\Product\Translations::title($this->di, $product), ':domain' => $sld . $tld]);
         } catch (\Exception $e) {
             // should never occur, but in case
             $this->logInfo($e->getMessage());
         }
 
-        return $product->getTitle();
+        return \ClientFence\Mod\Product\Translations::title($this->di, $product);
     }
 
     /**

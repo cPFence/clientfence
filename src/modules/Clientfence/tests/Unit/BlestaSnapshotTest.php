@@ -128,7 +128,8 @@ function blestaFake(): array
 }
 
 /** The fake Blesta as an SQLite file, its attachment in $files, and the run state on an in-memory database. */
-function blestaDi(): array
+/** @param array<string, list<array<string, mixed>>> $tables replace the fake's tables of these names */
+function blestaDi(array $tables = []): array
 {
     $dir = sys_get_temp_dir() . '/cf-blesta-test-' . getmypid();
     putenv('CLIENTFENCE_BACKUP_DIR=' . $dir . '/backups');
@@ -137,7 +138,7 @@ function blestaDi(): array
     file_put_contents($dir . '/secret.txt', 'DB_PASSWORD');
     @unlink($dir . '/blesta.sqlite');
     $blesta = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'path' => $dir . '/blesta.sqlite']);
-    foreach (blestaFake() as $table => $rows) {
+    foreach (array_replace(blestaFake(), $tables) as $table => $rows) {
         // Typed as the first row's values, so numbers compare as numbers (as in MySQL).
         $first = $rows[0] ?? ['service_id' => 0, 'registration_date' => '', 'expiration_date' => ''];
         $blesta->executeStatement(sprintf('CREATE TABLE %s (%s)', $table, implode(', ', array_map(fn (string $c): string => sprintf('"%s" %s', $c, is_int($first[$c]) ? 'INTEGER' : (is_float($first[$c]) ? 'REAL' : '')), array_keys($first)))));
@@ -306,4 +307,35 @@ test('a password kept from Blesta signs in once with the saved system key, then 
         // Rehashed the normal way: the next sign-in is a plain password check.
         ->and(password_verify('secret', $client->pass))->toBeTrue()
         ->and(Import::blestaPassword($di, $client, 'secret'))->toBeFalse();
+});
+
+test('names and descriptions in other languages go to the translations; translated email templates are counted', function (): void {
+    $fake = blestaFake();
+    [$di, $source, $settings] = blestaDi([
+        'company_settings' => [...$fake['company_settings'], ['company_id' => 1, 'key' => 'language', 'value' => 'de_de']],
+        'package_group_names' => [...$fake['package_group_names'], ['package_group_id' => 1, 'lang' => 'de_de', 'name' => 'Webhosting']],
+        // Starter has the default language's name; Weekly has none, so Blesta's default language (de_de) is its main one.
+        'package_names' => [
+            ['package_id' => 1, 'lang' => 'de_de', 'name' => 'Einsteiger'], ['package_id' => 1, 'lang' => 'en_us', 'name' => 'Starter'],
+            ['package_id' => 2, 'lang' => 'en_us', 'name' => '.com'],
+            ['package_id' => 3, 'lang' => 'fr_fr', 'name' => 'Hebdo'], ['package_id' => 3, 'lang' => 'de_de', 'name' => 'Woche'],
+        ],
+        'package_descriptions' => [...$fake['package_descriptions'], ['package_id' => 1, 'lang' => 'de_de', 'text' => 'Kleine Seiten']],
+        'emails' => [
+            ['id' => 1, 'email_group_id' => 1, 'company_id' => 1, 'lang' => 'en_us'], ['id' => 2, 'email_group_id' => 1, 'company_id' => 1, 'lang' => 'de_de'],
+            ['id' => 3, 'email_group_id' => 2, 'company_id' => 1, 'lang' => 'en_us'],
+        ],
+    ]);
+    Snapshot::fetch($di, $settings, 0.0, false, $source);
+    $db = Snapshot::open();
+
+    expect($db->fetchAllKeyValue('SELECT id, name FROM tblproducts ORDER BY id'))->toBe([1 => 'Starter', 3 => 'Woche'])
+        ->and($db->fetchOne('SELECT description FROM tblproducts WHERE id = 1'))->toBe('Small sites')
+        ->and($db->fetchAllAssociative('SELECT related_type, related_id, language, translation FROM tbldynamic_translations ORDER BY id'))->toBe([
+            ['related_type' => 'product_group.{id}.name', 'related_id' => 1, 'language' => 'de_de', 'translation' => 'Webhosting'],
+            ['related_type' => 'product.{id}.name', 'related_id' => 1, 'language' => 'de_de', 'translation' => 'Einsteiger'],
+            ['related_type' => 'product.{id}.description', 'related_id' => 1, 'language' => 'de_de', 'translation' => 'Kleine Seiten'],
+            ['related_type' => 'product.{id}.name', 'related_id' => 3, 'language' => 'fr_fr', 'translation' => 'Hebdo'],
+        ])
+        ->and(implode("\n", Run::warnings($di['em']->getConnection())))->toContain('1 translated email template in Blesta was not imported; ClientFence sends its own translated templates.');
 });

@@ -1312,6 +1312,107 @@ test('sendTemplate renders in the recipient\'s language if it is turned on, else
     'staff, also about a client with a language' => [['to_staff' => 1, 'to_client' => 1], 'fr_FR', null],
 ]);
 
+/** An in-memory email_template_translation table with one French version of template 7. */
+function emailVersionDb(string $subject = 'Sujet', string $content = 'Corps'): Doctrine\DBAL\Connection
+{
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE email_template_translation (id INTEGER PRIMARY KEY, email_template_id INTEGER, lang TEXT, subject TEXT, content TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('email_template_translation', ['email_template_id' => 7, 'lang' => 'fr_FR', 'subject' => $subject, 'content' => $content]);
+
+    return $db;
+}
+
+test('an email uses the version in the recipient\'s language, else the default text; a broken version sends the default and is recorded', function (string $locale, string $versionSubject, array $expected, ?string $error): void {
+    $template = emailTemplate('mod_email_test', 7, ['enabled' => true, 'is_custom' => true, 'subject' => 'Default subject', 'content' => 'Default body']);
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->andReturn($template);
+    $em = emailBuildEm(templateRepo: $templateRepo);
+    $em->shouldReceive('getConnection')->andReturn(emailVersionDb($versionSubject));
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('renderEmailTplString', 'renderEmailSubjectString')->andReturnUsing(function (string $tpl): string {
+        if ($tpl === 'BROKEN') {
+            throw new ClientFence\InformationException('Email template syntax error: broken');
+        }
+
+        return $tpl;
+    });
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (): object => $system);
+    $service = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $service->shouldReceive('getVars')->andReturn(['a' => 1]);
+    $service->setDi($di);
+
+    expect($service->renderTemplate('mod_email_test', ['a' => 1], [], null, $locale))->toBe($expected)
+        ->and($template->getLastError())->toBe($error)
+        ->and(in_array('warning', array_column($di['logger']->calls, 'method'), true))->toBe($error !== null);
+})->with([
+    'a version in the recipient\'s language' => ['fr_FR', 'Sujet', ['Sujet', 'Corps'], null],
+    'no version in that language' => ['de_DE', 'Sujet', ['Default subject', 'Default body'], null],
+    'a version that fails to render' => ['fr_FR', 'BROKEN', ['Default subject', 'Default body'], 'fr_FR: Email template syntax error: broken'],
+]);
+
+test('updateTemplate replaces the language versions when they are sent and keeps them otherwise', function (): void {
+    $db = emailVersionDb();
+    $template = emailTemplate('custom_test', 7, ['is_custom' => true, 'subject' => 'S', 'content' => 'C']);
+    $em = emailBuildEm();
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('checkEmailTplSyntax')->twice();
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (): object => $system);
+    // The app logger takes printf-style arguments (the container's PSR logger does not).
+    $di['logger'] = new class {
+        public function __call(string $name, array $arguments): static
+        {
+            return $this;
+        }
+    };
+    $service = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $service->shouldReceive('getVars')->andReturn([]);
+    $service->setDi($di);
+    $versions = fn (): array => $db->fetchAllKeyValue('SELECT lang, subject FROM email_template_translation');
+
+    $service->updateTemplate($template, null, null, null, null, ['de_DE' => ['subject' => 'Betreff', 'content' => 'Text']]);
+    expect($versions())->toBe(['de_DE' => 'Betreff']);
+
+    $service->updateTemplate($template, 1, 'General');
+    expect($versions())->toBe(['de_DE' => 'Betreff']);
+
+    $service->updateTemplate($template, translations: []);
+    expect($versions())->toBe([]);
+});
+
+test('validateAllTemplates checks each language version in its language', function (): void {
+    $template = emailTemplate('custom_test', 7, ['is_custom' => true, 'subject' => 'S', 'content' => 'C']);
+    $repo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class)->shouldIgnoreMissing();
+    $repo->shouldReceive('findAll')->andReturn([$template]);
+    $em = emailBuildEm();
+    $em->shouldReceive('getConnection')->andReturn(emailVersionDb('Sujet', 'BROKEN'));
+    $locales = [];
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('renderEmailTplString')->andReturnUsing(function (string $tpl, array $vars, ?string $timezone = null, ?string $locale = null) use (&$locales): string {
+        $locales[] = $locale;
+        if ($tpl === 'BROKEN') {
+            throw new ClientFence\InformationException('Email template syntax error: broken');
+        }
+
+        return $tpl;
+    });
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (): object => $system);
+    $service = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $service->shouldReceive('getVars')->andReturn([]);
+    $service->setDi($di);
+    (new ReflectionProperty($service, 'templateRepository'))->setValue($service, $repo);
+
+    expect($service->validateAllTemplates()['errors'][0]['error'] ?? null)->toBe('fr_FR: Email template syntax error: broken')
+        ->and($locales)->toBe([null, null, 'fr_FR'])
+        ->and($template->getLastError())->toBe('fr_FR: Email template syntax error: broken');
+});
+
 test('getTemplateGroupIds delegates to the template group repository', function (): void {
     $service = new ClientFence\Mod\Email\Service();
     $di = container();
@@ -1618,12 +1719,17 @@ test('templateToApiArray returns deep array with vars', function (): void {
         'content_override' => $content,
         'has_error' => false,
         'last_error' => null,
+        'translations' => [],
+        'default_locale' => (string) ClientFence\Config::getProperty('i18n.locale', 'en_US'),
     ];
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
     $serviceMock->shouldReceive('getVars')
         ->atLeast()->once()
         ->andReturn(['param1' => 'value1']);
+    $di = container();
+    $di['em'] = emailBuildEm();
+    $serviceMock->setDi($di);
 
     $result = $serviceMock->templateToApiArray($model, true);
 
@@ -2205,6 +2311,7 @@ test('EmailTemplate toApiArray includes has_error and last_error in deep mode', 
     $serviceMock->shouldReceive('getVars')
         ->atLeast()->once()
         ->andReturn([]);
+    $serviceMock->setDi(container());
 
     $result = $serviceMock->templateToApiArray($template, true);
 

@@ -1,15 +1,15 @@
-{% block subject %}[{{ guest.system_company.name }}] Quote #{{ quote.id|default('') }}: {{ quote.subject|default('') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Quote #%id%: %subject%'|trans({'%id%': quote.id|default(''), '%subject%': quote.subject|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Quote #{{ quote.id|default('') }}</title>
+<title>{{ 'Quote #%id%'|trans({'%id%': quote.id|default('')}) }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
-<div style="display:none; max-height:0; overflow:hidden;">Our quote for {{ quote.subject|default('') }}.</div>
+<div style="display:none; max-height:0; overflow:hidden;">{{ 'Our quote for %subject%.'|trans({'%subject%': quote.subject|default('')}) }}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
 <tr><td align="center" style="padding:24px 12px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
@@ -21,24 +21,24 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Quote #{{ quote.id|default('') }}</h1>
-		<p style="margin:0 0 16px;">Dear {{ quote.recipient.name|default('') }},</p>
-		<p style="margin:0 0 16px;">Thank you for your interest. Please find our quote for <strong>{{ quote.subject|default('') }}</strong> below; the PDF is attached to this email.</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Quote #%id%'|trans({'%id%': quote.id|default('')}) }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Dear %name%,'|trans({'%name%': quote.recipient.name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email.'|trans_html({}, {'%subject%': '<strong>' ~ (quote.subject|default(''))|e ~ '</strong>'}) }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Quote</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">#{{ quote.id|default('') }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Total</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ quote.total|default(0)|format_currency(quote.currency|default(default_currency)) }}</td></tr>
-					{% if quote.valid_until|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Valid until</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ quote.valid_until|default('')|format_date }}</td></tr>{% endif %}
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Quote'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">#{{ quote.id|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Total'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ quote.total|default(0)|format_currency(quote.currency|default(default_currency)) }}</td></tr>
+					{% if quote.valid_until|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Valid until'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ quote.valid_until|default('')|format_date }}</td></tr>{% endif %}
 				</table>
 			</td></tr>
 		</table>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ quote_link|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">View and accept quote</a>
+				<a href="{{ quote_link|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'View and accept quote'|trans }}</a>
 			</td></tr>
 		</table>
-		<p style="margin:0 0 16px;">Once you accept the quote, we send you the invoice. Questions? Just reply to this email.</p>
+		<p style="margin:0 0 16px;">{{ 'Once you accept the quote, we send you the invoice. Questions? Just reply to this email.'|trans }}</p>
 		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">

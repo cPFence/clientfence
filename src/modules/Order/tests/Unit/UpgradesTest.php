@@ -40,7 +40,7 @@ function upgradesDb(): Connection
             . ' w_enabled INTEGER DEFAULT 0, m_enabled INTEGER DEFAULT 0, q_enabled INTEGER DEFAULT 0, b_enabled INTEGER DEFAULT 0, a_enabled INTEGER DEFAULT 0, bia_enabled INTEGER DEFAULT 0, tria_enabled INTEGER DEFAULT 0)',
         'CREATE TABLE currency (code TEXT PRIMARY KEY, conversion_rate REAL)',
         'CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY, client_order_id INTEGER, name TEXT, value TEXT, created_at TEXT, updated_at TEXT)',
-        'CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT)',
+        'CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT, lang TEXT)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, service_id INTEGER, service_type TEXT, title TEXT, status TEXT, period TEXT, price REAL, quantity INTEGER DEFAULT 1,'
             . ' discount REAL, currency TEXT, expires_at TEXT, unpaid_invoice_id INTEGER, config TEXT, updated_at TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, hash TEXT, serie TEXT, nr TEXT, updated_at TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0, refund REAL DEFAULT 0, paid_at TEXT, created_at TEXT)',
@@ -691,6 +691,24 @@ test('monthly to yearly upgrade: invoiced, then applied once when paid', functio
         ->and(count($di['status_notes']))->toBe(1)
         // The new yearly Pro can move on: to Business yearly, for the days left of the new year.
         ->and(array_keys(upgradesOptionTable($di, 1, '2026-10-17 09:00:00')))->toContain('3/1Y');
+});
+
+test('a German client sees the plans by their German names and the changed order takes the new one', function (): void {
+    $db = upgradesDb();
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('product_translation', ['kind' => 'product', 'ref_id' => 1, 'lang' => 'de_DE', 'title' => 'Einsteiger']);
+    $db->insert('product_translation', ['kind' => 'product', 'ref_id' => 2, 'lang' => 'de_DE', 'title' => 'Profi']);
+    $db->update('client', ['lang' => 'de_DE'], ['id' => 5]);
+    $db->update('client_order', ['title' => 'Einsteiger'], ['id' => 1]);
+    $di = upgradesContainer($db);
+
+    $titles = array_column(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW)['options'], 'title', 'product_id');
+    expect($titles)->toMatchArray([1 => 'Einsteiger', 2 => 'Profi', 3 => 'Business']);
+
+    $result = Upgrades::request($di, upgradesOrder($di, 1), 2, '1y', UPGRADES_NOW);
+    upgradesPay($db, $result['id']);
+    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
+    expect($db->fetchOne('SELECT title FROM client_order WHERE id = 1'))->toBe('Profi');
 });
 
 test('a paid plan change cancels the order subscription', function (): void {
@@ -1700,6 +1718,20 @@ test('staff move a service to a compatible product, as WHMCS', function (bool $r
     'recalculated, Change Package' => [true, true, 200.0, [[5, 8]]],
     'price kept, no Change Package' => [false, false, 100.0, []],
 ]);
+
+test('staff moving a German client\'s service keep its title in German, with its domain', function (): void {
+    $db = upgradesDb();
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('product_translation', ['kind' => 'product', 'ref_id' => 20, 'lang' => 'de_DE', 'title' => 'Webhosting S']);
+    $db->insert('product_translation', ['kind' => 'product', 'ref_id' => 21, 'lang' => 'de_DE', 'title' => 'Webhosting M']);
+    $db->update('client', ['lang' => 'de_DE'], ['id' => 5]);
+    $db->update('client_order', ['title' => 'Webhosting S example.com'], ['id' => 5]);
+    $di = upgradesContainer($db);
+
+    Upgrades::staffMove($di, 5, 21, false, false);
+
+    expect($db->fetchOne('SELECT title FROM client_order WHERE id = 5'))->toBe('Webhosting M example.com');
+});
 
 test('staff cannot move a service to a product on another server or of another reseller kind', function (int $productId): void {
     $db = upgradesDb();

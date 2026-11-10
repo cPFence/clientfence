@@ -32,10 +32,15 @@
             card_class: 'mb-0'
         } %}
             {% block form_content %}
+                {# ClientFence: the language bar of the name and description (mod_product_translations.html.twig). #}
+                {{ include('mod_product_translations.html.twig', { part: 'bar', kind: 'product', item: product }) }}
                 <div class="row g-3">
                     <div class="col-lg-6">
-                        <label class="form-label">{{ 'Title'|trans }}</label>
-                        <input class="form-control" type="text" name="title" value="{{ product.title }}" required>
+                        <div data-cf-text-pane="">
+                            <label class="form-label">{{ 'Title'|trans }}</label>
+                            <input class="form-control" type="text" name="title" value="{{ product.title }}" required>
+                        </div>
+                        {{ include('mod_product_translations.html.twig', { part: 'title', kind: 'product', item: product }) }}
                     </div>
                     <div class="col-lg-6">
                         <label class="form-label">{{ 'Icon'|trans }}</label>
@@ -57,9 +62,12 @@
                         </select>
                     </div>
                     <div class="col-12">
-                        <label class="form-label">{{ 'Description'|trans }}</label>
-                        <div class="form-text mb-2">{{ 'Describe what this addon provides on the order page and in client-facing product details.'|trans }}</div>
-                        <textarea class="form-control" name="description" rows="5">{{ product.description }}</textarea>
+                        <div data-cf-text-pane="">
+                            <label class="form-label">{{ 'Description'|trans }}</label>
+                            <div class="form-text mb-2">{{ 'Describe what this addon provides on the order page and in client-facing product details.'|trans }}</div>
+                            <textarea class="form-control" name="description" rows="5">{{ product.description }}</textarea>
+                        </div>
+                        {{ include('mod_product_translations.html.twig', { part: 'description', kind: 'product', item: product }) }}
                     </div>
                 </div>
 

@@ -158,7 +158,7 @@ def unescape(body, quote, php):
 
 
 LITERAL = r"""(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")"""
-TWIG = re.compile(LITERAL + r'\s*\|\s*trans\b', re.S)
+TWIG = re.compile(LITERAL + r'\s*\|\s*trans(?:_html)?\b', re.S)
 PHP_SINGLE = re.compile(r'\b__trans\(\s*' + LITERAL, re.S)
 # System Health check texts, translated when read (Health::localize()).
 PHP_HEALTH = re.compile(r'\b(?:self|Health)::msg\(\s*' + LITERAL, re.S)

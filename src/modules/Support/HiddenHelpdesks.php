@@ -52,7 +52,13 @@ final class HiddenHelpdesks
      */
     public static function visiblePairs(\Pimple\Container $di, array $pairs): array
     {
-        return array_diff_key($pairs, array_flip(self::ids($di)));
+        $pairs = array_diff_key($pairs, array_flip(self::ids($di)));
+        // Clients and guests read the names in the page language (Product/Translations.php).
+        foreach ($pairs as $id => $name) {
+            $pairs[$id] = (string) \ClientFence\Mod\Product\Translations::text($di, 'helpdesk', (int) $id, 'title', (string) $name);
+        }
+
+        return $pairs;
     }
 
     /** Saves a help desk's "Hidden from clients" from its form (core patch in Service::helpdeskUpdate()). */

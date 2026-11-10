@@ -50,6 +50,30 @@ msgstr ""
 msgid "%active% active, %draft% draft"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% immediately."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%)."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% declined quote %quote%. It is now lost."
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "%count% files of ClientFence %version% were changed on this site."
 msgstr ""
@@ -78,6 +102,10 @@ msgstr ""
 msgid "%count% unpaid invoices already issued keep the old price."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "%discount% (included in the new price)"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig
 msgid "%left% of %total% days left"
 msgstr ""
@@ -86,8 +114,56 @@ msgstr ""
 msgid "%matched% services match: %change% get a new price, %unchanged% already have it, %skipped% are skipped."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "%name% assigned ticket %ticket% to you."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "%name% closed support ticket %ticket%."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig
+msgid "%name% opened a new support ticket: %subject%."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "%name% replied to support ticket %ticket%."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "%period% year(s)"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_canned_category.html.twig src/modules/Support/templates/admin/mod_support_canned_responses.html.twig src/modules/Support/templates/admin/mod_support_kb_article.html.twig …
 msgid "%time% ago"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "%title% cancelled"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+msgid "%title% is now active"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "%title% is ready"
+msgstr ""
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "%title% is ready to download"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "%title% reactivated"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "%title% renewed"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "%title% suspended"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -784,6 +860,10 @@ msgstr ""
 msgid "A check from a banned domain (with or without www.) or IP address fails whatever licence key it sends, and nothing is bound to the licence."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "A client"
+msgstr ""
+
 #: src/modules/Client/Users.php
 msgid "A client account already signs in with this email."
 msgstr ""
@@ -876,6 +956,18 @@ msgstr ""
 msgid "A license plugin is a PHP class named"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "A member of our team has created a client account for you. In the client area you can manage your services, pay invoices and contact our support team."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out (%date%). This site runs ClientFence %version%."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out. This site runs ClientFence %version%."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
 msgid "A new PIN is on its way."
 msgstr ""
@@ -884,8 +976,24 @@ msgstr ""
 msgid "A new backup code replaces the old one."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "A new client has just created an account with %company%."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "A new order has been placed on %created_at%."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "A new period starts today and renews on %date%: %charge%, less %credit% unused."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "A new support ticket was opened in %helpdesk%: %subject%."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "A new ticket from our team"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
@@ -1052,7 +1160,7 @@ msgstr ""
 msgid "API call is missing arguments"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php …
 msgid "API key"
 msgstr ""
 
@@ -1124,8 +1232,16 @@ msgstr ""
 msgid "Accept invitation"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
 msgid "Accept the cancellation request?"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "Accept the invitation"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_quote.html.twig
@@ -1260,7 +1376,7 @@ msgstr ""
 msgid "Account deletion requests are not available. Please open a ticket."
 msgstr ""
 
-#: src/themes/palisade/html/layout_default.html.twig
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Account details"
 msgstr ""
 
@@ -1318,6 +1434,10 @@ msgstr ""
 
 #: src/modules/Extension/templates/admin/mod_extension_index.html.twig src/modules/Order/templates/admin/mod_order_failed_actions.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Activate"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
+msgid "Activated"
 msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
@@ -1564,6 +1684,10 @@ msgstr ""
 msgid "Add group"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Add language"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Add line"
 msgstr ""
@@ -1800,7 +1924,7 @@ msgstr ""
 msgid "Admin address, captcha, sign-in"
 msgstr ""
 
-#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig src/themes/admin_default/html_custom/partial_admin_auth_card.html.twig
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/modules/Email/templates/email/mod_email_test.html.twig src/modules/Staff/templates/email/mod_staff_client_order.html.twig …
 msgid "Admin area"
 msgstr ""
 
@@ -1824,7 +1948,7 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_network_issue.html.twig src/modules/Support/templates/admin/mod_support_network_issues.html.twig src/themes/palisade/html/mod_support_network_status.html.twig
+#: src/modules/Support/templates/admin/mod_support_network_issue.html.twig src/modules/Support/templates/admin/mod_support_network_issues.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig …
 msgid "Affects"
 msgstr ""
 
@@ -2628,6 +2752,10 @@ msgstr ""
 msgid "Amount cannot exceed :max_amount"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Amount due"
+msgstr ""
+
 #: src/modules/Invoice/Reports.php
 msgid "Amount in"
 msgstr ""
@@ -2652,7 +2780,7 @@ msgstr ""
 msgid "Amount out"
 msgstr ""
 
-#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Invoice/templates/email/mod_invoice_paid.html.twig …
 msgid "Amount paid"
 msgstr ""
 
@@ -2708,8 +2836,16 @@ msgstr ""
 msgid "An error occurred while rendering this widget."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "An escalation rule assigned ticket %ticket% to you."
+msgstr ""
+
 #: src/modules/Extension/Service.php
 msgid "An exception was thrown by the :name module: :err"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "An invitation to %account%."
 msgstr ""
 
 #: src/modules/Product/Options.php
@@ -2788,7 +2924,7 @@ msgstr ""
 msgid "Another update appears to already be in progress. Please wait for it to finish before trying again."
 msgstr ""
 
-#: src/themes/palisade/html/macro_functions.html.twig
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
 msgid "Answered"
 msgstr ""
 
@@ -3200,6 +3336,22 @@ msgstr ""
 msgid "Automatic Sync Rate"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed: invoice #%number%"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment for your service has stopped"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment has stopped"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
 msgid "Automatic payments"
 msgstr ""
@@ -3460,7 +3612,7 @@ msgstr ""
 msgid "Billed weekly"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig …
 msgid "Billing"
 msgstr ""
 
@@ -3848,12 +4000,20 @@ msgstr ""
 msgid "Cancellation is scheduled at the payment gateway. Select a different status only to override the synchronized state."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request"
+msgstr ""
+
 #: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
 msgid "Cancellation request received"
 msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
 msgid "Cancellation request received: %title%"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request: #%id% %title%"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -4384,8 +4544,16 @@ msgstr ""
 msgid "Choose a month."
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_user_reset.html.twig src/themes/palisade/html/mod_client_set_new_password.html.twig
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "Choose a new password"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_user_reset.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/themes/palisade/html/mod_client_set_new_password.html.twig
 msgid "Choose a new password for your account."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "Choose a new password for your user."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_link.html.twig src/modules/Client/templates/client/mod_client_google_profile.html.twig
@@ -4848,7 +5016,7 @@ msgstr ""
 msgid "Client activity"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig src/modules/Order/templates/email/mod_order_cancel_request.html.twig …
+#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig …
 msgid "Client area"
 msgstr ""
 
@@ -4940,6 +5108,10 @@ msgstr ""
 msgid "ClientFence"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "ClientFence %version% is available"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "ClientFence %version% was installed successfully."
 msgstr ""
@@ -4954,6 +5126,10 @@ msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "ClientFence :version: requires at least PHP :min_php:, but you are running :current_php:."
+msgstr ""
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "ClientFence Email Test"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -5500,12 +5676,20 @@ msgstr ""
 msgid "Confirm Password"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Confirm email address"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_google_link.html.twig src/modules/Client/templates/client/mod_client_google_profile.html.twig src/themes/palisade/html/mod_page_signup.html.twig
 msgid "Confirm password"
 msgstr ""
 
 #: src/modules/Servicehosting/Api/Client.php
 msgid "Confirm that you want to restore this backup."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Confirm your email address"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -5632,7 +5816,7 @@ msgstr ""
 msgid "Control invoice cleanup rules and the numbering scheme used for generated documents."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
 msgid "Control panel"
 msgstr ""
 
@@ -5742,6 +5926,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
 msgid "Copied"
+msgstr ""
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Copied from the default text: translate it and click Update."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
@@ -6308,7 +6496,7 @@ msgstr ""
 msgid "Current password required"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig
 msgid "Current price"
 msgstr ""
 
@@ -6576,7 +6764,7 @@ msgstr ""
 msgid "Date of Birth"
 msgstr ""
 
-#: src/modules/Invoice/Reports.php
+#: src/modules/Invoice/Reports.php src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
 msgid "Date paid"
 msgstr ""
 
@@ -6606,6 +6794,18 @@ msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig
 msgid "Dead"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+msgid "Dear %first_name% %last_name%,"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Dear %first_name%,"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
+msgid "Dear %name%,"
 msgstr ""
 
 #: src/modules/Invoice/Reports.php src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
@@ -6866,6 +7066,10 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Delivery report"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig …
+msgid "Department"
 msgstr ""
 
 #: src/modules/Invoice/ServiceInvoiceItem.php
@@ -7276,6 +7480,10 @@ msgstr ""
 msgid "Domain products must be registered or transferred."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Domain reactivated"
+msgstr ""
+
 #: src/modules/Servicedomain/Service.php
 msgid "Domain registrar :adapter was not found"
 msgstr ""
@@ -7300,8 +7508,16 @@ msgstr ""
 msgid "Domain registration tld parameter missing."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Domain renewed"
+msgstr ""
+
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Domain searches ask guests once, then not again for an hour."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "Domain suspended"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig
@@ -7384,6 +7600,10 @@ msgstr ""
 msgid "Download a copy of the personal data we keep about you: your profile, orders, invoices, payments, tickets and the emails we sent you."
 msgstr ""
 
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Download now"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "Download payment gateway extension file and place it to"
 msgstr ""
@@ -7430,6 +7650,10 @@ msgstr ""
 
 #: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/client/mod_invoice_index.html.twig …
 msgid "Due Date"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Due date"
 msgstr ""
 
 #: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
@@ -7624,7 +7848,7 @@ msgstr ""
 msgid "Email Log Retention"
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_template.html.twig
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Email/templates/admin/partial_email_template_version.html.twig
 msgid "Email Message"
 msgstr ""
 
@@ -7826,6 +8050,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Email templates can receive variables from ClientFence. Available variables are listed under the Variables tab, and preview will render the current content using example values."
+msgstr ""
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Email test"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -8076,6 +8304,10 @@ msgstr ""
 msgid "End of billing period"
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Ends"
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid "Enforced. No script was blocked in the last 7 days."
 msgstr ""
@@ -8166,6 +8398,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php
 msgid "Enter a price of 0 or more."
+msgstr ""
+
+#: src/modules/Email/Translations.php
+msgid "Enter a subject and a message for every language version."
 msgstr ""
 
 #: src/modules/Support/NetworkIssues.php
@@ -8708,7 +8944,7 @@ msgstr ""
 msgid "Expiring soon"
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_post.html.twig
+#: src/modules/News/templates/admin/mod_news_post.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
 msgid "Expiry date"
 msgstr ""
 
@@ -9156,6 +9392,10 @@ msgstr ""
 msgid "Fix"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email."
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
 msgid "Fixed"
 msgstr ""
@@ -9242,6 +9482,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option_group.html.twig
 msgid "For staff only, such as \"VPS resources\"."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "For your security, passwords are never sent by email. Sign in to the client area to open your control panel directly or to set a new hosting password."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -9600,6 +9844,10 @@ msgstr ""
 msgid "Give a subject (up to 200 characters) and a message (up to 5000 characters)."
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Give feedback"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "Give other people their own sign-in to this account and choose what each of them can do."
 msgstr ""
@@ -9686,6 +9934,18 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Good morning, :name"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Good news: your domain %title% has been reactivated and is available again."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Good news: your hosting account %title% has been reactivated and is available again."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Good news: your service %title% has been reactivated and is available again."
 msgstr ""
 
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
@@ -9904,8 +10164,16 @@ msgstr ""
 msgid "Hello"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig src/modules/Order/templates/email/mod_order_cancel_request.html.twig …
+#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig …
 msgid "Hello %name%,"
+msgstr ""
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Hello %staff_member_name%,"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Hello,"
 msgstr ""
 
 #: src/themes/admin_default/html/layout_default.html.twig src/themes/admin_default/html_custom/partial_clientfence_sidebar.html.twig
@@ -9916,7 +10184,7 @@ msgstr ""
 msgid "Help Desk"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Support/templates/admin/mod_support_mail_log.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig …
 msgid "Help desk"
 msgstr ""
 
@@ -10136,8 +10404,24 @@ msgstr ""
 msgid "Hosting Settings Updated"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "Hosting account cancelled"
+msgstr ""
+
 #: src/modules/Servicehosting/Panel/Panels.php
 msgid "Hosting account not found"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Hosting account reactivated"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Hosting account renewed"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "Hosting account suspended"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig src/themes/palisade/html/partial_menu.html.twig
@@ -10148,7 +10432,7 @@ msgstr ""
 msgid "Hosting panels"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
 msgid "Hosting plan"
 msgstr ""
 
@@ -10252,8 +10536,16 @@ msgstr ""
 msgid "How clients pay you"
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do?"
+msgstr ""
+
 #: src/themes/palisade/html/mod_support_ticket.html.twig
 msgid "How did we do? Tell us about the support you received on this ticket."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do? Your feedback on ticket #%id%"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -10344,7 +10636,7 @@ msgstr ""
 msgid "ID required"
 msgstr ""
 
-#: src/modules/Order/Api/Admin.php src/modules/Staff/Api/Admin.php
+#: src/modules/Order/Api/Admin.php src/modules/Product/Api/Admin.php src/modules/Staff/Api/Admin.php
 msgid "ID was not passed"
 msgstr ""
 
@@ -10380,7 +10672,7 @@ msgstr ""
 msgid "IP Lookup"
 msgstr ""
 
-#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "IP address"
 msgstr ""
 
@@ -10460,6 +10752,18 @@ msgstr ""
 msgid "If the dropdown menu doesn't have the appropriate network interface, please enter the IP address or name (e.g., eth0) of the correct one above."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the domain. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the hosting account. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the service. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr ""
+
 #: src/modules/News/templates/admin/mod_news_post.html.twig
 msgid "If the text is very long you can use <strong>&lt;!--more--&gt;</strong> tag. Inserting this tag within the post will create and excerpt of text (before the tag) to be displayed in posts list. Users will be able to see whole content when they click on \"Read more\" button."
 msgstr ""
@@ -10484,12 +10788,56 @@ msgstr ""
 msgid "If you are new, continuing with Google creates your account. By continuing, you agree to our"
 msgstr ""
 
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "If you are reading this email, ClientFence is %bold%configured properly%bold_end% and is %bold%able to send emails%bold_end%. No further action is needed."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "If you are sure that this transaction is valid you can update transaction details in &quot;Manage&quot; tab and try processing transaction again"
 msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
 msgid "If you asked by mistake, withdraw the request from the service page before it is processed."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "If you believe this was done in error or have any questions, please open a support ticket and our team will be glad to help."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "If you did not ask for a password reset, you can safely ignore this email: your password stays the same."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "If you did not create an account with %company%, you can ignore this email."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "If you did not make this change, contact your administrator immediately."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "If you did not make this change, please contact our support team immediately."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "If you have any questions about this change, please reply to this email or open a support ticket."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "If you have any questions, please reply to this email or open a support ticket."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "If you need further help with this request, you can still view the ticket, or open a new one at any time."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "If you ordered a domain with this account, it can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig
@@ -10860,7 +11208,7 @@ msgstr ""
 msgid "Invalid knowledge base article status: :status"
 msgstr ""
 
-#: src/modules/Client/Api/Admin.php src/modules/Client/Service.php src/modules/Profile/Service.php
+#: src/modules/Client/Api/Admin.php src/modules/Client/Service.php src/modules/Email/Translations.php …
 msgid "Invalid locale code: :code"
 msgstr ""
 
@@ -11000,6 +11348,26 @@ msgstr ""
 msgid "Invoice #%id% keeps the old price"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number%"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% for %balance_due% is due on %due_at%."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Invoice #%number% is due on %due_at%."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Invoice #%number% is past due. Please pay it to keep your services running."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% is ready"
+msgstr ""
+
 #: src/modules/Invoice/ServiceTransaction.php
 msgid "Invoice #:id not found"
 msgstr ""
@@ -11112,6 +11480,10 @@ msgstr ""
 msgid "Invoice created: pay :amount by :method and send us the receipt."
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Invoice date"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Invoice hash lifetime (days)"
 msgstr ""
@@ -11154,6 +11526,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Invoice notifications are sent here. Leave blank to use your account email."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Invoice number"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -11468,6 +11844,10 @@ msgstr ""
 msgid "Language not found"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Language versions"
+msgstr ""
+
 #: src/modules/Extension/Controller/Admin.php
 msgid "Languages"
 msgstr ""
@@ -11664,6 +12044,10 @@ msgstr ""
 msgid "Leave blank to use company public name"
 msgstr ""
 
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Leave blank to use the default"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Leave empty for no promotion."
 msgstr ""
@@ -11782,6 +12166,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "License Validation Rules"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "License key"
 msgstr ""
 
 #: src/modules/Servicelicense/Service.php
@@ -12408,6 +12796,10 @@ msgstr ""
 msgid "Manage custom services"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Manage domain"
+msgstr ""
+
 #: src/modules/Servicedomain/Service.php
 msgid "Manage domains"
 msgstr ""
@@ -12442,6 +12834,14 @@ msgstr ""
 
 #: src/modules/Hook/Service.php
 msgid "Manage hooks"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Manage hosting"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Manage hosting account"
 msgstr ""
 
 #: src/modules/Servicehosting/Service.php
@@ -12564,7 +12964,7 @@ msgstr ""
 msgid "Manage reusable support responses and organize them into categories."
 msgstr ""
 
-#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig …
 msgid "Manage service"
 msgstr ""
 
@@ -12606,6 +13006,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Manage the email template content, inspect available variables, and preview how the rendered message will look."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Manage the order"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
@@ -13276,6 +13680,10 @@ msgstr ""
 msgid "Namecheap command :command failed with HTTP status :status."
 msgstr ""
 
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Names and descriptions in other languages"
+msgstr ""
+
 #: src/modules/Invoice/Quotes.php
 msgid "Names can be at most :max characters."
 msgstr ""
@@ -13568,6 +13976,10 @@ msgstr ""
 msgid "New backup code"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "New client signed up"
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "New client: :name"
 msgstr ""
@@ -13620,6 +14032,14 @@ msgstr ""
 msgid "New order #:id: :title"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order placed"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order: %title%"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "New orders"
 msgstr ""
@@ -13644,7 +14064,7 @@ msgstr ""
 msgid "New password required"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig
 msgid "New price"
 msgstr ""
 
@@ -13654,6 +14074,10 @@ msgstr ""
 
 #: src/modules/Client/Api/Guest.php
 msgid "New registrations are temporarily disabled"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "New reply from client"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -13670,6 +14094,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid "New ticket #:id: :subject"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "New ticket opened"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -13742,6 +14170,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Next date is counted from renewal (payment) date"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig …
+msgid "Next due date"
 msgstr ""
 
 #: src/modules/System/Service.php
@@ -14596,6 +15028,10 @@ msgstr ""
 msgid "Once per Client"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Once you accept the quote, we send you the invoice. Questions? Just reply to this email."
+msgstr ""
+
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig
 msgid "One IP address or CIDR range per line, at most 20. A check from any other IP answers as invalid. Leave empty to allow all IPs."
 msgstr ""
@@ -14614,6 +15050,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "One address per line. Mail to this account is also sent there."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "One click to confirm your email address."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
@@ -14856,12 +15296,20 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Open Cancellation Requests"
+msgstr ""
+
 #: src/modules/System/Service.php
 msgid "Open Cron Settings"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_config.html.twig
 msgid "Open Domain Management"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Open Failed actions"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Support/templates/client/mod_support_tickets.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
@@ -14880,6 +15328,10 @@ msgstr ""
 msgid "Open Support"
 msgstr ""
 
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "Open System health"
+msgstr ""
+
 #: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Open Ticket"
 msgstr ""
@@ -14890,6 +15342,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Open Tickets"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
+msgid "Open a support ticket"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
@@ -14908,12 +15364,24 @@ msgstr ""
 msgid "Open the Articles tab to load data"
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Open the client area"
+msgstr ""
+
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "Open the invoice"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Open the invoice to pay"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Open the quote"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Open the ticket"
 msgstr ""
 
 #: src/modules/Support/Service.php
@@ -15060,7 +15528,7 @@ msgstr ""
 msgid "Or send it later"
 msgstr ""
 
-#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_failed_actions.html.twig …
+#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig …
 msgid "Order"
 msgstr ""
 
@@ -15196,6 +15664,14 @@ msgstr ""
 msgid "Order Visibility"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed: %action% #%order_id%"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
 msgid "Order actions a hosting panel, registrar or other service refused or could not finish. Retry runs the same action again; Dismiss closes it without a retry."
 msgstr ""
@@ -15316,12 +15792,32 @@ msgstr ""
 msgid "Other/Unknown"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Our quote for %subject%."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our support team has opened a ticket for you. Their message is below."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
+msgstr ""
+
 #: src/modules/System/templates/client/mod_system_maintenance.html.twig src/themes/palisade/html/mod_system_maintenance.html.twig
 msgid "Our systems are undergoing maintenance. We'll be back soon."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_network_status.html.twig
 msgid "Our team is working on it. Details are below."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our team opened ticket #%id% for you."
 msgstr ""
 
 #: src/library/Server/Manager/Plesk.php
@@ -15362,6 +15858,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Overdue"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Overdue notice: invoice #%number%"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -15766,6 +16266,14 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Pay by :method"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Pay invoice"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Pay invoice now"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -16180,6 +16688,10 @@ msgstr ""
 msgid "Payment methods"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Payment overdue"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Payment pending"
 msgstr ""
@@ -16192,8 +16704,24 @@ msgstr ""
 msgid "Payment receipts go to"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received"
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "Payment received for invoice :number"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received: invoice #%number%"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder: invoice #%number%"
 msgstr ""
 
 #: src/library/Payment/Adapter/Stripe.php
@@ -16404,6 +16932,10 @@ msgstr ""
 msgid "Plan made."
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Please also %link%confirm your email address%link_end%. If the link has expired, you can ask for a new one after signing in."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Please be cautious when editing raw order configuration values. Incorrect changes can affect service behavior and billing logic."
 msgstr ""
@@ -16430,6 +16962,18 @@ msgstr ""
 
 #: src/modules/Antispam/Service.php
 msgid "Please complete the CAPTCHA verification."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm that this is your email address by clicking the button below. It keeps your account secure and makes sure you receive important notices about your services and invoices."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm your email address"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please confirm your email address to finish setting up your account."
 msgstr ""
 
 #: src/modules/Client/Privacy.php
@@ -16476,12 +17020,20 @@ msgstr ""
 msgid "Please fill out this field."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Please keep in mind that a new domain can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate. Your website and email on this domain start working once that is done."
+msgstr ""
+
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
 msgid "Please keep in mind that field name cannot start with a number. Special characters will be replaced with underscores ( _ )"
 msgstr ""
 
 #: src/themes/palisade/html/partials/i18n.html.twig
 msgid "Please match the requested format."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Please reply from the staff panel, not to this email."
 msgstr ""
 
 #: src/themes/palisade/html/partials/i18n.html.twig
@@ -16502,6 +17054,14 @@ msgstr ""
 
 #: src/themes/palisade/html/partials/guest_gate.html.twig
 msgid "Please sign in to your client area to continue."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please sign in with the password you chose when you signed up."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_feedback.html.twig
@@ -16816,7 +17376,7 @@ msgstr ""
 msgid "Priorities"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig src/modules/Support/templates/admin/mod_support_network_issue.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig …
 msgid "Priority"
 msgstr ""
 
@@ -17288,12 +17848,24 @@ msgstr ""
 msgid "Quick setup"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
 msgid "Quote"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
 msgid "Quote #%id%"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% accepted: %subject%"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% declined: %subject%"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Quote #%id%: %subject%"
 msgstr ""
 
 #: src/modules/Invoice/QuotePdf.php src/themes/palisade/html/mod_invoice_quote.html.twig
@@ -17312,8 +17884,16 @@ msgstr ""
 msgid "Quote Reply"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote accepted"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Quote accepted: the invoice is made and emailed."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote declined"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
@@ -17510,6 +18090,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Reason for Suspension"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Reason given:"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -17896,11 +18480,15 @@ msgstr ""
 msgid "Registration and Banking"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Registration date"
+msgstr ""
+
 #: src/modules/Antispam/Service.php
 msgid "Registration failed."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
 msgid "Registration period"
 msgstr ""
 
@@ -17996,6 +18584,10 @@ msgstr ""
 msgid "Remove line"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Remove the %language% version of this template?"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Remove the automatic reply"
 msgstr ""
@@ -18034,6 +18626,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "Remove this value"
+msgstr ""
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Remove version"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_message_files.html.twig src/themes/palisade/html/partials/ticket_files.html.twig
@@ -18080,6 +18676,10 @@ msgstr ""
 msgid "Renewal Price"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Renewal date"
+msgstr ""
+
 #: src/modules/Servicedomain/Api/Admin.php
 msgid "Renewal price is missing"
 msgstr ""
@@ -18122,6 +18722,10 @@ msgstr ""
 
 #: src/modules/Support/TicketFeedback.php
 msgid "Reply ratings are switched off."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Reply to ticket"
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -18396,7 +19000,7 @@ msgstr ""
 msgid "Reset to Standard Format"
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_password_reset.html.twig src/modules/Staff/templates/admin/mod_staff_password_update.html.twig
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/admin/mod_staff_password_reset.html.twig …
 msgid "Reset your password"
 msgstr ""
 
@@ -18552,6 +19156,10 @@ msgstr ""
 msgid "Review line items, pricing, taxation, and approval-ready billing content for this invoice."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "Review order"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Review order details, manage billing configuration, and inspect related service activity."
 msgstr ""
@@ -18646,6 +19254,10 @@ msgstr ""
 
 #: src/modules/Page/templates/client/mod_page_tos.html.twig
 msgid "Review the terms and conditions that apply to your use of %company% services."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "Review the ticket"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
@@ -19220,8 +19832,12 @@ msgstr ""
 msgid "See the default example plugin at"
 msgstr ""
 
-#: src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "See the network status"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "See the update"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_index.html.twig
@@ -19560,6 +20176,14 @@ msgstr ""
 msgid "Sent emails"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent for the default language and every language without its own version."
+msgstr ""
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent in:"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Sent to your staff email address."
 msgstr ""
@@ -19604,7 +20228,7 @@ msgstr ""
 msgid "Server ID was not passed"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig …
 msgid "Server IP"
 msgstr ""
 
@@ -19656,6 +20280,10 @@ msgstr ""
 msgid "Server access and secrets"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Server and nameservers"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Server connected"
 msgstr ""
@@ -19696,7 +20324,7 @@ msgstr ""
 msgid "Servers:"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig …
 msgid "Service"
 msgstr ""
 
@@ -19728,8 +20356,24 @@ msgstr ""
 msgid "Service cancellation request received"
 msgstr ""
 
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "Service cancelled"
+msgstr ""
+
 #: src/library/ClientFence/Tools.php
 msgid "Service class :class was not found in :path"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Service reactivated"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Service renewed"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "Service suspended"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Order/templates/client/mod_order_list.html.twig …
@@ -19882,6 +20526,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Set when expired orders are suspended, the default reasons used by automated suspension, and when suspended orders past their due date should be cancelled. Domain orders, and orders with \"Override Auto-Suspend\" ticked on their Edit Order tab, are never suspended or cancelled automatically."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Set your password"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
@@ -20160,6 +20808,10 @@ msgstr ""
 msgid "Sign in required"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Sign in to client area"
+msgstr ""
+
 #: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Sign in to continue"
 msgstr ""
@@ -20190,6 +20842,10 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "Sign-in"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Sign-in email"
 msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
@@ -20388,6 +21044,10 @@ msgstr ""
 msgid "Staff Only"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "Staff and clients"
 msgstr ""
@@ -20514,6 +21174,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Started :date; not finished."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Starts"
 msgstr ""
 
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
@@ -20972,8 +21636,16 @@ msgstr ""
 msgid "System group"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "System health"
+msgstr ""
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: %count% checks need attention"
+msgstr ""
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: 1 check needs attention"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -21156,6 +21828,10 @@ msgstr ""
 msgid "Tell us how we can improve."
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Tell us how we handled your ticket."
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Template"
 msgstr ""
@@ -21300,16 +21976,68 @@ msgstr ""
 msgid "Thank You"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Thank you for choosing %company%. Your hosting account %title% has been set up. This email holds everything you need to start using it: please keep it for your records."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Thank you for contacting our support team. A ticket has been opened for your request and a member of our team will reply as soon as possible. You will be notified by email when there is a response."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Thank you for helping us improve our service."
+msgstr ""
+
 #: src/themes/palisade/html/mod_support_ticket.html.twig
 msgid "Thank you for rating this reply."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Thank you for your business. A new invoice has been issued for your account on %created_at%. Please find the details below."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr ""
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to download."
+msgstr ""
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to use."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your API key is below: please keep it secret."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your license key is below: please keep it for your records."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. Your domain %title% is now active."
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
 msgid "Thank you for your patience."
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you for your payment of %total%."
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_thankyou.html.twig
 msgid "Thank you for your payment."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you! We have received your payment for invoice %number%. This email is your receipt."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_feedback.html.twig
@@ -21350,6 +22078,14 @@ msgstr ""
 
 #: src/library/ClientFence/Cache/CacheFactory.php
 msgid "The \"redis\" cache driver requires the PHP redis (or relay) extension to be installed."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it."
 msgstr ""
 
 #: src/modules/Support/TicketSecrets.php
@@ -21564,6 +22300,10 @@ msgstr ""
 msgid "The attachments folder must be an absolute path to a folder this site can read."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The automatic payment set up for your service at its old price was cancelled."
+msgstr ""
+
 #: src/modules/Servicehosting/Api/Client.php
 msgid "The automatic reply must end on or after the day it starts."
 msgstr ""
@@ -21610,6 +22350,10 @@ msgstr ""
 
 #: src/modules/Cookieconsent/Service.php
 msgid "The button text can be up to 40 characters."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The cancelled automatic payment will not pay your next renewal invoice. Unless your account credit covers it, please pay it when it arrives; paying it the same way as before sets up automatic payment again."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayTabs.php
@@ -21868,6 +22612,10 @@ msgstr ""
 msgid "The email could not be imported: :note"
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "The email was too large. Please send it again with smaller attachments, or attach the files from our client area."
+msgstr ""
+
 #: src/modules/Servicehosting/Api/Client.php
 msgid "The end date is not a valid date."
 msgstr ""
@@ -21965,6 +22713,14 @@ msgstr ""
 msgid "The hosting status still differs from the panel."
 msgstr ""
 
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found a check that needs attention:"
+msgstr ""
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found checks that need attention:"
+msgstr ""
+
 #: src/modules/Clientfence/Branding.php
 msgid "The image could not be saved: check that :dir is writable."
 msgstr ""
@@ -22029,6 +22785,10 @@ msgstr ""
 msgid "The invitation was sent."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr ""
+
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "The invoice could not be created: :error"
 msgstr ""
@@ -22075,6 +22835,10 @@ msgstr ""
 
 #: src/modules/Client/Api/Guest.php src/modules/Client/Controller/Client.php src/modules/Client/Repository/ClientPasswordResetRepository.php …
 msgid "The link has expired or you have already reset your password."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
@@ -22163,6 +22927,14 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "The name, email, address, phone, ticket messages and sent emails are erased for good; orders, invoices and payments stay. The client can no longer sign in. This cannot be undone."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with the renewal due %date%."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with your next invoice."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php
@@ -22261,6 +23033,10 @@ msgstr ""
 msgid "The password is not correct."
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "The password of your account was changed."
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "The password reset link was sent."
 msgstr ""
@@ -22307,6 +23083,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "The plan below was made from :old. Saving these details moves the import to :new and deletes that plan; you then make a new one. Go on?"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The plan, price or billing cycle of %title% changed, so the automatic payment set up for it at the old price was cancelled. You have not been charged for this."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
@@ -22419,6 +23199,10 @@ msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "The release could not be unpacked: check the free disk space and the file and folder permissions. The previous files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The renewal price of your service is changing."
 msgstr ""
 
 #: src/modules/Support/TicketEscalation.php
@@ -22685,6 +23469,10 @@ msgstr ""
 msgid "There are still :count: pending update patches (database level :current:, code level :latest:). Re-run finalization before completing the update."
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "There is a new reply on your ticket \"%subject%\"."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "There is nothing to pay."
 msgstr ""
@@ -22783,6 +23571,14 @@ msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Mail.php
 msgid "This address has no mailbox."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes replies to existing tickets. Please open a new ticket from our client area."
 msgstr ""
 
 #: src/modules/Notification/templates/admin/mod_notification_index.html.twig
@@ -22973,12 +23769,32 @@ msgstr ""
 msgid "This invoice link has expired"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "This is a confirmation that the password for your client area account has just been changed."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "This is a confirmation that the password for your staff account has just been changed."
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "This is a core module included with ClientFence and cannot be disabled."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "This is a custom template stored in the database."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due in %days% days, on %date%."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due today."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% was due on %date%. Please arrange payment as soon as possible."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -22997,6 +23813,14 @@ msgstr ""
 msgid "This is the usual address: choose your own."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "This is to confirm that your hosting account %title% has been cancelled."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "This is to confirm that your service %title% has been cancelled."
+msgstr ""
+
 #: src/modules/Cart/Service.php
 msgid "This item is currently out of stock"
 msgstr ""
@@ -23007,6 +23831,14 @@ msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "This kind of service cannot be changed here."
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "This language is turned off: these texts are kept but not shown."
+msgstr ""
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "This language is turned off: this version is not sent"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -23325,12 +24157,36 @@ msgstr ""
 msgid "Tick two or more tickets to merge."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Support/templates/admin/mod_support_ratings.html.twig src/modules/Support/templates/admin/mod_support_ticket.html.twig …
+#: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig …
 msgid "Ticket"
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig …
+msgid "Ticket #%id%"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket #%id% assigned to you: %subject%"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket #%id% escalated: %subject%"
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Ticket #%id% has been closed."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Ticket #%id% is open. We will reply as soon as possible."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "Ticket #%old% was merged into this ticket."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it."
 msgstr ""
 
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
@@ -23351,6 +24207,10 @@ msgstr ""
 
 #: src/modules/Support/TicketMerge.php
 msgid "Ticket #:id was not found."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
@@ -23401,6 +24261,10 @@ msgstr ""
 msgid "Ticket Summary"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket assigned to you"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_ticket_files.html.twig
 msgid "Ticket attachments"
 msgstr ""
@@ -23417,8 +24281,16 @@ msgstr ""
 msgid "Ticket cannot be reopened."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "Ticket closed by client"
+msgstr ""
+
 #: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
 msgid "Ticket content required"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket escalated"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -23567,6 +24439,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_user_profile.html.twig
 msgid "To change your sign-in email, contact us."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "To get started, choose your password with the button below."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -25185,6 +26061,18 @@ msgstr ""
 msgid "View all articles"
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "View and accept quote"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "View and pay invoice"
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "View and reply"
+msgstr ""
+
 #: src/modules/Antispam/Service.php
 msgid "View antispam settings"
 msgstr ""
@@ -25199,6 +26087,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "View checks"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "View client"
 msgstr ""
 
 #: src/modules/Cron/Service.php
@@ -25241,7 +26133,7 @@ msgstr ""
 msgid "View hosting servers"
 msgstr ""
 
-#: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
 msgid "View invoice"
 msgstr ""
 
@@ -25301,8 +26193,20 @@ msgstr ""
 msgid "View themes"
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "View ticket"
+msgstr ""
+
 #: src/modules/Widgets/Service.php
 msgid "View widgets"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "View your service"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "View your services"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_kb_article.html.twig src/modules/Support/templates/admin/mod_support_kb_category.html.twig src/modules/Support/templates/admin/mod_support_kb_index.html.twig
@@ -25421,8 +26325,28 @@ msgstr ""
 msgid "Warnings (:count): what was not imported as it was, and what to do"
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We apologise for any inconvenience and will keep you updated."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of these services is changing. The details are below."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of this service is changing. The details are below."
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "We check the :method payment and mark the invoice paid. You can follow it in Support."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method %card% for invoice %number%. %reason%"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method for invoice #%number%."
 msgstr ""
 
 #: src/modules/Support/Service.php
@@ -25445,6 +26369,10 @@ msgstr ""
 msgid "We have already received this request."
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "We have received your request"
+msgstr ""
+
 #: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
 msgid "We have received your request to cancel this service: %title%."
 msgstr ""
@@ -25453,16 +26381,52 @@ msgstr ""
 msgid "We have refunded %amount% of invoice %number%."
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "We have replied to your ticket"
+msgstr ""
+
 #: src/themes/palisade/html/mod_client_profile.html.twig
 msgid "We open a ticket with your request and reply there."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig
+msgid "We received a request to reset the password for your client area account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "We received a request to reset the password for your staff account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "We received a request to reset the password of your user for the client area. Click the button below to choose a new password. For your security, the link expires in %minutes% minutes."
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
 msgid "We recommend no less than 16 characters. When in doubt, leave this at 32."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "We regret to inform you that your domain %title% has been suspended."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "We regret to inform you that your hosting account %title% has been suspended."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "We regret to inform you that your service %title% has been suspended."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
 msgid "We sent a 6-digit sign-in PIN to %email%. It works for %minutes% minutes."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We will try it again on %date%."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -25509,7 +26473,7 @@ msgstr ""
 msgid "Weekly"
 msgstr ""
 
-#: src/themes/palisade/html/partials/guest_dashboard.html.twig
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig src/themes/palisade/html/partials/guest_dashboard.html.twig
 msgid "Welcome"
 msgstr ""
 
@@ -25527,6 +26491,10 @@ msgstr ""
 
 #: src/modules/Client/Api/Admin.php
 msgid "Welcome email can only be sent for active clients."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Welcome to %company%"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update_finalize.html.twig
@@ -25789,6 +26757,14 @@ msgstr ""
 msgid "You are currently logged out"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited to %account%"
+msgstr ""
+
 #: src/modules/Staff/Api/Guest.php
 msgid "You are not allowed to login to admin area from this IP address."
 msgstr ""
@@ -25853,12 +26829,28 @@ msgstr ""
 msgid "You can add at most 20 IP addresses or ranges."
 msgstr ""
 
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "You can also %link%download the invoice as a PDF%link_end% for your records."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "You can also %link%download the invoice as a PDF%link_end%. If you have already paid, please disregard this message."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "You can also save a payment method on your %link%Payment methods%link_end% page now, so your invoices are paid automatically."
+msgstr ""
+
 #: src/modules/Invoice/Service.php
 msgid "You can apply at most :amount."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "You can create your own license generation plugins for ClientFence. Follow these steps to add a new one:"
+msgstr ""
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "You can download it again at any time from the %link%service page%link_end% in the client area."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Namecheap.php
@@ -25887,6 +26879,10 @@ msgstr ""
 
 #: src/modules/Staff/Service.php
 msgid "You can only manage staff accounts in lower groups"
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
@@ -26017,6 +27013,10 @@ msgstr ""
 msgid "You get this email because you are our client. Do not want these emails?"
 msgstr ""
 
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "You get this email once per problem: the next one comes only if a check passes and breaks again."
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "You go to :method to pay :amount, then come back here. The invoice is marked paid as soon as :method confirms."
 msgstr ""
@@ -26043,6 +27043,10 @@ msgstr ""
 
 #: src/modules/Cart/Service.php
 msgid "You have already used this promo code. Please remove the promo code and checkout again."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You have been invited to use the client area of %account% with your own sign-in."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
@@ -26185,6 +27189,14 @@ msgstr ""
 msgid "You sign in with Google only. Choose a password so you can also sign in with your email; after that, you can unlink Google if you want."
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_user_invite.html.twig
 msgid "You were invited to this account. Choose your name and a password to sign in with :email."
 msgstr ""
@@ -26209,8 +27221,36 @@ msgstr ""
 msgid "You will need to update your nameservers to point to our servers."
 msgstr ""
 
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "Your %title% has been cancelled."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "Your %title% has been renewed."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "Your %title% has been suspended."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your %title% is active and ready to use."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "Your %title% is available again."
+msgstr ""
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your %title% is ready to download."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_profile.html.twig
 msgid "Your API Key"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Your API key is ready"
 msgstr ""
 
 #: src/modules/System/Service.php
@@ -26257,12 +27297,20 @@ msgstr ""
 msgid "Your account could not be made right now. Please try again later or contact support."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Your account credit or saved payment method will pay your next renewal invoice, so you do not need to do anything."
+msgstr ""
+
 #: src/modules/Client/Google.php
 msgid "Your account email is not confirmed yet. Sign in with your email and password, then link Google on the Google sign-in page of your account."
 msgstr ""
 
 #: src/modules/Client/templates/client/widgets/mod_client_google_signup_button.html.twig
 msgid "Your account is created with your Google email. By continuing, you agree to our"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Your account is ready."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_profile.html.twig
@@ -26329,6 +27377,10 @@ msgstr ""
 msgid "Your choice changed: apply the code again."
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Your client account is ready."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/palisade/html/partials/auth_shell.html.twig
 msgid "Your client area"
 msgstr ""
@@ -26349,6 +27401,22 @@ msgstr ""
 msgid "Your current period ends on %date%; %left% of its %total% days are unused. Their value is credited against the new price."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Your domain %title% has been renewed. Thank you for your continued business."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain %title% is active."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain is active"
+msgstr ""
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your download is ready"
+msgstr ""
+
 #: src/modules/Antispam/Service.php
 msgid "Your e-mail is blacklisted in the Stop Forum Spam database"
 msgstr ""
@@ -26357,12 +27425,44 @@ msgstr ""
 msgid "Your email"
 msgstr ""
 
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email \"%subject%\" to %helpdesk% was not added to a support ticket."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Your email provider or a sending service. Best delivery."
 msgstr ""
 
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Your email settings work"
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket"
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket: %subject%"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Your existing domain"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Your hosting account %title% has been renewed. Thank you for your continued business."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is ready"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is set up and ready to use."
+msgstr ""
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Your invoice is ready"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
@@ -26371,6 +27471,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_statement.html.twig
 msgid "Your invoices, payments and account credit with the running balance."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your license is active"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -26391,6 +27495,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_link.html.twig
 msgid "Your password first; then Google asks which account to link."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "Your password was changed"
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_thankyou.html.twig
@@ -26417,6 +27525,10 @@ msgstr ""
 msgid "Your profile currency is defined after your first order. Once your currency is set, all your profile accounting will be managed in that currency and cannot be changed."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your recurring discount"
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your renewal date stays %date%: %charge% for the %left% days left, less %credit% unused."
 msgstr ""
@@ -26429,12 +27541,24 @@ msgstr ""
 msgid "Your renewal invoices are then paid from your PayPal account. You can stop this on your Payment methods page or in PayPal."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your renewal price is changing"
+msgstr ""
+
 #: src/modules/Client/Privacy.php
 msgid "Your request could not be sent: there is no support desk. Please contact us."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Your request was sent. We will reply in a ticket."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Your service %title% has been renewed. Thank you for your continued business."
+msgstr ""
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Your service is active"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
@@ -26459,6 +27583,18 @@ msgstr ""
 
 #: src/modules/Client/Google.php
 msgid "Your sign-in here is linked to another Google account. Use that Google account, or your password."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket %subject% has now been closed. We hope we were able to help."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Your ticket %ticket% is now closed. We would love to know how we handled it."
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket is closed"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update_finalize.html.twig
@@ -26499,6 +27635,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Cron/templates/admin/mod_cron_settings.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig …
 msgid "ago"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "an account"
 msgstr ""
 
 #: src/modules/Client/templates/client/widgets/mod_client_google_button.html.twig src/modules/Client/templates/client/widgets/mod_client_google_signup_button.html.twig src/themes/palisade/html/mod_cart_index.html.twig …
@@ -26799,6 +27939,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
 msgid "order deleted"
+msgstr ""
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "our support team"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig

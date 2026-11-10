@@ -268,7 +268,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'support_helpdesk_feedback', 'support_helpdesk_hidden', 'support_kb_category_hidden', 'support_escalation_rule', 'support_escalation_applied',
         'invoice_quote', 'invoice_quote_item', 'support_network_issue',
         'product_option_group', 'product_option_group_product', 'product_option', 'product_option_value', 'promo_option',
-        'client_order_upgrade_option', 'client_contact', 'product_currency_price',
+        'client_order_upgrade_option', 'client_contact', 'product_currency_price', 'email_template_translation', 'product_translation',
         'service_license_log', 'service_license_ban',
     ];
 
@@ -388,6 +388,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
             $name = (string) ($field['name'] ?? '');
             $value = $data[$name] ?? null;
             $filled = is_array($value) ? $value !== [] : trim((string) $value) !== '';
+            // The question as the client read it (Product/Translations.php).
+            $field['label'] = \ClientFence\Mod\Product\Translations::text($di, 'field', (int) ($field['id'] ?? 0), 'title', $field['label'] ?? $name);
             // "Required" does not apply to checkboxes in FOSSBilling's form builder.
             if ((int) ($field['required'] ?? 0) === 1 && ($field['type'] ?? '') !== 'checkbox' && !$filled) {
                 throw new InformationException('You must fill in all required fields. :field is missing', [':field' => $field['label'] ?? $name]);

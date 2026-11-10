@@ -21853,3 +21853,1148 @@ msgstr ":tld domenini ko'pi bilan :years yilga ro'yxatdan o'tkazish mumkin."
 #: src/modules/Order/Upgrades.php
 msgid "This service was refunded or its price changed after its last payment, so our staff change it. Please contact us."
 msgstr "Bu xizmat uchun pul qaytarilgan yoki uning narxi oxirgi to'lovdan keyin o'zgargan, shuning uchun o'zgartirishni xodimlarimiz amalga oshiradi. Biz bilan bog'laning."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
+msgstr "%client% %order% buyurtmasini hisob-kitob davri oxirida (%date%) bekor qilishni so'radi."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period."
+msgstr "%client% %order% buyurtmasini hisob-kitob davri oxirida bekor qilishni so'radi."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% immediately."
+msgstr "%client% %order% buyurtmasini darhol bekor qilishni so'radi."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%)."
+msgstr "%company% %quote% taklifini qabul qildi. Hisob-faktura yaratildi va elektron pochta orqali yuborildi (hisob-faktura #%invoice%)."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed."
+msgstr "%company% %quote% taklifini qabul qildi. Hisob-faktura yaratildi va elektron pochta orqali yuborildi."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% declined quote %quote%. It is now lost."
+msgstr "%company% %quote% taklifini rad etdi. U endi yo'qotilgan."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "%discount% (included in the new price)"
+msgstr "%discount% (yangi narxga kiritilgan)"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "%name% assigned ticket %ticket% to you."
+msgstr "%name% %ticket% chiptasini sizga biriktirdi."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "%name% closed support ticket %ticket%."
+msgstr "%name% %ticket% qo'llab-quvvatlash chiptasini yopdi."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig
+msgid "%name% opened a new support ticket: %subject%."
+msgstr "%name% yangi qo'llab-quvvatlash chiptasi ochdi: %subject%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "%name% replied to support ticket %ticket%."
+msgstr "%name% %ticket% qo'llab-quvvatlash chiptasiga javob berdi."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "%period% year(s)"
+msgstr "%period% yil"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "%title% cancelled"
+msgstr "%title% bekor qilindi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+msgid "%title% is now active"
+msgstr "%title% endi faol"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "%title% is ready"
+msgstr "%title% tayyor"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "%title% is ready to download"
+msgstr "%title% yuklab olishga tayyor"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "%title% reactivated"
+msgstr "%title% qayta faollashtirildi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "%title% renewed"
+msgstr "%title% uzaytirildi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "%title% suspended"
+msgstr "%title% to'xtatildi"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "A client"
+msgstr "Mijoz"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "A member of our team has created a client account for you. In the client area you can manage your services, pay invoices and contact our support team."
+msgstr "Jamoamiz a'zosi siz uchun mijoz hisobini yaratdi. Mijozlar bo'limida xizmatlaringizni boshqarishingiz, hisob-fakturalarni to'lashingiz va qo'llab-quvvatlash jamoamiz bilan bog'lanishingiz mumkin."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out (%date%). This site runs ClientFence %version%."
+msgstr "ClientFence'ning yangi versiyasi chiqdi (%date%). Ushbu sayt ClientFence %version% da ishlamoqda."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out. This site runs ClientFence %version%."
+msgstr "ClientFence'ning yangi versiyasi chiqdi. Ushbu sayt ClientFence %version% da ishlamoqda."
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "A new client has just created an account with %company%."
+msgstr "Yangi mijoz hozirgina %company% da hisob yaratdi."
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "A new order has been placed on %created_at%."
+msgstr "%created_at% sanasida yangi buyurtma berildi."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "A new support ticket was opened in %helpdesk%: %subject%."
+msgstr "%helpdesk% da yangi qo'llab-quvvatlash chiptasi ochildi: %subject%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "A new ticket from our team"
+msgstr "Jamoamizdan yangi chipta"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it."
+msgstr "So'rovni Buyurtmalar > Bekor qilish so'rovlari bo'limida qabul qiling yoki to'xtating. Bekor qilish so'rovlari avtomatik qayta ishlansa, kundalik cron uni qabul qiladi; shu paytgacha mijoz uni qaytarib olishi mumkin."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "Accept the invitation"
+msgstr "Taklifni qabul qilish"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
+msgid "Activated"
+msgstr "Faollashtirilgan"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Add language"
+msgstr "Til qo'shish"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Amount due"
+msgstr "To'lanadigan summa"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "An escalation rule assigned ticket %ticket% to you."
+msgstr "Eskalatsiya qoidasi %ticket% chiptasini sizga biriktirdi."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "An invitation to %account%."
+msgstr "%account% ga taklif."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed"
+msgstr "Avtomatik to'lov amalga oshmadi"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed: invoice #%number%"
+msgstr "Avtomatik to'lov amalga oshmadi: hisob-faktura #%number%"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment for your service has stopped"
+msgstr "Xizmatingiz uchun avtomatik to'lov to'xtatildi"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment has stopped"
+msgstr "Avtomatik to'lov to'xtatildi"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request"
+msgstr "Bekor qilish so'rovi"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request: #%id% %title%"
+msgstr "Bekor qilish so'rovi: #%id% %title%"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "Choose a new password"
+msgstr "Yangi parol tanlang"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "Choose a new password for your user."
+msgstr "Foydalanuvchingiz uchun yangi parol tanlang."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "ClientFence %version% is available"
+msgstr "ClientFence %version% mavjud"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "ClientFence Email Test"
+msgstr "ClientFence test xati"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Confirm email address"
+msgstr "Elektron pochta manzilini tasdiqlang"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Confirm your email address"
+msgstr "Elektron pochta manzilingizni tasdiqlang"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Copied from the default text: translate it and click Update."
+msgstr "Standart matndan nusxalandi: uni tarjima qiling va Yangilash tugmasini bosing."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+msgid "Dear %first_name% %last_name%,"
+msgstr "Hurmatli %first_name% %last_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Dear %first_name%,"
+msgstr "Assalomu alaykum, %first_name%,"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
+msgid "Dear %name%,"
+msgstr "Hurmatli %name%,"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig …
+msgid "Department"
+msgstr "Bo'lim"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Domain reactivated"
+msgstr "Domen qayta faollashtirildi"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Domain renewed"
+msgstr "Domen uzaytirildi"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "Domain suspended"
+msgstr "Domen to'xtatildi"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Download now"
+msgstr "Hozir yuklab oling"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Due date"
+msgstr "To'lov muddati"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Email test"
+msgstr "Elektron pochta testi"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Ends"
+msgstr "Tugaydi"
+
+#: src/modules/Email/Translations.php
+msgid "Enter a subject and a message for every language version."
+msgstr "Har bir til versiyasi uchun mavzu va xabar kiriting."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email."
+msgstr "Sababni bartaraf eting, so'ng amalni Buyurtmalar > Muvaffaqiyatsiz amallar bo'limida qayta urining yoki qo'lda bajarilgan bo'lsa, o'sha yerda uni rad eting. Hech narsa o'z-o'zidan qayta urinilmaydi. Xuddi shu amalning keyingi muvaffaqiyatsizliklari o'sha yerda yana xat yuborilmasdan hisoblanadi."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "For your security, passwords are never sent by email. Sign in to the client area to open your control panel directly or to set a new hosting password."
+msgstr "Xavfsizligingiz uchun parollar hech qachon elektron pochta orqali yuborilmaydi. Boshqaruv panelingizni to'g'ridan-to'g'ri ochish yoki yangi hosting parolini o'rnatish uchun mijozlar bo'limiga kiring."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Give feedback"
+msgstr "Fikr bildiring"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Good news: your domain %title% has been reactivated and is available again."
+msgstr "Xushxabar: %title% domeningiz qayta faollashtirildi va yana mavjud."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Good news: your hosting account %title% has been reactivated and is available again."
+msgstr "Xushxabar: %title% hosting hisobingiz qayta faollashtirildi va yana mavjud."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Good news: your service %title% has been reactivated and is available again."
+msgstr "Xushxabar: %title% xizmatingiz qayta faollashtirildi va yana mavjud."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Hello %staff_member_name%,"
+msgstr "Assalomu alaykum, %staff_member_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Hello,"
+msgstr "Assalomu alaykum,"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "Hosting account cancelled"
+msgstr "Hosting hisobi bekor qilindi"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Hosting account reactivated"
+msgstr "Hosting hisobi qayta faollashtirildi"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Hosting account renewed"
+msgstr "Hosting hisobi uzaytirildi"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "Hosting account suspended"
+msgstr "Hosting hisobi to'xtatildi"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do?"
+msgstr "Qanday ishladik?"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do? Your feedback on ticket #%id%"
+msgstr "Qanday ishladik? #%id% chipta bo'yicha fikringiz"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the domain. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Agar to'xtatish to'lanmagan hisob-faktura bilan bog'liq bo'lsa, uni mijozlar bo'limida to'lash domenni tiklaydi. Boshqa har qanday sabab bo'lsa, uni qayta faollashtirishda yordam berishimiz uchun iltimos, imkon qadar tezroq qo'llab-quvvatlash jamoamiz bilan bog'laning."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the hosting account. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Agar to'xtatish to'lanmagan hisob-faktura bilan bog'liq bo'lsa, uni mijozlar bo'limida to'lash hosting hisobini tiklaydi. Boshqa har qanday sabab bo'lsa, uni qayta faollashtirishda yordam berishimiz uchun iltimos, imkon qadar tezroq qo'llab-quvvatlash jamoamiz bilan bog'laning."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the service. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Agar to'xtatish to'lanmagan hisob-faktura bilan bog'liq bo'lsa, uni mijozlar bo'limida to'lash xizmatni tiklaydi. Boshqa har qanday sabab bo'lsa, uni qayta faollashtirishda yordam berishimiz uchun iltimos, imkon qadar tezroq qo'llab-quvvatlash jamoamiz bilan bog'laning."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "If you are reading this email, ClientFence is %bold%configured properly%bold_end% and is %bold%able to send emails%bold_end%. No further action is needed."
+msgstr "Agar siz ushbu xatni o'qiyotgan bo'lsangiz, ClientFence %bold%to'g'ri sozlangan%bold_end% va %bold%xat yubora oladi%bold_end%. Boshqa hech qanday amal talab qilinmaydi."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "If you believe this was done in error or have any questions, please open a support ticket and our team will be glad to help."
+msgstr "Agar buni xato deb hisoblasangiz yoki savollaringiz bo'lsa, iltimos, qo'llab-quvvatlash chiptasini oching, jamoamiz sizga mamnuniyat bilan yordam beradi."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "If you did not ask for a password reset, you can safely ignore this email: your password stays the same."
+msgstr "Agar parolni tiklashni so'ramagan bo'lsangiz, bu xatga e'tibor bermasligingiz mumkin: parolingiz o'zgarishsiz qoladi."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "If you did not create an account with %company%, you can ignore this email."
+msgstr "Agar %company% da hisob yaratmagan bo'lsangiz, bu xatga e'tibor bermasligingiz mumkin."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "If you did not make this change, contact your administrator immediately."
+msgstr "Agar bu o'zgarishni siz qilmagan bo'lsangiz, darhol administratoringiz bilan bog'laning."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "If you did not make this change, please contact our support team immediately."
+msgstr "Agar bu o'zgarishni siz qilmagan bo'lsangiz, iltimos, darhol qo'llab-quvvatlash jamoamiz bilan bog'laning."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "If you have any questions about this change, please reply to this email or open a support ticket."
+msgstr "Agar bu o'zgarish bo'yicha savollaringiz bo'lsa, iltimos, ushbu xatga javob bering yoki qo'llab-quvvatlash chiptasini oching."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "If you have any questions, please reply to this email or open a support ticket."
+msgstr "Agar savollaringiz bo'lsa, iltimos, ushbu xatga javob bering yoki qo'llab-quvvatlash chiptasini oching."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
+msgstr "Agar boshlash uchun yordam kerak bo'lsa, qo'llab-quvvatlash jamoamiz sizga yordam berishga tayyor: shunchaki %link%qo'llab-quvvatlash chiptasini oching%link_end%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "If you need further help with this request, you can still view the ticket, or open a new one at any time."
+msgstr "Agar ushbu so'rov bo'yicha qo'shimcha yordam kerak bo'lsa, chiptani hamon ko'rishingiz yoki istalgan vaqtda yangisini ochishingiz mumkin."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "If you ordered a domain with this account, it can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate."
+msgstr "Agar ushbu hisob bilan domen buyurtma qilgan bo'lsangiz, DNS o'zgarishlari tarqalayotgan paytda uning internetning hamma joyida ko'rinishi uchun 48 soatgacha vaqt ketishi mumkin."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number%"
+msgstr "Hisob-faktura #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% for %balance_due% is due on %due_at%."
+msgstr "%balance_due% summasidagi #%number% hisob-faktura %due_at% sanasigacha to'lanishi kerak."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Invoice #%number% is due on %due_at%."
+msgstr "#%number% hisob-faktura %due_at% sanasigacha to'lanishi kerak."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Invoice #%number% is past due. Please pay it to keep your services running."
+msgstr "#%number% hisob-faktura muddati o'tgan. Xizmatlaringiz ishlashda davom etishi uchun iltimos, uni to'lang."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% is ready"
+msgstr "#%number% hisob-faktura tayyor"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Invoice date"
+msgstr "Hisob-faktura sanasi"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Invoice number"
+msgstr "Hisob-faktura raqami"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Language versions"
+msgstr "Til versiyalari"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Leave blank to use the default"
+msgstr "Standartdan foydalanish uchun bo'sh qoldiring"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "License key"
+msgstr "Litsenziya kaliti"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Manage domain"
+msgstr "Domenni boshqarish"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Manage hosting"
+msgstr "Hostingni boshqarish"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Manage hosting account"
+msgstr "Hosting hisobini boshqarish"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Manage the order"
+msgstr "Buyurtmani boshqarish"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Names and descriptions in other languages"
+msgstr "Boshqa tillardagi nomlar va tavsiflar"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "New client signed up"
+msgstr "Yangi mijoz ro'yxatdan o'tdi"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order placed"
+msgstr "Yangi buyurtma berildi"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order: %title%"
+msgstr "Yangi buyurtma: %title%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "New reply from client"
+msgstr "Mijozdan yangi javob"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "New ticket opened"
+msgstr "Yangi chipta ochildi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig …
+msgid "Next due date"
+msgstr "Keyingi to'lov muddati"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Once you accept the quote, we send you the invoice. Questions? Just reply to this email."
+msgstr "Taklifni qabul qilganingizdan so'ng, biz sizga hisob-fakturani yuboramiz. Savollar bormi? Shunchaki ushbu xatga javob bering."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "One click to confirm your email address."
+msgstr "Elektron pochta manzilingizni tasdiqlash uchun bir marta bosing."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Open Cancellation Requests"
+msgstr "Bekor qilish so'rovlarini ochish"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Open Failed actions"
+msgstr "Muvaffaqiyatsiz amallarni ochish"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "Open System health"
+msgstr "Tizim holatini ochish"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
+msgid "Open a support ticket"
+msgstr "Qo'llab-quvvatlash chiptasini ochish"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Open the client area"
+msgstr "Mijozlar bo'limini ochish"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Open the quote"
+msgstr "Taklifni ochish"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Open the ticket"
+msgstr "Chiptani ochish"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed"
+msgstr "Buyurtma amali bajarilmadi"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed: %action% #%order_id%"
+msgstr "Buyurtma amali bajarilmadi: %action% #%order_id%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Our quote for %subject%."
+msgstr "%subject% bo'yicha taklifimiz."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr "Yozuvlarimizga ko'ra, %number% hisob-fakturaning muddati o'tganiga %days_passed% kun bo'ldi. Xizmatlaringiz uzilib qolmasligi uchun iltimos, to'lovni imkon qadar tezroq amalga oshiring."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our support team has opened a ticket for you. Their message is below."
+msgstr "Qo'llab-quvvatlash jamoamiz siz uchun chipta ochdi. Ularning xabari quyida."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
+msgstr "Qo'llab-quvvatlash jamoamiz %subject% chiptangizga yangi javob yozdi. Javobni o'qishingiz va quyidagi havola orqali javob berishingiz mumkin."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our team opened ticket #%id% for you."
+msgstr "Jamoamiz siz uchun #%id% chiptani ochdi."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Overdue notice: invoice #%number%"
+msgstr "Muddati o'tganlik haqida xabar: hisob-faktura #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Pay invoice"
+msgstr "Hisob-fakturani to'lash"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Pay invoice now"
+msgstr "Hisob-fakturani hozir to'lash"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Payment overdue"
+msgstr "To'lov muddati o'tgan"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received"
+msgstr "To'lov qabul qilindi"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received: invoice #%number%"
+msgstr "To'lov qabul qilindi: hisob-faktura #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder"
+msgstr "To'lov eslatmasi"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder: invoice #%number%"
+msgstr "To'lov eslatmasi: hisob-faktura #%number%"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Please also %link%confirm your email address%link_end%. If the link has expired, you can ask for a new one after signing in."
+msgstr "Iltimos, shuningdek %link%elektron pochta manzilingizni tasdiqlang%link_end%. Havola muddati tugagan bo'lsa, tizimga kirgandan so'ng yangisini so'rashingiz mumkin."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm that this is your email address by clicking the button below. It keeps your account secure and makes sure you receive important notices about your services and invoices."
+msgstr "Quyidagi tugmani bosib, bu sizning elektron pochta manzilingiz ekanini tasdiqlang. Bu hisobingizni xavfsiz saqlaydi va xizmatlaringiz hamda hisob-fakturalaringiz haqidagi muhim xabarlarni olishingizni ta'minlaydi."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm your email address"
+msgstr "Iltimos, elektron pochta manzilingizni tasdiqlang"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please confirm your email address to finish setting up your account."
+msgstr "Hisobingizni sozlashni yakunlash uchun elektron pochta manzilingizni tasdiqlang."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Please keep in mind that a new domain can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate. Your website and email on this domain start working once that is done."
+msgstr "Esda tuting: yangi domenning DNS o'zgarishlari tarqalayotgan paytda internetning hamma joyida ko'rinishi uchun 48 soatgacha vaqt ketishi mumkin. Ushbu domendagi saytingiz va elektron pochtangiz bu tugagach ishlay boshlaydi."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Please reply from the staff panel, not to this email."
+msgstr "Iltimos, ushbu xatga emas, xodimlar panelidan javob bering."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please sign in with the password you chose when you signed up."
+msgstr "Iltimos, ro'yxatdan o'tishda tanlagan parolingiz bilan kiring."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in."
+msgstr "Sizga yordam bergan xodimlarni baholash va qanday yaxshilanishimiz mumkinligini aytish uchun bir daqiqa vaqt ajrating. Kirish talab qilinmaydi."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% accepted: %subject%"
+msgstr "#%id% taklif qabul qilindi: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% declined: %subject%"
+msgstr "#%id% taklif rad etildi: %subject%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Quote #%id%: %subject%"
+msgstr "Taklif #%id%: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote accepted"
+msgstr "Taklif qabul qilindi"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote declined"
+msgstr "Taklif rad etildi"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Reason given:"
+msgstr "Ko'rsatilgan sabab:"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Registration date"
+msgstr "Ro'yxatdan o'tish sanasi"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Remove the %language% version of this template?"
+msgstr "Ushbu shablonning %language% versiyasi olib tashlansinmi?"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Remove version"
+msgstr "Versiyani olib tashlash"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Renewal date"
+msgstr "Uzaytirish sanasi"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Reply to ticket"
+msgstr "Chiptaga javob berish"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "Review order"
+msgstr "Buyurtmani ko'rib chiqish"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "Review the ticket"
+msgstr "Chiptani ko'rib chiqish"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "See the update"
+msgstr "Yangilanishni ko'rish"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent for the default language and every language without its own version."
+msgstr "Standart til va o'z versiyasi bo'lmagan har bir til uchun yuboriladi."
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent in:"
+msgstr "Yuborilgan til:"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Server and nameservers"
+msgstr "Server va nom serverlari"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "Service cancelled"
+msgstr "Xizmat bekor qilindi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Service reactivated"
+msgstr "Xizmat qayta faollashtirildi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Service renewed"
+msgstr "Xizmat uzaytirildi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "Service suspended"
+msgstr "Xizmat to'xtatildi"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Set your password"
+msgstr "Parolingizni o'rnating"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Sign in to client area"
+msgstr "Mijozlar bo'limiga kirish"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Sign-in email"
+msgstr "Kirish uchun xat"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database."
+msgstr "Tizimni yangilash huquqiga ega xodimlar uni Tizim > Yangilash bo'limidan o'rnatishi mumkin: u ma'lumotlar bazasi va almashtiriladigan fayllarning zaxira nusxasini oladi, versiyani o'rnatadi va ma'lumotlar bazasini yangilaydi."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Starts"
+msgstr "Boshlanadi"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: %count% checks need attention"
+msgstr "Tizim holati: e'tibor talab qiladigan tekshiruvlar soni: %count%"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: 1 check needs attention"
+msgstr "Tizim holati: 1 ta tekshiruv e'tibor talab qiladi"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Tell us how we handled your ticket."
+msgstr "Chiptangizni qanday hal qilganimizni bizga ayting."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Thank you for choosing %company%. Your hosting account %title% has been set up. This email holds everything you need to start using it: please keep it for your records."
+msgstr "%company% ni tanlaganingiz uchun rahmat. %title% hosting hisobingiz sozlandi. Ushbu xatda undan foydalanishni boshlash uchun kerak bo'lgan hamma narsa bor: iltimos, uni yozuvlaringiz uchun saqlab qo'ying."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Thank you for contacting our support team. A ticket has been opened for your request and a member of our team will reply as soon as possible. You will be notified by email when there is a response."
+msgstr "Qo'llab-quvvatlash jamoamiz bilan bog'langaningiz uchun rahmat. So'rovingiz uchun chipta ochildi va jamoamiz a'zosi imkon qadar tezroq javob beradi. Javob kelganda elektron pochta orqali xabardor qilinasiz."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team."
+msgstr "Bizda hisob yaratganingiz uchun rahmat. Mijozlar bo'limida buyurtma berishingiz, xizmatlaringizni boshqarishingiz, hisob-fakturalarni to'lashingiz va qo'llab-quvvatlash jamoamiz bilan bog'lanishingiz mumkin."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Thank you for helping us improve our service."
+msgstr "Xizmatimizni yaxshilashga yordam berganingiz uchun rahmat."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Thank you for your business. A new invoice has been issued for your account on %created_at%. Please find the details below."
+msgstr "Ishonchingiz uchun rahmat. Hisobingiz uchun %created_at% sanasida yangi hisob-faktura chiqarildi. Tafsilotlar quyida."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr "Qiziqishingiz uchun rahmat. Quyida %subject% bo'yicha taklifimiz; PDF ushbu xatga ilova qilingan."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to download."
+msgstr "Buyurtmangiz uchun rahmat. %title% endi faol va yuklab olishga tayyor."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to use."
+msgstr "Buyurtmangiz uchun rahmat. %title% endi faol va foydalanishga tayyor."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your API key is below: please keep it secret."
+msgstr "Buyurtmangiz uchun rahmat. %title% endi faol. API kalitingiz quyida: iltimos, uni sir saqlang."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your license key is below: please keep it for your records."
+msgstr "Buyurtmangiz uchun rahmat. %title% endi faol. Litsenziya kalitingiz quyida: iltimos, uni yozuvlaringiz uchun saqlab qo'ying."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. Your domain %title% is now active."
+msgstr "Buyurtmangiz uchun rahmat. %title% domeningiz endi faol."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you for your payment of %total%."
+msgstr "%total% miqdoridagi to'lovingiz uchun rahmat."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you! We have received your payment for invoice %number%. This email is your receipt."
+msgstr "Rahmat! %number% hisob-faktura uchun to'lovingizni qabul qildik. Ushbu xat sizning kvitansiyangiz."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "%order% buyurtmasining (mijoz %client%) %action% amali bajarilmadi. Uning hosting paneli, registratori yoki boshqa xizmat uni rad etdi yoki yakunlay olmadi."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "%order% buyurtmasining %action% amali bajarilmadi. Uning hosting paneli, registratori yoki boshqa xizmat uni rad etdi yoki yakunlay olmadi."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The automatic payment set up for your service at its old price was cancelled."
+msgstr "Xizmatingiz uchun eski narxda o'rnatilgan avtomatik to'lov bekor qilindi."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The cancelled automatic payment will not pay your next renewal invoice. Unless your account credit covers it, please pay it when it arrives; paying it the same way as before sets up automatic payment again."
+msgstr "Bekor qilingan avtomatik to'lov keyingi uzaytirish hisob-fakturangizni to'lamaydi. Hisobingizdagi kredit uni qoplamasa, hisob-faktura kelganda uni to'lang; uni avvalgidek usulda to'lash avtomatik to'lovni qayta o'rnatadi."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "The email was too large. Please send it again with smaller attachments, or attach the files from our client area."
+msgstr "Xat juda katta edi. Iltimos, uni kichikroq ilovalar bilan qayta yuboring yoki fayllarni mijozlar bo'limimizdan ilova qiling."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found a check that needs attention:"
+msgstr "To'lov portalining soatlik tizim holati tekshiruvlari e'tibor talab qiladigan bitta tekshiruvni aniqladi:"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found checks that need attention:"
+msgstr "To'lov portalining soatlik tizim holati tekshiruvlari e'tibor talab qiladigan tekshiruvlarni aniqladi:"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr "Buning uchun allaqachon chiqarilgan hisob-faktura eski narxni saqlaydi; yangi narx undan keyingi uzaytirishdan boshlanadi."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
+msgstr "Havola faqat bir marta ishlaydi va %days% kundan keyin muddati tugaydi. Agar bu taklifni kutmagan bo'lsangiz, bu xatga e'tibor bermasligingiz mumkin."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with the renewal due %date%."
+msgstr "Yangi narx %date% sanasida to'lanishi kerak bo'lgan uzaytirishdan boshlanadi."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with your next invoice."
+msgstr "Yangi narx keyingi hisob-fakturangizdan boshlanadi."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "The password of your account was changed."
+msgstr "Hisobingiz paroli o'zgartirildi."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The plan, price or billing cycle of %title% changed, so the automatic payment set up for it at the old price was cancelled. You have not been charged for this."
+msgstr "%title% ning tarifi, narxi yoki hisob-kitob davri o'zgardi, shuning uchun u uchun eski narxda o'rnatilgan avtomatik to'lov bekor qilindi. Buning uchun sizdan to'lov olinmadi."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The renewal price of your service is changing."
+msgstr "Xizmatingizning uzaytirish narxi o'zgarmoqda."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "There is a new reply on your ticket \"%subject%\"."
+msgstr "\"%subject%\" chiptangizga yangi javob keldi."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area."
+msgstr "Ushbu manzil faqat ro'yxatdan o'tgan mijozlarning xatlarini qabul qiladi. Agar mijoz bo'lsangiz, iltimos, hisobingizning elektron pochta manzilidan yozing yoki mijozlar bo'limimizdan chipta oching."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes replies to existing tickets. Please open a new ticket from our client area."
+msgstr "Ushbu manzil faqat mavjud chiptalarga javoblarni qabul qiladi. Iltimos, mijozlar bo'limimizdan yangi chipta oching."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "This is a confirmation that the password for your client area account has just been changed."
+msgstr "Mijozlar bo'limi hisobingiz paroli hozirgina o'zgartirilganini tasdiqlaymiz."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "This is a confirmation that the password for your staff account has just been changed."
+msgstr "Xodim hisobingiz paroli hozirgina o'zgartirilganini tasdiqlaymiz."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due in %days% days, on %date%."
+msgstr "Do'stona eslatma: %number% hisob-faktura %days% kundan keyin, %date% sanasida to'lanishi kerak."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due today."
+msgstr "Do'stona eslatma: %number% hisob-faktura bugun to'lanishi kerak."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% was due on %date%. Please arrange payment as soon as possible."
+msgstr "Do'stona eslatma: %number% hisob-faktura %date% sanasida to'lanishi kerak edi. Iltimos, to'lovni imkon qadar tezroq amalga oshiring."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "This is to confirm that your hosting account %title% has been cancelled."
+msgstr "%title% hosting hisobingiz bekor qilinganini tasdiqlaymiz."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "This is to confirm that your service %title% has been cancelled."
+msgstr "%title% xizmatingiz bekor qilinganini tasdiqlaymiz."
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "This language is turned off: these texts are kept but not shown."
+msgstr "Bu til o'chirilgan: bu matnlar saqlanadi, lekin ko'rsatilmaydi."
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "This language is turned off: this version is not sent"
+msgstr "Bu til o'chirilgan: bu versiya yuborilmaydi"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig …
+msgid "Ticket #%id%"
+msgstr "Chipta #%id%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket #%id% assigned to you: %subject%"
+msgstr "#%id% chipta sizga biriktirildi: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket #%id% escalated: %subject%"
+msgstr "#%id% chipta eskalatsiya qilindi: %subject%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Ticket #%id% has been closed."
+msgstr "#%id% chipta yopildi."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Ticket #%id% is open. We will reply as soon as possible."
+msgstr "#%id% chipta ochiq. Imkon qadar tezroq javob beramiz."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it."
+msgstr "#%ticket_id% chipta yopilgan. Iltimos, yangi chipta oching yoki uni ko'rish uchun mijozlar bo'limimizga kiring."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it."
+msgstr "%ticket% chipta %minutes% daqiqa javobsiz qoldi, shuning uchun %name% eskalatsiya qoidasi unga ta'sir qildi."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket assigned to you"
+msgstr "Sizga biriktirilgan chipta"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "Ticket closed by client"
+msgstr "Chiptani mijoz yopdi"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket escalated"
+msgstr "Chipta eskalatsiya qilindi"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "To get started, choose your password with the button below."
+msgstr "Boshlash uchun quyidagi tugma bilan parolingizni tanlang."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "View and accept quote"
+msgstr "Taklifni ko'rish va qabul qilish"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "View and pay invoice"
+msgstr "Hisob-fakturani ko'rish va to'lash"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "View and reply"
+msgstr "Ko'rish va javob berish"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "View client"
+msgstr "Mijozni ko'rish"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "View ticket"
+msgstr "Chiptani ko'rish"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "View your service"
+msgstr "Xizmatingizni ko'rish"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "View your services"
+msgstr "Xizmatlaringizni ko'rish"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We apologise for any inconvenience and will keep you updated."
+msgstr "Noqulaylik uchun uzr so'raymiz va sizni xabardor qilib turamiz."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of these services is changing. The details are below."
+msgstr "Ushbu xizmatlarning takrorlanuvchi narxi o'zgarayotgani haqida sizni xabardor qilish uchun yozmoqdamiz. Tafsilotlar quyida."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of this service is changing. The details are below."
+msgstr "Ushbu xizmatning takrorlanuvchi narxi o'zgarayotgani haqida sizni xabardor qilish uchun yozmoqdamiz. Tafsilotlar quyida."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method %card% for invoice %number%. %reason%"
+msgstr "%number% hisob-faktura uchun saqlangan %card% to'lov usulingizdan pul yecha olmadik. %reason%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method for invoice #%number%."
+msgstr "#%number% hisob-faktura uchun saqlangan to'lov usulingizdan pul yecha olmadik."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "We have received your request"
+msgstr "So'rovingizni qabul qildik"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "We have replied to your ticket"
+msgstr "Chiptangizga javob berdik"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig
+msgid "We received a request to reset the password for your client area account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Mijozlar bo'limi hisobingiz parolini tiklash so'rovi qabul qilindi. Yangi parol tanlash uchun quyidagi tugmani bosing. Xavfsizlik uchun havola 15 daqiqadan keyin muddati tugaydi."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "We received a request to reset the password for your staff account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Xodim hisobingiz parolini tiklash so'rovi qabul qilindi. Yangi parol tanlash uchun quyidagi tugmani bosing. Xavfsizlik uchun havola 15 daqiqadan keyin muddati tugaydi."
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "We received a request to reset the password of your user for the client area. Click the button below to choose a new password. For your security, the link expires in %minutes% minutes."
+msgstr "Mijozlar bo'limi uchun foydalanuvchingiz parolini tiklash so'rovi qabul qilindi. Yangi parol tanlash uchun quyidagi tugmani bosing. Xavfsizlik uchun havola %minutes% daqiqadan keyin muddati tugaydi."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "We regret to inform you that your domain %title% has been suspended."
+msgstr "Afsuski, %title% domeningiz to'xtatilganini xabar qilamiz."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "We regret to inform you that your hosting account %title% has been suspended."
+msgstr "Afsuski, %title% hosting hisobingiz to'xtatilganini xabar qilamiz."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "We regret to inform you that your service %title% has been suspended."
+msgstr "Afsuski, %title% xizmatingiz to'xtatilganini xabar qilamiz."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We will try it again on %date%."
+msgstr "%date% sanasida yana urinib ko'ramiz."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
+msgstr "Tarmog'imiz haqida sizni xabardor qilmoqchimiz: %status_title% (%priority_title% ustuvorlik)."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Welcome to %company%"
+msgstr "%company% ga xush kelibsiz"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited"
+msgstr "Siz taklif qilindingiz"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited to %account%"
+msgstr "Siz %account% ga taklif qilindingiz"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "You can also %link%download the invoice as a PDF%link_end% for your records."
+msgstr "Shuningdek, yozuvlaringiz uchun %link%hisob-fakturani PDF sifatida yuklab olishingiz%link_end% mumkin."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "You can also %link%download the invoice as a PDF%link_end%. If you have already paid, please disregard this message."
+msgstr "Shuningdek, %link%hisob-fakturani PDF sifatida yuklab olishingiz%link_end% mumkin. Agar allaqachon to'lagan bo'lsangiz, bu xabarga e'tibor bermang."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "You can also save a payment method on your %link%Payment methods%link_end% page now, so your invoices are paid automatically."
+msgstr "Endi %link%To'lov usullari%link_end% sahifangizda ham to'lov usulini saqlashingiz mumkin, shunda hisob-fakturalaringiz avtomatik to'lanadi."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "You can download it again at any time from the %link%service page%link_end% in the client area."
+msgstr "Uni istalgan vaqtda mijozlar bo'limidagi %link%xizmat sahifasidan%link_end% yana yuklab olishingiz mumkin."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
+msgstr "Hisob-fakturani hozir to'lashingiz yoki to'lov usulingizni %link%To'lov usullari%link_end% sahifasida o'zgartirishingiz mumkin."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "You get this email once per problem: the next one comes only if a check passes and breaks again."
+msgstr "Siz bu xatni har bir muammo uchun bir marta olasiz: keyingisi faqat tekshiruv o'tib, keyin yana buzilsa keladi."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You have been invited to use the client area of %account% with your own sign-in."
+msgstr "Siz %account% mijozlar bo'limidan o'z kirishingiz bilan foydalanishga taklif qilindingiz."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
+msgstr "Siz Google hisobingiz bilan ro'yxatdan o'tdingiz, shuning uchun eslab qolish kerak bo'lgan parol yo'q: keyingi safar kirish sahifasidagi Google tugmasidan foydalaning va xuddi shu Google hisobini tanlang. Elektron pochtangiz bilan ham kirish uchun hisobingizning Google orqali kirish sahifasida parol tanlang."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password."
+msgstr "Siz Google hisobingiz bilan ro'yxatdan o'tdingiz. Shundan keyin parol tanlaysiz: keyingi safar elektron pochtangiz va shu parol bilan kiring."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "Your %title% has been cancelled."
+msgstr "%title% bekor qilindi."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "Your %title% has been renewed."
+msgstr "%title% uzaytirildi."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "Your %title% has been suspended."
+msgstr "%title% to'xtatildi."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your %title% is active and ready to use."
+msgstr "%title% faol va foydalanishga tayyor."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "Your %title% is available again."
+msgstr "%title% yana mavjud."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your %title% is ready to download."
+msgstr "%title% yuklab olishga tayyor."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Your API key is ready"
+msgstr "API kalitingiz tayyor"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Your account credit or saved payment method will pay your next renewal invoice, so you do not need to do anything."
+msgstr "Hisobingizdagi kredit yoki saqlangan to'lov usuli keyingi uzaytirish hisob-fakturangizni to'laydi, shuning uchun hech narsa qilishingiz shart emas."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Your account is ready."
+msgstr "Hisobingiz tayyor."
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Your client account is ready."
+msgstr "Mijoz hisobingiz tayyor."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Your domain %title% has been renewed. Thank you for your continued business."
+msgstr "%title% domeningiz uzaytirildi. Bizga doimiy ishonchingiz uchun rahmat."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain %title% is active."
+msgstr "%title% domeningiz faol."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain is active"
+msgstr "Domeningiz faol"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your download is ready"
+msgstr "Yuklab olishingiz tayyor"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email \"%subject%\" to %helpdesk% was not added to a support ticket."
+msgstr "%helpdesk% manziliga yuborgan \"%subject%\" xatingiz qo'llab-quvvatlash chiptasiga qo'shilmadi."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Your email settings work"
+msgstr "Elektron pochta sozlamalaringiz ishlayapti"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket"
+msgstr "Xatingiz chiptaga qo'shilmadi"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket: %subject%"
+msgstr "Xatingiz chiptaga qo'shilmadi: %subject%"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Your hosting account %title% has been renewed. Thank you for your continued business."
+msgstr "%title% hosting hisobingiz uzaytirildi. Bizga doimiy ishonchingiz uchun rahmat."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is ready"
+msgstr "Hosting hisobingiz tayyor"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is set up and ready to use."
+msgstr "Hosting hisobingiz sozlandi va foydalanishga tayyor."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Your invoice is ready"
+msgstr "Hisob-fakturangiz tayyor"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your license is active"
+msgstr "Litsenziyangiz faol"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "Your password was changed"
+msgstr "Parolingiz o'zgartirildi"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your recurring discount"
+msgstr "Takrorlanuvchi chegirmangiz"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your renewal price is changing"
+msgstr "Uzaytirish narxingiz o'zgarmoqda"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Your service %title% has been renewed. Thank you for your continued business."
+msgstr "%title% xizmatingiz uzaytirildi. Bizga doimiy ishonchingiz uchun rahmat."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Your service is active"
+msgstr "Xizmatingiz faol"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket %subject% has now been closed. We hope we were able to help."
+msgstr "%subject% chiptangiz endi yopildi. Yordam bera olgan bo'lsak, umid qilamiz."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Your ticket %ticket% is now closed. We would love to know how we handled it."
+msgstr "%ticket% chiptangiz endi yopildi. Uni qanday hal qilganimizni bilishni istardik."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket is closed"
+msgstr "Chiptangiz yopildi"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "an account"
+msgstr "hisob"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "our support team"
+msgstr "qo'llab-quvvatlash jamoamiz"

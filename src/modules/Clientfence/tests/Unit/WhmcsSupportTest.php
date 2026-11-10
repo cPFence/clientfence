@@ -263,6 +263,23 @@ test('departments become help desks with their ids, hidden ones hidden, mailboxe
         ->not->toContain('mailbox-secret');
 });
 
+test('department names in other languages become the help desks\' names in those languages', function (): void {
+    $source = whmcsSupportSource();
+    $source->executeStatement('CREATE TABLE tbldynamic_translations (id INTEGER PRIMARY KEY, related_type TEXT, related_id INTEGER, language TEXT, translation TEXT)');
+    foreach ([['ticket_department.{id}.name', 1, 'arabic', 'الدعم'], ['ticket_department.{id}.name', 3, 'french', 'Facturation'], ['ticket_department.{id}.description', 3, 'french', 'Factures']] as [$type, $id, $language, $text]) {
+        $source->insert('tbldynamic_translations', ['related_type' => $type, 'related_id' => $id, 'language' => $language, 'translation' => $text]);
+    }
+    $target = whmcsSupportTarget();
+    $target->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT, UNIQUE (kind, ref_id, lang))');
+    whmcsSupportAll($source, $target, '', whmcsSupportFolder('files'));
+
+    // A help desk has no description in ClientFence.
+    expect($target->fetchAllAssociative('SELECT kind, ref_id, lang, title, description FROM product_translation ORDER BY ref_id'))->toBe([
+        ['kind' => 'helpdesk', 'ref_id' => 1, 'lang' => 'ar_SA', 'title' => 'الدعم', 'description' => null],
+        ['kind' => 'helpdesk', 'ref_id' => 3, 'lang' => 'fr_FR', 'title' => 'Facturation', 'description' => null],
+    ]);
+});
+
 test('tickets keep their ids, authors, relations and statuses; merged ones point to their ticket', function (): void {
     $target = whmcsSupportTarget();
     $support = whmcsSupportAll(whmcsSupportSource(), $target, '', whmcsSupportFolder('files'));

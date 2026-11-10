@@ -188,6 +188,8 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $id = $template->getId();
         $service->getTemplateGroupRepository()->deleteAssociationsForTemplate((int) $id);
+        // ClientFence core patch: the template's language versions go with it (Email/Translations.php).
+        \ClientFence\Mod\Email\Translations::forget($this->getDi(), (int) $id);
         $this->getDi()['em']->remove($template);
         $this->getDi()['em']->flush();
 
@@ -239,8 +241,10 @@ class Admin extends \ClientFence\Api\AbstractApi
         $content = $data['content'] ?? null;
 
         $model = $this->getService()->getTemplate((int) $data['id']);
+        // ClientFence core patch: `translations` (lang => subject, content) replaces the language versions; left out, they stay.
+        $translations = array_key_exists('translations', $data) ? (is_array($data['translations']) ? $data['translations'] : []) : null;
 
-        return $this->getService()->updateTemplate($model, $enabled, $category, $subject, $content);
+        return $this->getService()->updateTemplate($model, $enabled, $category, $subject, $content, $translations);
     }
 
     /**
@@ -331,9 +335,12 @@ class Admin extends \ClientFence\Api\AbstractApi
         $vars['_tpl'] = $data['_tpl'] ?? $t['content'];
         $systemService = $this->getDi()['mod_service']('System');
 
+        // ClientFence core patch: a language version previews in its language (`lang`, a turned-on language).
+        $locale = in_array($data['lang'] ?? null, \ClientFence\i18n::getLocales(), true) ? $data['lang'] : null;
+
         // Preview-only output, which the modal re-escapes for display: decoded
         // form keeps subject previews accurate, content previews unchanged.
-        return $systemService->renderEmailSubjectString($vars['_tpl'], $vars);
+        return $systemService->renderEmailSubjectString($vars['_tpl'], $vars, null, $locale);
     }
 
     /**
@@ -465,6 +472,8 @@ class Admin extends \ClientFence\Api\AbstractApi
             if (!$template->isCustom() && $this->getService()->hasDefaultTemplate($template->getActionCode())) {
                 continue;
             }
+            // ClientFence core patch: deleted with its language versions.
+            \ClientFence\Mod\Email\Translations::forget($this->getDi(), (int) $template->getId());
             $this->getDi()['em']->remove($template);
         }
         $this->getDi()['em']->flush();

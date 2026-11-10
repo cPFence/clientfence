@@ -1,0 +1,100 @@
+{# ClientFence: names and descriptions per language (Product/Translations.php) on the product, add-on and category
+   pages, saved with their form as translations[lang][title|description] (blank: the default text). Included three
+   times in the form: `part` 'bar' above the Title field, 'title' after it and 'description' after the Description
+   field; the page wraps its own Title and Description fields in data-cf-text-pane="". Gets `kind` (product,
+   category, field or helpdesk), `item` (with `id`, `title`, `description`) and optionally `title_label`. Shown only
+   when more than one language is turned on; a page may hold several (one per order form field). #}
+{% set language_names = {} %}
+{% for l in guest.extension_languages(true) %}
+    {% set language_names = language_names|merge({(l.locale): l.title}) %}
+{% endfor %}
+{% if language_names|length > 1 %}
+    {% set texts = admin.product_translations_get({ kind: kind, id: item.id }) %}
+    {% set langs = language_names|keys|filter(l => l != texts.default_locale)|merge(texts.translations|keys)|reduce((all, l) => l in all ? all : all|merge([l]), []) %}
+    {% if part == 'bar' %}
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3 pb-2 border-bottom" data-cf-text-langs role="tablist" aria-label="{{ 'Names and descriptions in other languages'|trans }}">
+            <button class="btn btn-sm btn-primary" type="button" role="tab" aria-selected="true" data-cf-lang="">{{ 'Default'|trans }} <span class="ms-1 opacity-75">{{ language_names[texts.default_locale] ?? texts.default_locale }}</span></button>
+            {% for lang in langs %}
+                <button class="btn btn-sm btn-outline-secondary{% if language_names[lang] is not defined %} text-decoration-line-through{% endif %}" type="button" role="tab" aria-selected="false" data-cf-lang="{{ lang }}"{% if language_names[lang] is defined %} data-cf-on{% endif %}{% if texts.translations[lang] is not defined %} hidden{% endif %}>{{ language_names[lang] ?? lang }}</button>
+            {% endfor %}
+            <select class="form-select form-select-sm w-auto" data-cf-add-lang aria-label="{{ 'Add language'|trans }}">
+                <option value="">+ {{ 'Add language'|trans }}</option>
+                {% for lang in langs|filter(l => texts.translations[l] is not defined) %}
+                    <option value="{{ lang }}">{{ language_names[lang] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <script nonce="{{ csp_nonce }}">
+            // This bar's own form: clicks are handled when they happen, so the panes after it need not exist yet.
+            (function (bar) {
+                const form = bar.closest('form');
+                const add = bar.querySelector('[data-cf-add-lang]');
+                const show = function (lang) {
+                    bar.querySelectorAll('[data-cf-lang]').forEach(function (button) {
+                        const on = button.dataset.cfLang === lang;
+                        button.classList.toggle('btn-primary', on);
+                        button.classList.toggle('btn-outline-secondary', !on);
+                        button.setAttribute('aria-selected', on ? 'true' : 'false');
+                    });
+                    form.querySelectorAll('[data-cf-text-pane]').forEach(function (pane) {
+                        pane.hidden = pane.dataset.cfTextPane !== lang;
+                    });
+                };
+                bar.addEventListener('click', function (e) {
+                    const button = e.target.closest('[data-cf-lang]');
+                    if (button) {
+                        show(button.dataset.cfLang);
+                    }
+                });
+                add.addEventListener('change', function () {
+                    const lang = add.value;
+                    if (lang === '') {
+                        return;
+                    }
+                    bar.querySelector('[data-cf-lang="' + lang + '"]').hidden = false;
+                    add.selectedOptions[0].remove();
+                    show(lang);
+                });
+                // Removing empties the language's fields: saved blank, it shows the default texts.
+                form.addEventListener('click', function (e) {
+                    const remove = e.target.closest('[data-cf-remove-lang]');
+                    if (!remove) {
+                        return;
+                    }
+                    const lang = remove.closest('[data-cf-text-pane]').dataset.cfTextPane;
+                    const button = bar.querySelector('[data-cf-lang="' + lang + '"]');
+                    form.querySelectorAll('[data-cf-text-pane="' + lang + '"] [data-cf-field]').forEach(function (field) {
+                        field.value = '';
+                    });
+                    button.hidden = true;
+                    if (button.dataset.cfOn !== undefined) {
+                        add.add(new Option(button.textContent.trim(), lang));
+                    }
+                    show('');
+                });
+            })(document.currentScript.previousElementSibling);
+        </script>
+    {% else %}
+        {% for lang in langs %}
+            {% set own = texts.translations[lang] ?? {} %}
+            {% set rtl = lang[:2] in ['ar', 'he', 'fa'] %}
+            <div data-cf-text-pane="{{ lang }}" hidden>
+                {% if part == 'title' %}
+                    {% if language_names[lang] is not defined %}
+                        <div class="alert alert-warning" role="alert">{{ 'This language is turned off: these texts are kept but not shown.'|trans }}</div>
+                    {% endif %}
+                    <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                        <label class="form-label mb-0" for="cf-title-{{ kind }}{{ item.id }}-{{ lang }}">{{ title_label|default('Title'|trans) }} <span class="badge bg-blue-lt ms-1">{{ language_names[lang] ?? lang }}</span></label>
+                        <button class="btn btn-sm btn-outline-danger" type="button" data-cf-remove-lang>{{ 'Remove'|trans }}</button>
+                    </div>
+                    <input class="form-control" type="text" name="translations[{{ lang }}][title]" id="cf-title-{{ kind }}{{ item.id }}-{{ lang }}" value="{{ own.title ?? '' }}" placeholder="{{ item.title }}" data-cf-field lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                    <div class="form-hint">{{ 'Leave blank to use the default'|trans }}</div>
+                {% else %}
+                    <label class="form-label" for="cf-description-{{ kind }}{{ item.id }}-{{ lang }}">{{ 'Description'|trans }} <span class="badge bg-blue-lt ms-1">{{ language_names[lang] ?? lang }}</span></label>
+                    <textarea class="form-control" name="translations[{{ lang }}][description]" id="cf-description-{{ kind }}{{ item.id }}-{{ lang }}" rows="5" placeholder="{{ item.description }}" data-cf-field lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}>{{ own.description ?? '' }}</textarea>
+                    <div class="form-hint">{{ 'Leave blank to use the default'|trans }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endif %}

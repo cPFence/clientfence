@@ -434,6 +434,18 @@ class ClientFenceExtension
         return __trans($text, $values);
     }
 
+    /**
+     * ClientFence: a sentence with a link or bold part stays one text to translate. The translation
+     * and the $values are escaped; $html holds the template's own markup (it escapes what it inserts).
+     */
+    #[AsTwigFilter('trans_html', isSafe: ['html'])]
+    public function transHtml(string $text, array $values = [], array $html = []): string
+    {
+        $escape = static fn (mixed $value): string => htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        return strtr($escape(_gettext($text)), array_map($escape, $values) + $html);
+    }
+
     #[AsTwigFilter('truncate')]
     public function truncate(?string $text, int $length = 30, string $suffix = '...'): string
     {

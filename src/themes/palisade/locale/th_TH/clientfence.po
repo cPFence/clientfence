@@ -21582,3 +21582,1148 @@ msgstr "โดเมน :tld จดทะเบียนได้สูงสุ
 #: src/modules/Order/Upgrades.php
 msgid "This service was refunded or its price changed after its last payment, so our staff change it. Please contact us."
 msgstr "บริการนี้ได้รับการคืนเงินหรือราคาเปลี่ยนไปหลังการชำระเงินครั้งล่าสุด พนักงานของเราจึงเป็นผู้เปลี่ยนแปลงให้ โปรดติดต่อเรา"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
+msgstr "%client% ขอยกเลิกคำสั่งซื้อ %order% เมื่อสิ้นสุดรอบการเรียกเก็บเงิน (%date%)"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period."
+msgstr "%client% ขอยกเลิกคำสั่งซื้อ %order% เมื่อสิ้นสุดรอบการเรียกเก็บเงิน"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% immediately."
+msgstr "%client% ขอยกเลิกคำสั่งซื้อ %order% ทันที"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%)."
+msgstr "%company% ยอมรับใบเสนอราคา %quote% แล้ว ระบบสร้างใบแจ้งหนี้และส่งทางอีเมลแล้ว (ใบแจ้งหนี้ #%invoice%)"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed."
+msgstr "%company% ยอมรับใบเสนอราคา %quote% แล้ว ระบบสร้างใบแจ้งหนี้และส่งทางอีเมลแล้ว"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% declined quote %quote%. It is now lost."
+msgstr "%company% ปฏิเสธใบเสนอราคา %quote% ใบเสนอราคานี้จึงถือว่าสูญเสียแล้ว"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "%discount% (included in the new price)"
+msgstr "%discount% (รวมอยู่ในราคาใหม่แล้ว)"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "%name% assigned ticket %ticket% to you."
+msgstr "%name% มอบหมายคำขอสนับสนุน %ticket% ให้คุณ"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "%name% closed support ticket %ticket%."
+msgstr "%name% ปิดคำขอสนับสนุน %ticket% แล้ว"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig
+msgid "%name% opened a new support ticket: %subject%."
+msgstr "%name% เปิดคำขอสนับสนุนใหม่: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "%name% replied to support ticket %ticket%."
+msgstr "%name% ตอบกลับคำขอสนับสนุน %ticket%"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "%period% year(s)"
+msgstr "%period% ปี"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "%title% cancelled"
+msgstr "%title% ถูกยกเลิกแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+msgid "%title% is now active"
+msgstr "%title% เปิดใช้งานแล้ว"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "%title% is ready"
+msgstr "%title% พร้อมแล้ว"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "%title% is ready to download"
+msgstr "%title% พร้อมให้ดาวน์โหลด"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "%title% reactivated"
+msgstr "%title% เปิดใช้งานอีกครั้งแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "%title% renewed"
+msgstr "%title% ต่ออายุแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "%title% suspended"
+msgstr "%title% ถูกระงับแล้ว"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "A client"
+msgstr "ลูกค้า"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "A member of our team has created a client account for you. In the client area you can manage your services, pay invoices and contact our support team."
+msgstr "สมาชิกในทีมของเราสร้างบัญชีลูกค้าให้คุณแล้ว ในพื้นที่ลูกค้า คุณสามารถจัดการบริการ ชำระใบแจ้งหนี้ และติดต่อทีมสนับสนุนของเราได้"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out (%date%). This site runs ClientFence %version%."
+msgstr "ClientFence เวอร์ชันใหม่เปิดให้ใช้งานแล้ว (%date%) ไซต์นี้ใช้ ClientFence %version%"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out. This site runs ClientFence %version%."
+msgstr "ClientFence เวอร์ชันใหม่เปิดให้ใช้งานแล้ว ไซต์นี้ใช้ ClientFence %version%"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "A new client has just created an account with %company%."
+msgstr "ลูกค้ารายใหม่เพิ่งสร้างบัญชีกับ %company%"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "A new order has been placed on %created_at%."
+msgstr "มีคำสั่งซื้อใหม่เมื่อ %created_at%"
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "A new support ticket was opened in %helpdesk%: %subject%."
+msgstr "มีคำขอสนับสนุนใหม่ใน %helpdesk%: %subject%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "A new ticket from our team"
+msgstr "คำขอใหม่จากทีมของเรา"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it."
+msgstr "ยอมรับหรือหยุดคำขอได้ที่ คำสั่งซื้อ > คำขอยกเลิก เมื่อระบบประมวลผลคำขอยกเลิกอัตโนมัติ cron รายวันจะยอมรับคำขอนั้น ก่อนหน้านั้นลูกค้าสามารถถอนคำขอได้"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "Accept the invitation"
+msgstr "ยอมรับคำเชิญ"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
+msgid "Activated"
+msgstr "เปิดใช้งานเมื่อ"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Add language"
+msgstr "เพิ่มภาษา"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Amount due"
+msgstr "ยอดที่ต้องชำระ"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "An escalation rule assigned ticket %ticket% to you."
+msgstr "กฎการยกระดับมอบหมายคำขอสนับสนุน %ticket% ให้คุณ"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "An invitation to %account%."
+msgstr "คำเชิญเข้าร่วม %account%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed"
+msgstr "การชำระเงินอัตโนมัติล้มเหลว"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed: invoice #%number%"
+msgstr "การชำระเงินอัตโนมัติล้มเหลว: ใบแจ้งหนี้ #%number%"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment for your service has stopped"
+msgstr "การชำระเงินอัตโนมัติสำหรับบริการของคุณหยุดแล้ว"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment has stopped"
+msgstr "การชำระเงินอัตโนมัติหยุดแล้ว"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request"
+msgstr "คำขอยกเลิก"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request: #%id% %title%"
+msgstr "คำขอยกเลิก: #%id% %title%"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "Choose a new password"
+msgstr "เลือกรหัสผ่านใหม่"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "Choose a new password for your user."
+msgstr "เลือกรหัสผ่านใหม่สำหรับผู้ใช้ของคุณ"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "ClientFence %version% is available"
+msgstr "ClientFence %version% พร้อมให้ใช้งานแล้ว"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "ClientFence Email Test"
+msgstr "อีเมลทดสอบ ClientFence"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Confirm email address"
+msgstr "ยืนยันที่อยู่อีเมล"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Confirm your email address"
+msgstr "ยืนยันที่อยู่อีเมลของคุณ"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Copied from the default text: translate it and click Update."
+msgstr "คัดลอกมาจากข้อความเริ่มต้น: โปรดแปลแล้วคลิกอัปเดต"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+msgid "Dear %first_name% %last_name%,"
+msgstr "เรียน %first_name% %last_name%"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Dear %first_name%,"
+msgstr "สวัสดี %first_name%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
+msgid "Dear %name%,"
+msgstr "เรียน %name%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig …
+msgid "Department"
+msgstr "แผนก"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Domain reactivated"
+msgstr "เปิดใช้งานโดเมนอีกครั้งแล้ว"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Domain renewed"
+msgstr "ต่ออายุโดเมนแล้ว"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "Domain suspended"
+msgstr "โดเมนถูกระงับ"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Download now"
+msgstr "ดาวน์โหลดเลย"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Due date"
+msgstr "วันครบกำหนด"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Email test"
+msgstr "ทดสอบอีเมล"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Ends"
+msgstr "สิ้นสุด"
+
+#: src/modules/Email/Translations.php
+msgid "Enter a subject and a message for every language version."
+msgstr "ป้อนหัวข้อและข้อความสำหรับทุกเวอร์ชันภาษา"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email."
+msgstr "แก้ไขสาเหตุ แล้วลองดำเนินการอีกครั้งที่ คำสั่งซื้อ > การดำเนินการที่ล้มเหลว หรือปิดรายการที่นั่นหากดำเนินการด้วยตนเองแล้ว ระบบจะไม่ลองใหม่เอง ความล้มเหลวครั้งต่อ ๆ ไปของการดำเนินการเดียวกันจะถูกนับที่นั่นโดยไม่ส่งอีเมลอีก"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "For your security, passwords are never sent by email. Sign in to the client area to open your control panel directly or to set a new hosting password."
+msgstr "เพื่อความปลอดภัย เราจะไม่ส่งรหัสผ่านทางอีเมลเด็ดขาด โปรดลงชื่อเข้าใช้พื้นที่ลูกค้าเพื่อเปิดแผงควบคุมโดยตรง หรือตั้งรหัสผ่านโฮสติ้งใหม่"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Give feedback"
+msgstr "ให้ข้อเสนอแนะ"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Good news: your domain %title% has been reactivated and is available again."
+msgstr "ข่าวดี: โดเมน %title% ของคุณเปิดใช้งานอีกครั้งแล้วและกลับมาใช้งานได้"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Good news: your hosting account %title% has been reactivated and is available again."
+msgstr "ข่าวดี: บัญชีโฮสติ้ง %title% ของคุณเปิดใช้งานอีกครั้งแล้วและกลับมาใช้งานได้"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Good news: your service %title% has been reactivated and is available again."
+msgstr "ข่าวดี: บริการ %title% ของคุณเปิดใช้งานอีกครั้งแล้วและกลับมาใช้งานได้"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Hello %staff_member_name%,"
+msgstr "สวัสดี %staff_member_name%"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Hello,"
+msgstr "สวัสดี"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "Hosting account cancelled"
+msgstr "ยกเลิกบัญชีโฮสติ้งแล้ว"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Hosting account reactivated"
+msgstr "เปิดใช้งานบัญชีโฮสติ้งอีกครั้งแล้ว"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Hosting account renewed"
+msgstr "ต่ออายุบัญชีโฮสติ้งแล้ว"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "Hosting account suspended"
+msgstr "บัญชีโฮสติ้งถูกระงับ"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do?"
+msgstr "เราทำได้ดีแค่ไหน"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do? Your feedback on ticket #%id%"
+msgstr "เราทำได้ดีแค่ไหน ความเห็นของคุณเกี่ยวกับคำขอสนับสนุน #%id%"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the domain. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "หากการระงับเกี่ยวข้องกับใบแจ้งหนี้ที่ยังไม่ได้ชำระ การชำระใบแจ้งหนี้ในพื้นที่ลูกค้าจะคืนสถานะโดเมน หากเป็นสาเหตุอื่น โปรดติดต่อทีมสนับสนุนของเราโดยเร็วที่สุด เพื่อให้เราช่วยคุณเปิดใช้งานอีกครั้ง"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the hosting account. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "หากการระงับเกี่ยวข้องกับใบแจ้งหนี้ที่ยังไม่ได้ชำระ การชำระใบแจ้งหนี้ในพื้นที่ลูกค้าจะคืนสถานะบัญชีโฮสติ้ง หากเป็นสาเหตุอื่น โปรดติดต่อทีมสนับสนุนของเราโดยเร็วที่สุด เพื่อให้เราช่วยคุณเปิดใช้งานอีกครั้ง"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the service. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "หากการระงับเกี่ยวข้องกับใบแจ้งหนี้ที่ยังไม่ได้ชำระ การชำระใบแจ้งหนี้ในพื้นที่ลูกค้าจะคืนสถานะบริการ หากเป็นสาเหตุอื่น โปรดติดต่อทีมสนับสนุนของเราโดยเร็วที่สุด เพื่อให้เราช่วยคุณเปิดใช้งานอีกครั้ง"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "If you are reading this email, ClientFence is %bold%configured properly%bold_end% and is %bold%able to send emails%bold_end%. No further action is needed."
+msgstr "หากคุณอ่านอีเมลนี้ได้ แสดงว่า ClientFence %bold%ตั้งค่าถูกต้อง%bold_end% และ %bold%สามารถส่งอีเมลได้%bold_end% ไม่ต้องดำเนินการใด ๆ เพิ่มเติม"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "If you believe this was done in error or have any questions, please open a support ticket and our team will be glad to help."
+msgstr "หากคุณเชื่อว่าเกิดจากความผิดพลาดหรือมีคำถามใด ๆ โปรดเปิดคำขอสนับสนุน ทีมของเรายินดีช่วยเหลือ"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "If you did not ask for a password reset, you can safely ignore this email: your password stays the same."
+msgstr "หากคุณไม่ได้ขอรีเซ็ตรหัสผ่าน คุณสามารถละเว้นอีเมลนี้ได้ รหัสผ่านของคุณจะไม่เปลี่ยนแปลง"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "If you did not create an account with %company%, you can ignore this email."
+msgstr "หากคุณไม่ได้สร้างบัญชีกับ %company% คุณสามารถละเว้นอีเมลนี้ได้"
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "If you did not make this change, contact your administrator immediately."
+msgstr "หากคุณไม่ได้เป็นผู้ทำการเปลี่ยนแปลงนี้ โปรดติดต่อผู้ดูแลระบบของคุณทันที"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "If you did not make this change, please contact our support team immediately."
+msgstr "หากคุณไม่ได้เป็นผู้ทำการเปลี่ยนแปลงนี้ โปรดติดต่อทีมสนับสนุนของเราทันที"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "If you have any questions about this change, please reply to this email or open a support ticket."
+msgstr "หากคุณมีคำถามเกี่ยวกับการเปลี่ยนแปลงนี้ โปรดตอบกลับอีเมลนี้หรือเปิดคำขอสนับสนุน"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "If you have any questions, please reply to this email or open a support ticket."
+msgstr "หากคุณมีคำถาม โปรดตอบกลับอีเมลนี้หรือเปิดคำขอสนับสนุน"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
+msgstr "หากคุณต้องการความช่วยเหลือในการเริ่มต้น ทีมสนับสนุนของเราพร้อมช่วยเหลือ เพียง%link%เปิดคำขอสนับสนุน%link_end%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "If you need further help with this request, you can still view the ticket, or open a new one at any time."
+msgstr "หากคุณต้องการความช่วยเหลือเพิ่มเติมสำหรับคำขอนี้ คุณยังดูคำขอสนับสนุนได้ หรือเปิดคำขอใหม่ได้ทุกเมื่อ"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "If you ordered a domain with this account, it can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate."
+msgstr "หากคุณสั่งซื้อโดเมนด้วยบัญชีนี้ อาจใช้เวลาถึง 48 ชั่วโมงกว่าจะมองเห็นได้ทั่วอินเทอร์เน็ต ระหว่างที่การเปลี่ยนแปลง DNS แพร่กระจาย"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number%"
+msgstr "ใบแจ้งหนี้ #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% for %balance_due% is due on %due_at%."
+msgstr "ใบแจ้งหนี้ #%number% ยอด %balance_due% ครบกำหนดในวันที่ %due_at%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Invoice #%number% is due on %due_at%."
+msgstr "ใบแจ้งหนี้ #%number% ครบกำหนดในวันที่ %due_at%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Invoice #%number% is past due. Please pay it to keep your services running."
+msgstr "ใบแจ้งหนี้ #%number% เลยกำหนดชำระแล้ว โปรดชำระเพื่อให้บริการของคุณทำงานต่อเนื่อง"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% is ready"
+msgstr "ใบแจ้งหนี้ #%number% พร้อมแล้ว"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Invoice date"
+msgstr "วันที่ใบแจ้งหนี้"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Invoice number"
+msgstr "หมายเลขใบแจ้งหนี้"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Language versions"
+msgstr "เวอร์ชันภาษา"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Leave blank to use the default"
+msgstr "เว้นว่างไว้เพื่อใช้ค่าเริ่มต้น"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "License key"
+msgstr "คีย์ลิขสิทธิ์"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Manage domain"
+msgstr "จัดการโดเมน"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Manage hosting"
+msgstr "จัดการโฮสติ้ง"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Manage hosting account"
+msgstr "จัดการบัญชีโฮสติ้ง"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Manage the order"
+msgstr "จัดการคำสั่งซื้อ"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Names and descriptions in other languages"
+msgstr "ชื่อและคำอธิบายในภาษาอื่น"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "New client signed up"
+msgstr "ลูกค้ารายใหม่ลงทะเบียนแล้ว"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order placed"
+msgstr "มีคำสั่งซื้อใหม่"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order: %title%"
+msgstr "คำสั่งซื้อใหม่: %title%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "New reply from client"
+msgstr "ลูกค้าตอบกลับใหม่"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "New ticket opened"
+msgstr "เปิดคำขอสนับสนุนใหม่"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig …
+msgid "Next due date"
+msgstr "วันครบกำหนดถัดไป"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Once you accept the quote, we send you the invoice. Questions? Just reply to this email."
+msgstr "เมื่อคุณยอมรับใบเสนอราคา เราจะส่งใบแจ้งหนี้ให้คุณ มีคำถามหรือไม่ เพียงตอบกลับอีเมลนี้"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "One click to confirm your email address."
+msgstr "คลิกเพียงครั้งเดียวเพื่อยืนยันที่อยู่อีเมลของคุณ"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Open Cancellation Requests"
+msgstr "เปิดคำขอยกเลิก"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Open Failed actions"
+msgstr "เปิดการดำเนินการที่ล้มเหลว"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "Open System health"
+msgstr "เปิดสุขภาพของระบบ"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
+msgid "Open a support ticket"
+msgstr "เปิดคำขอสนับสนุน"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Open the client area"
+msgstr "เปิดพื้นที่ลูกค้า"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Open the quote"
+msgstr "เปิดใบเสนอราคา"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Open the ticket"
+msgstr "เปิดคำขอสนับสนุน"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed"
+msgstr "การดำเนินการของคำสั่งซื้อล้มเหลว"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed: %action% #%order_id%"
+msgstr "การดำเนินการของคำสั่งซื้อล้มเหลว: %action% #%order_id%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Our quote for %subject%."
+msgstr "ใบเสนอราคาของเราสำหรับ %subject%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr "จากบันทึกของเรา ใบแจ้งหนี้ %number% เลยกำหนดชำระมาแล้ว %days_passed% วัน โปรดชำระโดยเร็วที่สุดเพื่อหลีกเลี่ยงการหยุดชะงักของบริการของคุณ"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our support team has opened a ticket for you. Their message is below."
+msgstr "ทีมสนับสนุนของเราเปิดคำขอสนับสนุนให้คุณแล้ว ข้อความของทีมอยู่ด้านล่าง"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
+msgstr "ทีมสนับสนุนของเราโพสต์คำตอบใหม่ในคำขอสนับสนุน %subject% ของคุณ คุณสามารถอ่านและตอบกลับได้จากลิงก์ด้านล่าง"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our team opened ticket #%id% for you."
+msgstr "ทีมของเราเปิดคำขอสนับสนุน #%id% ให้คุณแล้ว"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Overdue notice: invoice #%number%"
+msgstr "แจ้งเตือนเลยกำหนด: ใบแจ้งหนี้ #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Pay invoice"
+msgstr "ชำระใบแจ้งหนี้"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Pay invoice now"
+msgstr "ชำระใบแจ้งหนี้ตอนนี้"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Payment overdue"
+msgstr "การชำระเงินเลยกำหนด"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received"
+msgstr "ได้รับการชำระเงินแล้ว"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received: invoice #%number%"
+msgstr "ได้รับการชำระเงินแล้ว: ใบแจ้งหนี้ #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder"
+msgstr "แจ้งเตือนการชำระเงิน"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder: invoice #%number%"
+msgstr "แจ้งเตือนการชำระเงิน: ใบแจ้งหนี้ #%number%"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Please also %link%confirm your email address%link_end%. If the link has expired, you can ask for a new one after signing in."
+msgstr "โปรด%link%ยืนยันที่อยู่อีเมลของคุณ%link_end%ด้วย หากลิงก์หมดอายุ คุณสามารถขอลิงก์ใหม่ได้หลังจากลงชื่อเข้าใช้"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm that this is your email address by clicking the button below. It keeps your account secure and makes sure you receive important notices about your services and invoices."
+msgstr "โปรดยืนยันว่านี่คือที่อยู่อีเมลของคุณโดยคลิกปุ่มด้านล่าง วิธีนี้ช่วยรักษาความปลอดภัยของบัญชี และทำให้คุณได้รับประกาศสำคัญเกี่ยวกับบริการและใบแจ้งหนี้"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm your email address"
+msgstr "โปรดยืนยันที่อยู่อีเมลของคุณ"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please confirm your email address to finish setting up your account."
+msgstr "โปรดยืนยันที่อยู่อีเมลของคุณเพื่อตั้งค่าบัญชีให้เสร็จสมบูรณ์"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Please keep in mind that a new domain can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate. Your website and email on this domain start working once that is done."
+msgstr "โปรดทราบว่าโดเมนใหม่อาจใช้เวลาถึง 48 ชั่วโมงกว่าจะมองเห็นได้ทั่วอินเทอร์เน็ต ระหว่างที่การเปลี่ยนแปลง DNS แพร่กระจาย เว็บไซต์และอีเมลของคุณบนโดเมนนี้จะเริ่มใช้งานได้เมื่อเสร็จสิ้น"
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Please reply from the staff panel, not to this email."
+msgstr "โปรดตอบกลับจากแผงเจ้าหน้าที่ ไม่ใช่ตอบอีเมลนี้"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please sign in with the password you chose when you signed up."
+msgstr "โปรดลงชื่อเข้าใช้ด้วยรหัสผ่านที่คุณเลือกไว้ตอนสมัคร"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in."
+msgstr "โปรดใช้เวลาสักครู่เพื่อให้คะแนนเจ้าหน้าที่ที่ช่วยเหลือคุณ และบอกเราว่าเราจะปรับปรุงอย่างไร ไม่ต้องลงชื่อเข้าใช้"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% accepted: %subject%"
+msgstr "ยอมรับใบเสนอราคา #%id% แล้ว: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% declined: %subject%"
+msgstr "ปฏิเสธใบเสนอราคา #%id% แล้ว: %subject%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Quote #%id%: %subject%"
+msgstr "ใบเสนอราคา #%id%: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote accepted"
+msgstr "ยอมรับใบเสนอราคาแล้ว"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote declined"
+msgstr "ปฏิเสธใบเสนอราคาแล้ว"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Reason given:"
+msgstr "เหตุผลที่ระบุ:"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Registration date"
+msgstr "วันที่ลงทะเบียน"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Remove the %language% version of this template?"
+msgstr "ลบเวอร์ชัน %language% ของเทมเพลตนี้หรือไม่"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Remove version"
+msgstr "ลบเวอร์ชัน"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Renewal date"
+msgstr "วันที่ต่ออายุ"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Reply to ticket"
+msgstr "ตอบกลับคำขอสนับสนุน"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "Review order"
+msgstr "ตรวจสอบคำสั่งซื้อ"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "Review the ticket"
+msgstr "ตรวจสอบคำขอสนับสนุน"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "See the update"
+msgstr "ดูการอัปเดต"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent for the default language and every language without its own version."
+msgstr "ส่งสำหรับภาษาเริ่มต้นและทุกภาษาที่ไม่มีเวอร์ชันของตนเอง"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent in:"
+msgstr "ส่งเป็นภาษา:"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Server and nameservers"
+msgstr "เซิร์ฟเวอร์และเนมเซิร์ฟเวอร์"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "Service cancelled"
+msgstr "ยกเลิกบริการแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Service reactivated"
+msgstr "เปิดใช้งานบริการอีกครั้งแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Service renewed"
+msgstr "ต่ออายุบริการแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "Service suspended"
+msgstr "บริการถูกระงับ"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Set your password"
+msgstr "ตั้งรหัสผ่านของคุณ"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Sign in to client area"
+msgstr "ลงชื่อเข้าใช้พื้นที่ลูกค้า"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Sign-in email"
+msgstr "อีเมลสำหรับลงชื่อเข้าใช้"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database."
+msgstr "เจ้าหน้าที่ที่ได้รับอนุญาตให้อัปเดตระบบสามารถติดตั้งได้จาก ระบบ > อัปเดต โดยระบบจะสำรองฐานข้อมูลและไฟล์ที่ถูกแทนที่ ติดตั้งรุ่น และอัปเดตฐานข้อมูล"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Starts"
+msgstr "เริ่มต้น"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: %count% checks need attention"
+msgstr "สุขภาพของระบบ: มี %count% การตรวจสอบที่ต้องให้ความสนใจ"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: 1 check needs attention"
+msgstr "สุขภาพของระบบ: มี 1 การตรวจสอบที่ต้องให้ความสนใจ"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Tell us how we handled your ticket."
+msgstr "บอกเราว่าเราจัดการคำขอสนับสนุนของคุณเป็นอย่างไร"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Thank you for choosing %company%. Your hosting account %title% has been set up. This email holds everything you need to start using it: please keep it for your records."
+msgstr "ขอบคุณที่เลือก %company% บัญชีโฮสติ้ง %title% ของคุณตั้งค่าเรียบร้อยแล้ว อีเมลนี้มีทุกอย่างที่คุณต้องใช้เพื่อเริ่มต้น โปรดเก็บไว้เป็นหลักฐาน"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Thank you for contacting our support team. A ticket has been opened for your request and a member of our team will reply as soon as possible. You will be notified by email when there is a response."
+msgstr "ขอบคุณที่ติดต่อทีมสนับสนุนของเรา เราเปิดคำขอสนับสนุนสำหรับคำขอของคุณแล้ว และสมาชิกในทีมจะตอบกลับโดยเร็วที่สุด คุณจะได้รับแจ้งทางอีเมลเมื่อมีคำตอบ"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team."
+msgstr "ขอบคุณที่สร้างบัญชีกับเรา ในพื้นที่ลูกค้า คุณสามารถสั่งซื้อ จัดการบริการ ชำระใบแจ้งหนี้ และติดต่อทีมสนับสนุนของเราได้"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Thank you for helping us improve our service."
+msgstr "ขอบคุณที่ช่วยให้เราปรับปรุงบริการ"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Thank you for your business. A new invoice has been issued for your account on %created_at%. Please find the details below."
+msgstr "ขอบคุณที่ไว้วางใจเรา เราออกใบแจ้งหนี้ใหม่สำหรับบัญชีของคุณเมื่อ %created_at% รายละเอียดอยู่ด้านล่าง"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr "ขอบคุณที่สนใจ ใบเสนอราคาของเราสำหรับ %subject% อยู่ด้านล่าง และแนบไฟล์ PDF มากับอีเมลนี้"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to download."
+msgstr "ขอบคุณสำหรับคำสั่งซื้อ %title% ของคุณเปิดใช้งานแล้วและพร้อมให้ดาวน์โหลด"
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to use."
+msgstr "ขอบคุณสำหรับคำสั่งซื้อ %title% ของคุณเปิดใช้งานแล้วและพร้อมใช้งาน"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your API key is below: please keep it secret."
+msgstr "ขอบคุณสำหรับคำสั่งซื้อ %title% ของคุณเปิดใช้งานแล้ว คีย์ API ของคุณอยู่ด้านล่าง โปรดเก็บเป็นความลับ"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your license key is below: please keep it for your records."
+msgstr "ขอบคุณสำหรับคำสั่งซื้อ %title% ของคุณเปิดใช้งานแล้ว คีย์ลิขสิทธิ์ของคุณอยู่ด้านล่าง โปรดเก็บไว้เป็นหลักฐาน"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. Your domain %title% is now active."
+msgstr "ขอบคุณสำหรับคำสั่งซื้อ โดเมน %title% ของคุณเปิดใช้งานแล้ว"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you for your payment of %total%."
+msgstr "ขอบคุณสำหรับการชำระเงิน %total%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you! We have received your payment for invoice %number%. This email is your receipt."
+msgstr "ขอบคุณ เราได้รับการชำระเงินของคุณสำหรับใบแจ้งหนี้ %number% แล้ว อีเมลนี้คือใบเสร็จของคุณ"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "การดำเนินการ %action% ของคำสั่งซื้อ %order% (ลูกค้า %client%) ล้มเหลว แผงโฮสติ้ง นายทะเบียน หรือบริการอื่นปฏิเสธหรือไม่สามารถดำเนินการให้เสร็จได้"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "การดำเนินการ %action% ของคำสั่งซื้อ %order% ล้มเหลว แผงโฮสติ้ง นายทะเบียน หรือบริการอื่นปฏิเสธหรือไม่สามารถดำเนินการให้เสร็จได้"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The automatic payment set up for your service at its old price was cancelled."
+msgstr "การชำระเงินอัตโนมัติที่ตั้งไว้สำหรับบริการของคุณในราคาเดิมถูกยกเลิกแล้ว"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The cancelled automatic payment will not pay your next renewal invoice. Unless your account credit covers it, please pay it when it arrives; paying it the same way as before sets up automatic payment again."
+msgstr "การชำระเงินอัตโนมัติที่ยกเลิกแล้วจะไม่ชำระใบแจ้งหนี้ต่ออายุครั้งถัดไปของคุณ เว้นแต่เครดิตในบัญชีของคุณจะครอบคลุม โปรดชำระเมื่อใบแจ้งหนี้มาถึง การชำระด้วยวิธีเดียวกับก่อนหน้านี้จะตั้งการชำระเงินอัตโนมัติอีกครั้ง"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "The email was too large. Please send it again with smaller attachments, or attach the files from our client area."
+msgstr "อีเมลมีขนาดใหญ่เกินไป โปรดส่งอีกครั้งพร้อมไฟล์แนบที่เล็กลง หรือแนบไฟล์จากพื้นที่ลูกค้าของเรา"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found a check that needs attention:"
+msgstr "การตรวจสอบสุขภาพระบบรายชั่วโมงของพอร์ทัลการเรียกเก็บเงินพบการตรวจสอบหนึ่งรายการที่ต้องให้ความสนใจ:"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found checks that need attention:"
+msgstr "การตรวจสอบสุขภาพระบบรายชั่วโมงของพอร์ทัลการเรียกเก็บเงินพบการตรวจสอบที่ต้องให้ความสนใจ:"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr "ใบแจ้งหนี้ที่ออกไปแล้วสำหรับรายการนี้ยังคงใช้ราคาเดิม ราคาใหม่เริ่มตั้งแต่การต่ออายุครั้งถัดไป"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
+msgstr "ลิงก์ใช้ได้ครั้งเดียวและหมดอายุใน %days% วัน หากคุณไม่ได้คาดหวังคำเชิญนี้ คุณสามารถละเว้นอีเมลนี้ได้"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with the renewal due %date%."
+msgstr "ราคาใหม่เริ่มตั้งแต่การต่ออายุที่ครบกำหนดในวันที่ %date%"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with your next invoice."
+msgstr "ราคาใหม่เริ่มตั้งแต่ใบแจ้งหนี้ครั้งถัดไปของคุณ"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "The password of your account was changed."
+msgstr "รหัสผ่านของบัญชีคุณถูกเปลี่ยนแล้ว"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The plan, price or billing cycle of %title% changed, so the automatic payment set up for it at the old price was cancelled. You have not been charged for this."
+msgstr "แผน ราคา หรือรอบการเรียกเก็บเงินของ %title% เปลี่ยนไป การชำระเงินอัตโนมัติที่ตั้งไว้ในราคาเดิมจึงถูกยกเลิก คุณไม่ได้ถูกเรียกเก็บเงินสำหรับเรื่องนี้"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The renewal price of your service is changing."
+msgstr "ราคาต่ออายุของบริการของคุณกำลังเปลี่ยนแปลง"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "There is a new reply on your ticket \"%subject%\"."
+msgstr "มีคำตอบใหม่ในคำขอสนับสนุน \"%subject%\" ของคุณ"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area."
+msgstr "ที่อยู่นี้รับเฉพาะอีเมลจากลูกค้าที่ลงทะเบียนแล้ว หากคุณเป็นลูกค้า โปรดเขียนจากที่อยู่อีเมลของบัญชี หรือเปิดคำขอสนับสนุนจากพื้นที่ลูกค้าของเรา"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes replies to existing tickets. Please open a new ticket from our client area."
+msgstr "ที่อยู่นี้รับเฉพาะการตอบกลับคำขอสนับสนุนที่มีอยู่แล้ว โปรดเปิดคำขอสนับสนุนใหม่จากพื้นที่ลูกค้าของเรา"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "This is a confirmation that the password for your client area account has just been changed."
+msgstr "นี่คือการยืนยันว่ารหัสผ่านของบัญชีพื้นที่ลูกค้าของคุณเพิ่งถูกเปลี่ยน"
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "This is a confirmation that the password for your staff account has just been changed."
+msgstr "นี่คือการยืนยันว่ารหัสผ่านของบัญชีเจ้าหน้าที่ของคุณเพิ่งถูกเปลี่ยน"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due in %days% days, on %date%."
+msgstr "ขอแจ้งเตือนด้วยความหวังดีว่า ใบแจ้งหนี้ %number% จะครบกำหนดในอีก %days% วัน ในวันที่ %date%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due today."
+msgstr "ขอแจ้งเตือนด้วยความหวังดีว่า ใบแจ้งหนี้ %number% ครบกำหนดวันนี้"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% was due on %date%. Please arrange payment as soon as possible."
+msgstr "ขอแจ้งเตือนด้วยความหวังดีว่า ใบแจ้งหนี้ %number% ครบกำหนดในวันที่ %date% โปรดชำระโดยเร็วที่สุด"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "This is to confirm that your hosting account %title% has been cancelled."
+msgstr "นี่คือการยืนยันว่าบัญชีโฮสติ้ง %title% ของคุณถูกยกเลิกแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "This is to confirm that your service %title% has been cancelled."
+msgstr "นี่คือการยืนยันว่าบริการ %title% ของคุณถูกยกเลิกแล้ว"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "This language is turned off: these texts are kept but not shown."
+msgstr "ภาษานี้ปิดอยู่: ข้อความเหล่านี้ถูกเก็บไว้แต่ไม่แสดง"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "This language is turned off: this version is not sent"
+msgstr "ภาษานี้ปิดอยู่: ไม่ส่งเวอร์ชันนี้"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig …
+msgid "Ticket #%id%"
+msgstr "คำขอสนับสนุน #%id%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket #%id% assigned to you: %subject%"
+msgstr "คำขอสนับสนุน #%id% ถูกมอบหมายให้คุณ: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket #%id% escalated: %subject%"
+msgstr "คำขอสนับสนุน #%id% ถูกยกระดับ: %subject%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Ticket #%id% has been closed."
+msgstr "ปิดคำขอสนับสนุน #%id% แล้ว"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Ticket #%id% is open. We will reply as soon as possible."
+msgstr "คำขอสนับสนุน #%id% เปิดอยู่ เราจะตอบกลับโดยเร็วที่สุด"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it."
+msgstr "คำขอสนับสนุน #%ticket_id% ปิดแล้ว โปรดเปิดคำขอสนับสนุนใหม่ หรือลงชื่อเข้าใช้พื้นที่ลูกค้าของเราเพื่อดู"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it."
+msgstr "คำขอสนับสนุน %ticket% ไม่มีการตอบกลับนาน %minutes% นาที กฎการยกระดับ %name% จึงดำเนินการกับคำขอนี้"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket assigned to you"
+msgstr "คำขอสนับสนุนที่มอบหมายให้คุณ"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "Ticket closed by client"
+msgstr "ลูกค้าปิดคำขอสนับสนุน"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket escalated"
+msgstr "คำขอสนับสนุนถูกยกระดับ"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "To get started, choose your password with the button below."
+msgstr "เริ่มต้นด้วยการเลือกรหัสผ่านของคุณด้วยปุ่มด้านล่าง"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "View and accept quote"
+msgstr "ดูและยอมรับใบเสนอราคา"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "View and pay invoice"
+msgstr "ดูและชำระใบแจ้งหนี้"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "View and reply"
+msgstr "ดูและตอบกลับ"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "View client"
+msgstr "ดูลูกค้า"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "View ticket"
+msgstr "ดูคำขอสนับสนุน"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "View your service"
+msgstr "ดูบริการของคุณ"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "View your services"
+msgstr "ดูบริการของคุณ"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We apologise for any inconvenience and will keep you updated."
+msgstr "ขออภัยในความไม่สะดวก เราจะแจ้งความคืบหน้าให้คุณทราบ"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of these services is changing. The details are below."
+msgstr "เราเขียนมาเพื่อแจ้งให้ทราบว่าราคาแบบเรียกเก็บซ้ำของบริการเหล่านี้กำลังเปลี่ยนแปลง รายละเอียดอยู่ด้านล่าง"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of this service is changing. The details are below."
+msgstr "เราเขียนมาเพื่อแจ้งให้ทราบว่าราคาแบบเรียกเก็บซ้ำของบริการนี้กำลังเปลี่ยนแปลง รายละเอียดอยู่ด้านล่าง"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method %card% for invoice %number%. %reason%"
+msgstr "เราไม่สามารถเรียกเก็บเงินจากวิธีชำระเงินที่บันทึกไว้ %card% ของคุณสำหรับใบแจ้งหนี้ %number% ได้ %reason%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method for invoice #%number%."
+msgstr "เราไม่สามารถเรียกเก็บเงินจากวิธีชำระเงินที่บันทึกไว้ของคุณสำหรับใบแจ้งหนี้ #%number% ได้"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "We have received your request"
+msgstr "เราได้รับคำขอของคุณแล้ว"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "We have replied to your ticket"
+msgstr "เราได้ตอบกลับคำขอสนับสนุนของคุณแล้ว"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig
+msgid "We received a request to reset the password for your client area account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "เราได้รับคำขอรีเซ็ตรหัสผ่านสำหรับบัญชีพื้นที่ลูกค้าของคุณ คลิกปุ่มด้านล่างเพื่อเลือกรหัสผ่านใหม่ เพื่อความปลอดภัย ลิงก์จะหมดอายุใน 15 นาที"
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "We received a request to reset the password for your staff account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "เราได้รับคำขอรีเซ็ตรหัสผ่านสำหรับบัญชีเจ้าหน้าที่ของคุณ คลิกปุ่มด้านล่างเพื่อเลือกรหัสผ่านใหม่ เพื่อความปลอดภัย ลิงก์จะหมดอายุใน 15 นาที"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "We received a request to reset the password of your user for the client area. Click the button below to choose a new password. For your security, the link expires in %minutes% minutes."
+msgstr "เราได้รับคำขอรีเซ็ตรหัสผ่านของผู้ใช้ของคุณสำหรับพื้นที่ลูกค้า คลิกปุ่มด้านล่างเพื่อเลือกรหัสผ่านใหม่ เพื่อความปลอดภัย ลิงก์จะหมดอายุใน %minutes% นาที"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "We regret to inform you that your domain %title% has been suspended."
+msgstr "เราเสียใจที่ต้องแจ้งว่าโดเมน %title% ของคุณถูกระงับแล้ว"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "We regret to inform you that your hosting account %title% has been suspended."
+msgstr "เราเสียใจที่ต้องแจ้งว่าบัญชีโฮสติ้ง %title% ของคุณถูกระงับแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "We regret to inform you that your service %title% has been suspended."
+msgstr "เราเสียใจที่ต้องแจ้งว่าบริการ %title% ของคุณถูกระงับแล้ว"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We will try it again on %date%."
+msgstr "เราจะลองอีกครั้งในวันที่ %date%"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
+msgstr "เราต้องการแจ้งข้อมูลเกี่ยวกับเครือข่ายของเราให้คุณทราบ: %status_title% (ลำดับความสำคัญ %priority_title%)"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Welcome to %company%"
+msgstr "ยินดีต้อนรับสู่ %company%"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited"
+msgstr "คุณได้รับเชิญ"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited to %account%"
+msgstr "คุณได้รับเชิญเข้าร่วม %account%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "You can also %link%download the invoice as a PDF%link_end% for your records."
+msgstr "คุณยัง%link%ดาวน์โหลดใบแจ้งหนี้เป็น PDF%link_end%เพื่อเก็บไว้เป็นหลักฐานได้"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "You can also %link%download the invoice as a PDF%link_end%. If you have already paid, please disregard this message."
+msgstr "คุณยัง%link%ดาวน์โหลดใบแจ้งหนี้เป็น PDF%link_end%ได้ หากคุณชำระแล้ว โปรดละเว้นข้อความนี้"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "You can also save a payment method on your %link%Payment methods%link_end% page now, so your invoices are paid automatically."
+msgstr "ตอนนี้คุณยังบันทึกวิธีชำระเงินได้ที่หน้า%link%วิธีการชำระเงิน%link_end%ของคุณ เพื่อให้ใบแจ้งหนี้ถูกชำระโดยอัตโนมัติ"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "You can download it again at any time from the %link%service page%link_end% in the client area."
+msgstr "คุณดาวน์โหลดอีกครั้งได้ทุกเมื่อจาก%link%หน้าบริการ%link_end%ในพื้นที่ลูกค้า"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
+msgstr "คุณสามารถชำระใบแจ้งหนี้ตอนนี้ หรือเปลี่ยนวิธีชำระเงินที่หน้า%link%วิธีการชำระเงิน%link_end%"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "You get this email once per problem: the next one comes only if a check passes and breaks again."
+msgstr "คุณจะได้รับอีเมลนี้หนึ่งครั้งต่อหนึ่งปัญหา อีเมลถัดไปจะมาก็ต่อเมื่อการตรวจสอบผ่านแล้วกลับล้มเหลวอีกครั้ง"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You have been invited to use the client area of %account% with your own sign-in."
+msgstr "คุณได้รับเชิญให้ใช้พื้นที่ลูกค้าของ %account% ด้วยการลงชื่อเข้าใช้ของคุณเอง"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
+msgstr "คุณสมัครด้วยบัญชี Google จึงไม่มีรหัสผ่านให้จำ ครั้งหน้าให้ใช้ปุ่ม Google ในหน้าลงชื่อเข้าใช้ และเลือกบัญชี Google เดิม หากต้องการลงชื่อเข้าใช้ด้วยอีเมลด้วย ให้เลือกรหัสผ่านในหน้าลงชื่อเข้าใช้ด้วย Google ของบัญชีคุณ"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password."
+msgstr "คุณสมัครด้วยบัญชี Google หลังจากนั้นคุณจะเลือกรหัสผ่าน ครั้งหน้าให้ลงชื่อเข้าใช้ด้วยอีเมลและรหัสผ่านนั้น"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "Your %title% has been cancelled."
+msgstr "%title% ของคุณถูกยกเลิกแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "Your %title% has been renewed."
+msgstr "%title% ของคุณต่ออายุแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "Your %title% has been suspended."
+msgstr "%title% ของคุณถูกระงับแล้ว"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your %title% is active and ready to use."
+msgstr "%title% ของคุณเปิดใช้งานและพร้อมใช้งาน"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "Your %title% is available again."
+msgstr "%title% ของคุณกลับมาใช้งานได้อีกครั้ง"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your %title% is ready to download."
+msgstr "%title% ของคุณพร้อมให้ดาวน์โหลด"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Your API key is ready"
+msgstr "คีย์ API ของคุณพร้อมแล้ว"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Your account credit or saved payment method will pay your next renewal invoice, so you do not need to do anything."
+msgstr "เครดิตในบัญชีหรือวิธีชำระเงินที่บันทึกไว้ของคุณจะชำระใบแจ้งหนี้ต่ออายุครั้งถัดไป คุณจึงไม่ต้องทำอะไร"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Your account is ready."
+msgstr "บัญชีของคุณพร้อมแล้ว"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Your client account is ready."
+msgstr "บัญชีลูกค้าของคุณพร้อมแล้ว"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Your domain %title% has been renewed. Thank you for your continued business."
+msgstr "ต่ออายุโดเมน %title% ของคุณแล้ว ขอบคุณที่ใช้บริการกับเราอย่างต่อเนื่อง"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain %title% is active."
+msgstr "โดเมน %title% ของคุณเปิดใช้งานอยู่"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain is active"
+msgstr "โดเมนของคุณเปิดใช้งานแล้ว"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your download is ready"
+msgstr "ไฟล์ดาวน์โหลดของคุณพร้อมแล้ว"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email \"%subject%\" to %helpdesk% was not added to a support ticket."
+msgstr "อีเมล \"%subject%\" ของคุณถึง %helpdesk% ไม่ได้ถูกเพิ่มในคำขอสนับสนุน"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Your email settings work"
+msgstr "การตั้งค่าอีเมลของคุณใช้งานได้"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket"
+msgstr "อีเมลของคุณไม่ได้ถูกเพิ่มในคำขอสนับสนุน"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket: %subject%"
+msgstr "อีเมลของคุณไม่ได้ถูกเพิ่มในคำขอสนับสนุน: %subject%"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Your hosting account %title% has been renewed. Thank you for your continued business."
+msgstr "ต่ออายุบัญชีโฮสติ้ง %title% ของคุณแล้ว ขอบคุณที่ใช้บริการกับเราอย่างต่อเนื่อง"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is ready"
+msgstr "บัญชีโฮสติ้งของคุณพร้อมแล้ว"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is set up and ready to use."
+msgstr "บัญชีโฮสติ้งของคุณตั้งค่าเรียบร้อยและพร้อมใช้งาน"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Your invoice is ready"
+msgstr "ใบแจ้งหนี้ของคุณพร้อมแล้ว"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your license is active"
+msgstr "ลิขสิทธิ์ของคุณเปิดใช้งานแล้ว"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "Your password was changed"
+msgstr "เปลี่ยนรหัสผ่านของคุณแล้ว"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your recurring discount"
+msgstr "ส่วนลดแบบเรียกเก็บซ้ำของคุณ"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your renewal price is changing"
+msgstr "ราคาต่ออายุของคุณกำลังเปลี่ยนแปลง"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Your service %title% has been renewed. Thank you for your continued business."
+msgstr "ต่ออายุบริการ %title% ของคุณแล้ว ขอบคุณที่ใช้บริการกับเราอย่างต่อเนื่อง"
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Your service is active"
+msgstr "บริการของคุณเปิดใช้งานแล้ว"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket %subject% has now been closed. We hope we were able to help."
+msgstr "ปิดคำขอสนับสนุน %subject% ของคุณแล้ว เราหวังว่าเราจะช่วยคุณได้"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Your ticket %ticket% is now closed. We would love to know how we handled it."
+msgstr "ปิดคำขอสนับสนุน %ticket% ของคุณแล้ว เราอยากทราบว่าเราจัดการได้ดีเพียงใด"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket is closed"
+msgstr "ปิดคำขอสนับสนุนของคุณแล้ว"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "an account"
+msgstr "บัญชี"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "our support team"
+msgstr "ทีมสนับสนุนของเรา"

@@ -23,7 +23,7 @@ function emailSandboxEnvironment(): Environment
     $twig->addExtension(new SandboxExtension(EmailPolicy::create(), true));
     foreach ([
         'format_currency', 'format_date', 'format_datetime', 'format_number', 'format_time', 'currency_name',
-        'currency_symbol', 'country_name', 'url', 'daysleft', 'trans', 'period_title', 'markdown_to_html',
+        'currency_symbol', 'country_name', 'url', 'daysleft', 'trans', 'trans_html', 'period_title', 'markdown_to_html',
     ] as $filter) {
         $twig->addFilter(new TwigFilter($filter, static fn (mixed $value, mixed ...$options): mixed => $value, ['is_variadic' => true]));
     }

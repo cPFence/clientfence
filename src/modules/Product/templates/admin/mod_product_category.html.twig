@@ -33,18 +33,26 @@
             footer_align: 'between'
         } %}
             {% block form_content %}
+                {# ClientFence: the language bar of the name and description (mod_product_translations.html.twig). #}
+                {{ include('mod_product_translations.html.twig', { part: 'bar', kind: 'category', item: category }) }}
                 <div class="row g-3">
                     <div class="col-lg-6">
-                        <label class="form-label">{{ 'Title'|trans }}</label>
-                        <input class="form-control" type="text" name="title" value="{{ category.title }}" required>
+                        <div data-cf-text-pane="">
+                            <label class="form-label">{{ 'Title'|trans }}</label>
+                            <input class="form-control" type="text" name="title" value="{{ category.title }}" required>
+                        </div>
+                        {{ include('mod_product_translations.html.twig', { part: 'title', kind: 'category', item: category }) }}
                     </div>
                     <div class="col-lg-6">
                         <label class="form-label">{{ 'Icon'|trans }}</label>
                         <input class="form-control" type="text" name="icon_url" id="bb-icon" value="{{ category.icon_url }}">
                     </div>
                     <div class="col-12">
-                        <label class="form-label">{{ 'Description'|trans }}</label>
-                        <textarea class="editor-textarea" name="description" rows="5">{{ category.description }}</textarea>
+                        <div data-cf-text-pane="">
+                            <label class="form-label">{{ 'Description'|trans }}</label>
+                            <textarea class="editor-textarea" name="description" rows="5">{{ category.description }}</textarea>
+                        </div>
+                        {{ include('mod_product_translations.html.twig', { part: 'description', kind: 'category', item: category }) }}
                     </div>
                 </div>
                 <input type="hidden" name="id" value="{{ category.id }}">

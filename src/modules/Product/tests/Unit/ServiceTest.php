@@ -384,6 +384,47 @@ test('get cart product title falls back to product title', function (): void {
     expect($service->getCartProductTitle($product, []))->toBe('Example');
 });
 
+/** An entity manager whose connection holds German texts of product 1 and category 1 (Product/Translations.php). */
+function productTestTranslationsEm(): Doctrine\ORM\EntityManagerInterface
+{
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('product_translation', ['kind' => 'product', 'ref_id' => 1, 'lang' => 'de_DE', 'title' => 'Beispiel', 'description' => null]);
+    $db->insert('product_translation', ['kind' => 'category', 'ref_id' => 1, 'lang' => 'de_DE', 'title' => 'Pakete', 'description' => 'Alle Pakete']);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+
+    return $em;
+}
+
+test('the order title is written in the page language', function (): void {
+    $service = new Service();
+    $product = productTestCreateProductEntity(1)->setType(Service::CUSTOM)->setTitle('Example');
+    $di = container();
+    $di['em'] = productTestTranslationsEm();
+    $di['mod_service'] = $di->protect(fn (): object => new stdClass());
+    $service->setDi($di);
+
+    expect(ClientFence\Translate::with('de_DE', fn (): string => $service->getCartProductTitle($product, [])))->toBe('Beispiel')
+        ->and(ClientFence\Translate::with('fr_FR', fn (): string => $service->getCartProductTitle($product, [])))->toBe('Example');
+});
+
+test('clients read a category in the page language, staff the default texts', function (?object $identity, array $expected): void {
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getCategoryProducts')->andReturn([]);
+    $di = container();
+    $di['em'] = productTestTranslationsEm();
+    $service->setDi($di);
+    $category = productTestCreateProductCategoryEntity(1)->setTitle('Packages')->setDescription('All packages');
+
+    $result = ClientFence\Translate::with('de_DE', fn (): array => $service->toProductCategoryApiArray($category, true, $identity));
+
+    expect([$result['title'], $result['description']])->toBe($expected);
+})->with([
+    'a guest' => [null, ['Pakete', 'Alle Pakete']],
+    'staff' => [fn (): object => createEntity(ClientFence\Mod\Staff\Entity\Admin::class), ['Packages', 'All packages']],
+]);
+
 test('get related product discount returns zero for non domain products', function (): void {
     $service = new Service();
     $product = productTestCreateProductEntity(1)->setType(Service::CUSTOM);

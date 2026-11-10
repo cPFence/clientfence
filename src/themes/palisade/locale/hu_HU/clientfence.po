@@ -23756,3 +23756,1148 @@ msgstr "A(z) :tld legfeljebb :years évre regisztrálható."
 #: src/modules/Order/Upgrades.php
 msgid "This service was refunded or its price changed after its last payment, so our staff change it. Please contact us."
 msgstr "Ezt a szolgáltatást visszatérítették, vagy az utolsó fizetés után megváltozott az ára, ezért a módosítást a személyzetünk végzi. Kérjük, lépjen kapcsolatba velünk."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
+msgstr "%client% kérte a(z) %order% megrendelés lemondását a számlázási időszak végén (%date%)."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period."
+msgstr "%client% kérte a(z) %order% megrendelés lemondását a számlázási időszak végén."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% immediately."
+msgstr "%client% kérte a(z) %order% megrendelés azonnali lemondását."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%)."
+msgstr "A(z) %company% elfogadta a(z) %quote% árajánlatot. A számla elkészült és e-mailben elküldtük (%invoice%. számla)."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed."
+msgstr "A(z) %company% elfogadta a(z) %quote% árajánlatot. A számla elkészült és e-mailben elküldtük."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% declined quote %quote%. It is now lost."
+msgstr "A(z) %company% elutasította a(z) %quote% árajánlatot. Az árajánlat így elveszett."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "%discount% (included in the new price)"
+msgstr "%discount% (az új ár tartalmazza)"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "%name% assigned ticket %ticket% to you."
+msgstr "%name% Önhöz rendelte a(z) %ticket% jegyet."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "%name% closed support ticket %ticket%."
+msgstr "%name% lezárta a(z) %ticket% támogatási jegyet."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig
+msgid "%name% opened a new support ticket: %subject%."
+msgstr "%name% új támogatási jegyet nyitott: %subject%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "%name% replied to support ticket %ticket%."
+msgstr "%name% válaszolt a(z) %ticket% támogatási jegyre."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "%period% year(s)"
+msgstr "%period% év"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "%title% cancelled"
+msgstr "%title% lemondva"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+msgid "%title% is now active"
+msgstr "%title% most már aktív"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "%title% is ready"
+msgstr "%title% elkészült"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "%title% is ready to download"
+msgstr "%title% letölthető"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "%title% reactivated"
+msgstr "%title% újra aktiválva"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "%title% renewed"
+msgstr "%title% megújítva"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "%title% suspended"
+msgstr "%title% felfüggesztve"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "A client"
+msgstr "Egy ügyfél"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "A member of our team has created a client account for you. In the client area you can manage your services, pay invoices and contact our support team."
+msgstr "Csapatunk egyik tagja ügyfélfiókot hozott létre Önnek. Az ügyfélfelületen kezelheti szolgáltatásait, fizetheti számláit, és kapcsolatba léphet támogatási csapatunkkal."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out (%date%). This site runs ClientFence %version%."
+msgstr "Megjelent a ClientFence új kiadása (%date%). Ez az oldal a ClientFence %version% verziót futtatja."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out. This site runs ClientFence %version%."
+msgstr "Megjelent a ClientFence új kiadása. Ez az oldal a ClientFence %version% verziót futtatja."
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "A new client has just created an account with %company%."
+msgstr "Egy új ügyfél éppen most hozott létre fiókot a(z) %company% rendszerében."
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "A new order has been placed on %created_at%."
+msgstr "%created_at% napján új megrendelés érkezett."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "A new support ticket was opened in %helpdesk%: %subject%."
+msgstr "Új támogatási jegy nyílt itt: %helpdesk%: %subject%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "A new ticket from our team"
+msgstr "Új jegy csapatunktól"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it."
+msgstr "Fogadja el vagy állítsa le a kérést a Megrendelések > Lemondási kérelmek oldalon. Ha a lemondási kérelmeket automatikusan dolgozzák fel, a napi cron elfogadja; addig az ügyfél visszavonhatja."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "Accept the invitation"
+msgstr "Meghívás elfogadása"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
+msgid "Activated"
+msgstr "Aktiválva"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Add language"
+msgstr "Nyelv hozzáadása"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Amount due"
+msgstr "Fizetendő összeg"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "An escalation rule assigned ticket %ticket% to you."
+msgstr "Egy eszkalációs szabály Önhöz rendelte a(z) %ticket% jegyet."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "An invitation to %account%."
+msgstr "Meghívás ide: %account%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed"
+msgstr "Az automatikus fizetés sikertelen"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed: invoice #%number%"
+msgstr "Az automatikus fizetés sikertelen: %number%. számla"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment for your service has stopped"
+msgstr "Szolgáltatása automatikus fizetése leállt"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment has stopped"
+msgstr "Az automatikus fizetés leállt"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request"
+msgstr "Lemondási kérelem"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request: #%id% %title%"
+msgstr "Lemondási kérelem: #%id% %title%"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "Choose a new password"
+msgstr "Válasszon új jelszót"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "Choose a new password for your user."
+msgstr "Válasszon új jelszót felhasználójának."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "ClientFence %version% is available"
+msgstr "Elérhető a ClientFence %version%"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "ClientFence Email Test"
+msgstr "ClientFence e-mail teszt"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Confirm email address"
+msgstr "E-mail-cím megerősítése"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Confirm your email address"
+msgstr "Erősítse meg e-mail-címét"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Copied from the default text: translate it and click Update."
+msgstr "Az alapértelmezett szövegből másolva: fordítsa le, majd kattintson a Frissítés gombra."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+msgid "Dear %first_name% %last_name%,"
+msgstr "Tisztelt %first_name% %last_name%!"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Dear %first_name%,"
+msgstr "Kedves %first_name%!"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
+msgid "Dear %name%,"
+msgstr "Tisztelt %name%!"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig …
+msgid "Department"
+msgstr "Részleg"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Domain reactivated"
+msgstr "Domain újra aktiválva"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Domain renewed"
+msgstr "Domain megújítva"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "Domain suspended"
+msgstr "Domain felfüggesztve"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Download now"
+msgstr "Letöltés most"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Due date"
+msgstr "Esedékesség"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Email test"
+msgstr "E-mail teszt"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Ends"
+msgstr "Vége"
+
+#: src/modules/Email/Translations.php
+msgid "Enter a subject and a message for every language version."
+msgstr "Adjon meg tárgyat és üzenetet minden nyelvi változathoz."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email."
+msgstr "Hárítsa el az okot, majd próbálja újra a műveletet a Megrendelések > Sikertelen műveletek oldalon, vagy zárja le ott, ha kézzel elvégezték. Semmit sem próbálunk újra automatikusan. Ugyanazon művelet további hibáit ott számoljuk, újabb e-mail nélkül."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "For your security, passwords are never sent by email. Sign in to the client area to open your control panel directly or to set a new hosting password."
+msgstr "Biztonsági okokból jelszavakat soha nem küldünk e-mailben. Jelentkezzen be az ügyfélfelületre, hogy közvetlenül megnyissa a vezérlőpultot, vagy új tárhelyjelszót állítson be."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Give feedback"
+msgstr "Visszajelzés küldése"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Good news: your domain %title% has been reactivated and is available again."
+msgstr "Jó hír: a(z) %title% domainje újra aktiválva lett, és ismét elérhető."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Good news: your hosting account %title% has been reactivated and is available again."
+msgstr "Jó hír: a(z) %title% tárhelyfiókja újra aktiválva lett, és ismét elérhető."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Good news: your service %title% has been reactivated and is available again."
+msgstr "Jó hír: a(z) %title% szolgáltatása újra aktiválva lett, és ismét elérhető."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Hello %staff_member_name%,"
+msgstr "Kedves %staff_member_name%!"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Hello,"
+msgstr "Tisztelt Ügyfelünk!"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "Hosting account cancelled"
+msgstr "Tárhelyfiók lemondva"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Hosting account reactivated"
+msgstr "Tárhelyfiók újra aktiválva"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Hosting account renewed"
+msgstr "Tárhelyfiók megújítva"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "Hosting account suspended"
+msgstr "Tárhelyfiók felfüggesztve"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do?"
+msgstr "Hogyan teljesítettünk?"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do? Your feedback on ticket #%id%"
+msgstr "Hogyan teljesítettünk? Visszajelzése a(z) #%id% jegyről"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the domain. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Ha a felfüggesztés kifizetetlen számlával függ össze, a számla ügyfélfelületen történő kifizetése visszaállítja a domaint. Bármely más ok esetén kérjük, minél előbb forduljon támogatási csapatunkhoz, hogy segíthessünk az újraaktiválásban."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the hosting account. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Ha a felfüggesztés kifizetetlen számlával függ össze, a számla ügyfélfelületen történő kifizetése visszaállítja a tárhelyfiókot. Bármely más ok esetén kérjük, minél előbb forduljon támogatási csapatunkhoz, hogy segíthessünk az újraaktiválásban."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the service. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Ha a felfüggesztés kifizetetlen számlával függ össze, a számla ügyfélfelületen történő kifizetése visszaállítja a szolgáltatást. Bármely más ok esetén kérjük, minél előbb forduljon támogatási csapatunkhoz, hogy segíthessünk az újraaktiválásban."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "If you are reading this email, ClientFence is %bold%configured properly%bold_end% and is %bold%able to send emails%bold_end%. No further action is needed."
+msgstr "Ha olvassa ezt az e-mailt, a ClientFence %bold%megfelelően be van állítva%bold_end%, és %bold%képes e-maileket küldeni%bold_end%. További teendő nincs."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "If you believe this was done in error or have any questions, please open a support ticket and our team will be glad to help."
+msgstr "Ha úgy véli, hogy ez tévedésből történt, vagy kérdése van, nyisson támogatási jegyet, csapatunk szívesen segít."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "If you did not ask for a password reset, you can safely ignore this email: your password stays the same."
+msgstr "Ha nem Ön kérte a jelszó visszaállítását, nyugodtan figyelmen kívül hagyhatja ezt az e-mailt: jelszava változatlan marad."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "If you did not create an account with %company%, you can ignore this email."
+msgstr "Ha nem Ön hozott létre fiókot a(z) %company% rendszerében, figyelmen kívül hagyhatja ezt az e-mailt."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "If you did not make this change, contact your administrator immediately."
+msgstr "Ha nem Ön végezte ezt a módosítást, azonnal forduljon a rendszergazdához."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "If you did not make this change, please contact our support team immediately."
+msgstr "Ha nem Ön végezte ezt a módosítást, kérjük, azonnal forduljon támogatási csapatunkhoz."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "If you have any questions about this change, please reply to this email or open a support ticket."
+msgstr "Ha kérdése van a módosítással kapcsolatban, válaszoljon erre az e-mailre, vagy nyisson támogatási jegyet."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "If you have any questions, please reply to this email or open a support ticket."
+msgstr "Ha kérdése van, válaszoljon erre az e-mailre, vagy nyisson támogatási jegyet."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
+msgstr "Ha segítségre van szüksége az induláshoz, támogatási csapatunk rendelkezésére áll: egyszerűen %link%nyisson támogatási jegyet%link_end%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "If you need further help with this request, you can still view the ticket, or open a new one at any time."
+msgstr "Ha további segítségre van szüksége ebben az ügyben, továbbra is megtekintheti a jegyet, vagy bármikor nyithat újat."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "If you ordered a domain with this account, it can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate."
+msgstr "Ha ezzel a fiókkal domaint rendelt, akár 48 órába is telhet, mire mindenhol látható lesz az interneten, amíg a DNS-módosítások terjednek."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number%"
+msgstr "%number%. számla"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% for %balance_due% is due on %due_at%."
+msgstr "A(z) %number%. számla %balance_due% összegben %due_at% napon esedékes."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Invoice #%number% is due on %due_at%."
+msgstr "A(z) %number%. számla %due_at% napon esedékes."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Invoice #%number% is past due. Please pay it to keep your services running."
+msgstr "A(z) %number%. számla lejárt. Kérjük, fizesse ki, hogy szolgáltatásai zavartalanul működjenek."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% is ready"
+msgstr "A(z) %number%. számla elkészült"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Invoice date"
+msgstr "Számla kelte"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Invoice number"
+msgstr "Számlaszám"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Language versions"
+msgstr "Nyelvi változatok"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Leave blank to use the default"
+msgstr "Hagyja üresen az alapértelmezett használatához"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "License key"
+msgstr "Licenckulcs"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Manage domain"
+msgstr "Domain kezelése"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Manage hosting"
+msgstr "Tárhely kezelése"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Manage hosting account"
+msgstr "Tárhelyfiók kezelése"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Manage the order"
+msgstr "Megrendelés kezelése"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Names and descriptions in other languages"
+msgstr "Nevek és leírások más nyelveken"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "New client signed up"
+msgstr "Új ügyfél regisztrált"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order placed"
+msgstr "Új megrendelés érkezett"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order: %title%"
+msgstr "Új megrendelés: %title%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "New reply from client"
+msgstr "Új válasz az ügyféltől"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "New ticket opened"
+msgstr "Új jegy nyílt"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig …
+msgid "Next due date"
+msgstr "Következő esedékesség"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Once you accept the quote, we send you the invoice. Questions? Just reply to this email."
+msgstr "Az árajánlat elfogadása után elküldjük Önnek a számlát. Kérdése van? Egyszerűen válaszoljon erre az e-mailre."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "One click to confirm your email address."
+msgstr "Egy kattintás az e-mail-címe megerősítéséhez."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Open Cancellation Requests"
+msgstr "Lemondási kérelmek megnyitása"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Open Failed actions"
+msgstr "Sikertelen műveletek megnyitása"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "Open System health"
+msgstr "Rendszerállapot megnyitása"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
+msgid "Open a support ticket"
+msgstr "Támogatási jegy nyitása"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Open the client area"
+msgstr "Az ügyfélfelület megnyitása"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Open the quote"
+msgstr "Az árajánlat megnyitása"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Open the ticket"
+msgstr "A jegy megnyitása"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed"
+msgstr "A megrendelés művelete sikertelen"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed: %action% #%order_id%"
+msgstr "A megrendelés művelete sikertelen: %action% #%order_id%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Our quote for %subject%."
+msgstr "Árajánlatunk: %subject%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr "Nyilvántartásunk szerint a(z) %number%. számla már %days_passed% napja lejárt. Kérjük, mielőbb gondoskodjon a fizetésről, hogy elkerülje szolgáltatásai megszakadását."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our support team has opened a ticket for you. Their message is below."
+msgstr "Támogatási csapatunk jegyet nyitott Önnek. Üzenetüket alább olvashatja."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
+msgstr "Támogatási csapatunk új választ írt a(z) %subject% jegyére. A választ elolvashatja, és az alábbi hivatkozásról válaszolhat is rá."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our team opened ticket #%id% for you."
+msgstr "Csapatunk megnyitotta Önnek a(z) #%id% jegyet."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Overdue notice: invoice #%number%"
+msgstr "Késedelmi értesítés: %number%. számla"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Pay invoice"
+msgstr "Számla kifizetése"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Pay invoice now"
+msgstr "Számla kifizetése most"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Payment overdue"
+msgstr "Lejárt fizetés"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received"
+msgstr "Fizetés beérkezett"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received: invoice #%number%"
+msgstr "Fizetés beérkezett: %number%. számla"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder"
+msgstr "Fizetési emlékeztető"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder: invoice #%number%"
+msgstr "Fizetési emlékeztető: %number%. számla"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Please also %link%confirm your email address%link_end%. If the link has expired, you can ask for a new one after signing in."
+msgstr "Kérjük, %link%erősítse meg e-mail-címét is%link_end%. Ha a hivatkozás lejárt, bejelentkezés után újat kérhet."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm that this is your email address by clicking the button below. It keeps your account secure and makes sure you receive important notices about your services and invoices."
+msgstr "Az alábbi gombra kattintva erősítse meg, hogy ez az Ön e-mail-címe. Ez védi fiókját, és biztosítja, hogy megkapja a szolgáltatásaival és számláival kapcsolatos fontos értesítéseket."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm your email address"
+msgstr "Kérjük, erősítse meg e-mail-címét"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please confirm your email address to finish setting up your account."
+msgstr "Erősítse meg e-mail-címét a fiók beállításának befejezéséhez."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Please keep in mind that a new domain can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate. Your website and email on this domain start working once that is done."
+msgstr "Kérjük, vegye figyelembe, hogy egy új domain akár 48 órán át is eltarthat, mire mindenhol látható lesz az interneten, amíg a DNS-módosítások terjednek. Weboldala és e-mailje ezen a domainen ezután kezd el működni."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Please reply from the staff panel, not to this email."
+msgstr "Kérjük, a munkatársi felületről válaszoljon, ne erre az e-mailre."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please sign in with the password you chose when you signed up."
+msgstr "Kérjük, jelentkezzen be a regisztrációkor választott jelszóval."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in."
+msgstr "Szánjon egy percet arra, hogy értékelje az Önt segítő munkatársakat, és elmondja, hogyan fejlődhetünk. Bejelentkezés nem szükséges."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% accepted: %subject%"
+msgstr "A(z) #%id% árajánlat elfogadva: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% declined: %subject%"
+msgstr "A(z) #%id% árajánlat elutasítva: %subject%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Quote #%id%: %subject%"
+msgstr "Árajánlat #%id%: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote accepted"
+msgstr "Árajánlat elfogadva"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote declined"
+msgstr "Árajánlat elutasítva"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Reason given:"
+msgstr "Megadott ok:"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Registration date"
+msgstr "Regisztráció dátuma"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Remove the %language% version of this template?"
+msgstr "Eltávolítja a sablon %language% változatát?"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Remove version"
+msgstr "Változat eltávolítása"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Renewal date"
+msgstr "Megújítás dátuma"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Reply to ticket"
+msgstr "Válasz a jegyre"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "Review order"
+msgstr "Megrendelés ellenőrzése"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "Review the ticket"
+msgstr "Jegy ellenőrzése"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "See the update"
+msgstr "A frissítés megtekintése"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent for the default language and every language without its own version."
+msgstr "Az alapértelmezett nyelvhez és minden saját változat nélküli nyelvhez küldjük."
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent in:"
+msgstr "Küldés nyelve:"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Server and nameservers"
+msgstr "Szerver és névszerverek"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "Service cancelled"
+msgstr "Szolgáltatás lemondva"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Service reactivated"
+msgstr "Szolgáltatás újra aktiválva"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Service renewed"
+msgstr "Szolgáltatás megújítva"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "Service suspended"
+msgstr "Szolgáltatás felfüggesztve"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Set your password"
+msgstr "Állítsa be jelszavát"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Sign in to client area"
+msgstr "Bejelentkezés az ügyfélfelületre"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Sign-in email"
+msgstr "Bejelentkezési e-mail"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database."
+msgstr "A rendszer frissítésére jogosult munkatársak a Rendszer > Frissítés oldalon telepíthetik: biztonsági mentést készít az adatbázisról és a lecserélt fájlokról, telepíti a kiadást, és frissíti az adatbázist."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Starts"
+msgstr "Kezdet"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: %count% checks need attention"
+msgstr "Rendszerállapot: %count% ellenőrzés figyelmet igényel"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: 1 check needs attention"
+msgstr "Rendszerállapot: 1 ellenőrzés figyelmet igényel"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Tell us how we handled your ticket."
+msgstr "Mondja el, hogyan kezeltük a jegyét."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Thank you for choosing %company%. Your hosting account %title% has been set up. This email holds everything you need to start using it: please keep it for your records."
+msgstr "Köszönjük, hogy a(z) %company% szolgáltatását választotta. A(z) %title% tárhelyfiókját beállítottuk. Ez az e-mail mindent tartalmaz, amire a használatához szüksége van: kérjük, őrizze meg nyilvántartásához."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Thank you for contacting our support team. A ticket has been opened for your request and a member of our team will reply as soon as possible. You will be notified by email when there is a response."
+msgstr "Köszönjük, hogy felvette a kapcsolatot támogatási csapatunkkal. Kérésére jegyet nyitottunk, és csapatunk egyik tagja a lehető leghamarabb válaszol. E-mailben értesítjük, amint érkezik válasz."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team."
+msgstr "Köszönjük, hogy fiókot hozott létre nálunk. Az ügyfélfelületen megrendeléseket adhat le, kezelheti szolgáltatásait, fizetheti számláit, és kapcsolatba léphet támogatási csapatunkkal."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Thank you for helping us improve our service."
+msgstr "Köszönjük, hogy segít szolgáltatásunk javításában."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Thank you for your business. A new invoice has been issued for your account on %created_at%. Please find the details below."
+msgstr "Köszönjük bizalmát. %created_at% napján új számlát állítottunk ki a fiókjához. A részleteket alább találja."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr "Köszönjük érdeklődését. Alább találja árajánlatunkat: %subject%; a PDF az e-mailhez van csatolva."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to download."
+msgstr "Köszönjük megrendelését. A(z) %title% most már aktív és letölthető."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to use."
+msgstr "Köszönjük megrendelését. A(z) %title% most már aktív és használatra kész."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your API key is below: please keep it secret."
+msgstr "Köszönjük megrendelését. A(z) %title% most már aktív. API-kulcsát alább találja: kérjük, tartsa titokban."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your license key is below: please keep it for your records."
+msgstr "Köszönjük megrendelését. A(z) %title% most már aktív. Licenckulcsát alább találja: kérjük, őrizze meg nyilvántartásához."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. Your domain %title% is now active."
+msgstr "Köszönjük megrendelését. A(z) %title% domainje most már aktív."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you for your payment of %total%."
+msgstr "Köszönjük %total% összegű befizetését."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you! We have received your payment for invoice %number%. This email is your receipt."
+msgstr "Köszönjük! Megkaptuk a(z) %number% számla kifizetését. Ez az e-mail az Ön nyugtája."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "A(z) %order% megrendelés (ügyfél: %client%) %action% művelete sikertelen volt. A tárhelyvezérlő, a regisztrátor vagy más szolgáltatás elutasította, vagy nem tudta befejezni."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "A(z) %order% megrendelés %action% művelete sikertelen volt. A tárhelyvezérlő, a regisztrátor vagy más szolgáltatás elutasította, vagy nem tudta befejezni."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The automatic payment set up for your service at its old price was cancelled."
+msgstr "A szolgáltatásához a régi áron beállított automatikus fizetést töröltük."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The cancelled automatic payment will not pay your next renewal invoice. Unless your account credit covers it, please pay it when it arrives; paying it the same way as before sets up automatic payment again."
+msgstr "A törölt automatikus fizetés nem fizeti ki következő megújítási számláját. Hacsak a fiókegyenleg nem fedezi, kérjük, fizesse ki, amint megérkezik; ha ugyanúgy fizeti, mint korábban, az automatikus fizetés újra beállításra kerül."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "The email was too large. Please send it again with smaller attachments, or attach the files from our client area."
+msgstr "Az e-mail túl nagy volt. Kérjük, küldje el újra kisebb mellékletekkel, vagy csatolja a fájlokat ügyfélfelületünkön."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found a check that needs attention:"
+msgstr "A számlázó portál óránkénti rendszerellenőrzései egy figyelmet igénylő ellenőrzést találtak:"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found checks that need attention:"
+msgstr "A számlázó portál óránkénti rendszerellenőrzései figyelmet igénylő ellenőrzéseket találtak:"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr "A hozzá már kiállított számla megtartja a régi árat; az új ár a rákövetkező megújítással kezdődik."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
+msgstr "A hivatkozás egyszer használható, és %days% nap múlva lejár. Ha nem számított erre a meghívásra, figyelmen kívül hagyhatja ezt az e-mailt."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with the renewal due %date%."
+msgstr "Az új ár a(z) %date% napon esedékes megújítással kezdődik."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with your next invoice."
+msgstr "Az új ár a következő számlájával kezdődik."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "The password of your account was changed."
+msgstr "Fiókja jelszavát megváltoztattuk."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The plan, price or billing cycle of %title% changed, so the automatic payment set up for it at the old price was cancelled. You have not been charged for this."
+msgstr "A(z) %title% csomagja, ára vagy számlázási ciklusa megváltozott, ezért a hozzá régi áron beállított automatikus fizetést töröltük. Ezért nem terheltünk Önt."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The renewal price of your service is changing."
+msgstr "Szolgáltatása megújítási ára változik."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "There is a new reply on your ticket \"%subject%\"."
+msgstr "Új válasz érkezett a(z) „%subject%” jegyére."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area."
+msgstr "Ez a cím csak regisztrált ügyfelek e-mailjeit fogadja. Ha ügyfelünk, kérjük, fiókja e-mail-címéről írjon, vagy nyisson jegyet ügyfélfelületünkön."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes replies to existing tickets. Please open a new ticket from our client area."
+msgstr "Ez a cím csak meglévő jegyekre érkező válaszokat fogad. Kérjük, nyisson új jegyet ügyfélfelületünkön."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "This is a confirmation that the password for your client area account has just been changed."
+msgstr "Ezúton megerősítjük, hogy ügyfélfelületi fiókja jelszavát az imént megváltoztatták."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "This is a confirmation that the password for your staff account has just been changed."
+msgstr "Ezúton megerősítjük, hogy munkatársi fiókja jelszavát az imént megváltoztatták."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due in %days% days, on %date%."
+msgstr "Barátságos emlékeztetőül jelezzük, hogy a(z) %number% számla %days% nap múlva, %date% napon esedékes."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due today."
+msgstr "Barátságos emlékeztetőül jelezzük, hogy a(z) %number% számla ma esedékes."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% was due on %date%. Please arrange payment as soon as possible."
+msgstr "Barátságos emlékeztetőül jelezzük, hogy a(z) %number% számla %date% napon esedékes volt. Kérjük, mielőbb gondoskodjon a fizetésről."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "This is to confirm that your hosting account %title% has been cancelled."
+msgstr "Ezúton megerősítjük, hogy a(z) %title% tárhelyfiókját lemondtuk."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "This is to confirm that your service %title% has been cancelled."
+msgstr "Ezúton megerősítjük, hogy a(z) %title% szolgáltatását lemondtuk."
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "This language is turned off: these texts are kept but not shown."
+msgstr "Ez a nyelv ki van kapcsolva: ezeket a szövegeket megőrizzük, de nem jelenítjük meg."
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "This language is turned off: this version is not sent"
+msgstr "Ez a nyelv ki van kapcsolva: ezt a változatot nem küldjük"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig …
+msgid "Ticket #%id%"
+msgstr "Jegy #%id%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket #%id% assigned to you: %subject%"
+msgstr "A(z) #%id% jegy Önhöz lett rendelve: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket #%id% escalated: %subject%"
+msgstr "A(z) #%id% jegy eszkalálva: %subject%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Ticket #%id% has been closed."
+msgstr "A(z) #%id% jegyet lezártuk."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Ticket #%id% is open. We will reply as soon as possible."
+msgstr "A(z) #%id% jegy nyitva van. A lehető leghamarabb válaszolunk."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it."
+msgstr "A(z) #%ticket_id% jegy le van zárva. Kérjük, nyisson új jegyet, vagy jelentkezzen be ügyfélfelületünkre a megtekintéséhez."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it."
+msgstr "A(z) %ticket% jegy %minutes% percig válasz nélkül maradt, ezért a(z) %name% eszkalációs szabály lépett működésbe."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket assigned to you"
+msgstr "Önhöz rendelt jegy"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "Ticket closed by client"
+msgstr "Jegyet lezárta az ügyfél"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket escalated"
+msgstr "Jegy eszkalálva"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "To get started, choose your password with the button below."
+msgstr "A kezdéshez válasszon jelszót az alábbi gombbal."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "View and accept quote"
+msgstr "Árajánlat megtekintése és elfogadása"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "View and pay invoice"
+msgstr "Számla megtekintése és kifizetése"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "View and reply"
+msgstr "Megtekintés és válasz"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "View client"
+msgstr "Ügyfél megtekintése"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "View ticket"
+msgstr "Jegy megtekintése"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "View your service"
+msgstr "Szolgáltatás megtekintése"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "View your services"
+msgstr "Szolgáltatások megtekintése"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We apologise for any inconvenience and will keep you updated."
+msgstr "Elnézést kérünk a kellemetlenségért, és folyamatosan tájékoztatjuk."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of these services is changing. The details are below."
+msgstr "Azért írunk, hogy tájékoztassuk: e szolgáltatások ismétlődő ára változik. A részleteket alább találja."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of this service is changing. The details are below."
+msgstr "Azért írunk, hogy tájékoztassuk: e szolgáltatás ismétlődő ára változik. A részleteket alább találja."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method %card% for invoice %number%. %reason%"
+msgstr "Nem tudtuk megterhelni a mentett %card% fizetési módját a(z) %number% számláért. %reason%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method for invoice #%number%."
+msgstr "Nem tudtuk megterhelni a mentett fizetési módját a(z) %number%. számláért."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "We have received your request"
+msgstr "Megkaptuk kérését"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "We have replied to your ticket"
+msgstr "Válaszoltunk a jegyére"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig
+msgid "We received a request to reset the password for your client area account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Kérés érkezett ügyfélfelületi fiókja jelszavának visszaállítására. Az alábbi gombra kattintva válasszon új jelszót. Biztonsági okokból a hivatkozás 15 perc múlva lejár."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "We received a request to reset the password for your staff account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Kérés érkezett munkatársi fiókja jelszavának visszaállítására. Az alábbi gombra kattintva válasszon új jelszót. Biztonsági okokból a hivatkozás 15 perc múlva lejár."
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "We received a request to reset the password of your user for the client area. Click the button below to choose a new password. For your security, the link expires in %minutes% minutes."
+msgstr "Kérés érkezett az ügyfélfelületi felhasználója jelszavának visszaállítására. Az alábbi gombra kattintva válasszon új jelszót. Biztonsági okokból a hivatkozás %minutes% perc múlva lejár."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "We regret to inform you that your domain %title% has been suspended."
+msgstr "Sajnálattal értesítjük, hogy a(z) %title% domainjét felfüggesztettük."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "We regret to inform you that your hosting account %title% has been suspended."
+msgstr "Sajnálattal értesítjük, hogy a(z) %title% tárhelyfiókját felfüggesztettük."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "We regret to inform you that your service %title% has been suspended."
+msgstr "Sajnálattal értesítjük, hogy a(z) %title% szolgáltatását felfüggesztettük."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We will try it again on %date%."
+msgstr "Újra megpróbáljuk %date% napon."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
+msgstr "Szeretnénk tájékoztatni hálózatunkról: %status_title% (%priority_title% prioritás)."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Welcome to %company%"
+msgstr "Üdvözöljük a(z) %company% szolgáltatásnál"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited"
+msgstr "Meghívást kapott"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited to %account%"
+msgstr "Meghívást kapott ide: %account%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "You can also %link%download the invoice as a PDF%link_end% for your records."
+msgstr "A számlát %link%PDF-ként is letöltheti%link_end% nyilvántartásához."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "You can also %link%download the invoice as a PDF%link_end%. If you have already paid, please disregard this message."
+msgstr "A számlát %link%PDF-ként is letöltheti%link_end%. Ha már fizetett, kérjük, hagyja figyelmen kívül ezt az üzenetet."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "You can also save a payment method on your %link%Payment methods%link_end% page now, so your invoices are paid automatically."
+msgstr "Most a %link%Fizetési módok%link_end% oldalon is mentheti a fizetési módját, hogy számláit automatikusan kifizessük."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "You can download it again at any time from the %link%service page%link_end% in the client area."
+msgstr "Bármikor újra letöltheti az ügyfélfelület %link%szolgáltatás oldaláról%link_end%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
+msgstr "A számlát most kifizetheti, vagy módosíthatja fizetési módját a %link%Fizetési módok%link_end% oldalon."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "You get this email once per problem: the next one comes only if a check passes and breaks again."
+msgstr "Ezt az e-mailt problémánként egyszer kapja: a következő csak akkor érkezik, ha egy ellenőrzés sikeres lesz, majd újra hibás."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You have been invited to use the client area of %account% with your own sign-in."
+msgstr "Meghívást kapott a(z) %account% ügyfélfelületének saját bejelentkezéssel való használatára."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
+msgstr "Google-fiókjával regisztrált, ezért nincs megjegyzendő jelszó: legközelebb használja a bejelentkezési oldalon a Google gombot, és válassza ugyanazt a Google-fiókot. Ha e-mail-címével is be szeretne jelentkezni, válasszon jelszót fiókja Google-bejelentkezési oldalán."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password."
+msgstr "Google-fiókjával regisztrált. Közvetlenül utána jelszót választ: legközelebb e-mail-címével és ezzel a jelszóval jelentkezzen be."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "Your %title% has been cancelled."
+msgstr "A(z) %title% lemondva."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "Your %title% has been renewed."
+msgstr "A(z) %title% megújítva."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "Your %title% has been suspended."
+msgstr "A(z) %title% felfüggesztve."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your %title% is active and ready to use."
+msgstr "A(z) %title% aktív és használatra kész."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "Your %title% is available again."
+msgstr "A(z) %title% ismét elérhető."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your %title% is ready to download."
+msgstr "A(z) %title% letölthető."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Your API key is ready"
+msgstr "API-kulcsa elkészült"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Your account credit or saved payment method will pay your next renewal invoice, so you do not need to do anything."
+msgstr "Fiókegyenlege vagy a mentett fizetési módja kifizeti következő megújítási számláját, így semmit sem kell tennie."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Your account is ready."
+msgstr "Fiókja elkészült."
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Your client account is ready."
+msgstr "Ügyfélfiókja elkészült."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Your domain %title% has been renewed. Thank you for your continued business."
+msgstr "A(z) %title% domainjét megújítottuk. Köszönjük, hogy velünk marad."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain %title% is active."
+msgstr "A(z) %title% domainje aktív."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain is active"
+msgstr "Domainje aktív"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your download is ready"
+msgstr "Letöltése elkészült"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email \"%subject%\" to %helpdesk% was not added to a support ticket."
+msgstr "A(z) %helpdesk% címre küldött „%subject%” e-mailjét nem adtuk hozzá támogatási jegyhez."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Your email settings work"
+msgstr "E-mail-beállításai működnek"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket"
+msgstr "E-mailjét nem adtuk hozzá jegyhez"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket: %subject%"
+msgstr "E-mailjét nem adtuk hozzá jegyhez: %subject%"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Your hosting account %title% has been renewed. Thank you for your continued business."
+msgstr "A(z) %title% tárhelyfiókját megújítottuk. Köszönjük, hogy velünk marad."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is ready"
+msgstr "Tárhelyfiókja elkészült"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is set up and ready to use."
+msgstr "Tárhelyfiókja be van állítva, és használatra kész."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Your invoice is ready"
+msgstr "Számlája elkészült"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your license is active"
+msgstr "Licence aktív"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "Your password was changed"
+msgstr "Jelszavát megváltoztattuk"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your recurring discount"
+msgstr "Ismétlődő kedvezménye"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your renewal price is changing"
+msgstr "Megújítási ára változik"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Your service %title% has been renewed. Thank you for your continued business."
+msgstr "A(z) %title% szolgáltatását megújítottuk. Köszönjük, hogy velünk marad."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Your service is active"
+msgstr "Szolgáltatása aktív"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket %subject% has now been closed. We hope we were able to help."
+msgstr "A(z) %subject% jegyét lezártuk. Reméljük, hogy tudtunk segíteni."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Your ticket %ticket% is now closed. We would love to know how we handled it."
+msgstr "A(z) %ticket% jegyét lezártuk. Szívesen megtudnánk, hogyan kezeltük."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket is closed"
+msgstr "Jegyét lezártuk"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "an account"
+msgstr "egy fiók"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "our support team"
+msgstr "támogatási csapatunk"

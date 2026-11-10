@@ -467,7 +467,13 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\InformationException('Help desk not found');
         }
 
-        return $this->getService()->helpdeskUpdate($model, $data);
+        $updated = $this->getService()->helpdeskUpdate($model, $data);
+        // ClientFence core patch: the help desk's name per language (Product/Translations.php), saved with its form.
+        if (is_array($data['translations'] ?? null)) {
+            \ClientFence\Mod\Product\Translations::save($this->getDi(), 'helpdesk', (int) $model->getId(), $data['translations']);
+        }
+
+        return $updated;
     }
 
     /**
@@ -508,7 +514,12 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\InformationException('Help desk not found');
         }
 
-        return $this->getService()->helpdeskRm($model);
+        $id = (int) $model->getId();
+        $removed = $this->getService()->helpdeskRm($model);
+        // ClientFence core patch: its names in other languages go with it (Product/Translations.php).
+        \ClientFence\Mod\Product\Translations::forget($this->getDi(), 'helpdesk', $id);
+
+        return $removed;
     }
 
     /**

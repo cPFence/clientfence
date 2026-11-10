@@ -1,7 +1,7 @@
 {% block subject %}[{{ guest.system_company.name }}] {{ 'Your sign-in PIN: %pin%'|trans({'%pin%': pin|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

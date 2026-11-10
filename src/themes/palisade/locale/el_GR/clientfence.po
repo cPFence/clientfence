@@ -23855,3 +23855,1148 @@ msgstr "Το :tld μπορεί να καταχωριστεί για έως :year
 #: src/modules/Order/Upgrades.php
 msgid "This service was refunded or its price changed after its last payment, so our staff change it. Please contact us."
 msgstr "Αυτή η υπηρεσία έχει επιστραφεί ή η τιμή της άλλαξε μετά την τελευταία πληρωμή, γι' αυτό την αλλαγή την κάνει το προσωπικό μας. Παρακαλούμε επικοινωνήστε μαζί μας."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
+msgstr "Ο/Η %client% ζήτησε την ακύρωση της παραγγελίας %order% στο τέλος της περιόδου χρέωσης (%date%)."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period."
+msgstr "Ο/Η %client% ζήτησε την ακύρωση της παραγγελίας %order% στο τέλος της περιόδου χρέωσης."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% immediately."
+msgstr "Ο/Η %client% ζήτησε την άμεση ακύρωση της παραγγελίας %order%."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%)."
+msgstr "Η %company% αποδέχτηκε την προσφορά %quote%. Το παραστατικό δημιουργήθηκε και στάλθηκε με email (παραστατικό #%invoice%)."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed."
+msgstr "Η %company% αποδέχτηκε την προσφορά %quote%. Το παραστατικό δημιουργήθηκε και στάλθηκε με email."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% declined quote %quote%. It is now lost."
+msgstr "Η %company% απέρριψε την προσφορά %quote%. Θεωρείται πλέον χαμένη."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "%discount% (included in the new price)"
+msgstr "%discount% (περιλαμβάνεται στη νέα τιμή)"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "%name% assigned ticket %ticket% to you."
+msgstr "Ο/Η %name% σάς ανέθεσε το αίτημα υποστήριξης %ticket%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "%name% closed support ticket %ticket%."
+msgstr "Ο/Η %name% έκλεισε το αίτημα υποστήριξης %ticket%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig
+msgid "%name% opened a new support ticket: %subject%."
+msgstr "Ο/Η %name% άνοιξε νέο αίτημα υποστήριξης: %subject%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "%name% replied to support ticket %ticket%."
+msgstr "Ο/Η %name% απάντησε στο αίτημα υποστήριξης %ticket%."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "%period% year(s)"
+msgstr "%period% έτος/η"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "%title% cancelled"
+msgstr "Το %title% ακυρώθηκε"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+msgid "%title% is now active"
+msgstr "Το %title% είναι πλέον ενεργό"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "%title% is ready"
+msgstr "Το %title% είναι έτοιμο"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "%title% is ready to download"
+msgstr "Το %title% είναι έτοιμο για λήψη"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "%title% reactivated"
+msgstr "Το %title% ενεργοποιήθηκε ξανά"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "%title% renewed"
+msgstr "Το %title% ανανεώθηκε"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "%title% suspended"
+msgstr "Το %title% ανεστάλη"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "A client"
+msgstr "Ένας πελάτης"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "A member of our team has created a client account for you. In the client area you can manage your services, pay invoices and contact our support team."
+msgstr "Ένα μέλος της ομάδας μας δημιούργησε έναν λογαριασμό πελάτη για εσάς. Στον χώρο πελατών μπορείτε να διαχειρίζεστε τις υπηρεσίες σας, να πληρώνετε παραστατικά και να επικοινωνείτε με την ομάδα υποστήριξής μας."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out (%date%). This site runs ClientFence %version%."
+msgstr "Κυκλοφόρησε νέα έκδοση του ClientFence (%date%). Αυτός ο ιστότοπος χρησιμοποιεί το ClientFence %version%."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out. This site runs ClientFence %version%."
+msgstr "Κυκλοφόρησε νέα έκδοση του ClientFence. Αυτός ο ιστότοπος χρησιμοποιεί το ClientFence %version%."
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "A new client has just created an account with %company%."
+msgstr "Ένας νέος πελάτης μόλις δημιούργησε λογαριασμό στην %company%."
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "A new order has been placed on %created_at%."
+msgstr "Στις %created_at% πραγματοποιήθηκε μια νέα παραγγελία."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "A new support ticket was opened in %helpdesk%: %subject%."
+msgstr "Άνοιξε νέο αίτημα υποστήριξης στο %helpdesk%: %subject%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "A new ticket from our team"
+msgstr "Νέο αίτημα από την ομάδα μας"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it."
+msgstr "Αποδεχτείτε ή σταματήστε το αίτημα στις Παραγγελίες > Αιτήματα ακύρωσης. Όταν τα αιτήματα ακύρωσης υποβάλλονται σε επεξεργασία αυτόματα, το ημερήσιο cron το αποδέχεται· μέχρι τότε ο πελάτης μπορεί να το αποσύρει."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "Accept the invitation"
+msgstr "Αποδοχή της πρόσκλησης"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
+msgid "Activated"
+msgstr "Ενεργοποιήθηκε"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Add language"
+msgstr "Προσθήκη γλώσσας"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Amount due"
+msgstr "Οφειλόμενο ποσό"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "An escalation rule assigned ticket %ticket% to you."
+msgstr "Ένας κανόνας κλιμάκωσης σάς ανέθεσε το αίτημα υποστήριξης %ticket%."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "An invitation to %account%."
+msgstr "Μια πρόσκληση στο %account%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed"
+msgstr "Η αυτόματη πληρωμή απέτυχε"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed: invoice #%number%"
+msgstr "Η αυτόματη πληρωμή απέτυχε: παραστατικό #%number%"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment for your service has stopped"
+msgstr "Η αυτόματη πληρωμή για την υπηρεσία σας σταμάτησε"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment has stopped"
+msgstr "Η αυτόματη πληρωμή σταμάτησε"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request"
+msgstr "Αίτημα ακύρωσης"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request: #%id% %title%"
+msgstr "Αίτημα ακύρωσης: #%id% %title%"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "Choose a new password"
+msgstr "Επιλέξτε νέο κωδικό πρόσβασης"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "Choose a new password for your user."
+msgstr "Επιλέξτε νέο κωδικό πρόσβασης για τον χρήστη σας."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "ClientFence %version% is available"
+msgstr "Το ClientFence %version% είναι διαθέσιμο"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "ClientFence Email Test"
+msgstr "Δοκιμή email του ClientFence"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Confirm email address"
+msgstr "Επιβεβαίωση διεύθυνσης email"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Confirm your email address"
+msgstr "Επιβεβαιώστε τη διεύθυνση email σας"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Copied from the default text: translate it and click Update."
+msgstr "Αντιγράφηκε από το προεπιλεγμένο κείμενο: μεταφράστε το και κάντε κλικ στο Ενημέρωση."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+msgid "Dear %first_name% %last_name%,"
+msgstr "Αγαπητέ/ή %first_name% %last_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Dear %first_name%,"
+msgstr "Γεια σας %first_name%,"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
+msgid "Dear %name%,"
+msgstr "Αγαπητέ/ή %name%,"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig …
+msgid "Department"
+msgstr "Τμήμα"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Domain reactivated"
+msgstr "Το όνομα χώρου ενεργοποιήθηκε ξανά"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Domain renewed"
+msgstr "Το όνομα χώρου ανανεώθηκε"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "Domain suspended"
+msgstr "Το όνομα χώρου ανεστάλη"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Download now"
+msgstr "Λήψη τώρα"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Due date"
+msgstr "Ημερομηνία λήξης"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Email test"
+msgstr "Δοκιμή email"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Ends"
+msgstr "Λήγει"
+
+#: src/modules/Email/Translations.php
+msgid "Enter a subject and a message for every language version."
+msgstr "Εισαγάγετε θέμα και μήνυμα για κάθε γλωσσική έκδοση."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email."
+msgstr "Διορθώστε την αιτία και επαναλάβετε την ενέργεια από τις Παραγγελίες > Αποτυχημένες ενέργειες ή απορρίψτε την εκεί αν έγινε χειροκίνητα. Τίποτα δεν επαναλαμβάνεται αυτόματα. Οι επόμενες αποτυχίες της ίδιας ενέργειας καταμετρώνται εκεί χωρίς νέο email."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "For your security, passwords are never sent by email. Sign in to the client area to open your control panel directly or to set a new hosting password."
+msgstr "Για την ασφάλειά σας, οι κωδικοί πρόσβασης δεν αποστέλλονται ποτέ με email. Συνδεθείτε στον χώρο πελατών για να ανοίξετε απευθείας τον πίνακα ελέγχου σας ή για να ορίσετε νέο κωδικό πρόσβασης φιλοξενίας."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Give feedback"
+msgstr "Στείλτε σχόλια"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Good news: your domain %title% has been reactivated and is available again."
+msgstr "Καλά νέα: το όνομα χώρου σας %title% ενεργοποιήθηκε ξανά και είναι πάλι διαθέσιμο."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Good news: your hosting account %title% has been reactivated and is available again."
+msgstr "Καλά νέα: ο λογαριασμός φιλοξενίας σας %title% ενεργοποιήθηκε ξανά και είναι πάλι διαθέσιμος."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Good news: your service %title% has been reactivated and is available again."
+msgstr "Καλά νέα: η υπηρεσία σας %title% ενεργοποιήθηκε ξανά και είναι πάλι διαθέσιμη."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Hello %staff_member_name%,"
+msgstr "Γεια σας %staff_member_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Hello,"
+msgstr "Γεια σας,"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "Hosting account cancelled"
+msgstr "Ο λογαριασμός φιλοξενίας ακυρώθηκε"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Hosting account reactivated"
+msgstr "Ο λογαριασμός φιλοξενίας ενεργοποιήθηκε ξανά"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Hosting account renewed"
+msgstr "Ο λογαριασμός φιλοξενίας ανανεώθηκε"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "Hosting account suspended"
+msgstr "Ο λογαριασμός φιλοξενίας ανεστάλη"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do?"
+msgstr "Πώς τα πήγαμε;"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do? Your feedback on ticket #%id%"
+msgstr "Πώς τα πήγαμε; Τα σχόλιά σας για το αίτημα #%id%"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the domain. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Αν η αναστολή σχετίζεται με απλήρωτο παραστατικό, η πληρωμή του στον χώρο πελατών επαναφέρει το όνομα χώρου. Για οποιονδήποτε άλλο λόγο, επικοινωνήστε με την ομάδα υποστήριξής μας το συντομότερο, ώστε να σας βοηθήσουμε να το ενεργοποιήσετε ξανά."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the hosting account. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Αν η αναστολή σχετίζεται με απλήρωτο παραστατικό, η πληρωμή του στον χώρο πελατών επαναφέρει τον λογαριασμό φιλοξενίας. Για οποιονδήποτε άλλο λόγο, επικοινωνήστε με την ομάδα υποστήριξής μας το συντομότερο, ώστε να σας βοηθήσουμε να τον ενεργοποιήσετε ξανά."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the service. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Αν η αναστολή σχετίζεται με απλήρωτο παραστατικό, η πληρωμή του στον χώρο πελατών επαναφέρει την υπηρεσία. Για οποιονδήποτε άλλο λόγο, επικοινωνήστε με την ομάδα υποστήριξής μας το συντομότερο, ώστε να σας βοηθήσουμε να την ενεργοποιήσετε ξανά."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "If you are reading this email, ClientFence is %bold%configured properly%bold_end% and is %bold%able to send emails%bold_end%. No further action is needed."
+msgstr "Αν διαβάζετε αυτό το email, το ClientFence είναι %bold%ρυθμισμένο σωστά%bold_end% και %bold%μπορεί να στέλνει emails%bold_end%. Δεν απαιτείται καμία άλλη ενέργεια."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "If you believe this was done in error or have any questions, please open a support ticket and our team will be glad to help."
+msgstr "Αν πιστεύετε ότι έγινε κατά λάθος ή έχετε ερωτήσεις, ανοίξτε ένα αίτημα υποστήριξης και η ομάδα μας θα χαρεί να σας βοηθήσει."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "If you did not ask for a password reset, you can safely ignore this email: your password stays the same."
+msgstr "Αν δεν ζητήσατε επαναφορά κωδικού πρόσβασης, μπορείτε να αγνοήσετε αυτό το email: ο κωδικός σας παραμένει ο ίδιος."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "If you did not create an account with %company%, you can ignore this email."
+msgstr "Αν δεν δημιουργήσατε λογαριασμό στην %company%, μπορείτε να αγνοήσετε αυτό το email."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "If you did not make this change, contact your administrator immediately."
+msgstr "Αν δεν κάνατε εσείς αυτή την αλλαγή, επικοινωνήστε αμέσως με τον διαχειριστή σας."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "If you did not make this change, please contact our support team immediately."
+msgstr "Αν δεν κάνατε εσείς αυτή την αλλαγή, επικοινωνήστε αμέσως με την ομάδα υποστήριξής μας."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "If you have any questions about this change, please reply to this email or open a support ticket."
+msgstr "Αν έχετε ερωτήσεις για αυτή την αλλαγή, απαντήστε σε αυτό το email ή ανοίξτε ένα αίτημα υποστήριξης."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "If you have any questions, please reply to this email or open a support ticket."
+msgstr "Αν έχετε ερωτήσεις, απαντήστε σε αυτό το email ή ανοίξτε ένα αίτημα υποστήριξης."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
+msgstr "Αν χρειάζεστε βοήθεια για να ξεκινήσετε, η ομάδα υποστήριξής μας είναι στη διάθεσή σας: απλώς %link%ανοίξτε ένα αίτημα υποστήριξης%link_end%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "If you need further help with this request, you can still view the ticket, or open a new one at any time."
+msgstr "Αν χρειάζεστε περαιτέρω βοήθεια για αυτό το αίτημα, μπορείτε ακόμη να δείτε το αίτημα ή να ανοίξετε ένα νέο ανά πάσα στιγμή."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "If you ordered a domain with this account, it can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate."
+msgstr "Αν παραγγείλατε όνομα χώρου με αυτόν τον λογαριασμό, μπορεί να χρειαστούν έως και 48 ώρες μέχρι να είναι ορατό παντού στο διαδίκτυο, καθώς διαδίδονται οι αλλαγές DNS."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number%"
+msgstr "Παραστατικό #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% for %balance_due% is due on %due_at%."
+msgstr "Το παραστατικό #%number% ύψους %balance_due% λήγει στις %due_at%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Invoice #%number% is due on %due_at%."
+msgstr "Το παραστατικό #%number% λήγει στις %due_at%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Invoice #%number% is past due. Please pay it to keep your services running."
+msgstr "Το παραστατικό #%number% είναι ληξιπρόθεσμο. Πληρώστε το για να συνεχίσουν να λειτουργούν οι υπηρεσίες σας."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% is ready"
+msgstr "Το παραστατικό #%number% είναι έτοιμο"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Invoice date"
+msgstr "Ημερομηνία παραστατικού"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Invoice number"
+msgstr "Αριθμός παραστατικού"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Language versions"
+msgstr "Γλωσσικές εκδόσεις"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Leave blank to use the default"
+msgstr "Αφήστε κενό για να χρησιμοποιηθεί η προεπιλογή"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "License key"
+msgstr "Κλειδί άδειας χρήσης"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Manage domain"
+msgstr "Διαχείριση ονόματος χώρου"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Manage hosting"
+msgstr "Διαχείριση φιλοξενίας"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Manage hosting account"
+msgstr "Διαχείριση λογαριασμού φιλοξενίας"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Manage the order"
+msgstr "Διαχείριση της παραγγελίας"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Names and descriptions in other languages"
+msgstr "Ονόματα και περιγραφές σε άλλες γλώσσες"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "New client signed up"
+msgstr "Εγγράφηκε νέος πελάτης"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order placed"
+msgstr "Έγινε νέα παραγγελία"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order: %title%"
+msgstr "Νέα παραγγελία: %title%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "New reply from client"
+msgstr "Νέα απάντηση από πελάτη"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "New ticket opened"
+msgstr "Άνοιξε νέο αίτημα"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig …
+msgid "Next due date"
+msgstr "Επόμενη ημερομηνία λήξης"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Once you accept the quote, we send you the invoice. Questions? Just reply to this email."
+msgstr "Μόλις αποδεχτείτε την προσφορά, θα σας στείλουμε το παραστατικό. Ερωτήσεις; Απλώς απαντήστε σε αυτό το email."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "One click to confirm your email address."
+msgstr "Ένα κλικ για να επιβεβαιώσετε τη διεύθυνση email σας."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Open Cancellation Requests"
+msgstr "Άνοιγμα αιτημάτων ακύρωσης"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Open Failed actions"
+msgstr "Άνοιγμα αποτυχημένων ενεργειών"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "Open System health"
+msgstr "Άνοιγμα υγείας συστήματος"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
+msgid "Open a support ticket"
+msgstr "Άνοιγμα αιτήματος υποστήριξης"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Open the client area"
+msgstr "Άνοιγμα του χώρου πελατών"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Open the quote"
+msgstr "Άνοιγμα της προσφοράς"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Open the ticket"
+msgstr "Άνοιγμα του αιτήματος"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed"
+msgstr "Η ενέργεια της παραγγελίας απέτυχε"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed: %action% #%order_id%"
+msgstr "Η ενέργεια της παραγγελίας απέτυχε: %action% #%order_id%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Our quote for %subject%."
+msgstr "Η προσφορά μας για %subject%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr "Σύμφωνα με τα αρχεία μας, το παραστατικό %number% είναι πλέον ληξιπρόθεσμο εδώ και %days_passed% ημέρες. Φροντίστε για την πληρωμή το συντομότερο, ώστε να αποφύγετε τη διακοπή των υπηρεσιών σας."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our support team has opened a ticket for you. Their message is below."
+msgstr "Η ομάδα υποστήριξής μας άνοιξε ένα αίτημα για εσάς. Το μήνυμά της βρίσκεται παρακάτω."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
+msgstr "Η ομάδα υποστήριξής μας δημοσίευσε νέα απάντηση στο αίτημά σας %subject%. Μπορείτε να τη διαβάσετε και να απαντήσετε από τον παρακάτω σύνδεσμο."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our team opened ticket #%id% for you."
+msgstr "Η ομάδα μας άνοιξε το αίτημα #%id% για εσάς."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Overdue notice: invoice #%number%"
+msgstr "Ειδοποίηση καθυστέρησης: παραστατικό #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Pay invoice"
+msgstr "Πληρωμή παραστατικού"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Pay invoice now"
+msgstr "Πληρώστε το παραστατικό τώρα"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Payment overdue"
+msgstr "Ληξιπρόθεσμη πληρωμή"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received"
+msgstr "Η πληρωμή ελήφθη"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received: invoice #%number%"
+msgstr "Η πληρωμή ελήφθη: παραστατικό #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder"
+msgstr "Υπενθύμιση πληρωμής"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder: invoice #%number%"
+msgstr "Υπενθύμιση πληρωμής: παραστατικό #%number%"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Please also %link%confirm your email address%link_end%. If the link has expired, you can ask for a new one after signing in."
+msgstr "Παρακαλούμε %link%επιβεβαιώστε επίσης τη διεύθυνση email σας%link_end%. Αν ο σύνδεσμος έχει λήξει, μπορείτε να ζητήσετε νέο μετά τη σύνδεση."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm that this is your email address by clicking the button below. It keeps your account secure and makes sure you receive important notices about your services and invoices."
+msgstr "Επιβεβαιώστε ότι αυτή είναι η διεύθυνση email σας κάνοντας κλικ στο παρακάτω κουμπί. Έτσι ο λογαριασμός σας παραμένει ασφαλής και λαμβάνετε σημαντικές ειδοποιήσεις για τις υπηρεσίες και τα παραστατικά σας."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm your email address"
+msgstr "Επιβεβαιώστε τη διεύθυνση email σας"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please confirm your email address to finish setting up your account."
+msgstr "Επιβεβαιώστε τη διεύθυνση email σας για να ολοκληρώσετε τη ρύθμιση του λογαριασμού σας."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Please keep in mind that a new domain can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate. Your website and email on this domain start working once that is done."
+msgstr "Λάβετε υπόψη ότι ένα νέο όνομα χώρου μπορεί να χρειαστεί έως και 48 ώρες για να γίνει ορατό παντού στο διαδίκτυο, καθώς διαδίδονται οι αλλαγές DNS. Ο ιστότοπός σας και το email σας σε αυτό το όνομα χώρου θα λειτουργήσουν μόλις ολοκληρωθεί."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Please reply from the staff panel, not to this email."
+msgstr "Παρακαλούμε απαντήστε από τον πίνακα προσωπικού και όχι σε αυτό το email."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please sign in with the password you chose when you signed up."
+msgstr "Συνδεθείτε με τον κωδικό πρόσβασης που επιλέξατε κατά την εγγραφή σας."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in."
+msgstr "Αφιερώστε ένα λεπτό για να βαθμολογήσετε το προσωπικό που σας βοήθησε και να μας πείτε πώς μπορούμε να βελτιωθούμε. Δεν απαιτείται σύνδεση."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% accepted: %subject%"
+msgstr "Η προσφορά #%id% έγινε αποδεκτή: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% declined: %subject%"
+msgstr "Η προσφορά #%id% απορρίφθηκε: %subject%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Quote #%id%: %subject%"
+msgstr "Προσφορά #%id%: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote accepted"
+msgstr "Η προσφορά έγινε αποδεκτή"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote declined"
+msgstr "Η προσφορά απορρίφθηκε"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Reason given:"
+msgstr "Αιτιολογία:"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Registration date"
+msgstr "Ημερομηνία εγγραφής"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Remove the %language% version of this template?"
+msgstr "Να αφαιρεθεί η έκδοση %language% αυτού του προτύπου;"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Remove version"
+msgstr "Αφαίρεση έκδοσης"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Renewal date"
+msgstr "Ημερομηνία ανανέωσης"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Reply to ticket"
+msgstr "Απάντηση στο αίτημα"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "Review order"
+msgstr "Έλεγχος παραγγελίας"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "Review the ticket"
+msgstr "Έλεγχος αιτήματος"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "See the update"
+msgstr "Δείτε την ενημέρωση"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent for the default language and every language without its own version."
+msgstr "Αποστέλλεται για την προεπιλεγμένη γλώσσα και για κάθε γλώσσα χωρίς δική της έκδοση."
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent in:"
+msgstr "Αποστολή στη γλώσσα:"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Server and nameservers"
+msgstr "Διακομιστής και διακομιστές ονομάτων"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "Service cancelled"
+msgstr "Η υπηρεσία ακυρώθηκε"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Service reactivated"
+msgstr "Η υπηρεσία ενεργοποιήθηκε ξανά"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Service renewed"
+msgstr "Η υπηρεσία ανανεώθηκε"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "Service suspended"
+msgstr "Η υπηρεσία ανεστάλη"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Set your password"
+msgstr "Ορίστε τον κωδικό πρόσβασής σας"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Sign in to client area"
+msgstr "Σύνδεση στον χώρο πελατών"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Sign-in email"
+msgstr "Email σύνδεσης"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database."
+msgstr "Το προσωπικό με δικαίωμα ενημέρωσης του συστήματος μπορεί να την εγκαταστήσει από το Σύστημα > Ενημέρωση: δημιουργεί αντίγραφο ασφαλείας της βάσης δεδομένων και των αρχείων που αντικαθιστά, εγκαθιστά την έκδοση και ενημερώνει τη βάση δεδομένων."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Starts"
+msgstr "Έναρξη"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: %count% checks need attention"
+msgstr "Υγεία συστήματος: %count% έλεγχοι χρειάζονται προσοχή"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: 1 check needs attention"
+msgstr "Υγεία συστήματος: 1 έλεγχος χρειάζεται προσοχή"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Tell us how we handled your ticket."
+msgstr "Πείτε μας πώς χειριστήκαμε το αίτημά σας."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Thank you for choosing %company%. Your hosting account %title% has been set up. This email holds everything you need to start using it: please keep it for your records."
+msgstr "Σας ευχαριστούμε που επιλέξατε την %company%. Ο λογαριασμός φιλοξενίας σας %title% ρυθμίστηκε. Αυτό το email περιέχει ό,τι χρειάζεστε για να ξεκινήσετε: παρακαλούμε φυλάξτε το για τα αρχεία σας."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Thank you for contacting our support team. A ticket has been opened for your request and a member of our team will reply as soon as possible. You will be notified by email when there is a response."
+msgstr "Σας ευχαριστούμε που επικοινωνήσατε με την ομάδα υποστήριξής μας. Για το αίτημά σας άνοιξε ένα αίτημα υποστήριξης και ένα μέλος της ομάδας μας θα απαντήσει το συντομότερο δυνατό. Θα ειδοποιηθείτε με email όταν υπάρξει απάντηση."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team."
+msgstr "Σας ευχαριστούμε που δημιουργήσατε λογαριασμό στην εταιρεία μας. Στον χώρο πελατών μπορείτε να κάνετε παραγγελίες, να διαχειρίζεστε τις υπηρεσίες σας, να πληρώνετε παραστατικά και να επικοινωνείτε με την ομάδα υποστήριξής μας."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Thank you for helping us improve our service."
+msgstr "Σας ευχαριστούμε που μας βοηθάτε να βελτιώσουμε την υπηρεσία μας."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Thank you for your business. A new invoice has been issued for your account on %created_at%. Please find the details below."
+msgstr "Σας ευχαριστούμε για την εμπιστοσύνη σας. Στις %created_at% εκδόθηκε νέο παραστατικό για τον λογαριασμό σας. Θα βρείτε τα στοιχεία παρακάτω."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr "Σας ευχαριστούμε για το ενδιαφέρον σας. Παρακάτω θα βρείτε την προσφορά μας για %subject%· το PDF επισυνάπτεται σε αυτό το email."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to download."
+msgstr "Σας ευχαριστούμε για την παραγγελία σας. Το %title% είναι πλέον ενεργό και έτοιμο για λήψη."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to use."
+msgstr "Σας ευχαριστούμε για την παραγγελία σας. Το %title% είναι πλέον ενεργό και έτοιμο για χρήση."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your API key is below: please keep it secret."
+msgstr "Σας ευχαριστούμε για την παραγγελία σας. Το %title% είναι πλέον ενεργό. Το κλειδί API σας βρίσκεται παρακάτω: παρακαλούμε κρατήστε το μυστικό."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your license key is below: please keep it for your records."
+msgstr "Σας ευχαριστούμε για την παραγγελία σας. Το %title% είναι πλέον ενεργό. Το κλειδί άδειας χρήσης σας βρίσκεται παρακάτω: παρακαλούμε φυλάξτε το για τα αρχεία σας."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. Your domain %title% is now active."
+msgstr "Σας ευχαριστούμε για την παραγγελία σας. Το όνομα χώρου σας %title% είναι πλέον ενεργό."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you for your payment of %total%."
+msgstr "Σας ευχαριστούμε για την πληρωμή σας ύψους %total%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you! We have received your payment for invoice %number%. This email is your receipt."
+msgstr "Ευχαριστούμε! Λάβαμε την πληρωμή σας για το παραστατικό %number%. Αυτό το email αποτελεί την απόδειξή σας."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "Η ενέργεια %action% της παραγγελίας %order% (πελάτης %client%) απέτυχε. Ο πίνακας φιλοξενίας, ο καταχωρητής ή άλλη υπηρεσία την απέρριψε ή δεν μπόρεσε να την ολοκληρώσει."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "Η ενέργεια %action% της παραγγελίας %order% απέτυχε. Ο πίνακας φιλοξενίας, ο καταχωρητής ή άλλη υπηρεσία την απέρριψε ή δεν μπόρεσε να την ολοκληρώσει."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The automatic payment set up for your service at its old price was cancelled."
+msgstr "Η αυτόματη πληρωμή που είχε ρυθμιστεί για την υπηρεσία σας στην παλιά τιμή ακυρώθηκε."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The cancelled automatic payment will not pay your next renewal invoice. Unless your account credit covers it, please pay it when it arrives; paying it the same way as before sets up automatic payment again."
+msgstr "Η ακυρωμένη αυτόματη πληρωμή δεν θα πληρώσει το επόμενο παραστατικό ανανέωσής σας. Εκτός αν το πιστωτικό υπόλοιπο του λογαριασμού σας το καλύπτει, πληρώστε το όταν φτάσει· αν το πληρώσετε με τον ίδιο τρόπο όπως πριν, η αυτόματη πληρωμή ρυθμίζεται ξανά."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "The email was too large. Please send it again with smaller attachments, or attach the files from our client area."
+msgstr "Το email ήταν πολύ μεγάλο. Στείλτε το ξανά με μικρότερα συνημμένα ή επισυνάψτε τα αρχεία από τον χώρο πελατών μας."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found a check that needs attention:"
+msgstr "Οι ωριαίοι έλεγχοι υγείας συστήματος της πύλης χρέωσης εντόπισαν έναν έλεγχο που χρειάζεται προσοχή:"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found checks that need attention:"
+msgstr "Οι ωριαίοι έλεγχοι υγείας συστήματος της πύλης χρέωσης εντόπισαν ελέγχους που χρειάζονται προσοχή:"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr "Το παραστατικό που έχει ήδη εκδοθεί για αυτήν διατηρεί την παλιά τιμή· η νέα τιμή ξεκινά με την επόμενη ανανέωση."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
+msgstr "Ο σύνδεσμος λειτουργεί μία φορά και λήγει σε %days% ημέρες. Αν δεν περιμένατε αυτή την πρόσκληση, μπορείτε να αγνοήσετε αυτό το email."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with the renewal due %date%."
+msgstr "Η νέα τιμή ξεκινά με την ανανέωση που λήγει στις %date%."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with your next invoice."
+msgstr "Η νέα τιμή ξεκινά με το επόμενο παραστατικό σας."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "The password of your account was changed."
+msgstr "Ο κωδικός πρόσβασης του λογαριασμού σας άλλαξε."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The plan, price or billing cycle of %title% changed, so the automatic payment set up for it at the old price was cancelled. You have not been charged for this."
+msgstr "Το πακέτο, η τιμή ή ο κύκλος χρέωσης του %title% άλλαξε, γι' αυτό η αυτόματη πληρωμή που είχε ρυθμιστεί για αυτό στην παλιά τιμή ακυρώθηκε. Δεν χρεωθήκατε για αυτό."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The renewal price of your service is changing."
+msgstr "Η τιμή ανανέωσης της υπηρεσίας σας αλλάζει."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "There is a new reply on your ticket \"%subject%\"."
+msgstr "Υπάρχει νέα απάντηση στο αίτημά σας «%subject%»."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area."
+msgstr "Αυτή η διεύθυνση δέχεται μόνο emails από εγγεγραμμένους πελάτες. Αν είστε πελάτης, γράψτε από τη διεύθυνση email του λογαριασμού σας ή ανοίξτε ένα αίτημα από τον χώρο πελατών μας."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes replies to existing tickets. Please open a new ticket from our client area."
+msgstr "Αυτή η διεύθυνση δέχεται μόνο απαντήσεις σε υπάρχοντα αιτήματα. Ανοίξτε ένα νέο αίτημα από τον χώρο πελατών μας."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "This is a confirmation that the password for your client area account has just been changed."
+msgstr "Σας επιβεβαιώνουμε ότι ο κωδικός πρόσβασης του λογαριασμού σας στον χώρο πελατών μόλις άλλαξε."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "This is a confirmation that the password for your staff account has just been changed."
+msgstr "Σας επιβεβαιώνουμε ότι ο κωδικός πρόσβασης του λογαριασμού προσωπικού σας μόλις άλλαξε."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due in %days% days, on %date%."
+msgstr "Σας υπενθυμίζουμε φιλικά ότι το παραστατικό %number% λήγει σε %days% ημέρες, στις %date%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due today."
+msgstr "Σας υπενθυμίζουμε φιλικά ότι το παραστατικό %number% λήγει σήμερα."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% was due on %date%. Please arrange payment as soon as possible."
+msgstr "Σας υπενθυμίζουμε φιλικά ότι το παραστατικό %number% έληξε στις %date%. Φροντίστε για την πληρωμή το συντομότερο δυνατό."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "This is to confirm that your hosting account %title% has been cancelled."
+msgstr "Σας επιβεβαιώνουμε ότι ο λογαριασμός φιλοξενίας σας %title% ακυρώθηκε."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "This is to confirm that your service %title% has been cancelled."
+msgstr "Σας επιβεβαιώνουμε ότι η υπηρεσία σας %title% ακυρώθηκε."
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "This language is turned off: these texts are kept but not shown."
+msgstr "Αυτή η γλώσσα είναι απενεργοποιημένη: τα κείμενα διατηρούνται αλλά δεν εμφανίζονται."
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "This language is turned off: this version is not sent"
+msgstr "Αυτή η γλώσσα είναι απενεργοποιημένη: αυτή η έκδοση δεν αποστέλλεται"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig …
+msgid "Ticket #%id%"
+msgstr "Αίτημα #%id%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket #%id% assigned to you: %subject%"
+msgstr "Το αίτημα #%id% σάς ανατέθηκε: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket #%id% escalated: %subject%"
+msgstr "Το αίτημα #%id% κλιμακώθηκε: %subject%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Ticket #%id% has been closed."
+msgstr "Το αίτημα #%id% έκλεισε."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Ticket #%id% is open. We will reply as soon as possible."
+msgstr "Το αίτημα #%id% είναι ανοιχτό. Θα απαντήσουμε το συντομότερο δυνατό."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it."
+msgstr "Το αίτημα #%ticket_id% είναι κλειστό. Ανοίξτε ένα νέο αίτημα ή συνδεθείτε στον χώρο πελατών μας για να το δείτε."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it."
+msgstr "Το αίτημα %ticket% έμεινε %minutes% λεπτά χωρίς απάντηση, γι' αυτό ο κανόνας κλιμάκωσης %name% ενήργησε επάνω του."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket assigned to you"
+msgstr "Αίτημα που σας ανατέθηκε"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "Ticket closed by client"
+msgstr "Αίτημα που έκλεισε ο πελάτης"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket escalated"
+msgstr "Το αίτημα κλιμακώθηκε"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "To get started, choose your password with the button below."
+msgstr "Για να ξεκινήσετε, επιλέξτε τον κωδικό πρόσβασής σας με το παρακάτω κουμπί."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "View and accept quote"
+msgstr "Προβολή και αποδοχή της προσφοράς"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "View and pay invoice"
+msgstr "Προβολή και πληρωμή του παραστατικού"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "View and reply"
+msgstr "Προβολή και απάντηση"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "View client"
+msgstr "Προβολή πελάτη"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "View ticket"
+msgstr "Προβολή αιτήματος"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "View your service"
+msgstr "Προβολή της υπηρεσίας σας"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "View your services"
+msgstr "Προβολή των υπηρεσιών σας"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We apologise for any inconvenience and will keep you updated."
+msgstr "Ζητούμε συγγνώμη για την ταλαιπωρία και θα σας ενημερώνουμε."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of these services is changing. The details are below."
+msgstr "Σας γράφουμε για να σας ενημερώσουμε ότι η επαναλαμβανόμενη τιμή αυτών των υπηρεσιών αλλάζει. Τα στοιχεία βρίσκονται παρακάτω."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of this service is changing. The details are below."
+msgstr "Σας γράφουμε για να σας ενημερώσουμε ότι η επαναλαμβανόμενη τιμή αυτής της υπηρεσίας αλλάζει. Τα στοιχεία βρίσκονται παρακάτω."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method %card% for invoice %number%. %reason%"
+msgstr "Δεν μπορέσαμε να χρεώσουμε την αποθηκευμένη μέθοδο πληρωμής σας %card% για το παραστατικό %number%. %reason%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method for invoice #%number%."
+msgstr "Δεν μπορέσαμε να χρεώσουμε την αποθηκευμένη μέθοδο πληρωμής σας για το παραστατικό #%number%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "We have received your request"
+msgstr "Λάβαμε το αίτημά σας"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "We have replied to your ticket"
+msgstr "Απαντήσαμε στο αίτημά σας"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig
+msgid "We received a request to reset the password for your client area account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Λάβαμε αίτημα επαναφοράς του κωδικού πρόσβασης του λογαριασμού σας στον χώρο πελατών. Κάντε κλικ στο παρακάτω κουμπί για να επιλέξετε νέο κωδικό πρόσβασης. Για την ασφάλειά σας, ο σύνδεσμος λήγει σε 15 λεπτά."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "We received a request to reset the password for your staff account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Λάβαμε αίτημα επαναφοράς του κωδικού πρόσβασης του λογαριασμού προσωπικού σας. Κάντε κλικ στο παρακάτω κουμπί για να επιλέξετε νέο κωδικό πρόσβασης. Για την ασφάλειά σας, ο σύνδεσμος λήγει σε 15 λεπτά."
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "We received a request to reset the password of your user for the client area. Click the button below to choose a new password. For your security, the link expires in %minutes% minutes."
+msgstr "Λάβαμε αίτημα επαναφοράς του κωδικού πρόσβασης του χρήστη σας για τον χώρο πελατών. Κάντε κλικ στο παρακάτω κουμπί για να επιλέξετε νέο κωδικό πρόσβασης. Για την ασφάλειά σας, ο σύνδεσμος λήγει σε %minutes% λεπτά."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "We regret to inform you that your domain %title% has been suspended."
+msgstr "Με λύπη σας ενημερώνουμε ότι το όνομα χώρου σας %title% ανεστάλη."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "We regret to inform you that your hosting account %title% has been suspended."
+msgstr "Με λύπη σας ενημερώνουμε ότι ο λογαριασμός φιλοξενίας σας %title% ανεστάλη."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "We regret to inform you that your service %title% has been suspended."
+msgstr "Με λύπη σας ενημερώνουμε ότι η υπηρεσία σας %title% ανεστάλη."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We will try it again on %date%."
+msgstr "Θα το ξαναδοκιμάσουμε στις %date%."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
+msgstr "Θέλουμε να σας ενημερώσουμε για το δίκτυό μας: %status_title% (προτεραιότητα %priority_title%)."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Welcome to %company%"
+msgstr "Καλώς ήρθατε στην %company%"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited"
+msgstr "Έχετε προσκληθεί"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited to %account%"
+msgstr "Έχετε προσκληθεί στο %account%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "You can also %link%download the invoice as a PDF%link_end% for your records."
+msgstr "Μπορείτε επίσης να %link%κατεβάσετε το παραστατικό ως PDF%link_end% για τα αρχεία σας."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "You can also %link%download the invoice as a PDF%link_end%. If you have already paid, please disregard this message."
+msgstr "Μπορείτε επίσης να %link%κατεβάσετε το παραστατικό ως PDF%link_end%. Αν έχετε ήδη πληρώσει, αγνοήστε αυτό το μήνυμα."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "You can also save a payment method on your %link%Payment methods%link_end% page now, so your invoices are paid automatically."
+msgstr "Μπορείτε επίσης να αποθηκεύσετε τώρα μια μέθοδο πληρωμής στη σελίδα %link%Τρόποι πληρωμής%link_end%, ώστε τα παραστατικά σας να πληρώνονται αυτόματα."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "You can download it again at any time from the %link%service page%link_end% in the client area."
+msgstr "Μπορείτε να το κατεβάσετε ξανά ανά πάσα στιγμή από τη %link%σελίδα της υπηρεσίας%link_end% στον χώρο πελατών."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
+msgstr "Μπορείτε να πληρώσετε το παραστατικό τώρα ή να αλλάξετε τη μέθοδο πληρωμής στη σελίδα %link%Τρόποι πληρωμής%link_end%."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "You get this email once per problem: the next one comes only if a check passes and breaks again."
+msgstr "Λαμβάνετε αυτό το email μία φορά ανά πρόβλημα: το επόμενο έρχεται μόνο αν ένας έλεγχος περάσει και ξαναχαλάσει."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You have been invited to use the client area of %account% with your own sign-in."
+msgstr "Έχετε προσκληθεί να χρησιμοποιήσετε τον χώρο πελατών του %account% με τη δική σας σύνδεση."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
+msgstr "Εγγραφήκατε με τον λογαριασμό σας Google, επομένως δεν υπάρχει κωδικός πρόσβασης να θυμάστε: την επόμενη φορά, χρησιμοποιήστε το κουμπί Google στη σελίδα σύνδεσης και επιλέξτε τον ίδιο λογαριασμό Google. Για να συνδέεστε και με το email σας, επιλέξτε έναν κωδικό πρόσβασης στη σελίδα σύνδεσης Google του λογαριασμού σας."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password."
+msgstr "Εγγραφήκατε με τον λογαριασμό σας Google. Αμέσως μετά επιλέγετε έναν κωδικό πρόσβασης: την επόμενη φορά, συνδεθείτε με το email σας και αυτόν τον κωδικό."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "Your %title% has been cancelled."
+msgstr "Το %title% ακυρώθηκε."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "Your %title% has been renewed."
+msgstr "Το %title% ανανεώθηκε."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "Your %title% has been suspended."
+msgstr "Το %title% ανεστάλη."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your %title% is active and ready to use."
+msgstr "Το %title% είναι ενεργό και έτοιμο για χρήση."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "Your %title% is available again."
+msgstr "Το %title% είναι πάλι διαθέσιμο."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your %title% is ready to download."
+msgstr "Το %title% είναι έτοιμο για λήψη."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Your API key is ready"
+msgstr "Το κλειδί API σας είναι έτοιμο"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Your account credit or saved payment method will pay your next renewal invoice, so you do not need to do anything."
+msgstr "Το πιστωτικό υπόλοιπο του λογαριασμού σας ή η αποθηκευμένη μέθοδος πληρωμής θα πληρώσει το επόμενο παραστατικό ανανέωσής σας, επομένως δεν χρειάζεται να κάνετε τίποτα."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Your account is ready."
+msgstr "Ο λογαριασμός σας είναι έτοιμος."
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Your client account is ready."
+msgstr "Ο λογαριασμός πελάτη σας είναι έτοιμος."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Your domain %title% has been renewed. Thank you for your continued business."
+msgstr "Το όνομα χώρου σας %title% ανανεώθηκε. Σας ευχαριστούμε για τη συνεχή εμπιστοσύνη σας."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain %title% is active."
+msgstr "Το όνομα χώρου σας %title% είναι ενεργό."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain is active"
+msgstr "Το όνομα χώρου σας είναι ενεργό"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your download is ready"
+msgstr "Η λήψη σας είναι έτοιμη"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email \"%subject%\" to %helpdesk% was not added to a support ticket."
+msgstr "Το email σας «%subject%» προς %helpdesk% δεν προστέθηκε σε αίτημα υποστήριξης."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Your email settings work"
+msgstr "Οι ρυθμίσεις email σας λειτουργούν"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket"
+msgstr "Το email σας δεν προστέθηκε σε αίτημα"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket: %subject%"
+msgstr "Το email σας δεν προστέθηκε σε αίτημα: %subject%"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Your hosting account %title% has been renewed. Thank you for your continued business."
+msgstr "Ο λογαριασμός φιλοξενίας σας %title% ανανεώθηκε. Σας ευχαριστούμε για τη συνεχή εμπιστοσύνη σας."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is ready"
+msgstr "Ο λογαριασμός φιλοξενίας σας είναι έτοιμος"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is set up and ready to use."
+msgstr "Ο λογαριασμός φιλοξενίας σας έχει ρυθμιστεί και είναι έτοιμος για χρήση."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Your invoice is ready"
+msgstr "Το παραστατικό σας είναι έτοιμο"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your license is active"
+msgstr "Η άδεια χρήσης σας είναι ενεργή"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "Your password was changed"
+msgstr "Ο κωδικός πρόσβασής σας άλλαξε"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your recurring discount"
+msgstr "Η επαναλαμβανόμενη έκπτωσή σας"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your renewal price is changing"
+msgstr "Η τιμή ανανέωσής σας αλλάζει"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Your service %title% has been renewed. Thank you for your continued business."
+msgstr "Η υπηρεσία σας %title% ανανεώθηκε. Σας ευχαριστούμε για τη συνεχή εμπιστοσύνη σας."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Your service is active"
+msgstr "Η υπηρεσία σας είναι ενεργή"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket %subject% has now been closed. We hope we were able to help."
+msgstr "Το αίτημά σας %subject% έκλεισε. Ελπίζουμε ότι καταφέραμε να βοηθήσουμε."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Your ticket %ticket% is now closed. We would love to know how we handled it."
+msgstr "Το αίτημά σας %ticket% έκλεισε. Θα θέλαμε να μάθουμε πώς το χειριστήκαμε."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket is closed"
+msgstr "Το αίτημά σας έκλεισε"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "an account"
+msgstr "ένας λογαριασμός"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "our support team"
+msgstr "η ομάδα υποστήριξής μας"

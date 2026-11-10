@@ -15,6 +15,9 @@
                             <h5 class="card-title mb-1">{{ 'Field Details'|trans }}</h5>
                             <p class="text-secondary mb-0">{{ 'Update the field name, label, and description shown in this form.'|trans }}</p>
                         </div>
+                        {# ClientFence core patch: the question's label and description per language, as WHMCS's custom field translations (mod_product_translations.html.twig). #}
+                        {% set cf_item = { id: field.id, title: field.label, description: field.description } %}
+                        {{ include('mod_product_translations.html.twig', { part: 'bar', kind: 'field', item: cf_item }) }}
                         <div class="row g-3">
                             <div class="col-lg-6">
                                 <label class="form-label" for="name">{{ 'Name'|trans }}</label>
@@ -22,12 +25,18 @@
                             <small class="form-hint">{{ 'Please keep in mind that field name cannot start with a number. Special characters will be replaced with underscores ( _ )'|trans }}</small>
                             </div>
                             <div class="col-lg-6">
+                                <div data-cf-text-pane="">
                                 <label class="form-label" for="label">{{ 'Label'|trans }}</label>
                             <input class="form-control" type="text" name="label" value="{{ field.label }}" id="label">
+                                </div>
+                                {{ include('mod_product_translations.html.twig', { part: 'title', kind: 'field', item: cf_item, title_label: 'Label'|trans }) }}
                             </div>
                             <div class="col-12">
+                                <div data-cf-text-pane="">
                                 <label class="form-label" for="description">{{ 'Description'|trans }}</label>
                                 <input class="form-control" type="text" name="description" value="{{ field.description}}" id="description">
+                                </div>
+                                {{ include('mod_product_translations.html.twig', { part: 'description', kind: 'field', item: cf_item }) }}
                             </div>
                         </div>
                     </section>

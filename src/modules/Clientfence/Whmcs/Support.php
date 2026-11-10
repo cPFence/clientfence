@@ -338,6 +338,7 @@ final class Support
             $this->db->insert('support_helpdesk', ['id' => $id, 'created_at' => $this->now] + $values);
         }
         $this->map->put('helpdesk', $id, $id);
+        Catalogue::translate($this->source, $this->db, $this->now, 'ticket_department', $row, 'helpdesk', $id);
         $this->db->executeStatement('DELETE FROM ' . TicketFeedback::HELPDESKS . ' WHERE helpdesk_id = ?', [$id]);
         $this->db->insert(TicketFeedback::HELPDESKS, ['helpdesk_id' => $id, 'feedback_request' => (int) ($row['feedback_request'] ?? 1) === 0 ? 0 : 1, 'updated_at' => $this->now]);
         $this->db->executeStatement('DELETE FROM ' . HiddenHelpdesks::TABLE . ' WHERE helpdesk_id = ?', [$id]);

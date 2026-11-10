@@ -356,6 +356,7 @@ test('gets a field', function (): void {
 test('removes a form', function (): void {
     $service = new Service();
     $dbal = Mockery::mock(Connection::class);
+    $dbal->shouldReceive('fetchFirstColumn')->once()->andReturn([]);
     $dbal->shouldReceive('executeStatement')->times(4)->andReturn(1);
 
     $di = container();

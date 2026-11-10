@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Clientfence\Blesta;
 
+use ClientFence\Config;
 use ClientFence\InformationException;
 use ClientFence\Mod\Clientfence\Whmcs\Snapshot as Base;
 use ClientFence\Mod\Clientfence\Whmcs\Source;
@@ -80,6 +81,9 @@ final class Snapshot extends Base
     {
         return $source->hasTable('clients') && $source->hasTable('invoices') && $source->hasTable('company_settings') && $source->hasTable('pricings');
     }
+
+    /** @var list<string>|null the languages a main text is taken in, first found first (texts()) */
+    private ?array $languages = null;
 
     private function __construct(private readonly Source $blesta, private readonly string $supportFiles, Connection $db)
     {
@@ -176,13 +180,20 @@ final class Snapshot extends Base
         }
         // Product groups, but not the Domains plugin's own group of TLD packages.
         $tlds = $this->blesta->hasTable('domains_tlds') ? 'AND NOT EXISTS (SELECT 1 FROM package_group pg JOIN domains_tlds t ON t.package_id = pg.package_id WHERE pg.package_group_id = g.id)' : '';
-        foreach ($this->blesta->rows("SELECT g.*, (SELECT n.name FROM package_group_names n WHERE n.package_group_id = g.id ORDER BY n.lang = 'en_us' DESC LIMIT 1) AS name FROM package_groups g WHERE g.company_id = ? AND g.type = 'standard' {$tlds} ORDER BY g.id", [self::COMPANY]) as $i => $g) {
-            $this->db->insert('tblproductgroups', ['id' => (int) $g['id'], 'name' => (string) ($g['name'] ?? '') ?: 'Products', 'slug' => '', 'hidden' => (int) $g['hidden'], '"order"' => $i]);
+        foreach ($this->blesta->rows("SELECT g.* FROM package_groups g WHERE g.company_id = ? AND g.type = 'standard' {$tlds} ORDER BY g.id", [self::COMPANY]) as $i => $g) {
+            [$name, $names] = $this->texts('SELECT lang, name AS text FROM package_group_names WHERE package_group_id = ?', (int) $g['id']);
+            $this->db->insert('tblproductgroups', ['id' => (int) $g['id'], 'name' => $name ?: 'Products', 'slug' => '', 'hidden' => (int) $g['hidden'], '"order"' => $i]);
+            $this->translate('product_group', (int) $g['id'], 'name', $names);
         }
         if ($this->blesta->hasTable('support_departments')) {
             foreach ($this->blesta->rows('SELECT * FROM support_departments WHERE company_id = ?', [self::COMPANY]) as $d) {
                 $this->db->insert('tblticketdepartments', ['id' => (int) $d['id'], 'name' => (string) $d['name'], 'description' => (string) ($d['description'] ?? ''), 'email' => (string) ($d['email'] ?? ''), 'hidden' => $d['status'] === 'hidden' ? 'on' : '']);
             }
+        }
+        // A template per language: ClientFence's own are translated (WHMCS's and Blesta's tags do not convert safely).
+        $translated = $this->blesta->hasTable('emails') ? (int) $this->blesta->value('SELECT COUNT(*) - COUNT(DISTINCT email_group_id) FROM emails WHERE company_id = ?', [self::COMPANY]) : 0;
+        if ($translated > 0) {
+            $this->warn(sprintf('%d translated email %s in Blesta %s not imported; ClientFence sends its own translated templates.', $translated, $translated === 1 ? 'template' : 'templates', $translated === 1 ? 'was' : 'were'));
         }
         foreach (['coupons' => 'coupons', 'invoices_recur' => 'recurring invoices', 'package_options' => 'package options', 'client_fields' => 'custom client fields'] as $table => $what) {
             $count = $this->blesta->hasTable($table) ? $this->blesta->count($table) : 0;
@@ -198,7 +209,7 @@ final class Snapshot extends Base
     private function package(array $p): void
     {
         $id = (int) $p['id'];
-        $name = (string) $this->blesta->value("SELECT name FROM package_names WHERE package_id = ? ORDER BY lang = 'en_us' DESC LIMIT 1", [$id]);
+        [$name, $names] = $this->texts('SELECT lang, name AS text FROM package_names WHERE package_id = ?', $id);
         $pricing = $this->blesta->rows('SELECT p.* FROM package_pricing pp JOIN pricings p ON p.id = pp.pricing_id WHERE pp.package_id = ? ORDER BY p.currency, p.period, p.term', [$id]);
         $tld = $this->blesta->hasTable('domains_tlds') ? $this->blesta->value('SELECT tld FROM domains_tlds WHERE package_id = ?', [$id]) : false;
         if ($tld !== false) {
@@ -227,13 +238,16 @@ final class Snapshot extends Base
             return;
         }
         $group = $this->blesta->value('SELECT package_group_id FROM package_group WHERE package_id = ? ORDER BY `order` LIMIT 1', [$id]);
+        [$description, $descriptions] = $this->texts('SELECT lang, text FROM package_descriptions WHERE package_id = ?', $id);
         $onetime = $pricing !== [] && array_filter($pricing, static fn (array $x): bool => $x['period'] !== 'onetime') === [];
         $this->db->insert('tblproducts', [
             'id' => $id, 'type' => 'other', 'gid' => $group === false ? 0 : (int) $group, 'name' => $name !== '' ? $name : 'Package #' . $id,
-            'description' => (string) ($this->blesta->value("SELECT text FROM package_descriptions WHERE package_id = ? ORDER BY lang = 'en_us' DESC LIMIT 1", [$id]) ?: ''),
+            'description' => $description,
             'hidden' => (int) $p['hidden'], 'stockcontrol' => $p['qty'] !== null ? 1 : 0, 'qty' => (int) ($p['qty'] ?? 0), 'paytype' => $onetime ? 'onetime' : 'recurring',
             'retired' => $p['status'] === 'inactive' ? 1 : 0, 'tax' => (int) $p['taxable'],
         ]);
+        $this->translate('product', $id, 'name', $names);
+        $this->translate('product', $id, 'description', $descriptions);
         $rows = [];
         $unbilled = [];
         foreach ($pricing as $price) {
@@ -259,6 +273,45 @@ final class Snapshot extends Base
             $this->db->insert('tblpricing', $row);
         }
         array_map($this->warn(...), array_values($unbilled));
+    }
+
+    /**
+     * An item's text in its main language, and its texts in the others by language: the main one is
+     * ClientFence's default language when Blesta has it, else Blesta's default language, else
+     * en_us, else the first.
+     *
+     * @return array{0: string, 1: array<string, string>}
+     */
+    private function texts(string $sql, int $id): array
+    {
+        $byLang = [];
+        foreach ($this->blesta->rows($sql . ' ORDER BY lang', [$id]) as $row) {
+            $byLang[strtolower((string) $row['lang'])] = (string) ($row['text'] ?? '');
+        }
+        $this->languages ??= array_values(array_unique(array_filter([strtolower((string) Config::getProperty('i18n.locale', 'en_US')), strtolower($this->setting('language')), 'en_us'])));
+        $main = array_values(array_intersect($this->languages, array_keys($byLang)))[0] ?? array_key_first($byLang);
+        if ($main === null) {
+            return ['', []];
+        }
+        $text = $byLang[$main];
+        unset($byLang[$main]);
+
+        return [$text, $byLang];
+    }
+
+    /**
+     * Texts of other languages as WHMCS's Dynamic Field Translation rows, which the catalogue step
+     * imports (Whmcs/Catalogue.php).
+     *
+     * @param array<string, string> $byLang
+     */
+    private function translate(string $type, int $id, string $field, array $byLang): void
+    {
+        foreach ($byLang as $lang => $text) {
+            if (trim($text) !== '') {
+                $this->db->insert('tbldynamic_translations', ['related_type' => $type . '.{id}.' . $field, 'related_id' => $id, 'language' => $lang, 'translation' => $text]);
+            }
+        }
     }
 
     /** A Blesta term in months as WHMCS bills it: 0 for one time, null when WHMCS has no name for it. */

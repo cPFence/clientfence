@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Clientfence\Whmcs;
 
+use ClientFence\Config;
 use ClientFence\Mod\Product\CurrencyPrices;
+use ClientFence\Mod\Product\Translations;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -28,6 +30,9 @@ use Doctrine\DBAL\Connection;
  * options (dropdown, radio, yes/no, quantity) and values with their prices in the default currency;
  * other currencies convert at the rate (Product/Options.php), and an option priced otherwise in
  * another currency is named in the warnings.
+ *
+ * Other languages: WHMCS's Dynamic Field Translation texts (tbldynamic_translations) of products,
+ * add-ons and product groups become the item's texts in that language (Product/Translations.php).
  *
  * Hosting servers keep their password (read with WHMCS's encryption key, stored encrypted:
  * Servicehosting/ServerSecrets.php) and API key, and are imported switched off (owner decision
@@ -129,6 +134,9 @@ final class Catalogue
     public function batch(string $step, int $after, int $limit): array
     {
         $table = self::STEPS[$step][1] ?? throw new \InvalidArgumentException('Unknown step ' . $step);
+        if ($step === 'categories' && $after === 0) {
+            $this->languageWarnings();
+        }
         if (!$this->source->hasTable($table)) {
             return [null, 0];
         }
@@ -170,7 +178,9 @@ final class Catalogue
             'description' => $description === '' ? null : $description,
             'created_at' => $this->now, 'updated_at' => $this->now,
         ]);
-        $this->map->put('category', (int) $row['id'], (int) $this->db->lastInsertId());
+        $categoryId = (int) $this->db->lastInsertId();
+        $this->map->put('category', (int) $row['id'], $categoryId);
+        self::translate($this->source, $this->db, $this->now, 'product_group', $row, 'category', $categoryId);
 
         return 1;
     }
@@ -266,6 +276,7 @@ final class Catalogue
         ]);
         $this->currencyPrices('product', $id, $productId, $title);
         $this->map->put('product', $id, $productId);
+        self::translate($this->source, $this->db, $this->now, 'product', $row, 'product', $productId);
 
         $formId = $this->form($id, $title);
         if ($formId !== null) {
@@ -471,7 +482,9 @@ final class Catalogue
                 'options' => $options,
                 'created_at' => $this->now, 'updated_at' => $this->now,
             ]);
-            $this->map->put('productfield', (int) $field['id'], (int) $this->db->lastInsertId());
+            $fieldId = (int) $this->db->lastInsertId();
+            $this->map->put('productfield', (int) $field['id'], $fieldId);
+            self::translate($this->source, $this->db, $this->now, 'custom_field', $field, 'field', $fieldId);
         }
 
         return $formId;
@@ -562,6 +575,7 @@ final class Catalogue
         ]);
         $this->currencyPrices('addon', $id, $productId, $title, $cycle);
         $this->map->put('addon', $id, $productId);
+        self::translate($this->source, $this->db, $this->now, 'product_addon', $row, 'product', $productId);
         $module = trim((string) ($row['module'] ?? ''));
         if ($module !== '') {
             $this->warn(sprintf('Add-on "%s" uses the WHMCS module "%s": it is a custom add-on; set up its provisioning by hand.', $title, $module));
@@ -1150,6 +1164,65 @@ final class Catalogue
         }
 
         return $this->codes;
+    }
+
+    /**
+     * An item's texts in other languages (tbldynamic_translations rows "<type>.{id}.<field>" with
+     * related_id), as product_translation rows: products, add-ons, groups, product custom fields
+     * (name: the label) and departments (Support.php). A group's headline and tagline make its
+     * description, as in category(); the default language keeps the item's own texts.
+     *
+     * @param array<string, mixed> $row the WHMCS item
+     */
+    public static function translate(Source $source, Connection $db, string $now, string $type, array $row, string $kind, int $refId): void
+    {
+        if (!$source->hasTable('tbldynamic_translations')) {
+            return;
+        }
+        $texts = [];
+        foreach ($source->rows('SELECT related_type, language, translation FROM tbldynamic_translations WHERE related_id = ? AND related_type LIKE ?', [(int) $row['id'], $type . '.{id}.%']) as $t) {
+            $locale = Accounts::locale((string) $t['language']);
+            $value = trim((string) $t['translation']);
+            if ($locale !== null && $value !== '') {
+                $texts[$locale][substr((string) $t['related_type'], strlen($type) + 6)] = $value;
+            }
+        }
+        unset($texts[(string) Config::getProperty('i18n.locale', 'en_US')]);
+        if ($texts !== []) {
+            // A help desk WHMCS's department takes over (Support.php) may have texts of its own.
+            $db->delete(Translations::TABLE, ['kind' => $kind, 'ref_id' => $refId]);
+        }
+        foreach ($texts as $locale => $t) {
+            $description = $type === 'product_group'
+                ? trim(implode("\n\n", array_filter([$t['headline'] ?? trim((string) ($row['headline'] ?? '')), $t['tagline'] ?? trim((string) ($row['tagline'] ?? ''))])))
+                // A help desk has no description in ClientFence.
+                : ($kind === 'helpdesk' ? '' : ($t['description'] ?? ''));
+            $title = self::cut($t['name'] ?? '', $kind === 'category' ? 100 : 255);
+            if (($title === '' && $description === '') || array_intersect_key($t, ['name' => 1, 'description' => 1, 'headline' => 1, 'tagline' => 1]) === []) {
+                continue;
+            }
+            $db->insert(Translations::TABLE, [
+                'kind' => $kind, 'ref_id' => $refId, 'lang' => $locale,
+                'title' => $title === '' ? null : $title, 'description' => $description === '' ? null : $description,
+                'created_at' => $now, 'updated_at' => $now,
+            ]);
+        }
+    }
+
+    /** Once per import: texts in languages this install does not ship, and translated email templates. */
+    private function languageWarnings(): void
+    {
+        if ($this->source->hasTable('tbldynamic_translations')) {
+            $languages = $this->source->rows("SELECT DISTINCT language FROM tbldynamic_translations WHERE related_type LIKE 'product%' OR related_type LIKE 'custom_field.%' OR related_type LIKE 'ticket_department.%'");
+            $missing = array_values(array_filter(array_map(static fn (array $r): string => trim((string) $r['language']), $languages), static fn (string $l): bool => $l !== '' && Accounts::locale($l) === null));
+            if ($missing !== []) {
+                $this->warn(sprintf('Product texts in %d %s were not imported: %s not installed (%s).', count($missing), count($missing) === 1 ? 'language' : 'languages', count($missing) === 1 ? 'it is' : 'those languages are', implode(', ', $missing)));
+            }
+        }
+        $templates = $this->source->count('tblemailtemplates', "language <> ''");
+        if ($templates > 0) {
+            $this->warn(sprintf('%d translated email %s in WHMCS %s not imported; ClientFence sends its own translated templates.', $templates, $templates === 1 ? 'template' : 'templates', $templates === 1 ? 'was' : 'were'));
+        }
     }
 
     private function warn(string $message): void

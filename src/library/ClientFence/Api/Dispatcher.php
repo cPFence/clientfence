@@ -70,7 +70,9 @@ final class Dispatcher implements InjectionAwareInterface
         // system_template_exists only says whether an admin template file exists (order and product pages ask it).
         // ClientFence core patch: extension_config_get/config_save check the module's own "Manage settings" permission (hasManagePermission()):
         // without this, that permission did nothing for staff without Extensions access.
-        $clientfenceOpenCall = in_array(strtolower($method), ['extension_get_navigation', 'system_template_exists', 'extension_config_get', 'extension_config_save'], true)
+        // ClientFence core patch: product_translations_get checks the permission of each kind's own module (help desks:
+        // Support, order form questions: Form Builder), so their pages work for staff without Products access.
+        $clientfenceOpenCall = in_array(strtolower($method), ['extension_get_navigation', 'system_template_exists', 'extension_config_get', 'extension_config_save', 'product_translations_get'], true)
             || (strtolower($method) === 'system_is_allowed' && is_string($clientfenceArgs['mod'] ?? null)
                 && preg_match('/^[a-z][a-z0-9_]*$/', $clientfenceArgs['mod']) === 1);
         if ($role === 'admin' && !$clientfenceOpenCall && !$this->isAllowedAdminFinalizationCall($mod, $method)) {

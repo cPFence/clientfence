@@ -1,7 +1,7 @@
 {% block subject %}[{{ guest.system_company.name }}] {{ issue.status_title|default('') }}: {{ issue.title|default('') }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,31 +22,31 @@
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
 		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ issue.title|default('') }}</h1>
-		<p style="margin:0 0 16px;">Dear {{ c.first_name|default('') }},</p>
-		<p style="margin:0 0 16px;">We would like to keep you informed about our network: <strong>{{ issue.status_title|default('') }}</strong> ({{ issue.priority_title|default('') }} priority).</p>
+		<p style="margin:0 0 16px;">{{ 'Dear %first_name%,'|trans({'%first_name%': c.first_name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'We would like to keep you informed about our network: %status_title% (%priority_title% priority).'|trans_html({'%priority_title%': issue.priority_title|default('')}, {'%status_title%': '<strong>' ~ (issue.status_title|default(''))|e ~ '</strong>'}) }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Affects</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ issue.about|default('') }}</td></tr>
-					{% if issue.start_at|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Starts</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ issue.start_at|default('') ? issue.start_at|format_datetime : '' }}</td></tr>{% endif %}
-					{% if issue.end_at|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Ends</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ issue.end_at|default('') ? issue.end_at|format_datetime : '' }}</td></tr>{% endif %}
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Affects'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ issue.about|default('') }}</td></tr>
+					{% if issue.start_at|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Starts'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ issue.start_at|default('') ? issue.start_at|format_datetime : '' }}</td></tr>{% endif %}
+					{% if issue.end_at|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Ends'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ issue.end_at|default('') ? issue.end_at|format_datetime : '' }}</td></tr>{% endif %}
 				</table>
 			</td></tr>
 		</table>
 {% if issue.description|default('') %}
 		<div style="margin:0 0 24px; padding:16px 20px; background-color:#f8fafc; border-left:3px solid #cbd5e1; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155; white-space:pre-line;">{{ issue.description }}</div>
 {% endif %}
-		<p style="margin:0 0 16px;">We apologise for any inconvenience and will keep you updated.</p>
+		<p style="margin:0 0 16px;">{{ 'We apologise for any inconvenience and will keep you updated.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ status_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">See the network status</a>
+				<a href="{{ status_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'See the network status'|trans }}</a>
 			</td></tr>
 		</table>
 		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">Client area</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">Profile</a>{% if guest.system_company.email|default('') %} &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
+		<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Client area'|trans }}</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Profile'|trans }}</a>{% if guest.system_company.email|default('') %} &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
 	</td></tr>
 </table>
 </td></tr>

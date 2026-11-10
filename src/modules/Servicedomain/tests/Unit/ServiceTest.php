@@ -38,6 +38,7 @@ test('gets dependency injection container', function (): void {
 
 test('gets cart product title', function (array $data, string $expected): void {
     $service = new Service();
+    $service->setDi(container());
     $product = (new ClientFence\Mod\Product\Entity\Product())->setTitle('Example.com Registration');
 
     $result = $service->getCartProductTitle($product, $data);

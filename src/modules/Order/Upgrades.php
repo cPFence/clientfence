@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use ClientFence\InformationException;
 use ClientFence\Mod\Clientfence\Whmcs\Money;
 use ClientFence\Mod\Product\Options;
+use ClientFence\Mod\Product\Translations;
 
 /**
  * ClientFence: upgrades and downgrades of a service by the client, as WHMCS (Proration.php has the
@@ -185,6 +186,7 @@ final class Upgrades
         $quantity = max(1, (int) ($order->quantity ?? 1));
 
         $options = [];
+        $locale = self::clientLocale($db, (int) $order->client_id);
         foreach (array_unique(array_merge([(int) $order->product_id], $from['upgrades'])) as $productId) {
             $to = $productId === (int) $order->product_id ? ($from['on_sale'] ? $from : null) : self::catalog($db, $productId, true, (string) $order->currency);
             if ($to === null || !self::compatible($from, $to)) {
@@ -212,7 +214,8 @@ final class Upgrades
                 $quote = self::quoteWithTax($di, $order, $quote);
                 $options[] = [
                     'product_id' => $productId,
-                    'title' => $to['title'],
+                    // The name in the client's language (Product/Translations.php): it becomes the order's title.
+                    'title' => Translations::text($di, 'product', $productId, 'title', $to['title'], $locale),
                     'period' => $period,
                     'price' => $newTotal,
                     'same_product' => $productId === (int) $order->product_id,
@@ -559,7 +562,10 @@ final class Upgrades
                 $fromProduct = self::catalog($db, (int) $up['from_product_id'], false);
                 $order->product_id = (int) $up['to_product_id'];
                 if (!$optionsOnly) {
-                    $order->title = self::newTitle((string) $order->title, (string) $up['from_title'], (string) $up['to_title'], $fromProduct['title'] ?? '');
+                    // The old name as the title has it: in the client's language (Product/Translations.php), else the default one.
+                    $fromName = Translations::text($di, 'product', (int) $up['from_product_id'], 'title', $fromProduct['title'] ?? '', self::clientLocale($db, (int) $order->client_id));
+                    $fromName = str_contains((string) $order->title, (string) $fromName) ? (string) $fromName : ($fromProduct['title'] ?? '');
+                    $order->title = self::newTitle((string) $order->title, (string) $up['from_title'], (string) $up['to_title'], $fromName);
                 }
                 // ClientFence core patch: a recurring promotion discounts the new product and cycle as checkout does (its old
                 // amount made the renewals of a cheaper plan free and overcharged a dearer one); none when it does not apply.
@@ -1121,6 +1127,14 @@ final class Upgrades
         return $out;
     }
 
+    /** The language the client's product names are shown in (Product/Translations.php). */
+    private static function clientLocale(Connection $db, int $clientId): string
+    {
+        $lang = $db->fetchOne('SELECT lang FROM client WHERE id = ?', [$clientId]);
+
+        return Translations::locale(is_string($lang) ? $lang : null);
+    }
+
     /**
      * The order's new title: the old product title in it is swapped for the new one (a hosting
      * order's title can carry its domain), else the new product title.
@@ -1369,11 +1383,16 @@ final class Upgrades
             $config['options'] = $options['choice'];
             $config['option_lines'] = $options['lines'];
         }
+        // The names as the client reads them (Product/Translations.php), as apply() writes a client's change.
+        $locale = self::clientLocale($db, (int) $order->client_id);
+        $toName = (string) Translations::text($di, 'product', $productId, 'title', $to['title'], $locale);
+        $fromName = (string) Translations::text($di, 'product', (int) $order->product_id, 'title', $from['title'], $locale);
+        $fromName = str_contains((string) $order->title, $fromName) ? $fromName : $from['title'];
         $config['product_id'] = $productId;
-        $config['title'] = $to['title'];
+        $config['title'] = $toName;
         $config = self::hostingConfig($order, $to, $config);
         $order->product_id = $productId;
-        $order->title = self::newTitle((string) $order->title, $from['title'], $to['title'], $from['title']);
+        $order->title = self::newTitle((string) $order->title, $from['title'], $toName, $fromName);
         $order->price = $price;
         $order->config = json_encode($config);
         $order->updated_at = date('Y-m-d H:i:s');

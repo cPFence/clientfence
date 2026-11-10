@@ -27423,3 +27423,1148 @@ msgstr "ניתן לרשום את :tld לכל היותר ל-:years שנים."
 #: src/modules/Order/Upgrades.php
 msgid "This service was refunded or its price changed after its last payment, so our staff change it. Please contact us."
 msgstr "השירות הזה הוחזר או שמחירו השתנה לאחר התשלום האחרון, ולכן הצוות שלנו מבצע את השינוי. אנא צרו איתנו קשר."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
+msgstr "%client% ביקש לבטל את ההזמנה %order% בסוף תקופת החיוב (%date%)."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period."
+msgstr "%client% ביקש לבטל את ההזמנה %order% בסוף תקופת החיוב."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% immediately."
+msgstr "%client% ביקש לבטל את ההזמנה %order% באופן מיידי."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%)."
+msgstr "%company% אישרה את הצעת המחיר %quote%. החשבונית נוצרה ונשלחה בדוא\"ל (חשבונית #%invoice%)."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed."
+msgstr "%company% אישרה את הצעת המחיר %quote%. החשבונית נוצרה ונשלחה בדוא\"ל."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% declined quote %quote%. It is now lost."
+msgstr "%company% דחתה את הצעת המחיר %quote%. היא נחשבת כעת כאבודה."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "%discount% (included in the new price)"
+msgstr "%discount% (כלול במחיר החדש)"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "%name% assigned ticket %ticket% to you."
+msgstr "%name% הקצה לכם את הפנייה %ticket%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "%name% closed support ticket %ticket%."
+msgstr "%name% סגר את פניית התמיכה %ticket%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig
+msgid "%name% opened a new support ticket: %subject%."
+msgstr "%name% פתח פניית תמיכה חדשה: %subject%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "%name% replied to support ticket %ticket%."
+msgstr "%name% השיב לפניית התמיכה %ticket%."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "%period% year(s)"
+msgstr "%period% שנה/שנים"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "%title% cancelled"
+msgstr "%title% בוטל"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+msgid "%title% is now active"
+msgstr "%title% פעיל כעת"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "%title% is ready"
+msgstr "%title% מוכן"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "%title% is ready to download"
+msgstr "%title% מוכן להורדה"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "%title% reactivated"
+msgstr "%title% הופעל מחדש"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "%title% renewed"
+msgstr "%title% חודש"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "%title% suspended"
+msgstr "%title% הושעה"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "A client"
+msgstr "לקוח"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "A member of our team has created a client account for you. In the client area you can manage your services, pay invoices and contact our support team."
+msgstr "חבר בצוות שלנו יצר עבורכם חשבון לקוח. באזור הלקוחות תוכלו לנהל את השירותים שלכם, לשלם חשבוניות וליצור קשר עם צוות התמיכה שלנו."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out (%date%). This site runs ClientFence %version%."
+msgstr "יצאה גרסה חדשה של ClientFence (%date%). אתר זה פועל על ClientFence %version%."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out. This site runs ClientFence %version%."
+msgstr "יצאה גרסה חדשה של ClientFence. אתר זה פועל על ClientFence %version%."
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "A new client has just created an account with %company%."
+msgstr "לקוח חדש יצר זה עתה חשבון ב-%company%."
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "A new order has been placed on %created_at%."
+msgstr "ב-%created_at% בוצעה הזמנה חדשה."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "A new support ticket was opened in %helpdesk%: %subject%."
+msgstr "נפתחה פניית תמיכה חדשה ב-%helpdesk%: %subject%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "A new ticket from our team"
+msgstr "פנייה חדשה מהצוות שלנו"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it."
+msgstr "אשרו או עצרו את הבקשה בהזמנות > בקשות ביטול. כשבקשות ביטול מטופלות אוטומטית, משימת ה-cron היומית מאשרת אותה; עד אז הלקוח יכול למשוך אותה בחזרה."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "Accept the invitation"
+msgstr "קבלת ההזמנה"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
+msgid "Activated"
+msgstr "הופעל"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Add language"
+msgstr "הוספת שפה"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Amount due"
+msgstr "סכום לתשלום"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "An escalation rule assigned ticket %ticket% to you."
+msgstr "כלל הסלמה הקצה לכם את הפנייה %ticket%."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "An invitation to %account%."
+msgstr "הזמנה אל %account%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed"
+msgstr "התשלום האוטומטי נכשל"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed: invoice #%number%"
+msgstr "התשלום האוטומטי נכשל: חשבונית #%number%"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment for your service has stopped"
+msgstr "התשלום האוטומטי עבור השירות שלכם הופסק"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment has stopped"
+msgstr "התשלום האוטומטי הופסק"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request"
+msgstr "בקשת ביטול"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request: #%id% %title%"
+msgstr "בקשת ביטול: #%id% %title%"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "Choose a new password"
+msgstr "בחרו סיסמה חדשה"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "Choose a new password for your user."
+msgstr "בחרו סיסמה חדשה עבור המשתמש שלכם."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "ClientFence %version% is available"
+msgstr "ClientFence %version% זמין"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "ClientFence Email Test"
+msgstr "הודעת בדיקה של ClientFence"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Confirm email address"
+msgstr "אישור כתובת דוא\"ל"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Confirm your email address"
+msgstr "אשרו את כתובת הדוא\"ל שלכם"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Copied from the default text: translate it and click Update."
+msgstr "הועתק מטקסט ברירת המחדל: תרגמו אותו ולחצו על עדכון."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+msgid "Dear %first_name% %last_name%,"
+msgstr "שלום %first_name% %last_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Dear %first_name%,"
+msgstr "שלום %first_name%,"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
+msgid "Dear %name%,"
+msgstr "שלום %name%,"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig …
+msgid "Department"
+msgstr "מחלקה"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Domain reactivated"
+msgstr "הדומיין הופעל מחדש"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Domain renewed"
+msgstr "הדומיין חודש"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "Domain suspended"
+msgstr "הדומיין הושעה"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Download now"
+msgstr "הורידו עכשיו"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Due date"
+msgstr "תאריך יעד"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Email test"
+msgstr "בדיקת דוא\"ל"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Ends"
+msgstr "מסתיים"
+
+#: src/modules/Email/Translations.php
+msgid "Enter a subject and a message for every language version."
+msgstr "הזינו נושא והודעה עבור כל גרסת שפה."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email."
+msgstr "תקנו את הסיבה ואז נסו שוב את הפעולה מהזמנות > פעולות שנכשלו, או סגרו אותה שם אם בוצעה ידנית. שום דבר לא מנוסה שוב אוטומטית. כשלים נוספים של אותה פעולה נספרים שם ללא דוא\"ל נוסף."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "For your security, passwords are never sent by email. Sign in to the client area to open your control panel directly or to set a new hosting password."
+msgstr "מטעמי אבטחה, סיסמאות לעולם אינן נשלחות בדוא\"ל. היכנסו לאזור הלקוחות כדי לפתוח ישירות את לוח הבקרה שלכם או להגדיר סיסמת אירוח חדשה."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Give feedback"
+msgstr "שליחת משוב"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Good news: your domain %title% has been reactivated and is available again."
+msgstr "חדשות טובות: הדומיין %title% שלכם הופעל מחדש וזמין שוב."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Good news: your hosting account %title% has been reactivated and is available again."
+msgstr "חדשות טובות: חשבון האירוח %title% שלכם הופעל מחדש וזמין שוב."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Good news: your service %title% has been reactivated and is available again."
+msgstr "חדשות טובות: השירות %title% שלכם הופעל מחדש וזמין שוב."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Hello %staff_member_name%,"
+msgstr "שלום %staff_member_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Hello,"
+msgstr "שלום,"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "Hosting account cancelled"
+msgstr "חשבון האירוח בוטל"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Hosting account reactivated"
+msgstr "חשבון האירוח הופעל מחדש"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Hosting account renewed"
+msgstr "חשבון האירוח חודש"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "Hosting account suspended"
+msgstr "חשבון האירוח הושעה"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do?"
+msgstr "איך היינו?"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do? Your feedback on ticket #%id%"
+msgstr "איך היינו? המשוב שלכם על פנייה #%id%"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the domain. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "אם ההשעיה קשורה לחשבונית שלא שולמה, תשלומה באזור הלקוחות ישיב את הדומיין. מכל סיבה אחרת, פנו אל צוות התמיכה שלנו בהקדם האפשרי כדי שנוכל לעזור לכם להפעיל אותו מחדש."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the hosting account. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "אם ההשעיה קשורה לחשבונית שלא שולמה, תשלומה באזור הלקוחות ישיב את חשבון האירוח. מכל סיבה אחרת, פנו אל צוות התמיכה שלנו בהקדם האפשרי כדי שנוכל לעזור לכם להפעיל אותו מחדש."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the service. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "אם ההשעיה קשורה לחשבונית שלא שולמה, תשלומה באזור הלקוחות ישיב את השירות. מכל סיבה אחרת, פנו אל צוות התמיכה שלנו בהקדם האפשרי כדי שנוכל לעזור לכם להפעיל אותו מחדש."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "If you are reading this email, ClientFence is %bold%configured properly%bold_end% and is %bold%able to send emails%bold_end%. No further action is needed."
+msgstr "אם אתם קוראים הודעה זו, ClientFence %bold%מוגדר כהלכה%bold_end% ו-%bold%מסוגל לשלוח דוא\"ל%bold_end%. אין צורך בפעולה נוספת."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "If you believe this was done in error or have any questions, please open a support ticket and our team will be glad to help."
+msgstr "אם אתם סבורים שזה נעשה בטעות או שיש לכם שאלות, פתחו פניית תמיכה והצוות שלנו ישמח לעזור."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "If you did not ask for a password reset, you can safely ignore this email: your password stays the same."
+msgstr "אם לא ביקשתם איפוס סיסמה, אפשר להתעלם מהודעה זו: הסיסמה שלכם נשארת ללא שינוי."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "If you did not create an account with %company%, you can ignore this email."
+msgstr "אם לא יצרתם חשבון ב-%company%, אפשר להתעלם מהודעה זו."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "If you did not make this change, contact your administrator immediately."
+msgstr "אם לא ביצעתם שינוי זה, פנו מיד אל מנהל המערכת שלכם."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "If you did not make this change, please contact our support team immediately."
+msgstr "אם לא ביצעתם שינוי זה, פנו מיד אל צוות התמיכה שלנו."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "If you have any questions about this change, please reply to this email or open a support ticket."
+msgstr "אם יש לכם שאלות לגבי שינוי זה, השיבו להודעה זו או פתחו פניית תמיכה."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "If you have any questions, please reply to this email or open a support ticket."
+msgstr "אם יש לכם שאלות, השיבו להודעה זו או פתחו פניית תמיכה."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
+msgstr "אם אתם זקוקים לעזרה בהתחלה, צוות התמיכה שלנו כאן בשבילכם: פשוט %link%פתחו פניית תמיכה%link_end%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "If you need further help with this request, you can still view the ticket, or open a new one at any time."
+msgstr "אם אתם זקוקים לעזרה נוספת בבקשה זו, עדיין אפשר לצפות בפנייה או לפתוח פנייה חדשה בכל עת."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "If you ordered a domain with this account, it can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate."
+msgstr "אם הזמנתם דומיין עם חשבון זה, ייתכן שיעברו עד 48 שעות עד שהוא ייראה בכל רחבי האינטרנט, בזמן שהשינויים ב-DNS מתפשטים."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number%"
+msgstr "חשבונית #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% for %balance_due% is due on %due_at%."
+msgstr "חשבונית #%number% על סך %balance_due% לתשלום עד %due_at%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Invoice #%number% is due on %due_at%."
+msgstr "חשבונית #%number% לתשלום עד %due_at%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Invoice #%number% is past due. Please pay it to keep your services running."
+msgstr "חשבונית #%number% באיחור. אנא שלמו אותה כדי שהשירותים שלכם ימשיכו לפעול."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% is ready"
+msgstr "חשבונית #%number% מוכנה"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Invoice date"
+msgstr "תאריך החשבונית"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Invoice number"
+msgstr "מספר חשבונית"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Language versions"
+msgstr "גרסאות שפה"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Leave blank to use the default"
+msgstr "השאירו ריק כדי להשתמש בברירת המחדל"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "License key"
+msgstr "מפתח רישיון"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Manage domain"
+msgstr "ניהול הדומיין"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Manage hosting"
+msgstr "ניהול האירוח"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Manage hosting account"
+msgstr "ניהול חשבון האירוח"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Manage the order"
+msgstr "ניהול ההזמנה"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Names and descriptions in other languages"
+msgstr "שמות ותיאורים בשפות אחרות"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "New client signed up"
+msgstr "לקוח חדש נרשם"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order placed"
+msgstr "בוצעה הזמנה חדשה"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order: %title%"
+msgstr "הזמנה חדשה: %title%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "New reply from client"
+msgstr "תגובה חדשה מהלקוח"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "New ticket opened"
+msgstr "נפתחה פנייה חדשה"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig …
+msgid "Next due date"
+msgstr "תאריך היעד הבא"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Once you accept the quote, we send you the invoice. Questions? Just reply to this email."
+msgstr "לאחר שתאשרו את הצעת המחיר, נשלח לכם את החשבונית. שאלות? פשוט השיבו להודעה זו."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "One click to confirm your email address."
+msgstr "לחיצה אחת כדי לאשר את כתובת הדוא\"ל שלכם."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Open Cancellation Requests"
+msgstr "פתיחת בקשות ביטול"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Open Failed actions"
+msgstr "פתיחת פעולות שנכשלו"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "Open System health"
+msgstr "פתיחת תקינות המערכת"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
+msgid "Open a support ticket"
+msgstr "פתיחת פניית תמיכה"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Open the client area"
+msgstr "פתיחת אזור הלקוחות"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Open the quote"
+msgstr "פתיחת הצעת המחיר"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Open the ticket"
+msgstr "פתיחת הפנייה"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed"
+msgstr "פעולת הזמנה נכשלה"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed: %action% #%order_id%"
+msgstr "פעולת הזמנה נכשלה: %action% #%order_id%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Our quote for %subject%."
+msgstr "הצעת המחיר שלנו עבור %subject%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr "לפי הרשומות שלנו, חשבונית %number% באיחור של %days_passed% ימים. אנא סדרו את התשלום בהקדם האפשרי כדי להימנע מהפרעה בשירותים שלכם."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our support team has opened a ticket for you. Their message is below."
+msgstr "צוות התמיכה שלנו פתח עבורכם פנייה. הודעתם מופיעה להלן."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
+msgstr "צוות התמיכה שלנו פרסם תגובה חדשה לפנייה %subject% שלכם. אפשר לקרוא את התגובה ולהשיב עליה דרך הקישור שלהלן."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our team opened ticket #%id% for you."
+msgstr "הצוות שלנו פתח עבורכם את פנייה #%id%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Overdue notice: invoice #%number%"
+msgstr "הודעת איחור: חשבונית #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Pay invoice"
+msgstr "תשלום חשבונית"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Pay invoice now"
+msgstr "שלמו את החשבונית עכשיו"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Payment overdue"
+msgstr "תשלום באיחור"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received"
+msgstr "התשלום התקבל"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received: invoice #%number%"
+msgstr "התשלום התקבל: חשבונית #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder"
+msgstr "תזכורת תשלום"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder: invoice #%number%"
+msgstr "תזכורת תשלום: חשבונית #%number%"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Please also %link%confirm your email address%link_end%. If the link has expired, you can ask for a new one after signing in."
+msgstr "אנא %link%אשרו גם את כתובת הדוא\"ל שלכם%link_end%. אם הקישור פג תוקף, אפשר לבקש חדש לאחר הכניסה."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm that this is your email address by clicking the button below. It keeps your account secure and makes sure you receive important notices about your services and invoices."
+msgstr "אשרו שזו כתובת הדוא\"ל שלכם בלחיצה על הכפתור שלהלן. כך החשבון שלכם נשאר מאובטח ואתם מקבלים הודעות חשובות על השירותים והחשבוניות שלכם."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm your email address"
+msgstr "אנא אשרו את כתובת הדוא\"ל שלכם"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please confirm your email address to finish setting up your account."
+msgstr "אשרו את כתובת הדוא\"ל שלכם כדי להשלים את הגדרת החשבון."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Please keep in mind that a new domain can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate. Your website and email on this domain start working once that is done."
+msgstr "שימו לב שדומיין חדש עשוי לדרוש עד 48 שעות עד שייראה בכל רחבי האינטרנט, בזמן שהשינויים ב-DNS מתפשטים. האתר והדוא\"ל שלכם בדומיין זה יתחילו לעבוד לאחר שזה יסתיים."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Please reply from the staff panel, not to this email."
+msgstr "אנא השיבו מלוח הצוות, ולא להודעה זו."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please sign in with the password you chose when you signed up."
+msgstr "היכנסו עם הסיסמה שבחרתם בעת ההרשמה."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in."
+msgstr "הקדישו דקה כדי לדרג את אנשי הצוות שעזרו לכם ולספר לנו איך נוכל להשתפר. אין צורך להתחבר."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% accepted: %subject%"
+msgstr "הצעת מחיר #%id% אושרה: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% declined: %subject%"
+msgstr "הצעת מחיר #%id% נדחתה: %subject%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Quote #%id%: %subject%"
+msgstr "הצעת מחיר #%id%: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote accepted"
+msgstr "הצעת המחיר אושרה"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote declined"
+msgstr "הצעת המחיר נדחתה"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Reason given:"
+msgstr "הסיבה שצוינה:"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Registration date"
+msgstr "תאריך הרישום"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Remove the %language% version of this template?"
+msgstr "להסיר את גרסת %language% של תבנית זו?"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Remove version"
+msgstr "הסרת גרסה"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Renewal date"
+msgstr "תאריך החידוש"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Reply to ticket"
+msgstr "תגובה לפנייה"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "Review order"
+msgstr "בדיקת ההזמנה"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "Review the ticket"
+msgstr "בדיקת הפנייה"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "See the update"
+msgstr "צפייה בעדכון"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent for the default language and every language without its own version."
+msgstr "נשלח עבור שפת ברירת המחדל וכל שפה ללא גרסה משלה."
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent in:"
+msgstr "נשלח בשפה:"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Server and nameservers"
+msgstr "שרת ושרתי שמות"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "Service cancelled"
+msgstr "השירות בוטל"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Service reactivated"
+msgstr "השירות הופעל מחדש"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Service renewed"
+msgstr "השירות חודש"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "Service suspended"
+msgstr "השירות הושעה"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Set your password"
+msgstr "הגדירו את הסיסמה שלכם"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Sign in to client area"
+msgstr "כניסה לאזור הלקוחות"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Sign-in email"
+msgstr "דוא\"ל כניסה"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database."
+msgstr "אנשי צוות המורשים לעדכן את המערכת יכולים להתקין אותה דרך מערכת > עדכון: היא מגבה את מסד הנתונים ואת הקבצים שהיא מחליפה, מתקינה את הגרסה ומעדכנת את מסד הנתונים."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Starts"
+msgstr "מתחיל"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: %count% checks need attention"
+msgstr "תקינות המערכת: מספר הבדיקות הדורשות תשומת לב: %count%"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: 1 check needs attention"
+msgstr "תקינות המערכת: בדיקה אחת דורשת תשומת לב"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Tell us how we handled your ticket."
+msgstr "ספרו לנו איך טיפלנו בפנייה שלכם."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Thank you for choosing %company%. Your hosting account %title% has been set up. This email holds everything you need to start using it: please keep it for your records."
+msgstr "תודה שבחרתם ב-%company%. חשבון האירוח %title% שלכם הוגדר. הודעה זו כוללת כל מה שצריך כדי להתחיל להשתמש בו: אנא שמרו אותה לתיעוד שלכם."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Thank you for contacting our support team. A ticket has been opened for your request and a member of our team will reply as soon as possible. You will be notified by email when there is a response."
+msgstr "תודה שפניתם לצוות התמיכה שלנו. נפתחה פנייה עבור הבקשה שלכם וחבר בצוות שלנו ישיב בהקדם האפשרי. תקבלו הודעה בדוא\"ל כשתהיה תגובה."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team."
+msgstr "תודה שיצרתם אצלנו חשבון. באזור הלקוחות תוכלו לבצע הזמנות, לנהל את השירותים שלכם, לשלם חשבוניות וליצור קשר עם צוות התמיכה שלנו."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Thank you for helping us improve our service."
+msgstr "תודה שאתם עוזרים לנו לשפר את השירות שלנו."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Thank you for your business. A new invoice has been issued for your account on %created_at%. Please find the details below."
+msgstr "תודה על אמונכם בנו. הונפקה חשבונית חדשה לחשבון שלכם ב-%created_at%. הפרטים מופיעים להלן."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr "תודה על התעניינותכם. להלן הצעת המחיר שלנו עבור %subject%; קובץ ה-PDF מצורף להודעה זו."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to download."
+msgstr "תודה על ההזמנה. %title% שלכם פעיל כעת ומוכן להורדה."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to use."
+msgstr "תודה על ההזמנה. %title% שלכם פעיל כעת ומוכן לשימוש."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your API key is below: please keep it secret."
+msgstr "תודה על ההזמנה. %title% שלכם פעיל כעת. מפתח ה-API שלכם מופיע להלן: אנא שמרו עליו בסוד."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your license key is below: please keep it for your records."
+msgstr "תודה על ההזמנה. %title% שלכם פעיל כעת. מפתח הרישיון שלכם מופיע להלן: אנא שמרו אותו לתיעוד שלכם."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. Your domain %title% is now active."
+msgstr "תודה על ההזמנה. הדומיין %title% שלכם פעיל כעת."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you for your payment of %total%."
+msgstr "תודה על התשלום בסך %total%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you! We have received your payment for invoice %number%. This email is your receipt."
+msgstr "תודה! קיבלנו את התשלום שלכם עבור חשבונית %number%. הודעה זו היא הקבלה שלכם."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "הפעולה %action% של הזמנה %order% (לקוח %client%) נכשלה. לוח האירוח, הרשם או שירות אחר דחו אותה או לא הצליחו להשלים אותה."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "הפעולה %action% של הזמנה %order% נכשלה. לוח האירוח, הרשם או שירות אחר דחו אותה או לא הצליחו להשלים אותה."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The automatic payment set up for your service at its old price was cancelled."
+msgstr "התשלום האוטומטי שהוגדר לשירות שלכם במחיר הישן בוטל."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The cancelled automatic payment will not pay your next renewal invoice. Unless your account credit covers it, please pay it when it arrives; paying it the same way as before sets up automatic payment again."
+msgstr "התשלום האוטומטי שבוטל לא ישלם את חשבונית החידוש הבאה שלכם. אלא אם יתרת החשבון שלכם מכסה אותה, אנא שלמו אותה כשתגיע; תשלום באותה דרך כמו קודם מגדיר שוב תשלום אוטומטי."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "The email was too large. Please send it again with smaller attachments, or attach the files from our client area."
+msgstr "ההודעה הייתה גדולה מדי. אנא שלחו אותה שוב עם קבצים מצורפים קטנים יותר, או צרפו את הקבצים מאזור הלקוחות שלנו."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found a check that needs attention:"
+msgstr "בדיקות תקינות המערכת השעתיות של פורטל החיוב מצאו בדיקה אחת הדורשת תשומת לב:"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found checks that need attention:"
+msgstr "בדיקות תקינות המערכת השעתיות של פורטל החיוב מצאו בדיקות הדורשות תשומת לב:"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr "החשבונית שכבר הונפקה עבורו שומרת על המחיר הישן; המחיר החדש מתחיל עם החידוש שאחריה."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
+msgstr "הקישור פועל פעם אחת ופג תוקף בעוד %days% ימים. אם לא ציפיתם להזמנה זו, אפשר להתעלם מהודעה זו."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with the renewal due %date%."
+msgstr "המחיר החדש מתחיל עם החידוש שמועד תשלומו ב-%date%."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with your next invoice."
+msgstr "המחיר החדש מתחיל עם החשבונית הבאה שלכם."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "The password of your account was changed."
+msgstr "סיסמת החשבון שלכם שונתה."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The plan, price or billing cycle of %title% changed, so the automatic payment set up for it at the old price was cancelled. You have not been charged for this."
+msgstr "התוכנית, המחיר או מחזור החיוב של %title% השתנו, ולכן התשלום האוטומטי שהוגדר לו במחיר הישן בוטל. לא חויבתם על כך."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The renewal price of your service is changing."
+msgstr "מחיר החידוש של השירות שלכם משתנה."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "There is a new reply on your ticket \"%subject%\"."
+msgstr "יש תגובה חדשה לפנייה \"%subject%\" שלכם."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area."
+msgstr "כתובת זו מקבלת הודעות רק מלקוחות רשומים. אם אתם לקוחות, אנא כתבו מכתובת הדוא\"ל של החשבון שלכם, או פתחו פנייה מאזור הלקוחות שלנו."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes replies to existing tickets. Please open a new ticket from our client area."
+msgstr "כתובת זו מקבלת רק תגובות לפניות קיימות. אנא פתחו פנייה חדשה מאזור הלקוחות שלנו."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "This is a confirmation that the password for your client area account has just been changed."
+msgstr "זהו אישור לכך שסיסמת חשבון אזור הלקוחות שלכם שונתה זה עתה."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "This is a confirmation that the password for your staff account has just been changed."
+msgstr "זהו אישור לכך שסיסמת חשבון הצוות שלכם שונתה זה עתה."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due in %days% days, on %date%."
+msgstr "תזכורת ידידותית: חשבונית %number% לתשלום בעוד %days% ימים, ב-%date%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due today."
+msgstr "תזכורת ידידותית: חשבונית %number% לתשלום היום."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% was due on %date%. Please arrange payment as soon as possible."
+msgstr "תזכורת ידידותית: חשבונית %number% הייתה לתשלום ב-%date%. אנא סדרו את התשלום בהקדם האפשרי."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "This is to confirm that your hosting account %title% has been cancelled."
+msgstr "זהו אישור לכך שחשבון האירוח %title% שלכם בוטל."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "This is to confirm that your service %title% has been cancelled."
+msgstr "זהו אישור לכך שהשירות %title% שלכם בוטל."
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "This language is turned off: these texts are kept but not shown."
+msgstr "שפה זו כבויה: הטקסטים נשמרים אך אינם מוצגים."
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "This language is turned off: this version is not sent"
+msgstr "שפה זו כבויה: גרסה זו אינה נשלחת"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig …
+msgid "Ticket #%id%"
+msgstr "פנייה #%id%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket #%id% assigned to you: %subject%"
+msgstr "פנייה #%id% הוקצתה לכם: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket #%id% escalated: %subject%"
+msgstr "פנייה #%id% הוסלמה: %subject%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Ticket #%id% has been closed."
+msgstr "פנייה #%id% נסגרה."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Ticket #%id% is open. We will reply as soon as possible."
+msgstr "פנייה #%id% פתוחה. נשיב בהקדם האפשרי."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it."
+msgstr "פנייה #%ticket_id% סגורה. אנא פתחו פנייה חדשה או היכנסו לאזור הלקוחות שלנו כדי לצפות בה."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it."
+msgstr "הפנייה %ticket% נשארה %minutes% דקות ללא מענה, ולכן כלל ההסלמה %name% פעל עליה."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket assigned to you"
+msgstr "פנייה שהוקצתה לכם"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "Ticket closed by client"
+msgstr "הלקוח סגר את הפנייה"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket escalated"
+msgstr "הפנייה הוסלמה"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "To get started, choose your password with the button below."
+msgstr "כדי להתחיל, בחרו את הסיסמה שלכם בכפתור שלהלן."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "View and accept quote"
+msgstr "צפייה באישור הצעת המחיר"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "View and pay invoice"
+msgstr "צפייה ותשלום החשבונית"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "View and reply"
+msgstr "צפייה ותגובה"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "View client"
+msgstr "צפייה בלקוח"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "View ticket"
+msgstr "צפייה בפנייה"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "View your service"
+msgstr "צפייה בשירות שלכם"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "View your services"
+msgstr "צפייה בשירותים שלכם"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We apologise for any inconvenience and will keep you updated."
+msgstr "אנו מתנצלים על אי הנוחות ונמשיך לעדכן אתכם."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of these services is changing. The details are below."
+msgstr "אנו כותבים כדי להודיע לכם שהמחיר החוזר של שירותים אלה משתנה. הפרטים מופיעים להלן."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of this service is changing. The details are below."
+msgstr "אנו כותבים כדי להודיע לכם שהמחיר החוזר של שירות זה משתנה. הפרטים מופיעים להלן."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method %card% for invoice %number%. %reason%"
+msgstr "לא הצלחנו לחייב את אמצעי התשלום השמור שלכם %card% עבור חשבונית %number%. %reason%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method for invoice #%number%."
+msgstr "לא הצלחנו לחייב את אמצעי התשלום השמור שלכם עבור חשבונית #%number%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "We have received your request"
+msgstr "קיבלנו את הבקשה שלכם"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "We have replied to your ticket"
+msgstr "השבנו לפנייה שלכם"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig
+msgid "We received a request to reset the password for your client area account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "קיבלנו בקשה לאיפוס הסיסמה של חשבון אזור הלקוחות שלכם. לחצו על הכפתור שלהלן כדי לבחור סיסמה חדשה. מטעמי אבטחה, הקישור פג תוקף בעוד 15 דקות."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "We received a request to reset the password for your staff account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "קיבלנו בקשה לאיפוס הסיסמה של חשבון הצוות שלכם. לחצו על הכפתור שלהלן כדי לבחור סיסמה חדשה. מטעמי אבטחה, הקישור פג תוקף בעוד 15 דקות."
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "We received a request to reset the password of your user for the client area. Click the button below to choose a new password. For your security, the link expires in %minutes% minutes."
+msgstr "קיבלנו בקשה לאיפוס הסיסמה של המשתמש שלכם לאזור הלקוחות. לחצו על הכפתור שלהלן כדי לבחור סיסמה חדשה. מטעמי אבטחה, הקישור פג תוקף בעוד %minutes% דקות."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "We regret to inform you that your domain %title% has been suspended."
+msgstr "לצערנו, עלינו להודיע לכם שהדומיין %title% שלכם הושעה."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "We regret to inform you that your hosting account %title% has been suspended."
+msgstr "לצערנו, עלינו להודיע לכם שחשבון האירוח %title% שלכם הושעה."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "We regret to inform you that your service %title% has been suspended."
+msgstr "לצערנו, עלינו להודיע לכם שהשירות %title% שלכם הושעה."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We will try it again on %date%."
+msgstr "ננסה שוב ב-%date%."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
+msgstr "ברצוננו לעדכן אתכם לגבי הרשת שלנו: %status_title% (עדיפות %priority_title%)."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Welcome to %company%"
+msgstr "ברוכים הבאים ל-%company%"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited"
+msgstr "הוזמנתם"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited to %account%"
+msgstr "הוזמנתם אל %account%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "You can also %link%download the invoice as a PDF%link_end% for your records."
+msgstr "אפשר גם %link%להוריד את החשבונית כ-PDF%link_end% לתיעוד שלכם."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "You can also %link%download the invoice as a PDF%link_end%. If you have already paid, please disregard this message."
+msgstr "אפשר גם %link%להוריד את החשבונית כ-PDF%link_end%. אם כבר שילמתם, אנא התעלמו מהודעה זו."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "You can also save a payment method on your %link%Payment methods%link_end% page now, so your invoices are paid automatically."
+msgstr "אפשר גם לשמור עכשיו אמצעי תשלום בעמוד %link%אמצעי תשלום%link_end% שלכם, כך שהחשבוניות שלכם ישולמו אוטומטית."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "You can download it again at any time from the %link%service page%link_end% in the client area."
+msgstr "אפשר להוריד אותו שוב בכל עת דרך %link%עמוד השירות%link_end% באזור הלקוחות."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
+msgstr "אפשר לשלם את החשבונית עכשיו, או לשנות את אמצעי התשלום בעמוד %link%אמצעי תשלום%link_end%."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "You get this email once per problem: the next one comes only if a check passes and breaks again."
+msgstr "אתם מקבלים הודעה זו פעם אחת לכל בעיה: ההודעה הבאה תגיע רק אם בדיקה תעבור ואז תיכשל שוב."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You have been invited to use the client area of %account% with your own sign-in."
+msgstr "הוזמנתם להשתמש באזור הלקוחות של %account% עם כניסה משלכם."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
+msgstr "נרשמתם עם חשבון Google שלכם, ולכן אין סיסמה לזכור: בפעם הבאה השתמשו בכפתור Google בעמוד הכניסה ובחרו באותו חשבון Google. כדי להיכנס גם עם הדוא\"ל שלכם, בחרו סיסמה בעמוד הכניסה באמצעות Google של החשבון שלכם."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password."
+msgstr "נרשמתם עם חשבון Google שלכם. מיד לאחר מכן אתם בוחרים סיסמה: בפעם הבאה היכנסו עם הדוא\"ל שלכם ועם הסיסמה הזו."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "Your %title% has been cancelled."
+msgstr "%title% שלכם בוטל."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "Your %title% has been renewed."
+msgstr "%title% שלכם חודש."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "Your %title% has been suspended."
+msgstr "%title% שלכם הושעה."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your %title% is active and ready to use."
+msgstr "%title% שלכם פעיל ומוכן לשימוש."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "Your %title% is available again."
+msgstr "%title% שלכם זמין שוב."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your %title% is ready to download."
+msgstr "%title% שלכם מוכן להורדה."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Your API key is ready"
+msgstr "מפתח ה-API שלכם מוכן"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Your account credit or saved payment method will pay your next renewal invoice, so you do not need to do anything."
+msgstr "יתרת החשבון שלכם או אמצעי התשלום השמור ישלמו את חשבונית החידוש הבאה שלכם, ולכן אין צורך לעשות דבר."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Your account is ready."
+msgstr "החשבון שלכם מוכן."
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Your client account is ready."
+msgstr "חשבון הלקוח שלכם מוכן."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Your domain %title% has been renewed. Thank you for your continued business."
+msgstr "הדומיין %title% שלכם חודש. תודה על אמונכם המתמשך בנו."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain %title% is active."
+msgstr "הדומיין %title% שלכם פעיל."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain is active"
+msgstr "הדומיין שלכם פעיל"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your download is ready"
+msgstr "ההורדה שלכם מוכנה"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email \"%subject%\" to %helpdesk% was not added to a support ticket."
+msgstr "הדוא\"ל \"%subject%\" שלכם אל %helpdesk% לא נוסף לפניית תמיכה."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Your email settings work"
+msgstr "הגדרות הדוא\"ל שלכם פועלות"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket"
+msgstr "הדוא\"ל שלכם לא נוסף לפנייה"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket: %subject%"
+msgstr "הדוא\"ל שלכם לא נוסף לפנייה: %subject%"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Your hosting account %title% has been renewed. Thank you for your continued business."
+msgstr "חשבון האירוח %title% שלכם חודש. תודה על אמונכם המתמשך בנו."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is ready"
+msgstr "חשבון האירוח שלכם מוכן"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is set up and ready to use."
+msgstr "חשבון האירוח שלכם הוגדר ומוכן לשימוש."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Your invoice is ready"
+msgstr "החשבונית שלכם מוכנה"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your license is active"
+msgstr "הרישיון שלכם פעיל"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "Your password was changed"
+msgstr "הסיסמה שלכם שונתה"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your recurring discount"
+msgstr "ההנחה החוזרת שלכם"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your renewal price is changing"
+msgstr "מחיר החידוש שלכם משתנה"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Your service %title% has been renewed. Thank you for your continued business."
+msgstr "השירות %title% שלכם חודש. תודה על אמונכם המתמשך בנו."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Your service is active"
+msgstr "השירות שלכם פעיל"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket %subject% has now been closed. We hope we were able to help."
+msgstr "הפנייה %subject% שלכם נסגרה כעת. אנו מקווים שהצלחנו לעזור."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Your ticket %ticket% is now closed. We would love to know how we handled it."
+msgstr "הפנייה %ticket% שלכם נסגרה כעת. נשמח לדעת איך טיפלנו בה."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket is closed"
+msgstr "הפנייה שלכם נסגרה"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "an account"
+msgstr "חשבון"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "our support team"
+msgstr "צוות התמיכה שלנו"

@@ -345,6 +345,10 @@ class Service implements InjectionAwareInterface
 
     public function removeForm($form_id): bool
     {
+        // ClientFence core patch: the fields' texts in other languages go with them (Product/Translations.php).
+        foreach ($this->getDbal()->fetchFirstColumn('SELECT id FROM form_field WHERE form_id = ?', [$form_id]) as $fieldId) {
+            \ClientFence\Mod\Product\Translations::forget($this->di, 'field', (int) $fieldId);
+        }
         $this->getDbal()->executeStatement('DELETE FROM form_field WHERE form_id = ?', [$form_id]);
         $this->getDbal()->executeStatement('DELETE FROM form WHERE id = ?', [$form_id]);
         $this->getDbal()->executeStatement('UPDATE product SET form_id = NULL WHERE form_id = ?', [$form_id]);
@@ -361,6 +365,8 @@ class Service implements InjectionAwareInterface
         if ($deleted === 0) {
             throw new \ClientFence\InformationException('Field was not found');
         }
+        // ClientFence core patch: the field's texts in other languages go with it (Product/Translations.php).
+        \ClientFence\Mod\Product\Translations::forget($this->di, 'field', (int) $data['id']);
 
         $this->di['logger']->info('Deleted custom field %s', $data['id']);
 

@@ -400,7 +400,7 @@ test('template update', function (): void {
     $emailService
     ->shouldReceive('updateTemplate')
     ->atLeast()->once()
-        ->with($emailTemplateModel, $data['enabled'], $data['category'], $data['subject'], $data['content'])
+        ->with($emailTemplateModel, $data['enabled'], $data['category'], $data['subject'], $data['content'], null)
     ->andReturn(true);
     $adminApi->setService($emailService);
     $adminApi->setDi($di);
@@ -681,6 +681,25 @@ test('template render', function (): void {
     $result = $adminApi->template_render(['id' => 5]);
     expect('rendered')->toEqual($result);
 });
+
+test('template render previews a language version in its language', function (string $lang, ?string $locale): void {
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('renderEmailSubjectString')->once()->with('Sujet', Mockery::any(), null, $locale)->andReturn('rendered');
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $emailService->shouldReceive('getTemplate')->andReturn(new EmailTemplate('mod_email_test', 5));
+    $emailService->shouldReceive('templateToApiArray')->andReturn(['vars' => [], 'content' => 'content']);
+    $di = container();
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system]));
+    $adminApi = Mockery::mock(ClientFence\Mod\Email\Api\Admin::class)->makePartial();
+    $adminApi->setDi($di);
+    $adminApi->setService($emailService);
+
+    expect($adminApi->template_render(['id' => 5, '_tpl' => 'Sujet', 'lang' => $lang]))->toBe('rendered');
+})->with([
+    'a turned-on language' => ['fr_FR', 'fr_FR'],
+    'the default text' => ['', null],
+    'not a language' => ['../../x', null],
+]);
 
 test('batch delete', function (): void {
     $activityMock = Mockery::mock(ClientFence\Mod\Email\Api\Admin::class)->makePartial();

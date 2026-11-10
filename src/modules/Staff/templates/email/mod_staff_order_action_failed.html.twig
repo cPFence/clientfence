@@ -1,12 +1,12 @@
-{% block subject %}[{{ guest.system_company.name }}] Order action failed: {{ failure.action|default('')|title }} #{{ failure.order_id|default('') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Order action failed: %action% #%order_id%'|trans({'%action%': failure.action|default('')|title, '%order_id%': failure.order_id|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Order action failed</title>
+<title>{{ 'Order action failed'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
@@ -20,21 +20,21 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Order action failed</h1>
-		<p style="margin:0 0 16px;">Hello {{ staff.name|default('') }},</p>
-		<p style="margin:0 0 16px;">The <strong>{{ failure.action|default('') }}</strong> action of order <strong>#{{ failure.order_id|default('') }} {{ failure.order_title|default('') }}</strong>{% if failure.client_name|default('') %} (client <strong>{{ failure.client_name }}</strong>){% endif %} failed. Its hosting panel, registrar or other service refused it or could not finish it.</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Order action failed'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': staff.name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{% if failure.client_name|default('') %}{{ 'The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it.'|trans_html({}, {'%action%': '<strong>' ~ (failure.action|default(''))|e ~ '</strong>', '%order%': '<strong>#' ~ (failure.order_id|default(''))|e ~ ' ' ~ (failure.order_title|default(''))|e ~ '</strong>', '%client%': '<strong>' ~ (failure.client_name)|e ~ '</strong>'}) }}{% else %}{{ 'The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it.'|trans_html({}, {'%action%': '<strong>' ~ (failure.action|default(''))|e ~ '</strong>', '%order%': '<strong>#' ~ (failure.order_id|default(''))|e ~ ' ' ~ (failure.order_title|default(''))|e ~ '</strong>'}) }}{% endif %}</p>
 		<div style="margin:0 0 24px; padding:16px 20px; background-color:#f8fafc; border-left:3px solid #cbd5e1; font-family:'Courier New', Courier, monospace; font-size:13px; line-height:22px; color:#334155; white-space:pre-line;">{{ failure.message|default('') }}</div>
-		<p style="margin:0 0 16px;">Fix the cause, then retry the action from Orders &gt; Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email.</p>
+		<p style="margin:0 0 16px;">{{ 'Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ failure.list_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Open Failed actions</a>
+				<a href="{{ failure.list_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open Failed actions'|trans }}</a>
 			</td></tr>
 		</table>
-		<p style="margin:0 0 16px;"><a href="{{ failure.order_url|default('') }}" target="_blank" style="color:{{ guest.system_company.brand_link|default('#2563eb') }};">Manage the order</a></p>
+		<p style="margin:0 0 16px;"><a href="{{ failure.order_url|default('') }}" target="_blank" style="color:{{ guest.system_company.brand_link|default('#2563eb') }};">{{ 'Manage the order'|trans }}</a></p>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">Admin area</a>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
 	</td></tr>
 </table>
 </td></tr>

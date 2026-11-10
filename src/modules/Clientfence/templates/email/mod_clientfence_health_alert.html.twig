@@ -1,12 +1,12 @@
-{% block subject %}[{{ guest.system_company.name }}] System health: {{ count|default(1) == 1 ? '1 check needs attention' : (count ~ ' checks need attention') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ count|default(1) == 1 ? 'System health: 1 check needs attention'|trans : 'System health: %count% checks need attention'|trans({'%count%': count}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>System health</title>
+<title>{{ 'System health'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
@@ -20,9 +20,9 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">System health</h1>
-		<p style="margin:0 0 16px;">Hello {{ c.name|default('') }},</p>
-		<p style="margin:0 0 16px;">The hourly system health checks of the billing portal found {{ count|default(1) == 1 ? 'a check that needs' : 'checks that need' }} attention:</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'System health'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': c.name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ count|default(1) == 1 ? 'The hourly system health checks of the billing portal found a check that needs attention:'|trans : 'The hourly system health checks of the billing portal found checks that need attention:'|trans }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
@@ -33,16 +33,16 @@
 				</table>
 			</td></tr>
 		</table>
-		<p style="margin:0 0 16px;">You get this email once per problem: the next one comes only if a check passes and breaks again.</p>
+		<p style="margin:0 0 16px;">{{ 'You get this email once per problem: the next one comes only if a check passes and breaks again.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ "clientfence/health"|url(area: 'admin') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Open System health</a>
+				<a href="{{ "clientfence/health"|url(area: 'admin') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open System health'|trans }}</a>
 			</td></tr>
 		</table>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">Admin area</a>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
 	</td></tr>
 </table>
 </td></tr>

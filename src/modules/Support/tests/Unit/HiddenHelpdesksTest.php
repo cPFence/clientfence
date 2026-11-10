@@ -142,3 +142,13 @@ test('nothing hidden leaves the guest form as it was', function (): void {
     $api->ticket_create(['name' => 'Guest', 'email' => 'guest@mail.test', 'subject' => 'Hello', 'content' => 'Hello there']);
     expect($sent)->toBe(['none']);
 });
+
+test('clients and guests read a help desk\'s name in the page language, else the default one', function (): void {
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('product_translation', ['kind' => 'helpdesk', 'ref_id' => 2, 'lang' => 'de_DE', 'title' => 'Buchhaltung', 'description' => null]);
+    $di = hiddenHelpdesksContainer($db);
+
+    expect(ClientFence\Translate::with('de_DE', fn (): array => HiddenHelpdesks::visiblePairs($di, [1 => 'General', 2 => 'Billing'])))->toBe([1 => 'General', 2 => 'Buchhaltung'])
+        ->and(ClientFence\Translate::with('fr_FR', fn (): array => HiddenHelpdesks::visiblePairs($di, [1 => 'General', 2 => 'Billing'])))->toBe([1 => 'General', 2 => 'Billing']);
+});

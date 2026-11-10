@@ -479,7 +479,8 @@ class Service implements InjectionAwareInterface
                 ];
 
                 if ($product) {
-                    $orderData['product_name'] = $product['title'];
+                    // ClientFence core patch: the product name in the invoice client's language (Product/Translations.php).
+                    $orderData['product_name'] = \ClientFence\Mod\Product\Translations::text($this->di, 'product', $productId, 'title', $product['title'], \ClientFence\Mod\Product\Translations::locale($client instanceof \Model_Client ? $client->lang : null));
                     $orderData['product_type'] = $product['type'];
                 }
 

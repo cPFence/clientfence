@@ -1,12 +1,12 @@
-{% block subject %}[{{ guest.system_company.name }}] Cancellation request: #{{ order.id|default('') }} {{ order.title|default('') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Cancellation request: #%id% %title%'|trans({'%id%': order.id|default(''), '%title%': order.title|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Cancellation request</title>
+<title>{{ 'Cancellation request'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
@@ -20,22 +20,22 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Cancellation request</h1>
-		<p style="margin:0 0 16px;">Hello {{ staff.name|default('') }},</p>
-		<p style="margin:0 0 16px;">{% if client.name|default('') %}<strong>{{ client.name }}</strong>{% else %}A client{% endif %} asked to cancel order <strong>#{{ order.id|default('') }} {{ order.title|default('') }}</strong>{% if request.type|default('') == 'end_of_period' %} at the end of its billing period{% if order.expires_at|default('') %} ({{ order.expires_at|format_date }}){% endif %}{% else %} immediately{% endif %}.</p>
-		<p style="margin:0 0 16px;">Reason given:</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Cancellation request'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': staff.name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{% set who = client.name|default('') ? '<strong>' ~ (client.name)|e ~ '</strong>' : 'A client'|trans|e %}{% set what = '<strong>#' ~ (order.id|default(''))|e ~ ' ' ~ (order.title|default(''))|e ~ '</strong>' %}{% if request.type|default('') == 'end_of_period' %}{% if order.expires_at|default('') %}{{ '%client% asked to cancel order %order% at the end of its billing period (%date%).'|trans_html({'%date%': order.expires_at|format_date}, {'%client%': who, '%order%': what}) }}{% else %}{{ '%client% asked to cancel order %order% at the end of its billing period.'|trans_html({}, {'%client%': who, '%order%': what}) }}{% endif %}{% else %}{{ '%client% asked to cancel order %order% immediately.'|trans_html({}, {'%client%': who, '%order%': what}) }}{% endif %}</p>
+		<p style="margin:0 0 16px;">{{ 'Reason given:'|trans }}</p>
 		<div style="margin:0 0 24px; padding:16px 20px; background-color:#f8fafc; border-left:3px solid #cbd5e1; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155; white-space:pre-line;">{{ request.reason|default('') }}</div>
-		<p style="margin:0 0 16px;">Accept or stop the request in Orders &gt; Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it.</p>
+		<p style="margin:0 0 16px;">{{ 'Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ order.list_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Open Cancellation Requests</a>
+				<a href="{{ order.list_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open Cancellation Requests'|trans }}</a>
 			</td></tr>
 		</table>
-		<p style="margin:0 0 16px;"><a href="{{ order.url|default('') }}" target="_blank" style="color:{{ guest.system_company.brand_link|default('#2563eb') }};">Manage the order</a></p>
+		<p style="margin:0 0 16px;"><a href="{{ order.url|default('') }}" target="_blank" style="color:{{ guest.system_company.brand_link|default('#2563eb') }};">{{ 'Manage the order'|trans }}</a></p>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">Admin area</a>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
 	</td></tr>
 </table>
 </td></tr>

@@ -1,12 +1,12 @@
-{% block subject %}[{{ guest.system_company.name }}] Quote #{{ quote.id|default('') }} {{ accepted|default(false) ? 'accepted' : 'declined' }}: {{ quote.subject|default('') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ accepted|default(false) ? 'Quote #%id% accepted: %subject%'|trans({'%id%': quote.id|default(''), '%subject%': quote.subject|default('')}) : 'Quote #%id% declined: %subject%'|trans({'%id%': quote.id|default(''), '%subject%': quote.subject|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Quote {{ accepted|default(false) ? 'accepted' : 'declined' }}</title>
+<title>{{ accepted|default(false) ? 'Quote accepted'|trans : 'Quote declined'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
@@ -20,30 +20,30 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Quote {{ accepted|default(false) ? 'accepted' : 'declined' }}</h1>
-		<p style="margin:0 0 16px;">Hello {{ c.name|default('') }},</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ accepted|default(false) ? 'Quote accepted'|trans : 'Quote declined'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': c.name|default('')}) }}</p>
 {% if accepted|default(false) %}
-		<p style="margin:0 0 16px;"><strong>{{ quote.recipient.company|default('') ?: quote.recipient.name|default('') }}</strong> accepted quote <strong>#{{ quote.id|default('') }} {{ quote.subject|default('') }}</strong>. The invoice was made and emailed{% if quote.invoice_id|default('') %} (invoice #{{ quote.invoice_id }}){% endif %}.</p>
+		<p style="margin:0 0 16px;">{% if quote.invoice_id|default('') %}{{ '%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%).'|trans_html({'%invoice%': quote.invoice_id}, {'%company%': '<strong>' ~ (quote.recipient.company|default('') ?: quote.recipient.name|default(''))|e ~ '</strong>', '%quote%': '<strong>#' ~ (quote.id|default(''))|e ~ ' ' ~ (quote.subject|default(''))|e ~ '</strong>'}) }}{% else %}{{ '%company% accepted quote %quote%. The invoice was made and emailed.'|trans_html({}, {'%company%': '<strong>' ~ (quote.recipient.company|default('') ?: quote.recipient.name|default(''))|e ~ '</strong>', '%quote%': '<strong>#' ~ (quote.id|default(''))|e ~ ' ' ~ (quote.subject|default(''))|e ~ '</strong>'}) }}{% endif %}</p>
 {% else %}
-		<p style="margin:0 0 16px;"><strong>{{ quote.recipient.company|default('') ?: quote.recipient.name|default('') }}</strong> declined quote <strong>#{{ quote.id|default('') }} {{ quote.subject|default('') }}</strong>. It is now lost.</p>
+		<p style="margin:0 0 16px;">{{ '%company% declined quote %quote%. It is now lost.'|trans_html({}, {'%company%': '<strong>' ~ (quote.recipient.company|default('') ?: quote.recipient.name|default(''))|e ~ '</strong>', '%quote%': '<strong>#' ~ (quote.id|default(''))|e ~ ' ' ~ (quote.subject|default(''))|e ~ '</strong>'}) }}</p>
 {% endif %}
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Total</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ quote.total|default(0)|format_currency(quote.currency|default(default_currency)) }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Email</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ quote.recipient.email|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Total'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ quote.total|default(0)|format_currency(quote.currency|default(default_currency)) }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Email'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ quote.recipient.email|default('') }}</td></tr>
 				</table>
 			</td></tr>
 		</table>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ quote_admin_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Open the quote</a>
+				<a href="{{ quote_admin_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open the quote'|trans }}</a>
 			</td></tr>
 		</table>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">Admin area</a>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
 	</td></tr>
 </table>
 </td></tr>

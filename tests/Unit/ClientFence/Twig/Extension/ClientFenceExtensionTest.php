@@ -310,3 +310,13 @@ test('json_encode cannot close a script block or an attribute, and replaces the 
     $twig->addRuntimeLoader(new Twig\RuntimeLoader\FactoryRuntimeLoader([ClientFenceExtension::class => fn () => $extension]));
     expect($twig->render('t', ['value' => $value]))->toBe('<script>const v = ' . $json . ';</script>');
 });
+
+test('trans_html escapes the text and the values but keeps the template\'s own markup', function (): void {
+    $template = "{{ 'Hi & welcome %name%: %link%open%link_end% %order%'|trans_html({'%name%': name}, {'%link%': '<a href=\"' ~ url|e ~ '\">', '%link_end%': '</a>', '%order%': '<strong>' ~ title|e ~ '</strong>'}) }}";
+    $twig = new Environment(new ArrayLoader(['t' => $template]));
+    $twig->addExtension(new Twig\Extension\AttributeExtension(ClientFenceExtension::class));
+    $twig->addRuntimeLoader(new Twig\RuntimeLoader\FactoryRuntimeLoader([ClientFenceExtension::class => fn () => makeClientFenceTwigExtension()]));
+
+    expect($twig->render('t', ['name' => '<b>Eve</b>', 'url' => 'https://x.test/?a=1&b=2', 'title' => 'A<B']))
+        ->toBe('Hi &amp; welcome &lt;b&gt;Eve&lt;/b&gt;: <a href="https://x.test/?a=1&amp;b=2">open</a> <strong>A&lt;B</strong>');
+});

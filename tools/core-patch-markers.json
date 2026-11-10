@@ -2181,7 +2181,7 @@
     },
     {
         "file": "modules/Invoice/templates/email/mod_invoice_created.html.twig",
-        "done": "Invoice #{{ invoice.serie_nr|default('') }}"
+        "done": "{{ 'Invoice #%number%'|trans({'%number%': invoice.serie_nr|default('')}) }}"
     },
     {
         "file": "modules/Invoice/templates/pdf/default-invoice.twig",
@@ -2193,7 +2193,7 @@
     },
     {
         "file": "modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig",
-        "done": ">Manage hosting</a>"
+        "done": ">{{ 'Manage hosting'|trans }}</a>"
     },
     {
         "file": "modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig",
@@ -4798,5 +4798,173 @@
     {
         "file": "modules/Email/Service.php",
         "done": "ClientFence core patch: the language an email goes out in, the recipient's if it is turned on, else the default."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: the template's version in the recipient's language when it has one (Translations.php);"
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: the language versions (lang => subject, content) and the language of the default text."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: `translations` replaces the template's language versions (null keeps them)."
+    },
+    {
+        "file": "modules/Email/Service.php",
+        "done": "ClientFence core patch: the template's language versions are checked too, each in its language."
+    },
+    {
+        "file": "modules/Email/Api/Admin.php",
+        "done": "ClientFence core patch: the template's language versions go with it (Email/Translations.php)."
+    },
+    {
+        "file": "modules/Email/Api/Admin.php",
+        "done": "ClientFence core patch: `translations` (lang => subject, content) replaces the language versions; left out, they stay."
+    },
+    {
+        "file": "modules/Email/Api/Admin.php",
+        "done": "ClientFence core patch: a language version previews in its language (`lang`, a turned-on language)."
+    },
+    {
+        "file": "modules/Email/Api/Admin.php",
+        "done": "ClientFence core patch: deleted with its language versions."
+    },
+    {
+        "file": "modules/Email/templates/admin/mod_email_template.html.twig",
+        "done": "ClientFence: language versions of the template (Email/Translations.php), shown when more than one language is turned on."
+    },
+    {
+        "file": "modules/Email/templates/admin/mod_email_template.html.twig",
+        "done": "ClientFence: the language bar (Default and one tab per language version, Email/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: clients and guests read the name and description in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the order title is written in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: and its names and descriptions in other languages (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: its names and descriptions in other languages go with it (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: clients and guests read the category's texts in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the client's upgrade list shows the names in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the add-on's name and description in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "ClientFence core patch: names and descriptions per language (Product/Translations.php), saved with the form."
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "ClientFence core patch: the category's names and descriptions per language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/Api/Admin.php",
+        "done": "ClientFence core patch: names and descriptions per language (Product/Translations.php) for the item's"
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: the plan's name in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the product's name in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the product name in the client's language (Product/Translations.php), as at checkout."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: a staff order's titles are written in the client's language, as at their own checkout."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the product name in the invoice client's language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_manage.html.twig",
+        "done": "ClientFence: the language bar of the name and description (mod_product_translations.html.twig)."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_addon_manage.html.twig",
+        "done": "ClientFence: the language bar of the name and description (mod_product_translations.html.twig)."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_category.html.twig",
+        "done": "ClientFence: the language bar of the name and description (mod_product_translations.html.twig)."
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "ClientFence core patch: the email's language and direction for <html lang dir> (de_DE -> de-DE)."
+    },
+    {
+        "file": "library/ClientFence/Twig/EmailPolicy.php",
+        "done": "ClientFence core patch: trans_html, for a translated sentence with a link or bold part."
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "#[AsTwigFilter('trans_html', isSafe: ['html'])]"
+    },
+    {
+        "file": "modules/Formbuilder/Api/Admin.php",
+        "done": "ClientFence core patch: the question's label and description per language (Product/Translations.php), saved with the field."
+    },
+    {
+        "file": "modules/Formbuilder/Api/Guest.php",
+        "done": "ClientFence core patch: clients and guests read each question in the page language (Product/Translations.php); staff pages ask for the default texts."
+    },
+    {
+        "file": "modules/Formbuilder/Service.php",
+        "done": "ClientFence core patch: the fields' texts in other languages go with them (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Formbuilder/Service.php",
+        "done": "ClientFence core patch: the field's texts in other languages go with it (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig",
+        "done": "ClientFence core patch: the question's label and description per language, as WHMCS's custom field translations (mod_product_translations.html.twig)."
+    },
+    {
+        "file": "modules/Formbuilder/templates/admin/mod_formbuilder_manage.html.twig",
+        "done": "ClientFence core patch: staff read the questions' default texts (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: the help desk's name per language (Product/Translations.php), saved with its form."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: its names in other languages go with it (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: a client reads the help desk's name in the page language (Product/Translations.php)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_helpdesk.html.twig",
+        "done": "ClientFence core patch: the name per language, as WHMCS's department translations (mod_product_translations.html.twig)."
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: product_translations_get checks the permission of each kind's own module (help desks:"
     }
 ]

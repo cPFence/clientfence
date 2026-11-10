@@ -36,7 +36,8 @@ final class EmailPolicy
             'currency_name', 'currency_symbol',
             'country_name',
             // ClientFenceExtension
-            'url', 'daysleft', 'trans',
+            // ClientFence core patch: trans_html, for a translated sentence with a link or bold part.
+            'url', 'daysleft', 'trans', 'trans_html',
             // LegacyExtension
             'period_title',
             // MarkdownExtension

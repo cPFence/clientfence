@@ -519,6 +519,10 @@ class Service implements \ClientFence\InjectionAwareInterface
         $data['helpdesk'] = $helpdesk instanceof Helpdesk ? $helpdesk->toApiArray($identity) : null;
         // ClientFence core patch: help desk greeting for the staff reply box (ClientFence).
         $data['helpdesk'] = \ClientFence\Mod\Clientfence\Service::withHelpdeskGreeting($this->di, $data['helpdesk'], $identity);
+        // ClientFence core patch: a client reads the help desk's name in the page language (Product/Translations.php).
+        if ($identity instanceof \Model_Client && $data['helpdesk'] !== null) {
+            $data['helpdesk']['name'] = \ClientFence\Mod\Product\Translations::text($this->di, 'helpdesk', (int) $data['helpdesk']['id'], 'title', $data['helpdesk']['name']);
+        }
         $data['author'] = $this->getTicketAuthor($model, $identity);
 
         $data['client'] = $known['client'] ?? $this->getClientApiArrayForTicket($model, $identity);

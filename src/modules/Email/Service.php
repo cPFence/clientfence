@@ -810,11 +810,33 @@ class Service implements \ClientFence\InjectionAwareInterface
         $systemService = $this->di['mod_service']('System');
         [$subjectTemplate, $contentTemplate] = $this->getEffectiveTemplateParts($template);
 
+        // ClientFence core patch: the template's version in the recipient's language when it has one (Translations.php);
+        // a version that fails to render sends the default text and records the error on the template, which only a
+        // save or the template check clears while the template has versions.
+        $versions = Translations::forTemplate($this->di, (int) $template->getId());
+        $versionError = null;
+        $version = $locale === null ? null : ($versions[$locale] ?? null);
+        if ($version !== null) {
+            try {
+                $pc = $systemService->renderEmailTplString($version['content'], $vars, $timezone, $locale);
+                $ps = $systemService->renderEmailSubjectString($version['subject'], $vars, $timezone, $locale);
+
+                return [$ps, $pc];
+            } catch (\ClientFence\Exception $e) {
+                $versionError = $locale . ': ' . $e->getMessage();
+                $this->di['logger']->setChannel('email')->warning(sprintf('Email template "%s": the %s version failed, the default text was sent: %s', $template->getActionCode(), $locale, $e->getMessage()));
+            }
+        }
+
         try {
             $pc = $systemService->renderEmailTplString($contentTemplate, $vars, $timezone, $locale);
             $ps = $systemService->renderEmailSubjectString($subjectTemplate, $vars, $timezone, $locale);
 
-            if ($template->hasError()) {
+            if ($versionError !== null) {
+                $template->setLastError($versionError);
+                $template->setErrorCheckedAt(new \DateTimeImmutable());
+                $this->di['em']->flush();
+            } elseif ($versions === [] && $template->hasError()) {
                 $template->clearError();
                 $this->di['em']->flush();
             }
@@ -909,6 +931,9 @@ class Service implements \ClientFence\InjectionAwareInterface
             $data['content_override'] = $isCustom ? null : $template->getContent();
             $data['has_error'] = $template->hasError();
             $data['last_error'] = $template->getLastError();
+            // ClientFence core patch: the language versions (lang => subject, content) and the language of the default text.
+            $data['translations'] = Translations::forTemplate($this->di, (int) $template->getId());
+            $data['default_locale'] = (string) Config::getProperty('i18n.locale', 'en_US');
         }
 
         return $data;
@@ -949,7 +974,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         ];
     }
 
-    public function updateTemplate(EmailTemplate $template, $enabled = null, $category = null, $subject = null, $content = null): bool
+    public function updateTemplate(EmailTemplate $template, $enabled = null, $category = null, $subject = null, $content = null, ?array $translations = null): bool
     {
         if (isset($enabled)) {
             $template->setEnabled((bool) $enabled);
@@ -975,6 +1000,11 @@ class Service implements \ClientFence\InjectionAwareInterface
             $vars['_tpl'] = $content;
             $systemService->renderEmailTplString($content, $vars);
             $template->setContent($content);
+        }
+
+        // ClientFence core patch: `translations` replaces the template's language versions (null keeps them).
+        if ($translations !== null) {
+            Translations::save($this->di, (int) $template->getId(), $translations);
         }
 
         $template->clearError();
@@ -1222,14 +1252,21 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         foreach ($templates as $template) {
             $error = null;
+            $versionLang = null;
 
             try {
                 [$subjectTemplate, $contentTemplate] = $this->getEffectiveTemplateParts($template);
                 $vars = $this->getVars($template);
                 $systemService->renderEmailTplString($contentTemplate, $vars);
                 $systemService->renderEmailTplString($subjectTemplate, $vars);
+                // ClientFence core patch: the template's language versions are checked too, each in its language.
+                foreach (Translations::forTemplate($this->di, (int) $template->getId()) as $versionLang => $version) {
+                    $systemService->renderEmailTplString($version['content'], $vars, null, $versionLang);
+                    $systemService->renderEmailTplString($version['subject'], $vars, null, $versionLang);
+                }
+                $versionLang = null;
             } catch (\Throwable $e) {
-                $error = $e->getMessage();
+                $error = ($versionLang !== null ? $versionLang . ': ' : '') . $e->getMessage();
             }
 
             if ($error !== null) {

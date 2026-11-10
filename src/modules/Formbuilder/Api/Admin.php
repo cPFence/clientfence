@@ -245,7 +245,13 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\InformationException('This input type must have unique values', null, 3658);
         }
 
-        return $service->updateField($data);
+        $id = $service->updateField($data);
+        // ClientFence core patch: the question's label and description per language (Product/Translations.php), saved with the field.
+        if (is_array($data['translations'] ?? null)) {
+            \ClientFence\Mod\Product\Translations::save($this->getDi(), 'field', $id, $data['translations']);
+        }
+
+        return $id;
     }
 
     /**

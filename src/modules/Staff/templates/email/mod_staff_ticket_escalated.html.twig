@@ -1,12 +1,12 @@
-{% block subject %}[{{ guest.system_company.name }}] Ticket #{{ ticket.id|default('') }} escalated: {{ ticket.subject|default('') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Ticket #%id% escalated: %subject%'|trans({'%id%': ticket.id|default(''), '%subject%': ticket.subject|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Ticket escalated</title>
+<title>{{ 'Ticket escalated'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
@@ -20,28 +20,28 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Ticket escalated</h1>
-		<p style="margin:0 0 16px;">Hello {{ c.name|default('') }},</p>
-		<p style="margin:0 0 16px;">Ticket <strong>#{{ ticket.id|default('') }} {{ ticket.subject|default('') }}</strong> got no reply for {{ rule.minutes|default('') }} min, so the escalation rule <strong>{{ rule.name|default('') }}</strong> acted on it.</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Ticket escalated'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': c.name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it.'|trans_html({'%minutes%': rule.minutes|default('')}, {'%ticket%': '<strong>#' ~ (ticket.id|default(''))|e ~ ' ' ~ (ticket.subject|default(''))|e ~ '</strong>', '%name%': '<strong>' ~ (rule.name|default(''))|e ~ '</strong>'}) }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Ticket</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">#{{ ticket.id|default('') }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Help desk</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.helpdesk|default('') }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Priority</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.priority_title|default('') }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Status</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.status_title|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Ticket'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">#{{ ticket.id|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Help desk'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.helpdesk|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Priority'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.priority_title|default('') }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Status'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ ticket.status_title|default('') }}</td></tr>
 				</table>
 			</td></tr>
 		</table>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ ticket.url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Open the ticket</a>
+				<a href="{{ ticket.url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open the ticket'|trans }}</a>
 			</td></tr>
 		</table>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">Admin area</a>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
 	</td></tr>
 </table>
 </td></tr>

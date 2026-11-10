@@ -1,15 +1,15 @@
-{% block subject %}[{{ guest.system_company.name }}] Your renewal price is changing{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Your renewal price is changing'|trans }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Your renewal price is changing</title>
+<title>{{ 'Your renewal price is changing'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
-<div style="display:none; max-height:0; overflow:hidden;">The renewal price of your service is changing.</div>
+<div style="display:none; max-height:0; overflow:hidden;">{{ 'The renewal price of your service is changing.'|trans }}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
 <tr><td align="center" style="padding:24px 12px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
@@ -21,34 +21,34 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Your renewal price is changing</h1>
-		<p style="margin:0 0 16px;">Dear {{ c.first_name|default('') }},</p>
-		<p style="margin:0 0 16px;">We are writing to let you know that the recurring price of {{ services|length > 1 ? 'these services' : 'this service' }} is changing. The details are below.</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Your renewal price is changing'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Dear %first_name%,'|trans({'%first_name%': c.first_name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{{ services|length > 1 ? 'We are writing to let you know that the recurring price of these services is changing. The details are below.'|trans : 'We are writing to let you know that the recurring price of this service is changing. The details are below.'|trans }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
 					{% for service in services %}
 					{% if not loop.first %}<tr><td colspan="2" style="padding:8px 0 0; border-top:1px solid #e2e8f0;"></td></tr>{% endif %}
 					<tr><td colspan="2" style="padding:4px 0; font-weight:bold;"><a href="{{ ('order/service/manage/' ~ service.id|default(''))|url(area: 'client') }}" target="_blank" style="color:#0f172a; text-decoration:none;">{{ service.title|default('') }}</a></td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Current price</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.old_total|default(0)|format_currency(service.currency|default(default_currency)) }} {{ service.period|default('')|period_title }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">New price</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ service.new_total|default(0)|format_currency(service.currency|default(default_currency)) }} {{ service.period|default('')|period_title }}</td></tr>
-					{% if service.discount|default(0) > 0 %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">Your recurring discount</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.discount|format_currency(service.currency|default(default_currency)) }} (included in the new price)</td></tr>{% endif %}
-					<tr><td colspan="2" style="padding:4px 0; color:#64748b;">{% if service.unpaid_invoice_id|default(false) %}The invoice already issued for it keeps the old price; the new price starts with the renewal after it.{% elseif service.next_invoice|default(false) %}The new price starts with the renewal due {{ service.next_invoice|format_date }}.{% else %}The new price starts with your next invoice.{% endif %}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Current price'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.old_total|default(0)|format_currency(service.currency|default(default_currency)) }} {{ service.period|default('')|period_title }}</td></tr>
+					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'New price'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ service.new_total|default(0)|format_currency(service.currency|default(default_currency)) }} {{ service.period|default('')|period_title }}</td></tr>
+					{% if service.discount|default(0) > 0 %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Your recurring discount'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ '%discount% (included in the new price)'|trans({'%discount%': service.discount|format_currency(service.currency|default(default_currency))}) }}</td></tr>{% endif %}
+					<tr><td colspan="2" style="padding:4px 0; color:#64748b;">{% if service.unpaid_invoice_id|default(false) %}{{ 'The invoice already issued for it keeps the old price; the new price starts with the renewal after it.'|trans }}{% elseif service.next_invoice|default(false) %}{{ 'The new price starts with the renewal due %date%.'|trans({'%date%': service.next_invoice|format_date}) }}{% else %}{{ 'The new price starts with your next invoice.'|trans }}{% endif %}</td></tr>
 					{% endfor %}
 				</table>
 			</td></tr>
 		</table>
-		<p style="margin:0 0 16px;">If you have any questions about this change, please reply to this email or open a support ticket.</p>
+		<p style="margin:0 0 16px;">{{ 'If you have any questions about this change, please reply to this email or open a support ticket.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ 'order/service'|url(area: 'client') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">View your services</a>
+				<a href="{{ 'order/service'|url(area: 'client') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'View your services'|trans }}</a>
 			</td></tr>
 		</table>
 		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">Client area</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">Profile</a>{% if guest.system_company.email|default('') %} &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
+		<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Client area'|trans }}</a> &middot; <a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Profile'|trans }}</a>{% if guest.system_company.email|default('') %} &middot; {% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}
 	</td></tr>
 </table>
 </td></tr>

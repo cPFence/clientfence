@@ -1129,7 +1129,9 @@ class Service implements InjectionAwareInterface
             $parentGroupId = $parent_order ? $this->orderGroupId($parent_order) : null;
             $order->setGroupId($parentGroupId ?? uniqid());
             $order->setGroupMaster(!$parent_order);
-            $order->setTitle($generatedOrderTitle ?? $data['title'] ?? $this->getProductTitle($product));
+            // ClientFence core patch: the product name in the client's language (Product/Translations.php), as at checkout.
+            $clientLang = $client instanceof ClientEntity ? $client->getLang() : $client->lang;
+            $order->setTitle($generatedOrderTitle ?? $data['title'] ?? \ClientFence\Mod\Product\Translations::title($this->di, $product, \ClientFence\Mod\Product\Translations::locale($clientLang)));
             $order->setCurrency($currency->getCode());
             $order->setServiceType($this->getProductType($product));
             $order->setUnit($this->getProductUnit($product));
@@ -2937,11 +2939,6 @@ class Service implements InjectionAwareInterface
     private function getProductFormId(Product $product): ?int
     {
         return $product->getFormId();
-    }
-
-    private function getProductTitle(Product $product): string
-    {
-        return (string) $product->getTitle();
     }
 
     private function getProductType(Product $product): string

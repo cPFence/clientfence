@@ -266,6 +266,25 @@ test('updates a category', function (): void {
     expect($api->category_update($data))->toBeTrue();
 });
 
+test('a category\'s names and descriptions per language are saved with it and read back for its page', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $di = container();
+    $di['em'] = $em;
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('findProductCategoryById')->with(3)->andReturn(Tests\Helpers\createEntity(ProductCategory::class, ['id' => 3]));
+    $serviceMock->shouldReceive('updateCategory')->andReturn(true);
+    $api = apiEndpoint(new Admin());
+    $api->setService($serviceMock);
+    $api->setDi($di);
+
+    expect($api->category_update(['id' => 3, 'translations' => ['de_DE' => ['title' => 'Pakete', 'description' => '']]]))->toBeTrue()
+        ->and($api->translations_get(['kind' => 'category', 'id' => 3])['translations'])->toBe(['de_DE' => ['title' => 'Pakete', 'description' => null]])
+        ->and(fn () => $api->translations_get(['kind' => 'tld', 'id' => 3]))->toThrow(ClientFence\InformationException::class, 'Unknown item.');
+});
+
 test('gets a category', function (): void {
     $api = apiEndpoint(new Admin());
     $data = ['id' => 1];

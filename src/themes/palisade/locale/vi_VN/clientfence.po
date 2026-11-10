@@ -23766,3 +23766,1148 @@ msgstr "Tên miền :tld chỉ có thể đăng ký tối đa :years năm."
 #: src/modules/Order/Upgrades.php
 msgid "This service was refunded or its price changed after its last payment, so our staff change it. Please contact us."
 msgstr "Dịch vụ này đã được hoàn tiền hoặc giá đã thay đổi sau lần thanh toán gần nhất, nên nhân viên của chúng tôi sẽ thực hiện thay đổi. Vui lòng liên hệ với chúng tôi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
+msgstr "%client% đã yêu cầu hủy đơn hàng %order% vào cuối chu kỳ thanh toán (%date%)."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% at the end of its billing period."
+msgstr "%client% đã yêu cầu hủy đơn hàng %order% vào cuối chu kỳ thanh toán."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "%client% asked to cancel order %order% immediately."
+msgstr "%client% đã yêu cầu hủy đơn hàng %order% ngay lập tức."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed (invoice #%invoice%)."
+msgstr "%company% đã chấp nhận báo giá %quote%. Hóa đơn đã được tạo và gửi qua email (hóa đơn #%invoice%)."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% accepted quote %quote%. The invoice was made and emailed."
+msgstr "%company% đã chấp nhận báo giá %quote%. Hóa đơn đã được tạo và gửi qua email."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "%company% declined quote %quote%. It is now lost."
+msgstr "%company% đã từ chối báo giá %quote%. Báo giá này giờ đã mất."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "%discount% (included in the new price)"
+msgstr "%discount% (đã bao gồm trong giá mới)"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "%name% assigned ticket %ticket% to you."
+msgstr "%name% đã giao phiếu yêu cầu %ticket% cho quý khách."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "%name% closed support ticket %ticket%."
+msgstr "%name% đã đóng phiếu yêu cầu hỗ trợ %ticket%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig
+msgid "%name% opened a new support ticket: %subject%."
+msgstr "%name% đã mở một phiếu yêu cầu hỗ trợ mới: %subject%."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "%name% replied to support ticket %ticket%."
+msgstr "%name% đã trả lời phiếu yêu cầu hỗ trợ %ticket%."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "%period% year(s)"
+msgstr "%period% năm"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "%title% cancelled"
+msgstr "%title% đã bị hủy"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+msgid "%title% is now active"
+msgstr "%title% hiện đã hoạt động"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "%title% is ready"
+msgstr "%title% đã sẵn sàng"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "%title% is ready to download"
+msgstr "%title% đã sẵn sàng để tải về"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "%title% reactivated"
+msgstr "%title% đã được kích hoạt lại"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "%title% renewed"
+msgstr "%title% đã được gia hạn"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "%title% suspended"
+msgstr "%title% đã bị tạm ngưng"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "A client"
+msgstr "Một khách hàng"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "A member of our team has created a client account for you. In the client area you can manage your services, pay invoices and contact our support team."
+msgstr "Một thành viên trong nhóm của chúng tôi đã tạo tài khoản khách hàng cho quý khách. Trong khu vực khách hàng, quý khách có thể quản lý dịch vụ, thanh toán hóa đơn và liên hệ nhóm hỗ trợ của chúng tôi."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out (%date%). This site runs ClientFence %version%."
+msgstr "Đã có bản phát hành ClientFence mới (%date%). Trang web này đang chạy ClientFence %version%."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "A new ClientFence release is out. This site runs ClientFence %version%."
+msgstr "Đã có bản phát hành ClientFence mới. Trang web này đang chạy ClientFence %version%."
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "A new client has just created an account with %company%."
+msgstr "Một khách hàng mới vừa tạo tài khoản tại %company%."
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "A new order has been placed on %created_at%."
+msgstr "Một đơn hàng mới đã được đặt vào %created_at%."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "A new support ticket was opened in %helpdesk%: %subject%."
+msgstr "Một phiếu yêu cầu hỗ trợ mới đã được mở trong %helpdesk%: %subject%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "A new ticket from our team"
+msgstr "Phiếu yêu cầu mới từ nhóm của chúng tôi"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Accept or stop the request in Orders > Cancellation Requests. When cancellation requests are processed automatically, the daily cron accepts it; until then the client can withdraw it."
+msgstr "Hãy chấp nhận hoặc dừng yêu cầu trong Đơn hàng > Yêu cầu hủy. Khi yêu cầu hủy được xử lý tự động, cron hằng ngày sẽ chấp nhận yêu cầu; cho đến lúc đó khách hàng có thể rút lại."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "Accept the invitation"
+msgstr "Chấp nhận lời mời"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
+msgid "Activated"
+msgstr "Đã kích hoạt"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Add language"
+msgstr "Thêm ngôn ngữ"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Amount due"
+msgstr "Số tiền phải trả"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "An escalation rule assigned ticket %ticket% to you."
+msgstr "Một quy tắc nâng cấp xử lý đã giao phiếu yêu cầu %ticket% cho quý khách."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "An invitation to %account%."
+msgstr "Lời mời tham gia %account%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed"
+msgstr "Thanh toán tự động không thành công"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "Automatic payment failed: invoice #%number%"
+msgstr "Thanh toán tự động không thành công: hóa đơn #%number%"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment for your service has stopped"
+msgstr "Thanh toán tự động cho dịch vụ của quý khách đã dừng"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Automatic payment has stopped"
+msgstr "Thanh toán tự động đã dừng"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request"
+msgstr "Yêu cầu hủy"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Cancellation request: #%id% %title%"
+msgstr "Yêu cầu hủy: #%id% %title%"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "Choose a new password"
+msgstr "Chọn mật khẩu mới"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "Choose a new password for your user."
+msgstr "Chọn mật khẩu mới cho người dùng của quý khách."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "ClientFence %version% is available"
+msgstr "ClientFence %version% đã có sẵn"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "ClientFence Email Test"
+msgstr "Email kiểm tra ClientFence"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Confirm email address"
+msgstr "Xác nhận địa chỉ email"
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Confirm your email address"
+msgstr "Xác nhận địa chỉ email của quý khách"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Copied from the default text: translate it and click Update."
+msgstr "Đã sao chép từ văn bản mặc định: hãy dịch và nhấp Cập nhật."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+msgid "Dear %first_name% %last_name%,"
+msgstr "Kính gửi %first_name% %last_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Dear %first_name%,"
+msgstr "Xin chào %first_name%,"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
+msgid "Dear %name%,"
+msgstr "Kính gửi %name%,"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig …
+msgid "Department"
+msgstr "Bộ phận"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Domain reactivated"
+msgstr "Tên miền đã được kích hoạt lại"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Domain renewed"
+msgstr "Tên miền đã được gia hạn"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "Domain suspended"
+msgstr "Tên miền đã bị tạm ngưng"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Download now"
+msgstr "Tải về ngay"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Due date"
+msgstr "Ngày đến hạn"
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Email test"
+msgstr "Email kiểm tra"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Ends"
+msgstr "Kết thúc"
+
+#: src/modules/Email/Translations.php
+msgid "Enter a subject and a message for every language version."
+msgstr "Nhập tiêu đề và nội dung cho mỗi phiên bản ngôn ngữ."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email."
+msgstr "Hãy khắc phục nguyên nhân, rồi thử lại thao tác từ Đơn hàng > Thao tác thất bại, hoặc bỏ qua tại đó nếu đã làm thủ công. Hệ thống không tự thử lại. Các lần thất bại tiếp theo của cùng thao tác được đếm tại đó mà không gửi thêm email."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "For your security, passwords are never sent by email. Sign in to the client area to open your control panel directly or to set a new hosting password."
+msgstr "Vì lý do bảo mật, mật khẩu không bao giờ được gửi qua email. Hãy đăng nhập vào khu vực khách hàng để mở trực tiếp bảng điều khiển hoặc đặt mật khẩu hosting mới."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Give feedback"
+msgstr "Gửi phản hồi"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Good news: your domain %title% has been reactivated and is available again."
+msgstr "Tin vui: tên miền %title% của quý khách đã được kích hoạt lại và có thể sử dụng trở lại."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Good news: your hosting account %title% has been reactivated and is available again."
+msgstr "Tin vui: tài khoản hosting %title% của quý khách đã được kích hoạt lại và có thể sử dụng trở lại."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Good news: your service %title% has been reactivated and is available again."
+msgstr "Tin vui: dịch vụ %title% của quý khách đã được kích hoạt lại và có thể sử dụng trở lại."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Hello %staff_member_name%,"
+msgstr "Xin chào %staff_member_name%,"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Hello,"
+msgstr "Xin chào,"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "Hosting account cancelled"
+msgstr "Tài khoản hosting đã bị hủy"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Hosting account reactivated"
+msgstr "Tài khoản hosting đã được kích hoạt lại"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Hosting account renewed"
+msgstr "Tài khoản hosting đã được gia hạn"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "Hosting account suspended"
+msgstr "Tài khoản hosting đã bị tạm ngưng"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do?"
+msgstr "Chúng tôi đã làm tốt chưa?"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "How did we do? Your feedback on ticket #%id%"
+msgstr "Chúng tôi đã làm tốt chưa? Phản hồi của quý khách về phiếu yêu cầu #%id%"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the domain. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Nếu việc tạm ngưng liên quan đến hóa đơn chưa thanh toán, thanh toán hóa đơn trong khu vực khách hàng sẽ khôi phục tên miền. Với bất kỳ lý do nào khác, vui lòng liên hệ nhóm hỗ trợ của chúng tôi sớm nhất có thể để chúng tôi giúp quý khách kích hoạt lại."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the hosting account. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Nếu việc tạm ngưng liên quan đến hóa đơn chưa thanh toán, thanh toán hóa đơn trong khu vực khách hàng sẽ khôi phục tài khoản hosting. Với bất kỳ lý do nào khác, vui lòng liên hệ nhóm hỗ trợ của chúng tôi sớm nhất có thể để chúng tôi giúp quý khách kích hoạt lại."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "If the suspension relates to an unpaid invoice, paying it in the client area restores the service. For any other reason, please contact our support team as soon as possible so we can help you get it reactivated."
+msgstr "Nếu việc tạm ngưng liên quan đến hóa đơn chưa thanh toán, thanh toán hóa đơn trong khu vực khách hàng sẽ khôi phục dịch vụ. Với bất kỳ lý do nào khác, vui lòng liên hệ nhóm hỗ trợ của chúng tôi sớm nhất có thể để chúng tôi giúp quý khách kích hoạt lại."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "If you are reading this email, ClientFence is %bold%configured properly%bold_end% and is %bold%able to send emails%bold_end%. No further action is needed."
+msgstr "Nếu quý khách đang đọc email này, ClientFence đã %bold%được cấu hình đúng%bold_end% và %bold%có thể gửi email%bold_end%. Không cần thực hiện thêm thao tác nào."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "If you believe this was done in error or have any questions, please open a support ticket and our team will be glad to help."
+msgstr "Nếu quý khách cho rằng đây là sự nhầm lẫn hoặc có bất kỳ câu hỏi nào, vui lòng mở một phiếu yêu cầu hỗ trợ và nhóm của chúng tôi sẽ sẵn lòng giúp đỡ."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig src/modules/Client/templates/email/mod_client_user_password_reset.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "If you did not ask for a password reset, you can safely ignore this email: your password stays the same."
+msgstr "Nếu quý khách không yêu cầu đặt lại mật khẩu, có thể bỏ qua email này: mật khẩu của quý khách vẫn giữ nguyên."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "If you did not create an account with %company%, you can ignore this email."
+msgstr "Nếu quý khách không tạo tài khoản tại %company%, có thể bỏ qua email này."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "If you did not make this change, contact your administrator immediately."
+msgstr "Nếu quý khách không thực hiện thay đổi này, hãy liên hệ ngay với quản trị viên của quý khách."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "If you did not make this change, please contact our support team immediately."
+msgstr "Nếu quý khách không thực hiện thay đổi này, vui lòng liên hệ ngay với nhóm hỗ trợ của chúng tôi."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "If you have any questions about this change, please reply to this email or open a support ticket."
+msgstr "Nếu quý khách có câu hỏi về thay đổi này, vui lòng trả lời email này hoặc mở một phiếu yêu cầu hỗ trợ."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "If you have any questions, please reply to this email or open a support ticket."
+msgstr "Nếu quý khách có câu hỏi, vui lòng trả lời email này hoặc mở một phiếu yêu cầu hỗ trợ."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
+msgstr "Nếu quý khách cần trợ giúp khi bắt đầu, nhóm hỗ trợ của chúng tôi luôn sẵn sàng: chỉ cần %link%mở một phiếu yêu cầu hỗ trợ%link_end%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "If you need further help with this request, you can still view the ticket, or open a new one at any time."
+msgstr "Nếu quý khách cần thêm trợ giúp cho yêu cầu này, quý khách vẫn có thể xem phiếu yêu cầu hoặc mở phiếu mới bất cứ lúc nào."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "If you ordered a domain with this account, it can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate."
+msgstr "Nếu quý khách đã đặt tên miền với tài khoản này, có thể mất tối đa 48 giờ để tên miền hiển thị trên toàn internet trong khi các thay đổi DNS được lan truyền."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number%"
+msgstr "Hóa đơn #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% for %balance_due% is due on %due_at%."
+msgstr "Hóa đơn #%number% với số tiền %balance_due% đến hạn vào %due_at%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Invoice #%number% is due on %due_at%."
+msgstr "Hóa đơn #%number% đến hạn vào %due_at%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Invoice #%number% is past due. Please pay it to keep your services running."
+msgstr "Hóa đơn #%number% đã quá hạn. Vui lòng thanh toán để dịch vụ của quý khách tiếp tục hoạt động."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Invoice #%number% is ready"
+msgstr "Hóa đơn #%number% đã sẵn sàng"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Invoice date"
+msgstr "Ngày hóa đơn"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Invoice number"
+msgstr "Số hóa đơn"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Language versions"
+msgstr "Phiên bản ngôn ngữ"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Leave blank to use the default"
+msgstr "Để trống để dùng văn bản mặc định"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "License key"
+msgstr "Khóa giấy phép"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+msgid "Manage domain"
+msgstr "Quản lý tên miền"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Manage hosting"
+msgstr "Quản lý hosting"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_unsuspended.html.twig
+msgid "Manage hosting account"
+msgstr "Quản lý tài khoản hosting"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Manage the order"
+msgstr "Quản lý đơn hàng"
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "Names and descriptions in other languages"
+msgstr "Tên và mô tả bằng các ngôn ngữ khác"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "New client signed up"
+msgstr "Khách hàng mới đã đăng ký"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order placed"
+msgstr "Đã có đơn hàng mới"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "New order: %title%"
+msgstr "Đơn hàng mới: %title%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "New reply from client"
+msgstr "Phản hồi mới từ khách hàng"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "New ticket opened"
+msgstr "Đã mở phiếu yêu cầu mới"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig …
+msgid "Next due date"
+msgstr "Ngày đến hạn tiếp theo"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Once you accept the quote, we send you the invoice. Questions? Just reply to this email."
+msgstr "Sau khi quý khách chấp nhận báo giá, chúng tôi sẽ gửi hóa đơn. Có câu hỏi? Chỉ cần trả lời email này."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "One click to confirm your email address."
+msgstr "Chỉ một lần nhấp để xác nhận địa chỉ email của quý khách."
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Open Cancellation Requests"
+msgstr "Mở Yêu cầu hủy"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Open Failed actions"
+msgstr "Mở Thao tác thất bại"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "Open System health"
+msgstr "Mở Tình trạng hệ thống"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
+msgid "Open a support ticket"
+msgstr "Mở phiếu yêu cầu hỗ trợ"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Open the client area"
+msgstr "Mở khu vực khách hàng"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Open the quote"
+msgstr "Mở báo giá"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Open the ticket"
+msgstr "Mở phiếu yêu cầu"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed"
+msgstr "Thao tác đơn hàng thất bại"
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "Order action failed: %action% #%order_id%"
+msgstr "Thao tác đơn hàng thất bại: %action% #%order_id%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Our quote for %subject%."
+msgstr "Báo giá của chúng tôi cho %subject%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr "Theo ghi nhận của chúng tôi, hóa đơn %number% hiện đã quá hạn %days_passed% ngày. Vui lòng thanh toán sớm nhất có thể để tránh gián đoạn dịch vụ của quý khách."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our support team has opened a ticket for you. Their message is below."
+msgstr "Nhóm hỗ trợ của chúng tôi đã mở một phiếu yêu cầu cho quý khách. Nội dung của họ ở bên dưới."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
+msgstr "Nhóm hỗ trợ của chúng tôi đã đăng phản hồi mới cho phiếu yêu cầu %subject% của quý khách. Quý khách có thể đọc và trả lời phản hồi qua liên kết bên dưới."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "Our team opened ticket #%id% for you."
+msgstr "Nhóm của chúng tôi đã mở phiếu yêu cầu #%id% cho quý khách."
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Overdue notice: invoice #%number%"
+msgstr "Thông báo quá hạn: hóa đơn #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Pay invoice"
+msgstr "Thanh toán hóa đơn"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Pay invoice now"
+msgstr "Thanh toán hóa đơn ngay"
+
+#: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
+msgid "Payment overdue"
+msgstr "Thanh toán quá hạn"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received"
+msgstr "Đã nhận thanh toán"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Payment received: invoice #%number%"
+msgstr "Đã nhận thanh toán: hóa đơn #%number%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder"
+msgstr "Nhắc thanh toán"
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "Payment reminder: invoice #%number%"
+msgstr "Nhắc thanh toán: hóa đơn #%number%"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Please also %link%confirm your email address%link_end%. If the link has expired, you can ask for a new one after signing in."
+msgstr "Vui lòng cũng %link%xác nhận địa chỉ email của quý khách%link_end%. Nếu liên kết đã hết hạn, quý khách có thể yêu cầu liên kết mới sau khi đăng nhập."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm that this is your email address by clicking the button below. It keeps your account secure and makes sure you receive important notices about your services and invoices."
+msgstr "Vui lòng xác nhận đây là địa chỉ email của quý khách bằng cách nhấp vào nút bên dưới. Điều này giúp bảo vệ tài khoản và bảo đảm quý khách nhận được các thông báo quan trọng về dịch vụ và hóa đơn."
+
+#: src/modules/Client/templates/email/mod_client_confirm.html.twig
+msgid "Please confirm your email address"
+msgstr "Vui lòng xác nhận địa chỉ email của quý khách"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please confirm your email address to finish setting up your account."
+msgstr "Vui lòng xác nhận địa chỉ email để hoàn tất việc thiết lập tài khoản."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Please keep in mind that a new domain can take up to 48 hours to be visible everywhere on the internet while DNS changes propagate. Your website and email on this domain start working once that is done."
+msgstr "Xin lưu ý rằng một tên miền mới có thể mất tối đa 48 giờ để hiển thị trên toàn internet trong khi các thay đổi DNS được lan truyền. Website và email của quý khách trên tên miền này sẽ hoạt động khi quá trình đó hoàn tất."
+
+#: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Please reply from the staff panel, not to this email."
+msgstr "Vui lòng trả lời từ bảng điều khiển nhân viên, không trả lời email này."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Please sign in with the password you chose when you signed up."
+msgstr "Vui lòng đăng nhập bằng mật khẩu quý khách đã chọn khi đăng ký."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in."
+msgstr "Vui lòng dành một phút để đánh giá nhân viên đã hỗ trợ quý khách và cho chúng tôi biết cách cải thiện. Không cần đăng nhập."
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% accepted: %subject%"
+msgstr "Báo giá #%id% đã được chấp nhận: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote #%id% declined: %subject%"
+msgstr "Báo giá #%id% đã bị từ chối: %subject%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Quote #%id%: %subject%"
+msgstr "Báo giá #%id%: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote accepted"
+msgstr "Báo giá đã được chấp nhận"
+
+#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+msgid "Quote declined"
+msgstr "Báo giá đã bị từ chối"
+
+#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+msgid "Reason given:"
+msgstr "Lý do đã nêu:"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Registration date"
+msgstr "Ngày đăng ký"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Remove the %language% version of this template?"
+msgstr "Xóa phiên bản %language% của mẫu này?"
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "Remove version"
+msgstr "Xóa phiên bản"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "Renewal date"
+msgstr "Ngày gia hạn"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_open.html.twig src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig
+msgid "Reply to ticket"
+msgstr "Trả lời phiếu yêu cầu"
+
+#: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
+msgid "Review order"
+msgstr "Xem xét đơn hàng"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
+msgid "Review the ticket"
+msgstr "Xem xét phiếu yêu cầu"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "See the update"
+msgstr "Xem bản cập nhật"
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent for the default language and every language without its own version."
+msgstr "Được gửi cho ngôn ngữ mặc định và mọi ngôn ngữ không có phiên bản riêng."
+
+#: src/modules/Email/templates/admin/mod_email_template.html.twig
+msgid "Sent in:"
+msgstr "Gửi bằng:"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Server and nameservers"
+msgstr "Máy chủ và máy chủ tên miền"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "Service cancelled"
+msgstr "Dịch vụ đã bị hủy"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
+msgid "Service reactivated"
+msgstr "Dịch vụ đã được kích hoạt lại"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Service renewed"
+msgstr "Dịch vụ đã được gia hạn"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "Service suspended"
+msgstr "Dịch vụ đã bị tạm ngưng"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Set your password"
+msgstr "Đặt mật khẩu của quý khách"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Sign in to client area"
+msgstr "Đăng nhập vào khu vực khách hàng"
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Sign-in email"
+msgstr "Email đăng nhập"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_update.html.twig
+msgid "Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database."
+msgstr "Nhân viên được phép cập nhật hệ thống có thể cài đặt tại Hệ thống > Cập nhật: hệ thống sao lưu cơ sở dữ liệu và các tệp bị thay thế, cài đặt bản phát hành và cập nhật cơ sở dữ liệu."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "Starts"
+msgstr "Bắt đầu"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: %count% checks need attention"
+msgstr "Tình trạng hệ thống: %count% kiểm tra cần chú ý"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "System health: 1 check needs attention"
+msgstr "Tình trạng hệ thống: 1 kiểm tra cần chú ý"
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Tell us how we handled your ticket."
+msgstr "Hãy cho chúng tôi biết chúng tôi đã xử lý phiếu yêu cầu của quý khách như thế nào."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Thank you for choosing %company%. Your hosting account %title% has been set up. This email holds everything you need to start using it: please keep it for your records."
+msgstr "Cảm ơn quý khách đã chọn %company%. Tài khoản hosting %title% của quý khách đã được thiết lập. Email này có mọi thông tin quý khách cần để bắt đầu sử dụng: vui lòng lưu lại để tham khảo."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Thank you for contacting our support team. A ticket has been opened for your request and a member of our team will reply as soon as possible. You will be notified by email when there is a response."
+msgstr "Cảm ơn quý khách đã liên hệ nhóm hỗ trợ của chúng tôi. Một phiếu yêu cầu đã được mở cho yêu cầu của quý khách và một thành viên trong nhóm sẽ trả lời sớm nhất có thể. Quý khách sẽ được thông báo qua email khi có phản hồi."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Thank you for creating an account with us. In the client area you can place orders, manage your services, pay invoices and contact our support team."
+msgstr "Cảm ơn quý khách đã tạo tài khoản với chúng tôi. Trong khu vực khách hàng, quý khách có thể đặt hàng, quản lý dịch vụ, thanh toán hóa đơn và liên hệ nhóm hỗ trợ của chúng tôi."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Thank you for helping us improve our service."
+msgstr "Cảm ơn quý khách đã giúp chúng tôi cải thiện dịch vụ."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Thank you for your business. A new invoice has been issued for your account on %created_at%. Please find the details below."
+msgstr "Cảm ơn quý khách đã tin tưởng. Một hóa đơn mới đã được phát hành cho tài khoản của quý khách vào %created_at%. Chi tiết ở bên dưới."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr "Cảm ơn quý khách đã quan tâm. Bên dưới là báo giá của chúng tôi cho %subject%; tệp PDF được đính kèm trong email này."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to download."
+msgstr "Cảm ơn quý khách đã đặt hàng. %title% của quý khách hiện đã hoạt động và sẵn sàng để tải về."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active and ready to use."
+msgstr "Cảm ơn quý khách đã đặt hàng. %title% của quý khách hiện đã hoạt động và sẵn sàng để sử dụng."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your API key is below: please keep it secret."
+msgstr "Cảm ơn quý khách đã đặt hàng. %title% của quý khách hiện đã hoạt động. Khóa API của quý khách ở bên dưới: vui lòng giữ bí mật."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Thank you for your order. Your %title% is now active. Your license key is below: please keep it for your records."
+msgstr "Cảm ơn quý khách đã đặt hàng. %title% của quý khách hiện đã hoạt động. Khóa giấy phép của quý khách ở bên dưới: vui lòng lưu lại để tham khảo."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. Your domain %title% is now active."
+msgstr "Cảm ơn quý khách đã đặt hàng. Tên miền %title% của quý khách hiện đã hoạt động."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you for your payment of %total%."
+msgstr "Cảm ơn quý khách đã thanh toán %total%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "Thank you! We have received your payment for invoice %number%. This email is your receipt."
+msgstr "Cảm ơn quý khách! Chúng tôi đã nhận được thanh toán của quý khách cho hóa đơn %number%. Email này là biên nhận của quý khách."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "Thao tác %action% của đơn hàng %order% (khách hàng %client%) đã thất bại. Bảng điều khiển hosting, nhà đăng ký tên miền hoặc dịch vụ khác đã từ chối hoặc không thể hoàn tất thao tác."
+
+#: src/modules/Staff/templates/email/mod_staff_order_action_failed.html.twig
+msgid "The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it."
+msgstr "Thao tác %action% của đơn hàng %order% đã thất bại. Bảng điều khiển hosting, nhà đăng ký tên miền hoặc dịch vụ khác đã từ chối hoặc không thể hoàn tất thao tác."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The automatic payment set up for your service at its old price was cancelled."
+msgstr "Thanh toán tự động đã thiết lập cho dịch vụ của quý khách theo mức giá cũ đã bị hủy."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The cancelled automatic payment will not pay your next renewal invoice. Unless your account credit covers it, please pay it when it arrives; paying it the same way as before sets up automatic payment again."
+msgstr "Thanh toán tự động đã hủy sẽ không thanh toán hóa đơn gia hạn tiếp theo của quý khách. Trừ khi số dư tài khoản đủ chi trả, vui lòng thanh toán khi hóa đơn đến; thanh toán theo cùng cách như trước sẽ thiết lập lại thanh toán tự động."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "The email was too large. Please send it again with smaller attachments, or attach the files from our client area."
+msgstr "Email quá lớn. Vui lòng gửi lại với tệp đính kèm nhỏ hơn, hoặc đính kèm tệp từ khu vực khách hàng của chúng tôi."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found a check that needs attention:"
+msgstr "Các kiểm tra tình trạng hệ thống hằng giờ của cổng thanh toán đã phát hiện một kiểm tra cần chú ý:"
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "The hourly system health checks of the billing portal found checks that need attention:"
+msgstr "Các kiểm tra tình trạng hệ thống hằng giờ của cổng thanh toán đã phát hiện các kiểm tra cần chú ý:"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr "Hóa đơn đã phát hành cho dịch vụ giữ nguyên giá cũ; giá mới bắt đầu từ kỳ gia hạn sau đó."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
+msgstr "Liên kết chỉ dùng được một lần và hết hạn sau %days% ngày. Nếu quý khách không mong đợi lời mời này, có thể bỏ qua email này."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with the renewal due %date%."
+msgstr "Giá mới bắt đầu từ kỳ gia hạn đến hạn vào %date%."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The new price starts with your next invoice."
+msgstr "Giá mới bắt đầu từ hóa đơn tiếp theo của quý khách."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "The password of your account was changed."
+msgstr "Mật khẩu tài khoản của quý khách đã được thay đổi."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "The plan, price or billing cycle of %title% changed, so the automatic payment set up for it at the old price was cancelled. You have not been charged for this."
+msgstr "Gói, giá hoặc chu kỳ thanh toán của %title% đã thay đổi, vì vậy thanh toán tự động thiết lập cho dịch vụ theo giá cũ đã bị hủy. Quý khách không bị tính phí cho việc này."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "The renewal price of your service is changing."
+msgstr "Giá gia hạn dịch vụ của quý khách sắp thay đổi."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "There is a new reply on your ticket \"%subject%\"."
+msgstr "Có phản hồi mới cho phiếu yêu cầu \"%subject%\" của quý khách."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area."
+msgstr "Địa chỉ này chỉ nhận email từ khách hàng đã đăng ký. Nếu quý khách là khách hàng, vui lòng viết từ địa chỉ email của tài khoản, hoặc mở phiếu yêu cầu từ khu vực khách hàng của chúng tôi."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "This address only takes replies to existing tickets. Please open a new ticket from our client area."
+msgstr "Địa chỉ này chỉ nhận phản hồi cho các phiếu yêu cầu hiện có. Vui lòng mở phiếu yêu cầu mới từ khu vực khách hàng của chúng tôi."
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
+msgid "This is a confirmation that the password for your client area account has just been changed."
+msgstr "Email này xác nhận rằng mật khẩu tài khoản khu vực khách hàng của quý khách vừa được thay đổi."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "This is a confirmation that the password for your staff account has just been changed."
+msgstr "Email này xác nhận rằng mật khẩu tài khoản nhân viên của quý khách vừa được thay đổi."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due in %days% days, on %date%."
+msgstr "Đây là lời nhắc thân thiện rằng hóa đơn %number% đến hạn sau %days% ngày, vào %date%."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% is due today."
+msgstr "Đây là lời nhắc thân thiện rằng hóa đơn %number% đến hạn hôm nay."
+
+#: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
+msgid "This is a friendly reminder that invoice %number% was due on %date%. Please arrange payment as soon as possible."
+msgstr "Đây là lời nhắc thân thiện rằng hóa đơn %number% đã đến hạn vào %date%. Vui lòng thanh toán sớm nhất có thể."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
+msgid "This is to confirm that your hosting account %title% has been cancelled."
+msgstr "Email này xác nhận rằng tài khoản hosting %title% của quý khách đã bị hủy."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_canceled.html.twig
+msgid "This is to confirm that your service %title% has been cancelled."
+msgstr "Email này xác nhận rằng dịch vụ %title% của quý khách đã bị hủy."
+
+#: src/modules/Product/templates/admin/mod_product_translations.html.twig
+msgid "This language is turned off: these texts are kept but not shown."
+msgstr "Ngôn ngữ này đang tắt: các văn bản này được giữ lại nhưng không hiển thị."
+
+#: src/modules/Email/templates/admin/partial_email_template_version.html.twig
+msgid "This language is turned off: this version is not sent"
+msgstr "Ngôn ngữ này đang tắt: phiên bản này không được gửi"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig …
+msgid "Ticket #%id%"
+msgstr "Phiếu yêu cầu #%id%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket #%id% assigned to you: %subject%"
+msgstr "Phiếu yêu cầu #%id% đã được giao cho quý khách: %subject%"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket #%id% escalated: %subject%"
+msgstr "Phiếu yêu cầu #%id% đã được nâng cấp xử lý: %subject%"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Ticket #%id% has been closed."
+msgstr "Phiếu yêu cầu #%id% đã được đóng."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "Ticket #%id% is open. We will reply as soon as possible."
+msgstr "Phiếu yêu cầu #%id% đang mở. Chúng tôi sẽ trả lời sớm nhất có thể."
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it."
+msgstr "Phiếu yêu cầu #%ticket_id% đã đóng. Vui lòng mở phiếu mới, hoặc đăng nhập vào khu vực khách hàng của chúng tôi để xem."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket %ticket% got no reply for %minutes% min, so the escalation rule %name% acted on it."
+msgstr "Phiếu yêu cầu %ticket% không có phản hồi trong %minutes% phút, nên quy tắc nâng cấp xử lý %name% đã tác động lên phiếu."
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig
+msgid "Ticket assigned to you"
+msgstr "Phiếu yêu cầu được giao cho quý khách"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig
+msgid "Ticket closed by client"
+msgstr "Khách hàng đã đóng phiếu yêu cầu"
+
+#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+msgid "Ticket escalated"
+msgstr "Phiếu yêu cầu đã được nâng cấp xử lý"
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "To get started, choose your password with the button below."
+msgstr "Để bắt đầu, hãy chọn mật khẩu bằng nút bên dưới."
+
+#: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
+msgid "View and accept quote"
+msgstr "Xem và chấp nhận báo giá"
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "View and pay invoice"
+msgstr "Xem và thanh toán hóa đơn"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
+msgid "View and reply"
+msgstr "Xem và trả lời"
+
+#: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
+msgid "View client"
+msgstr "Xem khách hàng"
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "View ticket"
+msgstr "Xem phiếu yêu cầu"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "View your service"
+msgstr "Xem dịch vụ của quý khách"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "View your services"
+msgstr "Xem các dịch vụ của quý khách"
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We apologise for any inconvenience and will keep you updated."
+msgstr "Chúng tôi xin lỗi vì sự bất tiện và sẽ tiếp tục cập nhật cho quý khách."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of these services is changing. The details are below."
+msgstr "Chúng tôi viết thư để thông báo rằng giá định kỳ của các dịch vụ này sắp thay đổi. Chi tiết ở bên dưới."
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "We are writing to let you know that the recurring price of this service is changing. The details are below."
+msgstr "Chúng tôi viết thư để thông báo rằng giá định kỳ của dịch vụ này sắp thay đổi. Chi tiết ở bên dưới."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method %card% for invoice %number%. %reason%"
+msgstr "Chúng tôi không thể thu phí phương thức thanh toán đã lưu %card% của quý khách cho hóa đơn %number%. %reason%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We could not charge your saved payment method for invoice #%number%."
+msgstr "Chúng tôi không thể thu phí phương thức thanh toán đã lưu của quý khách cho hóa đơn #%number%."
+
+#: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
+msgid "We have received your request"
+msgstr "Chúng tôi đã nhận được yêu cầu của quý khách"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig
+msgid "We have replied to your ticket"
+msgstr "Chúng tôi đã trả lời phiếu yêu cầu của quý khách"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_request.html.twig
+msgid "We received a request to reset the password for your client area account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản khu vực khách hàng của quý khách. Nhấp vào nút bên dưới để chọn mật khẩu mới. Vì lý do bảo mật, liên kết hết hạn sau 15 phút."
+
+#: src/modules/Staff/templates/email/mod_staff_password_reset_request.html.twig
+msgid "We received a request to reset the password for your staff account. Click the button below to choose a new password. For your security, the link expires in 15 minutes."
+msgstr "Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản nhân viên của quý khách. Nhấp vào nút bên dưới để chọn mật khẩu mới. Vì lý do bảo mật, liên kết hết hạn sau 15 phút."
+
+#: src/modules/Client/templates/email/mod_client_user_password_reset.html.twig
+msgid "We received a request to reset the password of your user for the client area. Click the button below to choose a new password. For your security, the link expires in %minutes% minutes."
+msgstr "Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho người dùng khu vực khách hàng của quý khách. Nhấp vào nút bên dưới để chọn mật khẩu mới. Vì lý do bảo mật, liên kết hết hạn sau %minutes% phút."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig
+msgid "We regret to inform you that your domain %title% has been suspended."
+msgstr "Chúng tôi rất tiếc phải thông báo rằng tên miền %title% của quý khách đã bị tạm ngưng."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_suspended.html.twig
+msgid "We regret to inform you that your hosting account %title% has been suspended."
+msgstr "Chúng tôi rất tiếc phải thông báo rằng tài khoản hosting %title% của quý khách đã bị tạm ngưng."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
+msgid "We regret to inform you that your service %title% has been suspended."
+msgstr "Chúng tôi rất tiếc phải thông báo rằng dịch vụ %title% của quý khách đã bị tạm ngưng."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "We will try it again on %date%."
+msgstr "Chúng tôi sẽ thử lại vào %date%."
+
+#: src/modules/Support/templates/email/mod_support_network_issue.html.twig
+msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
+msgstr "Chúng tôi muốn cập nhật cho quý khách về mạng của chúng tôi: %status_title% (mức ưu tiên %priority_title%)."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Welcome to %company%"
+msgstr "Chào mừng đến với %company%"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited"
+msgstr "Quý khách được mời"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You are invited to %account%"
+msgstr "Quý khách được mời tham gia %account%"
+
+#: src/modules/Invoice/templates/email/mod_invoice_paid.html.twig
+msgid "You can also %link%download the invoice as a PDF%link_end% for your records."
+msgstr "Quý khách cũng có thể %link%tải hóa đơn dạng PDF%link_end% để lưu lại."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+msgid "You can also %link%download the invoice as a PDF%link_end%. If you have already paid, please disregard this message."
+msgstr "Quý khách cũng có thể %link%tải hóa đơn dạng PDF%link_end%. Nếu đã thanh toán, vui lòng bỏ qua tin nhắn này."
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "You can also save a payment method on your %link%Payment methods%link_end% page now, so your invoices are paid automatically."
+msgstr "Quý khách cũng có thể lưu một phương thức thanh toán ngay bây giờ tại trang %link%Phương thức thanh toán%link_end%, để hóa đơn được thanh toán tự động."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "You can download it again at any time from the %link%service page%link_end% in the client area."
+msgstr "Quý khách có thể tải lại bất cứ lúc nào từ %link%trang dịch vụ%link_end% trong khu vực khách hàng."
+
+#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
+msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
+msgstr "Quý khách có thể thanh toán hóa đơn ngay bây giờ, hoặc đổi phương thức thanh toán tại trang %link%Phương thức thanh toán%link_end%."
+
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
+msgid "You get this email once per problem: the next one comes only if a check passes and breaks again."
+msgstr "Quý khách nhận email này một lần cho mỗi sự cố: email tiếp theo chỉ đến nếu một kiểm tra đạt rồi lại lỗi."
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "You have been invited to use the client area of %account% with your own sign-in."
+msgstr "Quý khách được mời sử dụng khu vực khách hàng của %account% bằng thông tin đăng nhập riêng."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
+msgstr "Quý khách đã đăng ký bằng tài khoản Google, vì vậy không có mật khẩu nào cần nhớ: lần sau, hãy dùng nút Google ở trang đăng nhập và chọn cùng tài khoản Google đó. Để đăng nhập cả bằng email, hãy chọn mật khẩu tại trang đăng nhập Google của tài khoản."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password."
+msgstr "Quý khách đã đăng ký bằng tài khoản Google. Ngay sau đó, quý khách chọn một mật khẩu: lần sau, hãy đăng nhập bằng email và mật khẩu đó."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig …
+msgid "Your %title% has been cancelled."
+msgstr "%title% của quý khách đã bị hủy."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig …
+msgid "Your %title% has been renewed."
+msgstr "%title% của quý khách đã được gia hạn."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_suspended.html.twig …
+msgid "Your %title% has been suspended."
+msgstr "%title% của quý khách đã bị tạm ngưng."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your %title% is active and ready to use."
+msgstr "%title% của quý khách đang hoạt động và sẵn sàng để sử dụng."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig …
+msgid "Your %title% is available again."
+msgstr "%title% của quý khách đã có thể sử dụng trở lại."
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your %title% is ready to download."
+msgstr "%title% của quý khách đã sẵn sàng để tải về."
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig
+msgid "Your API key is ready"
+msgstr "Khóa API của quý khách đã sẵn sàng"
+
+#: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
+msgid "Your account credit or saved payment method will pay your next renewal invoice, so you do not need to do anything."
+msgstr "Số dư tài khoản hoặc phương thức thanh toán đã lưu của quý khách sẽ thanh toán hóa đơn gia hạn tiếp theo, vì vậy quý khách không cần làm gì."
+
+#: src/modules/Client/templates/email/mod_client_signup.html.twig
+msgid "Your account is ready."
+msgstr "Tài khoản của quý khách đã sẵn sàng."
+
+#: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
+msgid "Your client account is ready."
+msgstr "Tài khoản khách hàng của quý khách đã sẵn sàng."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig
+msgid "Your domain %title% has been renewed. Thank you for your continued business."
+msgstr "Tên miền %title% của quý khách đã được gia hạn. Cảm ơn quý khách đã tiếp tục tin dùng."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain %title% is active."
+msgstr "Tên miền %title% của quý khách đang hoạt động."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain is active"
+msgstr "Tên miền của quý khách đang hoạt động"
+
+#: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
+msgid "Your download is ready"
+msgstr "Bản tải về của quý khách đã sẵn sàng"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email \"%subject%\" to %helpdesk% was not added to a support ticket."
+msgstr "Email \"%subject%\" của quý khách gửi đến %helpdesk% chưa được thêm vào phiếu yêu cầu hỗ trợ."
+
+#: src/modules/Email/templates/email/mod_email_test.html.twig
+msgid "Your email settings work"
+msgstr "Cài đặt email của quý khách hoạt động tốt"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket"
+msgstr "Email của quý khách chưa được thêm vào phiếu yêu cầu"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "Your email was not added to a ticket: %subject%"
+msgstr "Email của quý khách chưa được thêm vào phiếu yêu cầu: %subject%"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_renewed.html.twig
+msgid "Your hosting account %title% has been renewed. Thank you for your continued business."
+msgstr "Tài khoản hosting %title% của quý khách đã được gia hạn. Cảm ơn quý khách đã tiếp tục tin dùng."
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is ready"
+msgstr "Tài khoản hosting của quý khách đã sẵn sàng"
+
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+msgid "Your hosting account is set up and ready to use."
+msgstr "Tài khoản hosting của quý khách đã được thiết lập và sẵn sàng sử dụng."
+
+#: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
+msgid "Your invoice is ready"
+msgstr "Hóa đơn của quý khách đã sẵn sàng"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
+msgid "Your license is active"
+msgstr "Giấy phép của quý khách đang hoạt động"
+
+#: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Staff/templates/email/mod_staff_password_reset_approve.html.twig
+msgid "Your password was changed"
+msgstr "Mật khẩu của quý khách đã được thay đổi"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your recurring discount"
+msgstr "Chiết khấu định kỳ của quý khách"
+
+#: src/modules/Order/templates/email/mod_order_price_changed.html.twig
+msgid "Your renewal price is changing"
+msgstr "Giá gia hạn của quý khách sắp thay đổi"
+
+#: src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_renewed.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_renewed.html.twig
+msgid "Your service %title% has been renewed. Thank you for your continued business."
+msgstr "Dịch vụ %title% của quý khách đã được gia hạn. Cảm ơn quý khách đã tiếp tục tin dùng."
+
+#: src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig
+msgid "Your service is active"
+msgstr "Dịch vụ của quý khách đang hoạt động"
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket %subject% has now been closed. We hope we were able to help."
+msgstr "Phiếu yêu cầu %subject% của quý khách hiện đã được đóng. Chúng tôi hy vọng đã giúp được quý khách."
+
+#: src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
+msgid "Your ticket %ticket% is now closed. We would love to know how we handled it."
+msgstr "Phiếu yêu cầu %ticket% của quý khách hiện đã được đóng. Chúng tôi rất muốn biết chúng tôi đã xử lý như thế nào."
+
+#: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
+msgid "Your ticket is closed"
+msgstr "Phiếu yêu cầu của quý khách đã được đóng"
+
+#: src/modules/Client/templates/email/mod_client_user_invite.html.twig
+msgid "an account"
+msgstr "một tài khoản"
+
+#: src/modules/Support/templates/email/mod_support_mail_rejected.html.twig
+msgid "our support team"
+msgstr "nhóm hỗ trợ của chúng tôi"

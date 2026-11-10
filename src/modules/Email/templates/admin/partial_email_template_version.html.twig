@@ -1,0 +1,27 @@
+{# ClientFence: one language version of an email template (Email/Translations.php) on mod_email_template.html.twig.
+   Gets `lang` ('' for the empty copy the page's script fills in for a new version), `name`, `subject`, `content`,
+   `off` (the language is turned off) and `can_edit`. #}
+{% set rtl = lang[:2] in ['ar', 'he', 'fa'] %}
+<div data-cf-lang-pane="{{ lang }}" hidden>
+    {% if lang == '' %}
+        <div class="alert alert-warning" role="alert">{{ 'Copied from the default text: translate it and click Update.'|trans }}</div>
+    {% elseif off %}
+        <div class="alert alert-warning" role="alert">{{ 'This language is turned off: this version is not sent'|trans }}</div>
+    {% endif %}
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <span class="badge bg-blue-lt" data-cf-lang-name>{{ name }}</span>
+        {% if can_edit %}
+            <button class="btn btn-sm btn-outline-danger" type="button" data-cf-remove-lang>{{ 'Remove version'|trans }}</button>
+        {% endif %}
+    </div>
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <label class="form-label" for="email-subject-{{ lang }}">{{ 'Email Subject'|trans }}</label>
+            <input class="form-control" type="text" name="translations[{{ lang }}][subject]" value="{{ subject }}" id="email-subject-{{ lang }}" data-cf-field="subject" lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}{% if not can_edit %} readonly{% endif %}>
+        </div>
+        <div class="col-12">
+            <label class="form-label" for="email-template-{{ lang }}">{{ 'Email Message'|trans }}</label>
+            <textarea class="form-control" name="translations[{{ lang }}][content]" id="email-template-{{ lang }}" data-cf-field="content" rows="10" lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}{% if not can_edit %} readonly{% endif %}>{{ content }}</textarea>
+        </div>
+    </div>
+</div>

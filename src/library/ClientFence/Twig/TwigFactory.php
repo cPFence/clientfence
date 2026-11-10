@@ -289,6 +289,9 @@ class TwigFactory
         ]);
         $twig->addGlobal('default_currency', $this->getDefaultCurrencyCode());
         $twig->addGlobal('ClientFenceVersion', Version::CLIENTFENCE);
+        // ClientFence core patch: the email's language and direction for <html lang dir> (de_DE -> de-DE).
+        $twig->addGlobal('locale', str_replace('_', '-', $locale));
+        $twig->addGlobal('dir', RtlDateExtension::isRtl($locale) ? 'rtl' : 'ltr');
 
         return $twig;
     }

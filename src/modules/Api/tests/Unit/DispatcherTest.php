@@ -196,4 +196,7 @@ test('extension settings calls pass the module gate; other extension calls do no
     'config_get' => ['extension_config_get', false],
     'config_save' => ['extension_config_save', false],
     'activate' => ['extension_activate', true],
+    // Help desk and order form pages read their texts without Products access; translations_get checks each kind.
+    'product translations' => ['product_translations_get', false],
+    'other product calls' => ['product_get', true],
 ]);

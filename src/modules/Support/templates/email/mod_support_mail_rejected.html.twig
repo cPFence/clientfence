@@ -1,12 +1,12 @@
-{% block subject %}[{{ guest.system_company.name }}] Your email was not added to a ticket: {{ rejected.subject|default('') }}{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Your email was not added to a ticket: %subject%'|trans({'%subject%': rejected.subject|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>Your email was not added to a ticket</title>
+<title>{{ 'Your email was not added to a ticket'|trans }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
@@ -20,23 +20,23 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">Your email was not added to a ticket</h1>
-		<p style="margin:0 0 16px;">Hello,</p>
-		<p style="margin:0 0 16px;">Your email "{{ rejected.subject|default('') }}" to {{ rejected.helpdesk|default('our support team') }} was not added to a support ticket.</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Your email was not added to a ticket'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello,'|trans }}</p>
+		<p style="margin:0 0 16px;">{{ 'Your email "%subject%" to %helpdesk% was not added to a support ticket.'|trans({'%subject%': rejected.subject|default(''), '%helpdesk%': rejected.helpdesk|default('our support team'|trans)}) }}</p>
 {% if rejected.reason|default('') == 'rejected_closed' %}
-		<p style="margin:0 0 16px;">Ticket #{{ rejected.ticket_id|default('') }} is closed. Please open a new ticket, or sign in to our client area to see it.</p>
+		<p style="margin:0 0 16px;">{{ 'Ticket #%ticket_id% is closed. Please open a new ticket, or sign in to our client area to see it.'|trans({'%ticket_id%': rejected.ticket_id|default('')}) }}</p>
 {% elseif rejected.reason|default('') == 'rejected_replies_only' %}
-		<p style="margin:0 0 16px;">This address only takes replies to existing tickets. Please open a new ticket from our client area.</p>
+		<p style="margin:0 0 16px;">{{ 'This address only takes replies to existing tickets. Please open a new ticket from our client area.'|trans }}</p>
 {% elseif rejected.reason|default('') == 'rejected_clients_only' %}
-		<p style="margin:0 0 16px;">This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area.</p>
+		<p style="margin:0 0 16px;">{{ 'This address only takes emails from registered clients. If you are a client, please write from the email address of your account, or open a ticket from our client area.'|trans }}</p>
 {% elseif rejected.reason|default('') == 'rejected_refused' %}
 		<p style="margin:0 0 16px;">{{ rejected.note|default('') }}</p>
 {% elseif rejected.reason|default('') == 'rejected_too_large' %}
-		<p style="margin:0 0 16px;">The email was too large. Please send it again with smaller attachments, or attach the files from our client area.</p>
+		<p style="margin:0 0 16px;">{{ 'The email was too large. Please send it again with smaller attachments, or attach the files from our client area.'|trans }}</p>
 {% endif %}
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ 'support'|url(area: 'client') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Open the client area</a>
+				<a href="{{ 'support'|url(area: 'client') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open the client area'|trans }}</a>
 			</td></tr>
 		</table>
 		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>

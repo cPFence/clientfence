@@ -63,6 +63,14 @@
                                 subtitle: 'Email templates can receive variables from ClientFence. Available variables are listed under the Variables tab, and preview will render the current content using example values.'|trans
                             } %}
                                 {% block form_content %}
+                                    {# ClientFence: language versions of the template (Email/Translations.php), shown when more than one language is turned on. #}
+                                    {% set language_names = {} %}
+                                    {% for l in guest.extension_languages(true) %}
+                                        {% set language_names = language_names|merge({(l.locale): l.title}) %}
+                                    {% endfor %}
+                                    {% set default_locale = template.default_locale %}
+                                    {% set show_languages = language_names|length > 1 %}
+                                    {% set sent_in %}{% if show_languages %} <span class="text-secondary">{{ 'Sent in:'|trans }}</span> {{ (['Default'|trans]|merge(template.translations|keys|filter(l => language_names[l] is defined)|map(l => language_names[l])))|join(', ') }}.{% endif %}{% endset %}
                                     {% if not can_manage_templates %}
                                         <div class="alert alert-warning" role="alert">
                                             <strong class="me-1">{{ 'Warning:'|trans }}</strong>{{ 'You can view this email template, but you do not have permission to edit or preview it.'|trans }}
@@ -70,31 +78,62 @@
                                     {% endif %}
                                     {% if template.is_custom %}
                                         <div class="alert alert-info" role="alert">
-                                            <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This is a custom template stored in the database.'|trans }}
+                                            <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This is a custom template stored in the database.'|trans }}{{ sent_in }}
                                         </div>
                                     {% elseif not template.has_default %}
                                         <div class="alert alert-warning" role="alert">
-                                            <strong class="me-1">{{ 'Warning:'|trans }}</strong>{{ 'This template no longer has a file-backed default.'|trans }}
+                                            <strong class="me-1">{{ 'Warning:'|trans }}</strong>{{ 'This template no longer has a file-backed default.'|trans }}{{ sent_in }}
                                         </div>
                                     {% elseif template.is_overridden %}
                                         <div class="alert alert-info" role="alert">
-                                            <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This built-in template is customized. Reset it to use the file-backed default.'|trans }}
+                                            <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This built-in template is customized. Reset it to use the file-backed default.'|trans }}{{ sent_in }}
                                         </div>
                                     {% else %}
                                         <div class="alert alert-info" role="alert">
-                                            <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This built-in template is using the file-backed default.'|trans }}
+                                            <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This built-in template is using the file-backed default.'|trans }}{{ sent_in }}
                                         </div>
                                     {% endif %}
-                                    <div class="row g-3">
-                                        <div class="col-lg-8">
-                                            <label class="form-label">{{ 'Email Subject'|trans }}</label>
-                                            <input class="form-control" type="text" name="subject" value="{{ template.subject }}" id="email-subject" required{% if not can_manage_templates %} readonly{% endif %}>
+                                    {% if show_languages %}
+                                        <div class="d-flex flex-wrap align-items-center gap-2 mb-3 pb-2 border-bottom" data-cf-email-langs data-cf-remove-text="{{ 'Remove the %language% version of this template?'|trans }}" role="tablist" aria-label="{{ 'Language versions'|trans }}">
+                                            <button class="btn btn-sm btn-primary" type="button" role="tab" aria-selected="true" data-cf-lang="">{{ 'Default'|trans }} <span class="ms-1 opacity-75">{{ language_names[default_locale] ?? default_locale }}</span></button>
+                                            {% for lang in template.translations|keys %}
+                                                <button class="btn btn-sm btn-outline-secondary{% if language_names[lang] is not defined %} text-decoration-line-through{% endif %}" type="button" role="tab" aria-selected="false" data-cf-lang="{{ lang }}"{% if language_names[lang] is defined %} data-cf-on{% endif %}>{{ language_names[lang] ?? lang }}</button>
+                                            {% endfor %}
+                                            {% if can_manage_templates %}
+                                                <select class="form-select form-select-sm w-auto" data-cf-add-lang aria-label="{{ 'Add language'|trans }}">
+                                                    <option value="">+ {{ 'Add language'|trans }}</option>
+                                                    {% for lang, name in language_names|filter((name, lang) => lang != default_locale and template.translations[lang] is not defined) %}
+                                                        <option value="{{ lang }}">{{ name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endif %}
                                         </div>
-                                        <div class="col-12">
-                                            <label class="form-label">{{ 'Email Message'|trans }}</label>
-                                            <textarea class="form-control" name="content" id="email-template" rows="10" required{% if not can_manage_templates %} readonly{% endif %}>{{ template.content }}</textarea>
+                                        {# Sent first: with no version left, `translations` still arrives (empty) and removes them all. #}
+                                        <input type="hidden" name="translations" value="">
+                                    {% endif %}
+                                    <div data-cf-lang-panes>
+                                        <div data-cf-lang-pane="">
+                                            <div class="row g-3">
+                                                <div class="col-lg-8">
+                                                    <label class="form-label" for="email-subject">{{ 'Email Subject'|trans }}</label>
+                                                    <input class="form-control" type="text" name="subject" value="{{ template.subject }}" id="email-subject" data-cf-field="subject" required{% if not can_manage_templates %} readonly{% endif %}>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label" for="email-template">{{ 'Email Message'|trans }}</label>
+                                                    <textarea class="form-control" name="content" id="email-template" data-cf-field="content" rows="10" required{% if not can_manage_templates %} readonly{% endif %}>{{ template.content }}</textarea>
+                                                    {% if show_languages %}<div class="form-hint">{{ 'Sent for the default language and every language without its own version.'|trans }}</div>{% endif %}
+                                                </div>
+                                            </div>
                                         </div>
+                                        {% if show_languages %}
+                                            {% for lang, version in template.translations %}
+                                                {{ include('partial_email_template_version.html.twig', {lang: lang, name: language_names[lang] ?? lang, subject: version.subject, content: version.content, off: language_names[lang] is not defined, can_edit: can_manage_templates}, with_context = false) }}
+                                            {% endfor %}
+                                        {% endif %}
                                     </div>
+                                    {% if show_languages and can_manage_templates %}
+                                        <template data-cf-lang-new>{{ include('partial_email_template_version.html.twig', {lang: '', name: '', subject: '', content: '', off: false, can_edit: true}, with_context = false) }}</template>
+                                    {% endif %}
                                 {% endblock %}
 
                                 {% block form_actions %}
@@ -315,14 +354,18 @@ document.addEventListener('DOMContentLoaded', function() {
     previewButton.addEventListener('click', function(e) {
         e.preventDefault();
 
+        // ClientFence: the language tab on show; a language version previews in its language.
+        const pane = document.querySelector('[data-cf-lang-pane]:not([hidden])');
         const subjectParams = {
-            _tpl: document.getElementById('email-subject').value,
+            _tpl: pane.querySelector('[data-cf-field="subject"]').value,
             id: '{{ template.id }}',
+            lang: pane.dataset.cfLangPane,
         };
 
         const contentParams = {
-            _tpl: document.getElementById('email-template').value,
+            _tpl: pane.querySelector('[data-cf-field="content"]').value,
             id: '{{ template.id }}',
+            lang: pane.dataset.cfLangPane,
         };
 
         let subjectResult = '';
@@ -343,6 +386,82 @@ document.addEventListener('DOMContentLoaded', function() {
             ClientFence.message(`{{ 'Failed to render email subject'|trans }}: ${error.message}`, 'error');
         });
     });
+
+    // ClientFence: the language bar (Default and one tab per language version, Email/Translations.php).
+    const bar = document.querySelector('[data-cf-email-langs]');
+    if (bar) {
+        const panes = document.querySelector('[data-cf-lang-panes]');
+        const add = bar.querySelector('[data-cf-add-lang]');
+        const show = function (lang) {
+            bar.querySelectorAll('[data-cf-lang]').forEach(function (button) {
+                const on = button.dataset.cfLang === lang;
+                button.classList.toggle('btn-primary', on);
+                button.classList.toggle('btn-outline-secondary', !on);
+                button.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            panes.querySelectorAll('[data-cf-lang-pane]').forEach(function (pane) {
+                pane.hidden = pane.dataset.cfLangPane !== lang;
+            });
+        };
+        bar.addEventListener('click', function (e) {
+            const button = e.target.closest('[data-cf-lang]');
+            if (button) {
+                show(button.dataset.cfLang);
+            }
+        });
+        // A new version starts as a copy of the default subject and message.
+        add?.addEventListener('change', function () {
+            const lang = add.value;
+            if (lang === '') {
+                return;
+            }
+            const option = add.selectedOptions[0];
+            const pane = document.querySelector('template[data-cf-lang-new]').content.firstElementChild.cloneNode(true);
+            pane.dataset.cfLangPane = lang;
+            pane.querySelector('[data-cf-lang-name]').textContent = option.textContent;
+            ['subject', 'content'].forEach(function (field) {
+                const input = pane.querySelector('[data-cf-field="' + field + '"]');
+                const label = pane.querySelector('label[for="' + input.id + '"]');
+                input.name = 'translations[' + lang + '][' + field + ']';
+                input.id += lang;
+                label.htmlFor = input.id;
+                input.lang = lang.slice(0, 2);
+                if (['ar', 'he', 'fa'].includes(input.lang)) {
+                    input.dir = 'rtl';
+                }
+                input.value = panes.querySelector('[data-cf-lang-pane=""] [data-cf-field="' + field + '"]').value;
+            });
+            panes.appendChild(pane);
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-sm btn-outline-secondary';
+            button.setAttribute('role', 'tab');
+            button.dataset.cfLang = lang;
+            button.dataset.cfOn = '';
+            button.textContent = option.textContent;
+            add.before(button);
+            option.remove();
+            show(lang);
+        });
+        panes.addEventListener('click', function (e) {
+            const remove = e.target.closest('[data-cf-remove-lang]');
+            if (!remove) {
+                return;
+            }
+            const pane = remove.closest('[data-cf-lang-pane]');
+            const lang = pane.dataset.cfLangPane;
+            const button = bar.querySelector('[data-cf-lang="' + lang + '"]');
+            if (!window.confirm(bar.dataset.cfRemoveText.replace('%language%', button.textContent.trim()))) {
+                return;
+            }
+            pane.remove();
+            button.remove();
+            if (add && button.dataset.cfOn !== undefined) {
+                add.add(new Option(button.textContent.trim(), lang));
+            }
+            show('');
+        });
+    }
 
     // Preview button for the examples tab
     const examplePreviewButton = document.querySelector('.epb');

@@ -1,4 +1,5 @@
-{% set form = guest.formbuilder_get({ "id": order.form_id }) %}
+{# ClientFence core patch: staff read the questions' default texts (Product/Translations.php). #}
+{% set form = guest.formbuilder_get({ "id": order.form_id, "default_texts": 1 }) %}
 {% set config = order.config %}
 <form method="post" action="{{ 'order/update_config'|api_url }}" {{ fb_api_form({message: 'Order Updated'|trans}) }}>
     {# ClientFence core patch (0.8.9 port): service settings are preserved on the server. #}

@@ -40,10 +40,16 @@
             body_class: 'pt-4'
         } %}
             {% block form_content %}
+                {# ClientFence core patch: the name per language, as WHMCS's department translations (mod_product_translations.html.twig). #}
+                {% set cf_item = { id: helpdesk.id, title: helpdesk.name, description: '' } %}
+                {{ include('mod_product_translations.html.twig', { part: 'bar', kind: 'helpdesk', item: cf_item }) }}
                 <div class="row g-3">
                     <div class="col-lg-6">
+                        <div data-cf-text-pane="">
                         <label class="form-label">{{ 'Title'|trans }}</label>
                         <input class="form-control" type="text" name="name" value="{{ helpdesk.name }}" required>
+                        </div>
+                        {{ include('mod_product_translations.html.twig', { part: 'title', kind: 'helpdesk', item: cf_item }) }}
                     </div>
                     <div class="col-lg-6">
                         <label class="form-label">{{ 'Email'|trans }}</label>

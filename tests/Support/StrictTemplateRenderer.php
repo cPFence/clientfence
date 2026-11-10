@@ -355,6 +355,9 @@ final class StrictTemplateRenderer
                 'ClientFenceVersion' => '0.0.0',
                 'ClientFenceVersion' => '0.0.0',
                 'default_currency' => 'USD',
+                // TwigFactory::createEmailEnvironment(): the email's language and direction.
+                'locale' => 'en-US',
+                'dir' => 'ltr',
                 'app_area' => 'email',
                 'current_theme' => 'admin_default',
                 'theme' => ['code' => 'admin_default', 'name' => 'admin_default', 'url' => '/themes/admin_default/'],

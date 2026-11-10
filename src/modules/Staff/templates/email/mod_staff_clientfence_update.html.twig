@@ -1,12 +1,12 @@
-{% block subject %}[{{ guest.system_company.name }}] ClientFence {{ release.version|default('') }} is available{% endblock %}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'ClientFence %version% is available'|trans({'%version%': release.version|default('')}) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}" dir="{{ dir }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
-<title>ClientFence {{ release.version|default('') }} is available</title>
+<title>{{ 'ClientFence %version% is available'|trans({'%version%': release.version|default('')}) }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f1f4f8;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
@@ -20,22 +20,22 @@
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">ClientFence {{ release.version|default('') }} is available</h1>
-		<p style="margin:0 0 16px;">Hello {{ c.name|default('') }},</p>
-		<p style="margin:0 0 16px;">A new ClientFence release is out{% if release.release_date|default('') %} ({{ release.release_date|format_date }}){% endif %}. This site runs ClientFence {{ current_version|default('') }}.</p>
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'ClientFence %version% is available'|trans({'%version%': release.version|default('')}) }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': c.name|default('')}) }}</p>
+		<p style="margin:0 0 16px;">{% if release.release_date|default('') %}{{ 'A new ClientFence release is out (%date%). This site runs ClientFence %version%.'|trans({'%date%': release.release_date|format_date, '%version%': current_version|default('')}) }}{% else %}{{ 'A new ClientFence release is out. This site runs ClientFence %version%.'|trans({'%version%': current_version|default('')}) }}{% endif %}</p>
 {% if release.notes|default('') %}
 		<div style="margin:0 0 16px;">{{ release.notes|markdown_to_html }}</div>
 {% endif %}
-		<p style="margin:0 0 16px;">Staff allowed to update the system can install it from System &gt; Update: it backs up the database and the files it replaces, installs the release and updates the database.</p>
+		<p style="margin:0 0 16px;">{{ 'Staff allowed to update the system can install it from System > Update: it backs up the database and the files it replaces, installs the release and updates the database.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ update_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">See the update</a>
+				<a href="{{ update_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'See the update'|trans }}</a>
 			</td></tr>
 		</table>
 	</td></tr>
 	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
-		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">Admin area</a>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
 	</td></tr>
 </table>
 </td></tr>

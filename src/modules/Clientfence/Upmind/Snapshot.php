@@ -87,7 +87,7 @@ final class Snapshot extends Base
             return [null, $this->setup()];
         }
         $path = ['products' => 'products', 'clients' => 'clients', 'services' => 'contracts_products', 'invoices' => 'invoices', 'payments' => 'payments', 'tickets' => 'tickets'][$step];
-        [$rows, $total] = $this->api->page($path, $offset, self::PAGES[$step], ['products' => ['with' => 'prices'], 'tickets' => ['with' => 'department']][$step] ?? []);
+        [$rows, $total] = $this->api->page($path, $offset, self::PAGES[$step], ['products' => ['with' => 'prices,translations'], 'tickets' => ['with' => 'department']][$step] ?? []);
         foreach ($rows as $row) {
             match ($step) {
                 'products' => $this->product($row),
@@ -145,6 +145,7 @@ final class Snapshot extends Base
         $this->currency($default, true);
         foreach ($this->api->all('products_categories') as $i => $c) {
             $this->db->insert('tblproductgroups', ['id' => $this->id('group', (string) $c['id']), 'name' => (string) $c['name'], 'slug' => '', 'hidden' => !empty($c['hidden']) ? 1 : 0, '"order"' => $i]);
+            $this->translate('product_group', $this->id('group', (string) $c['id']), (array) ($c['translations'] ?? []));
             if (($c['module_sub_id'] ?? '') === 'domains') {
                 $this->lookup('domaingroup', (string) $c['id'], '1');
             }
@@ -222,6 +223,7 @@ final class Snapshot extends Base
             'description' => (string) ($p['description'] ?? ''), 'hidden' => !empty($p['hidden']) ? 1 : 0, 'paytype' => $onetime ? 'onetime' : 'recurring',
             '"order"' => (int) ($p['order'] ?? 0), 'retired' => !empty($p['deleted_at']) ? 1 : 0,
         ]);
+        $this->translate('product', $id, (array) ($p['translations'] ?? []));
         foreach ($prices as $code => $byMonths) {
             $row = ['type' => 'product', 'currency' => $this->currency($code), 'relid' => $id, 'msetupfee' => 0, 'qsetupfee' => 0, 'ssetupfee' => 0, 'asetupfee' => 0, 'bsetupfee' => 0];
             foreach ($byMonths as $months => $price) {
@@ -234,6 +236,24 @@ final class Snapshot extends Base
                 }
             }
             $this->db->insert('tblpricing', $row);
+        }
+    }
+
+    /**
+     * Upmind's translations of a product or category ({language_code, name, description}) as
+     * WHMCS's Dynamic Field Translation rows, which the catalogue step imports (Whmcs/Catalogue.php).
+     *
+     * @param array<mixed> $translations
+     */
+    private function translate(string $type, int $id, array $translations): void
+    {
+        foreach ($translations as $t) {
+            foreach (['name', 'description'] as $field) {
+                $text = is_array($t) ? trim((string) ($t[$field] ?? '')) : '';
+                if ($text !== '' && trim((string) ($t['language_code'] ?? '')) !== '') {
+                    $this->db->insert('tbldynamic_translations', ['related_type' => $type . '.{id}.' . $field, 'related_id' => $id, 'language' => (string) $t['language_code'], 'translation' => $text]);
+                }
+            }
         }
     }
 

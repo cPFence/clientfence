@@ -60,10 +60,15 @@
                     } %}
                         {% import 'macro_functions.html.twig' as mf %}
                         {% block form_content %}
+                            {# ClientFence: the language bar of the name and description (mod_product_translations.html.twig). #}
+                            {{ include('mod_product_translations.html.twig', { part: 'bar', kind: 'product', item: product }) }}
                             <div class="row g-3">
                                 <div class="col-lg-6">
-                                    <label class="form-label">{{ 'Title'|trans }}</label>
-                                    <input class="form-control" type="text" name="title" value="{{ product.title }}" required>
+                                    <div data-cf-text-pane="">
+                                        <label class="form-label">{{ 'Title'|trans }}</label>
+                                        <input class="form-control" type="text" name="title" value="{{ product.title }}" required>
+                                    </div>
+                                    {{ include('mod_product_translations.html.twig', { part: 'title', kind: 'product', item: product }) }}
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="form-label">{{ 'Slug'|trans }}</label>
@@ -167,9 +172,12 @@
                             </div>
 
                             <div class="mt-4">
-                                <label class="form-label">{{ 'Description'|trans }}</label>
-                                <div class="form-text mb-2">{{ 'Edit the client-facing description shown on the order page for this product.'|trans }}</div>
-                                <textarea class="editor-textarea" name="description" rows="5">{{ product.description }}</textarea>
+                                <div data-cf-text-pane="">
+                                    <label class="form-label">{{ 'Description'|trans }}</label>
+                                    <div class="form-text mb-2">{{ 'Edit the client-facing description shown on the order page for this product.'|trans }}</div>
+                                    <textarea class="editor-textarea" name="description" rows="5">{{ product.description }}</textarea>
+                                </div>
+                                {{ include('mod_product_translations.html.twig', { part: 'description', kind: 'product', item: product }) }}
                             </div>
 
                             <input type="hidden" name="id" value="{{ product.id }}">

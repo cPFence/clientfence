@@ -271,7 +271,8 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        return $result;
+        // ClientFence core patch: clients and guests read the name and description in the page language (Product/Translations.php).
+        return $isAdmin ? $result : Translations::overlay($this->di, 'product', $result);
     }
 
     private function getPublicConfig(array $config): array
@@ -340,7 +341,8 @@ class Service implements InjectionAwareInterface
             return $service->getCartProductTitle($product, $config ?? []);
         }
 
-        return (string) $product->getTitle();
+        // ClientFence core patch: the order title is written in the page language (Product/Translations.php).
+        return Translations::title($this->di, $product);
     }
 
     public function validateSelectedAddonsForProduct(Product $product, array $addons): void
@@ -705,6 +707,8 @@ class Service implements InjectionAwareInterface
         $this->di['em']->flush();
         // ClientFence core patch: its fixed currency prices (Product/CurrencyPrices.php) go with it.
         CurrencyPrices::forgetIn($this->di, 'product', (int) $id);
+        // ClientFence core patch: and its names and descriptions in other languages (Product/Translations.php).
+        Translations::forget($this->di, 'product', (int) $id);
         $this->di['logger']->info('Deleted product #%s', $id);
 
         return true;
@@ -774,6 +778,8 @@ class Service implements InjectionAwareInterface
         $id = $category->getId();
         $this->di['em']->remove($category);
         $this->di['em']->flush();
+        // ClientFence core patch: its names and descriptions in other languages go with it (Product/Translations.php).
+        Translations::forget($this->di, 'category', (int) $id);
 
         $this->di['logger']->info('Deleted product category #%s', $id);
 
@@ -807,7 +813,7 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        return [
+        $result = [
             'id' => $model->getId(),
             'title' => $model->getTitle(),
             'description' => $model->getDescription(),
@@ -818,6 +824,9 @@ class Service implements InjectionAwareInterface
             'type' => $type,
             'products' => $products,
         ];
+
+        // ClientFence core patch: clients and guests read the category's texts in the page language (Product/Translations.php).
+        return $identity instanceof Admin || $identity instanceof \Model_Admin ? $result : Translations::overlay($this->di, 'category', $result);
     }
 
     /**
@@ -880,7 +889,13 @@ class Service implements InjectionAwareInterface
 
     public function getUpgradablePairsByProductId(int $productId): array
     {
-        return $this->getUpgradablePairs($this->findProductById($productId));
+        // ClientFence core patch: the client's upgrade list shows the names in the page language (Product/Translations.php).
+        $pairs = $this->getUpgradablePairs($this->findProductById($productId));
+        foreach ($pairs as $id => $title) {
+            $pairs[$id] = Translations::text($this->di, 'product', (int) $id, 'title', $title);
+        }
+
+        return $pairs;
     }
 
     public function canUpgradeTo(Product $model, Product $new): bool
@@ -1315,6 +1330,8 @@ class Service implements InjectionAwareInterface
 
         if (!$isAdmin) {
             unset($result['plugin'], $result['created_at'], $result['updated_at']);
+            // ClientFence core patch: the add-on's name and description in the page language (Product/Translations.php).
+            $result = Translations::overlay($this->di, 'product', $result);
         }
 
         return $result;

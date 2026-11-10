@@ -30,7 +30,16 @@ class Guest extends \ClientFence\Api\AbstractApi
     public function get($data)
     {
         $service = $this->getService();
+        $form = $service->getForm((int) $data['id']);
+        // ClientFence core patch: clients and guests read each question in the page language (Product/Translations.php); staff pages ask for the default texts.
+        if (empty($data['default_texts'])) {
+            foreach ($form['fields'] as &$field) {
+                $field['label'] = \ClientFence\Mod\Product\Translations::text($this->getDi(), 'field', (int) $field['id'], 'title', $field['label']);
+                $field['description'] = \ClientFence\Mod\Product\Translations::text($this->getDi(), 'field', (int) $field['id'], 'description', $field['description']);
+            }
+            unset($field);
+        }
 
-        return $service->getForm((int) $data['id']);
+        return $form;
     }
 }

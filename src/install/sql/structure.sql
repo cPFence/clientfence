@@ -1834,6 +1834,22 @@ CREATE TABLE `product_currency_price` (`id` bigint(20) unsigned NOT NULL AUTO_IN
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `email_template_translation` (ClientFence)
+--
+
+CREATE TABLE `email_template_translation` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `email_template_id` bigint(20) NOT NULL, `lang` varchar(10) NOT NULL, `subject` varchar(255) NOT NULL, `content` mediumtext NOT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `template_lang` (`email_template_id`, `lang`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_translation` (ClientFence)
+--
+
+CREATE TABLE `product_translation` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `kind` varchar(20) NOT NULL, `ref_id` bigint(20) NOT NULL, `lang` varchar(10) NOT NULL, `title` varchar(255) DEFAULT NULL, `description` mediumtext DEFAULT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `item_lang` (`kind`, `ref_id`, `lang`), KEY `lang` (`lang`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `service_license_log` (ClientFence)
 --
 

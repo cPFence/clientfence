@@ -45,6 +45,9 @@ class Service implements InjectionAwareInterface
     /** ClientFence: true while staffOrder() fills its cart, for the onBeforeProductAddedToCart listeners. */
     private bool $staffOrder = false;
 
+    /** ClientFence: the client's language while staffOrder() runs: its order titles are written in it (Product/Translations.php). */
+    private ?string $staffOrderLocale = null;
+
     public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
@@ -1204,6 +1207,7 @@ class Service implements InjectionAwareInterface
         }
         $run = function () use ($client, $items, $promoCode, $gatewayId, $staff, $currency): array {
             $this->staffOrder = true;
+            $this->staffOrderLocale = \ClientFence\Mod\Product\Translations::locale($client->lang);
             $cart = new Cart();
             $cart->setSessionId('staff-' . bin2hex(random_bytes(13))); // session_id holds 32 characters
             $cart->setCurrencyId($currency->getId());
@@ -1384,7 +1388,10 @@ class Service implements InjectionAwareInterface
         Cart|\Model_Cart|null $cart = null,
         ?array $cartProducts = null,
     ): array {
-        $productView = $this->getProductService()->getCartProductViewData($model);
+        // ClientFence core patch: a staff order's titles are written in the client's language, as at their own checkout.
+        $productView = $this->staffOrderLocale === null
+            ? $this->getProductService()->getCartProductViewData($model)
+            : \ClientFence\Translate::with($this->staffOrderLocale, fn (): array => $this->getProductService()->getCartProductViewData($model));
         $config = $productView['config'];
         $setup = $productView['setup_price'];
         $price = $productView['price'];

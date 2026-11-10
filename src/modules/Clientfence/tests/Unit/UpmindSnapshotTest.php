@@ -41,9 +41,9 @@ function upmindFake(): array
         ],
         'gateways' => [['id' => 'g-off', 'name' => 'Bank - Offline', 'provider' => 'Offline'], ['id' => 'g-card', 'name' => 'Cards', 'provider' => 'Stripe']],
         'brands' => [['id' => 'b', 'currency_id' => 'cur-gbp']],
-        'products_categories' => [['id' => 'cat-h', 'name' => 'Hosting'], ['id' => 'cat-d', 'name' => 'Domains', 'module_sub_id' => 'domains']],
+        'products_categories' => [['id' => 'cat-h', 'name' => 'Hosting', 'translations' => [['language_code' => 'de', 'name' => 'Webhosting']]], ['id' => 'cat-d', 'name' => 'Domains', 'module_sub_id' => 'domains']],
         'products' => [
-            ['id' => 'p-start', 'name' => 'Starter', 'category_id' => 'cat-h', 'module_sub_id' => null, 'prices' => [
+            ['id' => 'p-start', 'name' => 'Starter', 'category_id' => 'cat-h', 'module_sub_id' => null, 'translations' => [['language_code' => 'de', 'name' => 'Einstieg', 'description' => '']], 'prices' => [
                 ['currency_code' => 'GBP', 'billing_cycle_months' => 1, 'price' => 5], ['currency_code' => 'GBP', 'billing_cycle_months' => 12, 'price' => 50],
                 ['currency_code' => 'GBP', 'billing_cycle_months' => 13, 'price' => 60], ['currency_code' => 'USD', 'billing_cycle_months' => 1, 'price' => 6],
             ]],
@@ -182,7 +182,12 @@ test('Upmind is read a page at a time into WHMCS\'s tables, and what cannot come
         ->and($db->fetchOne("SELECT monthly FROM tblpricing p JOIN tblproducts r ON r.id = p.relid AND p.type = 'product' WHERE r.name = 'Logo'"))->toBe(99.0)
         ->and($db->fetchFirstColumn('SELECT extension FROM tbldomainpricing'))->toBe(['.com'])
         ->and($db->fetchAssociative("SELECT msetupfee, qsetupfee FROM tblpricing WHERE type = 'domainregister'"))->toBe(['msetupfee' => 10.0, 'qsetupfee' => 15.0])
-        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM tblproducts'))->toBe(2);
+        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM tblproducts'))->toBe(2)
+        // Names in other languages, for the catalogue step; a blank one is left out.
+        ->and($db->fetchAllAssociative('SELECT related_type, related_id, language, translation FROM tbldynamic_translations ORDER BY id'))->toBe([
+            ['related_type' => 'product_group.{id}.name', 'related_id' => 1, 'language' => 'de', 'translation' => 'Webhosting'],
+            ['related_type' => 'product.{id}.name', 'related_id' => 1, 'language' => 'de', 'translation' => 'Einstieg'],
+        ]);
 
     // Services renew at their price, not at what Upmind's import invoice charged.
     expect($db->fetchAssociative('SELECT packageid, amount, billingcycle, domainstatus, regdate, nextduedate, domain FROM tblhosting ORDER BY id LIMIT 1'))->toBe(['packageid' => 1, 'amount' => 5.0, 'billingcycle' => 'Monthly', 'domainstatus' => 'Active', 'regdate' => '2025-01-01', 'nextduedate' => '2026-12-01', 'domain' => 'first.example'])
