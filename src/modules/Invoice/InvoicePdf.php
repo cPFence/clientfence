@@ -13,7 +13,7 @@ final class InvoicePdf
         $previous = \Locale::getDefault();
         (new \ClientFence\Translate())->setLocale($locale)->setup();
         try {
-            $pdf = RtlPdf::document($di, $locale, __trans('Invoice Number') . ': ' . $data['invoice']['serie_nr']);
+            $pdf = RtlPdf::document($di, $locale, self::heading($data));
             $logo = $data['logo_source'];
             if ($logo !== '') {
                 $svg = str_starts_with($logo, 'data:image/svg+xml;');
@@ -36,6 +36,14 @@ final class InvoicePdf
         }
     }
 
+    /** "Invoice Number: CF00011", or the Document Title setting before the number ("Tax Invoice CF00011", GitHub #9). */
+    private static function heading(array $data): string
+    {
+        $title = (string) ($data['footer']['invoice_title'] ?? '');
+
+        return ($title !== '' ? $title . ' ' : __trans('Invoice Number') . ': ') . $data['invoice']['serie_nr'];
+    }
+
     private static function html(\Pimple\Container $di, array $data, callable $money, string $locale): string
     {
         $rtl = RtlPdf::isRtl($locale);
@@ -44,7 +52,8 @@ final class InvoicePdf
         $end = $rtl ? 'left' : 'right';
         $invoice = $data['invoice'];
         $date = new \IntlDateFormatter($locale, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::NONE);
-        $html = '<h1 style="font-size:16pt;">' . $text(__trans('Invoice Number')) . ': ' . $text($invoice['serie_nr']) . '</h1>'
+        $taxLabel = (string) ($data['footer']['tax_label'] ?? '');
+        $html = '<h1 style="font-size:16pt;">' . $text(self::heading($data)) . '</h1>'
             . '<p>' . $text(__trans('Invoice Date')) . ': ' . $text($date->format(new \DateTimeImmutable((string) $invoice['created_at']))) . '<br>'
             . $text(__trans('Due Date')) . ': ' . $text($date->format(new \DateTimeImmutable((string) $invoice['due_at']))) . '<br>'
             . $text(__trans('Invoice Status')) . ': ' . $text(__trans(ucfirst($invoice['status']))) . '</p>'
@@ -53,7 +62,11 @@ final class InvoicePdf
         foreach ([['Company', $data['seller'], 'Name'], ['Client', $data['buyer'], 'Company']] as [$heading, $fields, $bold]) {
             $html .= '<td width="50%" align="' . $start . '"><b>' . $text(__trans($heading)) . '</b><br>';
             foreach ($fields as $label => $value) {
-                $line = (in_array($label, ['Phone', 'VAT Number'], true) ? $text(__trans($label)) . ': ' : '') . $text($value);
+                $line = match ($label) {
+                    'Phone' => $text(__trans($label)) . ': ',
+                    'VAT Number' => $text($taxLabel !== '' ? $taxLabel : __trans($label)) . ': ',
+                    default => '',
+                } . $text($value);
                 $html .= ($label === $bold ? '<b>' . $line . '</b>' : $line) . '<br>';
             }
             $html .= '</td>';
@@ -118,7 +131,7 @@ final class InvoicePdf
             . '<b>' . $text(__trans('Email')) . ':</b> ' . $text($footer['email']) . '<br>';
         foreach (['Phone' => 'phone', 'VAT ID' => 'company_vat', 'Company Registration #:' => 'company_number'] as $label => $key) {
             if ($footer[$key]) {
-                $html .= '<b>' . $text(__trans($label)) . '</b> ' . $text($footer[$key]) . '<br>';
+                $html .= '<b>' . $text($key === 'company_vat' && $taxLabel !== '' ? $taxLabel : __trans($label)) . '</b> ' . $text($footer[$key]) . '<br>';
             }
         }
 

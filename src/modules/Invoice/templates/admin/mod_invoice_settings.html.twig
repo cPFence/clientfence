@@ -148,6 +148,17 @@
                             <small class="form-hint">{{ 'Attaches a PDF copy of the invoice to the created, paid, reminder, and overdue emails, so clients who pay by bank transfer can view it without logging in.'|trans }}</small>
                         </div>
                     </div>
+                    {# ClientFence: Tax Invoice and ABN for Australian GST invoices, for example (GitHub #9). #}
+                    <div class="col-lg-6">
+                        <label class="form-label" for="invoice_title">{{ 'Document Title'|trans }}</label>
+                        <input class="form-control" id="invoice_title" type="text" maxlength="60" name="invoice_title" value="{{ params.invoice_title|default('') }}" placeholder="{{ 'Invoice'|trans }}">
+                        <small class="form-hint">{{ 'Replaces "Invoice" in the PDF heading and on the client invoice pages, for example Tax Invoice. Leave empty to keep the default.'|trans }}</small>
+                    </div>
+                    <div class="col-lg-6">
+                        <label class="form-label" for="invoice_tax_label">{{ 'Tax Number Label'|trans }}</label>
+                        <input class="form-control" id="invoice_tax_label" type="text" maxlength="30" name="invoice_tax_label" value="{{ params.invoice_tax_label|default('') }}" placeholder="{{ 'VAT'|trans }}">
+                        <small class="form-hint">{{ 'Printed before your company tax number and the client tax number on invoices, for example ABN. Leave empty to keep the default VAT labels.'|trans }}</small>
+                    </div>
                 </div>
             </div>
             <div class="card-body border-top">

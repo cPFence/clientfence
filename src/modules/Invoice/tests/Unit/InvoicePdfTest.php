@@ -116,3 +116,16 @@ test('admin invoice PDFs reject a language that is not installed', function (): 
     expect(fn () => $controller->get_pdf($app, str_repeat('a', 32)))
         ->toThrow(ClientFence\InformationException::class, 'Language not found');
 });
+
+test('invoice PDFs use the Document Title and Tax Number Label settings when set (GitHub #9)', function (string $title, string $label, array $expected): void {
+    [$di, $data] = invoicePdfFixture('en_US');
+    $data['footer'] += ['invoice_title' => $title, 'tax_label' => $label];
+    $data['seller']['VAT Number'] = '12 345 678 901';
+    $data['buyer'] = ['Name' => 'Example Client', 'VAT Number' => '98 765 432 109'];
+    $html = (new ReflectionMethod(InvoicePdf::class, 'html'))->invoke(null, $di, $data, static fn (mixed $amount): string => (string) $amount, 'en_US');
+
+    expect($html)->toContain(...$expected);
+})->with([
+    'set' => ['Tax Invoice', 'ABN', ['>Tax Invoice CF-00001</h1>', 'ABN: 12 345 678 901', 'ABN: 98 765 432 109', '<b>ABN</b> VAT-123']],
+    'empty' => ['', '', ['>Invoice Number: CF-00001</h1>', 'VAT Number: 12 345 678 901', '<b>VAT ID</b> VAT-123']],
+]);

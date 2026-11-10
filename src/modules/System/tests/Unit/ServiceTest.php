@@ -49,6 +49,8 @@ test('getCompany returns company information', function (): void {
         'privacy_policy' => null,
         'tos' => null,
         'vat_number' => null,
+        'invoice_title' => '',
+        'tax_label' => '',
     ];
 
     $multParamsResults = [

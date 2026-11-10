@@ -14,8 +14,11 @@
 {% import 'partials/store_macros.html.twig' as sm %}
 
 {% set nr = invoice.serie_nr %}
+{# The Invoice settings' Document Title and Tax Number Label, such as Tax Invoice and ABN (GitHub #9). #}
+{% set company = guest.system_company %}
+{% set doc_title = company.invoice_title|default('') ?: 'Invoice'|trans %}
 
-{% block meta_title %}{{ 'Invoice'|trans }} #{{ nr }}{% endblock %}
+{% block meta_title %}{{ doc_title }} #{{ nr }}{% endblock %}
 {% block body_class %}invoice-invoice bf-invoice-page{% endblock %}
 
 {% block breadcrumb %}
@@ -57,7 +60,7 @@
     {% if client %}<a class="bf-linkbtn" href="{{ 'invoice'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'All invoices'|trans }}</a>{% endif %}
     <div class="bf-page-head">
         <div>
-            <h1 class="bf-page-title">{{ 'Invoice'|trans }} #{{ nr }}</h1>
+            <h1 class="bf-page-title">{{ doc_title }} #{{ nr }}</h1>
             <span class="bf-hint">
                 {{ 'Issued :date'|trans({ ':date': invoice.created_at|format_date }) }}{% if invoice.due_at|trim %} · {{ 'Due :date'|trans({ ':date': invoice.due_at|format_date }) }}{% endif %}{% if invoice.paid_at|trim %} · {{ 'Paid :date'|trans({ ':date': invoice.paid_at|format_date }) }}{% endif %}
             </span>
@@ -163,7 +166,7 @@
                         <dd>
                             {% if seller.company|trim %}<strong>{{ seller.company }}</strong><br>{% endif %}
                             {% if seller.address|trim %}{{ seller.address }}<br>{% endif %}
-                            {% if seller.company_vat|trim %}{{ 'VAT'|trans }} {{ seller.company_vat }}<br>{% endif %}
+                            {% if seller.company_vat|trim %}{{ company.tax_label|default('') ?: 'VAT'|trans }} {{ seller.company_vat }}<br>{% endif %}
                             {% if seller.phone|trim %}<bdi dir="ltr">{{ seller.phone }}</bdi><br>{% endif %}
                             {% if seller.email|trim %}{{ seller.email }}<br>{% endif %}
                             {% if seller.account_number|trim %}{{ 'Account'|trans }} {{ seller.account_number }}<br>{% endif %}
@@ -176,7 +179,7 @@
                             {% if buyer.first_name|trim or buyer.last_name|trim %}<strong>{{ buyer.first_name }} {{ buyer.last_name }}</strong><br>{% endif %}
                             {% if buyer.company|trim %}{{ buyer.company }}<br>{% endif %}
                             {% if buyer.company_number|trim %}{{ 'Company Number'|trans }} {{ buyer.company_number }}<br>{% endif %}
-                            {% if buyer.company_vat|trim %}{{ 'Company VAT'|trans }} {{ buyer.company_vat }}<br>{% endif %}
+                            {% if buyer.company_vat|trim %}{{ company.tax_label|default('') ?: 'Company VAT'|trans }} {{ buyer.company_vat }}<br>{% endif %}
                             {% if buyer.address|trim %}{{ buyer.address }}<br>{{ buyer.city }}{% if buyer.state|trim %}, {{ buyer.state }}{% endif %}<br>{{ buyer.zip }}{% if buyer.country|trim %}, {{ buyer.country|country_name }}{% endif %}<br>{% endif %}
                             {% if buyer.phone|trim %}<bdi dir="ltr">{{ buyer.phone }}</bdi>{% endif %}
                         </dd>

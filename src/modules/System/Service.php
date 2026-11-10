@@ -250,6 +250,8 @@ class Service
             'company_privacy_policy',
             'company_tos',
             'company_vat_number',
+            'invoice_title',
+            'invoice_tax_label',
         ];
         $results = $this->getSettingsByParams($c);
 
@@ -293,6 +295,9 @@ class Service
             'privacy_policy' => $results['company_privacy_policy'] ?? null,
             'tos' => $results['company_tos'] ?? null,
             'vat_number' => isset($results['company_vat_number']) ? (string) $results['company_vat_number'] : null,
+            // ClientFence core patch: an invoice title and tax number label, such as Tax Invoice and ABN (GitHub #9).
+            'invoice_title' => trim((string) ($results['invoice_title'] ?? '')),
+            'tax_label' => trim((string) ($results['invoice_tax_label'] ?? '')),
         ];
     }
 

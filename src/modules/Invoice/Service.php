@@ -3611,6 +3611,8 @@ class Service implements InjectionAwareInterface
             'address_1' => $company['address_1'] ?? null,
             'address_2' => $company['address_2'] ?? null,
             'address_3' => $company['address_3'] ?? null,
+            'invoice_title' => $company['invoice_title'] ?? '',
+            'tax_label' => $company['tax_label'] ?? '',
         ];
     }
 
