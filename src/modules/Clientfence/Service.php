@@ -257,6 +257,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
      */
     public const HOME_TABLES = [
         'client_note', 'client_file',
+        // ClientFence core patch: the Support PIN table belongs to Client.
+        'client_support_pin',
         'support_ticket_file', 'support_ticket_author',
         // ClientFence core patch: ticket secret tables belong to Support.
         'support_ticket_secret', 'support_ticket_secret_event',

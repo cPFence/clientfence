@@ -112,6 +112,11 @@
                                         <td class="w-50 text-end">{{ 'Client ID'|trans }}</td>
                                         <td>{{ client.id }}</td>
                                     </tr>
+                                    {# ClientFence core patch: the Support PIN staff check in chat or on the phone (Client/SupportPin.php). #}
+                                    <tr>
+                                        <td class="text-end">{{ 'Support PIN'|trans }}</td>
+                                        <td><span class="font-monospace">{{ admin.client_support_pin({ id: client.id }) }}</span>{% if can_edit_profile %} <a class="ms-2" href="{{ 'client/support_pin_new'|api_url(query: { id: client.id }) }}" {{ fb_api_link({ modal: { type: 'confirm', title: 'Make a new Support PIN?'|trans, content: 'The current PIN stops working.'|trans }, reload: true }) }}>{{ 'New PIN'|trans }}</a>{% endif %}</td>
+                                    </tr>
                                     {% if client.aid %}
                                     <tr>
                                         <td class="text-end">{{ 'Custom Client ID'|trans }}</td>

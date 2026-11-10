@@ -4966,5 +4966,45 @@
     {
         "file": "library/ClientFence/Api/Dispatcher.php",
         "done": "ClientFence core patch: product_translations_get checks the permission of each kind's own module (help desks:"
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "ClientFence core patch: the account's Support PIN for staff to confirm who they talk to (SupportPin.php)."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: staff read the client's Support PIN (SupportPin.php) and make a new one."
+    },
+    {
+        "file": "modules/Client/Users.php",
+        "done": "ClientFence core patch: the Support PIN shows on the dashboard; a new one changes the account."
+    },
+    {
+        "file": "modules/Clientfence/Service.php",
+        "done": "ClientFence core patch: the Support PIN table belongs to Client."
+    },
+    {
+        "file": "modules/Clientfence/schema.json",
+        "done": "ClientFence core patch: register client Support PINs."
+    },
+    {
+        "file": "modules/Clientfence/Migrations.php",
+        "done": "ClientFence core patch: existing installs create the Support PIN table before use."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: the client's Support PIN (Client/SupportPin.php)."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the Support PIN table migration."
+    },
+    {
+        "file": "themes/palisade/html/mod_index_dashboard.html.twig",
+        "done": "ClientFence core patch: the Support PIN staff ask for in chat or on the phone (Client/SupportPin.php)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the Support PIN staff check in chat or on the phone (Client/SupportPin.php)."
     }
 ]

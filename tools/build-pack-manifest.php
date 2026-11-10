@@ -98,6 +98,7 @@ $paths = [
     'modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig',
     'modules/Client/Users.php',
     'modules/Client/Notes.php',
+    'modules/Client/SupportPin.php',
     'modules/Client/Files.php',
     'modules/Client/templates/admin/mod_client_summary_cards.html.twig',
     'modules/Client/TwoFactor.php',

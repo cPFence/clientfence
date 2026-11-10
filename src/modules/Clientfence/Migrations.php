@@ -29,6 +29,7 @@ final class Migrations
         3 => 'm3Privacy',
         4 => 'm4ClientRecords',
         5 => 'm5TicketSecrets',
+        6 => 'm6SupportPin',
     ];
 
     public static function latest(): int
@@ -129,6 +130,12 @@ final class Migrations
 
     // ClientFence core patch: existing installs create the ticket secret tables before use.
     private static function m5TicketSecrets(\Pimple\Container $di): void
+    {
+        Service::ensureTables($di, true);
+    }
+
+    // ClientFence core patch: existing installs create the Support PIN table before use.
+    private static function m6SupportPin(\Pimple\Container $di): void
     {
         Service::ensureTables($di, true);
     }

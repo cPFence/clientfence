@@ -32,9 +32,22 @@
     {% set dashboard = client.index_get_dashboard %}
     {% set profile = dashboard.profile %}
 
-    <div class="page-heading">
-        <h1>{{ 'Welcome back, :name'|trans({ ':name': clientfence_user|default(null) ? clientfence_user.user.first_name : profile.first_name }) }}</h1>
-        <p>{{ 'Here is an overview of your account.'|trans }}</p>
+    <div class="page-heading d-flex flex-wrap justify-content-between align-items-start gap-3">
+        <div>
+            <h1>{{ 'Welcome back, :name'|trans({ ':name': clientfence_user|default(null) ? clientfence_user.user.first_name : profile.first_name }) }}</h1>
+            <p>{{ 'Here is an overview of your account.'|trans }}</p>
+        </div>
+        {# ClientFence core patch: the Support PIN staff ask for in chat or on the phone (Client/SupportPin.php). #}
+        <div class="text-md-end">
+            <div class="small text-muted">{{ 'Support PIN'|trans }}</div>
+            <div class="fs-3 fw-semibold font-monospace">{{ client.client_support_pin }}</div>
+            <div class="small text-muted">
+                {{ 'Staff may ask for it to confirm who you are.'|trans }}
+                {% if not clientfence_user|default(null) or clientfence_user.owner or 'profile' in clientfence_user.permissions %}
+                    <a href="{{ 'client/support_pin_new'|api_url }}" {{ fb_api_link({ modal: { type: 'confirm', title: 'Make a new Support PIN?'|trans, content: 'The current PIN stops working.'|trans }, reload: true }) }}>{{ 'New PIN'|trans }}</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
     {{ render_widgets('client.index.dashboard.client.before', { 'dashboard': dashboard, 'profile': profile }) }}

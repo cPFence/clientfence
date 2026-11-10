@@ -95,6 +95,8 @@ final class Users
             'google_status' => '*', 'google_link' => '*', 'google_unlink' => '*',
             // The account's contacts (Contacts.php).
             'contacts_get_list' => 'contacts', 'contacts_save' => 'contacts', 'contacts_delete' => 'contacts',
+            // ClientFence core patch: the Support PIN shows on the dashboard; a new one changes the account.
+            'support_pin' => '*', 'support_pin_new' => 'profile',
             // users_* (the Users page) are not listed: the owner and owner links only.
         ],
         'email' => ['get_list' => 'emails', 'get' => 'emails', 'resend' => 'emails', 'delete' => 'emails'],

@@ -22,6 +22,7 @@ use ClientFence\PaginationOptions;
 use ClientFence\Mod\Client\Google;
 use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Client\Contacts;
+use ClientFence\Mod\Client\SupportPin;
 use ClientFence\Mod\Client\Users;
 
 class Client extends \ClientFence\Api\AbstractApi
@@ -349,6 +350,18 @@ class Client extends \ClientFence\Api\AbstractApi
         \ClientFence\Mod\Client\Privacy::setOptOut($this->getDi(), (int) $this->getIdentity()->id, !$on, 'profile');
 
         return true;
+    }
+
+    /** ClientFence core patch: the account's Support PIN for staff to confirm who they talk to (SupportPin.php). */
+    public function support_pin(): string
+    {
+        return SupportPin::get($this->getDi(), $this->onClientId());
+    }
+
+    /** Makes a new random Support PIN and returns it. */
+    public function support_pin_new(): string
+    {
+        return SupportPin::renew($this->getDi(), $this->onClientId());
     }
 
     /** ClientFence: asks staff to delete the account (a ticket); returns the ticket id. */

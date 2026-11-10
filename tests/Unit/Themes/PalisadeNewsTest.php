@@ -26,6 +26,7 @@ final class PalisadeNewsStub
             'news_get_list' => ['list' => $this->posts, 'pages' => $this->pages, 'total' => count($this->posts) * $this->pages, 'per_page' => $args[0]['per_page']],
             'index_get_dashboard' => ['profile' => ['first_name' => 'Ann'], 'orders' => null, 'invoices' => null, 'tickets' => null, 'recent_tickets' => []],
             'system_current_url' => '/news',
+            'client_support_pin' => '01234567',
             default => [],
         };
     }
@@ -44,7 +45,9 @@ function renderPalisadeNews(string $template, PalisadeNewsStub $guest): string
         $twig->addFilter(new TwigFilter($filter, static fn (?string $value): string => (string) $value));
     }
     $twig->addFilter(new TwigFilter('truncate', static fn (?string $text, int $length): string => mb_substr((string) $text, 0, $length)));
+    $twig->addFilter(new TwigFilter('api_url', static fn (string $path): string => '/api/client/' . $path));
     $twig->addFunction(new TwigFunction('render_widgets', static fn (): string => ''));
+    $twig->addFunction(new TwigFunction('fb_api_link', static fn (): string => ''));
 
     return $twig->render($template, ['client' => $guest, 'guest' => $guest, 'request' => ['page' => 1], 'settings' => []]);
 }

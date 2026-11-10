@@ -36,7 +36,14 @@ test('authorized users can call product actions with their assigned permission',
 })->with([
     'API key allowed IPs' => ['serviceapikey', 'update_ips', 'manageproducts'],
     'order options quote' => ['order', 'upgrade_options_quote', 'products'],
+    'new Support PIN' => ['client', 'support_pin_new', 'profile'],
 ]);
+
+test('authorized users see the Support PIN but need the profile permission for a new one', function (): void {
+    expect(Users::checkCall($this->di, $this->client, 'client', 'support_pin'))->toBeNull()
+        ->and(fn () => Users::checkCall($this->di, $this->client, 'client', 'support_pin_new'))
+        ->toThrow(InformationException::class, 'Ask the account owner for access.');
+});
 
 test('invoice access does not allow a sub-user to list or accept quotes', function (): void {
     expect(fn () => Users::checkCall($this->di, $this->client, 'invoice', 'quote_get_list'))

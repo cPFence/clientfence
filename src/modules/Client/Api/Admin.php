@@ -28,6 +28,7 @@ use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Locales;
 use ClientFence\Mod\Client\Contacts;
 use ClientFence\Mod\Client\Google;
+use ClientFence\Mod\Client\SupportPin;
 use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Client\Users;
 
@@ -691,6 +692,23 @@ class Admin extends \ClientFence\Api\AbstractApi
         \ClientFence\Mod\Client\Notes::delete($this->getDi(), (int) $data['id']);
 
         return true;
+    }
+
+    // ClientFence core patch: staff read the client's Support PIN (SupportPin.php) and make a new one.
+    #[RequiredParams(['id' => 'Client ID is missing'])]
+    public function support_pin($data): string
+    {
+        $this->checkPermissions('client', 'view');
+
+        return SupportPin::get($this->getDi(), (int) $data['id']);
+    }
+
+    #[RequiredParams(['id' => 'Client ID is missing'])]
+    public function support_pin_new($data): string
+    {
+        $this->checkPermissions('client', 'edit_profile');
+
+        return SupportPin::renew($this->getDi(), (int) $data['id']);
     }
 
     #[RequiredParams(['client_id' => 'Client ID is missing'])]
