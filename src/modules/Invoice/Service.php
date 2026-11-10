@@ -535,7 +535,7 @@ class Service implements InjectionAwareInterface
         try {
             $invoiceModel = $di['db']->load('Invoice', $params['id'] ?? 0);
 
-            if (($params['total'] ?? 0) > 0
+            if (($params['total'] ?? 0) > 0 && empty($params['skip_email'])
                 && ($params['status'] ?? null) !== \Model_Invoice::STATUS_PAID
                 && isset($params['client']['id'])
             ) {
@@ -1269,7 +1269,10 @@ class Service implements InjectionAwareInterface
             $this->tryPayWithCredits($invoice);
         }
 
-        $this->di['events_manager']->fire(['event' => 'onAfterAdminInvoiceApprove', 'params' => $this->toApiArray($invoice, true, null, true)]);
+        $params = $this->toApiArray($invoice, true, null, true);
+        // ClientFence core patch: staff Add New Order may issue the invoice without its email (WHMCS "Send Email").
+        $params['skip_email'] = ($data['send_email'] ?? true) === false;
+        $this->di['events_manager']->fire(['event' => 'onAfterAdminInvoiceApprove', 'params' => $params]);
 
         $this->di['logger']->info("Approved invoice {$invoice->id}.");
 

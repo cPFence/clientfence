@@ -1,6 +1,6 @@
 <ul class="menu_body">
     {% if admin.system_is_allowed({ 'mod': 'order' }) %}
-    <li><a href="{{ 'order#tab-new'|url }}">{{ 'Order'|trans }}</a></li>
+    <li><a href="{{ 'order/new'|url }}">{{ 'Order'|trans }}</a></li>
     {% endif %}
 
     {% if admin.system_is_allowed({ 'mod': 'invoice' }) %}

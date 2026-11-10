@@ -2526,6 +2526,36 @@ test('prepareCartProductConfig strips client-supplied admin-controlled keys', fu
     expect($result)->not->toHaveKey('reseller');
 });
 
+test('prepareCartProductConfig keeps staff fields and skips the order form check for a staff order', function (bool $staff): void {
+    $service = new Service();
+    $product = productTestCreateProductEntity(1)->setType('custom')->setConfig('{}');
+    $customService = new class {
+        public int $formChecks = 0;
+
+        public function clientSettableConfigKeys(): array
+        {
+            return ['period'];
+        }
+
+        public function validateCustomForm(array $config, array $product): void
+        {
+            ++$this->formChecks;
+        }
+    };
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $serviceName): object => match ($serviceName) {
+        'servicecustom' => $customService,
+        'extension' => extensionServiceWithoutClientfence(),
+        default => throw new RuntimeException('Unexpected service request ' . $serviceName),
+    });
+    $service->setDi($di);
+
+    $result = $service->prepareCartProductConfig($product, ['period' => '1M', 'import' => 1, 'username' => 'old'], $staff);
+
+    expect(isset($result['import'], $result['username']))->toBe($staff)
+        ->and($customService->formChecks)->toBe($staff ? 0 : 1);
+})->with(['staff order' => [true], 'client cart' => [false]]);
+
 test('prepareCartProductConfig preserves all allowlisted client keys', function (): void {
     $service = new Service();
 

@@ -8,12 +8,12 @@
 {# ClientFence core patch: a status filter alone keeps the counter cards (the ClientFence admin frame filters the list in place). #}
 {% set filter_panel_open = request_has_filters and request_query|filter((v, k) => k not in ['status', 'page', 'per_page', 'search'])|length > 0 %}
 {% set new_order_action %}
-    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newOrderModal">
+    <a class="btn btn-primary" href="{{ 'order/new'|url }}">
         <svg class="icon">
             <use href="#plus" />
         </svg>
         {{ 'New Order'|trans }}
-    </button>
+    </a>
 {% endset %}
 
 {% block meta_title %}{{ 'Orders'|trans }}{% endblock %}
@@ -283,45 +283,6 @@
                     </div>
                 </div>
 
-            <div class="modal modal-blur fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <form class="modal-content" method="post" action="{{ 'order/new'|url }}">
-                        <div class="modal-header">
-                            <h3 class="modal-title" id="newOrderModalLabel">{{ 'Create New Order'|trans }}</h3>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label" for="client_id">{{ 'Client'|trans }}</label>
-                                {% if not request.client_id %}
-                                    <select class="form-control autocomplete-selector"
-                                            placeholder="{{ 'Start typing the client name or ID'|trans }}"
-                                            id="client_id"
-                                            name="client_id"
-                                            data-resturl="/api/admin/client/get_pairs"
-                                            required aria-required="true">
-                                    </select>
-                                {% else %}
-                                    {% set client = admin.client_get({ 'id': request.client_id }) %}
-                                    <input type="text" id="client_id" class="form-control" disabled value="{{ client.first_name }} {{ client.last_name }}" />
-                                    <input type="hidden" name="client_id" value="{{ request.client_id }}" />
-                                {% endif %}
-                            </div>
-                            <div class="mb-0">
-                                <label class="form-label" for="product_id">{{ 'Product'|trans }}</label>
-                                {{ mf.selectbox('product_id', admin.product_get_pairs, request.product_id, 1) }}
-                            </div>
-                            {% if request.client_id %}
-                                <input type="hidden" name="client_id" value="{{ request.client_id }}">
-                            {% endif %}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
-                            <button type="submit" class="btn btn-primary">{{ 'Continue'|trans }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
         </div>
     </div>
@@ -370,29 +331,4 @@
     </div>
 {% endblock %}
 
-{% block js %}
-<script nonce="{{ csp_nonce }}">
-document.addEventListener('DOMContentLoaded', function () {
-    const modalElement = document.getElementById('newOrderModal');
-    if (!modalElement) {
-        return;
-    }
 
-    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-
-    if (window.location.hash === '#tab-new') {
-        modal.show();
-    }
-
-    modalElement.addEventListener('hidden.bs.modal', function () {
-        if (window.location.hash !== '#tab-new') {
-            return;
-        }
-
-        const url = new URL(window.location.href);
-        url.hash = '';
-        window.history.replaceState({}, '', url);
-    });
-});
-</script>
-{% endblock %}

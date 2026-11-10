@@ -98,7 +98,7 @@ msgstr ""
 msgid "(not set)"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_domain_fields.html.twig …
+#: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig …
 msgid "(optional)"
 msgstr ""
 
@@ -558,6 +558,14 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid ":limit; 256M or more is recommended."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid ":n year"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid ":n years"
 msgstr ""
 
 #: src/modules/Product/Options.php
@@ -1308,10 +1316,6 @@ msgstr ""
 msgid "Activate"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Activate Order"
-msgstr ""
-
 #: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Activated At"
 msgstr ""
@@ -1350,6 +1354,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Active services and active clients in each country."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Active sets the services up now, before payment."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -1448,7 +1456,7 @@ msgstr ""
 msgid "Add New Form"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Add New Order"
 msgstr ""
 
@@ -1488,12 +1496,24 @@ msgstr ""
 msgid "Add a hidden form field that bots typically fill out but humans do not. Registration fails when that field is submitted."
 msgstr ""
 
+#: src/modules/Cart/Service.php
+msgid "Add a product or a domain to the order."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Add a reply"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Add and continue"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Add another domain"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Add another product"
 msgstr ""
 
 #: src/modules/Clientfence/SignInSecurity.php
@@ -2784,6 +2804,10 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Any payment method"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
 msgid "Any price"
 msgstr ""
@@ -2872,12 +2896,12 @@ msgstr ""
 msgid "Apply Patches & Update Configuration"
 msgstr ""
 
-#: src/themes/palisade/html/mod_invoice_invoice.html.twig
-msgid "Apply credit"
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Apply client credit (:amount)"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Apply the credit to this order, up to its total. Anything left is due as usual."
+#: src/themes/palisade/html/mod_invoice_invoice.html.twig
+msgid "Apply credit"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -3464,7 +3488,7 @@ msgstr ""
 msgid "Billing Settings"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_index.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_configure.html.twig
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/themes/palisade/html/mod_order_index.html.twig src/themes/palisade/html/mod_order_product.html.twig …
 msgid "Billing cycle"
 msgstr ""
 
@@ -4320,6 +4344,10 @@ msgstr ""
 msgid "Choose a category, set the article status, and draft the knowledge base content."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Choose a client to see the prices."
+msgstr ""
+
 #: src/modules/Invoice/Quotes.php
 msgid "Choose a client, or enter the first name and email of the prospect."
 msgstr ""
@@ -4488,10 +4516,6 @@ msgstr ""
 msgid "Choose how the next service expiration date is calculated after a renewal payment is received."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Choose how the order should be invoiced and whether it should be activated immediately."
-msgstr ""
-
 #: src/modules/Order/BulkPrices.php
 msgid "Choose how to set the new price."
 msgstr ""
@@ -4570,6 +4594,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "Choose the option groups clients pick from when they order this product. Their prices are added to the product price."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Choose the payment method the client paid with. The Custom payment gateway needs a transaction ID."
 msgstr ""
 
 #: src/modules/Support/NetworkIssues.php
@@ -4728,10 +4756,6 @@ msgstr ""
 msgid "Client Credentials"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Client Credit"
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Client Details at Time of Purchase"
 msgstr ""
@@ -4832,7 +4856,7 @@ msgstr ""
 msgid "Client controller class for the module :mod was not found."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Invoice/Api/Admin.php
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Invoice/Api/Admin.php src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Client credit"
 msgstr ""
 
@@ -5476,10 +5500,6 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Confirm that the first invoice has already been paid by the client"
-msgstr ""
-
 #: src/modules/Servicehosting/Api/Client.php
 msgid "Confirm that you want to restore this backup."
 msgstr ""
@@ -5564,7 +5584,7 @@ msgstr ""
 msgid "Content was not passed"
 msgstr ""
 
-#: src/modules/Client/Controller/Client.php src/modules/Invoice/Controller/Client.php src/modules/Order/templates/admin/mod_order_index.html.twig …
+#: src/modules/Client/Controller/Client.php src/modules/Invoice/Controller/Client.php src/modules/System/templates/admin/mod_system_update.html.twig …
 msgid "Continue"
 msgstr ""
 
@@ -5942,10 +5962,6 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
 msgid "Create New Invoice"
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Create New Order"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_index.html.twig
@@ -7004,10 +7020,6 @@ msgstr ""
 msgid "Do Not Show Form Title"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Do not apply credit. The client pays this order with their payment method."
-msgstr ""
-
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Do not import"
 msgstr ""
@@ -7032,7 +7044,7 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: src/modules/Product/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig …
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Product/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig …
 msgid "Domain"
 msgstr ""
 
@@ -7308,8 +7320,12 @@ msgstr ""
 msgid "Domain unlocked"
 msgstr ""
 
-#: src/modules/Client/Contacts.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig …
+#: src/modules/Client/Contacts.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig …
 msgid "Domains"
+msgstr ""
+
+#: src/modules/Cart/Service.php
+msgid "Domains are not sold in this store."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -7446,6 +7462,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php
 msgid "Dynadot search failed: :error"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "EPP / auth code"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
@@ -8110,6 +8130,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Enter a client ID to see the client's statement."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Enter a domain with a TLD this store sells:"
 msgstr ""
 
 #: src/modules/Support/TicketSecrets.php
@@ -9204,6 +9228,10 @@ msgstr ""
 msgid "For light backgrounds. Wide, up to 1200 × 400."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "For product :n (:title)."
+msgstr ""
+
 #: src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "For renewal or any change to this domain, open a support ticket."
 msgstr ""
@@ -9526,6 +9554,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Generate due invoices for this client now?"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Generate invoice"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -10484,6 +10516,10 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Import an existing account from the server (do not create it)"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Import anyway"
 msgstr ""
@@ -10630,10 +10666,6 @@ msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
 msgid "Information:"
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Initial Invoice Handling"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
@@ -11024,7 +11056,7 @@ msgstr ""
 msgid "Invoice Number Padding Length"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
+#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Invoice Option"
 msgstr ""
 
@@ -11596,7 +11628,7 @@ msgstr ""
 msgid "Leave blank to automatically set"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_order.html.twig
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_order.html.twig
 msgid "Leave blank to generate"
 msgstr ""
 
@@ -11626,6 +11658,14 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Leave blank to use company public name"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for no promotion."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the normal price."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig src/modules/Invoice/templates/admin/mod_invoice_taxupdate.html.twig
@@ -12704,6 +12744,10 @@ msgstr ""
 msgid "Mark as read"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Mark the invoice as paid"
+msgstr ""
+
 #: src/modules/Page/templates/client/mod_page_preview_markdown.html.twig
 msgid "Markdown preview"
 msgstr ""
@@ -13528,6 +13572,10 @@ msgstr ""
 msgid "New clients"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "New domain"
+msgstr ""
+
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig
 msgid "New field"
 msgstr ""
@@ -13880,6 +13928,10 @@ msgstr ""
 msgid "No domain is registered with us for this service."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "No domains in this order."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "No edit history for this message yet."
 msgstr ""
@@ -13966,6 +14018,10 @@ msgstr ""
 
 #: src/themes/admin_default/html/partial_batch_delete.html.twig
 msgid "No items selected"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "No items yet. Add a product or a domain."
 msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_index.html.twig
@@ -14058,6 +14114,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
 msgid "No products."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "No products. Add one, or order domains only."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig src/themes/palisade/html/mod_invoice_quotes.html.twig
@@ -15096,10 +15156,6 @@ msgstr ""
 msgid "Order Notes"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Order Options"
-msgstr ""
-
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "Order Page (via ID)"
 msgstr ""
@@ -15116,7 +15172,7 @@ msgstr ""
 msgid "Order Status"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Order Summary"
 msgstr ""
 
@@ -15148,7 +15204,7 @@ msgstr ""
 msgid "Order config not passed"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Order details"
 msgstr ""
 
@@ -15184,7 +15240,7 @@ msgstr ""
 msgid "Order now"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Order status"
 msgstr ""
 
@@ -16096,7 +16152,7 @@ msgstr ""
 msgid "Payment instructions"
 msgstr ""
 
-#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_client_balance.html.twig src/themes/palisade/html/mod_order_product.html.twig …
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_client_balance.html.twig …
 msgid "Payment method"
 msgstr ""
 
@@ -16168,7 +16224,7 @@ msgstr ""
 msgid "Pays invoices automatically"
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_update.html.twig
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Pending"
 msgstr ""
 
@@ -16310,10 +16366,6 @@ msgstr ""
 
 #: src/modules/Notification/templates/admin/mod_notification_index.html.twig
 msgid "Pinned until :date"
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Place New Order"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -16668,6 +16720,10 @@ msgstr ""
 msgid "Price for Period"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Price override"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_index.html.twig
 msgid "Priced choices on a product, such as more memory or extra IPs. Make a group, add its options, then attach it to products on their Options tab."
 msgstr ""
@@ -16694,6 +16750,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_currency_prices.html.twig
 msgid "Prices in other currencies"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Prices include :tax"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
@@ -16840,6 +16900,10 @@ msgstr ""
 msgid "Product"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Product / service"
+msgstr ""
+
 #: src/modules/Order/Service.php src/modules/Product/Service.php
 msgid "Product :id is out of stock."
 msgstr ""
@@ -16912,10 +16976,6 @@ msgstr ""
 msgid "Product groups"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Product is disabled in configuration"
-msgstr ""
-
 #: src/modules/Servicedownloadable/Service.php
 msgid "Product is not configured completely."
 msgstr ""
@@ -16972,7 +17032,7 @@ msgstr ""
 msgid "Products and prices"
 msgstr ""
 
-#: src/modules/Clientfence/Setup.php
+#: src/modules/Clientfence/Setup.php src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Products and services"
 msgstr ""
 
@@ -17052,12 +17112,20 @@ msgstr ""
 msgid "Promo value is missing"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Promotion (:code)"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Promotion Behavior"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "Promotion Limitations"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Promotion code"
 msgstr ""
 
 #: src/modules/Product/Service.php
@@ -17168,7 +17236,7 @@ msgstr ""
 msgid "Quantities are whole numbers. Tax follows the client's tax rule; totals with tax are shown after saving."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_options.html.twig …
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig …
 msgid "Quantity"
 msgstr ""
 
@@ -17708,8 +17776,12 @@ msgstr ""
 msgid "Region:"
 msgstr ""
 
-#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig …
+#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig …
 msgid "Register"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Register :domain too"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig
@@ -17730,6 +17802,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "Registered on"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Registered or transferred with this order (see Domains)."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -17818,6 +17894,10 @@ msgstr ""
 
 #: src/modules/Antispam/Service.php
 msgid "Registration failed."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Registration period"
 msgstr ""
 
 #: src/modules/Servicedomain/Service.php
@@ -18174,14 +18254,6 @@ msgstr ""
 
 #: src/modules/Servicedomain/Service.php
 msgid "Required field state is missing"
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Required when marking the invoice as paid during order creation."
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Required when using the Custom payment gateway."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -19180,7 +19252,7 @@ msgstr ""
 msgid "Select Hosting Plan"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig …
+#: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "Select Payment Gateway"
 msgstr ""
 
@@ -19272,10 +19344,6 @@ msgstr ""
 msgid "Selected orders must belong to one client"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Selected price is 0.00"
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
 msgid "Selected products to be added as invoice items"
 msgstr ""
@@ -19358,6 +19426,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "Send invitation"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Send invoice email"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
@@ -19844,7 +19916,7 @@ msgstr ""
 msgid "Setup Price"
 msgstr ""
 
-#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Setup fee"
 msgstr ""
 
@@ -20424,7 +20496,7 @@ msgstr ""
 msgid "Start the import"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Start typing the client name or ID"
 msgstr ""
 
@@ -20598,6 +20670,10 @@ msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Submit New Support Ticket"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Submit Order"
 msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_manage.html.twig
@@ -21600,7 +21676,7 @@ msgstr ""
 msgid "The client group that can order was not found."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The client has :amount of credit."
 msgstr ""
 
@@ -21630,6 +21706,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "The clients who paid most, net of refunds."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "The client’s own domain, or register or transfer it with this order."
 msgstr ""
 
 #: src/modules/Client/TwoFactor.php
@@ -23017,6 +23097,10 @@ msgstr ""
 msgid "This promotion code already exists."
 msgstr ""
 
+#: src/modules/Cart/Service.php
+msgid "This promotion code cannot be used for this client."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "This promotion has redemption history and can no longer be deleted. Disable it to archive it."
 msgstr ""
@@ -23585,6 +23669,10 @@ msgstr ""
 msgid "Total Duration"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Total due today"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Total in"
 msgstr ""
@@ -23717,8 +23805,12 @@ msgstr ""
 msgid "Transactions Received"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig …
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig …
 msgid "Transfer"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Transfer :domain too"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
@@ -24791,10 +24883,6 @@ msgstr ""
 
 #: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_manage.html.twig
 msgid "Use this function to replace the existing order file. The client will be able to download the new file from the client area."
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Use this only when the client has already completed payment outside the standard order flow."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
@@ -26551,10 +26639,6 @@ msgstr ""
 
 #: src/modules/Clientfence/Backups.php
 msgid "email"
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "for"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Internetbs.php

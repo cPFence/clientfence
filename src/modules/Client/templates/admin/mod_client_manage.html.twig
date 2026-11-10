@@ -553,7 +553,7 @@
                 card_class: 'm-3'
             } %}
                 {% block section_action %}
-                    <a href="{{ 'order'|url(query: { 'client_id': client.id }) }}#tab-new" class="btn btn-primary">
+                    <a href="{{ 'order/new'|url(query: { 'client_id': client.id }) }}" class="btn btn-primary">
                         <svg class="icon">
                             <use href="#plus" />
                         </svg>

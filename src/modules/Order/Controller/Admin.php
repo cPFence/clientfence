@@ -72,7 +72,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/order/failed-actions', 'get_failed_actions', [], static::class);
         // ClientFence: bulk price update, with its preview (BulkPrices.php).
         $app->get('/order/bulk-prices', 'get_bulk_prices', [], static::class);
-        $app->post('/order/new', 'get_new', [], static::class);
+        // ClientFence core patch: Add New Order is one page for a client's products and domains (WHMCS).
+        $app->get('/order/new', 'get_new', [], static::class);
     }
 
     /**
@@ -111,13 +112,10 @@ class Admin implements \ClientFence\InjectionAwareInterface
 
     public function get_new(\ClientFence\App $app): string
     {
-        $api = $this->di['api_admin'];
+        $this->di['is_admin_logged'];
+        $clientId = (int) $app->getRequest()->query->get('client_id');
 
-        $request = $app->getRequest();
-        $product = $api->product_get(['id' => $request->request->get('product_id')]);
-        $client = $api->client_get(['id' => $request->request->get('client_id')]);
-
-        return $app->render('mod_order_new', ['product' => $product, 'client' => $client]);
+        return $app->render('mod_order_new', ['client' => $clientId > 0 ? $this->di['api_admin']->client_get(['id' => $clientId]) : null]);
     }
 
     public function get_order(\ClientFence\App $app, $id): string

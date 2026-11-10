@@ -19,67 +19,40 @@ test('register configures routes', function (): void {
     $controller = new Admin();
     $boxAppMock = Mockery::mock('ClientFence\App');
     $boxAppMock->shouldReceive('get')->atLeast()->once();
-    $boxAppMock->shouldReceive('post')->atLeast()->once();
 
     $controller->register($boxAppMock);
 });
 
-test('get new forwards product and client ids from request body', function (): void {
+test('get new loads the client from the query', function (): void {
     $controller = new Admin();
     $di = container();
+    $di['is_admin_logged'] = true;
 
-    $product = ['id' => 7, 'title' => 'Shared Hosting'];
     $client = ['id' => 9, 'email' => 'client@example.com'];
-
     $apiAdmin = Mockery::mock();
-    $apiAdmin->shouldReceive('product_get')
-        ->once()
-        ->with(['id' => '7'])
-        ->andReturn($product);
-    $apiAdmin->shouldReceive('client_get')
-        ->once()
-        ->with(['id' => '9'])
-        ->andReturn($client);
+    $apiAdmin->shouldReceive('client_get')->once()->with(['id' => 9])->andReturn($client);
     $di['api_admin'] = $apiAdmin;
-
     $controller->setDi($di);
 
-    $request = Request::create('/order/new', 'POST', [
-        'product_id' => '7',
-        'client_id' => '9',
-    ]);
-
     $boxAppMock = Mockery::mock('ClientFence\App');
-    $boxAppMock->shouldReceive('getRequest')->once()->andReturn($request);
-    $boxAppMock->shouldReceive('render')
-        ->once()
-        ->with('mod_order_new', ['product' => $product, 'client' => $client])
-        ->andReturn('rendered');
+    $boxAppMock->shouldReceive('getRequest')->once()->andReturn(Request::create('/order/new', 'GET', ['client_id' => '9']));
+    $boxAppMock->shouldReceive('render')->once()->with('mod_order_new', ['client' => $client])->andReturn('rendered');
 
-    $result = $controller->get_new($boxAppMock);
-    expect($result)->toBe('rendered');
+    expect($controller->get_new($boxAppMock))->toBe('rendered');
 });
 
-test('get new forwards null ids when request body is empty', function (): void {
+test('get new opens without a client', function (): void {
     $controller = new Admin();
     $di = container();
-
+    $di['is_admin_logged'] = true;
     $apiAdmin = Mockery::mock();
-    $apiAdmin->shouldReceive('product_get')->once()->with(['id' => null])->andReturn(null);
-    $apiAdmin->shouldReceive('client_get')->once()->with(['id' => null])->andReturn(null);
+    $apiAdmin->shouldNotReceive('client_get');
     $di['api_admin'] = $apiAdmin;
-
     $controller->setDi($di);
 
-    $request = Request::create('/order/new', 'POST');
-
     $boxAppMock = Mockery::mock('ClientFence\App');
-    $boxAppMock->shouldReceive('getRequest')->once()->andReturn($request);
-    $boxAppMock->shouldReceive('render')
-        ->once()
-        ->with('mod_order_new', ['product' => null, 'client' => null])
-        ->andReturn('rendered');
+    $boxAppMock->shouldReceive('getRequest')->once()->andReturn(Request::create('/order/new'));
+    $boxAppMock->shouldReceive('render')->once()->with('mod_order_new', ['client' => null])->andReturn('rendered');
 
-    $result = $controller->get_new($boxAppMock);
-    expect($result)->toBe('rendered');
+    expect($controller->get_new($boxAppMock))->toBe('rendered');
 });

@@ -128,6 +128,29 @@ test('rejects marking an order invoice paid when staff have invoice access witho
     ]))->toThrow(ClientFence\InformationException::class, 'invoice.manage_invoices');
 });
 
+test('create_many refuses to mark an invoice paid without its permission or without an invoice', function (bool $canPay, array $data, string $message): void {
+    $api = apiEndpoint(new Admin());
+    $cartServiceMock = Mockery::mock(ClientFence\Mod\Cart\Service::class);
+    $cartServiceMock->shouldReceive('staffOrder')->never();
+    $staffServiceMock = Mockery::mock(ClientFence\Mod\Staff\Service::class)->makePartial();
+    $staffServiceMock->shouldReceive('hasPermission')->byDefault()->andReturn(true);
+    $staffServiceMock->shouldReceive('hasPermission')->with(Mockery::any(), 'invoice', 'manage_invoices', null)->andReturn($canPay);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name): Mockery\MockInterface => match (strtolower($name)) {
+        'staff' => $staffServiceMock,
+        'cart' => $cartServiceMock,
+        default => Mockery::mock()->shouldIgnoreMissing(),
+    });
+    $api->setDi($di);
+
+    expect(fn () => $api->create_many(['client_id' => 1, 'items' => [['product_id' => 1]], 'mark_invoice_paid' => 1, 'gateway_id' => 5] + $data))
+        ->toThrow(ClientFence\InformationException::class, $message);
+})->with([
+    'no permission' => [false, [], 'invoice.manage_invoices'],
+    'no invoice' => [true, ['invoice' => 0], 'requires the order to issue an invoice'],
+]);
+
 test('uses invoice service to validate mark paid request when permission granted', function (): void {
     $api = apiEndpoint(new Admin());
 

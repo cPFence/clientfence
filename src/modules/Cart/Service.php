@@ -39,6 +39,12 @@ class Service implements InjectionAwareInterface
     /** ClientFence: the currency cartProductToApiArray() prices an item in (Product/CurrencyPrices.php). */
     private ?string $priceCurrency = null;
 
+    /** ClientFence: staff price overrides (Add New Order) by cart product id, in the cart's units; set only by staffOrder(). */
+    private array $staffPrices = [];
+
+    /** ClientFence: true while staffOrder() fills its cart, for the onBeforeProductAddedToCart listeners. */
+    private bool $staffOrder = false;
+
     public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
@@ -326,7 +332,8 @@ class Service implements InjectionAwareInterface
 
     public function addItem(Cart|\Model_Cart $cart, Product $product, array $data): bool
     {
-        $event_params = [...$data, 'cart_id' => $this->cartId($cart), 'product_id' => $this->getProductId($product)];
+        // ClientFence core patch: staff_order is set last, so a client's cart data cannot claim it.
+        $event_params = [...$data, 'cart_id' => $this->cartId($cart), 'product_id' => $this->getProductId($product), 'staff_order' => $this->staffOrder];
         $this->di['events_manager']->fire(['event' => 'onBeforeProductAddedToCart', 'params' => $event_params]);
 
         $productService = $this->getProductService()->getProductModuleService($product);
@@ -426,7 +433,7 @@ class Service implements InjectionAwareInterface
 
         foreach ($list as $c) {
             $productFromList = $c['product'];
-            $productFromListConfig = $this->getProductService()->prepareCartProductConfig($productFromList, $c['config']);
+            $productFromListConfig = $this->getProductService()->prepareCartProductConfig($productFromList, $c['config'], $this->staffOrder);
             // One add-to-cart action equals one order family. Stamped after
             // prepareCartProductConfig() so the client-input filter can
             // neither strip it nor be bypassed with a forged value.
@@ -885,9 +892,13 @@ class Service implements InjectionAwareInterface
         return $result;
     }
 
-    public function createFromCart(Client|\Model_Client $client, $gateway_id = null): array
+    /**
+     * @param array|null $staff ClientFence core patch: staff Add New Order (staffOrder()): `invoice` (issue the first one), `activate`,
+     *                          `quote` (stop once the invoice is prepared) and the Order\Service::approveStaffInvoice() fields
+     */
+    public function createFromCart(Client|\Model_Client $client, $gateway_id = null, Cart|\Model_Cart|null $cart = null, ?array $staff = null): array
     {
-        $cart = $this->getSessionCart();
+        $cart ??= $this->getSessionCart();
         $ca = $this->toApiArray($cart);
         if (\ClientFence\Tools::safeCount($ca['items']) == 0) {
             throw new \ClientFence\InformationException('Cannot checkout an empty cart');
@@ -928,7 +939,7 @@ class Service implements InjectionAwareInterface
         }
 
         try {
-            return $this->di['em']->wrapInTransaction(function () use ($ca, $cart, $client, $legacyClient, $currency, $currencyCode, $gateway_id, $taxed, $promo, $promoProductService, $promoId, &$reservedOrderIds, &$reservedCount) {
+            return $this->di['em']->wrapInTransaction(function () use ($ca, $cart, $client, $legacyClient, $currency, $currencyCode, $gateway_id, $taxed, $promo, $promoProductService, $promoId, $staff, &$reservedOrderIds, &$reservedCount) {
                 if ($promo instanceof Promo) {
                     $this->assertClientAbleToUsePromoForUpdate($client, $promo);
                 }
@@ -954,7 +965,8 @@ class Service implements InjectionAwareInterface
                     unset($item[self::CART_FAMILY_KEY]);
 
                     $product = $this->getProductService()->findProductById((int) $item['product_id']);
-                    if ($product->getStatus() !== 'enabled') {
+                    // ClientFence core patch: staff may order a disabled product, as with order/create (staffOrder()).
+                    if ($product->getStatus() !== 'enabled' && $staff === null) {
                         throw new \ClientFence\InformationException('Unable to complete order. One or more of the selected products are invalid.');
                     }
 
@@ -1066,13 +1078,23 @@ class Service implements InjectionAwareInterface
                     $master_order ??= $order;
                 }
 
-                if ($ca['total'] > 0) { // crete invoice if order total > 0
+                // A quote (staffOrder()) stops before anything is paid, used or activated, a free order too.
+                if (!empty($staff['quote']) && $ca['total'] <= 0) {
+                    return [$master_order, null, []];
+                }
+                if ($ca['total'] > 0 && ($staff === null || !empty($staff['invoice']))) { // crete invoice if order total > 0
                     $invoiceService = $this->di['mod_service']('Invoice');
                     // ClientFence core patch: catalog prices may include tax (Invoice\Service::applyInclusiveTax()).
                     $invoiceModel = $invoiceService->prepareInvoice($legacyClient, ['client_id' => $this->clientId($client), 'items' => $invoice_items, 'gateway_id' => $gateway_id, 'prices_include_tax' => true]);
+                    if (!empty($staff['quote'])) {
+                        return [$master_order, $invoiceModel, []];
+                    }
 
                     // ClientFence core patch: tryPayWithCredits() compares the balance with the invoice total in the client's currency (the cart total is in the default one).
-                    $invoiceService->approveInvoice($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true]);
+                    // A staff order applies the credit, or marks it paid, as staff chose.
+                    $staff === null
+                        ? $invoiceService->approveInvoice($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true])
+                        : $this->di['mod_service']('order')->approveStaffInvoice($invoiceModel, $staff);
 
                     $isUnpaid = $invoiceModel instanceof \Model_Invoice
                         && $invoiceModel->status === \Model_Invoice::STATUS_UNPAID;
@@ -1126,6 +1148,11 @@ class Service implements InjectionAwareInterface
                             && $this->di['dbal']->fetchOne('SELECT status FROM client_order WHERE id = ?', [$order->getId()]) === Order::STATUS_PENDING_SETUP) {
                             $orderService->activateOrder($order);
                         }
+
+                        // ClientFence core patch: staff may activate the orders at once, before payment (Add New Order "Active").
+                        if (!empty($staff['activate']) && $this->di['dbal']->fetchOne('SELECT status FROM client_order WHERE id = ?', [$order->getId()]) === Order::STATUS_PENDING_SETUP) {
+                            $orderService->activateOrder($order);
+                        }
                     } catch (\Throwable $e) {
                         // An escaped failure here would roll back the whole
                         // wrapInTransaction() below, including every order
@@ -1155,6 +1182,100 @@ class Service implements InjectionAwareInterface
             }
 
             throw $e;
+        }
+    }
+
+    /**
+     * ClientFence core patch: staff Add New Order, as WHMCS: products and domains for a client in one order with one
+     * invoice, priced and checked as at checkout, in a cart of their own. $items: [{product_id (none: a domain),
+     * period, quantity, config, price, domain_price}] (staff overrides of the item's price and of the domain a hosting
+     * item registers or transfers, in the client's currency). $staff: the
+     * createFromCart() staff options; null quotes the order: it is made and rolled back, and its totals returned.
+     */
+    public function staffOrder(\Model_Client $client, array $items, string $promoCode, ?int $gatewayId, ?array $staff): array
+    {
+        if ($items === []) {
+            throw new \ClientFence\InformationException('Add a product or a domain to the order.');
+        }
+        $currencyRepository = $this->di['mod_service']('currency')->getCurrencyRepository();
+        $currency = ($client->currency ? $currencyRepository->findOneByCode($client->currency) : null) ?? $currencyRepository->findDefault();
+        if (!$currency instanceof Currency) {
+            throw new \ClientFence\Exception('Default currency not found.');
+        }
+        $run = function () use ($client, $items, $promoCode, $gatewayId, $staff, $currency): array {
+            $this->staffOrder = true;
+            $cart = new Cart();
+            $cart->setSessionId('staff-' . bin2hex(random_bytes(13))); // session_id holds 32 characters
+            $cart->setCurrencyId($currency->getId());
+            $this->di['em']->persist($cart);
+            $this->di['em']->flush();
+            foreach ($items as $item) {
+                $product = empty($item['product_id'])
+                    ? ($this->getProductService()->getMainDomainProduct() ?? throw new \ClientFence\InformationException('Domains are not sold in this store.'))
+                    : $this->getProductService()->findProductById((int) $item['product_id']);
+                $before = array_map($this->cartProductId(...), $this->findCartProducts($cart));
+                $config = is_array($item['config'] ?? null) ? $item['config'] : [];
+                $this->addItem($cart, $product, ['period' => $item['period'] ?? null, 'quantity' => $item['quantity'] ?? 1] + $config);
+                // The item's own line is the first one added; a hosting plan adds its domain after it.
+                $added = array_values(array_diff(array_map($this->cartProductId(...), $this->findCartProducts($cart)), $before));
+                foreach (['price' => 0, 'domain_price' => 1] as $key => $line) {
+                    if (isset($item[$key], $added[$line]) && $item[$key] !== '') {
+                        $this->staffPrices[$added[$line]] = \ClientFence\Validation\PriceValidator::validateAmount($item[$key]) / $currency->getConversionRate();
+                    }
+                }
+            }
+            if ($promoCode !== '') {
+                $promo = $this->findActivePromoByCode($promoCode);
+                if (!$promo instanceof Promo || !$this->promoCanBeApplied($promo) || !$this->isClientAbleToUsePromo($client, $promo)
+                    || !$this->getProductService()->isPromoAvailableForClientGroup($promo, $client)) {
+                    throw new \ClientFence\InformationException('This promotion code cannot be used for this client.');
+                }
+                $this->applyPromo($cart, $promo);
+            }
+            $quote = $this->toApiArray($cart);
+            [, $invoice, $ids] = $this->createFromCart($client, $gatewayId, $cart, $staff ?? ['invoice' => true, 'quote' => true]);
+            if ($staff !== null) {
+                $this->rm($cart);
+            }
+
+            return [$quote, $invoice, $ids];
+        };
+
+        try {
+            if ($staff !== null) {
+                // As checkout: the client's credit lock is held until the orders are committed.
+                [, $invoice, $ids] = \ClientFence\Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $client->id, fn (): array => $this->di['dbal']->transactional($run));
+
+                return ['order_ids' => $ids, 'invoice_id' => $invoice instanceof \Model_Invoice ? (int) $invoice->id : null];
+            }
+            $this->di['dbal']->beginTransaction();
+            try {
+                [$cart, $invoice] = $run();
+                $invoiceService = $this->di['mod_service']('Invoice');
+                $rate = $currency->getConversionRate();
+
+                return [
+                    'currency' => $currency->getCode(),
+                    'items' => array_map(static fn (array $i): array => [
+                        'title' => $i['title'], 'quantity' => $i['quantity'], 'period' => $i['period'] ?? null,
+                        'price' => $i['price'] * $rate, 'total' => $i['total'] * $rate, 'setup_price' => $i['setup_price'] * $rate, 'discount' => $i['discount'] * $rate,
+                    ], $cart['items']),
+                    'promocode' => $cart['promocode'],
+                    'subtotal' => $cart['subtotal'] * $rate,
+                    'discount' => $cart['discount'] * $rate,
+                    'tax' => $invoice instanceof \Model_Invoice ? $invoiceService->getTax($invoice) : 0.0,
+                    'tax_name' => $invoice instanceof \Model_Invoice ? (string) $invoice->taxname : '',
+                    'tax_included' => $invoiceService->pricesIncludeTax(),
+                    'total' => $invoice instanceof \Model_Invoice ? $invoiceService->getTotalWithTax($invoice) : 0.0,
+                    'credit' => $invoiceService->getFreeCredit((int) $client->id),
+                ];
+            } finally {
+                $this->di['dbal']->rollBack();
+                $this->resetEntityManager();
+            }
+        } finally {
+            $this->staffPrices = [];
+            $this->staffOrder = false;
         }
     }
 
@@ -1270,6 +1391,11 @@ class Service implements InjectionAwareInterface
         $qty = $productView['quantity'];
 
         [$discount_price, $discount_setup] = $this->getProductDiscount($model, $setup, $cart, $cartProducts, $productView['options_setup_price']);
+        // ClientFence core patch: a staff price override is the item's final price, without a promotion (WHMCS Add New Order).
+        if (isset($this->staffPrices[$this->cartProductId($model)])) {
+            $price = $this->staffPrices[$this->cartProductId($model)];
+            $discount_price = $discount_setup = 0;
+        }
 
         $discount_total = $discount_price + $discount_setup;
 

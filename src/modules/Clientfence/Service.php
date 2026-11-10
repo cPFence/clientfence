@@ -361,6 +361,10 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
 
     public static function onBeforeProductAddedToCart(\ClientFence\Event $event): void
     {
+        // Staff Add New Order (Cart\Service::staffOrder()) is not held by the store mode or the order form, as the staff order before it.
+        if ($event->getParameters()['staff_order'] ?? false) {
+            return;
+        }
         $di = $event->getDi();
         if (!self::storeOpenTo($di, self::sessionClientId($di))) {
             throw new InformationException('The store is not available.');

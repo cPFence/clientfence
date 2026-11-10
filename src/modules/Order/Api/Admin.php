@@ -126,6 +126,63 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence: the Order Summary of a staff order (Add New Order): its lines, discount, tax and total, made as
+     * create_many would and rolled back.
+     *
+     * @param array $data client_id, items (see create_many), promocode
+     */
+    #[RequiredParams(['client_id' => 'Client ID was not passed'])]
+    public function quote($data): array
+    {
+        $this->checkPermissions('order', 'manage');
+
+        return $this->staffOrder($data, null);
+    }
+
+    /**
+     * ClientFence: Add New Order as WHMCS: several products and domains in one order with one invoice.
+     *
+     * @param array $data client_id; items: [{product_id (none: a domain), period, quantity, config, price, domain_price}];
+     *                    promocode, gateway_id, invoice (issue one), send_email, use_credit, mark_invoice_paid and
+     *                    its payment fields, activate
+     *
+     * @return array{order_ids: int[], invoice_id: int|null}
+     */
+    #[RequiredParams(['client_id' => 'Client ID was not passed'])]
+    public function create_many($data): array
+    {
+        $this->checkPermissions('order', 'manage');
+        $data['mark_invoice_paid'] = Tools::normalizeBoolean($data['mark_invoice_paid'] ?? false);
+        $data['invoice'] = Tools::normalizeBoolean($data['invoice'] ?? true);
+        if ($data['mark_invoice_paid']) {
+            // As create: paying the invoice needs invoice management permission and an invoice.
+            $this->checkPermissions('invoice', 'manage_invoices');
+            if (!$data['invoice']) {
+                throw new InformationException('Marking an invoice as paid requires the order to issue an invoice.');
+            }
+            $this->getDi()['mod_service']('Invoice')->validateAdminMarkAsPaidRequest($data);
+        }
+
+        unset($data['quote']);
+
+        return $this->staffOrder($data, [
+            'invoice' => $data['invoice'],
+            'activate' => Tools::normalizeBoolean($data['activate'] ?? false),
+            'send_email' => Tools::normalizeBoolean($data['send_email'] ?? true),
+            'use_credit' => Tools::normalizeBoolean($data['use_credit'] ?? true),
+        ] + $data);
+    }
+
+    private function staffOrder(array $data, ?array $staff): array
+    {
+        $client = $this->getDi()['db']->getExistingModelById('Client', (int) $data['client_id'], 'Client not found');
+        $items = is_array($data['items'] ?? null) ? array_values($data['items']) : [];
+        $gatewayId = empty($data['gateway_id']) ? null : (int) $data['gateway_id'];
+
+        return $this->getDi()['mod_service']('cart')->staffOrder($client, $items, trim((string) ($data['promocode'] ?? '')), $gatewayId, $staff);
+    }
+
+    /**
      * Update order settings.
      *
      * @optional string $period - Order billing period, ie: 1Y

@@ -2137,6 +2137,31 @@ test('approves an invoice', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('approving a staff order invoice tells the email listener whether to send', function (bool|null $sendEmail, bool $skip): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('toApiArray')->andReturn(['id' => 1]);
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+
+    $eventManagerMock = Mockery::mock('ClientFence\EventManager');
+    $eventManagerMock->shouldReceive('fire')->once()->with(['event' => 'onBeforeAdminInvoiceApprove', 'params' => ['id' => 1]]);
+    $eventManagerMock->shouldReceive('fire')->once()->with(['event' => 'onAfterAdminInvoiceApprove', 'params' => ['id' => 1, 'skip_email' => $skip]]);
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('executeStatement')->once();
+
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $di['events_manager'] = $eventManagerMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $serviceMock->setDi($di);
+
+    $serviceMock->approveInvoice($invoiceModel, $sendEmail === null ? [] : ['send_email' => $sendEmail]);
+})->with([
+    'not said' => [null, false],
+    'send' => [true, false],
+    'do not send' => [false, true],
+]);
+
 test('account credit never pays an Add funds invoice', function (): void {
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());

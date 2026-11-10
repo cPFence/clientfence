@@ -367,14 +367,18 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public function prepareCartProductConfig(Product $product, array $config): array
+    /**
+     * @param bool $staff ClientFence core patch: a staff order (Cart\Service::staffOrder()) keeps staff fields (hosting import,
+     *                    username) and skips the client order form check, as order/create
+     */
+    public function prepareCartProductConfig(Product $product, array $config, bool $staff = false): array
     {
         $service = $this->getProductModuleService($product);
 
         // Strip client-supplied keys the product-type service hasn't declared
         // as client-settable, preventing mass-assignment of admin-controlled
         // fields (e.g. hosting_plan_id, server_id) via the cart/add_item endpoint.
-        if (method_exists($service, 'clientSettableConfigKeys')) {
+        if (!$staff && method_exists($service, 'clientSettableConfigKeys')) {
             // ClientFence core patch: order form answers. The product's own order form fields are kept too
             // (modules/Clientfence/Service.php orderFormKeys(): never a product setting or an order key).
             $allowedKeys = $service->clientSettableConfigKeys();
@@ -403,7 +407,7 @@ class Service implements InjectionAwareInterface
             $service->validateOrderData($config, $product);
         }
 
-        if (method_exists($service, 'validateCustomForm')) {
+        if (!$staff && method_exists($service, 'validateCustomForm')) {
             $service->validateCustomForm($config, $this->getProductValidationData($product));
         }
 

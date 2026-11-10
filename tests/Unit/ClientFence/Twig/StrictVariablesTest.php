@@ -91,29 +91,36 @@ test('order new only lists periods the product is actually priced for', function
     // columns for those periods, so a product's pricing.recurrent never
     // contains them. Regression test for #4063: indexing pricing.recurrent
     // by every system period used to throw under strict_variables.
-    $html = $renderer->renderTemplate(PATH_MODS . '/Order/templates/admin/mod_order_new.html.twig', [
-        'admin' => new PermissiveStub(['system_template_exists' => false]),
-        'client' => ['id' => 1, 'first_name' => 'Jane', 'last_name' => 'Doe'],
-        'product' => [
-            'id' => 1,
-            'title' => 'Annual Hosting',
-            'type' => 'hosting',
-            'pricing' => [
-                'type' => 'recurrent',
-                'recurrent' => [
-                    '1Y' => ['price' => 10, 'setup' => 0, 'enabled' => true],
-                ],
+    $product = [
+        'id' => 1,
+        'title' => 'Annual Hosting',
+        'type' => 'hosting',
+        'allow_quantity_select' => false,
+        'pricing' => [
+            'type' => 'recurrent',
+            'recurrent' => [
+                '1Y' => ['price' => 10, 'setup' => 0, 'enabled' => true],
             ],
         ],
+    ];
+    $html = $renderer->renderTemplate(PATH_MODS . '/Order/templates/admin/mod_order_new.html.twig', [
+        'admin' => new PermissiveStub([
+            'product_get_pairs' => [1 => 'Annual Hosting'],
+            'product_get_list' => ['list' => [$product]],
+            'product_promo_get_list' => ['list' => []],
+            'invoice_gateway_get_pairs' => [],
+        ]),
+        'client' => ['id' => 1, 'first_name' => 'Jane', 'last_name' => 'Doe'],
         'guest' => [
             'system_periods' => \ClientFence\Period::getPredefined(),
+            'serviceDomain_tlds' => [],
         ],
     ]);
 
     expect($html)
-        ->toContain('value="1Y"')
-        ->not->toContain('value="4Y"')
-        ->not->toContain('value="5Y"');
+        ->toContain('&quot;code&quot;&#x3A;&quot;1Y&quot;')
+        ->not->toContain('&quot;code&quot;&#x3A;&quot;4Y&quot;')
+        ->not->toContain('&quot;code&quot;&#x3A;&quot;5Y&quot;');
 });
 
 /*

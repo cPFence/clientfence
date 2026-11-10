@@ -1468,6 +1468,27 @@ test('addItem throws exception when recurring payment period param missing', fun
         ->toThrow(ClientFence\Exception::class, 'Period parameter not passed');
 });
 
+test('addItem events never take staff_order from the client\'s cart data', function (): void {
+    $productModel = createProductEntity(type: 'Custom');
+    $eventMock = Mockery::mock(\ClientFence\EventManager::class);
+    $eventMock->shouldReceive('fire')->once()->with(Mockery::on(fn (array $e): bool => $e['event'] === 'onBeforeProductAddedToCart' && $e['params']['staff_order'] === false));
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('isRecurrentPricing')->once()->andReturn(true);
+    $productService = new ProductService();
+    $di = container();
+    $di['events_manager'] = $eventMock;
+    $di['mod_service'] = $di->protect(fn ($name) => $name === 'Product' ? $productService : Mockery::mock(ClientFence\Mod\Servicecustom\Service::class)->shouldIgnoreMissing());
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('checkRequiredParamsForArray')->andThrow(new ClientFence\Exception('Period parameter not passed'));
+    $di['validator'] = $validatorMock;
+    $productService->setDi($di);
+    $serviceMock->setDi($di);
+
+    expect(fn () => $serviceMock->addItem(createEntity(Cart::class), $productModel, ['staff_order' => true]))
+        ->toThrow(ClientFence\Exception::class, 'Period parameter not passed');
+});
+
 test('addItem throws exception when recurring payment period is not enabled', function (): void {
     $cartModel = createEntity(Cart::class);
 

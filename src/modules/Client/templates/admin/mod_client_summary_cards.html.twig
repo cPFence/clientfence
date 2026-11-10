@@ -63,7 +63,7 @@
             </table>
             <div class="card-footer d-flex flex-wrap gap-2">
                 <a class="btn btn-sm btn-outline-secondary" href="#tab-orders" role="button" data-tab-jump>{{ 'View Orders'|trans }}</a>
-                <a class="btn btn-sm btn-outline-primary" href="{{ 'order'|url(query: { 'client_id': client.id }) }}#tab-new">{{ 'Add New Order'|trans }}</a>
+                <a class="btn btn-sm btn-outline-primary" href="{{ 'order/new'|url(query: { 'client_id': client.id }) }}">{{ 'Add New Order'|trans }}</a>
             </div>
         </div>
     </div>

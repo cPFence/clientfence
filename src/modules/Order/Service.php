@@ -1107,7 +1107,6 @@ class Service implements InjectionAwareInterface
         }
 
         $invoice = null;
-        $markInvoicePaid = \ClientFence\Tools::normalizeBoolean($data['mark_invoice_paid'] ?? false);
 
         $id = $this->di['em']->wrapInTransaction(function () use (
             $client,
@@ -1227,33 +1226,7 @@ class Service implements InjectionAwareInterface
         }
 
         if ($invoice instanceof \Model_Invoice) {
-            $invoiceService = $this->di['mod_service']('invoice');
-
-            try {
-                // ClientFence core patch: as WHMCS Add New Order, staff apply the client's credit up to the total or none.
-                // A part is applied before the approval so the invoice email shows what is left; a 0.00 invoice is settled as before.
-                $due = $invoiceService->getBalanceDue($invoice);
-                $useCredit = !$markInvoicePaid && ($due <= 0 || \ClientFence\Tools::normalizeBoolean($data['use_credit'] ?? true));
-                $part = $useCredit ? min($due, $invoiceService->getFreeCredit((int) $invoice->client_id)) : 0;
-                if ($part > 0 && $part < $due) {
-                    $invoiceService->applyCredit($invoice, $part);
-                }
-                $invoiceService->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => $useCredit]);
-
-                if ($markInvoicePaid) {
-                    $invoiceService->markAsPaidByAdmin($invoice, $data);
-                } elseif (!$useCredit) {
-                    $invoiceService->skipAutoCredit($invoice);
-                }
-            } catch (\Exception $e) {
-                $this->di['logger']->info($e->getMessage());
-
-                try {
-                    $invoiceService->addNote($invoice, 'Order was created, but invoice follow-up failed: ' . $e->getMessage());
-                } catch (\Exception $noteException) {
-                    $this->di['logger']->info($noteException->getMessage());
-                }
-            }
+            $this->approveStaffInvoice($invoice, $data);
         }
 
         $this->di['events_manager']->fire(['event' => 'onAfterAdminOrderCreate', 'params' => ['id' => $order->getId()], 'subject' => $this->getProductType($product)]);
@@ -1270,6 +1243,42 @@ class Service implements InjectionAwareInterface
         }
 
         return $id;
+    }
+
+    /**
+     * ClientFence core patch: approves the invoice of a staff order (`use_credit`, `mark_invoice_paid` and its payment
+     * fields, `send_email`), for Add New Order with one product or several.
+     */
+    public function approveStaffInvoice(\Model_Invoice $invoice, array $data): void
+    {
+        $markInvoicePaid = \ClientFence\Tools::normalizeBoolean($data['mark_invoice_paid'] ?? false);
+        $invoiceService = $this->di['mod_service']('invoice');
+
+        try {
+            // ClientFence core patch: as WHMCS Add New Order, staff apply the client's credit up to the total or none.
+            // A part is applied before the approval so the invoice email shows what is left; a 0.00 invoice is settled as before.
+            $due = $invoiceService->getBalanceDue($invoice);
+            $useCredit = !$markInvoicePaid && ($due <= 0 || \ClientFence\Tools::normalizeBoolean($data['use_credit'] ?? true));
+            $part = $useCredit ? min($due, $invoiceService->getFreeCredit((int) $invoice->client_id)) : 0;
+            if ($part > 0 && $part < $due) {
+                $invoiceService->applyCredit($invoice, $part);
+            }
+            $invoiceService->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => $useCredit, 'send_email' => \ClientFence\Tools::normalizeBoolean($data['send_email'] ?? true)]);
+
+            if ($markInvoicePaid) {
+                $invoiceService->markAsPaidByAdmin($invoice, $data);
+            } elseif (!$useCredit) {
+                $invoiceService->skipAutoCredit($invoice);
+            }
+        } catch (\Exception $e) {
+            $this->di['logger']->info($e->getMessage());
+
+            try {
+                $invoiceService->addNote($invoice, 'Order was created, but invoice follow-up failed: ' . $e->getMessage());
+            } catch (\Exception $noteException) {
+                $this->di['logger']->info($noteException->getMessage());
+            }
+        }
     }
 
     public function getMasterOrderForClient(ClientEntity|\Model_Client $client, $group_id): Order|\Model_ClientOrder|null

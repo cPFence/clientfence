@@ -2240,20 +2240,12 @@
         "done": "ClientFence core patch: the release notes are English: left to right in a right-to-left admin."
     },
     {
-        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
-        "done": "ClientFence core patch: as WHMCS Add New Order, staff choose whether the client's credit pays this order."
-    },
-    {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: as WHMCS Add New Order, staff apply the client's credit up to the total or none."
     },
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: staff chose \"Do not apply credit\" on a new order: the credit batch leaves this invoice."
-    },
-    {
-        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
-        "done": "ClientFence core patch: only the periods the product sells"
     },
     {
         "file": "themes/palisade/html/mod_support_tickets.html.twig",
@@ -4714,5 +4706,49 @@
     {
         "file": "library/Payment/Adapter/Stripe.php",
         "done": "ClientFence core patch: our own \"Save this card\" box, ticked as WHMCS does; Stripe's box is always unticked (GitHub #7)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: staff_order is set last, so a client's cart data cannot claim it."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: staff Add New Order (staffOrder()): `invoice` (issue the first one), `activate`,"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: staff may activate the orders at once, before payment (Add New Order \"Active\")."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: staff Add New Order, as WHMCS: products and domains for a client in one order with one"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: a staff price override is the item's final price, without a promotion (WHMCS Add New Order)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: staff Add New Order may issue the invoice without its email (WHMCS \"Send Email\")."
+    },
+    {
+        "file": "modules/Order/Controller/Admin.php",
+        "done": "ClientFence core patch: Add New Order is one page for a client's products and domains (WHMCS)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: approves the invoice of a staff order (`use_credit`, `mark_invoice_paid` and its payment"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
+        "done": "ClientFence core patch: Add New Order as WHMCS: products and domains for one client in one order with one invoice,"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: staff may order a disabled product, as with order/create (staffOrder())."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: a staff order (Cart\\Service::staffOrder()) keeps staff fields (hosting import,"
     }
 ]

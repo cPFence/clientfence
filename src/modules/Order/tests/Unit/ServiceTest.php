@@ -1935,7 +1935,7 @@ test('createOrder returns success when invoice follow up fails', function (): vo
         ->andReturn($invoiceModel);
     $invoiceServiceMock->shouldReceive('approveInvoice')
         ->once()
-        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => false])
+        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => false, 'send_email' => true])
         ->andReturn(true);
     $invoiceServiceMock->shouldReceive('getBalanceDue')->andReturn(10.0);
     $invoiceServiceMock->shouldReceive('markAsPaidByAdmin')
@@ -3698,7 +3698,7 @@ test('createOrder generates an invoice for a zero-price order with issue-invoice
         ->andReturn($invoiceModel);
     $invoiceServiceMock->shouldReceive('approveInvoice')
         ->once()
-        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => $useCredits])
+        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => $useCredits, 'send_email' => true])
         ->andReturn(true);
     $invoiceServiceMock->shouldReceive('getBalanceDue')->andReturn($due);
     $invoiceServiceMock->shouldReceive('getFreeCredit')->andReturn(3.0);
