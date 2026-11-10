@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.43 (2026-11-10)
+
+### Changed
+
+- Stripe card payments have a "Save this card for future invoices" box, ticked by default as in WHMCS. A saved card pays renewals automatically, and the client can untick the box or remove the card later on Payment methods ([#7](https://github.com/cPFence/clientfence/issues/7)).
+- A newly installed Stripe gateway starts with subscriptions off: Stripe renews with the saved card, as WHMCS and Blesta do. Stripe subscriptions that clients already have keep running ([#7](https://github.com/cPFence/clientfence/issues/7)).
+
 ## 1.0.42 (2026-11-10)
 
 ### Added
