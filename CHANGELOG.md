@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.40 (2026-11-10)
+
+### Added
+
+- Import from Blesta: clients with their passwords (when Blesta's system key is entered), packages, services, domains, invoices, payments, tickets with attachments and tax rates, read from Blesta's database.
+- Import from ClientExec: clients, packages, services, domains, invoices, payments, tickets and tax rules, read from ClientExec's database.
+- Staff choose whether a client's credit pays a new order, as in WHMCS: Create New Order shows the client's credit and applies it up to the order total, or not at all. With "Do not apply credit", the cron no longer pays that invoice from credit.
+
+### Changed
+
+- The Migration tab starts with "Move from": pick WHMCS, Upmind, Blesta or ClientExec. Switching to another system deletes an unfinished plan after you confirm.
+- Import checks and console messages name the system you import from.
+- Marking a new order's first invoice as paid no longer takes the client's credit first.
+
+### Fixed
+
+- The admin area now reads right to left on every page in Arabic, Hebrew and Persian, not only the dashboard, and the text editor types right to left too.
+
 ## 1.0.39 (2026-11-09)
 
 ### Added
