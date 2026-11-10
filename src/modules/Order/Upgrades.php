@@ -518,7 +518,7 @@ final class Upgrades
                 $newPrice = round((float) $up['to_price'] / $quantity, 2);
                 // ClientFence core patch: a changed price or cycle must not keep charging the old gateway subscription.
                 if ((float) $order->price !== $newPrice || (string) $order->period !== (string) $up['to_period']) {
-                    $di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order);
+                    $renewalNote .= self::cancelSubscriptions($di, $order);
                 }
 
                 if ($order->service_type === 'hosting' && !$optionsOnly) {
@@ -1334,9 +1334,7 @@ final class Upgrades
         }
         $productService->returnStock((int) $order->product_id, $quantity);
         // A changed price must not keep charging the old gateway subscription.
-        if ($price !== $old) {
-            $di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order);
-        }
+        $subscriptionNote = $price !== $old ? self::cancelSubscriptions($di, $order) : '';
 
         $config = json_decode((string) $order->config, true);
         $config = self::productConfig($db, $order, $to, is_array($config) ? $config : []);
@@ -1356,9 +1354,29 @@ final class Upgrades
         $order->updated_at = date('Y-m-d H:i:s');
         $di['db']->store($order);
         $note = sprintf('Moved by staff from %s to %s', $from['title'], $to['title']) . ($price !== $old ? sprintf('; price %s to %s %s', number_format($old, 2, '.', ''), number_format($price, 2, '.', ''), $order->currency) : '')
-            . ($changePackage && $order->service_type === 'hosting' ? '; hosting plan changed on the panel' : '');
+            . ($changePackage && $order->service_type === 'hosting' ? '; hosting plan changed on the panel' : '') . $subscriptionNote;
         $di['mod_service']('order')->saveStatusChange($order, $note);
         self::log($di, sprintf('Order #%d: %s', $orderId, $note));
+    }
+
+    /**
+     * ClientFence core patch: the old gateway subscription is cancelled, as WHMCS does on an upgrade; nothing renews the
+     * service automatically now, so the client is emailed and the history says so (GitHub issue #5).
+     */
+    private static function cancelSubscriptions(\Pimple\Container $di, \Model_ClientOrder $order): string
+    {
+        if ($di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order) === 0) {
+            return '';
+        }
+        try {
+            // A saved card or account still pays the renewal (SavedCards cron): the email says which applies.
+            $saved = \ClientFence\Mod\Invoice\SavedCards::method($di, (int) $order->client_id) !== null;
+            $di['mod_service']('email')->sendTemplate(['code' => 'mod_order_subscription_stopped', 'to_client' => (int) $order->client_id, 'order_id' => (int) $order->id, 'title' => (string) $order->title, 'saved_method' => $saved]);
+        } catch (\Throwable $e) {
+            self::log($di, sprintf('Order #%d: the automatic payment stopped email failed: %s', $order->id, $e->getMessage()));
+        }
+
+        return ' (automatic payment by subscription at the old price stopped; client emailed)';
     }
 
     private static function moveHosting(\Pimple\Container $di, \Model_ClientOrder $order, array $to): void

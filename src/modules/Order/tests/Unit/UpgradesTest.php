@@ -134,6 +134,12 @@ final class UpgradesTestDb
         return $model;
     }
 
+    /** No enabled payment gateway: SavedCards finds no saved method. */
+    public function findOne(string $type, string $sql, array $params): ?object
+    {
+        return null;
+    }
+
     public function find(string $type, string $sql, array $params): array
     {
         $params = array_combine(array_map(fn (int|string $key): string => ltrim((string) $key, ':'), array_keys($params)), array_values($params));
@@ -324,8 +330,12 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
             }
         },
         'email' => new class {
+            public array $sent = [];
+
             public function sendTemplate(array $data): bool
             {
+                $this->sent[] = $data;
+
                 return true;
             }
         },
@@ -689,7 +699,12 @@ test('a paid plan change cancels the order subscription', function (): void {
     upgradesPay($db, $result['id']);
     Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
 
-    expect($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))->toBe('applied');
+    expect($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE . ' WHERE id = ?', [$result['id']]))->toBe('applied')
+        // Nothing renews the service automatically now: the client is emailed and the history says so (issue #5).
+        ->and(array_column($di['services']['email']->sent, 'code'))->toBe(['mod_order_subscription_stopped'])
+        ->and($di['services']['email']->sent[0]['order_id'])->toBe(1)
+        ->and($di['services']['email']->sent[0]['saved_method'])->toBeFalse()
+        ->and($di['status_notes']->getArrayCopy()[0][1])->toContain('automatic payment by subscription at the old price stopped');
 });
 
 test('a plan change requires a PayPal subscription to be canceled in PayPal first', function (): void {
