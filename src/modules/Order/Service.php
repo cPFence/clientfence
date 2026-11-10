@@ -1230,10 +1230,20 @@ class Service implements InjectionAwareInterface
             $invoiceService = $this->di['mod_service']('invoice');
 
             try {
-                $invoiceService->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
+                // ClientFence core patch: as WHMCS Add New Order, staff apply the client's credit up to the total or none.
+                // A part is applied before the approval so the invoice email shows what is left; a 0.00 invoice is settled as before.
+                $due = $invoiceService->getBalanceDue($invoice);
+                $useCredit = !$markInvoicePaid && ($due <= 0 || \ClientFence\Tools::normalizeBoolean($data['use_credit'] ?? true));
+                $part = $useCredit ? min($due, $invoiceService->getFreeCredit((int) $invoice->client_id)) : 0;
+                if ($part > 0 && $part < $due) {
+                    $invoiceService->applyCredit($invoice, $part);
+                }
+                $invoiceService->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => $useCredit]);
 
                 if ($markInvoicePaid) {
                     $invoiceService->markAsPaidByAdmin($invoice, $data);
+                } elseif (!$useCredit) {
+                    $invoiceService->skipAutoCredit($invoice);
                 }
             } catch (\Exception $e) {
                 $this->di['logger']->info($e->getMessage());

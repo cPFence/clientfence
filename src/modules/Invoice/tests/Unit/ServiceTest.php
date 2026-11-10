@@ -3399,7 +3399,7 @@ test('a staff renewal right after a paid renewal of the order is refused', funct
     'paid two hours ago' => [7200, false],
 ]);
 
-test('processes batch pay with credits', function (): void {
+test('processes batch pay with credits, leaving invoices staff kept off credit', function (array $skip, int $paid): void {
     $service = new Service();
     $invoiceModel = new Model_Invoice();
     $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
@@ -3407,23 +3407,29 @@ test('processes batch pay with credits', function (): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('findAllUnpaid')
         ->atLeast()->once()
-        ->andReturn([[]]);
+        ->andReturn([['id' => 7]]);
     $serviceMock->shouldReceive('tryPayWithCredits')
-        ->atLeast()->once();
+        ->times($paid);
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('getExistingModelById')
-        ->atLeast()->once()
+        ->times($paid)
         ->andReturn($invoiceModel);
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('fetchFirstColumn')->once()->andReturn($skip);
 
     $di = container();
     $di['logger'] = new Tests\Helpers\TestLogger();
     $di['db'] = $dbMock;
+    $di['dbal'] = $dbalMock;
 
     $serviceMock->setDi($di);
     $result = $serviceMock->doBatchPayWithCredits([]);
     expect($result)->toBeBool()->toBeTrue();
-});
+})->with([
+    'paid from credit' => [[], 1],
+    'staff chose not to apply credit' => [['7'], 0],
+]);
 
 test('pays invoice with credits', function (): void {
     $service = new Service();

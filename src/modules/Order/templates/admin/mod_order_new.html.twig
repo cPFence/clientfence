@@ -76,6 +76,26 @@
                 {{ include(product_order) }}
             {% endif %}
 
+            {# ClientFence core patch: as WHMCS Add New Order, staff choose whether the client's credit pays this order. #}
+            {% if has_permission('invoice') and client.balance|default(0) > 0 %}
+            <div id="order-credit-options" class="card mb-4 d-none">
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-1 mb-3">
+                        <h5 class="card-title mb-0">{{ 'Client Credit'|trans }}</h5>
+                        <p class="text-secondary mb-0">{{ 'The client has :amount of credit.'|trans({ ':amount': client.balance|format_currency(client.currency) }) }}</p>
+                    </div>
+                    <label class="form-check">
+                        <input class="form-check-input" type="radio" name="use_credit" value="1" checked>
+                        <span class="form-check-label">{{ 'Apply the credit to this order, up to its total. Anything left is due as usual.'|trans }}</span>
+                    </label>
+                    <label class="form-check mb-0">
+                        <input class="form-check-input" type="radio" name="use_credit" value="0">
+                        <span class="form-check-label">{{ 'Do not apply credit. The client pays this order with their payment method.'|trans }}</span>
+                    </label>
+                </div>
+            </div>
+            {% endif %}
+
             {% if has_permission('invoice') %}
             <div id="mark-invoice-paid-options" class="card mb-4 d-none">
                 <div class="card-body">
@@ -128,6 +148,7 @@
     const markInvoicePaidFieldsEl = document.getElementById('mark-invoice-paid-fields');
     const gatewayEl = document.querySelector('[name="gateway_id"]');
     const transactionIdEl = document.getElementById('transaction-id');
+    const creditOptionsEl = document.getElementById('order-credit-options');
 
     function syncMarkInvoicePaidControls() {
         if (!markInvoicePaidOptionsEl || !invoiceOptionEl) {
@@ -142,6 +163,9 @@
         }
 
         const markInvoicePaid = invoiceIsIssued && !!(markInvoicePaidEl && markInvoicePaidEl.checked);
+        if (creditOptionsEl) {
+            creditOptionsEl.classList.toggle('d-none', !invoiceIsIssued || markInvoicePaid);
+        }
         if (markInvoicePaidFieldsEl) {
             markInvoicePaidFieldsEl.classList.toggle('d-none', !markInvoicePaid);
         }

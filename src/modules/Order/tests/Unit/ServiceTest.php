@@ -1935,8 +1935,9 @@ test('createOrder returns success when invoice follow up fails', function (): vo
         ->andReturn($invoiceModel);
     $invoiceServiceMock->shouldReceive('approveInvoice')
         ->once()
-        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true])
+        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => false])
         ->andReturn(true);
+    $invoiceServiceMock->shouldReceive('getBalanceDue')->andReturn(10.0);
     $invoiceServiceMock->shouldReceive('markAsPaidByAdmin')
         ->once()
         ->with($invoiceModel, Mockery::on(fn (array $data): bool => $data['invoice_option'] === 'issue-invoice'
@@ -3660,7 +3661,7 @@ test('updateOrder rejects a negative price', function (): void {
         ->toThrow(ClientFence\InformationException::class, 'Price cannot be negative');
 });
 
-test('createOrder generates an invoice for a zero-price order with issue-invoice', function (): void {
+test('createOrder generates an invoice for a zero-price order with issue-invoice and applies the credit as staff chose', function (array $choice, float $due, bool $useCredits, int $applied, int $skipped): void {
     $modelClient = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['currency' => 'USD']);
 
     $modelProduct = orderServiceCreateProductEntity(1, 'custom');
@@ -3697,8 +3698,12 @@ test('createOrder generates an invoice for a zero-price order with issue-invoice
         ->andReturn($invoiceModel);
     $invoiceServiceMock->shouldReceive('approveInvoice')
         ->once()
-        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true])
+        ->with($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => $useCredits])
         ->andReturn(true);
+    $invoiceServiceMock->shouldReceive('getBalanceDue')->andReturn($due);
+    $invoiceServiceMock->shouldReceive('getFreeCredit')->andReturn(3.0);
+    $invoiceServiceMock->shouldReceive('applyCredit')->times($applied)->with($invoiceModel, 3.0)->andReturn(true);
+    $invoiceServiceMock->shouldReceive('skipAutoCredit')->times($skipped)->with($invoiceModel);
 
     $persistedEntities = [];
     $nextOrderId = 1;
@@ -3774,10 +3779,15 @@ test('createOrder generates an invoice for a zero-price order with issue-invoice
         'period' => '1Y',
         'price' => 0,
         'invoice_option' => 'issue-invoice',
-    ]);
+    ] + $choice);
 
     expect($result)->toBe($newId);
-});
+})->with([
+    'part of the credit applied before the approval' => [[], 5.0, true, 1, 0],
+    'credit that covers the total paid by the approval' => [[], 3.0, true, 0, 0],
+    'do not apply credit' => [['use_credit' => 0], 5.0, false, 0, 1],
+    'a 0.00 invoice is settled even with do not apply credit' => [['use_credit' => 0], 0.0, true, 0, 0],
+]);
 
 test('createOrder does not roll back when invoice generation fails for a negative resolved price', function (): void {
     $modelClient = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['currency' => 'USD']);

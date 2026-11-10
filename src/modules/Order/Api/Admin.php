@@ -89,6 +89,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional string $invoice_option - Options: "no-invoice", "issue-invoice"; Default: no-invoice
      * @optional bool $mark_invoice_paid - Mark the generated invoice as paid after the order is created
      * @optional int $gateway_id - Payment gateway to associate with the invoice when mark_invoice_paid is used
+     * @optional bool $use_credit - Pay the new invoice from the client's credit, up to its total; Default: true
      * @optional string $transactionId - Custom transaction ID to use when the selected gateway is Custom
      * @optional string $created_at - date when order was created. Default: now
      * @optional string $updated_at - date when order was updated. Default: now

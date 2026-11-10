@@ -2433,9 +2433,16 @@ class Service implements InjectionAwareInterface
         return $invoice->id;
     }
 
+    /** ClientFence core patch: staff chose "Do not apply credit" on a new order: the credit batch leaves this invoice. */
+    public function skipAutoCredit(\Model_Invoice $invoice): void
+    {
+        $this->di['dbal']->insert('extension_meta', ['client_id' => $invoice->client_id, 'extension' => 'mod_invoice', 'rel_type' => 'invoice', 'rel_id' => (string) $invoice->id, 'meta_key' => 'no_auto_credit', 'meta_value' => '1', 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
+    }
+
     public function doBatchPayWithCredits(array $data): bool
     {
-        $unpaid = $this->findAllUnpaid($data);
+        $skip = $this->di['dbal']->fetchFirstColumn("SELECT rel_id FROM extension_meta WHERE extension = 'mod_invoice' AND meta_key = 'no_auto_credit'");
+        $unpaid = array_filter($this->findAllUnpaid($data), fn ($proforma) => !in_array((string) $proforma['id'], $skip, true));
         foreach ($unpaid as $proforma) {
             try {
                 $model = $this->di['db']->getExistingModelById('Invoice', $proforma['id'] ?? null);
