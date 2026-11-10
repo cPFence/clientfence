@@ -72,10 +72,20 @@
 {% if guest.extension_is_on({ mod: 'custompages' }) %}
     {% set menu = menu|merge(guest.custompages_links|filter(custom => custom.menu)|map(custom => { key: 'page-' ~ custom.slug, url: ('page/' ~ custom.slug)|url, icon: 'link', label: custom.title })) %}
 {% endif %}
+{# ClientFence core patch: staff's own links (theme settings "Menu Links") for signed-in clients; only http(s) addresses show. #}
+{% if client %}
+    {% for i in 1..5 %}
+        {% set link_url = attribute(settings, 'menu_link_' ~ i ~ '_url')|default('')|trim %}
+        {% set link_title = attribute(settings, 'menu_link_' ~ i ~ '_title')|default('')|trim %}
+        {% if link_title and (link_url|lower starts with 'https://' or link_url|lower starts with 'http://') %}
+            {% set menu = menu|merge([{ key: 'menu-link-' ~ i, url: link_url, icon: 'external-link', label: link_title, new_tab: attribute(settings, 'menu_link_' ~ i ~ '_new_tab')|default('0') }]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 {% for item in menu %}
     {% set is_active = current_active_menu == item.key %}
     <li>
-        <a href="{{ item.url }}" title="{{ item.label }}"{% if is_active %} class="active" aria-current="page"{% endif %}>
+        <a href="{{ item.url }}" title="{{ item.label }}"{% if is_active %} class="active" aria-current="page"{% endif %}{% if item.new_tab|default(false) %} target="_blank" rel="noopener noreferrer"{% endif %}>
             <svg class="icon" aria-hidden="true"><use href="#{{ item.icon }}"/></svg>
             <span class="sidebar-text">{{ item.label }}</span>
         </a>

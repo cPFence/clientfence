@@ -164,6 +164,30 @@
         </div>
     </div>
 
+    {# ClientFence core patch: staff links at the end of the left menu for signed-in clients (partial_menu.html.twig). #}
+    <div class="mb-4">
+        <h5 class="mb-2">{{ 'Menu Links'|trans }}</h5>
+        <small class="form-hint d-block mb-2">{{ 'Links shown at the end of the left menu for signed-in clients. The address must start with https:// or http://.'|trans }}</small>
+        <div class="d-flex flex-column gap-3">
+            {% for i in [1, 2, 3, 4, 5] %}
+            <div class="row g-2 align-items-center">
+                <div class="col-12 col-lg-2">
+                    <label class="form-label mb-lg-0" for="menu_link_{{ i }}_title">{{ 'Menu Link #:number'|trans({ ':number': i }) }}</label>
+                </div>
+                <div class="col-lg-4">
+                    <input class="form-control" type="text" name="menu_link_{{ i }}_title" id="menu_link_{{ i }}_title" value="" placeholder="{{ 'Link Title'|trans }}">
+                </div>
+                <div class="col-lg-4">
+                    <input class="form-control" type="url" name="menu_link_{{ i }}_url" value="" placeholder="https://">
+                </div>
+                <div class="col-auto">
+                    <label class="form-check mb-0"><input class="form-check-input" type="checkbox" name="menu_link_{{ i }}_new_tab" value="1"><span class="form-check-label">{{ 'Open in a New Tab'|trans }}</span></label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
     <div>
         <h5 class="mb-2">{{ 'Simple Sidebar Note'|trans }}</h5>
         <div class="row g-3">

@@ -28,6 +28,8 @@ function renderPalisadeSettingsHtml(array $settings): string
 {
     $twig = new Environment(new ArrayLoader(), ['strict_variables' => true]);
     $twig->addFilter(new TwigFilter('trans', static fn (mixed $value): string => (string) $value));
+    // The admin page renders it in this sandbox (TwigFactory::createThemeSettingsEnvironment()).
+    $twig->addExtension(new Twig\Extension\SandboxExtension(ClientFence\Twig\AdapterPolicy::create(), true));
 
     $theme = new Theme('palisade');
     $html = SandboxedStringRenderer::render(
