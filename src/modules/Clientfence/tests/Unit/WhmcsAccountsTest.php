@@ -175,6 +175,24 @@ test('Hebrew client language survives the account import', function (): void {
     expect($target->fetchOne('SELECT lang FROM client WHERE id = 1'))->toBe('he_IL');
 });
 
+test('a locale code as the Blesta and Upmind reads leave it becomes the client\'s locale; one this install lacks, or two fit, is none', function (): void {
+    $source = whmcsAccountsSource();
+    $source->update('tblusers', ['language' => 'bg_bg'], ['id' => 10]);
+    $target = whmcsAccountsTarget();
+    whmcsImportAll($source, $target, Cipher::withKey(WHMCS_TEST_KEY));
+
+    expect($target->fetchOne('SELECT lang FROM client WHERE id = 1'))->toBe('bg_BG')
+        ->and(Accounts::locale('Serbian'))->toBe('sr_RS')
+        ->and(Accounts::locale('sr'))->toBe('sr_RS')
+        ->and(Accounts::locale('pt-BR'))->toBe('pt_BR')
+        // Two WHMCS names of one locale are one locale.
+        ->and(Accounts::locale('fa'))->toBe('fa_IR')
+        ->and(Accounts::locale('xx_XX'))->toBeNull()
+        // Portugal's and Brazil's Portuguese both fit: no guess.
+        ->and(Accounts::locale('pt'))->toBeNull()
+        ->and(Accounts::locale(''))->toBeNull();
+});
+
 test('owner logins sign in to their account; the others are named in warnings', function (): void {
     $target = whmcsAccountsTarget();
     [$accounts] = whmcsImportAll(whmcsAccountsSource(), $target, Cipher::withKey(WHMCS_TEST_KEY));

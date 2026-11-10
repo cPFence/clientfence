@@ -277,6 +277,8 @@ final class Snapshot extends Base
             'phonenumber' => self::phone($phone), 'tax_id' => (string) ($company['vat_number'] ?? ''), 'password' => $hash,
             'currency' => 1, 'taxexempt' => !empty($c['tax_exempt_number']) ? 1 : 0,
             'datecreated' => substr($created, 0, 10), 'created_at' => $created,
+            // Upmind's language code (sr): the WHMCS import maps it to a locale this install ships (Accounts::locale).
+            'language' => (string) ($c['interface_language_code'] ?? ''),
             'status' => $this->value('status', (string) ($c['status_id'] ?? '')) === 'client_inactive' ? 'Inactive' : 'Active',
             'credit' => round((float) ($credit['credit'] ?? 0), 2),
         ]);

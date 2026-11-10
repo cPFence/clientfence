@@ -313,7 +313,7 @@ final class Accounts
                 'postcode' => self::cut($row['postcode'] ?? '', 100),
                 'country' => strtoupper(self::cut($row['country'] ?? '', 100)),
                 'currency' => $currencies[(int) ($row['currency'] ?? 0)] ?? null,
-                'lang' => self::LANGUAGES[strtolower(trim((string) (($signsIn ? $owner['language'] : null) ?: ($row['language'] ?? ''))))] ?? null,
+                'lang' => self::locale((string) (($signsIn ? $owner['language'] : null) ?: ($row['language'] ?? ''))),
                 'ip' => self::cut($row['ip'] ?? '', 45) ?: null,
                 'client_group_id' => (int) ($row['groupid'] ?? 0) > 0 ? $this->map->get('group', (int) $row['groupid']) : null,
                 'notes' => null,
@@ -523,7 +523,7 @@ final class Accounts
             'first_name' => self::cut($user['first_name'] ?? '', 100),
             'last_name' => self::cut($user['last_name'] ?? '', 100),
             'pass' => $this->hash((string) ($user['password'] ?? ''), 'Login ' . $email),
-            'lang' => self::LANGUAGES[strtolower(trim((string) ($user['language'] ?? '')))] ?? null,
+            'lang' => self::locale((string) ($user['language'] ?? '')),
             'status' => 'active',
             'session_version' => 1,
             'last_login_at' => self::date($user['last_login'] ?? null),
@@ -813,6 +813,23 @@ final class Accounts
         }
 
         return ['', $value];
+    }
+
+    /**
+     * The locale this install ships for a WHMCS language name ("german") or a locale code ("bg_bg",
+     * "sr-RS", "sr", as the Blesta and Upmind reads leave it); null when there is none, or when a bare
+     * code fits two locales ("pt").
+     */
+    public static function locale(string $language): ?string
+    {
+        $language = strtolower(trim($language));
+        if (isset(self::LANGUAGES[$language])) {
+            return self::LANGUAGES[$language];
+        }
+        $code = str_replace('-', '_', $language);
+        $found = array_values(array_filter(array_unique(self::LANGUAGES), static fn (string $locale): bool => strtolower($locale) === $code || str_starts_with(strtolower($locale), $code . '_')));
+
+        return count($found) === 1 ? $found[0] : null;
     }
 
     /** A WHMCS date or time, or null for empty and zero dates. */

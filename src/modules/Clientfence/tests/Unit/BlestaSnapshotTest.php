@@ -67,6 +67,7 @@ function blestaFake(): array
         'client_settings' => [
             ['client_id' => 1, 'key' => 'tax_id', 'value' => 'GB123', 'encrypted' => 0],
             ['client_id' => 1, 'key' => 'default_currency', 'value' => 'USD', 'encrypted' => 0],
+            ['client_id' => 1, 'key' => 'language', 'value' => 'bg_bg', 'encrypted' => 0],
             ['client_id' => 2, 'key' => 'default_currency', 'value' => 'EUR', 'encrypted' => 0],
         ],
         'contacts' => [
@@ -175,8 +176,10 @@ test('Blesta is read a page at a time into WHMCS\'s tables, and what cannot come
     expect($state['finished_at'])->not->toBeNull()
         ->and($calls)->toBeGreaterThan(5)
         ->and(substr(sprintf('%o', fileperms(Snapshot::path())), -4))->toBe('0600')
-        ->and($db->fetchAssociative('SELECT firstname, companyname, email, tax_id, phonenumber, state, credit, status, groupid FROM tblclients WHERE id = 1'))
-        ->toBe(['firstname' => 'Ann', 'companyname' => 'Lee Ltd', 'email' => 'ann@example.test', 'tax_id' => 'GB123', 'phonenumber' => '+44.2071234567', 'state' => 'LND', 'credit' => 25.0, 'status' => 'Active', 'groupid' => 1])
+        ->and($db->fetchAssociative('SELECT firstname, companyname, email, tax_id, phonenumber, state, credit, status, groupid, language FROM tblclients WHERE id = 1'))
+        ->toBe(['firstname' => 'Ann', 'companyname' => 'Lee Ltd', 'email' => 'ann@example.test', 'tax_id' => 'GB123', 'phonenumber' => '+44.2071234567', 'state' => 'LND', 'credit' => 25.0, 'status' => 'Active', 'groupid' => 1, 'language' => 'bg_bg'])
+        // Blesta's language code is kept as it is; the WHMCS import maps it (WhmcsAccountsTest). A client without one has none.
+        ->and($db->fetchOne('SELECT language FROM tblclients WHERE id = 2'))->toBe('')
         // A client's currency is its own Blesta default.
         ->and($db->fetchAllKeyValue('SELECT c.id, cur.code FROM tblclients c JOIN tblcurrencies cur ON cur.id = c.currency ORDER BY c.id'))->toBe([1 => 'USD', 2 => 'EUR'])
         ->and($db->fetchOne('SELECT status FROM tblclients WHERE id = 2'))->toBe('Closed')

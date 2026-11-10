@@ -55,7 +55,7 @@ final class Snapshot extends Base
     private const URGENCY = [1 => 'High', 2 => 'Medium', 3 => 'Low'];
 
     /** customuserfields types of the client's details. */
-    private const FIELDS = ['address1' => 2, 'city' => 3, 'state' => 4, 'postcode' => 5, 'country' => 6, 'phonenumber' => 7, 'tax_id' => 47];
+    private const FIELDS = ['address1' => 2, 'city' => 3, 'state' => 4, 'postcode' => 5, 'country' => 6, 'phonenumber' => 7, 'language' => 8, 'tax_id' => 47];
 
     /** @var array<int, ?int>|null billing_cycle ids => months (null: weeks or days) */
     private ?array $cycles = null;
@@ -329,6 +329,8 @@ final class Snapshot extends Base
             'address1' => $fields[self::FIELDS['address1']] ?? '', 'address2' => '', 'city' => $fields[self::FIELDS['city']] ?? '', 'state' => $fields[self::FIELDS['state']] ?? '',
             'postcode' => $fields[self::FIELDS['postcode']] ?? '', 'country' => strtoupper($fields[self::FIELDS['country']] ?? ''), 'phonenumber' => $fields[self::FIELDS['phonenumber']] ?? '',
             'tax_id' => $fields[self::FIELDS['tax_id']] ?? '', 'password' => $password,
+            // ClientExec's "Language" field ("English"): the WHMCS import maps it to a locale this install ships (Accounts::locale).
+            'language' => $fields[self::FIELDS['language']] ?? '',
             'currency' => $this->currency($code !== '' && $code !== '0' ? $code : ($this->setting('Default Currency') ?: 'USD')),
             'taxexempt' => (int) $u['taxable'] === 1 ? 0 : 1, 'datecreated' => $created, 'created_at' => $created . ' 00:00:00',
             'groupid' => $group === false ? 0 : (int) $group, 'status' => self::CLIENT_STATUSES[$status] ?? 'Active',

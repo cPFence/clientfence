@@ -19,7 +19,7 @@ function upmindFake(): array
 {
     $clients = [];
     for ($n = 1; $n <= 11; ++$n) {
-        $clients[] = ['id' => "cl-$n", 'firstname' => "First$n", 'lastname' => 'Last', 'email' => "c$n@example.test", 'has_login' => $n === 1, 'enabled_2fa' => $n === 1, 'status_id' => 's-client', 'created_at' => '2024-01-02 03:04:05'];
+        $clients[] = ['id' => "cl-$n", 'firstname' => "First$n", 'lastname' => 'Last', 'email' => "c$n@example.test", 'has_login' => $n === 1, 'enabled_2fa' => $n === 1, 'status_id' => 's-client', 'created_at' => '2024-01-02 03:04:05'] + ($n === 1 ? ['interface_language_code' => 'sr'] : []);
     }
     $line = ['from_date' => '2026-11-01', 'to_date' => '2026-12-01'];
 
@@ -152,7 +152,8 @@ test('Upmind is read a page at a time into WHMCS\'s tables, and what cannot come
         ->and($state['steps']['clients']['done'])->toBe(11)
         // Eleven clients: numbered 1 to 11 (sorted as numbers, not as text).
         ->and($db->fetchFirstColumn('SELECT id FROM tblclients ORDER BY id'))->toBe(range(1, 11))
-        ->and($client)->toMatchArray(['firstname' => 'First1', 'companyname' => 'First Co', 'tax_id' => 'GB123', 'country' => 'GB', 'phonenumber' => '+44.2071234567', 'credit' => 25.0, 'status' => 'Active'])
+        ->and($client)->toMatchArray(['firstname' => 'First1', 'companyname' => 'First Co', 'tax_id' => 'GB123', 'country' => 'GB', 'phonenumber' => '+44.2071234567', 'credit' => 25.0, 'status' => 'Active', 'language' => 'sr'])
+        ->and($db->fetchOne('SELECT language FROM tblclients WHERE id = 2'))->toBe('')
         ->and(password_get_info($client['password'])['algo'])->toBe(PASSWORD_BCRYPT)
         ->and($db->fetchFirstColumn('SELECT client_id FROM tblusers_clients WHERE owner = 1'))->toBe([1])
         ->and($warnings)->toContain('Client c1@example.test used two-factor sign-in in Upmind')

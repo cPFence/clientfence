@@ -295,6 +295,8 @@ final class Snapshot extends Base
             'phonenumber' => (string) ($this->blesta->value("SELECT number FROM contact_numbers WHERE contact_id = ? ORDER BY type = 'phone' DESC, id LIMIT 1", [(int) ($contact['id'] ?? 0)]) ?: ''),
             'tax_id' => $settings['tax_id'] ?? '', 'password' => (string) ($user['password'] ?? ''), 'currency' => $this->currency($currency),
             'taxexempt' => ($settings['tax_exempt'] ?? '') === 'true' ? 1 : 0, 'datecreated' => substr($created, 0, 10), 'created_at' => $created,
+            // Blesta's language code (bg_bg): the WHMCS import maps it to a locale this install ships (Accounts::locale).
+            'language' => $settings['language'] ?? '',
             'groupid' => (int) $c['client_group_id'], 'status' => ['active' => 'Active', 'inactive' => 'Inactive', 'fraud' => 'Closed'][$c['status']] ?? 'Active',
         ]);
         if ($c['status'] === 'fraud') {

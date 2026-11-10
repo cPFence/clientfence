@@ -78,10 +78,10 @@ function clientexecFake(): array
             ['id' => 101, 'groupid' => 1, 'status' => 1, 'firstname' => 'Ann', 'lastname' => 'Lee', 'email' => 'ann@example.test', 'organization' => 'Lee Ltd', 'currency' => 'USD', 'balance' => 25.0, 'taxable' => 1, 'password' => password_hash('secret', PASSWORD_BCRYPT), 'dateActivated' => '2025-01-05', 'created_at' => '0000-00-00 00:00:00', 'usernotes' => 'Pays early.'],
             ['id' => 102, 'groupid' => 1, 'status' => 9, 'firstname' => 'Eve', 'lastname' => 'Fox', 'email' => 'eve@example.test', 'organization' => '', 'currency' => 'EUR', 'balance' => 0.0, 'taxable' => 0, 'password' => null, 'dateActivated' => '0000-00-00', 'created_at' => '2025-02-01 10:00:00', 'usernotes' => ''],
         ],
-        'customuserfields' => [['id' => 3, 'name' => 'Address', 'type' => 2], ['id' => 5, 'name' => 'City', 'type' => 3], ['id' => 8, 'name' => 'Phone', 'type' => 7], ['id' => 15, 'name' => 'Country', 'type' => 6], ['id' => 41, 'name' => 'VAT Number', 'type' => 47], ['id' => 62, 'name' => 'TwoFactor Enabled', 'type' => 0]],
+        'customuserfields' => [['id' => 3, 'name' => 'Address', 'type' => 2], ['id' => 5, 'name' => 'City', 'type' => 3], ['id' => 8, 'name' => 'Phone', 'type' => 7], ['id' => 15, 'name' => 'Country', 'type' => 6], ['id' => 18, 'name' => 'Language', 'type' => 8], ['id' => 41, 'name' => 'VAT Number', 'type' => 47], ['id' => 62, 'name' => 'TwoFactor Enabled', 'type' => 0]],
         'user_customuserfields' => [
             ['userid' => 101, 'customid' => 3, 'value' => '1 Road'], ['userid' => 101, 'customid' => 5, 'value' => 'London'], ['userid' => 101, 'customid' => 8, 'value' => '+44 20 7123 4567'],
-            ['userid' => 101, 'customid' => 15, 'value' => 'gb'], ['userid' => 101, 'customid' => 41, 'value' => 'GB123'], ['userid' => 102, 'customid' => 62, 'value' => '1'],
+            ['userid' => 101, 'customid' => 15, 'value' => 'gb'], ['userid' => 101, 'customid' => 18, 'value' => 'English'], ['userid' => 101, 'customid' => 41, 'value' => 'GB123'], ['userid' => 102, 'customid' => 62, 'value' => '1'],
         ],
         'clients_notes' => [['id' => 1, 'date' => '2025-03-01 10:00:00', 'target_id' => 101, 'is_target_group' => 0, 'note' => 'Called about renewal.', 'subject' => 'Call']],
         'customField' => [['id' => 2, 'groupId' => 2, 'subGroupId' => 3, 'name' => 'Domain Name'], ['id' => 12, 'groupId' => 2, 'subGroupId' => 1, 'name' => 'Domain Name'], ['id' => 10, 'groupId' => 2, 'subGroupId' => 1, 'name' => 'User Name'], ['id' => 21, 'groupId' => 2, 'subGroupId' => 3, 'name' => 'Expiration Date'], ['id' => 34, 'groupId' => 2, 'subGroupId' => 0, 'name' => 'Cancellation Reason']],
@@ -194,6 +194,8 @@ test('ClientExec is read a page at a time into WHMCS\'s tables, and what cannot 
         ->and($db->fetchAssociative('SELECT firstname, companyname, address1, city, country, phonenumber, tax_id, credit, status, groupid, taxexempt, datecreated FROM tblclients WHERE id = 101'))
         ->toBe(['firstname' => 'Ann', 'companyname' => 'Lee Ltd', 'address1' => '1 Road', 'city' => 'London', 'country' => 'GB', 'phonenumber' => '+44 20 7123 4567', 'tax_id' => 'GB123', 'credit' => 25.0, 'status' => 'Active', 'groupid' => 6, 'taxexempt' => 0, 'datecreated' => '2025-01-05'])
         ->and($db->fetchAllKeyValue('SELECT c.id, cur.code FROM tblclients c JOIN tblcurrencies cur ON cur.id = c.currency ORDER BY c.id'))->toBe([101 => 'USD', 102 => 'EUR'])
+        // ClientExec's "Language" field is kept as it is; the WHMCS import maps it (WhmcsAccountsTest). A client without one has none.
+        ->and($db->fetchAllKeyValue('SELECT id, language FROM tblclients ORDER BY id'))->toBe([101 => 'English', 102 => ''])
         ->and($db->fetchAssociative('SELECT status, taxexempt, datecreated FROM tblclients WHERE id = 102'))->toBe(['status' => 'Closed', 'taxexempt' => 1, 'datecreated' => '2025-02-01'])
         ->and($warnings)->toContain('Client #102 is marked as fraud in ClientExec')
         ->and($warnings)->toContain('Client eve@example.test used two-factor sign-in in ClientExec')
