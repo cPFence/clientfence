@@ -119,7 +119,11 @@ function blestaFake(): array
             ['id' => 3, 'ticket_id' => 1, 'staff_id' => 1, 'contact_id' => null, 'type' => 'note', 'details' => 'Server 3.', 'date_added' => '2026-11-05 09:40:00'],
             ['id' => 4, 'ticket_id' => 1, 'staff_id' => 1, 'contact_id' => null, 'type' => 'log', 'details' => 'Status changed.', 'date_added' => '2026-11-05 10:00:00'],
         ],
-        'support_attachments' => [['id' => 7, 'reply_id' => 1, 'name' => 'shot.png', 'file_name' => '/var/blesta/uploads/1/support_manager_files/a1b2c3']],
+        'support_attachments' => [
+            ['id' => 7, 'reply_id' => 1, 'name' => 'shot.png', 'file_name' => '/var/blesta/uploads/1/support_manager_files/a1b2c3'],
+            // A path outside the support folder (a hostile source naming a local file) is never copied.
+            ['id' => 8, 'reply_id' => 1, 'name' => 'notes.txt', 'file_name' => sys_get_temp_dir() . '/cf-blesta-test-' . getmypid() . '/secret.txt'],
+        ],
     ];
 }
 
@@ -130,6 +134,7 @@ function blestaDi(): array
     putenv('CLIENTFENCE_BACKUP_DIR=' . $dir . '/backups');
     @mkdir($dir . '/files', 0700, true);
     file_put_contents($dir . '/files/a1b2c3', 'PNG');
+    file_put_contents($dir . '/secret.txt', 'DB_PASSWORD');
     @unlink($dir . '/blesta.sqlite');
     $blesta = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'path' => $dir . '/blesta.sqlite']);
     foreach (blestaFake() as $table => $rows) {
@@ -157,6 +162,7 @@ afterEach(function (): void {
     @rmdir(Snapshot::files());
     @unlink(Snapshot::path());
     @rmdir(dirname(Snapshot::path()));
+    @unlink($dir . '/secret.txt');
     @rmdir($dir . '/files');
     @unlink($dir . '/blesta.sqlite');
     @rmdir($dir);
@@ -244,12 +250,13 @@ test('Blesta is read a page at a time into WHMCS\'s tables, and what cannot come
         ->and($warnings)->toContain('Payment #3 of client #1 was refunded in Blesta');
 
     // Support: the first reply opens the ticket; staff replies, notes and attachments keep their kind; logs are left out.
-    expect($db->fetchAssociative('SELECT tid, title, message, status, urgency, email, attachment, service FROM tbltickets'))->toBe(['tid' => '4242', 'title' => 'Help', 'message' => 'My site is down.', 'status' => 'Answered', 'urgency' => 'High', 'email' => 'ann@example.test', 'attachment' => '7_shot.png', 'service' => 'S1'])
+    expect($db->fetchAssociative('SELECT tid, title, message, status, urgency, email, attachment, service FROM tbltickets'))->toBe(['tid' => '4242', 'title' => 'Help', 'message' => 'My site is down.', 'status' => 'Answered', 'urgency' => 'High', 'email' => 'ann@example.test', 'attachment' => '7_shot.png|8_notes.txt', 'service' => 'S1'])
         ->and($db->fetchAllAssociative('SELECT admin, message FROM tblticketreplies'))->toBe([['admin' => 'Sam Ops', 'message' => 'We are on it.']])
         ->and($db->fetchFirstColumn('SELECT message FROM tblticketnotes'))->toBe(['Server 3.'])
         // Found in the attachments folder by its stored name, copied under the name the WHMCS step reads.
         ->and(file_get_contents(Snapshot::files() . '/7_shot.png'))->toBe('PNG')
-        ->and(substr(sprintf('%o', fileperms(Snapshot::files() . '/7_shot.png')), -4))->toBe('0600');
+        ->and(substr(sprintf('%o', fileperms(Snapshot::files() . '/7_shot.png')), -4))->toBe('0600')
+        ->and(file_exists(Snapshot::files() . '/8_notes.txt'))->toBeFalse();
 
     $plan = Inventory::plan(new Source($db));
     expect($plan['version'])->toBe('8.0.0 (Blesta 6.0.4)')

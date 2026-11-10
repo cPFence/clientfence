@@ -518,8 +518,9 @@ final class Snapshot extends Base
         foreach ($this->blesta->rows('SELECT * FROM support_attachments WHERE reply_id = ? ORDER BY id', [$reply]) as $a) {
             $stored = (int) $a['id'] . '_' . str_replace(['/', '\\', '|'], '_', (string) $a['name']);
             $names[] = $stored;
-            $from = array_values(array_filter([$this->supportFiles !== '' ? rtrim($this->supportFiles, '/') . '/' . basename((string) $a['file_name']) : '', (string) $a['file_name']], static fn (string $f): bool => $f !== '' && is_file($f) && is_readable($f)))[0] ?? '';
-            if ($from === '') {
+            // Only from the support folder staff set: a path from the source database could name any file here.
+            $from = $this->supportFiles !== '' ? rtrim($this->supportFiles, '/') . '/' . basename((string) $a['file_name']) : '';
+            if ($from === '' || !is_file($from) || !is_readable($from)) {
                 // The WHMCS step shows it as removed and names it in a warning.
                 continue;
             }
