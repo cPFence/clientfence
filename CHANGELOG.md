@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.42 (2026-11-10)
+
+### Added
+
+- Invoice settings: Document Title and Tax Number Label, for example "Tax Invoice" and "ABN" for Australian GST invoices ([#9](https://github.com/cPFence/clientfence/issues/9)).
+- Pay an invoice at once with your saved PayPal account ("Pay now with").
+- Payment methods link in the client area sidebar ([#7](https://github.com/cPFence/clientfence/issues/7)).
+
+### Changed
+
+- Emails use your brand color for their buttons, top line and links ([#10](https://github.com/cPFence/clientfence/issues/10)).
+- The service page says why Upgrade / Downgrade is not available right now ([#8](https://github.com/cPFence/clientfence/issues/8)).
+- The "automatic payment stopped" email links the Payment methods page when no payment method is saved ([#7](https://github.com/cPFence/clientfence/issues/7)).
+
+### Fixed
+
+- The Stripe payment form lists the client's saved cards, also those saved on the Payment methods page ([#6](https://github.com/cPFence/clientfence/issues/6)).
+
 ## 1.0.41 (2026-11-10)
 
 ### Fixed
