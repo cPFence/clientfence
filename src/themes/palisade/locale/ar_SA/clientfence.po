@@ -24308,3 +24308,32 @@ msgstr "رمز PIN للدعم"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "The current PIN stops working."
 msgstr "سيتوقف رمز PIN الحالي عن العمل."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Client groups without a limit"
+msgstr "مجموعات العملاء بلا حد"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Limit the new tickets a client opens from the client area. Every ticket of the client in the period counts, but tickets staff open, tickets from email or the contact form and all replies are never refused. 0 or empty: no limit."
+msgstr "حدّ التذاكر الجديدة التي يفتحها العميل من منطقة العملاء. تُحتسب كل تذاكر العميل خلال الفترة، لكن التذاكر التي يفتحها الموظفون والتذاكر الواردة بالبريد أو نموذج الاتصال وجميع الردود لا تُرفض أبدًا. 0 أو فارغ: بلا حد."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Limit"
+msgstr "حد التذاكر"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Tickets a client may open"
+msgstr "عدد التذاكر التي يمكن للعميل فتحها"
+
+#: src/modules/Support/TicketLimit.php src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open :max tickets every :days days. You can open a new ticket on :date."
+msgstr "الحد المسموح: :max تذكرة كل :days يوم. يمكنك فتح تذكرة جديدة بتاريخ :date."
+
+#: src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open one more ticket until :date."
+msgstr "يمكنك فتح تذكرة واحدة إضافية حتى :date."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "in this many days"
+msgstr "خلال هذا العدد من الأيام"

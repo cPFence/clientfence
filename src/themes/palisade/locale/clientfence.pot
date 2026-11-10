@@ -5064,6 +5064,10 @@ msgstr ""
 msgid "Client groups"
 msgstr ""
 
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Client groups without a limit"
+msgstr ""
+
 #: src/modules/Client/Api/Client.php src/modules/Order/Api/Client.php src/modules/Profile/Api/Client.php
 msgid "Client identity not found"
 msgstr ""
@@ -12206,6 +12210,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Limit Tracking"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Limit the new tickets a client opens from the client area. Every ticket of the client in the period counts, but tickets staff open, tickets from email or the contact form and all replies are never refused. 0 or empty: no limit."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php
@@ -24257,6 +24265,10 @@ msgstr ""
 msgid "Ticket ID was not passed"
 msgstr ""
 
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Limit"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_tickets.html.twig
 msgid "Ticket Messages"
 msgstr ""
@@ -24395,6 +24407,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig src/modules/Support/templates/admin/modal/mod_support_new_helpdesk.html.twig
 msgid "Tickets Can Be Reopened?"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Tickets a client may open"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -26901,6 +26917,14 @@ msgstr ""
 msgid "You can only manage staff accounts in lower groups"
 msgstr ""
 
+#: src/modules/Support/TicketLimit.php src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open :max tickets every :days days. You can open a new ticket on :date."
+msgstr ""
+
+#: src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open one more ticket until :date."
+msgstr ""
+
 #: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
 msgid "You can pay the invoice now, or change your payment method on the %link%Payment methods%link_end% page."
 msgstr ""
@@ -27851,6 +27875,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "in :days day(s)"
+msgstr ""
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "in this many days"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig

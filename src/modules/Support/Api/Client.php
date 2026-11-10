@@ -96,8 +96,19 @@ class Client extends \ClientFence\Api\AbstractApi
         }
 
         $client = $this->getIdentity();
+        // ClientFence core patch: the ticket limit per client counts only here, not for staff, email or system tickets (TicketLimit).
+        \ClientFence\Mod\Support\TicketLimit::check($this->getDi(), $client);
 
         return $this->getService()->ticketCreateForClient($client, $helpdesk, $data);
+    }
+
+    /**
+     * ClientFence: the client's ticket limit for the new-ticket banners (TicketLimit): max, days,
+     * left and date; null without a limit.
+     */
+    public function ticket_limit(): ?array
+    {
+        return \ClientFence\Mod\Support\TicketLimit::status($this->getDi(), $this->getIdentity());
     }
 
     /**

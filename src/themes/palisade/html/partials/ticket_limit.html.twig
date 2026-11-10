@@ -1,0 +1,6 @@
+{# ClientFence: the ticket limit banners of the new-ticket forms (Support/TicketLimit.php); none without a limit. #}
+{% if ticket_limit and ticket_limit.left == 0 %}
+    <div class="alert alert-danger" role="alert">{{ 'You can open :max tickets every :days days. You can open a new ticket on :date.'|trans({ ':max': ticket_limit.max, ':days': ticket_limit.days, ':date': ticket_limit.date|format_date }) }}</div>
+{% elseif ticket_limit and ticket_limit.left == 1 %}
+    <div class="alert alert-warning" role="status">{{ 'You can open one more ticket until :date.'|trans({ ':date': ticket_limit.date|format_date }) }}</div>
+{% endif %}

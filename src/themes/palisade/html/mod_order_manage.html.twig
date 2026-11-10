@@ -254,6 +254,9 @@
                         </div>
                         <form action="" method="post" id="open-ticket-form" class="open-ticket">
                             <div class="modal-body">
+                                {# ClientFence core patch: the ticket limit per client, Open Ticket off when none is left (Support/TicketLimit.php). #}
+                                {% set ticket_limit = client.support_ticket_limit %}
+                                {{ include('partials/ticket_limit.html.twig') }}
                                 <input type="hidden" name="rel_type" value="order">
                                 <input type="hidden" name="rel_id" value="{{ order.id }}">
                                 <div class="mb-3">
@@ -270,7 +273,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">{{ 'Open Ticket'|trans }}</button>
+                                <button type="submit" class="btn btn-primary"{% if ticket_limit and ticket_limit.left == 0 %} disabled{% endif %}>{{ 'Open Ticket'|trans }}</button>
                             </div>
                         </form>
                     </div>

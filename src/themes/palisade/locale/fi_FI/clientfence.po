@@ -25357,3 +25357,32 @@ msgstr "Tuen PIN-koodi"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "The current PIN stops working."
 msgstr "Nykyinen PIN-koodi lakkaa toimimasta."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Client groups without a limit"
+msgstr "Asiakasryhmät ilman rajaa"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Limit the new tickets a client opens from the client area. Every ticket of the client in the period counts, but tickets staff open, tickets from email or the contact form and all replies are never refused. 0 or empty: no limit."
+msgstr "Rajoittaa uusia tukipyyntöjä, joita asiakas avaa asiakasalueelta. Kaikki asiakkaan tukipyynnöt jaksolla lasketaan, mutta henkilökunnan avaamia tukipyyntöjä, sähköpostista tai yhteydenottolomakkeesta tulevia tukipyyntöjä ja kaikkia vastauksia ei koskaan hylätä. 0 tai tyhjä: ei rajaa."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Limit"
+msgstr "Tukipyyntöjen raja"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Tickets a client may open"
+msgstr "Tukipyyntöjä, jotka asiakas saa avata"
+
+#: src/modules/Support/TicketLimit.php src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open :max tickets every :days days. You can open a new ticket on :date."
+msgstr "Voit avata :max tukipyyntöä :days päivän aikana. Voit avata uuden tukipyynnön :date."
+
+#: src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open one more ticket until :date."
+msgstr "Voit avata vielä yhden tukipyynnön :date asti."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "in this many days"
+msgstr "tämän monen päivän aikana"

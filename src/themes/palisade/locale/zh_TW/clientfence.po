@@ -25436,3 +25436,32 @@ msgstr "支援 PIN 碼"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "The current PIN stops working."
 msgstr "目前的 PIN 碼將失效。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Client groups without a limit"
+msgstr "不受限制的客戶群組"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Limit the new tickets a client opens from the client area. Every ticket of the client in the period counts, but tickets staff open, tickets from email or the contact form and all replies are never refused. 0 or empty: no limit."
+msgstr "限制客戶從客戶區新開的支援單數量。客戶在該期間內的所有支援單都會計入，但員工開立的支援單、來自電子郵件或聯絡表單的支援單以及所有回覆都不會被拒絕。0 或留空：不限制。"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Limit"
+msgstr "支援單限制"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Tickets a client may open"
+msgstr "客戶可開立的支援單數"
+
+#: src/modules/Support/TicketLimit.php src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open :max tickets every :days days. You can open a new ticket on :date."
+msgstr "您每 :days 天可開立 :max 張支援單。您可在 :date 開立新的支援單。"
+
+#: src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open one more ticket until :date."
+msgstr "您在 :date 之前還可再開立 1 張支援單。"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "in this many days"
+msgstr "在這麼多天內"

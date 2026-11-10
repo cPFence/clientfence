@@ -66,6 +66,7 @@ $paths = [
     'modules/Support/TicketFeedback.php',
     'modules/Support/HiddenHelpdesks.php',
     'modules/Support/HiddenKbCategories.php',
+    'modules/Support/TicketLimit.php',
     'modules/Servicelicense/CheckLog.php',
     'modules/Servicelicense/Bans.php',
     'modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig',

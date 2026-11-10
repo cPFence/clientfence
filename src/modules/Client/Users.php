@@ -142,6 +142,8 @@ final class Users
             'ticket_message_rate' => 'tickets',
             // The network issues banner (Support/NetworkIssues.php): every user of the account.
             'network_issue_alerts' => '*',
+            // The ticket limit banners (Support/TicketLimit.php): the service page shows them while it renders.
+            'ticket_limit' => '*',
         ],
     ];
 

@@ -17,7 +17,10 @@
 
 {% block content %}
 {% set tickets = client.support_ticket_get_list({"per_page":10, "page":request.page, "deep": 0, "include_first": 0}) %}
-{% set show_form = not tickets.list or request.ticket or request.subject %}
+{# ClientFence core patch: the ticket limit per client closes the form when none is left (Support/TicketLimit.php). #}
+{% set ticket_limit = client.support_ticket_limit %}
+{% set ticket_blocked = ticket_limit and ticket_limit.left == 0 %}
+{% set show_form = not ticket_blocked and (not tickets.list or request.ticket or request.subject) %}
 <div class="row">
     <div class="col-md-12">
         <div class="bf-page-head mb-4">
@@ -26,9 +29,10 @@
                 <span class="bf-hint">{{ 'Need an answer? We are here to help!'|trans }}</span>
             </div>
             <div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#new-ticket" aria-controls="new-ticket" aria-expanded="{{ show_form ? 'true' : 'false' }}">{{ 'New Ticket'|trans }}</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#new-ticket" aria-controls="new-ticket" aria-expanded="{{ show_form ? 'true' : 'false' }}"{% if ticket_blocked %} disabled{% endif %}>{{ 'New Ticket'|trans }}</button>
             </div>
         </div>
+        {{ include('partials/ticket_limit.html.twig') }}
         <div class="card mb-4">
             <div class="collapse{{ show_form ? ' show' : '' }}" id="new-ticket">
                 <div class="card-body border-bottom">
@@ -78,7 +82,7 @@
                                 {{ include('partials/ticket_secrets_script.html.twig') }}
                             {% endif %}
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary">{{ 'Submit'|trans }}</button>
+                                <button type="submit" class="btn btn-primary"{% if ticket_blocked %} disabled{% endif %}>{{ 'Submit'|trans }}</button>
                             </div>
                         </div>
                     </form>

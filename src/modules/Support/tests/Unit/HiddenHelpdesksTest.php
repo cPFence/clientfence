@@ -55,6 +55,8 @@ function hiddenHelpdesksApi(string $class, Pimple\Container $di, ?Closure $guest
         }
     };
     $di['request'] = Symfony\Component\HttpFoundation\Request::create('/');
+    // No ticket limit (TicketLimit).
+    $di['mod_config'] = $di->protect(static fn (): array => []);
     $api = new $class();
     $api->setDi($di);
     $api->setService($service);

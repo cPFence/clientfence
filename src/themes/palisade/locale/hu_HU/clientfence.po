@@ -24922,3 +24922,32 @@ msgstr "Támogatási PIN-kód"
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "The current PIN stops working."
 msgstr "A jelenlegi PIN-kód nem fog működni."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Client groups without a limit"
+msgstr "Korlátozás nélküli ügyfélcsoportok"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Limit the new tickets a client opens from the client area. Every ticket of the client in the period counts, but tickets staff open, tickets from email or the contact form and all replies are never refused. 0 or empty: no limit."
+msgstr "Korlátozza az ügyfél által az ügyfélterületről nyitott új jegyek számát. Az ügyfél minden jegye beleszámít az időszakban, de a munkatársak által nyitott jegyeket, az e-mailből vagy a kapcsolatfelvételi űrlapról érkező jegyeket és az összes választ soha nem utasítja el. 0 vagy üres: nincs korlát."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Ticket Limit"
+msgstr "Jegykorlát"
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "Tickets a client may open"
+msgstr "Az ügyfél által nyitható jegyek száma"
+
+#: src/modules/Support/TicketLimit.php src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open :max tickets every :days days. You can open a new ticket on :date."
+msgstr "Ön :days naponta :max jegyet nyithat. Új jegyet ekkor nyithat: :date."
+
+#: src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You can open one more ticket until :date."
+msgstr "Még egy jegyet nyithat eddig: :date."
+
+#: src/modules/Support/templates/admin/mod_support_settings.html.twig
+msgid "in this many days"
+msgstr "ennyi nap alatt"

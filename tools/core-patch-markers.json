@@ -5006,5 +5006,21 @@
     {
         "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
         "done": "ClientFence core patch: the Support PIN staff check in chat or on the phone (Client/SupportPin.php)."
+    },
+    {
+        "file": "modules/Support/Api/Client.php",
+        "done": "ClientFence core patch: the ticket limit per client counts only here, not for staff, email or system tickets (TicketLimit)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_settings.html.twig",
+        "done": "ClientFence core patch: a ticket limit per client, as WHMCS hosts add (Support/TicketLimit.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: the ticket limit per client closes the form when none is left (Support/TicketLimit.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the ticket limit per client, Open Ticket off when none is left (Support/TicketLimit.php)."
     }
 ]
