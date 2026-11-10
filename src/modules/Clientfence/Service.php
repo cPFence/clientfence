@@ -107,6 +107,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'store_testers_group' => '',
         'store_title' => '',
         'store_subtitle' => '',
+        'store_cycle' => '',
         'store_preview_token' => '',
     ];
 
@@ -120,6 +121,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'store_testers_group' => 'order',
         'store_title' => 'order',
         'store_subtitle' => 'order',
+        'store_cycle' => 'order',
         'store_preview_token' => 'order',
     ];
 

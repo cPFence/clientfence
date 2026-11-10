@@ -371,13 +371,14 @@ final class Setup
         if ($mode === 'testers' && $group === '') {
             throw new InformationException('Choose the client group that can order.');
         }
-        // The store's title and subtitle are kept (the API saves all four settings).
+        // The store's title, subtitle and opening cycle are kept (the API saves every store setting).
         $store = Service::config($di);
         $di['api_admin']->clientfence_store_update([
             'store_mode' => $mode,
             'store_testers_group' => $group,
             'store_title' => (string) ($store['store_title'] ?? ''),
             'store_subtitle' => (string) ($store['store_subtitle'] ?? ''),
+            'store_cycle' => (string) ($store['store_cycle'] ?? ''),
         ]);
     }
 

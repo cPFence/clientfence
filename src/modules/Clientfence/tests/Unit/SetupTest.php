@@ -117,3 +117,31 @@ test('only a signed-in Super Administrator may run the wizard', function (): voi
     $di['loggedin_admin'] = (object) ['id' => 1];
     expect(Setup::allowed($di))->toBeTrue();
 });
+
+test('the Store step keeps the store title, subtitle and opening cycle', function (): void {
+    $di = new Pimple\Container();
+    $di['mod'] = $di->protect(fn (string $name) => new class($name) {
+        public function __construct(private string $name)
+        {
+        }
+
+        public function getConfig(): array
+        {
+            return $this->name === 'order' ? ['store_title' => 'Plans', 'store_subtitle' => 'Pick one', 'store_cycle' => '1Y'] : [];
+        }
+    });
+    $di['api_admin'] = new class {
+        public array $saved = [];
+
+        public function __call(string $method, array $args): bool
+        {
+            $this->saved = $args[0];
+
+            return true;
+        }
+    };
+
+    Setup::saveStore($di, ['store_mode' => 'public']);
+
+    expect($di['api_admin']->saved)->toMatchArray(['store_mode' => 'public', 'store_title' => 'Plans', 'store_subtitle' => 'Pick one', 'store_cycle' => '1Y']);
+});

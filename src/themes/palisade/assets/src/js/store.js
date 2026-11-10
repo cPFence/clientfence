@@ -78,6 +78,9 @@ export default function initStore(root) {
       }
     });
 
+    root.querySelectorAll('[data-category-note]').forEach((note) => {
+      note.hidden = note.dataset.categoryNote !== category;
+    });
     root.querySelectorAll('.bf-tab').forEach((tab) => {
       const on = tab.dataset.category === category;
       tab.classList.toggle('is-on', on);

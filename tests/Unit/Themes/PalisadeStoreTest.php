@@ -37,8 +37,10 @@ final class PalisadeStoreGuestStub
 
 /**
  * @param list<array<string, mixed>> $products
+ * @param array<string, mixed> $info
+ * @param array<string, mixed> $category
  */
-function renderPalisadeStore(array $products): string
+function renderPalisadeStore(array $products, array $info = [], array $category = []): string
 {
     $loader = new ChainLoader([
         new ArrayLoader(['layout_blank.html.twig' => '{% block content %}{% endblock %}']),
@@ -49,6 +51,7 @@ function renderPalisadeStore(array $products): string
     $twig->addGlobal('csp_nonce', 'test-nonce');
     $twig->addFilter(new TwigFilter('trans', static fn (string $text, array $values = []): string => strtr($text, $values)));
     $twig->addFilter(new TwigFilter('url', static fn (string $path): string => '/' . ltrim($path, '/')));
+    $twig->addFilter(new TwigFilter('markdown_to_html', static fn (string $text): string => '<p>' . $text . '</p>', ['is_safe' => ['html']]));
     $twig->addFunction(new TwigFunction('render_widgets', static fn (): string => ''));
 
     return $twig->render('mod_order_index.html.twig', [
@@ -56,9 +59,9 @@ function renderPalisadeStore(array $products): string
         'client' => null,
         'guest' => new PalisadeStoreGuestStub([
             'clientfence_store_open' => true,
-            'clientfence_store_info' => ['title' => 'Store', 'subtitle' => ''],
+            'clientfence_store_info' => $info + ['title' => 'Store', 'subtitle' => ''],
             'cart_get_currency' => ['code' => 'USD', 'conversion_rate' => 1],
-            'product_category_get_list' => ['list' => [['id' => 1, 'title' => 'All', 'products' => $products]]],
+            'product_category_get_list' => ['list' => [$category + ['id' => 1, 'title' => 'All', 'products' => $products]]],
         ]),
     ]);
 }
@@ -89,3 +92,25 @@ test('the store page lists a domain product with its lowest registration price',
         ->and($html)->toContain('href="/order/starter-hosting?period=1M" data-select')
         ->and($html)->toMatch('#data-href="/order/setup"[^>]*data-once="30"#');
 });
+
+test('the store opens on the billing cycle set in the Orders settings, when a product offers it', function (): void {
+    $hosting = [[
+        'id' => 1, 'type' => 'hosting', 'title' => 'Starter Hosting', 'slug' => 'starter-hosting', 'priority' => 1, 'description' => '',
+        'pricing' => ['type' => 'recurrent', 'recurrent' => ['1M' => ['enabled' => true, 'price' => 5], '1Y' => ['enabled' => true, 'price' => 50]]],
+    ]];
+
+    expect(renderPalisadeStore($hosting, ['cycle' => '1Y']))->toContain('data-cycle="1Y">')
+        ->toContain('href="/order/starter-hosting?period=1Y" data-select')
+        // A cycle no product offers falls back to monthly.
+        ->and(renderPalisadeStore($hosting, ['cycle' => '2Y']))->toContain('href="/order/starter-hosting?period=1M" data-select');
+});
+
+test('a category description shows as the note of its tab', function (): void {
+    $html = renderPalisadeStore([[
+        'id' => 3, 'type' => 'custom', 'title' => 'Setup', 'slug' => 'setup', 'priority' => 1, 'description' => '',
+        'pricing' => ['type' => 'once', 'once' => ['price' => 30, 'setup' => 0]],
+    ]], [], ['description' => 'Per-website license? [Read this](https://example.com/guide)']);
+
+    expect($html)->toContain('<div class="alert alert-info bf-category-note" data-category-note="1" hidden><p>Per-website license?');
+});
+

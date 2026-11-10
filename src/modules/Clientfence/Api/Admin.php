@@ -819,12 +819,18 @@ class Admin extends \ClientFence\Api\AbstractApi
         if (preg_match('/[\x00-\x1F\x7F]/u', $title . $subtitle) === 1) {
             throw new InformationException('The store title and subtitle are one line of plain text each.');
         }
+        // The billing cycle the store opens on; empty: monthly, or the first cycle offered.
+        $cycle = (string) ($data['store_cycle'] ?? '');
+        if ($cycle !== '' && !array_key_exists($cycle, \ClientFence\Period::getPredefined())) {
+            throw new InformationException('Choose a billing cycle for the store.');
+        }
 
         Service::saveSettings($this->getDi(), [
             'store_mode' => $mode,
             'store_testers_group' => $group,
             'store_title' => $title,
             'store_subtitle' => $subtitle,
+            'store_cycle' => $cycle,
         ]);
         $this->getDi()['logger']->info('ClientFence: store set to %s (client group that can order: %s)', $mode, $group === '' ? 'none' : $group);
 

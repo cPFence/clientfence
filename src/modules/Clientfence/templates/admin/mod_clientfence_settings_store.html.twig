@@ -72,6 +72,20 @@
 				</div>
 			</div>
 		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="store_cycle">{{ 'Store opens on'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'The billing cycle the store shows first, for example yearly prices. Visitors can still switch.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<select class="form-select" id="store_cycle" name="store_cycle">
+					<option value="">{{ 'Monthly (default)'|trans }}</option>
+					{% for code, title in guest.system_periods %}
+						<option value="{{ code }}"{% if store.store_cycle|default('') == code %} selected{% endif %}>{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
 		<div class="clientfence-settings-actions">
 			<button type="submit" class="btn btn-primary">{{ 'Save store settings'|trans }}</button>
 		</div>

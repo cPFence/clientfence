@@ -40,7 +40,7 @@
     {% endfor %}
 {% endfor %}
 {% set used = order|filter(code => code in used) %}
-{% set first_cycle = '1M' in used ? '1M' : (used|first ?: '') %}
+{% set first_cycle = store.cycle|default('') in used ? store.cycle : ('1M' in used ? '1M' : (used|first ?: '')) %}
 
 <div class="bf-store" data-bf-store
      data-currency="{{ cart_currency.code }}" data-rate="{{ cart_currency.conversion_rate }}"
@@ -90,6 +90,11 @@
                 </select>
             {% endif %}
         </div>
+
+        {# The chosen category's description (Products → Categories), for example a tip with a link. #}
+        {% for category in categories|filter(c => c.description|default('')|trim) %}
+            <div class="alert alert-info bf-category-note" data-category-note="{{ category.id }}" hidden>{{ category.description|markdown_to_html }}</div>
+        {% endfor %}
 
         <div class="bf-products">
             {% for category in categories %}

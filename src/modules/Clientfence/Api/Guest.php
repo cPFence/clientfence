@@ -41,6 +41,7 @@ class Guest extends \ClientFence\Api\AbstractApi
         return [
             'title' => (string) $config['store_title'],
             'subtitle' => (string) $config['store_subtitle'],
+            'cycle' => (string) $config['store_cycle'],
             'preview' => Service::previewActive($di),
             'signup' => Service::registrationOpen($di),
         ];
