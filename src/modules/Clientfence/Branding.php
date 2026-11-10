@@ -158,6 +158,24 @@ final class Branding
     }
 
     /**
+     * The colors of the email templates: the custom brand color with its text and link colors, or the emails' own
+     * blue while the brand color is the default (GitHub #10).
+     *
+     * @return array{color: string, text: string, link: string}
+     */
+    public static function email(\Pimple\Container $di): array
+    {
+        $brand = self::get($di);
+        if (!$brand['custom']) {
+            return ['color' => '#2563eb', 'text' => '#ffffff', 'link' => '#2563eb'];
+        }
+        $text = self::textOn($brand['color']);
+
+        // A light brand color cannot be read as link text on white: its deep shade is used instead.
+        return ['color' => $brand['color'], 'text' => $text, 'link' => $text === '#ffffff' ? $brand['color'] : self::palette($brand['color'])['deep']];
+    }
+
+    /**
      * The shades made from one brand color.
      *
      * @return array<string, string>

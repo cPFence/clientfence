@@ -13,7 +13,7 @@
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
 <tr><td align="center" style="padding:24px 12px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
-	<tr><td style="padding:20px 32px; border-bottom:3px solid #2563eb;">
+	<tr><td style="padding:20px 32px; border-bottom:3px solid {{ guest.system_company.brand_color|default('#2563eb') }};">
 		{% if guest.system_company.logo_url|default('') %}
 		<img src="{{ guest.system_company.logo_url }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
 		{% else %}
@@ -26,8 +26,8 @@
 		<p style="margin:0 0 16px;">Your ticket <strong>#{{ ticket.id|default('') }} {{ ticket.subject|default('') }}</strong> is now closed. We would love to know how we handled it.</p>
 		<p style="margin:0 0 16px;">Please take a minute to rate the staff who helped you and tell us how we can improve. It takes no sign-in.</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
-			<tr><td style="border-radius:6px; background-color:#2563eb;">
-				<a href="{{ feedback_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none;">Give feedback</a>
+			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
+				<a href="{{ feedback_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">Give feedback</a>
 			</td></tr>
 		</table>
 		<p style="margin:0 0 16px;">Thank you for helping us improve our service.</p>

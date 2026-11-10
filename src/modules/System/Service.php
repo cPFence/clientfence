@@ -271,6 +271,8 @@ class Service
             $faviconUrl = SYSTEM_URL . $faviconUrl;
         }
 
+        $email = \ClientFence\Mod\Clientfence\Branding::email($this->di);
+
         // Returned raw: output contexts escape on render, so escaping here
         // double-escapes in templates and corrupts stored snapshots.
         return [
@@ -298,6 +300,10 @@ class Service
             // ClientFence core patch: an invoice title and tax number label, such as Tax Invoice and ABN (GitHub #9).
             'invoice_title' => trim((string) ($results['invoice_title'] ?? '')),
             'tax_label' => trim((string) ($results['invoice_tax_label'] ?? '')),
+            // ClientFence core patch: the brand color for the email templates (GitHub #10).
+            'brand_color' => $email['color'],
+            'brand_text' => $email['text'],
+            'brand_link' => $email['link'],
         ];
     }
 
