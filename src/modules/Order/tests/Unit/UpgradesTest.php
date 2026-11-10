@@ -163,7 +163,7 @@ final class UpgradesTestDb
     public function store(object $model): int
     {
         $row = [];
-        foreach (['product_id', 'title', 'price', 'period', 'expires_at', 'config', 'updated_at', 'status', 'unpaid_invoice_id'] as $key) {
+        foreach (['product_id', 'title', 'price', 'discount', 'period', 'expires_at', 'config', 'updated_at', 'status', 'unpaid_invoice_id'] as $key) {
             $row[$key] = $model->{$key};
         }
         $this->db->update('client_order', $row, ['id' => (int) $model->id]);
@@ -1486,19 +1486,43 @@ test('a recurring promotion credits the days left at the discounted recurring am
     $di = upgradesContainer($db);
     $db->update('client_order', ['expires_at' => '2027-03-03 12:00:00', 'activated_at' => '2027-01-31 12:00:00', 'promo_id' => 4, 'promo_recurring' => 1], ['id' => 3]);
     $di['mod_service']('product')->shouldReceive('getRenewalPromoAdjustment')->atLeast()->once()->andReturn(['discount_amount' => 9.0]);
+    $di['mod_service']('product')->shouldReceive('findPromoById')->andReturn(new ClientFence\Mod\Product\Entity\Promo());
+    $di['mod_service']('product')->shouldReceive('inCurrency')->andReturnSelf();
+    $di['mod_service']('product')->shouldReceive('getProductDiscountById')->andReturn(1.0);
 
     // 45 less the 9 off each renewal, 36 x 31/31, less 5 x 31/31 for Starter.
     expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -31.0]);
 });
 
-test('a first-period promotion credits the first period at what was paid, the full price after a renewal', function (array $paid, bool $planChanged, float $amount): void {
+test('days paid through a plan change are credited at the full price, not at the recurring promotion\'s', function (): void {
+    $db = upgradesDb();
+    foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
+        $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
+    }
+    $di = upgradesContainer($db);
+    // Moved to Pro (45) after its last paid invoice, charged in full; its renewals take 9 off.
+    $db->update('client_order', ['expires_at' => '2027-03-03 12:00:00', 'activated_at' => '2027-01-31 12:00:00', 'promo_id' => 4, 'promo_recurring' => 1, 'discount' => 9], ['id' => 3]);
+    $db->insert(Upgrades::TABLE, ['order_id' => 3, 'client_id' => 5, 'kind' => 'upgrade', 'from_product_id' => 1, 'from_period' => '1M', 'from_price' => 5, 'from_expires_at' => '2027-03-03 12:00:00',
+        'to_product_id' => 2, 'to_period' => '1M', 'to_price' => 45, 'to_expires_at' => '2027-03-03 12:00:00', 'days_left' => 31, 'days_total' => 31, 'credit' => 5, 'charge' => 45, 'amount' => 40,
+        'status' => 'applied', 'created_at' => '2027-01-31 12:30:00', 'applied_at' => '2027-01-31 12:30:00']);
+    $products = $di['mod_service']('product');
+    $products->shouldReceive('getRenewalPromoAdjustment')->andReturn(['discount_amount' => 9.0]);
+    $products->shouldReceive('findPromoById')->andReturn(new ClientFence\Mod\Product\Entity\Promo());
+    $products->shouldReceive('inCurrency')->andReturnSelf();
+    $products->shouldReceive('getProductDiscountById')->andReturn(1.0);
+
+    // 45 x 31/31, less 5 x 31/31 for Starter (not 36 less 5).
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -40.0]);
+});
+
+test('a first-period promotion credits the first period at what was paid, the full price after a renewal', function (array $paid, bool $planChanged, float $amount, string $activated = '2027-01-31 12:00:00', string $expires = '2027-03-03 12:00:00'): void {
     $db = upgradesDb();
     foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
         $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
     }
     $di = upgradesContainer($db);
     // 45 a month, 20 off the first month only.
-    $db->update('client_order', ['expires_at' => '2027-03-03 12:00:00', 'activated_at' => '2027-01-31 12:00:00', 'promo_id' => 7, 'promo_recurring' => 0, 'discount' => 20], ['id' => 3]);
+    $db->update('client_order', ['expires_at' => $expires, 'activated_at' => $activated, 'promo_id' => 7, 'promo_recurring' => 0, 'discount' => 20], ['id' => 3]);
     $db->executeStatement('DELETE FROM invoice_item WHERE rel_id = ?', ['3']);
     foreach ($paid as $i => $task) {
         $db->insert('invoice', ['id' => 901 + $i, 'client_id' => 5, 'status' => 'paid']);
@@ -1515,9 +1539,13 @@ test('a first-period promotion credits the first period at what was paid, the fu
     // 45 less the 20 off, 25 x 31/31, less 5 x 31/31 for Starter.
     'first period' => [['activate'], false, -20.0],
     'free first period, no invoice' => [[], false, -20.0],
-    // Renewed at the full price: 45 less 5.
-    'renewed' => [['activate', 'renew'], false, -40.0],
-    'free first period, then renewed' => [['renew'], false, -40.0],
+    // Renewed at the full price (the first period ended on 31 January): 45 less 5.
+    'renewed' => [['activate', 'renew'], false, -40.0, '2026-12-31 12:00:00'],
+    'free first period, then renewed' => [['renew'], false, -40.0, '2026-12-31 12:00:00'],
+    // Renewed on the first day, to 3 April: 31 days at 25 and 31 at 45 = 70, less 5 x 62/31.
+    'renewed early in the first period' => [['activate', 'renew'], false, -60.0, '2027-01-31 12:00:00', '2027-04-03 12:00:00'],
+    // Renewed from the payment day (to 28 February): the renewal paid the 28 days left in full, 45 less 5, x 28/31 (-18.06 with the discount).
+    'renewed from the payment day' => [['activate', 'renew'], false, -36.13, '2027-01-31 12:00:00', '2027-02-28 13:00:00'],
     // A plan change in the first period was charged at the new plan's full price.
     'plan changed in the first period' => [['activate'], true, -40.0],
 ]);
@@ -1539,6 +1567,7 @@ test('a plan change of a service refunded or repriced after its last payment goe
 
     $options = Upgrades::options($di, upgradesOrder($di, 3), UPGRADES_NOW);
     expect($options['available'])->toBe(!$blocked)
+        ->and($options['notice'])->toBe($blocked)
         ->and($options['reason'])->toBe($blocked ? 'This service was refunded or its price changed after its last payment, so our staff change it. Please contact us.' : '');
 })->with([
     'paid at the price' => [[], 45, false, false],
@@ -1558,6 +1587,37 @@ test('a plan change of a service refunded or repriced after its last payment goe
     // Paid 45; staff raised it to 90, then options for 10 more: 55 paid, not 100.
     'an options change after a staff price raise' => [[], 100, true, true, false, null, 'paid', 90.0],
 ]);
+
+test('a plan change discounts the new plan with a recurring promotion as checkout does', function (): void {
+    $db = upgradesDb();
+    foreach (['promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
+        $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
+    }
+    $di = upgradesContainer($db);
+    // Pro 45 a month with 20% off every renewal (9); down to Starter (5): 20% of it is 1.
+    $db->update('client_order', ['promo_id' => 7, 'promo_recurring' => 1, 'discount' => 9], ['id' => 3]);
+    $promo = new ClientFence\Mod\Product\Entity\Promo();
+    $products = $di['mod_service']('product');
+    $products->shouldReceive('getRenewalPromoAdjustment')->andReturn(['discount_amount' => 9.0]);
+    $products->shouldReceive('findPromoById')->with(7)->andReturn($promo);
+    $products->shouldReceive('inCurrency')->andReturnSelf();
+    $products->shouldReceive('getProductDiscountById')->with(1, $promo, Mockery::type('array'))->andReturn(1.0);
+
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', UPGRADES_NOW)['status'])->toBe('applied')
+        ->and((float) $db->fetchOne('SELECT discount FROM client_order WHERE id = 3'))->toBe(1.0);
+});
+
+test('an options change after a full refund goes to staff, after a staff price change it does not', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $o = upgradesWithOptions($di);
+    $db->update('client_order', ['price' => 50], ['id' => 1]);
+    expect(Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['support'] => $o['priority']], UPGRADES_NOW)['kind'])->toBe('upgrade');
+
+    $db->update('invoice', ['status' => 'refunded'], ['id' => 9001]);
+    expect(fn () => Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['support'] => $o['priority']], UPGRADES_NOW))
+        ->toThrow(InformationException::class, 'refunded or its price changed');
+});
 
 test('a refund of an older period does not stop a plan change in a newer paid one', function (): void {
     $db = upgradesDb();

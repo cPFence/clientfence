@@ -178,7 +178,7 @@ final class Upgrades
         // The client may change the configurable options alone (optionsQuote()): the options offered
         // now, for the service page's form (also for a product no longer on sale).
         $offered = Options::forProduct($di, (int) $order->product_id);
-        $paid = self::recurringTotal($di, $order);
+        $paid = self::recurringTotal($di, $order, $now);
         $productRule = self::rule($di, self::SCOPE_PRODUCT, (int) $order->product_id);
         $orderRule = self::rule($di, self::SCOPE_ORDER, (int) $order->id);
         $anchor = self::periodAnchor($db, $order);
@@ -227,7 +227,8 @@ final class Upgrades
             return $none($reason, null, [], $options !== []);
         }
         if (self::repricedSincePaid($di, $db, $order)) {
-            return $none(__trans('This service was refunded or its price changed after its last payment, so our staff change it. Please contact us.'), null, $offered);
+            // Shown in place of the Upgrade / Downgrade button when there are plans to change to (GitHub #8).
+            return $none(__trans('This service was refunded or its price changed after its last payment, so our staff change it. Please contact us.'), null, $offered, $options !== []);
         }
 
         return $options === []
@@ -560,6 +561,18 @@ final class Upgrades
                 if (!$optionsOnly) {
                     $order->title = self::newTitle((string) $order->title, (string) $up['from_title'], (string) $up['to_title'], $fromProduct['title'] ?? '');
                 }
+                // ClientFence core patch: a recurring promotion discounts the new product and cycle as checkout does (its old
+                // amount made the renewals of a cheaper plan free and overcharged a dearer one); none when it does not apply.
+                if (!$optionsOnly && $order->promo_recurring && $order->promo_id) {
+                    $products = $di['mod_service']('product');
+                    try {
+                        $promo = $products->findPromoById((int) $order->promo_id);
+                        $discount = (float) $products->inCurrency((string) $order->currency)->getProductDiscountById((int) $up['to_product_id'], $promo, $config) * (self::rate($db, (string) $order->currency) ?? 1.0);
+                    } catch (\ClientFence\Exception) {
+                        $discount = 0.0;
+                    }
+                    $order->discount = min(round($discount, 2), round((float) $up['to_price'], 2));
+                }
                 $order->price = $newPrice;
                 $order->period = (string) $up['to_period'];
                 $order->expires_at = (string) $up['to_expires_at'];
@@ -879,6 +892,10 @@ final class Upgrades
             throw new InformationException($reason);
         }
         $db = self::db($di);
+        // Options were refunded with the invoice; after a price change only their difference moves.
+        if (self::repricedSincePaid($di, $db, $order, false)) {
+            throw new InformationException(__trans('This service was refunded or its price changed after its last payment, so our staff change it. Please contact us.'));
+        }
         $product = self::catalog($db, (int) $order->product_id, false);
         $rate = self::rate($db, (string) $order->currency);
         if ($product === null || $rate === null || Options::forProduct($di, (int) $order->product_id) === []) {
@@ -895,7 +912,7 @@ final class Upgrades
         $delta = ($new['price'] - $current) * $rate * $quantity;
         $newTotal = round(self::orderTotal($order) + $delta, 2);
         // Only the options' difference is charged or credited for the days left.
-        $paid = self::recurringTotal($di, $order);
+        $paid = self::recurringTotal($di, $order, $now);
         if ($newTotal < 0 || round($paid + $delta, 2) < 0) {
             throw new InformationException('The price of this service is lower than its options, so it is changed by our staff. Please contact us.');
         }
@@ -1403,9 +1420,9 @@ final class Upgrades
      * ClientFence core patch: the days left are credited at the price, so they must have been paid at it: after a full refund
      * of the service's last invoice or of a change applied since, or a price raised above what was last paid, staff make a
      * plan change.
-     * A part refund does not count: one invoice often holds several services.
+     * A part refund does not count: one invoice often holds several services. Without $price, only the refunds count.
      */
-    private static function repricedSincePaid(\Pimple\Container $di, Connection $db, \Model_ClientOrder $order): bool
+    private static function repricedSincePaid(\Pimple\Container $di, Connection $db, \Model_ClientOrder $order, bool $price = true): bool
     {
         $last = $db->fetchAssociative(
             'SELECT i.status, i.taxrate, i.paid_at, ii.price * ii.quantity AS amount FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
@@ -1417,7 +1434,7 @@ final class Upgrades
             return true;
         }
         $paid = null;
-        if ($last !== false) {
+        if ($last !== false && $price) {
             // With prices that include tax the line holds the net price (Invoice Service::applyInclusiveTax(), same rate).
             $rate = 0.0;
             if ($di['mod_service']('invoice')->pricesIncludeTax()) {
@@ -1445,7 +1462,7 @@ final class Upgrades
         }
 
         // Unit prices are rounded per line, so two cents per unit are not a price change.
-        return $paid !== null && round($paid, 2) < self::orderTotal($order) - 0.02 * max(1, (int) ($order->quantity ?? 1));
+        return $price && $paid !== null && round($paid, 2) < self::orderTotal($order) - 0.02 * max(1, (int) ($order->quantity ?? 1));
     }
 
     private static function orderTotal(\Model_ClientOrder $order): float
@@ -1457,19 +1474,33 @@ final class Upgrades
      * ClientFence core patch: the days left are credited at the service's recurring amount (its price less a recurring
      * promotion), per day of its cycle, as WHMCS does.
      */
-    private static function recurringTotal(\Pimple\Container $di, \Model_ClientOrder $order): float
+    private static function recurringTotal(\Pimple\Container $di, \Model_ClientOrder $order, string $now): float
     {
+        $db = self::db($di);
+        // ClientFence core patch: a plan or cycle change since the last paid renewal was charged the full price, so its days
+        // are credited at that, not at the recurring promotion's price the change set for the renewals.
+        $lastPaid = $db->fetchOne('SELECT MAX(i.paid_at) FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.rel_id = ?', [\Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, (string) $order->id]);
         $promo = $order->promo_recurring && $order->promo_id
+            && $db->fetchOne('SELECT 1 FROM ' . self::TABLE . ' WHERE order_id = ? AND status = ? AND (to_product_id <> from_product_id OR to_period <> from_period) AND applied_at >= ?', [(int) $order->id, self::STATUS_APPLIED, (string) ($lastPaid ?: '')]) === false
             ? $di['mod_service']('Product')->getRenewalPromoAdjustment($order, (float) $order->price, (float) max(1, (int) ($order->quantity ?? 1)))
             : null;
         // ClientFence core patch: a first-period promotion lowered what the first period was paid, so its days are credited at
-        // that until a renewal or a change of plan or cycle is paid (a downgrade gave the discount back as credit).
-        // shortcut: a renewal paid early credits the first period's last days at the full price, upgrade to per-period amounts if it matters.
-        $db = self::db($di);
-        $firstDiscount = !$order->promo_recurring && (float) $order->discount > 0
-            && $db->fetchOne('SELECT 1 FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.task = ? AND ii.rel_id = ?', [\Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, \Model_InvoiceItem::TASK_RENEW, (string) $order->id]) === false
-            && $db->fetchOne('SELECT 1 FROM ' . self::TABLE . ' WHERE order_id = ? AND status = ? AND (to_product_id <> from_product_id OR to_period <> from_period)', [(int) $order->id, self::STATUS_APPLIED]) === false
-            ? (float) $order->discount : 0.0;
+        // that until a change of plan or cycle is paid (a downgrade gave the discount back as credit). After a renewal the
+        // discount covers only the first period's days still left (a renewal paid on day one gave it all back).
+        $firstDiscount = 0.0;
+        if (!$order->promo_recurring && (float) $order->discount > 0
+            && $db->fetchOne('SELECT 1 FROM ' . self::TABLE . ' WHERE order_id = ? AND status = ? AND (to_product_id <> from_product_id OR to_period <> from_period)', [(int) $order->id, self::STATUS_APPLIED]) === false) {
+            $firstDiscount = (float) $order->discount;
+            if ($db->fetchOne('SELECT 1 FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.task = ? AND ii.rel_id = ?', [\Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, \Model_InvoiceItem::TASK_RENEW, (string) $order->id]) !== false) {
+                $left = Proration::daysLeft((string) $order->expires_at, $now);
+                // The first period ended where activation put the first expiry, or earlier where the paid period began (renewals
+                // counted from the payment day).
+                $firstEnd = (string) $order->activated_at !== '' ? (new \ClientFence\Period((string) $order->period))->getExpirationTime((int) strtotime((string) $order->activated_at)) : false;
+                [$qty, $unit] = Proration::parsePeriod((string) $order->period);
+                $firstEnd = $firstEnd === false ? false : min($firstEnd, Proration::shift(new \DateTimeImmutable((string) $order->expires_at), $qty, $unit, -1)->getTimestamp());
+                $firstDiscount = $left > 0 && $firstEnd !== false ? $firstDiscount * min($left, Proration::daysLeft(date('Y-m-d H:i:s', $firstEnd), $now)) / $left : 0.0;
+            }
+        }
 
         return max(0.0, round(self::orderTotal($order) - (float) ($promo['discount_amount'] ?? 0) - $firstDiscount, 2));
     }
