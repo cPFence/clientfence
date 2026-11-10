@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.41 (2026-11-10)
+
+### Fixed
+
+- When an upgrade, downgrade or staff move changes a service's price or billing cycle, its subscription at the old price is still cancelled, but the client now gets an email about it saying whether their credit or saved payment method pays the next renewal, and the order history notes it ([#5](https://github.com/cPFence/clientfence/issues/5)).
+
 ## 1.0.40 (2026-11-10)
 
 ### Added
