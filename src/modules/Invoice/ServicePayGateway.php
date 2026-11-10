@@ -172,7 +172,8 @@ class ServicePayGateway implements InjectionAwareInterface
         $config = $this->getAdapterConfig($new);
         $new->name = $config['title'] ?? $code;
         $new->allow_single = empty($config['supports_one_time_payments']) ? 0 : 1;
-        $new->allow_recurrent = empty($config['supports_subscriptions']) ? 0 : 1;
+        // ClientFence core patch: Stripe renews with the saved card, as WHMCS does, not with Stripe subscriptions (GitHub #7).
+        $new->allow_recurrent = empty($config['supports_subscriptions']) || $code === 'Stripe' ? 0 : 1;
         $new->enabled = 0;
         $new->accepted_currencies = null;
         $new->test_mode = 0;

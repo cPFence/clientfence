@@ -2016,10 +2016,24 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return ['checked' => count($rows), 'found' => $found, 'next' => count($rows) < $limit ? null : (int) end($rows)['id']];
     }
 
+    /** ClientFence: the client's "Save this card" choice on invoice $invoiceId's card form, set on the payment before it is confirmed (GitHub #7). */
+    public function cardSaveChoice(int $clientId, int $invoiceId, string $paymentIntentId, bool $save): void
+    {
+        $intent = $this->stripe->paymentIntents->retrieve($paymentIntentId, []);
+        $customerId = $this->ownedCustomer($clientId);
+        if (($intent->metadata['invoice_id'] ?? null) !== (string) $invoiceId || ($intent->metadata['gateway_id'] ?? null) !== (string) $this->gatewayId()
+            || $customerId === null || $intent->customer !== $customerId
+            || !in_array($intent->status, ['requires_payment_method', 'requires_confirmation', 'requires_action'], true)) {
+            throw new ClientFence\InformationException('This payment cannot be changed. Reload the page and try again.');
+        }
+        $this->stripe->paymentIntents->update($paymentIntentId, ['payment_method_options' => ['card' => ['setup_future_usage' => $save ? 'off_session' : '']]]);
+    }
+
     /** A successful payment the client chose to save the card with: keeps the card (default when none). */
     private function rememberPaidCard(object $paymentIntent, int $clientId): void
     {
-        if (($paymentIntent->status ?? '') !== 'succeeded' || ($paymentIntent->setup_future_usage ?? null) !== 'off_session'
+        $save = ($paymentIntent->setup_future_usage ?? null) === 'off_session' || ($paymentIntent->payment_method_options->card->setup_future_usage ?? null) === 'off_session';
+        if (($paymentIntent->status ?? '') !== 'succeeded' || !$save
             || empty($paymentIntent->payment_method) || $clientId <= 0
             || ($paymentIntent->customer ?? null) === null || $paymentIntent->customer !== $this->ownedCustomer($clientId)) {
             return;
@@ -2038,6 +2052,10 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
     private function rememberCard(int $clientId, string $paymentMethodId, bool $makeDefault): void
     {
         $method = $this->stripe->paymentMethods->retrieve($paymentMethodId, []);
+        // A method Stripe did not save (paid with another way than the card the client chose to save) cannot be charged later.
+        if ($method->customer !== $this->ownedCustomer($clientId)) {
+            return;
+        }
         $this->di['dbal']->executeStatement(
             // auto_pay_at: the card a client saved or chose last pays, also over a saved PayPal account (SavedCards::method()).
             'UPDATE pay_gateway_customer SET default_payment_method = ?, default_card = ?, auto_pay_at = ? WHERE pay_gateway_id = ? AND client_id = ? AND test_mode = ? AND saved_cards = 1'
@@ -2149,8 +2167,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             ],
         ];
         // ClientFence: on their own invoice, a signed-in client may save the card (and pay with a saved
-        // one): Stripe's own checkbox in the Payment Element, through a customer session.
+        // one), through a customer session.
         $customerSession = null;
+        $saveCard = null;
         $user = ClientFence\Mod\Client\Users::context($this->di);
         if ((int) ($this->di['session']->get('client_id') ?? 0) === (int) $invoice->client_id && ($user === null || $user['owner'])) {
             try {
@@ -2161,12 +2180,17 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                         'payment_method_redisplay' => 'enabled',
                         // ClientFence core patch: cards saved on the Payment methods page are "unspecified", which Stripe hides by default (GitHub #6).
                         'payment_method_allow_redisplay_filters' => ['always', 'limited', 'unspecified'],
-                        'payment_method_save' => 'enabled',
-                        'payment_method_save_usage' => 'off_session',
+                        // ClientFence core patch: our own "Save this card" box, ticked as WHMCS does; Stripe's box is always unticked (GitHub #7).
+                        'payment_method_save' => 'disabled',
                         'payment_method_remove' => 'disabled',
                     ]]],
                 ]);
                 $intentParams['customer'] = $customerId;
+                // Staff signed in as the client tick it themselves. On the card only: Stripe hides methods that cannot be saved.
+                $saveCard = empty($this->di['session']->get('admin'));
+                if ($saveCard) {
+                    $intentParams['payment_method_options'] = ['card' => ['setup_future_usage' => 'off_session']];
+                }
             } catch (Throwable $e) {
                 // Saving a card is extra: the client can always pay without it.
                 $this->di['logger']->warning('Stripe: no saved cards on invoice #%s: %s', $invoice->id, $e->getMessage());
@@ -2192,6 +2216,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                     <div id="payment-element">
                         <!-- Stripe Elements will create form elements here -->
                     </div>
+:save_card
 
                     <button id="submit" class="btn btn-primary mt-2" style="margin-top: 0.5em;">Submit</button>
 
@@ -2224,6 +2249,20 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                     form.addEventListener(\'submit\', async (event) => {
                     event.preventDefault();
 
+                    const saveCard = document.getElementById(\'cf-save-card\');
+                    if (saveCard) {
+                        try {
+                            await new Promise((resolve, reject) => ClientFence.api.client.post(\'invoice/card_save_choice\', {hash: \':invoice_hash\', gateway_id: :gateway_id, intent: \':intent_id\', save: saveCard.checked ? 1 : 0}, resolve, reject));
+                            const updated = await elements.fetchUpdates();
+                            if (updated.error) {
+                                throw updated.error;
+                            }
+                        } catch (saveError) {
+                            ClientFence.message(saveError.message, \'error\');
+                            return;
+                        }
+                    }
+
                     const {error} = await stripe.confirmPayment({
                         elements,
                         confirmParams: {
@@ -2249,6 +2288,14 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $bindings = [
             ':pub_key' => $pubKey,
             ':intent_secret' => $intent->client_secret,
+            ':intent_id' => $intent->id,
+            ':gateway_id' => (string) $this->gatewayId(),
+            ':save_card' => $saveCard === null ? '' : sprintf(
+                '<div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="cf-save-card"%s><label class="form-check-label" for="cf-save-card">%s</label><div class="form-text">%s</div></div>',
+                $saveCard ? ' checked' : '',
+                htmlspecialchars(__trans('Save this card for future invoices'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                htmlspecialchars(__trans('A saved card can pay this account\'s invoices automatically. You can remove it on the Payment methods page.'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            ),
             ':buyer_email' => self::encodeJsString((string) $invoice->buyer_email),
             ':buyer_name' => self::encodeJsString(trim($invoice->buyer_first_name . ' ' . $invoice->buyer_last_name)),
             ':callbackUrl' => $this->config['notify_url'],

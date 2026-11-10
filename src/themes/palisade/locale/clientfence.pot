@@ -948,6 +948,10 @@ msgstr ""
 msgid "A rule acts on tickets of the chosen help desks, statuses and priorities that got no reply for the set time: it can add a reply, move the ticket, change its priority and status, assign it and email staff. It acts once for each reply, and only when the time runs out after the rule was made. The cron runs the rules."
 msgstr ""
 
+#: src/library/Payment/Adapter/Stripe.php
+msgid "A saved card can pay this account's invoices automatically. You can remove it on the Payment methods page."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "A secret is saved; it is never shown again. Leave this empty to keep it."
 msgstr ""
@@ -14768,7 +14772,7 @@ msgstr ""
 msgid "Only the account owner can restore backups."
 msgstr ""
 
-#: src/modules/Invoice/Controller/Client.php
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
 msgid "Only the account owner can save a payment method."
 msgstr ""
 
@@ -15984,6 +15988,10 @@ msgstr ""
 msgid "Payment ID"
 msgstr ""
 
+#: src/modules/Invoice/Api/Client.php
+msgid "Payment ID was not passed"
+msgstr ""
+
 #: src/themes/palisade/html/partials/footer.html.twig
 msgid "Payment Information"
 msgstr ""
@@ -16048,7 +16056,7 @@ msgstr ""
 msgid "Payment gateway ID is missing"
 msgstr ""
 
-#: src/modules/Invoice/Api/Admin.php
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Api/Client.php
 msgid "Payment gateway ID was not passed"
 msgstr ""
 
@@ -18902,6 +18910,10 @@ msgstr ""
 
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
 msgid "Save the settings to create the key."
+msgstr ""
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Save this card for future invoices"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_ticket_files.html.twig
@@ -22963,6 +22975,10 @@ msgstr ""
 
 #: src/modules/Redirect/Service.php
 msgid "This path is reserved."
+msgstr ""
+
+#: src/library/Payment/Adapter/Stripe.php
+msgid "This payment cannot be changed. Reload the page and try again."
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig

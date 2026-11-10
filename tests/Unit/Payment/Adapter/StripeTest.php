@@ -2834,7 +2834,7 @@ describe('saved cards', function (): void {
         $this->adapter->setDi($di);
         $this->stripe = Mockery::mock(StripeClient::class);
         $this->stripe->paymentMethods = Mockery::mock();
-        $this->stripe->paymentMethods->allows('retrieve')->andReturnUsing(fn (string $id): object => (object) ['id' => $id, 'type' => 'card', 'customer' => 'cus_9', 'card' => (object) ['brand' => 'visa', 'last4' => '4242', 'exp_month' => 3, 'exp_year' => 2030]]);
+        $this->stripe->paymentMethods->allows('retrieve')->andReturnUsing(fn (string $id): object => (object) ['id' => $id, 'type' => 'card', 'customer' => $id === 'pm_unattached' ? null : 'cus_9', 'card' => (object) ['brand' => 'visa', 'last4' => '4242', 'exp_month' => 3, 'exp_year' => 2030]]);
         setPrivateProperty($this->adapter, 'stripe', $this->stripe);
         $this->invoice = new Model_Invoice();
         $this->invoice->loadBean(new DummyBean());
@@ -2849,7 +2849,12 @@ describe('saved cards', function (): void {
         invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) $paid, 9]);
         expect($this->adapter->savedCard(9))->toBeNull();
 
-        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) ($paid + ['setup_future_usage' => 'off_session']), 9]);
+        // Saved on the card only (GitHub #7): another way to pay is not attached to the customer, so not kept.
+        $cardOnly = ['payment_method_options' => (object) ['card' => (object) ['setup_future_usage' => 'off_session']]];
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) (['payment_method' => 'pm_unattached'] + $cardOnly + $paid), 9]);
+        expect($this->adapter->savedCard(9))->toBeNull();
+
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) ($cardOnly + $paid), 9]);
         invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) (['payment_method' => 'pm_2', 'setup_future_usage' => 'off_session'] + $paid), 9]);
         expect($this->adapter->savedCard(9))->toMatchArray(['payment_method' => 'pm_1', 'card' => 'Visa •••• 4242 (03/2030)'])
             ->and($this->adapter->savedCard(9)['auto_pay_at'])->not->toBe('');
@@ -2864,20 +2869,45 @@ describe('saved cards', function (): void {
             ->and(fn () => $this->adapter->cardDefault(9, 'pm_2'))->toThrow(ClientFence\InformationException::class, 'Payment method not found.');
     });
 
-    test('the payment form lists every saved card of the client, also those saved on the Payment methods page (GitHub #6)', function (): void {
+    test('the payment form lists every saved card of the client (GitHub #6) and saves the card unless unticked; staff tick it themselves (GitHub #7)', function (?array $admin, ?string $usage, string $box): void {
         $this->adapter->getDi()['session']->shouldReceive('get')->with('client_id')->andReturn(9);
+        $this->adapter->getDi()['session']->shouldReceive('get')->with('admin')->andReturn($admin);
         $this->stripe->customerSessions = Mockery::mock();
         $this->stripe->customerSessions->shouldReceive('create')->once()
             ->withArgs(fn (array $params): bool => $params['customer'] === 'cus_9'
-                && $params['components']['payment_element']['features']['payment_method_allow_redisplay_filters'] === ['always', 'limited', 'unspecified'])
+                && $params['components']['payment_element']['features']['payment_method_allow_redisplay_filters'] === ['always', 'limited', 'unspecified']
+                && $params['components']['payment_element']['features']['payment_method_save'] === 'disabled')
             ->andReturn((object) ['client_secret' => 'cuss_secret']);
         $this->stripe->paymentIntents = Mockery::mock();
         $this->stripe->paymentIntents->shouldReceive('create')->once()
-            ->withArgs(fn (array $params): bool => $params['customer'] === 'cus_9')
+            ->withArgs(fn (array $params): bool => $params['customer'] === 'cus_9' && !isset($params['setup_future_usage'])
+                && ($params['payment_method_options']['card']['setup_future_usage'] ?? null) === $usage)
             ->andReturn((object) ['id' => 'pi_70', 'client_secret' => 'pi_secret']);
 
-        expect(invokePrivateMethod($this->adapter, '_generateForm', [$this->invoice]))->toContain('cuss_secret');
-    });
+        expect(invokePrivateMethod($this->adapter, '_generateForm', [$this->invoice]))->toContain('cuss_secret')->toContain($box)->toContain("intent: 'pi_70'");
+    })->with([
+        'the client' => [null, 'off_session', 'id="cf-save-card" checked>'],
+        'staff signed in as the client' => [['id' => 1], null, 'id="cf-save-card">'],
+    ]);
+
+    test('the Save this card choice is set on the client\'s own unconfirmed payment only (GitHub #7)', function (array $intent, ?string $usage): void {
+        $this->stripe->paymentIntents = Mockery::mock();
+        $this->stripe->paymentIntents->shouldReceive('retrieve')->once()->with('pi_70', [])
+            ->andReturn((object) ($intent + ['metadata' => ['invoice_id' => '70', 'gateway_id' => '1'], 'customer' => 'cus_9', 'status' => 'requires_payment_method']));
+        $usage === null
+            ? $this->stripe->paymentIntents->shouldNotReceive('update')
+            : $this->stripe->paymentIntents->shouldReceive('update')->once()->with('pi_70', ['payment_method_options' => ['card' => ['setup_future_usage' => $usage]]]);
+
+        $choice = fn () => $this->adapter->cardSaveChoice(9, 70, 'pi_70', $usage !== '');
+        $usage === null ? expect($choice)->toThrow(ClientFence\InformationException::class, 'This payment cannot be changed.') : $choice();
+    })->with([
+        'save' => [[], 'off_session'],
+        'do not save' => [[], ''],
+        'back from a bank page' => [['status' => 'requires_action'], ''],
+        'another invoice' => [['metadata' => ['invoice_id' => '71', 'gateway_id' => '1']], null],
+        'another customer' => [['customer' => 'cus_8'], null],
+        'already confirmed' => [['status' => 'succeeded'], null],
+    ]);
 
     test('the saved card is charged off session for the balance; a card that needs the client fails', function (string $status, ?string $error): void {
         $this->cards->update('pay_gateway_customer', ['default_payment_method' => 'pm_1', 'default_card' => 'Visa'], ['client_id' => 9]);

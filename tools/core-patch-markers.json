@@ -4706,5 +4706,13 @@
     {
         "file": "modules/System/Service.php",
         "done": "ClientFence core patch: the brand color for the email templates (GitHub #10)."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: Stripe renews with the saved card, as WHMCS does, not with Stripe subscriptions (GitHub #7)."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: our own \"Save this card\" box, ticked as WHMCS does; Stripe's box is always unticked (GitHub #7)."
     }
 ]

@@ -93,9 +93,7 @@ test('gets available gateways', function (): void {
     expect($result)->toBeArray();
 });
 
-test('installs a pay gateway with its display name and payment kinds', function (): void {
-    $service = new ServicePayGateway();
-    $code = 'PayPalAutoPay';
+test('installs a pay gateway with its display name and payment kinds', function (string $code, string $name): void {
 
     $serviceMock = Mockery::mock(ServicePayGateway::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('getAvailable')
@@ -119,10 +117,14 @@ test('installs a pay gateway with its display name and payment kinds', function 
 
     $result = $serviceMock->install($code);
     expect($result)->toBeBool()->toBeTrue()
-        ->and($payGatewayModel->name)->toBe('PayPal Auto-Pay')
+        ->and($payGatewayModel->name)->toBe($name)
         ->and($payGatewayModel->allow_single)->toBe(1)
         ->and($payGatewayModel->allow_recurrent)->toBe(0);
-});
+})->with([
+    'PayPal Auto-Pay' => ['PayPalAutoPay', 'PayPal Auto-Pay'],
+    // Stripe renews with the saved card, not with Stripe subscriptions (GitHub #7).
+    'Stripe' => ['Stripe', 'Stripe'],
+]);
 
 test('throws exception when installing unavailable gateway', function (): void {
     $service = new ServicePayGateway();

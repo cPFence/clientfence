@@ -403,6 +403,28 @@ class Client extends \ClientFence\Api\AbstractApi
         return ['paid' => $result['paid'], 'message' => (string) ($result['error'] ?? '')];
     }
 
+    /** ClientFence: the "Save this card" choice (`save`) for the card payment (`intent`) of the client's own unpaid invoice (`hash`) at Stripe gateway `gateway_id`. */
+    #[RequiredParams(['hash' => 'Invoice hash was not passed', 'gateway_id' => 'Payment gateway ID was not passed', 'intent' => 'Payment ID was not passed'])]
+    public function card_save_choice($data): bool
+    {
+        $di = $this->getDi();
+        $clientId = (int) $this->getIdentity()->id;
+        $user = \ClientFence\Mod\Client\Users::context($di);
+        if ($user !== null && !$user['owner']) {
+            throw new \ClientFence\InformationException('Only the account owner can save a payment method.');
+        }
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+            ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
+        $gateway = $di['db']->findOne('PayGateway', 'id = ? AND gateway = ? AND enabled = 1', [(int) $data['gateway_id'], 'Stripe']);
+        $adapter = $gateway instanceof \Model_PayGateway ? $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway) : null;
+        if (!$adapter instanceof \Payment_Adapter_Stripe) {
+            throw new \ClientFence\InformationException('Saved cards are not available.');
+        }
+        $adapter->cardSaveChoice($clientId, (int) $invoice->id, (string) $data['intent'], !empty($data['save']));
+
+        return true;
+    }
+
     /** ClientFence: starts adding a card: {client_secret, pub_key} for Stripe's card form. */
     public function card_setup(): array
     {
