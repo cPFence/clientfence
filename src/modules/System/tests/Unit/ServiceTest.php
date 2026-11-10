@@ -151,6 +151,31 @@ test('renderEmailSubjectString decodes the HTML autoescape pass', function (): v
     expect($service->renderEmailSubjectString('[A & B Ltd] Invoice', []))->toBe('[A & B Ltd] Invoice');
 });
 
+test('renderEmailTplString translates in the recipient\'s language and restores the page language', function (?string $locale, string $expected): void {
+    $previous = Locale::getDefault();
+    (new ClientFence\Translate())->setLocale('en_US')->setup();
+    try {
+        // |trans reads the gettext locale (the tests' own __trans() does not translate).
+        $twig = new Twig\Environment(new Twig\Loader\ArrayLoader());
+        $twig->addFilter(new Twig\TwigFilter('trans', static fn (string $text): string => _gettext($text)));
+        $factory = Mockery::mock(ClientFence\Twig\TwigFactory::class);
+        $factory->shouldReceive('createEmailEnvironment')->once()->with('UTC', $locale)->andReturn($twig);
+        $di = container();
+        $di['twig_factory'] = $factory;
+        $service = new Service();
+        $service->setDi($di);
+
+        expect($service->renderEmailTplString("{{ 'Invoice Number'|trans }}", [], 'UTC', $locale))->toBe($expected)
+            ->and(Locale::getDefault())->toBe('en_US')
+            ->and(_gettext('Invoice Number'))->toBe('Invoice Number');
+    } finally {
+        (new ClientFence\Translate())->setLocale($previous ?: 'en_US')->setup();
+    }
+})->with([
+    'German recipient' => ['de_DE', 'Rechnungsnummer'],
+    'no recipient language: the page language' => [null, 'Invoice Number'],
+]);
+
 test('getParams returns system parameters', function (): void {
     $service = new Service();
     $expected = [

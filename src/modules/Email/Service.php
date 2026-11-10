@@ -154,6 +154,14 @@ class Service implements \ClientFence\InjectionAwareInterface
         return $this->_parse($template, $vars, $timezone, $locale);
     }
 
+    /**
+     * ClientFence core patch: the language an email goes out in, the recipient's if it is turned on, else the default.
+     */
+    public function recipientLocale(?string $lang): string
+    {
+        return in_array($lang, \ClientFence\i18n::getLocales(), true) ? $lang : (string) Config::getProperty('i18n.locale', 'en_US');
+    }
+
     public function setVars(EmailTemplate $template, array $vars): bool
     {
         $encoded = json_encode($vars);
@@ -299,6 +307,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         // ClientFence core patch: a Reply-To for this email only (ReplyTo.php), e.g. a ticket's help desk.
         $replyTo = isset($data['reply_to']) && is_string($data['reply_to']) ? $data['reply_to'] : null;
         unset($vars['reply_to']);
+        // ClientFence core patch: `to_lang`, the language of a plain `to` address, is not a template variable.
+        unset($vars['to_lang']);
         unset($vars['to'], $vars['to_client'], $vars['to_staff'], $vars['to_name'], $vars['from'], $vars['from_name'], $vars['to_admin'], $vars['client_billing_email']);
         unset($vars['default_description'], $vars['default_subject'], $vars['default_template'], $vars['code'], $vars['send_now'], $vars['throw_exceptions'], $vars['attachment']);
 
@@ -381,7 +391,10 @@ class Service implements \ClientFence\InjectionAwareInterface
             $recipientTimezone = (string) $oneStaff['timezone'];
         }
 
-        $recipientLocale = $customer['lang'] ?? null;
+        // ClientFence core patch: the recipient's language if it is turned on (the client's, or `to_lang` for a
+        // plain address such as an authorized user), else the default; staff get the default language (WHMCS).
+        $wanted = isset($staff) || isset($oneStaff) ? null : (isset($customer) ? ($customer['lang'] ?? null) : ($data['to_lang'] ?? null));
+        $recipientLocale = $this->recipientLocale($wanted);
 
         [$subject, $content] = $this->_parse($template, $vars, $recipientTimezone, $recipientLocale);
 
@@ -408,7 +421,7 @@ class Service implements \ClientFence\InjectionAwareInterface
                 $staffVars = $vars;
                 $staffVars['staff'] = $this->safeStaffTemplateVars($staff);
                 $staffTimezone = !empty($staff['timezone'] ?? null) ? (string) $staff['timezone'] : null;
-                [$subject, $content] = $this->_parse($template, $staffVars, $staffTimezone, $staff['lang'] ?? null);
+                [$subject, $content] = $this->_parse($template, $staffVars, $staffTimezone, $recipientLocale);
 
                 $to = $staff['email'];
                 $to_name = $staff['name'];

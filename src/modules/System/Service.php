@@ -600,7 +600,7 @@ class Service
         $twigFactory = $this->di['twig_factory'];
         $twig = $twigFactory->createEmailEnvironment($timezone, $locale);
 
-        return SandboxedStringRenderer::render(
+        $render = fn (): string => SandboxedStringRenderer::render(
             $twig,
             $tpl,
             $vars,
@@ -611,6 +611,9 @@ class Service
                 ]);
             }
         );
+
+        // ClientFence core patch: |trans follows the recipient's language, not the language of whoever triggered the email.
+        return empty($locale) ? $render() : \ClientFence\Translate::with($locale, $render);
     }
 
     /**

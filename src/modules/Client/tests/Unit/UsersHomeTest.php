@@ -121,3 +121,51 @@ test('authorized-user password and token consumption roll back together on a sto
     expect($db->fetchOne('SELECT pass FROM client_user'))->toBe('old')
         ->and((int) $db->fetchOne('SELECT COUNT(*) FROM client_user_password_reset'))->toBe(1);
 });
+
+test('authorized-user reset and invitation emails go out in the user\'s language, else the account\'s', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, email TEXT, first_name TEXT, last_name TEXT, company TEXT, lang TEXT)');
+    $db->executeStatement('CREATE TABLE client_user (id INTEGER PRIMARY KEY, email TEXT, first_name TEXT, last_name TEXT, lang TEXT, status TEXT)');
+    $db->executeStatement('CREATE TABLE client_user_account (id INTEGER PRIMARY KEY, user_id INTEGER, client_id INTEGER)');
+    $db->executeStatement('CREATE TABLE client_user_password_reset (token_hash TEXT, user_id INTEGER, created_at TEXT, expires_at TEXT)');
+    $db->executeStatement('CREATE TABLE client_user_invite (id INTEGER PRIMARY KEY, client_id INTEGER, email TEXT, permissions TEXT, token_hash TEXT, created_at TEXT, expires_at TEXT)');
+    $db->executeStatement('CREATE TABLE client_user_invite_log (client_id INTEGER, sent_at TEXT)');
+    $db->executeStatement("INSERT INTO client VALUES (1, 'one@example.com', 'One', '', '', 'de_DE'), (2, 'two@example.com', 'Two', '', '', 'fr_FR')");
+    $db->executeStatement("INSERT INTO client_user VALUES (1, 'ann@example.com', 'Ann', '', NULL, 'active'), (2, 'bob@example.com', 'Bob', '', 'it_IT', 'active')");
+    $db->executeStatement('INSERT INTO client_user_account VALUES (1, 1, 1), (2, 1, 2), (3, 2, 2)');
+    $sent = [];
+    $email = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $email->shouldReceive('sendTemplate')->andReturnUsing(function (array $data) use (&$sent): bool {
+        $sent[] = [$data['to'], $data['to_lang']];
+
+        return true;
+    });
+    $di = container();
+    $di['em']->shouldReceive('getConnection')->andReturn($db);
+    $di['mod_service'] = $di->protect(fn (string $name): object => $name === 'email' ? $email : Mockery::mock()->shouldIgnoreMissing());
+    // The app logger takes printf-style arguments (the container's PSR logger does not).
+    $di['logger'] = new class {
+        public function setChannel(string $channel): static
+        {
+            return $this;
+        }
+
+        public function __call(string $name, array $arguments): void
+        {
+        }
+    };
+
+    Users::requestReset($di, 'ann@example.com');
+    Users::requestReset($di, 'bob@example.com');
+    Users::staffSendReset($di, 1, 2, 9);
+    Users::invite($di, 1, 'new@example.com', []);
+    Users::invite($di, 1, 'bob@example.com', []);
+
+    expect($sent)->toBe([
+        ['ann@example.com', 'de_DE'], // no language: the first account's
+        ['bob@example.com', 'it_IT'],
+        ['ann@example.com', 'fr_FR'], // staff send it from the second account
+        ['new@example.com', 'de_DE'],
+        ['bob@example.com', 'it_IT'],
+    ]);
+});

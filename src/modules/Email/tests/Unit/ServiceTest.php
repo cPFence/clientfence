@@ -348,8 +348,8 @@ test('sendTemplate masks secrets in saved previews while rendering the full vari
         return 'encrypted';
     });
     $system = Mockery::mock(ClientFence\Mod\System\Service::class);
-    $system->shouldReceive('renderEmailTplString')->once()->with('Body', $vars, null, null)->andReturn('Rendered body');
-    $system->shouldReceive('renderEmailSubjectString')->once()->with('Subject', $vars, null, null)->andReturn('Rendered subject');
+    $system->shouldReceive('renderEmailTplString')->once()->with('Body', $vars, null, 'en_US')->andReturn('Rendered body');
+    $system->shouldReceive('renderEmailSubjectString')->once()->with('Subject', $vars, null, 'en_US')->andReturn('Rendered subject');
     $system->shouldReceive('getParamValue')->with('company_email')->andReturn('billing@example.test');
     $system->shouldReceive('getParamValue')->with('company_name')->andReturn('Company');
     $module = Mockery::mock(ClientFence\Module::class);
@@ -1264,6 +1264,53 @@ test('sendTemplate does not send to staff when template has no assigned groups',
 
     expect($result)->toBeFalse();
 });
+
+test('sendTemplate renders in the recipient\'s language if it is turned on, else in the default one', function (array $data, ?string $clientLang, ?string $expected): void {
+    $expected ??= (string) ClientFence\Config::getProperty('i18n.locale', 'en_US');
+    $service = new ClientFence\Mod\Email\Service();
+    $di = container();
+
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->andReturn(emailTemplate(data: ['enabled' => true]));
+    $templateGroupRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateGroupRepository::class);
+    $templateGroupRepo->shouldReceive('getGroupIdsForTemplate')->andReturn([3]);
+    $groupMemberRepo = Mockery::mock(ClientFence\Mod\Staff\Repository\AdminGroupMemberRepository::class);
+    $groupMemberRepo->shouldReceive('getActiveStaffInGroups')->andReturn([['id' => 1, 'email' => 'staff@example.com', 'name' => 'Staff', 'signature' => '', 'timezone' => null]]);
+    $staffService = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffService->shouldReceive('getAdminGroupMemberRepository')->andReturn($groupMemberRepo);
+
+    $locales = [];
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->andReturn('value');
+    $system->shouldReceive('renderEmailTplString', 'renderEmailSubjectString')->andReturnUsing(function (string $tpl, array $vars, ?string $timezone, ?string $locale) use (&$locales): string {
+        $locales[] = $locale;
+
+        return 'value';
+    });
+    $clientService = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientService->shouldReceive('get')->andReturn(createEntity(ClientFence\Mod\Client\Entity\Client::class, ['email' => 'client@example.com', 'billing_email' => null]));
+    $clientService->shouldReceive('toApiArray')->andReturn(['id' => 1, 'email' => 'client@example.com', 'first_name' => 'John', 'last_name' => 'Smith', 'lang' => $clientLang]);
+    $crypt = Mockery::mock('ClientFence\Crypt');
+    $crypt->shouldReceive('encrypt')->andReturn('encrypted');
+    $module = Mockery::mock(ClientFence\Module::class)->makePartial();
+    $module->shouldReceive('getConfig')->andReturn(['from_name' => 'Test', 'from_email' => 'test@test.com']);
+
+    $di['em'] = emailBuildEm(null, $templateRepo, null, true, $templateGroupRepo);
+    $di['crypt'] = $crypt;
+    $di['mod'] = $di->protect(fn () => $module);
+    $di['mod_service'] = $di->protect(moduleService(['staff' => $staffService, 'system' => $system, 'client' => $clientService]));
+    $service->setDi($di);
+
+    expect($service->sendTemplate(['code' => 'mod_email_test', 'default_subject' => 'S', 'default_template' => 'T', 'default_description' => 'D'] + $data))->toBeTrue()
+        ->and(array_values(array_unique($locales)))->toBe([$expected]);
+})->with([
+    'client with a turned-on language' => [['to_client' => 1], 'fr_FR', 'fr_FR'],
+    'client with a language that is not installed' => [['to_client' => 1], 'ja_JP', null],
+    'client without a language' => [['to_client' => 1], null, null],
+    'authorized user (to_lang)' => [['to' => 'user@example.com', 'to_lang' => 'fr_FR'], null, 'fr_FR'],
+    'plain address' => [['to' => 'someone@example.com'], null, null],
+    'staff, also about a client with a language' => [['to_staff' => 1, 'to_client' => 1], 'fr_FR', null],
+]);
 
 test('getTemplateGroupIds delegates to the template group repository', function (): void {
     $service = new ClientFence\Mod\Email\Service();

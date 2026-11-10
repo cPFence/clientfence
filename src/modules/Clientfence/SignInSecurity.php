@@ -291,6 +291,7 @@ final class SignInSecurity
             'email' => (string) $login['email'],
             'name' => (string) ($login['name'] ?? ''),
             'timezone' => (string) ($login['timezone'] ?? ''),
+            'lang' => (string) ($login['lang'] ?? ''),
             'payload' => $payload,
             'password_fingerprint' => hash('sha256', (string) self::passwordHash($di, (string) $login['kind'], (int) $login['id'])),
             'hash' => self::hashPin($pin),
@@ -299,7 +300,7 @@ final class SignInSecurity
             'sends' => 1,
             'tries' => 0,
         ]);
-        self::sendPin($di, $area, (string) $login['email'], (string) ($login['name'] ?? ''), $pin, $ip, (string) ($login['timezone'] ?? ''));
+        self::sendPin($di, $area, (string) $login['email'], (string) ($login['name'] ?? ''), $pin, $ip, (string) ($login['timezone'] ?? ''), (string) ($login['lang'] ?? ''));
 
         return true;
     }
@@ -311,12 +312,12 @@ final class SignInSecurity
     public static function clientLogin(\Pimple\Container $di, \ClientFence\Mod\Client\Entity\Client $client, ?array $user): array
     {
         if ($user !== null) {
-            $row = $di['em']->getConnection()->fetchAssociative('SELECT email, first_name, last_name FROM client_user WHERE id = ?', [(int) $user['user_id']]) ?: [];
+            $row = $di['em']->getConnection()->fetchAssociative('SELECT email, first_name, last_name, lang FROM client_user WHERE id = ?', [(int) $user['user_id']]) ?: [];
 
-            return ['kind' => 'user', 'id' => (int) $user['user_id'], 'email' => (string) ($row['email'] ?? ''), 'name' => trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? '')), 'timezone' => (string) $client->getTimezone()];
+            return ['kind' => 'user', 'id' => (int) $user['user_id'], 'email' => (string) ($row['email'] ?? ''), 'name' => trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? '')), 'timezone' => (string) $client->getTimezone(), 'lang' => (string) (($row['lang'] ?? '') ?: $client->getLang())];
         }
 
-        return ['kind' => 'client', 'id' => (int) $client->getId(), 'email' => (string) $client->getEmail(), 'name' => trim($client->getFirstName() . ' ' . $client->getLastName()), 'timezone' => (string) $client->getTimezone()];
+        return ['kind' => 'client', 'id' => (int) $client->getId(), 'email' => (string) $client->getEmail(), 'name' => trim($client->getFirstName() . ' ' . $client->getLastName()), 'timezone' => (string) $client->getTimezone(), 'lang' => (string) $client->getLang()];
     }
 
     /** The sign-in waiting for a PIN in this session for an area, or null. */
@@ -359,7 +360,7 @@ final class SignInSecurity
         $pending['sends'] = (int) $pending['sends'] + 1;
         $pending['tries'] = 0;
         $di['session']->set(self::PENDING, $pending);
-        self::sendPin($di, $area, (string) $pending['email'], (string) $pending['name'], $pin, $ip, (string) $pending['timezone']);
+        self::sendPin($di, $area, (string) $pending['email'], (string) $pending['name'], $pin, $ip, (string) $pending['timezone'], (string) ($pending['lang'] ?? ''));
 
         return self::pageInfo($di, $area) ?? [];
     }
@@ -478,12 +479,14 @@ final class SignInSecurity
      * Sends a PIN at once through the Email settings' mailer (not the queue, not the email log).
      * The text is the email template of the area (Email templates; translated).
      */
-    private static function sendPin(\Pimple\Container $di, string $area, string $email, string $name, string $pin, string $ip, string $timezone): void
+    private static function sendPin(\Pimple\Container $di, string $area, string $email, string $name, string $pin, string $ip, string $timezone, string $lang = ''): void
     {
         $country = self::countryOf($di, $ip);
         $vars = ['pin' => $pin, 'minutes' => intdiv(self::PIN_SECONDS, 60), 'ip' => $ip, 'country' => $country !== null ? Countries::getName($country) : '', 'name' => $name];
         $preview = ['pin' => '123456', 'minutes' => intdiv(self::PIN_SECONDS, 60), 'ip' => '203.0.113.7', 'country' => 'Germany', 'name' => 'Example Name'];
-        [$subject, $content] = $di['mod_service']('email')->renderTemplate(self::TEMPLATES[$area], $vars, $preview, $timezone !== '' ? $timezone : null);
+        // In the client's language (not the sign-in page's); staff get the default language (no $lang).
+        $emails = $di['mod_service']('email');
+        [$subject, $content] = $emails->renderTemplate(self::TEMPLATES[$area], $vars, $preview, $timezone !== '' ? $timezone : null, $emails->recipientLocale($lang !== '' ? $lang : null));
         $settings = $di['mod']('email')->getConfig();
         $system = $di['mod_service']('system');
         $from = (string) ($settings['from_email'] ?? '') ?: (string) $system->getParamValue('company_email');

@@ -135,11 +135,16 @@ final class SignInSecurityTestWorld
             {
             }
 
-            public function renderTemplate(string $code, array $vars, array $preview = [], ?string $timezone = null): array
+            public function renderTemplate(string $code, array $vars, array $preview = [], ?string $timezone = null, ?string $locale = null): array
             {
-                $this->world->pins[] = ['code' => $code] + $vars;
+                $this->world->pins[] = ['code' => $code, 'locale' => $locale] + $vars;
 
                 return ['Your PIN', '<p>' . $vars['pin'] . '</p>'];
+            }
+
+            public function recipientLocale(?string $lang): string
+            {
+                return $lang ?? 'en_US';
             }
         };
         $system = new class {
@@ -503,4 +508,17 @@ test('the setup wizard sets the staff side only and saves nothing until the PIN 
     // Switched off, the rule keeps its list for next time.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 0], $admin, '198.51.100.1');
     expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true]);
+});
+
+test('a client\'s PIN email is in the client\'s language, also when resent; the staff PIN in the default', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->save(['pin' => 'clients']);
+    SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'client@example.test', 'lang' => 'de_DE'], [], '192.0.2.5');
+    $world->session[SignInSecurity::PENDING]['sent_at'] -= SignInSecurity::RESEND_SECONDS;
+    SignInSecurity::resend($world->di, 'client', '192.0.2.5');
+    $staff = new SignInSecurityTestWorld();
+    $staff->save(['pin' => 'staff']);
+
+    expect(array_column($world->pins, 'locale'))->toBe(['de_DE', 'de_DE'])
+        ->and($staff->pins[0])->toMatchArray(['code' => 'mod_staff_clientfence_signin_pin', 'locale' => 'en_US']);
 });

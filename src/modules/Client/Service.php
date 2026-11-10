@@ -914,6 +914,10 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 $safeData[$field] = $data[$field];
             }
         }
+        // ClientFence core patch: a new client keeps the language of the page they signed up on, for their emails (WHMCS).
+        if (empty($safeData['lang'])) {
+            $safeData['lang'] = i18n::getActiveLocale($this->di['request']);
+        }
 
         return $this->createClient($safeData);
     }

@@ -921,6 +921,27 @@ test('adminCreateClient returns int', function (): void {
     expect($result)->toBeInt();
 });
 
+test('a sign-up keeps the language of the page the client signed up on', function (array $posted, string $expected): void {
+    $eventManager = Mockery::mock('ClientFence\EventManager');
+    $eventManager->shouldReceive('fire');
+    $password = Mockery::mock(ClientFence\PasswordManager::class);
+    $password->shouldReceive('hashIt')->andReturn('hash');
+    $module = Mockery::mock(ClientFence\Module::class)->makePartial();
+    $module->shouldReceive('getConfig')->andReturn([]);
+    $di = container();
+    $di['events_manager'] = $eventManager;
+    $di['password'] = $password;
+    $di['mod'] = $di->protect(fn (): Mockery\MockInterface => $module);
+    $di['request'] = fn (): Symfony\Component\HttpFoundation\Request => Symfony\Component\HttpFoundation\Request::create('http://localhost/', cookies: [ClientFence\Http\CookieNames::LOCALE => 'de_DE']);
+    $service = new ClientFence\Mod\Client\Service();
+    $service->setDi($di);
+
+    expect($service->prepareGuestClient(['email' => 'new@example.com', 'first_name' => 'New', 'password' => 'x'] + $posted)->getLang())->toBe($expected);
+})->with([
+    'the page language' => [[], 'de_DE'],
+    'a language the form sent' => [['lang' => 'fr_FR'], 'fr_FR'],
+]);
+
 test('deleteGroup returns true', function (): void {
     $service = new ClientFence\Mod\Client\Service();
 

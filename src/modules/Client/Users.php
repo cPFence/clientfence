@@ -531,7 +531,12 @@ final class Users
     {
         try {
             $db = $di['em']->getConnection();
-            $user = $db->fetchAssociative('SELECT id, email, first_name, last_name FROM client_user WHERE email = ? AND status = ?', [$email, 'active']);
+            // The user's language, else that of the first account they were added to (their emails go out in it).
+            $user = $db->fetchAssociative(
+                'SELECT u.id, u.email, u.first_name, u.last_name, COALESCE(u.lang, (SELECT c.lang FROM client_user_account l JOIN client c ON c.id = l.client_id WHERE l.user_id = u.id ORDER BY l.id LIMIT 1)) AS lang
+                 FROM client_user u WHERE u.email = ? AND u.status = ?',
+                [$email, 'active']
+            );
         } catch (\Throwable) {
             return false;
         }
@@ -551,8 +556,8 @@ final class Users
     {
         $db = $di['em']->getConnection();
         $user = $db->fetchAssociative(
-            'SELECT u.id, u.email, u.first_name, u.last_name, u.status FROM client_user u
-             JOIN client_user_account l ON l.user_id = u.id AND l.client_id = ? WHERE u.id = ?',
+            'SELECT u.id, u.email, u.first_name, u.last_name, u.status, COALESCE(u.lang, c.lang) AS lang FROM client_user u
+             JOIN client_user_account l ON l.user_id = u.id AND l.client_id = ? JOIN client c ON c.id = l.client_id WHERE u.id = ?',
             [$clientId, $userId]
         );
         if ($user === false) {
@@ -587,6 +592,7 @@ final class Users
             'code' => 'mod_client_user_password_reset',
             'to' => (string) $user['email'],
             'to_name' => trim($user['first_name'] . ' ' . $user['last_name']),
+            'to_lang' => $user['lang'],
             'first_name' => (string) $user['first_name'],
             'token' => $token,
             'minutes' => self::RESET_MINUTES,
@@ -733,7 +739,7 @@ final class Users
         $email = $di['tools']->validateAndSanitizeEmail(is_string($email) ? trim($email) : '', true, false);
         $permissions = self::validPermissions($permissions);
         $db = $di['em']->getConnection();
-        $client = $db->fetchAssociative('SELECT id, email, first_name, last_name, company FROM client WHERE id = ?', [$clientId]);
+        $client = $db->fetchAssociative('SELECT id, email, first_name, last_name, company, lang FROM client WHERE id = ?', [$clientId]);
         if ($client === false) {
             throw new InformationException('Client not found.', null, 404);
         }
@@ -767,7 +773,7 @@ final class Users
     {
         $db = $di['em']->getConnection();
         $invite = $db->fetchAssociative('SELECT id, email FROM client_user_invite WHERE id = ? AND client_id = ?', [$inviteId, $clientId]);
-        $client = $db->fetchAssociative('SELECT id, email, first_name, last_name, company FROM client WHERE id = ?', [$clientId]);
+        $client = $db->fetchAssociative('SELECT id, email, first_name, last_name, company, lang FROM client WHERE id = ?', [$clientId]);
         if ($invite === false || $client === false) {
             throw new InformationException('Invitation not found.', null, 404);
         }
@@ -891,6 +897,8 @@ final class Users
         $di['mod_service']('email')->sendTemplate([
             'code' => 'mod_client_user_invite',
             'to' => $email,
+            // An existing user's language, else the account's.
+            'to_lang' => $di['em']->getConnection()->fetchOne('SELECT lang FROM client_user WHERE email = ?', [$email]) ?: $client['lang'],
             'account' => self::accountName($client),
             'token' => $token,
             'days' => self::INVITE_DAYS,

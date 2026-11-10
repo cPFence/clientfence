@@ -125,6 +125,30 @@ class Translate
     }
 
     /**
+     * ClientFence core patch: runs $fn with the texts of $locale (an email in its recipient's language)
+     * and always restores the previous locale; no switch when the locale is already active (cron batches).
+     *
+     * @template T
+     *
+     * @param callable(): T $fn
+     *
+     * @return T
+     */
+    public static function with(string $locale, callable $fn): mixed
+    {
+        $previous = \Locale::getDefault();
+        if ($locale === $previous) {
+            return $fn();
+        }
+        (new self())->setLocale($locale)->setup();
+        try {
+            return $fn();
+        } finally {
+            (new self())->setLocale($previous ?: 'en_US')->setup();
+        }
+    }
+
+    /**
      * @return string
      */
     public function getDomain()
