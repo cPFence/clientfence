@@ -153,7 +153,8 @@
                                     <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This update is considered to be a minor update, there are low chances of incompatibilities.'|trans }}
                                 </div>
                             {% endif %}
-                            {{ (update_info['release_notes'] ?? '')|markdown_to_html }}
+                            {# ClientFence core patch: the release notes are English: left to right in a right-to-left admin. #}
+                            <div dir="ltr" lang="en">{{ (update_info['release_notes'] ?? '')|markdown_to_html }}</div>
                         {% endif %}
                     {% else %}
                         <h2 class="card-title">{{ 'There Is No Update Available'|trans }}</h2>
