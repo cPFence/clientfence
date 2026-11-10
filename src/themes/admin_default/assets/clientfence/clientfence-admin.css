@@ -121,6 +121,8 @@ body { font-family: var(--bf-font); }
 .bf-nowrap { white-space: nowrap; }
 .bf-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 [dir="rtl"] .bf-flip { transform: scaleX(-1); }
+/* Tabler's right-to-left build mirrors the breadcrumb "/" into "\" and its padding with it: a plain "/" reads right. */
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before { transform: none; }
 /* FOSSBilling's back/next arrows on the inner pages point the reading way. */
 [dir="rtl"] svg:has(> use[href="#chevron-left"], > use[href="#chevron-right"], > use[href="#arrow-left"], > use[href="#arrow-right"]) { transform: scaleX(-1); }
 .bf-shell .icon { width: 20px; height: 20px; flex: none; }
