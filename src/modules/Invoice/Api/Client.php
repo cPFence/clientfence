@@ -306,6 +306,24 @@ class Client extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    /** ClientFence: pays the client's own unpaid invoice (`hash`) at once with their saved PayPal account, as autopay_pay (GitHub #6). */
+    #[RequiredParams(['hash' => 'Invoice hash was not passed'])]
+    public function paypal_pay($data): array
+    {
+        $di = $this->getDi();
+        $adapter = $this->paypalAdapter();
+        $clientId = (int) $this->getIdentity()->id;
+        $user = \ClientFence\Mod\Client\Users::context($di);
+        if (($user !== null && !$user['owner']) || $adapter->savedCard($clientId) === null) {
+            throw new \ClientFence\InformationException('You cannot pay this invoice with a saved PayPal account.');
+        }
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+            ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
+        $result = SavedCards::charge($di, $invoice, $adapter, true, true);
+
+        return ['paid' => $result['paid'], 'message' => (string) ($result['error'] ?? '')];
+    }
+
     /** ClientFence: makes the PayPal billing agreement the method that pays the client's invoices. */
     public function autopay_default(): bool
     {

@@ -2864,6 +2864,21 @@ describe('saved cards', function (): void {
             ->and(fn () => $this->adapter->cardDefault(9, 'pm_2'))->toThrow(ClientFence\InformationException::class, 'Payment method not found.');
     });
 
+    test('the payment form lists every saved card of the client, also those saved on the Payment methods page (GitHub #6)', function (): void {
+        $this->adapter->getDi()['session']->shouldReceive('get')->with('client_id')->andReturn(9);
+        $this->stripe->customerSessions = Mockery::mock();
+        $this->stripe->customerSessions->shouldReceive('create')->once()
+            ->withArgs(fn (array $params): bool => $params['customer'] === 'cus_9'
+                && $params['components']['payment_element']['features']['payment_method_allow_redisplay_filters'] === ['always', 'limited', 'unspecified'])
+            ->andReturn((object) ['client_secret' => 'cuss_secret']);
+        $this->stripe->paymentIntents = Mockery::mock();
+        $this->stripe->paymentIntents->shouldReceive('create')->once()
+            ->withArgs(fn (array $params): bool => $params['customer'] === 'cus_9')
+            ->andReturn((object) ['id' => 'pi_70', 'client_secret' => 'pi_secret']);
+
+        expect(invokePrivateMethod($this->adapter, '_generateForm', [$this->invoice]))->toContain('cuss_secret');
+    });
+
     test('the saved card is charged off session for the balance; a card that needs the client fails', function (string $status, ?string $error): void {
         $this->cards->update('pay_gateway_customer', ['default_payment_method' => 'pm_1', 'default_card' => 'Visa'], ['client_id' => 9]);
         $this->stripe->paymentIntents = Mockery::mock();

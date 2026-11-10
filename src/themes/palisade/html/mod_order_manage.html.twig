@@ -136,6 +136,9 @@
                     {% endif %}
                     {% if upgrade.available %}
                         <button class="btn btn-outline-primary btn-sm" type="button" id="request-upgrade" data-bs-toggle="modal" data-bs-target="#upgrade-modal">{{ 'Upgrade / Downgrade'|trans }}</button>
+                    {% elseif upgrade.notice|default(false) %}
+                        {# ClientFence: why Upgrade / Downgrade is not offered now (GitHub #8). #}
+                        <p class="text-muted small mb-0 w-100" id="upgrade-unavailable">{{ upgrade.reason }}</p>
                     {% endif %}
                     {% if upgrade.options_change|default(false) %}
                         <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#options-change-modal">{{ 'Change options'|trans }}</button>

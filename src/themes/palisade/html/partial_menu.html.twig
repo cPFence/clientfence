@@ -32,6 +32,10 @@
 {% if guest.invoice_funds_enabled and client %}
     {% set menu = menu|merge([{ key: 'payments', url: 'client/balance'|url, icon: 'wallet', label: 'Wallet'|trans, setting: 'side_menu_payments' }]) %}
 {% endif %}
+{# ClientFence: the account owner's saved payment methods, as in the account menu (GitHub #7). #}
+{% if client and (not clientfence_user|default(null) or clientfence_user.owner) and client.invoice_card_available %}
+    {% set menu = menu|merge([{ key: 'payment-methods', url: 'payment-methods'|url, icon: 'credit-card', label: 'Payment methods'|trans }]) %}
+{% endif %}
 {% if guest.extension_is_on({ mod: 'news' }) %}
     {% set menu = menu|merge([{ key: 'news', url: 'news'|url, icon: 'news', label: 'News'|trans, setting: 'side_menu_news' }]) %}
 {% endif %}

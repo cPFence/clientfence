@@ -4682,5 +4682,17 @@
     {
         "file": "modules/Order/Upgrades.php",
         "done": "ClientFence core patch: the old gateway subscription is cancelled, as WHMCS does on an upgrade; nothing renews the"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "'payment_method_allow_redisplay_filters' => ['always', 'limited', 'unspecified'],"
+    },
+    {
+        "file": "library/Payment/Adapter/PayPalEmail.php",
+        "done": "ClientFence core patch: the saved PayPal account pays at once, as PayPal Auto-Pay and PayTabs offer (GitHub #6)."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: a service that has options but cannot change now says why on its page (GitHub #8)."
     }
 ]

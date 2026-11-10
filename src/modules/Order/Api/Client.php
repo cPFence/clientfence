@@ -115,7 +115,7 @@ class Client extends \ClientFence\Api\AbstractApi
      * ClientFence core patch: what an active service can be upgraded or downgraded to, with the
      * prorated price (Order\Upgrades; WHMCS-style upgrades).
      *
-     * @return array{available: bool, reason: string, current: array<string, mixed>, options: list<array<string, mixed>>, waiting: array<string, mixed>|null, options_change: bool, product_options: list<array<string, mixed>>}
+     * @return array{available: bool, reason: string, notice: bool, current: array<string, mixed>, options: list<array<string, mixed>>, waiting: array<string, mixed>|null, options_change: bool, product_options: list<array<string, mixed>>}
      */
     public function upgrade_options($data): array
     {

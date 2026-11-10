@@ -2159,6 +2159,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                     'customer' => $customerId,
                     'components' => ['payment_element' => ['enabled' => true, 'features' => [
                         'payment_method_redisplay' => 'enabled',
+                        // ClientFence core patch: cards saved on the Payment methods page are "unspecified", which Stripe hides by default (GitHub #6).
+                        'payment_method_allow_redisplay_filters' => ['always', 'limited', 'unspecified'],
                         'payment_method_save' => 'enabled',
                         'payment_method_save_usage' => 'off_session',
                         'payment_method_remove' => 'disabled',

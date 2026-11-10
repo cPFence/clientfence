@@ -582,7 +582,7 @@ test('settings and rules filter the options', function (): void {
         ->and(fn () => Upgrades::saveRule($di, Upgrades::SCOPE_ORDER, 3, 'yes', 'allow'))->toThrow(InformationException::class);
 });
 
-test('services that cannot change say why', function (array $change, string $reason): void {
+test('services that cannot change say why', function (array $change, string $reason, bool $notice, bool $noOptions = false): void {
     $db = upgradesDb();
     $db->insert('invoice', ['id' => 50, 'client_id' => 5, 'status' => 'unpaid', 'hash' => 'x']);
     $db->insert('invoice', ['id' => 51, 'client_id' => 5, 'status' => 'paid', 'hash' => 'y']);
@@ -590,15 +590,20 @@ test('services that cannot change say why', function (array $change, string $rea
         $db->update($table, $values, ['id' => $table === 'client' ? 5 : 1]);
     }
     $di = upgradesContainer($db);
+    if ($noOptions) {
+        Upgrades::saveRule($di, Upgrades::SCOPE_ORDER, 1, 'block', 'block');
+    }
 
-    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => $reason, 'options' => []]);
+    // The service page shows the reason only for a service that has options, but cannot change now (GitHub #8).
+    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => $reason, 'notice' => $notice, 'options' => []]);
 })->with([
-    'suspended' => [['client_order' => ['status' => 'suspended']], 'Only active services can be changed.'],
-    'a domain' => [['client_order' => ['service_type' => 'domain']], 'This kind of service cannot be changed here.'],
-    'no period' => [['client_order' => ['period' => '']], 'Only services billed by period can be changed.'],
-    'an unpaid invoice' => [['client_order' => ['unpaid_invoice_id' => 50]], 'Pay the open invoice of this service first.'],
-    'another currency' => [['client' => ['currency' => 'EUR']], 'This service is billed in another currency. Please contact us.'],
-    'no currency' => [['client' => ['currency' => null]], 'This service is billed in another currency. Please contact us.'],
+    'suspended' => [['client_order' => ['status' => 'suspended']], 'Only active services can be changed.', true],
+    'a domain' => [['client_order' => ['service_type' => 'domain']], 'This kind of service cannot be changed here.', false],
+    'no period' => [['client_order' => ['period' => '']], 'Only services billed by period can be changed.', false],
+    'an unpaid invoice' => [['client_order' => ['unpaid_invoice_id' => 50]], 'Pay the open invoice of this service first.', true],
+    'an unpaid invoice, nothing to change to' => [['client_order' => ['unpaid_invoice_id' => 50]], 'Pay the open invoice of this service first.', false, true],
+    'another currency' => [['client' => ['currency' => 'EUR']], 'This service is billed in another currency. Please contact us.', true],
+    'no currency' => [['client' => ['currency' => null]], 'This service is billed in another currency. Please contact us.', true],
 ]);
 
 // ClientFence (QA r4 F-01): a downgrade after a refund credited time already paid back.
@@ -704,6 +709,7 @@ test('a paid plan change cancels the order subscription', function (): void {
         ->and(array_column($di['services']['email']->sent, 'code'))->toBe(['mod_order_subscription_stopped'])
         ->and($di['services']['email']->sent[0]['order_id'])->toBe(1)
         ->and($di['services']['email']->sent[0]['saved_method'])->toBeFalse()
+        ->and($di['services']['email']->sent[0]['payment_methods'])->toBeFalse()
         ->and($di['status_notes']->getArrayCopy()[0][1])->toContain('automatic payment by subscription at the old price stopped');
 });
 

@@ -1081,6 +1081,31 @@ test('a saved PayPal account is kept from an approved setup, and a newer one rep
     expect($adapter->savedCard(9))->toBeNull();
 });
 
+test('the account owner\'s invoice offers to pay now with the saved PayPal account, else to pay and save one (GitHub #6)', function (bool $saved): void {
+    $db = paypalVaultDb();
+    if ($saved) {
+        $db->insert('pay_gateway_customer', ['pay_gateway_id' => 2, 'client_id' => 9, 'test_mode' => 1, 'external_customer_id' => 'CUST-9', 'saved_cards' => 1, 'default_payment_method' => 'TOKEN-1', 'default_card' => 'PayPal buyer@example.com']);
+    }
+    $invoice = paypalBean(Model_Invoice::class, ['id' => 16, 'client_id' => 9, 'currency' => 'USD', 'nr' => 42, 'serie' => 'CF', 'hash' => 'hash16', 'status' => 'unpaid']);
+    $redbean = Mockery::mock(ClientFence\Database::class);
+    $redbean->allows('load')->with('Invoice', 16)->andReturn($invoice);
+    $invoices = Mockery::mock();
+    $invoices->allows('toApiArray')->andReturn(['id' => 16, 'nr' => 42, 'serie' => 'CF', 'currency' => 'USD', 'subtotal' => 10, 'tax' => 0, 'status' => 'unpaid', 'lines' => [['title' => 'Hosting']]]);
+    $adapter = paypalVaultAdapter(PAYPAL_TOKEN, $calls, $db, $invoices, $redbean);
+    setPrivateProperty($adapter, 'config', ['email' => 'merchant@example.com', 'test_mode' => true, 'gateway_id' => 2, 'vault' => '1', 'test_api_client_id' => 'sandbox-id', 'test_api_secret' => 'sandbox-secret', 'thankyou_url' => 'https://billing.example/thanks', 'cancel_url' => 'https://billing.example/cancel', 'notify_url' => 'https://billing.example/ipn.php']);
+    $adapter->getDi()['session']->shouldReceive('get')->with('client_id')->andReturn(9);
+    $adapter->getDi()['url'] = new class {
+        public function link(string $path): string
+        {
+            return 'https://billing.example/' . $path;
+        }
+    };
+
+    $html = $adapter->getHtml(null, 16, false);
+    expect(str_contains($html, 'invoice/paypal_pay') && str_contains($html, 'PayPal buyer@example.com'))->toBe($saved)
+        ->and(str_contains($html, 'invoice/paypal-save/hash16'))->toBe(!$saved);
+})->with(['saved' => [true], 'none saved' => [false]]);
+
 test('a saved PayPal account pays the invoice balance with its own request ID per try, and PayPal\'s refusal is the client\'s reason', function (): void {
     $db = paypalVaultDb();
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 2, 'client_id' => 9, 'test_mode' => 1, 'external_customer_id' => 'CUST-9', 'saved_cards' => 1, 'default_payment_method' => 'TOKEN-1', 'default_card' => 'PayPal buyer@example.com']);

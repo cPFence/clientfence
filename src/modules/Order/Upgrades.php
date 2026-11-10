@@ -145,7 +145,7 @@ final class Upgrades
     /**
      * What a service can change to now. `available` false comes with a `reason` for the client.
      *
-     * @return array{available: bool, reason: string, current: array<string, mixed>, options: list<array<string, mixed>>, waiting: array<string, mixed>|null, options_change: bool, product_options: list<array<string, mixed>>}
+     * @return array{available: bool, reason: string, notice: bool, current: array<string, mixed>, options: list<array<string, mixed>>, waiting: array<string, mixed>|null, options_change: bool, product_options: list<array<string, mixed>>}
      */
     public static function options(\Pimple\Container $di, \Model_ClientOrder $order, ?string $now = null): array
     {
@@ -154,7 +154,7 @@ final class Upgrades
         $own = self::orderOptions($order);
         $current = ['product_id' => (int) $order->product_id, 'title' => (string) $order->title, 'period' => (string) $order->period, 'price' => self::orderTotal($order), 'expires_at' => (string) $order->expires_at, 'currency' => (string) $order->currency, 'option_lines' => $own['lines']];
         $settings = self::settings($di);
-        $none = static fn (string $reason, ?array $waiting = null, array $offered = []): array => ['available' => false, 'reason' => $reason, 'current' => $current, 'options' => [], 'waiting' => $waiting, 'options_change' => $offered !== [], 'product_options' => $offered];
+        $none = static fn (string $reason, ?array $waiting = null, array $offered = [], bool $notice = false): array => ['available' => false, 'reason' => $reason, 'notice' => $notice, 'current' => $current, 'options' => [], 'waiting' => $waiting, 'options_change' => $offered !== [], 'product_options' => $offered];
         // A change waiting for payment is shown to the client with its invoice, whatever the settings.
         $waiting = self::waiting($di, (int) $order->id);
         if ($waiting !== null) {
@@ -164,7 +164,8 @@ final class Upgrades
             return $none('Upgrades and downgrades are not available.');
         }
         $reason = self::blocker($di, $order, $now);
-        if ($reason !== null) {
+        // ClientFence core patch: a service that has options but cannot change now says why on its page (GitHub #8).
+        if ($reason !== null && !(in_array((string) $order->service_type, self::KINDS, true) && (string) $order->period !== '' && (string) $order->expires_at !== '')) {
             return $none($reason);
         }
         // A retired product can still move to the products it lists, but not to its own cycles.
@@ -172,7 +173,7 @@ final class Upgrades
         $from = self::catalog($db, (int) $order->product_id, false, (string) $order->currency);
         $rate = self::rate($db, (string) $order->currency);
         if ($from === null || $rate === null) {
-            return $none('This service cannot be changed here. Please contact us.');
+            return $none($reason ?? 'This service cannot be changed here. Please contact us.');
         }
         // The client may change the configurable options alone (optionsQuote()): the options offered
         // now, for the service page's form (also for a product no longer on sale).
@@ -222,9 +223,13 @@ final class Upgrades
         }
         usort($options, static fn (array $a, array $b): int => [$a['same_product'] ? 0 : 1, $a['price'] / self::periodDays($a['period']), $a['title']] <=> [$b['same_product'] ? 0 : 1, $b['price'] / self::periodDays($b['period']), $b['title']]);
 
+        if ($reason !== null) {
+            return $none($reason, null, [], $options !== []);
+        }
+
         return $options === []
             ? $none('There is nothing to change this service to.', null, $offered)
-            : ['available' => true, 'reason' => '', 'current' => $current, 'options' => $options, 'waiting' => null, 'options_change' => $offered !== [], 'product_options' => $offered];
+            : ['available' => true, 'reason' => '', 'notice' => false, 'current' => $current, 'options' => $options, 'waiting' => null, 'options_change' => $offered !== [], 'product_options' => $offered];
     }
 
     /**
@@ -1371,7 +1376,9 @@ final class Upgrades
         try {
             // A saved card or account still pays the renewal (SavedCards cron): the email says which applies.
             $saved = \ClientFence\Mod\Invoice\SavedCards::method($di, (int) $order->client_id) !== null;
-            $di['mod_service']('email')->sendTemplate(['code' => 'mod_order_subscription_stopped', 'to_client' => (int) $order->client_id, 'order_id' => (int) $order->id, 'title' => (string) $order->title, 'saved_method' => $saved]);
+            // Without one, the email links the Payment methods page while a gateway can save one (GitHub #7).
+            $methods = !$saved && \ClientFence\Mod\Invoice\SavedCards::adapters($di) !== [];
+            $di['mod_service']('email')->sendTemplate(['code' => 'mod_order_subscription_stopped', 'to_client' => (int) $order->client_id, 'order_id' => (int) $order->id, 'title' => (string) $order->title, 'saved_method' => $saved, 'payment_methods' => $methods]);
         } catch (\Throwable $e) {
             self::log($di, sprintf('Order #%d: the automatic payment stopped email failed: %s', $order->id, $e->getMessage()));
         }

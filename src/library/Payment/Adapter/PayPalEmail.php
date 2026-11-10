@@ -122,7 +122,18 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
             $this->config['auto_redirect'] = false;
         }
         $form = $this->_generateForm($url, $data);
-        if ($save) {
+        $saved = $save ? $this->savedCard((int) $invoiceModel->client_id) : null;
+        if ($saved !== null) {
+            // ClientFence core patch: the saved PayPal account pays at once, as PayPal Auto-Pay and PayTabs offer (GitHub #6).
+            $json = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+            $form .= '<p class="mt-3"><button type="button" class="btn btn-primary" data-cf-paypal-pay>' . htmlspecialchars(__trans('Pay now with :account', [':account' => $saved['card']]), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</button></p>'
+                . '<script nonce="' . ClientFence\Csp::nonce() . '">document.querySelector("[data-cf-paypal-pay]").addEventListener("click", function (event) {'
+                . ' var button = event.currentTarget; button.disabled = true;'
+                . ' ClientFence.api.client.post("invoice/paypal_pay", ' . json_encode(['hash' => $invoiceModel->hash], $json) . ', function (result) {'
+                . ' if (result.paid) { location.assign(' . json_encode((string) $this->di['url']->link('invoice/thank-you/' . $invoiceModel->hash), $json | JSON_UNESCAPED_SLASHES) . '); } else { ClientFence.message(result.message, "info"); }'
+                . ' }, function (error) { button.disabled = false; ClientFence.message(error.message, "error"); });'
+                . ' });</script>';
+        } elseif ($save) {
             $form .= sprintf(
                 '<p class="mt-3"><a class="btn btn-outline-primary" href="%s">%s</a></p>',
                 htmlspecialchars((string) $this->di['url']->link('invoice/paypal-save/' . $invoiceModel->hash), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
