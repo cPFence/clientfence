@@ -163,6 +163,8 @@ COPY composer.json composer.lock phpstan.neon phpstan-baseline.neon phpstan-base
 COPY tests ./tests
 COPY tools/core-patch-markers.json ./tools/core-patch-markers.json
 COPY src/themes/palisade/locale ./src/themes/palisade/locale
+# Theme tests read the script sources; the release tree ships only the built bundle.
+COPY src/themes/palisade/assets/src/js ./src/themes/palisade/assets/src/js
 
 RUN set -eux; \
   php -r '$config = require "./src/config-sample.php"; file_put_contents("./src/config.php", "<?php\nreturn " . var_export($config, true) . ";\n");'; \
