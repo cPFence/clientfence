@@ -24,7 +24,7 @@
 - The hosting page hides the Email tab when the plan allows no email accounts ([#14](https://github.com/cPFence/clientfence/issues/14)).
 - Quick setup gives your business email to the help desk that still has the installer's address, and System Health warns about one ([#14](https://github.com/cPFence/clientfence/issues/14)).
 - Clearer bank transfer texts: the client uploads their own transfer receipt ([#13](https://github.com/cPFence/clientfence/issues/13)).
-- Imports from Blesta, Upmind and ClientExec keep each client's language.
+- Imports from Blesta, Upmind and ClientExec keep each client's language, and the WHMCS, Blesta and Upmind imports bring their translated product, help desk and order form texts along.
 - Dropdown lists open as a modern menu in the theme's colours, in the admin and client areas (Chrome and Edge; other browsers keep their own list).
 - The text editor follows the dark theme in the admin and client areas.
 
