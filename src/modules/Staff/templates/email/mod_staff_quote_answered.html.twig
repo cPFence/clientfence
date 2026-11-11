@@ -1,4 +1,4 @@
-{% block subject %}[{{ guest.system_company.name }}] {{ accepted|default(false) ? 'Quote #%id% accepted: %subject%'|trans({'%id%': quote.id|default(''), '%subject%': quote.subject|default('')}) : 'Quote #%id% declined: %subject%'|trans({'%id%': quote.id|default(''), '%subject%': quote.subject|default('')}) }}{% endblock %}
+{% block subject %}{% set p = {'%id%': quote.id|default(''), '%subject%': quote.subject|default('')} %}[{{ guest.system_company.name }}] {{ accepted|default(false) ? 'Quote #%id% accepted: %subject%'|trans(p) : 'Quote #%id% declined: %subject%'|trans(p) }}{% endblock %}
 {% block content %}
 <!DOCTYPE html>
 <html lang="{{ locale }}" dir="{{ dir }}">

@@ -32,6 +32,13 @@ function emailSandboxEnvironment(): Environment
     return $twig;
 }
 
+dataset('shipped email templates', function (): array {
+    $files = glob(dirname(__DIR__, 4) . '/src/modules/*/templates/email/*.html.twig') ?: [];
+    sort($files);
+
+    return array_combine(array_map(static fn (string $f): string => basename(dirname($f, 3)) . '/' . basename($f), $files), array_map(static fn (string $f): array => [$f], $files));
+});
+
 test('shipped email templates use only what the email sandbox allows', function (string $file): void {
     $twig = emailSandboxEnvironment();
 
@@ -39,12 +46,14 @@ test('shipped email templates use only what the email sandbox allows', function 
     $twig->createTemplate((string) file_get_contents($file), basename($file))->render([]);
 
     expect(true)->toBeTrue();
-})->with(function (): array {
-    $files = glob(dirname(__DIR__, 4) . '/src/modules/*/templates/email/*.html.twig') ?: [];
-    sort($files);
+})->with('shipped email templates');
 
-    return array_combine(array_map(static fn (string $f): string => basename(dirname($f, 3)) . '/' . basename($f), $files), array_map(static fn (string $f): array => [$f], $files));
-});
+test('shipped email subjects fit the email_template.subject column', function (string $file): void {
+    // The installer and the template sync store the subject block's source in varchar(255): longer fails the install.
+    preg_match('#{%.?block subject.?%}((.*?)+){%.?endblock.?%}#', (string) file_get_contents($file), $ms);
+
+    expect(mb_strlen($ms[1] ?? ''))->toBeLessThanOrEqual(255);
+})->with('shipped email templates');
 
 test('the check catches a disallowed filter', function (): void {
     expect(fn () => emailSandboxEnvironment()->createTemplate("{{ 'on_hold'|replace({'_': ' '})|capitalize }}", 'bad')->render([]))
