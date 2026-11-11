@@ -218,6 +218,118 @@ dd {
   display: none !important;
 }
 
+// ---- Dropdown lists and the editor
+// Open dropdown lists take the theme's look (rounded panel, hover, check mark) where the browser has customizable
+// selects (Chrome and Edge 135+; the others keep their own list). The select stays a real select, so scripts that
+// read or change its options work unchanged. The form-select chevron stays, the browser's own icon is hidden.
+@supports (appearance: base-select) {
+  select:not([multiple]):not([size]),
+  select:not([multiple]):not([size])::picker(select) {
+    appearance: base-select;
+  }
+
+  select:not([multiple]):not([size])::picker-icon {
+    display: none;
+  }
+
+  select::picker(select) {
+    margin-block: 4px;
+    padding: 4px;
+    max-block-size: min(60vh, 420px);
+    overflow-y: auto;
+    color: var(--bs-body-color);
+    background: var(--bf-surface);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(16, 26, 43, .16);
+  }
+
+  select option {
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
+  }
+
+  select option:hover,
+  select option:focus-visible {
+    background: rgba(var(--pal-brand-rgb), .1);
+    outline: none;
+  }
+
+  select option:checked {
+    font-weight: 600;
+  }
+
+  select option::checkmark {
+    order: 1;
+    margin-inline-start: auto;
+    color: var(--pal-brand);
+  }
+
+  [data-bs-theme="dark"] select::picker(select) {
+    background: $navy-800;
+    border-color: $navy-700;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .5);
+  }
+
+  [data-bs-theme="dark"] select option:hover,
+  [data-bs-theme="dark"] select option:focus-visible {
+    background: $navy-700;
+  }
+}
+
+// The rich text editor (CKEditor, ticket replies) was white in the dark theme: its own colour variables take the navy.
+:root[data-bs-theme="dark"] {
+  --ck-color-base-background: #{$navy-800};
+  --ck-color-base-foreground: #{$navy-850};
+  --ck-color-base-border: #{$navy-600};
+  --ck-color-text: var(--bs-body-color);
+  --ck-color-focus-border: var(--pal-brand);
+  --ck-color-shadow-drop: rgba(0, 0, 0, .5);
+  --ck-color-toolbar-background: #{$navy-850};
+  --ck-color-toolbar-border: #{$navy-600};
+  --ck-color-button-default-hover-background: #{$navy-700};
+  --ck-color-button-default-active-background: #{$navy-700};
+  --ck-color-button-on-background: #{$navy-700};
+  --ck-color-button-on-hover-background: #{$navy-600};
+  --ck-color-button-on-active-background: #{$navy-600};
+  --ck-color-button-on-color: #{$accent};
+  --ck-color-split-button-hover-background: #{$navy-700};
+  --ck-color-split-button-hover-border: #{$navy-600};
+  --ck-color-dropdown-panel-background: #{$navy-800};
+  --ck-color-dropdown-panel-border: #{$navy-700};
+  --ck-color-panel-background: #{$navy-800};
+  --ck-color-panel-border: #{$navy-700};
+  --ck-color-input-background: #{$navy-850};
+  --ck-color-input-border: #{$navy-600};
+  --ck-color-input-text: var(--bs-body-color);
+  --ck-color-labeled-field-label-background: #{$navy-800};
+  --ck-color-list-background: #{$navy-800};
+  --ck-color-list-button-hover-background: #{$navy-700};
+  --ck-color-list-button-on-background: #{$navy-700};
+  --ck-color-list-button-on-background-focus: #{$navy-700};
+  --ck-color-list-button-on-text: #{$accent};
+  --ck-color-tooltip-background: #{$navy-950};
+  --ck-color-tooltip-text: var(--bs-body-color);
+  --ck-color-link-default: #{$accent};
+  --ck-color-widget-blurred-border: #{$navy-600};
+  --ck-color-widget-hover-border: var(--pal-brand);
+  --ck-color-widget-editable-focus-background: #{$navy-800};
+  --ck-color-image-caption-background: #{$navy-850};
+  --ck-color-image-caption-text: var(--bs-body-color);
+  --ck-content-font-color: var(--bs-body-color);
+  --ck-content-color-image-caption-background: #{$navy-850};
+  --ck-content-color-image-caption-text: var(--bs-body-color);
+  --ck-content-color-table-caption-background: #{$navy-850};
+  --ck-content-color-table-caption-text: var(--bs-body-color);
+}
+
+// CKEditor sets no colour on its Source view, so the browser's own dark grey showed there.
+[data-bs-theme="dark"] .ck-source-editing-area textarea {
+  color: var(--bs-body-color);
+  background: $navy-800;
+}
+
 // ---- App shell
 .app-shell {
   display: flex;

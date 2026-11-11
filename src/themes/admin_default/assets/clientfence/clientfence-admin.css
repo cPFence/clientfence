@@ -105,6 +105,81 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, .5);
 }
 
+/* Open dropdown lists take the app's look (rounded panel, hover, check mark) where the browser has customizable
+   selects (Chrome and Edge 135+; the others keep their own list). The select stays a real select, so scripts that
+   read or change its options work unchanged. The form-select chevron stays, the browser's own icon is hidden. */
+@supports (appearance: base-select) {
+  select:not([multiple]):not([size]),
+  select:not([multiple]):not([size])::picker(select) { appearance: base-select; }
+  select:not([multiple]):not([size])::picker-icon { display: none; }
+  select::picker(select) {
+    margin-block: 4px;
+    padding: 4px;
+    max-block-size: min(60vh, 420px);
+    overflow-y: auto;
+    color: var(--bf-ink);
+    background: var(--bf-surface);
+    border: 1px solid var(--bf-line);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(16, 26, 43, .16);
+  }
+  select option { gap: 10px; padding: 7px 10px; border-radius: 6px; font-size: 14px; }
+  select option:hover,
+  select option:focus-visible { color: var(--bf-soft-ink); background: var(--bf-soft); outline: none; }
+  select option:checked { font-weight: 600; }
+  select option::checkmark { order: 1; margin-inline-start: auto; color: var(--bf-brand); }
+  select optgroup { padding-block: 4px; font-size: 12px; font-weight: 600; color: var(--bf-muted); }
+  [data-bs-theme="dark"] select::picker(select) { background: var(--bf-surface-2); box-shadow: 0 12px 32px rgba(0, 0, 0, .5); }
+}
+
+/* The rich text editor (CKEditor) was white in the dark theme: its own colour variables take the navy. */
+:root[data-bs-theme="dark"] {
+  --ck-color-base-background: var(--bf-surface-2);
+  --ck-color-base-foreground: var(--bf-surface);
+  --ck-color-base-border: var(--bf-line);
+  --ck-color-text: var(--bf-ink);
+  --ck-color-focus-border: var(--bf-brand);
+  --ck-color-shadow-drop: rgba(0, 0, 0, .5);
+  --ck-color-toolbar-background: var(--bf-surface);
+  --ck-color-toolbar-border: var(--bf-line);
+  --ck-color-button-default-hover-background: var(--bf-side-active);
+  --ck-color-button-default-active-background: var(--bf-side-active);
+  --ck-color-button-on-background: var(--bf-soft);
+  --ck-color-button-on-hover-background: var(--bf-side-active);
+  --ck-color-button-on-active-background: var(--bf-side-active);
+  --ck-color-button-on-color: var(--bf-soft-ink);
+  --ck-color-split-button-hover-background: var(--bf-side-active);
+  --ck-color-split-button-hover-border: var(--bf-line);
+  --ck-color-dropdown-panel-background: var(--bf-surface-2);
+  --ck-color-dropdown-panel-border: var(--bf-line);
+  --ck-color-panel-background: var(--bf-surface-2);
+  --ck-color-panel-border: var(--bf-line);
+  --ck-color-input-background: var(--bf-surface);
+  --ck-color-input-border: var(--bf-line);
+  --ck-color-input-text: var(--bf-ink);
+  --ck-color-labeled-field-label-background: var(--bf-surface-2);
+  --ck-color-list-background: var(--bf-surface-2);
+  --ck-color-list-button-hover-background: var(--bf-side-active);
+  --ck-color-list-button-on-background: var(--bf-soft);
+  --ck-color-list-button-on-background-focus: var(--bf-soft);
+  --ck-color-list-button-on-text: var(--bf-soft-ink);
+  --ck-color-tooltip-background: var(--bf-side);
+  --ck-color-tooltip-text: var(--bf-ink);
+  --ck-color-link-default: var(--bf-soft-ink);
+  --ck-color-widget-blurred-border: var(--bf-line);
+  --ck-color-widget-hover-border: var(--bf-brand);
+  --ck-color-widget-editable-focus-background: var(--bf-surface-2);
+  --ck-color-image-caption-background: var(--bf-surface);
+  --ck-color-image-caption-text: var(--bf-ink);
+  --ck-content-font-color: var(--bf-ink);
+  --ck-content-color-image-caption-background: var(--bf-surface);
+  --ck-content-color-image-caption-text: var(--bf-ink);
+  --ck-content-color-table-caption-background: var(--bf-surface);
+  --ck-content-color-table-caption-text: var(--bf-ink);
+}
+/* CKEditor sets no colour on its Source view, so the browser's own dark grey showed there. */
+[data-bs-theme="dark"] .ck-source-editing-area textarea { color: var(--bf-ink); background: var(--bf-surface-2); }
+
 body { font-family: var(--bf-font); }
 
 /* ---- Shell. A grid, so markup a page closes too early (a stray </div> in some FOSSBilling pages
