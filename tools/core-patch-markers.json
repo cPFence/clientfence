@@ -2493,7 +2493,7 @@
     },
     {
         "file": "themes/palisade/html/mod_order_manage.html.twig",
-        "done": "{% if order.period and order.status in ['active', 'suspended'] %}"
+        "done": "{% set can_renew = order.period and order.status in ['active', 'suspended'] %}"
     },
     {
         "file": "modules/Order/Service.php",
@@ -2633,11 +2633,11 @@
     },
     {
         "file": "themes/palisade/html/mod_servicehosting_manage.html.twig",
-        "done": "<table class=\"table bf-detail-list\">"
+        "done": "<dl class=\"bf-facts\">"
     },
     {
         "file": "themes/palisade/html/mod_order_manage.html.twig",
-        "done": "<table class=\"table bf-detail-list mb-0\">"
+        "done": "<dl class=\"bf-facts\">"
     },
     {
         "file": "modules/Currency/Service.php",

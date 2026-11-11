@@ -1,0 +1,14 @@
+{# ClientFence: the hosting service's part of the service page header and Manage panel (mod_order_manage, `part`). #}
+{% if part == 'meta' %}
+    {% if service.domain %}<a href="http://{{ service.domain }}" target="_blank" rel="noopener"><bdi dir="ltr">{{ service.domain }}</bdi></a>{% endif %}
+    {% if service.hosting_plan.name|default(null) %}<span>{{ service.hosting_plan.name }}</span>{% endif %}
+{% elseif part == 'actions' %}
+    <a class="btn btn-primary" href="{{ 'servicehosting/get_login_url'|api_url(query: { 'order_id': order.id }) }}" {{ fb_api_link({callback: 'onAfterLoginLinkCreated'}) }}>
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#layout-dashboard"/></svg>{{ 'Login to Control Panel'|trans }}
+    </a>
+    {% if service.domain %}
+        <a class="btn btn-outline-secondary" href="http://{{ service.domain }}" target="_blank" rel="noopener">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#external-link"/></svg>{{ 'Visit website'|trans }}
+        </a>
+    {% endif %}
+{% endif %}

@@ -1,0 +1,8 @@
+{# ClientFence: the download's part of the service page header (mod_order_manage, `part`). #}
+{% if part == 'meta' %}
+    <span>{{ 'Download'|trans }}</span>
+{% elseif part == 'actions' %}
+    <a class="btn btn-primary" href="{{ "servicedownloadable/get-file/#{order.id}"|url }}">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#download"/></svg>{{ 'Download'|trans }}
+    </a>
+{% endif %}

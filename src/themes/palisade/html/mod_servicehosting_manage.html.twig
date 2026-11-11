@@ -1,8 +1,10 @@
-{# ClientFence: FOSSBilling's hosting page without the Domain and Username change tabs (domain and
-   username changes are staff-only), with the server the website really runs on (from its hosting
-   panel through ClientFence; FOSSBilling's server record is the cluster's API host) and a Domain
-   tab that says whether the domain is registered with us. #}
+{# ClientFence: the hosting card of the service page. FOSSBilling's hosting page without the Domain and Username
+   change tabs (domain and username changes are staff-only), with the server the website really runs on (from its
+   hosting panel through ClientFence; FOSSBilling's server record is the cluster's API host) and a Domain tab that
+   says whether the domain is registered with us. The header's Control panel button is in mod_servicehosting_head. #}
 {% if order.status == 'active' %}
+{% macro size(mb) %}<bdi>{% if mb >= 1048576 %}{{ (mb / 1048576)|round(1) }} TB{% elseif mb >= 1024 %}{{ (mb / 1024)|round(1) }} GB{% else %}{{ mb }} MB{% endif %}</bdi>{% endmacro %}
+{% import _self as hosting %}
 {% set live_server = client.servicehosting_server({ 'order_id': order.id }) %}
 {% set registered = null %}
 {% for domain_order in client.order_get_list({ 'type': 'domain', 'status': 'active', 'per_page': 100 }).list %}
@@ -11,156 +13,89 @@
         {% set registered = domain_service %}
     {% endif %}
 {% endfor %}
-<div class="card bf-card mb-4">
-    <div class="card-header">
-        <h2>{{ 'Manage Hosting Account'|trans }}</h2>
-    </div>
-    <div class="card-body">
-        <ul class="nav nav-tabs mb-2">
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#details">{{ 'Details'|trans }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#domain">{{ 'Domain'|trans }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#password">{{ 'Password'|trans }}</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            {# Hosting details #}
-            <div class="tab-pane fade active show" role="tabpanel" id="details">
-                {% set server = service.server %}
-                {% set hp = service.hosting_plan %}
-                <table class="table bf-detail-list">
-                    <tbody>
-                        <tr>
-                            <td>{{ 'Domain'|trans }}</td>
-                            <td>
-                                <a target="_blank" href="http://{{ service.domain }}">{{ service.domain }}</a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Server IP'|trans }}</td>
-                            <td>{{ live_server.ip|default(null) ?: server.ip }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Server Hostname'|trans }}</td>
-                            <td>{{ live_server.hostname|default(null) ?: server.hostname }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Username'|trans }}</td>
-                            <td>{{ service.username }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Password'|trans }}</td>
-                            <td>******</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Hosting Plan'|trans }}</td>
-                            <td>{{ hp.name }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Bandwidth'|trans }}</td>
-                            <td>{% if hp.bandwidth == 'unlimited' %}{{ 'Unlimited'|trans }}{% else %}{{ hp.bandwidth }} MB / {{ 'per month'|trans }}{% endif %}</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Disk Quota'|trans }}</td>
-                            <td>{% if hp.quota == 'unlimited' %}{{ 'Unlimited'|trans }}{% else %}{{ hp.quota }} MB{% endif %}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="bf-actions mt-3">
-                        {% if service.domain_order_id %}
-                            <a class="btn btn-outline-primary btn-sm" href='{{ "order/service/manage/#{service.domain_order_id}"|url }}'>{{ 'Manage Domain'|trans }}</a>
-                        {% endif %}
-                        <a class="btn btn-primary btn-sm" href="{{ 'servicehosting/get_login_url'|api_url(query: { 'order_id':  order.id }) }}" {{ fb_api_link({callback: 'onAfterLoginLinkCreated'}) }}>{{ 'Login to Control Panel'|trans }}</a>
+{% set server = service.server %}
+{% set hp = service.hosting_plan %}
+{% set ip = live_server.ip|default(null) ?: server.ip %}
+{% set hostname = live_server.hostname|default(null) ?: server.hostname %}
+<div class="card mb-4">
+    <ul class="nav bf-card-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#hosting-details" role="tab" aria-controls="hosting-details" aria-selected="true"><svg class="icon icon-sm" aria-hidden="true"><use href="#server"/></svg>{{ 'Details'|trans }}</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#hosting-domain" role="tab" aria-controls="hosting-domain" aria-selected="false"><svg class="icon icon-sm" aria-hidden="true"><use href="#world"/></svg>{{ 'Domain'|trans }}</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#hosting-password" id="hosting-password-tab" role="tab" aria-controls="hosting-password" aria-selected="false"><svg class="icon icon-sm" aria-hidden="true"><use href="#key"/></svg>{{ 'Password'|trans }}</button>
+        </li>
+    </ul>
+    <div class="tab-content">
+        {# Hosting details #}
+        <div class="tab-pane fade active show" role="tabpanel" id="hosting-details" aria-labelledby="hosting-details">
+            <dl class="bf-facts">
+                <div class="bf-fact"><dt>{{ 'Domain'|trans }}</dt><dd><a target="_blank" rel="noopener" href="http://{{ service.domain }}"><bdi dir="ltr">{{ service.domain }}</bdi></a></dd></div>
+                <div class="bf-fact"><dt>{{ 'Hosting Plan'|trans }}</dt><dd>{{ hp.name }}</dd></div>
+                <div class="bf-fact"><dt>{{ 'Server IP'|trans }}</dt><dd><bdi dir="ltr">{{ ip }}</bdi>{% if ip %} <button class="bf-copy" type="button" data-bf-copy="{{ ip }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button>{% endif %}</dd></div>
+                <div class="bf-fact"><dt>{{ 'Server Hostname'|trans }}</dt><dd><bdi dir="ltr">{{ hostname }}</bdi>{% if hostname %} <button class="bf-copy" type="button" data-bf-copy="{{ hostname }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button>{% endif %}</dd></div>
+                <div class="bf-fact"><dt>{{ 'Username'|trans }}</dt><dd><bdi dir="ltr">{{ service.username }}</bdi>{% if service.username %} <button class="bf-copy" type="button" data-bf-copy="{{ service.username }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button>{% endif %}</dd></div>
+                <div class="bf-fact"><dt>{{ 'Password'|trans }}</dt><dd><button class="btn btn-link p-0" type="button" id="hosting-password-link">{{ 'Change Password'|trans }}</button></dd></div>
+                <div class="bf-fact"><dt>{{ 'Disk Quota'|trans }}</dt><dd>{% if hp.quota == 'unlimited' %}{{ 'Unlimited'|trans }}{% else %}{{ hosting.size(hp.quota) }}{% endif %}</dd></div>
+                <div class="bf-fact"><dt>{{ 'Bandwidth'|trans }}</dt><dd>{% if hp.bandwidth == 'unlimited' %}{{ 'Unlimited'|trans }}{% else %}{{ hosting.size(hp.bandwidth) }} / {{ 'per month'|trans }}{% endif %}</dd></div>
+            </dl>
+            {% if service.domain_order_id %}
+                <div class="bf-card-foot">
+                    <a class="btn btn-outline-secondary btn-sm" href='{{ "order/service/manage/#{service.domain_order_id}"|url }}'>{{ 'Manage Domain'|trans }}</a>
                 </div>
-            </div>
-            {# Domain registration with ClientFence #}
-            <div class="tab-pane fade" role="tabpanel" id="domain">
-                {% if registered %}
-                    {% set expired = registered.expires_at and registered.expires_at|date('U') < 'now'|date('U') %}
-                    <p>{{ ':domain is registered with us.'|trans({ ':domain': registered.domain }) }}</p>
-                    <table class="table bf-detail-list">
-                        <tbody>
-                            <tr>
-                                <td>{{ 'Domain'|trans }}</td>
-                                <td dir="ltr" class="text-start">{{ registered.domain }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ 'Status'|trans }}</td>
-                                <td>
-                                    {% if expired %}
-                                        <span class="badge bg-danger">{{ 'Expired'|trans }}</span>
-                                    {% else %}
-                                        <span class="badge bg-success">{{ 'Active'|trans }}</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% if registered.registered_at %}
-                            <tr>
-                                <td>{{ 'Registered on'|trans }}</td>
-                                <td>{{ registered.registered_at|format_date }}</td>
-                            </tr>
-                            {% endif %}
-                            <tr>
-                                <td>{{ 'Renewal Date'|trans }}{% if registered.expires_at and not expired %} {{ 'in :days day(s)'|trans({ ':days': registered.expires_at|daysleft }) }}{% endif %}</td>
-                                <td>{% if registered.expires_at %}{{ registered.expires_at|format_date }}{% else %}-{% endif %}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p class="text-secondary small mb-0">{{ 'For renewal or any change to this domain, open a support ticket.'|trans }}</p>
-                {% else %}
-                    <p>{{ 'No domain is registered with us for this service.'|trans }}</p>
-                    <p class="text-secondary mb-0">{{ ':domain is registered with another registrar, so its renewal is handled there. To transfer it to us, open a support ticket.'|trans({ ':domain': service.domain }) }}</p>
-                {% endif %}
-            </div>
-            {# Hosting password #}
-            <div class="tab-pane fade" role="tabpanel" id="password">
-                <h3 class="h6 mb-3">{{ 'Change Your Control Panel/FTP/SSH Password'|trans }}</h3>
-                <form action="{{ 'servicehosting/change_password'|api_url }}" method="post" {{ fb_api_form({message: 'Password Changed'|trans}) }}>
-                    <fieldset>
-                        <div class="control-group">
-                            <label class="col-form-label" >{{ 'Password'|trans }}: </label>
-                            <div class="controls">
-                                <input class="form-control" type="password" name="password" value="{{ request.password }}" required="required" minlength="10" autocomplete="new-password" aria-describedby="hosting-password-rule">
-                                {# The control panel's own rule (Enhance); the adapter checks it too. #}
-                                <div class="form-text" id="hosting-password-rule">{{ 'At least 10 characters, with lowercase and uppercase letters, numbers and special characters.'|trans }}</div>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="col-form-label" >{{ 'Password Confirm'|trans }}: </label>
-                            <div class="controls">
-                                <input class="form-control" type="password" name="password_confirm" value="{{ request.password_confirm }}" required="required" minlength="10" autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <input type="hidden" name="order_id" value="{{ order.id }}">
-                        <div class="control-group mt-1">
-                            <div class="controls">
-                                <button class="btn btn-primary" type="submit" value="{{ 'Change Password'|trans }}">{{ 'Change Password'|trans }}</button>
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
+            {% endif %}
+        </div>
+        {# Domain registration with ClientFence #}
+        <div class="tab-pane fade card-body" role="tabpanel" id="hosting-domain">
+            {% if registered %}
+                {% set expired = registered.expires_at and registered.expires_at|date('U') < 'now'|date('U') %}
+                <p>{{ ':domain is registered with us.'|trans({ ':domain': registered.domain }) }}</p>
+                <dl class="bf-facts bf-facts-inset">
+                    <div class="bf-fact"><dt>{{ 'Domain'|trans }}</dt><dd><bdi dir="ltr">{{ registered.domain }}</bdi></dd></div>
+                    <div class="bf-fact"><dt>{{ 'Status'|trans }}</dt><dd>{% if expired %}<span class="badge bg-danger">{{ 'Expired'|trans }}</span>{% else %}<span class="badge bg-success">{{ 'Active'|trans }}</span>{% endif %}</dd></div>
+                    {% if registered.registered_at %}
+                        <div class="bf-fact"><dt>{{ 'Registered on'|trans }}</dt><dd>{{ registered.registered_at|format_date }}</dd></div>
+                    {% endif %}
+                    <div class="bf-fact"><dt>{{ 'Renewal Date'|trans }}{% if registered.expires_at and not expired %} {{ 'in :days day(s)'|trans({ ':days': registered.expires_at|daysleft }) }}{% endif %}</dt><dd>{% if registered.expires_at %}{{ registered.expires_at|format_date }}{% else %}-{% endif %}</dd></div>
+                </dl>
+                <p class="text-secondary small mt-3 mb-0">{{ 'For renewal or any change to this domain, open a support ticket.'|trans }}</p>
+            {% else %}
+                <p>{{ 'No domain is registered with us for this service.'|trans }}</p>
+                <p class="text-secondary mb-0">{{ ':domain is registered with another registrar, so its renewal is handled there. To transfer it to us, open a support ticket.'|trans({ ':domain': service.domain }) }}</p>
+            {% endif %}
+        </div>
+        {# Hosting password #}
+        <div class="tab-pane fade card-body" role="tabpanel" id="hosting-password">
+            <h3 class="h6 mb-3">{{ 'Change Your Control Panel/FTP/SSH Password'|trans }}</h3>
+            <form action="{{ 'servicehosting/change_password'|api_url }}" method="post" {{ fb_api_form({message: 'Password Changed'|trans}) }}>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="hosting-new-password">{{ 'Password'|trans }}</label>
+                        <input class="form-control" type="password" name="password" id="hosting-new-password" value="{{ request.password }}" required="required" minlength="10" autocomplete="new-password" aria-describedby="hosting-password-rule">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="hosting-new-password-confirm">{{ 'Password Confirm'|trans }}</label>
+                        <input class="form-control" type="password" name="password_confirm" id="hosting-new-password-confirm" value="{{ request.password_confirm }}" required="required" minlength="10" autocomplete="new-password">
+                    </div>
+                </div>
+                {# The control panel's own rule (Enhance); the adapter checks it too. #}
+                <div class="form-text" id="hosting-password-rule">{{ 'At least 10 characters, with lowercase and uppercase letters, numbers and special characters.'|trans }}</div>
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <button class="btn btn-primary mt-3" type="submit">{{ 'Change Password'|trans }}</button>
+            </form>
         </div>
     </div>
 </div>
 
-{% block js %}
 <script nonce="{{ csp_nonce }}">
     function onAfterLoginLinkCreated(url){
         window.open(url, "_blank");
     }
+    document.getElementById('hosting-password-link').addEventListener('click', () => {
+        bootstrap.Tab.getOrCreateInstance(document.getElementById('hosting-password-tab')).show();
+    });
 </script>
-{% endblock %}
 {% endif %}

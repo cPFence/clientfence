@@ -1,0 +1,17 @@
+{# ClientFence: the API key's part of the service page header and Manage panel (mod_order_manage, `part`). #}
+{% if part == 'meta' %}
+    <span>{{ 'API Key'|trans }}</span>
+{% elseif part == 'actions' %}
+    <button class="btn btn-primary" type="button" id="cf-apikey-copy-head" data-bf-copy="{{ service.api_key }}">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg>{{ 'Copy API key'|trans }}
+    </button>
+{% elseif part == 'manage' %}
+    <button class="list-row" type="button" data-bs-toggle="modal" data-bs-target="#cf-apikey-regenerate-modal">
+        <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg></span>
+        <span class="min-w-0">
+            <span class="list-row-title d-block">{{ 'Regenerate'|trans }}</span>
+            <span class="list-row-meta d-block">{{ 'The old key stops working at once.'|trans }}</span>
+        </span>
+        <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+    </button>
+{% endif %}

@@ -1,0 +1,12 @@
+{# ClientFence: the download card of the service page; the header's Download button is in mod_servicedownloadable_head. #}
+{% if order.status == 'active' %}
+<div class="card mb-4">
+    <div class="card-header"><h2>{{ 'File'|trans }}</h2></div>
+    <dl class="bf-facts">
+        <div class="bf-fact"><dt>{{ 'File'|trans }}</dt><dd><bdi dir="ltr">{{ service.filename }}</bdi></dd></div>
+    </dl>
+    <div class="bf-card-foot">
+        <a class="btn btn-primary btn-sm" href="{{ "servicedownloadable/get-file/#{order.id}"|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#download"/></svg> {{ 'Download'|trans }}</a>
+    </div>
+</div>
+{% endif %}

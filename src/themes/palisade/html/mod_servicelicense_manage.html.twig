@@ -1,52 +1,35 @@
-{# Licence service card on the service page (overrides the module's plain table): the key, the
-   limits it is checked against, and the reset. #}
+{# ClientFence: the licence card of the service page (overrides the module's plain table): the key and the limits it
+   is checked against. Copy and Reset are in mod_servicelicense_head. #}
 {% if order.status == 'active' %}
 {% set limits = [] %}
 {% if service.validate_ip %}{% set limits = limits|merge([{ label: 'Valid IPs'|trans, values: service.ips, all: 'All IPs'|trans }]) %}{% endif %}
 {% if service.validate_host %}{% set limits = limits|merge([{ label: 'Valid Domains'|trans, values: service.hosts, all: 'All Hosts'|trans }]) %}{% endif %}
 {% if service.validate_version %}{% set limits = limits|merge([{ label: 'Valid Versions'|trans, values: service.versions, all: 'All Versions'|trans }]) %}{% endif %}
 {% if service.validate_path %}{% set limits = limits|merge([{ label: 'Valid Installation Paths'|trans, values: service.paths, all: 'All Paths'|trans }]) %}{% endif %}
-<section class="card bf-card mb-4 bf-licence" aria-labelledby="bf-licence-title">
-    <div class="card-body bf-licence-body">
-        <div class="bf-licence-head">
-            <span class="bf-licence-icon" aria-hidden="true"><svg class="icon"><use href="#key"/></svg></span>
-            <div>
-                <h2 class="h5 mb-0" id="bf-licence-title">{{ 'License Details'|trans }}</h2>
-                <span class="small text-body-secondary">{{ order.title }}</span>
-            </div>
+<section class="card mb-4" aria-labelledby="bf-licence-title">
+    <div class="card-header"><h2 id="bf-licence-title">{{ 'License Details'|trans }}</h2></div>
+    <div class="card-body">
+        <span class="bf-licence-label">{{ 'Key'|trans }}</span>
+        <div class="bf-key">
+            <code class="bf-licence-code flex-grow-1" dir="ltr">{{ service.license_key }}</code>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bf-copy="{{ service.license_key }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg> {{ 'Copy'|trans }}</button>
         </div>
-
-        <div class="bf-licence-key">
-            <span class="bf-licence-label">{{ 'Key'|trans }}</span>
-            <code class="bf-licence-code" dir="ltr">{{ service.license_key }}</code>
-        </div>
-
-        {% if limits %}
-            <dl class="bf-licence-limits">
-                {% for limit in limits %}
-                    <div>
-                        <dt class="bf-licence-label">{{ limit.label }}</dt>
-                        <dd>
-                            {% for value in limit.values %}
-                                <span class="bf-licence-chip" dir="ltr">{{ value }}</span>
-                            {% else %}
-                                <span class="text-body-secondary">{{ limit.all }}</span>
-                            {% endfor %}
-                        </dd>
-                    </div>
-                {% endfor %}
-            </dl>
-        {% endif %}
     </div>
-
-    <div class="card-body bf-licence-reset">
-        <div>
-            <h3 class="h6 mb-1">{{ 'Reset License'|trans }}</h3>
-            <p class="small text-body-secondary mb-0">{{ 'Resetting the license will clear saved validation data (IP addresses, domains, versions, and installation paths). Use this if you moved servers; the license must then be activated again from the new environment.'|trans }}</p>
-        </div>
-        <a class="btn btn-outline-primary bf-licence-reset-btn" {{ fb_api_link({href: 'servicelicense/reset'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'License was reset'|trans}) }}>
-            <svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg>{{ 'Reset'|trans }}
-        </a>
-    </div>
+    {% if limits %}
+        <dl class="bf-facts border-top">
+            {% for limit in limits %}
+                <div class="bf-fact">
+                    <dt>{{ limit.label }}</dt>
+                    <dd class="flex-wrap">
+                        {% for value in limit.values %}
+                            <span class="bf-licence-chip" dir="ltr">{{ value }}</span>
+                        {% else %}
+                            <span class="text-body-secondary">{{ limit.all }}</span>
+                        {% endfor %}
+                    </dd>
+                </div>
+            {% endfor %}
+        </dl>
+    {% endif %}
 </section>
 {% endif %}

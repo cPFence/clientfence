@@ -1,4 +1,7 @@
-{# ClientFence: FOSSBilling's order page without the Order Notes row; notes are staff notes. #}
+{# ClientFence: the service page (CF-52). A header with the service's own actions, the open invoice, four tiles,
+   the service card (mod_service<type>_manage.html.twig) or a Details card, and a Manage panel. A service type
+   adds to the header and the panel with mod_service<type>_head.html.twig (`part`: meta, actions or manage).
+   No Order Notes row: notes are staff notes. #}
 {% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
 {% set active_menu = 'services' %}
 
@@ -15,212 +18,241 @@
 {% endblock %}
 
 {% set service_partial = "mod_service" ~ order.service_type ~ "_manage.html.twig" %}
+{% set has_partial = order.status == 'active' and guest.system_template_exists({ 'file': service_partial }) %}
+{% set service = has_partial ? client.order_service({ 'id': order.id }) : null %}
+{% set head_partial = "mod_service" ~ order.service_type ~ "_head.html.twig" %}
+{% set has_head = service and guest.system_template_exists({ 'file': head_partial }) %}
 {# ClientFence core patch: prorated upgrades and downgrades by the client (Order\Upgrades) replace the upgrade request ticket. #}
 {% set upgrade = order.status == 'active' ? client.order_upgrade_options({ 'id': order.id }) : { 'available': false } %}
 {# ClientFence core patch: cancellation requests in their own list, as WHMCS (Order\CancelRequests); the client can withdraw one while it waits. #}
 {% set cancel_request = order.status == 'active' ? client.order_cancel_request_get({ 'id': order.id }) : null %}
+{# ClientFence core patch: an unpaid renewal invoice is paid here; Renew Now would only open it again (Invoice Service generateForOrder()). #}
+{% set can_renew = order.period and order.status in ['active', 'suspended'] %}
+{% set tickets_on = guest.support_tickets_enabled %}
+
+{# The order form answers (Formbuilder), each with its question in the client's language. Deleting a form clears it from its orders. #}
+{% set answers = [] %}
+{% if order.form_id and guest.extension_is_on({ 'mod': 'formbuilder' }) %}
+    {% for field in guest.formbuilder_get({ 'id': order.form_id }).fields %}
+        {% set value = order.config[field.name]|default(null) %}
+        {% set shown = [] %}
+        {% for one in (value is iterable ? value : [value])|filter(v => v is not null and v != '') %}
+            {% set label = one %}
+            {% if field.type in ['select', 'radio', 'checkbox'] and field.options is iterable %}
+                {% for option_label, option_value in field.options %}{% if option_value == one %}{% set label = option_label %}{% endif %}{% endfor %}
+            {% endif %}
+            {% set shown = shown|merge([label]) %}
+        {% endfor %}
+        {% if shown %}{% set answers = answers|merge([{ 'label': field.label, 'value': shown|join(', ') }]) %}{% endif %}
+    {% endfor %}
+{% endif %}
+{% set lines = order.config.option_lines|default([]) %}
 
 {% block head %}
     {{ wysiwyg('.editor-textarea') }}
 {% endblock %}
 
 {% block content %}
+    {# Inside the block: the layout sets clientfence_user (an authorized user's permissions). #}
+    {% set open_invoice = can_renew and order.unpaid_invoice_id and (not clientfence_user or clientfence_user.owner or 'invoices' in clientfence_user.permissions) ? client.invoice_get_list({ 'id': order.unpaid_invoice_id, 'status': 'unpaid', 'per_page': 1 }).list|first : null %}
     {{ render_widgets('client.order.manage.content.start', { 'order': order }) }}
 
-    <div class="row">
-        <div class="col-md-12">
-            {# Order info #}
-            <div class="bf-page-head mb-4">
-                <div>
-                    <h1 class="bf-page-title">{{ 'Service Details'|trans }}</h1>
-                    <span class="bf-hint">{{ 'All information about your service'|trans }}</span>
+    {% set icon = { 'hosting': 'server', 'domain': 'world', 'license': 'key', 'apikey': 'key', 'downloadable': 'folder' }[order.service_type]|default('apps') %}
+    <div class="clientfence-hosting-hero card mb-4">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <span class="clientfence-hosting-monogram is-large" aria-hidden="true"><svg class="icon"><use href="#{{ icon }}"/></svg></span>
+            <div class="min-w-0 flex-grow-1">
+                <h1 class="clientfence-hosting-hero-domain mb-1">{% if order.service_type == 'domain' and service %}<bdi dir="ltr">{{ service.domain }}</bdi>{% else %}{{ order.title }}{% endif %}</h1>
+                <div class="clientfence-hosting-hero-meta">
+                    {{ mf.status_badge(order.status, 'order') }}
+                    {% if has_head %}{{ include(head_partial, { 'part': 'meta' }) }}{% else %}<span>{{ 'Order #:id'|trans({ ':id': order.id }) }}</span>{% endif %}
                 </div>
             </div>
-            <div class="card bf-card mb-4">
-                <div class="card-body">
-                    <table class="table bf-detail-list mb-0">
-                        <tbody>
-                        <tr>
-                            <td><label>{{ 'Order'|trans }}</label></td>
-                            <td>#{{ order.id }}</td>
-                        </tr>
+            {% if has_head %}
+                <div class="clientfence-hosting-actions">{{ include(head_partial, { 'part': 'actions' }) }}</div>
+            {% endif %}
+        </div>
+    </div>
 
-                        <tr>
-                            <td><label>{{ 'Product Name'|trans }}</label></td>
-                            <td><strong>{{ order.title }}</strong></td>
-                        </tr>
+    {% if open_invoice %}
+        <div class="alert alert-warning bf-pay-strip mb-4" role="status">
+            <span class="d-inline-flex align-items-center gap-2"><svg class="icon flex-none" aria-hidden="true"><use href="#alert-triangle"/></svg>{{ 'Invoice :number for :amount is waiting for payment. Your service renews when it is paid.'|trans({ ':number': open_invoice.serie_nr, ':amount': open_invoice.total|format_currency(open_invoice.currency) }) }}</span>
+            <a class="btn btn-sm btn-warning" href="{{ 'invoice'|url }}/{{ open_invoice.hash }}">{{ 'Pay invoice'|trans }}</a>
+        </div>
+    {% endif %}
+    {% if upgrade.waiting|default(null) %}
+        {% set waiting = upgrade.waiting %}
+        <div class="alert alert-info bf-pay-strip mb-4" role="status">
+            <span>{{ 'Your change to %title%, %period%, is waiting for payment of invoice #%number% (%amount%). It is made as soon as the invoice is paid.'|trans({ '%title%': waiting.title, '%period%': waiting.period|period_title|lower, '%number%': waiting.invoice_number, '%amount%': waiting.amount|format_currency(waiting.currency) }) }}</span>
+            <a class="btn btn-primary btn-sm" href="{{ 'invoice'|url }}/{{ waiting.invoice_hash }}">{{ 'Pay Invoice'|trans }}</a>
+        </div>
+    {% endif %}
+    {% if cancel_request %}
+        <div class="alert alert-warning bf-pay-strip mb-4" role="status">
+            <span>{{ cancel_request.type == 'end_of_period'
+                ? 'You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed.'|trans({ '%date%': cancel_request.created_at|format_date })
+                : 'You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed.'|trans({ '%date%': cancel_request.created_at|format_date }) }}</span>
+            <a class="btn btn-outline-secondary btn-sm" {{ fb_api_link({href: 'order/cancel_request_withdraw'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Withdraw the cancellation request?'|trans, content: 'The service stays active.'|trans}, reload: true}) }}>{{ 'Withdraw Request'|trans }}</a>
+        </div>
+    {% endif %}
 
-                        <tr>
-                            <td><label>{{ 'Payment Amount'|trans }}</label></td>
-                            <td>{{ order.total|format_currency(order.currency ?? default_currency) }}</td>
-                        </tr>
+    {% set tile_col = tickets_on ? 'col-6 col-xl-3' : 'col-6 col-xl-4' %}
+    {# A domain's dates are the registrar's (Sync Now updates them); a one-off promo price does not renew. #}
+    {% set is_domain = order.service_type == 'domain' and service %}
+    {% set expires_at = is_domain ? service.expires_at : order.expires_at %}
+    {% set since = is_domain ? service.registered_at : order.activated_at %}
+    <div class="row g-3 mb-4">
+        <div class="{{ tile_col }}">
+            <div class="stat-card">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#credit-card"/></svg></span>
+                {% if order.service_type == 'domain' %}
+                    <div class="stat-label">{{ 'Payment Amount'|trans }}</div>
+                    <div class="stat-value">{{ (order.total - order.discount)|format_currency(order.currency ?? default_currency) }}</div>
+                    <div class="stat-meta">{{ order.created_at|format_date }}</div>
+                {% else %}
+                    <div class="stat-label">{{ 'Price'|trans }}</div>
+                    <div class="stat-value">{{ (order.promo_recurring ? order.total - order.discount : order.total)|format_currency(order.currency ?? default_currency) }}</div>
+                    <div class="stat-meta">{{ order.period ? order.period|period_title : 'One-time payment'|trans }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="{{ tile_col }}">
+            <div class="stat-card{% if expires_at and expires_at|daysleft <= 14 %} is-alert{% endif %}">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#refresh"/></svg></span>
+                <div class="stat-label">{{ order.service_type == 'domain' ? 'Expires'|trans : 'Next renewal'|trans }}</div>
+                <div class="stat-value is-sm">{{ expires_at ? expires_at|format_date : '-' }}</div>
+                <div class="stat-meta">{{ expires_at ? 'in :days day(s)'|trans({ ':days': expires_at|daysleft }) : 'Does not renew'|trans }}</div>
+            </div>
+        </div>
+        <div class="{{ tile_col }}">
+            <div class="stat-card">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#circle-check"/></svg></span>
+                <div class="stat-label">{{ is_domain ? 'Registered on'|trans : 'Active since'|trans }}</div>
+                <div class="stat-value is-sm">{{ since ? since|format_date : '-' }}</div>
+                <div class="stat-meta">{{ 'Order #:id'|trans({ ':id': order.id }) }}</div>
+            </div>
+        </div>
+        {# ClientFence core patch: no ticket count or Open Ticket while tickets are off (Support settings). #}
+        {% if tickets_on %}
+        <div class="{{ tile_col }}">
+            <a class="stat-card d-block" href="{{ 'support'|url }}">
+                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#headset"/></svg></span>
+                <div class="stat-label">{{ 'Open tickets'|trans }}</div>
+                <div class="stat-value">{{ order.active_tickets }}</div>
+                <div class="stat-meta">{{ 'About this service'|trans }}</div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
 
-                        {% if order.discount and order.discount > 0 %}
-                            <tr>
-                                <td><label>{{ 'Order Discount'|trans }}</label></td>
-                                <td>-{{ order.discount|format_currency(order.currency ?? default_currency) }}</td>
-                            </tr>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {{ render_widgets('client.order.manage.service.before', { 'order': order, 'service': service }) }}
+            {% if service %}
+                {{ include(service_partial, { 'order': order, 'service': service }) }}
+            {% elseif has_partial %}
+                <div class="alert alert-info" role="alert">{{ 'This order has no active service to manage.'|trans }}</div>
+            {% endif %}
+            {{ render_widgets('client.order.manage.service.after', { 'order': order, 'service': service }) }}
 
-                            <tr>
-                                <td><label>{{ 'Payment Amount After Discount'|trans }}</label></td>
-                                <td>{{ (order.total - order.discount)|format_currency(order.currency ?? default_currency) }}</td>
-                            </tr>
-                        {% endif %}
+            {# A product without its own service card (or with options and answers next to it). #}
+            {% if not service or lines or answers or order.discount > 0 %}
+            <div class="card mb-4">
+                <div class="card-header"><h2>{{ 'Details'|trans }}</h2></div>
+                <dl class="bf-facts">
+                    {% if not service %}
+                        <div class="bf-fact"><dt>{{ 'Product'|trans }}</dt><dd>{{ order.title }}</dd></div>
+                    {% endif %}
+                    {# ClientFence: configurable options (Product/Options.php). #}
+                    {% for line in lines %}
+                        <div class="bf-fact"><dt>{{ line.title }}</dt><dd><bdi>{% if line.type == 'yesno' %}{{ 'Yes'|trans }}{% elseif line.type == 'quantity' %}{{ line.quantity }}{% if line.unit %} {{ line.unit }}{% endif %}{% else %}{{ line.value }}{% endif %}</bdi></dd></div>
+                    {% endfor %}
+                    {% for answer in answers %}
+                        <div class="bf-fact"><dt>{{ answer.label }}</dt><dd><bdi>{{ answer.value }}</bdi> <button class="bf-copy" type="button" data-bf-copy="{{ answer.value }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button></dd></div>
+                    {% endfor %}
+                    {% if order.discount > 0 %}
+                        <div class="bf-fact"><dt>{{ 'Order Discount'|trans }}</dt><dd>-{{ order.discount|format_currency(order.currency ?? default_currency) }}</dd></div>
+                    {% endif %}
+                    <div class="bf-fact"><dt>{{ 'Order Created'|trans }}</dt><dd>{{ order.created_at|format_date }}</dd></div>
+                </dl>
+                {% if answers %}
+                    <div class="card-footer small text-secondary">{{ 'Your answers on the order form.'|trans }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+            {{ render_widgets('client.order.manage.details.after', { 'order': order }) }}
 
-                        {% if order.period %}
-                            <tr>
-                                <td><label>{{ 'Billing Cycle'|trans }}</label></td>
-                                <td>{{ order.period|period_title }}</td>
-                            </tr>
-                        {% endif %}
-
-                        {# ClientFence: configurable options (Product/Options.php). #}
-                        {% for line in order.config.option_lines|default([]) %}
-                            <tr>
-                                <td><label>{{ line.title }}</label></td>
-                                <td>{% if line.type == 'yesno' %}{{ 'Yes'|trans }}{% elseif line.type == 'quantity' %}{{ line.quantity }}{% if line.unit %} {{ line.unit }}{% endif %}{% else %}{{ line.value }}{% endif %}</td>
-                            </tr>
-                        {% endfor %}
-
-                        <tr>
-                            <td><label>{{ 'Order Status'|trans }}</label></td>
-                            <td>
-                                {{ mf.status_badge(order.status, 'order') }}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td><label>{{ 'Order Created'|trans }}</label></td>
-                            <td>{{ order.created_at|format_date }}</td>
-                        </tr>
-
-                        <tr>
-                            <td><label>{{ 'Activated At'|trans }}</label></td>
-                            <td>{% if order.activated_at %}{{ order.activated_at|format_date }}{% else %}-{% endif %}</td>
-                        </tr>
-
-                        {% if order.period %}
-                            <tr>
-                                <td><label>{{ 'Renewal Date'|trans }} {% if order.expires_at %} {{ 'in :days day(s)'|trans({ ':days': order.expires_at|daysleft }) }} {% endif %}</label></td>
-                                <td>{% if order.expires_at %}{{ order.expires_at|format_date }}{% else %}-{% endif %}</td>
-                            </tr>
-                        {% endif %}
-
-                        {# ClientFence core patch: no ticket count or Open Ticket while tickets are off (Support settings). #}
-                        {% if order.active_tickets > 0 and guest.support_tickets_enabled %}
-                            <tr>
-                                <td><label>{{ 'Active Support Tickets'|trans }}</label></td>
-                                <td>
-                                    <div class="num"><a href="{{ 'support'|url }}" class="redNum">{{ order.active_tickets }}</a></div>
-                                    {# <div class="num"><a href="{{ 'support'|url }}" class="greenNum">{{ order.active_tickets }}</a></div> #}
-                                    {# <div class="num"><a href="{{ 'support'|url }}" class="bludNum">{{ order.active_tickets }}</a></div> #}
-                                </td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
-                    {{ render_widgets('client.order.manage.details.after', { 'order': order }) }}
-                </div>
-                <div class="card-footer bf-actions">
-                    {% if upgrade.waiting|default(null) %}
-                        {% set waiting = upgrade.waiting %}
-                        <div class="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1 w-100" role="status">
-                            <span>{{ 'Your change to %title%, %period%, is waiting for payment of invoice #%number% (%amount%). It is made as soon as the invoice is paid.'|trans({ '%title%': waiting.title, '%period%': waiting.period|period_title|lower, '%number%': waiting.invoice_number, '%amount%': waiting.amount|format_currency(waiting.currency) }) }}</span>
-                            <a class="btn btn-primary btn-sm" href="{{ 'invoice'|url }}/{{ waiting.invoice_hash }}">{{ 'Pay Invoice'|trans }}</a>
+            {# Order addons #}
+            {% if order.group_master == 1 and addons|length > 0 %}
+            <div class="card mb-4">
+                <div class="card-header"><h2>{{ 'Addons'|trans }}</h2></div>
+                {% for addon in addons %}
+                    <a class="list-row" href="{{ "order/service/manage/#{addon.id}"|url }}">
+                        <div class="min-w-0">
+                            <div class="list-row-title text-truncate">{{ addon.title }}</div>
+                            <div class="list-row-meta">{{ addon.total|format_currency(addon.currency ?? default_currency) }} · {{ addon.period|period_title }}{% if addon.expires_at %} · {{ 'Expires'|trans }} {{ addon.expires_at|format_date }}{% endif %}</div>
                         </div>
+                        {{ mf.status_badge(addon.status, 'order') }}
+                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header"><h2>{{ 'Manage'|trans }}</h2></div>
+                <div class="bf-manage">
+                    {% if can_renew and not open_invoice and (order.service_type != 'domain' or not has_head) %}
+                        <a class="list-row" {{ fb_api_link({href: 'invoice/renewal_invoice'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans, content: 'This will generate new invoice. Are you sure you want to continue?'|trans}, callback: 'onRenewalInvoiceCreated'}) }}>
+                            <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg></span>
+                            <span class="min-w-0"><span class="list-row-title d-block">{{ 'Renew Now'|trans }}</span><span class="list-row-meta d-block">{{ 'Pay the next period now'|trans }}</span></span>
+                            <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+                        </a>
                     {% endif %}
-                    {% if order.period and order.status in ['active', 'suspended'] %}
-                        {# ClientFence core patch: an unpaid renewal invoice is paid here; Renew Now would only open it again (Invoice Service generateForOrder()). #}
-                        {% set open_invoice = order.unpaid_invoice_id and (not clientfence_user or clientfence_user.owner or 'invoices' in clientfence_user.permissions) ? client.invoice_get_list({ 'id': order.unpaid_invoice_id, 'status': 'unpaid', 'per_page': 1 }).list|first : null %}
-                        {% if open_invoice %}
-                        <a class="btn btn-primary btn-sm" href="{{ 'invoice'|url }}/{{ open_invoice.hash }}">{{ 'Pay invoice :number'|trans({ ':number': open_invoice.serie_nr }) }}</a>
-                        {% else %}
-                        <a class="btn btn-primary btn-sm"
-                           {{ fb_api_link({href: 'invoice/renewal_invoice'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans, content: 'This will generate new invoice. Are you sure you want to continue?'|trans}, callback: 'onRenewalInvoiceCreated'}) }}>{{ 'Renew Now'|trans }}</a>
-                        <script nonce="{{ csp_nonce|raw }}">window.onRenewalInvoiceCreated = (hash) => { window.location = "{{ 'invoice'|url }}/" + hash; };</script>
-                        {% endif %}
-                    {% endif %}
+                    {% if has_head %}{{ include(head_partial, { 'part': 'manage' }) }}{% endif %}
                     {% if upgrade.available %}
-                        <button class="btn btn-outline-primary btn-sm" type="button" id="request-upgrade" data-bs-toggle="modal" data-bs-target="#upgrade-modal">{{ 'Upgrade / Downgrade'|trans }}</button>
+                        <button class="list-row" type="button" id="request-upgrade" data-bs-toggle="modal" data-bs-target="#upgrade-modal">
+                            <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#arrows-exchange"/></svg></span>
+                            <span class="min-w-0"><span class="list-row-title d-block">{{ 'Upgrade / Downgrade'|trans }}</span><span class="list-row-meta d-block">{{ 'Change plan or billing cycle'|trans }}</span></span>
+                            <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+                        </button>
                     {% elseif upgrade.notice|default(false) %}
                         {# ClientFence: why Upgrade / Downgrade is not offered now (GitHub #8). #}
-                        <p class="text-muted small mb-0 w-100" id="upgrade-unavailable">{{ upgrade.reason }}</p>
+                        <div class="list-row is-off" id="upgrade-unavailable">
+                            <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#arrows-exchange"/></svg></span>
+                            <span class="min-w-0"><span class="list-row-title d-block">{{ 'Upgrade / Downgrade'|trans }}</span><span class="list-row-meta d-block">{{ upgrade.reason }}</span></span>
+                        </div>
                     {% endif %}
                     {% if upgrade.options_change|default(false) %}
-                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#options-change-modal">{{ 'Change options'|trans }}</button>
+                        <button class="list-row" type="button" data-bs-toggle="modal" data-bs-target="#options-change-modal">
+                            <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#pencil"/></svg></span>
+                            <span class="min-w-0"><span class="list-row-title d-block">{{ 'Change options'|trans }}</span><span class="list-row-meta d-block text-truncate">{{ lines|map(l => l.title ~ ': ' ~ (l.type == 'quantity' ? l.quantity ~ (l.unit ? ' ' ~ l.unit : '') : (l.type == 'yesno' ? 'Yes'|trans : l.value)))|join(', ') }}</span></span>
+                            <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+                        </button>
                     {% endif %}
-                    {% if guest.support_tickets_enabled %}
-                    <button class="btn btn-outline-secondary btn-sm" type="button" id="open-ticket" data-bs-toggle="modal" data-bs-target="#open-ticket-modal">{{ 'Open Ticket'|trans }}</button>
+                    {% if tickets_on %}
+                        <button class="list-row" type="button" id="open-ticket" data-bs-toggle="modal" data-bs-target="#open-ticket-modal">
+                            <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#headset"/></svg></span>
+                            <span class="min-w-0"><span class="list-row-title d-block">{{ 'Open Ticket'|trans }}</span><span class="list-row-meta d-block">{{ 'About this service'|trans }}</span></span>
+                            <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+                        </button>
                     {% endif %}
-                    {% if cancel_request %}
-                        <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1 w-100" role="status">
-                            <span>{{ cancel_request.type == 'end_of_period'
-                                ? 'You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed.'|trans({ '%date%': cancel_request.created_at|format_date })
-                                : 'You asked on %date% to cancel this service immediately. You can withdraw the request until it is processed.'|trans({ '%date%': cancel_request.created_at|format_date }) }}</span>
-                            <a class="btn btn-outline-secondary btn-sm" {{ fb_api_link({href: 'order/cancel_request_withdraw'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Withdraw the cancellation request?'|trans, content: 'The service stays active.'|trans}, reload: true}) }}>{{ 'Withdraw Request'|trans }}</a>
-                        </div>
-                    {% elseif order.status == 'active' %}
-                        <button class="btn btn-outline-danger btn-sm" type="button" id="request-cancel" data-bs-toggle="modal" data-bs-target="#cancel-request-modal">{{ 'Request Cancellation'|trans }}</button>
+                    {% if order.status == 'active' and not cancel_request %}
+                        <button class="list-row is-danger" type="button" id="request-cancel" data-bs-toggle="modal" data-bs-target="#cancel-request-modal">
+                            <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#x"/></svg></span>
+                            <span class="min-w-0"><span class="list-row-title d-block">{{ 'Request Cancellation'|trans }}</span><span class="list-row-meta d-block">{{ 'Now or at the end of the period'|trans }}</span></span>
+                            <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+                        </button>
                     {% endif %}
                     {{ render_widgets('client.order.manage.actions.end', { 'order': order }) }}
                 </div>
             </div>
+        </div>
+    </div>
 
-            {# Service management #}
-            {% set service = null %}
-            {{ render_widgets('client.order.manage.service.before', { 'order': order, 'service': service }) }}
-            {% if order.status == 'active' and guest.system_template_exists({ 'file': service_partial }) %}
-                {% set service = client.order_service({ 'id': order.id }) %}
-                {% if service %}
-                    {{ include(service_partial, { 'order': order, 'service': service }) }}
-                {% else %}
-                    <div class="alert alert-info" role="alert">{{ 'This order has no active service to manage.'|trans }}</div>
-                {% endif %}
-            {% endif %}
-            {{ render_widgets('client.order.manage.service.after', { 'order': order, 'service': service }) }}
-
-            {# Order addons #}
-            {% if order.group_master == 1 and addons|length > 0 %}
-            <div class="card bf-card mb-4">
-                <div class="card-header">
-                    <div>
-                        <h2 class="mb-1">{{ 'Addons'|trans }}</h2>
-                        <span class="small text-secondary">{{ 'Addons you have ordered with this service'|trans }}</span>
-                    </div>
-                </div>
-                <div class="card-body">
-                        <table class="table table-hover align-middle table-stack mb-0">
-                            <thead>
-                            <tr>
-                                <th>{{ 'Product/Service'|trans }}</th>
-                                <th>{{ 'Price'|trans }}</th>
-                                <th>{{ 'Billing Cycle'|trans }}</th>
-                                <th>{{ 'Next Due Date'|trans }}</th>
-                                <th>{{ 'Status'|trans }}</th>
-                                <th>{{ 'Actions'|trans }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for i, addon in addons %}
-                                <tr>
-                                    <td>{{ addon.title }}</td>
-                                    <td>{{ addon.total|format_currency(addon.currency ?? default_currency) }}</td>
-                                    <td>{{ addon.period|period_title }}</td>
-                                    <td>{% if addon.expires_at %}{{ addon.expires_at|format_date }}{% else %}-{% endif %}</td>
-                                    <td>
-                                        {{ mf.status_badge(addon.status, 'order') }}
-                                    </td>
-                                    <td class="actions">
-                                        <a class="btn btn-outline-primary btn-sm" href='{{ "order/service/manage/#{addon.id}"|url }}'>{{ 'Manage'|trans }}</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            {% endif %}
-
+    <div class="row">
+        <div class="col-md-12">
             <div class="modal fade" id="cancel-request-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-modal" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -392,7 +424,16 @@
 {% block js %}
 {% autoescape "js" %}
     <script nonce="{{ csp_nonce|raw }}">
+        window.onRenewalInvoiceCreated = (hash) => { window.location = {{ 'invoice'|url|json_encode|raw }} + '/' + hash; };
         document.addEventListener("DOMContentLoaded", function() {
+            // Copy buttons of the service page and its cards (data-bf-copy holds the text).
+            document.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-bf-copy]');
+                if (button) {
+                    navigator.clipboard?.writeText(button.dataset.bfCopy).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'));
+                }
+            });
+
             const cancelRequestForm = document.getElementById('cancel-request-form');
             const upgradeForm = document.getElementById('upgrade-form');
             const openTicketForm = document.getElementById('open-ticket-form');

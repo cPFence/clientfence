@@ -1,0 +1,19 @@
+{# ClientFence: the domain's part of the service page header and Manage panel (mod_order_manage, `part`). #}
+{% if part == 'meta' %}
+    <span>{{ 'Domain registration'|trans }}</span>
+{% elseif part == 'actions' %}
+    {% if can_renew and not open_invoice %}
+        <a class="btn btn-primary" {{ fb_api_link({href: 'invoice/renewal_invoice'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans, content: 'This will generate new invoice. Are you sure you want to continue?'|trans}, callback: 'onRenewalInvoiceCreated'}) }}>
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg>{{ 'Renew Now'|trans }}
+        </a>
+    {% endif %}
+{% elseif part == 'manage' %}
+    <button class="list-row" type="button" id="domain-sync">
+        <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg></span>
+        <span class="min-w-0">
+            <span class="list-row-title d-block">{{ 'Sync Now'|trans }}</span>
+            <span class="list-row-meta d-block" id="synced-at-value">{% if service.synced_at %}{{ 'Last synced with registrar on %date%'|trans({'%date%': service.synced_at|format_date(pattern="MMM dd, yyyy HH:mm")}) }}{% else %}{{ 'Never synced with registrar'|trans }}{% endif %}</span>
+        </span>
+        <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+    </button>
+{% endif %}

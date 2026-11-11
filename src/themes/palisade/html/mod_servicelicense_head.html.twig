@@ -1,0 +1,17 @@
+{# ClientFence: the licence's part of the service page header and Manage panel (mod_order_manage, `part`). #}
+{% if part == 'meta' %}
+    <span>{{ 'License'|trans }}</span>
+{% elseif part == 'actions' %}
+    <button class="btn btn-primary" type="button" data-bf-copy="{{ service.license_key }}">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg>{{ 'Copy license key'|trans }}
+    </button>
+{% elseif part == 'manage' %}
+    <a class="list-row" {{ fb_api_link({href: 'servicelicense/reset'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'License was reset'|trans}) }}>
+        <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg></span>
+        <span class="min-w-0">
+            <span class="list-row-title d-block">{{ 'Reset License'|trans }}</span>
+            <span class="list-row-meta d-block">{{ 'Moved servers? Clear the saved IPs and domains.'|trans }}</span>
+        </span>
+        <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
+    </a>
+{% endif %}
