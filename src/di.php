@@ -498,10 +498,14 @@ $di['api_identity'] = $di->protect(function ($role) use ($di) {
     if ($role === 'client' && !$di['is_client_email_validated']($identity)) {
         $routePath = RequestFactory::getRoutePath($di['request']);
         $isApiRequest = str_starts_with($routePath, '/api/');
+        // ClientFence core patch: as in WHMCS, an unconfirmed client may still order and pay: the store, the cart and
+        // checkout, their invoice, its payment and the way back (a banner asks to confirm); the rest waits.
         $isAllowedClientApi = str_starts_with($routePath, '/api/client/client/')
-            || str_starts_with($routePath, '/api/client/profile/');
+            || str_starts_with($routePath, '/api/client/profile/')
+            || in_array($routePath, ['/api/client/cart/checkout', '/api/client/invoice/apply_credit', '/api/client/invoice/receipt_send', '/api/client/invoice/card_save_choice', '/api/client/invoice/paypal_pay', '/api/client/invoice/autopay_pay', '/api/client/invoice/paytabs_pay'], true);
         $isAllowedClientPage = str_starts_with($routePath, '/client/profile')
-            || str_starts_with($routePath, '/client/logout');
+            || str_starts_with($routePath, '/client/logout')
+            || preg_match('#^/(cart|order(/(?!service$)[a-z0-9-]+)?|invoice/((banklink|thank-you)/)?(?!(statement|quotes)$)[a-z0-9]+(/[0-9]+)?)$#', $routePath) === 1;
 
         if (($isApiRequest && !$isAllowedClientApi) || (!$isApiRequest && !$isAllowedClientPage)) {
             throw new EmailValidationRequiredException();

@@ -214,6 +214,13 @@
         </header>
 
         <main class="app-content" id="content">
+            {# ClientFence: an unconfirmed client sees only the pages to order and pay (di.php api_identity) and the profile. #}
+            {% if client and guest.client_is_email_validation_required and not (profile.email_approved is defined ? profile.email_approved : true) %}
+                <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2" role="status" data-clientfence-email-unconfirmed>
+                    <span>{{ 'Confirm your email address to use your whole account. We sent you a link.'|trans }}</span>
+                    <a class="btn btn-sm btn-primary" href="{{ 'client/resend_email_verification'|api_url }}" {{ fb_api_link({message: 'Verification Email Re-sent'|trans}) }}>{{ 'Resend Verification Email'|trans }}</a>
+                </div>
+            {% endif %}
             {% block content_before %}{% endblock %}
             {{ render_widgets('client.theme.content.before') }}
             {% block content %}{% endblock %}

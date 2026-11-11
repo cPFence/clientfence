@@ -178,7 +178,11 @@ class Service implements InjectionAwareInterface
             $params['approved'] = (int) $approved;
         }
 
-        if ($status) {
+        if (is_array($status)) {
+            // ClientFence core patch: several statuses (the client's cancelled and refunded invoices); only real ones reach the SQL.
+            $statuses = array_intersect([\Model_Invoice::STATUS_UNPAID, \Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED, \Model_Invoice::STATUS_CANCELED], $status);
+            $sql .= " AND p.status IN ('" . implode("', '", $statuses ?: ['']) . "')";
+        } elseif ($status) {
             $sql .= ' AND p.status = :status';
             $params['status'] = $status;
         }

@@ -42,7 +42,7 @@
         {% set support_email = guest.system_company.email|default('') %}
         {% if guest.clientfence_signup_info.open and settings.show_signup_link|default('1') %}
             <p class="mt-4 mb-1" data-clientfence-signup-link>
-                {{ 'New here?'|trans }} <a class="fw-semibold" href="{{ 'signup'|url }}">{{ 'Create an account'|trans }}</a>
+                {{ 'New here?'|trans }} <a class="fw-semibold" href="{{ 'signup'|url(back ? {back: back} : {}) }}">{{ 'Create an account'|trans }}</a>
             </p>
             {% if support_email %}
             <p class="small text-body-secondary mb-0">

@@ -5545,3 +5545,20 @@ test('a gateway refund goes against a payment with enough left, as WHMCS refunds
         ->and($service->gatewayRefundPayment($invoice, 6.01))->toBeNull()
         ->and($service->gatewayRefundPayment($invoice))->toMatchArray(['transaction' => 'OLDEST00000001', 'gateway' => 'PayPal', 'left' => 6.0]);
 });
+
+test('a list of statuses finds those invoices of the client only, and only real statuses reach the SQL', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, approved INTEGER)');
+    $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER)');
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY)');
+    foreach ([[1, 1, 'canceled'], [2, 1, 'refunded'], [3, 1, 'paid'], [4, 1, 'unpaid'], [5, 2, 'canceled'], [6, 2, 'refunded']] as [$id, $clientId, $status]) {
+        $db->insert('invoice', ['id' => $id, 'client_id' => $clientId, 'status' => $status, 'approved' => 1]);
+    }
+    $service = new Service();
+    $service->setDi(container());
+
+    // The client list call's filters (Invoice\Api\Client::get_list): the signed-in client and approved invoices.
+    [$sql, $params] = $service->getSearchQuery(['client_id' => 1, 'approved' => true, 'status' => ['canceled', 'refunded', "x') OR ('1"]]);
+
+    expect($db->fetchFirstColumn($sql, $params))->toEqual([2, 1]);
+});

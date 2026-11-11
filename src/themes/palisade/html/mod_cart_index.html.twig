@@ -91,7 +91,7 @@
                     <p class="mb-0">{{ 'Sign in to place your order; you come back to this cart.'|trans }}</p>
                     <div class="bf-cart-signin">
                         <a class="btn btn-primary" href="{{ 'login'|url({ back: '/cart' }) }}">{{ 'Sign in'|trans }}</a>
-                        {% if guest.clientfence_signup_info.open %}<a class="btn bf-btn-ghost" href="{{ 'signup'|url }}">{{ 'Create an account'|trans }}</a>{% endif %}
+                        {% if guest.clientfence_signup_info.open %}<a class="btn bf-btn-ghost" href="{{ 'signup'|url({ back: '/cart' }) }}">{{ 'Create an account'|trans }}</a>{% endif %}
                     </div>
                 {% endif %}
             </section>

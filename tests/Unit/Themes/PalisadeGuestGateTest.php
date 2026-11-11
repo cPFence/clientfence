@@ -48,6 +48,8 @@ function renderPalisadeGatedPage(string $layout, bool $guestTickets, string $loc
     $twig->addExtension(new IntlExtension());
     $twig->addFilter(new TwigFilter('trans', static fn (string $text): string => $text));
     $twig->addFilter(new TwigFilter('url', static fn (string $path): string => '/' . ltrim($path, '/')));
+    $twig->addFilter(new TwigFilter('api_url', static fn (string $path): string => '/api/client/' . $path));
+    $twig->addFunction(new TwigFunction('fb_api_link', static fn (): string => ''));
     $twig->addFunction(new TwigFunction('render_widgets', static fn (): string => ''));
     $twig->addFunction(new TwigFunction('svg_sprite', static fn (): string => ''));
 

@@ -30,7 +30,11 @@
             <a class="btn btn-primary btn-lg w-100" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
         {% else %}
             <p class="auth-lead">{{ 'One account for your services, invoices and support tickets.'|trans }}</p>
-            <form method="post" action="{{ 'client/create'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignUp'}) }} data-clientfence-sign-up data-redirect="{{ '/'|url }}">
+            {# ClientFence: ?back=<path on this site> (the checkout's "Create an account"), where the new
+               account goes next; the sign-in page's rule. #}
+            {% set back = request.back|default('') %}
+            {% set back = back is iterable or not (back matches '#^/(?![/\\\\])[^\\s\\\\]*$#') or '://' in back ? '' : back %}
+            <form method="post" action="{{ 'client/create'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignUp'}) }} data-clientfence-sign-up data-redirect="{{ back ?: '/'|url }}">
     {# ClientFence core patch (0.8.9 port): bind guest authentication to this browser session. #}
     <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
                 {% set r = guest.client_required %}
@@ -144,11 +148,11 @@
             {# Shown when the sign-up did not sign in (auto login off, or the email had an account: FOSSBilling never says which). #}
             <div class="alert alert-info mb-0" role="status" data-clientfence-sign-up-done hidden>
                 {{ 'Thank you. Sign in with your email and password to continue. If this email already had an account, use that account’s password, or reset it.'|trans }}
-                <a class="btn btn-primary w-100 mt-3" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+                <a class="btn btn-primary w-100 mt-3" href="{{ 'login'|url(back ? {back: back} : {}) }}">{{ 'Sign in'|trans }}</a>
             </div>
             {{ render_widgets('client.page.signup.form.after') }}
             <p class="small text-body-secondary mt-4 mb-0">
-                {{ 'Already have an account?'|trans }} <a href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>
+                {{ 'Already have an account?'|trans }} <a href="{{ 'login'|url(back ? {back: back} : {}) }}">{{ 'Sign in'|trans }}</a>
             </p>
         {% endif %}
     {% endblock %}

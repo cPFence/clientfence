@@ -12,16 +12,6 @@
     {# ClientFence core patch: the Privacy tab (Client/Privacy.php), for the account owner while a privacy switch is on. #}
     {% set privacy = client.client_user_session ? null : client.client_privacy_status %}
     {% set privacy_tab = privacy and (privacy.tools or privacy.optout) %}
-    {% if (guest.client_is_email_validation_required) and (not profile.email_approved) %}
-        <div class="alert alert-block alert-danger">
-            <div class="row">
-                <span>{{ 'You must verify your email address before you may access our services.'|trans }}</span>
-            </div>
-            <a class="btn btn-primary" href="{{ 'client/resend_email_verification'|api_url }}"
-               {{ fb_api_link({message: 'Verification Email Re-sent'|trans}) }}>{{ 'Resend Verification Email'|trans }}</a>
-        </div>
-    {% endif %}
-
     <div class="bf-page-head mb-4">
         <h1 class="bf-page-title">{{ 'Profile'|trans }}</h1>
     </div>
