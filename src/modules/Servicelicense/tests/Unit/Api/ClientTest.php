@@ -38,8 +38,10 @@ test('reset returns true', function (): void {
         ->once()
         ->andReturn(new ServiceLicense());
 
+    // ClientFence (CF-56): a client's reset goes through the IP change rules.
     $serviceMock = Mockery::mock(ClientFence\Mod\Servicelicense\Service::class);
-    $serviceMock->shouldReceive('reset')
+    $serviceMock->shouldReceive('ipAction')
+        ->with(Mockery::type(ServiceLicense::class), ClientFence\IpSeats::RESET)
         ->atLeast()
         ->once()
         ->andReturn(true);

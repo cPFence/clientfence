@@ -333,6 +333,8 @@
                                 <p class="mb-1"><strong>{{ 'Current'|trans }}:</strong> {{ cur.title }}, {{ cur.price|format_currency(cur.currency) }} {{ cur.period|period_title|lower }}</p>
                                 <p class="text-secondary small mb-3">{{ 'Your current period ends on %date%; %left% of its %total% days are unused. Their value is credited against the new price.'|trans({ '%date%': first.expires_at|format_date, '%left%': first.days_left, '%total%': first.days_total }) }}</p>
                                 <input type="hidden" name="id" value="{{ order.id }}">
+                                {# Why a plan is not offered, e.g. too many IP addresses for it (IpSeats, CF-56). #}
+                                {% if upgrade.reason %}<div class="alert alert-info small">{{ upgrade.reason }}</div>{% endif %}
                                 <div class="list-group">
                                     {% for opt in upgrade.options %}
                                     <label class="list-group-item d-flex gap-3 align-items-start">

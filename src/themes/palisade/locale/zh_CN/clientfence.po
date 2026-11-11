@@ -24628,3 +24628,266 @@ msgstr "旧密钥将立即失效。"
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your answers on the order form."
 msgstr "您在订单表单中的回答。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid ":used of :seats servers used"
+msgstr "已使用 :used 台，共 :seats 台服务器"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "A change of these IP addresses is already waiting for approval."
+msgstr "这些 IP 地址的更改已在等待核准。"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A check from a new IP address takes a free place by itself."
+msgstr "来自新 IP 地址的检查会自动占用一个空位。"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "A check from a new server takes a free place by itself."
+msgstr "来自新服务器的检查会自动占用一个空位。"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Add %ip%"
+msgstr "添加 %ip%"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "All :count places are in use. Remove an IP address first."
+msgstr "全部 :count 个位置均已占用。请先删除一个 IP 地址。"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Approve this IP change?"
+msgstr "核准此 IP 更改？"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Bind on first check"
+msgstr "首次检查时绑定"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Changes need staff approval"
+msgstr "更改需要员工核准"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Checks in the last :days days"
+msgstr "最近 :days 天的检查"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Clear the IP change count?"
+msgstr "清除 IP 更改次数？"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client IP Addresses"
+msgstr "客户 IP 地址"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used (no limit)"
+msgstr "客户最近 30 天的 IP 更改：:used（不限）"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used of :count"
+msgstr "客户最近 30 天的 IP 更改：:used / :count"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client changes wait until staff approve them."
+msgstr "客户的更改会等待员工核准。"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Empty: no limit (up to 20 IP addresses or ranges). With a limit, single IP addresses only."
+msgstr "留空：不限（最多 20 个 IP 地址或范围）。设置限制后，只能使用单个 IP 地址。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Empty: no limit. With a limit, the IP address is always checked, whatever Validate IP says."
+msgstr "留空：不限。设置限制后，无论“校验 IP”如何设置，都始终检查 IP 地址。"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "How to check"
+msgstr "如何检查"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved"
+msgstr "IP 地址更改已核准"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved: %title%"
+msgstr "IP 地址更改已核准：%title%"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused"
+msgstr "IP 地址更改已拒绝"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused: %title%"
+msgstr "IP 地址更改已拒绝：%title%"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "IP address change requested for order #:id: :title"
+msgstr "订单 #:id 的 IP 地址更改请求：:title"
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig
+msgid "IP changes left: :left of :count in 30 days."
+msgstr "剩余 IP 更改次数：30 天内 :left / :count。"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address added in the last 24 hours is free."
+msgstr "剩余 IP 更改次数：30 天内 :left / :count。删除最近 24 小时内添加的 IP 地址不计次数。"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "IP changes per 30 days"
+msgstr "每 30 天的 IP 更改次数"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Last check"
+msgstr "上次检查"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Last checked"
+msgstr "上次检查时间"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Let clients add and remove the IP addresses of their key within these limits."
+msgstr "允许客户在这些限制内添加和删除其密钥的 IP 地址。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Let clients add and remove the IP addresses of their licence within these limits."
+msgstr "允许客户在这些限制内添加和删除其许可证的 IP 地址。"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "No checks yet"
+msgstr "暂无检查记录"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Only our staff can change these IP addresses. Please open a ticket."
+msgstr "只有我们的员工可以更改这些 IP 地址。请提交工单。"
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Our staff approve each change first."
+msgstr "我们的员工会先核准每一项更改。"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff approved your IP address change for %title%:"
+msgstr "我们的员工已核准您对 %title% 的 IP 地址更改："
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff refused your IP address change for %title%:"
+msgstr "我们的员工已拒绝您对 %title% 的 IP 地址更改："
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Reason (optional, sent to the client)"
+msgstr "原因（可选，将发送给客户）"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Reason: %reason%"
+msgstr "原因：%reason%"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Refuse"
+msgstr "拒绝"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Remove %ip%"
+msgstr "删除 %ip%"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Remove this IP address?"
+msgstr "删除此 IP 地址？"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Removing an IP address or a reset. Empty: no limit. 0: only staff."
+msgstr "删除 IP 地址或重置。留空：不限。0：仅员工。"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Removing an IP address. Empty: no limit. 0: only staff."
+msgstr "删除 IP 地址。留空：不限。0：仅员工。"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Servers (IP addresses)"
+msgstr "服务器（IP 地址）"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "The client can make the full number of IP changes again."
+msgstr "客户可以再次使用全部 IP 更改次数。"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "There is no IP address request waiting."
+msgstr "没有等待处理的 IP 地址请求。"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is already on the list."
+msgstr "此 IP 地址已在列表中。"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is not on the list."
+msgstr "此 IP 地址不在列表中。"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This is not a single IP address: :ip"
+msgstr "这不是单个 IP 地址：:ip"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "This licence is not tied to IP addresses or domains."
+msgstr "此许可证未绑定 IP 地址或域名。"
+
+#: src/modules/Serviceapikey/Service.php
+msgid "This plan has a server limit: add or remove one IP address at a time."
+msgstr "此套餐有服务器限制：请一次添加或删除一个 IP 地址。"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This plan has no server limit, so its IP addresses are not added or removed one at a time."
+msgstr "此套餐没有服务器限制，因此其 IP 地址不能逐个添加或删除。"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "This product has no server limit."
+msgstr "此产品没有服务器限制。"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "This uses one of your IP changes."
+msgstr "这将使用您的一次 IP 更改。"
+
+#: src/modules/Order/Upgrades.php
+msgid "To move to a plan with fewer servers, first remove the IP addresses it cannot hold."
+msgstr "要改用服务器更少的套餐，请先删除它容纳不下的 IP 地址。"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: add :ip"
+msgstr "等待核准：添加 :ip"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: remove :ip"
+msgstr "等待核准：删除 :ip"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: reset the license"
+msgstr "等待核准：重置许可"
+
+#: src/modules/Serviceapikey/Service.php
+msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
+msgstr "设置服务器限制后，列表只能包含单个 IP 地址，不能包含范围：:ip"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Withdraw the request?"
+msgstr "撤回请求？"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "You have used your :count IP changes for 30 days. The next one is free on :date."
+msgstr "您已用完 30 天内的 :count 次 IP 更改。下一次将于 :date 恢复免费。"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was approved"
+msgstr "您对 :title 的 IP 地址更改已核准"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was refused"
+msgstr "您对 :title 的 IP 地址更改已被拒绝"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Your software sends the key, its domain, install path and version to this address. The answer has \"valid\": true when the licence passes."
+msgstr "您的软件会将密钥、其域名、安装路径和版本发送到此地址。许可证通过时，响应中包含 \"valid\": true。"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address in the first 24 hours, before any check has used it, is free."
+msgstr "剩余 IP 更改次数：30 天内 :left / :count。在最初 24 小时内、尚无检查使用该 IP 地址之前删除它，不计次数。"
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/IpSeats.php
+msgid "The change no longer fits, so it was refused and the client was told: :reason"
+msgstr "该更改已不符合限制，因此已被拒绝并已通知客户：:reason"

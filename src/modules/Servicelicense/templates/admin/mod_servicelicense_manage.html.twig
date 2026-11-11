@@ -28,6 +28,9 @@
     {{ order_actions|default('') }}
 </div>
 
+{# ClientFence core patch: the client IP addresses, their changes and a request waiting for approval (IpSeats, CF-56). #}
+{% if service.seats is defined %}{{ include('mod_order_ip_seats.html.twig', { 'seats': service.seats, 'order': order, 'api': 'servicelicense' }) }}{% endif %}
+
 <div class="card-body">
     <form method="post" action="{{ 'servicelicense/update'|api_url }}" {{ fb_api_form({message: 'License Updated'|trans}) }}>
         <div class="mb-5">

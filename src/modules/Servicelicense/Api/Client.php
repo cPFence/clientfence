@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Servicelicense\Api;
 
+use ClientFence\IpSeats;
 use ClientFence\Mod\Servicelicense\Entity\ServiceLicense;
 
 /**
@@ -21,13 +22,36 @@ class Client extends \ClientFence\Api\AbstractApi
     /**
      * Reset license validation rules.
      *
+     * ClientFence core patch: counts as one IP change and may need staff approval (IpSeats, CF-56).
+     *
      * @return bool
      */
     public function reset($data)
     {
         $s = $this->_getService($data);
 
-        return $this->getService()->reset($s);
+        return $this->getService()->ipAction($s, IpSeats::RESET);
+    }
+
+    /**
+     * ClientFence: adds an IP address (order_id, ip) into a free place of a product with "Servers (IP
+     * addresses)"; true when done or waiting for staff approval (order_service seats.pending).
+     */
+    public function ip_add($data): bool
+    {
+        return $this->getService()->ipAction($this->_getService($data), IpSeats::ADD, (string) ($data['ip'] ?? ''));
+    }
+
+    /** ClientFence: removes an IP address (order_id, ip): one IP change, free in its first 24 hours while no check has used it. */
+    public function ip_remove($data): bool
+    {
+        return $this->getService()->ipAction($this->_getService($data), IpSeats::REMOVE, (string) ($data['ip'] ?? ''));
+    }
+
+    /** ClientFence: takes back the IP change request waiting for staff approval (order_id). */
+    public function ip_request_withdraw($data): bool
+    {
+        return $this->getService()->ipAction($this->_getService($data), 'withdraw');
     }
 
     public function _getService(array $data): ServiceLicense

@@ -48,6 +48,30 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('serviceapikey', 'manage');
 
-        return $this->getService()->setAllowedIps($this->getService()->findApiKey($data), $data['allowed_ips'] ?? '');
+        return $this->getService()->setAllowedIps($this->getService()->findApiKey($data), $data['allowed_ips'] ?? '', true);
+    }
+
+    /** ClientFence core patch: clears the client's IP change count of a key (order_id; IpSeats, CF-56). */
+    public function ip_changes_clear($data): bool
+    {
+        $this->checkPermissions('serviceapikey', 'manage');
+
+        return $this->getService()->ipAction($this->getService()->findApiKey($data), 'clear');
+    }
+
+    /** ClientFence: applies the client's IP change request (order_id); false when it could no longer be applied and was refused. */
+    public function ip_request_approve($data): bool
+    {
+        $this->checkPermissions('serviceapikey', 'manage');
+
+        return $this->getService()->ipAction($this->getService()->findApiKey($data), 'approve');
+    }
+
+    /** ClientFence: refuses the client's IP change request (order_id, reason: optional, sent to the client). */
+    public function ip_request_refuse($data): bool
+    {
+        $this->checkPermissions('serviceapikey', 'manage');
+
+        return $this->getService()->ipAction($this->getService()->findApiKey($data), 'refuse', '', (string) ($data['reason'] ?? ''));
     }
 }

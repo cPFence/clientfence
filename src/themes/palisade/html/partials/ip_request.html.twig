@@ -1,0 +1,9 @@
+{# ClientFence: a client's IP change waiting for staff approval, with Withdraw (IpSeats, CF-56). `p` (the seats'
+   pending request or null), `order`, `api` (servicelicense or serviceapikey). #}
+{% if p %}
+    {% set ip = '<bdi dir="ltr">' ~ p.ip|e ~ '</bdi>' %}
+    <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2" role="status">
+        <span>{% if p.type == 'add' %}{{ 'Waiting for approval: add :ip'|trans_html({}, {':ip': ip}) }}{% elseif p.type == 'remove' %}{{ 'Waiting for approval: remove :ip'|trans_html({}, {':ip': ip}) }}{% else %}{{ 'Waiting for approval: reset the license'|trans }}{% endif %}</span>
+        <a class="btn btn-sm btn-outline-secondary" {{ fb_api_link({href: (api ~ '/ip_request_withdraw')|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Withdraw the request?'|trans}, reload: true}) }}>{{ 'Withdraw Request'|trans }}</a>
+    </div>
+{% endif %}

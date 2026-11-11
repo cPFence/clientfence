@@ -25174,3 +25174,266 @@ msgstr "Старий ключ перестане працювати одразу
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your answers on the order form."
 msgstr "Ваші відповіді у формі замовлення."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid ":used of :seats servers used"
+msgstr "Використано серверів: :used з :seats"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "A change of these IP addresses is already waiting for approval."
+msgstr "Зміна цих IP-адрес уже очікує схвалення."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A check from a new IP address takes a free place by itself."
+msgstr "Перевірка з нової IP-адреси сама займає вільне місце."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "A check from a new server takes a free place by itself."
+msgstr "Перевірка з нового сервера сама займає вільне місце."
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Add %ip%"
+msgstr "Додати %ip%"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "All :count places are in use. Remove an IP address first."
+msgstr "Усі місця (:count) зайняті. Спершу видаліть IP-адресу."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Approve this IP change?"
+msgstr "Схвалити цю зміну IP?"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Bind on first check"
+msgstr "Прив'язати під час першої перевірки"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Changes need staff approval"
+msgstr "Зміни потребують схвалення персоналу"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Checks in the last :days days"
+msgstr "Перевірки за останні :days дн."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Clear the IP change count?"
+msgstr "Скинути лічильник змін IP?"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client IP Addresses"
+msgstr "IP-адреси клієнта"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used (no limit)"
+msgstr "Зміни IP клієнтом за останні 30 днів: :used (без ліміту)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used of :count"
+msgstr "Зміни IP клієнтом за останні 30 днів: :used з :count"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client changes wait until staff approve them."
+msgstr "Зміни клієнта чекають, доки персонал їх схвалить."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Empty: no limit (up to 20 IP addresses or ranges). With a limit, single IP addresses only."
+msgstr "Порожньо: без ліміту (до 20 IP-адрес або діапазонів). З лімітом лише окремі IP-адреси."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Empty: no limit. With a limit, the IP address is always checked, whatever Validate IP says."
+msgstr "Порожньо: без ліміту. З лімітом IP-адреса перевіряється завжди, незалежно від налаштування «Перевірка валідності IP»."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "How to check"
+msgstr "Як перевірити"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved"
+msgstr "Зміну IP-адреси схвалено"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved: %title%"
+msgstr "Зміну IP-адреси схвалено: %title%"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused"
+msgstr "Зміну IP-адреси відхилено"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused: %title%"
+msgstr "Зміну IP-адреси відхилено: %title%"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "IP address change requested for order #:id: :title"
+msgstr "Запит на зміну IP-адреси для замовлення №:id: :title"
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig
+msgid "IP changes left: :left of :count in 30 days."
+msgstr "Залишилося змін IP: :left з :count за 30 днів."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address added in the last 24 hours is free."
+msgstr "Залишилося змін IP: :left з :count за 30 днів. Видалення IP-адреси, доданої за останні 24 години, безкоштовне."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "IP changes per 30 days"
+msgstr "Змін IP за 30 днів"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Last check"
+msgstr "Остання перевірка"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Last checked"
+msgstr "Остання перевірка"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Let clients add and remove the IP addresses of their key within these limits."
+msgstr "Дозвольте клієнтам додавати й видаляти IP-адреси свого ключа в цих межах."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Let clients add and remove the IP addresses of their licence within these limits."
+msgstr "Дозвольте клієнтам додавати й видаляти IP-адреси своєї ліцензії в цих межах."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "No checks yet"
+msgstr "Перевірок поки немає"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Only our staff can change these IP addresses. Please open a ticket."
+msgstr "Ці IP-адреси можуть змінювати лише наші співробітники. Створіть тікет."
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Our staff approve each change first."
+msgstr "Наші співробітники спершу схвалюють кожну зміну."
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff approved your IP address change for %title%:"
+msgstr "Наші співробітники схвалили вашу зміну IP-адреси для %title%:"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff refused your IP address change for %title%:"
+msgstr "Наші співробітники відхилили вашу зміну IP-адреси для %title%:"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Reason (optional, sent to the client)"
+msgstr "Причина (необов'язково, надсилається клієнту)"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Reason: %reason%"
+msgstr "Причина: %reason%"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Refuse"
+msgstr "Відхилити"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Remove %ip%"
+msgstr "Видалити %ip%"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Remove this IP address?"
+msgstr "Видалити цю IP-адресу?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Removing an IP address or a reset. Empty: no limit. 0: only staff."
+msgstr "Видалення IP-адреси або скидання. Порожньо: без ліміту. 0: лише персонал."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Removing an IP address. Empty: no limit. 0: only staff."
+msgstr "Видалення IP-адреси. Порожньо: без ліміту. 0: лише персонал."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Servers (IP addresses)"
+msgstr "Сервери (IP-адреси)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "The client can make the full number of IP changes again."
+msgstr "Клієнт знову може зробити повну кількість змін IP."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "There is no IP address request waiting."
+msgstr "Немає запиту на зміну IP-адреси, що очікує розгляду."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is already on the list."
+msgstr "Ця IP-адреса вже є в списку."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is not on the list."
+msgstr "Цієї IP-адреси немає в списку."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This is not a single IP address: :ip"
+msgstr "Це не одна IP-адреса: :ip"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "This licence is not tied to IP addresses or domains."
+msgstr "Ця ліцензія не прив'язана до IP-адрес або доменів."
+
+#: src/modules/Serviceapikey/Service.php
+msgid "This plan has a server limit: add or remove one IP address at a time."
+msgstr "Цей тариф має ліміт серверів: додавайте або видаляйте по одній IP-адресі."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This plan has no server limit, so its IP addresses are not added or removed one at a time."
+msgstr "Цей тариф не має ліміту серверів, тому його IP-адреси не додаються й не видаляються по одній."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "This product has no server limit."
+msgstr "Цей продукт не має ліміту серверів."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "This uses one of your IP changes."
+msgstr "Це використовує одну з ваших змін IP."
+
+#: src/modules/Order/Upgrades.php
+msgid "To move to a plan with fewer servers, first remove the IP addresses it cannot hold."
+msgstr "Щоб перейти на тариф з меншою кількістю серверів, спершу видаліть IP-адреси, які він не вмістить."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: add :ip"
+msgstr "Очікує схвалення: додати :ip"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: remove :ip"
+msgstr "Очікує схвалення: видалити :ip"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: reset the license"
+msgstr "Очікує схвалення: скинути ліцензію"
+
+#: src/modules/Serviceapikey/Service.php
+msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
+msgstr "З лімітом серверів список містить окремі IP-адреси, а не діапазони: :ip"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Withdraw the request?"
+msgstr "Відкликати запит?"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "You have used your :count IP changes for 30 days. The next one is free on :date."
+msgstr "Ви використали всі зміни IP (:count) за 30 днів. Наступна буде безкоштовною :date."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was approved"
+msgstr "Вашу зміну IP-адреси для :title схвалено"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was refused"
+msgstr "Вашу зміну IP-адреси для :title відхилено"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Your software sends the key, its domain, install path and version to this address. The answer has \"valid\": true when the licence passes."
+msgstr "Ваше ПЗ надсилає на цю адресу ключ, його домен, шлях встановлення та версію. Відповідь містить \"valid\": true, якщо ліцензія дійсна."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address in the first 24 hours, before any check has used it, is free."
+msgstr "Залишилося змін IP: :left з :count за 30 днів. Видалення IP-адреси протягом перших 24 годин, поки її не використала жодна перевірка, безкоштовне."
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/IpSeats.php
+msgid "The change no longer fits, so it was refused and the client was told: :reason"
+msgstr "Зміна більше не підходить, тому її відхилено, а клієнта повідомлено: :reason"

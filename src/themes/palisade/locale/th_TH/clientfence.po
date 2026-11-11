@@ -22954,3 +22954,266 @@ msgstr "คีย์เก่าจะหยุดทำงานทันที
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your answers on the order form."
 msgstr "คำตอบของคุณในแบบฟอร์มสั่งซื้อ"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid ":used of :seats servers used"
+msgstr "ใช้แล้ว :used จาก :seats เซิร์ฟเวอร์"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "A change of these IP addresses is already waiting for approval."
+msgstr "การเปลี่ยนแปลงที่อยู่ IP เหล่านี้กำลังรออนุมัติอยู่แล้ว"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A check from a new IP address takes a free place by itself."
+msgstr "การตรวจสอบจากที่อยู่ IP ใหม่จะใช้ที่ว่างโดยอัตโนมัติ"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "A check from a new server takes a free place by itself."
+msgstr "การตรวจสอบจากเซิร์ฟเวอร์ใหม่จะใช้ที่ว่างโดยอัตโนมัติ"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Add %ip%"
+msgstr "เพิ่ม %ip%"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "All :count places are in use. Remove an IP address first."
+msgstr "ใช้ครบทั้ง :count ที่แล้ว โปรดลบที่อยู่ IP ก่อน"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Approve this IP change?"
+msgstr "อนุมัติการเปลี่ยน IP นี้หรือไม่?"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Bind on first check"
+msgstr "ผูกเมื่อตรวจสอบครั้งแรก"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Changes need staff approval"
+msgstr "การเปลี่ยนแปลงต้องได้รับอนุมัติจากเจ้าหน้าที่"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Checks in the last :days days"
+msgstr "การตรวจสอบใน :days วันที่ผ่านมา"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Clear the IP change count?"
+msgstr "ล้างจำนวนการเปลี่ยน IP หรือไม่?"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client IP Addresses"
+msgstr "ที่อยู่ IP ของลูกค้า"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used (no limit)"
+msgstr "การเปลี่ยน IP ของลูกค้าใน 30 วันที่ผ่านมา: :used (ไม่จำกัด)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used of :count"
+msgstr "การเปลี่ยน IP ของลูกค้าใน 30 วันที่ผ่านมา: :used จาก :count"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client changes wait until staff approve them."
+msgstr "การเปลี่ยนแปลงของลูกค้าจะรอจนกว่าเจ้าหน้าที่จะอนุมัติ"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Empty: no limit (up to 20 IP addresses or ranges). With a limit, single IP addresses only."
+msgstr "เว้นว่าง: ไม่จำกัด (สูงสุด 20 ที่อยู่ IP หรือช่วง) เมื่อมีขีดจำกัด ใช้ได้เฉพาะที่อยู่ IP เดี่ยว"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Empty: no limit. With a limit, the IP address is always checked, whatever Validate IP says."
+msgstr "เว้นว่าง: ไม่จำกัด เมื่อมีขีดจำกัด ที่อยู่ IP จะถูกตรวจสอบเสมอ ไม่ว่าการตั้งค่าตรวจสอบความถูกต้องของ IP จะเป็นอย่างไร"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "How to check"
+msgstr "วิธีตรวจสอบ"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved"
+msgstr "อนุมัติการเปลี่ยนที่อยู่ IP แล้ว"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved: %title%"
+msgstr "อนุมัติการเปลี่ยนที่อยู่ IP แล้ว: %title%"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused"
+msgstr "ปฏิเสธการเปลี่ยนที่อยู่ IP แล้ว"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused: %title%"
+msgstr "ปฏิเสธการเปลี่ยนที่อยู่ IP แล้ว: %title%"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "IP address change requested for order #:id: :title"
+msgstr "ขอเปลี่ยนที่อยู่ IP สำหรับคำสั่งซื้อ #:id: :title"
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig
+msgid "IP changes left: :left of :count in 30 days."
+msgstr "การเปลี่ยน IP ที่เหลือ: :left จาก :count ใน 30 วัน"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address added in the last 24 hours is free."
+msgstr "การเปลี่ยน IP ที่เหลือ: :left จาก :count ใน 30 วัน การลบที่อยู่ IP ที่เพิ่มภายใน 24 ชั่วโมงที่ผ่านมาไม่เสียสิทธิ์"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "IP changes per 30 days"
+msgstr "การเปลี่ยน IP ต่อ 30 วัน"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Last check"
+msgstr "ตรวจสอบล่าสุด"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Last checked"
+msgstr "ตรวจสอบล่าสุดเมื่อ"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Let clients add and remove the IP addresses of their key within these limits."
+msgstr "ให้ลูกค้าเพิ่มและลบที่อยู่ IP ของคีย์ได้ภายในขีดจำกัดเหล่านี้"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Let clients add and remove the IP addresses of their licence within these limits."
+msgstr "ให้ลูกค้าเพิ่มและลบที่อยู่ IP ของใบอนุญาตได้ภายในขีดจำกัดเหล่านี้"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "No checks yet"
+msgstr "ยังไม่มีการตรวจสอบ"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Only our staff can change these IP addresses. Please open a ticket."
+msgstr "เฉพาะเจ้าหน้าที่ของเราเท่านั้นที่เปลี่ยนที่อยู่ IP เหล่านี้ได้ โปรดเปิดทิกเก็ต"
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Our staff approve each change first."
+msgstr "เจ้าหน้าที่ของเราจะอนุมัติทุกการเปลี่ยนแปลงก่อน"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff approved your IP address change for %title%:"
+msgstr "เจ้าหน้าที่ของเราอนุมัติการเปลี่ยนที่อยู่ IP ของคุณสำหรับ %title% แล้ว:"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff refused your IP address change for %title%:"
+msgstr "เจ้าหน้าที่ของเราปฏิเสธการเปลี่ยนที่อยู่ IP ของคุณสำหรับ %title%:"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Reason (optional, sent to the client)"
+msgstr "เหตุผล (ไม่บังคับ ส่งให้ลูกค้า)"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Reason: %reason%"
+msgstr "เหตุผล: %reason%"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Refuse"
+msgstr "ปฏิเสธ"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Remove %ip%"
+msgstr "ลบ %ip%"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Remove this IP address?"
+msgstr "ลบที่อยู่ IP นี้หรือไม่?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Removing an IP address or a reset. Empty: no limit. 0: only staff."
+msgstr "การลบที่อยู่ IP หรือการรีเซ็ต เว้นว่าง: ไม่จำกัด 0: เฉพาะเจ้าหน้าที่"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Removing an IP address. Empty: no limit. 0: only staff."
+msgstr "การลบที่อยู่ IP เว้นว่าง: ไม่จำกัด 0: เฉพาะเจ้าหน้าที่"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Servers (IP addresses)"
+msgstr "เซิร์ฟเวอร์ (ที่อยู่ IP)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "The client can make the full number of IP changes again."
+msgstr "ลูกค้าเปลี่ยน IP ได้เต็มจำนวนอีกครั้ง"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "There is no IP address request waiting."
+msgstr "ไม่มีคำขอที่อยู่ IP ที่รออยู่"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is already on the list."
+msgstr "ที่อยู่ IP นี้อยู่ในรายการแล้ว"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is not on the list."
+msgstr "ที่อยู่ IP นี้ไม่อยู่ในรายการ"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This is not a single IP address: :ip"
+msgstr "นี่ไม่ใช่ที่อยู่ IP เดี่ยว: :ip"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "This licence is not tied to IP addresses or domains."
+msgstr "ใบอนุญาตนี้ไม่ได้ผูกกับที่อยู่ IP หรือโดเมน"
+
+#: src/modules/Serviceapikey/Service.php
+msgid "This plan has a server limit: add or remove one IP address at a time."
+msgstr "แพ็กเกจนี้มีขีดจำกัดเซิร์ฟเวอร์: เพิ่มหรือลบที่อยู่ IP ทีละรายการ"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This plan has no server limit, so its IP addresses are not added or removed one at a time."
+msgstr "แพ็กเกจนี้ไม่มีขีดจำกัดเซิร์ฟเวอร์ จึงไม่มีการเพิ่มหรือลบที่อยู่ IP ทีละรายการ"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "This product has no server limit."
+msgstr "ผลิตภัณฑ์นี้ไม่มีขีดจำกัดเซิร์ฟเวอร์"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "This uses one of your IP changes."
+msgstr "การดำเนินการนี้ใช้สิทธิ์เปลี่ยน IP ของคุณ 1 ครั้ง"
+
+#: src/modules/Order/Upgrades.php
+msgid "To move to a plan with fewer servers, first remove the IP addresses it cannot hold."
+msgstr "หากต้องการย้ายไปแพ็กเกจที่มีเซิร์ฟเวอร์น้อยกว่า โปรดลบที่อยู่ IP ที่แพ็กเกจนั้นรองรับไม่ได้ก่อน"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: add :ip"
+msgstr "รออนุมัติ: เพิ่ม :ip"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: remove :ip"
+msgstr "รออนุมัติ: ลบ :ip"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: reset the license"
+msgstr "รออนุมัติ: รีเซ็ตใบอนุญาต"
+
+#: src/modules/Serviceapikey/Service.php
+msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
+msgstr "เมื่อมีขีดจำกัดเซิร์ฟเวอร์ รายการจะมีเฉพาะที่อยู่ IP เดี่ยว ไม่ใช่ช่วง: :ip"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Withdraw the request?"
+msgstr "ถอนคำขอหรือไม่?"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "You have used your :count IP changes for 30 days. The next one is free on :date."
+msgstr "คุณใช้สิทธิ์เปลี่ยน IP ครบ :count ครั้งใน 30 วันแล้ว ครั้งถัดไปฟรีในวันที่ :date"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was approved"
+msgstr "การเปลี่ยนที่อยู่ IP ของคุณสำหรับ :title ได้รับการอนุมัติแล้ว"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was refused"
+msgstr "การเปลี่ยนที่อยู่ IP ของคุณสำหรับ :title ถูกปฏิเสธ"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Your software sends the key, its domain, install path and version to this address. The answer has \"valid\": true when the licence passes."
+msgstr "ซอฟต์แวร์ของคุณส่งคีย์ โดเมนของคีย์ เส้นทางติดตั้ง และเวอร์ชันมายังที่อยู่นี้ คำตอบจะมี \"valid\": true เมื่อใบอนุญาตผ่าน"
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address in the first 24 hours, before any check has used it, is free."
+msgstr "การเปลี่ยน IP ที่เหลือ: :left จาก :count ใน 30 วัน การลบที่อยู่ IP ภายใน 24 ชั่วโมงแรก ก่อนที่จะมีการตรวจสอบใดใช้งาน ไม่เสียสิทธิ์"
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/IpSeats.php
+msgid "The change no longer fits, so it was refused and the client was told: :reason"
+msgstr "การเปลี่ยนแปลงนี้ไม่พอดีกับขีดจำกัดอีกต่อไป จึงถูกปฏิเสธและแจ้งลูกค้าแล้ว: :reason"

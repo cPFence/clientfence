@@ -77,6 +77,32 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: clears the client's IP change count of a licence (order_id; IpSeats, CF-56).
+     */
+    public function ip_changes_clear($data): bool
+    {
+        $this->checkPermissions('servicelicense', 'manage');
+
+        return $this->getService()->ipAction($this->_getService($data), 'clear');
+    }
+
+    /** ClientFence: applies the client's IP change request (order_id); false when it could no longer be applied and was refused. */
+    public function ip_request_approve($data): bool
+    {
+        $this->checkPermissions('servicelicense', 'manage');
+
+        return $this->getService()->ipAction($this->_getService($data), 'approve');
+    }
+
+    /** ClientFence: refuses the client's IP change request (order_id, reason: optional, sent to the client). */
+    public function ip_request_refuse($data): bool
+    {
+        $this->checkPermissions('servicelicense', 'manage');
+
+        return $this->getService()->ipAction($this->_getService($data), 'refuse', '', (string) ($data['reason'] ?? ''));
+    }
+
+    /**
      * ClientFence: a licence's latest checks, newest first (CheckLog).
      *
      * @return list<array<string, string>>

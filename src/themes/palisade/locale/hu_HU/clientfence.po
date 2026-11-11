@@ -25129,3 +25129,266 @@ msgstr "A régi kulcs azonnal megszűnik működni."
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your answers on the order form."
 msgstr "Az Ön válaszai a megrendelőlapon."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid ":used of :seats servers used"
+msgstr "Használt szerverek: :used / :seats"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "A change of these IP addresses is already waiting for approval."
+msgstr "E IP-címek módosítása már jóváhagyásra vár."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A check from a new IP address takes a free place by itself."
+msgstr "Egy új IP-címről érkező ellenőrzés automatikusan elfoglal egy szabad helyet."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "A check from a new server takes a free place by itself."
+msgstr "Egy új szerverről érkező ellenőrzés automatikusan elfoglal egy szabad helyet."
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Add %ip%"
+msgstr "%ip% hozzáadása"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "All :count places are in use. Remove an IP address first."
+msgstr "Mind a(z) :count hely foglalt. Előbb távolítson el egy IP-címet."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Approve this IP change?"
+msgstr "Jóváhagyja ezt az IP-módosítást?"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Bind on first check"
+msgstr "Kötés az első ellenőrzéskor"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Changes need staff approval"
+msgstr "A módosításokhoz a munkatársak jóváhagyása kell"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Checks in the last :days days"
+msgstr "Ellenőrzések az elmúlt :days napban"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Clear the IP change count?"
+msgstr "Törli az IP-módosítások számát?"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client IP Addresses"
+msgstr "Az ügyfél IP-címei"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used (no limit)"
+msgstr "Az ügyfél IP-módosításai az elmúlt 30 napban: :used (korlát nélkül)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used of :count"
+msgstr "Az ügyfél IP-módosításai az elmúlt 30 napban: :used / :count"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client changes wait until staff approve them."
+msgstr "Az ügyfél módosításai addig várnak, amíg a munkatársak jóvá nem hagyják őket."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Empty: no limit (up to 20 IP addresses or ranges). With a limit, single IP addresses only."
+msgstr "Üres: nincs korlát (legfeljebb 20 IP-cím vagy tartomány). Korláttal csak egyes IP-címek."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Empty: no limit. With a limit, the IP address is always checked, whatever Validate IP says."
+msgstr "Üres: nincs korlát. Korláttal az IP-címet mindig ellenőrzi, függetlenül az IP-cím ellenőrzése beállítástól."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "How to check"
+msgstr "Az ellenőrzés módja"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved"
+msgstr "IP-cím módosítása jóváhagyva"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved: %title%"
+msgstr "IP-cím módosítása jóváhagyva: %title%"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused"
+msgstr "IP-cím módosítása elutasítva"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused: %title%"
+msgstr "IP-cím módosítása elutasítva: %title%"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "IP address change requested for order #:id: :title"
+msgstr "IP-cím módosítását kérték a(z) #:id megrendeléshez: :title"
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig
+msgid "IP changes left: :left of :count in 30 days."
+msgstr "Hátralévő IP-módosítások: :left / :count 30 napon belül."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address added in the last 24 hours is free."
+msgstr "Hátralévő IP-módosítások: :left / :count 30 napon belül. Az elmúlt 24 órában hozzáadott IP-cím eltávolítása ingyenes."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "IP changes per 30 days"
+msgstr "IP-módosítások 30 naponként"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Last check"
+msgstr "Utolsó ellenőrzés"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Last checked"
+msgstr "Utoljára ellenőrizve"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Let clients add and remove the IP addresses of their key within these limits."
+msgstr "Engedje meg az ügyfeleknek, hogy e korlátokon belül hozzáadják és eltávolítsák a kulcsuk IP-címeit."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Let clients add and remove the IP addresses of their licence within these limits."
+msgstr "Engedje meg az ügyfeleknek, hogy e korlátokon belül hozzáadják és eltávolítsák a licencük IP-címeit."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "No checks yet"
+msgstr "Még nincs ellenőrzés"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Only our staff can change these IP addresses. Please open a ticket."
+msgstr "Ezeket az IP-címeket csak a munkatársaink módosíthatják. Nyisson jegyet."
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Our staff approve each change first."
+msgstr "Munkatársaink először minden módosítást jóváhagynak."
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff approved your IP address change for %title%:"
+msgstr "Munkatársaink jóváhagyták az IP-cím módosítását a(z) %title% esetében:"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff refused your IP address change for %title%:"
+msgstr "Munkatársaink elutasították az IP-cím módosítását a(z) %title% esetében:"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Reason (optional, sent to the client)"
+msgstr "Ok (nem kötelező, elküldjük az ügyfélnek)"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Reason: %reason%"
+msgstr "Ok: %reason%"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Refuse"
+msgstr "Elutasítás"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Remove %ip%"
+msgstr "%ip% eltávolítása"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Remove this IP address?"
+msgstr "Eltávolítja ezt az IP-címet?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Removing an IP address or a reset. Empty: no limit. 0: only staff."
+msgstr "IP-cím eltávolítása vagy visszaállítás. Üres: nincs korlát. 0: csak a munkatársak."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Removing an IP address. Empty: no limit. 0: only staff."
+msgstr "IP-cím eltávolítása. Üres: nincs korlát. 0: csak a munkatársak."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Servers (IP addresses)"
+msgstr "Szerverek (IP-címek)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "The client can make the full number of IP changes again."
+msgstr "Az ügyfél újra elvégezheti a teljes számú IP-módosítást."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "There is no IP address request waiting."
+msgstr "Nincs jóváhagyásra váró IP-címkérelem."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is already on the list."
+msgstr "Ez az IP-cím már szerepel a listán."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is not on the list."
+msgstr "Ez az IP-cím nem szerepel a listán."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This is not a single IP address: :ip"
+msgstr "Ez nem egyetlen IP-cím: :ip"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "This licence is not tied to IP addresses or domains."
+msgstr "Ez a licenc nincs IP-címhez vagy domainhez kötve."
+
+#: src/modules/Serviceapikey/Service.php
+msgid "This plan has a server limit: add or remove one IP address at a time."
+msgstr "Ennek a csomagnak szerverkorlátja van: egyszerre egy IP-címet adjon hozzá vagy távolítson el."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This plan has no server limit, so its IP addresses are not added or removed one at a time."
+msgstr "Ennek a csomagnak nincs szerverkorlátja, ezért az IP-címeit nem egyesével adják hozzá vagy távolítják el."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "This product has no server limit."
+msgstr "Ennek a terméknek nincs szerverkorlátja."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "This uses one of your IP changes."
+msgstr "Ez az egyik IP-módosítását használja el."
+
+#: src/modules/Order/Upgrades.php
+msgid "To move to a plan with fewer servers, first remove the IP addresses it cannot hold."
+msgstr "Kevesebb szerveres csomagra váltáshoz előbb távolítsa el azokat az IP-címeket, amelyeket nem tud tárolni."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: add :ip"
+msgstr "Jóváhagyásra vár: :ip hozzáadása"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: remove :ip"
+msgstr "Jóváhagyásra vár: :ip eltávolítása"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: reset the license"
+msgstr "Jóváhagyásra vár: a licenc visszaállítása"
+
+#: src/modules/Serviceapikey/Service.php
+msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
+msgstr "Szerverkorláttal a lista egyes IP-címeket tartalmaz, nem tartományokat: :ip"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Withdraw the request?"
+msgstr "Visszavonja a kérelmet?"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "You have used your :count IP changes for 30 days. The next one is free on :date."
+msgstr "Felhasználta a 30 napra járó mind a(z) :count IP-módosítást. A következő ekkor ingyenes: :date."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was approved"
+msgstr "A(z) :title IP-címének módosítását jóváhagytuk"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was refused"
+msgstr "A(z) :title IP-címének módosítását elutasítottuk"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Your software sends the key, its domain, install path and version to this address. The answer has \"valid\": true when the licence passes."
+msgstr "A szoftvere erre a címre küldi a kulcsot, annak domainjét, a telepítési útvonalat és a verziót. A válasz \"valid\": true értéket tartalmaz, ha a licenc érvényes."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address in the first 24 hours, before any check has used it, is free."
+msgstr "Hátralévő IP-módosítások: :left / :count 30 napon belül. Az IP-cím eltávolítása az első 24 órában, mielőtt bármelyik ellenőrzés használta volna, ingyenes."
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/IpSeats.php
+msgid "The change no longer fits, so it was refused and the client was told: :reason"
+msgstr "A módosítás már nem fér bele, ezért elutasítottuk, és értesítettük az ügyfelet: :reason"

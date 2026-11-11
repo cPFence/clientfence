@@ -23226,3 +23226,266 @@ msgstr "Eski kalit darhol ishlamay qoladi."
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your answers on the order form."
 msgstr "Buyurtma shaklidagi javoblaringiz."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid ":used of :seats servers used"
+msgstr ":seats ta serverdan :used tasi band"
+
+#: src/library/ClientFence/IpSeats.php
+msgid "A change of these IP addresses is already waiting for approval."
+msgstr "Bu IP manzillarni o'zgartirish allaqachon tasdiqlanishini kutmoqda."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A check from a new IP address takes a free place by itself."
+msgstr "Yangi IP manzildan kelgan tekshiruv bo'sh joyni o'zi egallaydi."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "A check from a new server takes a free place by itself."
+msgstr "Yangi serverdan kelgan tekshiruv bo'sh joyni o'zi egallaydi."
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Add %ip%"
+msgstr "%ip% qo'shish"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "All :count places are in use. Remove an IP address first."
+msgstr "Barcha :count ta joy band. Avval bitta IP manzilni o'chiring."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Approve this IP change?"
+msgstr "Bu IP o'zgarishi tasdiqlansinmi?"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Bind on first check"
+msgstr "Birinchi tekshiruvda bog'lash"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Changes need staff approval"
+msgstr "O'zgarishlar xodimlar tasdig'ini talab qiladi"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Checks in the last :days days"
+msgstr "So'nggi :days kundagi tekshiruvlar"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Clear the IP change count?"
+msgstr "IP o'zgarishlari hisobi tozalansinmi?"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client IP Addresses"
+msgstr "Mijozning IP manzillari"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used (no limit)"
+msgstr "Mijozning so'nggi 30 kundagi IP o'zgarishlari: :used (cheklovsiz)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used of :count"
+msgstr "Mijozning so'nggi 30 kundagi IP o'zgarishlari: :used / :count"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client changes wait until staff approve them."
+msgstr "Mijoz o'zgarishlari xodimlar tasdiqlaguncha kutadi."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Empty: no limit (up to 20 IP addresses or ranges). With a limit, single IP addresses only."
+msgstr "Bo'sh: cheklov yo'q (20 tagacha IP manzil yoki diapazon). Cheklov bilan faqat yakka IP manzillar."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Empty: no limit. With a limit, the IP address is always checked, whatever Validate IP says."
+msgstr "Bo'sh: cheklov yo'q. Cheklov bilan IP manzil har doim tekshiriladi, IP-ni tasdiqlang sozlamasidan qat'i nazar."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "How to check"
+msgstr "Qanday tekshirish"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved"
+msgstr "IP manzil o'zgarishi tasdiqlandi"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved: %title%"
+msgstr "IP manzil o'zgarishi tasdiqlandi: %title%"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused"
+msgstr "IP manzil o'zgarishi rad etildi"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused: %title%"
+msgstr "IP manzil o'zgarishi rad etildi: %title%"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "IP address change requested for order #:id: :title"
+msgstr "#:id buyurtma uchun IP manzil o'zgarishi so'raldi: :title"
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig
+msgid "IP changes left: :left of :count in 30 days."
+msgstr "Qolgan IP o'zgarishlari: 30 kunda :left / :count."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address added in the last 24 hours is free."
+msgstr "Qolgan IP o'zgarishlari: 30 kunda :left / :count. So'nggi 24 soatda qo'shilgan IP manzilni o'chirish bepul."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "IP changes per 30 days"
+msgstr "30 kunda IP o'zgarishlari"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Last check"
+msgstr "So'nggi tekshiruv"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Last checked"
+msgstr "Oxirgi tekshirilgan"
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Let clients add and remove the IP addresses of their key within these limits."
+msgstr "Mijozlarga kalitining IP manzillarini shu chegaralarda qo'shish va o'chirishga ruxsat bering."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Let clients add and remove the IP addresses of their licence within these limits."
+msgstr "Mijozlarga litsenziyasining IP manzillarini shu chegaralarda qo'shish va o'chirishga ruxsat bering."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "No checks yet"
+msgstr "Hali tekshiruvlar yo'q"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Only our staff can change these IP addresses. Please open a ticket."
+msgstr "Bu IP manzillarni faqat xodimlarimiz o'zgartira oladi. Iltimos, tiket oching."
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Our staff approve each change first."
+msgstr "Xodimlarimiz har bir o'zgarishni avval tasdiqlaydi."
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff approved your IP address change for %title%:"
+msgstr "Xodimlarimiz %title% uchun IP manzil o'zgarishingizni tasdiqladi:"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff refused your IP address change for %title%:"
+msgstr "Xodimlarimiz %title% uchun IP manzil o'zgarishingizni rad etdi:"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Reason (optional, sent to the client)"
+msgstr "Sabab (ixtiyoriy, mijozga yuboriladi)"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Reason: %reason%"
+msgstr "Sabab: %reason%"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Refuse"
+msgstr "Rad etish"
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Remove %ip%"
+msgstr "%ip% o'chirish"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Remove this IP address?"
+msgstr "Bu IP manzil o'chirilsinmi?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Removing an IP address or a reset. Empty: no limit. 0: only staff."
+msgstr "IP manzilni o'chirish yoki tiklash. Bo'sh: cheklov yo'q. 0: faqat xodimlar."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Removing an IP address. Empty: no limit. 0: only staff."
+msgstr "IP manzilni o'chirish. Bo'sh: cheklov yo'q. 0: faqat xodimlar."
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Servers (IP addresses)"
+msgstr "Serverlar (IP manzillar)"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "The client can make the full number of IP changes again."
+msgstr "Mijoz yana IP o'zgarishlarining to'liq sonini bajara oladi."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "There is no IP address request waiting."
+msgstr "Kutayotgan IP manzil so'rovi yo'q."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is already on the list."
+msgstr "Bu IP manzil ro'yxatda allaqachon bor."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is not on the list."
+msgstr "Bu IP manzil ro'yxatda yo'q."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This is not a single IP address: :ip"
+msgstr "Bu yakka IP manzil emas: :ip"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "This licence is not tied to IP addresses or domains."
+msgstr "Bu litsenziya IP manzillarga yoki domenlarga bog'lanmagan."
+
+#: src/modules/Serviceapikey/Service.php
+msgid "This plan has a server limit: add or remove one IP address at a time."
+msgstr "Bu tarifda serverlar chegarasi bor: IP manzillarni bittadan qo'shing yoki o'chiring."
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This plan has no server limit, so its IP addresses are not added or removed one at a time."
+msgstr "Bu tarifda serverlar chegarasi yo'q, shuning uchun uning IP manzillari bittalab qo'shilmaydi yoki o'chirilmaydi."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "This product has no server limit."
+msgstr "Bu mahsulotda serverlar chegarasi yo'q."
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "This uses one of your IP changes."
+msgstr "Bu IP o'zgarishlaringizdan birini sarflaydi."
+
+#: src/modules/Order/Upgrades.php
+msgid "To move to a plan with fewer servers, first remove the IP addresses it cannot hold."
+msgstr "Serverlari kamroq tarifga o'tish uchun avval sig'maydigan IP manzillarni o'chiring."
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: add :ip"
+msgstr "Tasdiqlanishini kutmoqda: :ip qo'shish"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: remove :ip"
+msgstr "Tasdiqlanishini kutmoqda: :ip o'chirish"
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Waiting for approval: reset the license"
+msgstr "Tasdiqlanishini kutmoqda: litsenziyani tiklash"
+
+#: src/modules/Serviceapikey/Service.php
+msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
+msgstr "Serverlar chegarasi bilan ro'yxatda diapazonlar emas, yakka IP manzillar turadi: :ip"
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Withdraw the request?"
+msgstr "So'rov qaytarib olinsinmi?"
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "You have used your :count IP changes for 30 days. The next one is free on :date."
+msgstr "30 kunlik :count ta IP o'zgarishining hammasini ishlatdingiz. Keyingisi :date kuni bepul."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was approved"
+msgstr ":title uchun IP manzil o'zgarishingiz tasdiqlandi"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was refused"
+msgstr ":title uchun IP manzil o'zgarishingiz rad etildi"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Your software sends the key, its domain, install path and version to this address. The answer has \"valid\": true when the licence passes."
+msgstr "Dasturingiz kalitni, uning domenini, o'rnatish yo'lini va versiyani shu manzilga yuboradi. Litsenziya o'tsa, javobda \"valid\": true bo'ladi."
+
+# To translate (tools/locales.py starter).
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address in the first 24 hours, before any check has used it, is free."
+msgstr "Qolgan IP o'zgarishlari: 30 kunda :left / :count. IP manzilni dastlabki 24 soat ichida, birorta tekshiruv uni ishlatmasdan oldin, o'chirish bepul."
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/IpSeats.php
+msgid "The change no longer fits, so it was refused and the client was told: :reason"
+msgstr "O'zgarish endi sig'maydi, shuning uchun rad etildi va mijozga xabar berildi: :reason"

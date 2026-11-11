@@ -6,11 +6,13 @@
         <svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg>{{ 'Copy license key'|trans }}
     </button>
 {% elseif part == 'manage' %}
-    <a class="list-row" {{ fb_api_link({href: 'servicelicense/reset'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'License was reset'|trans}) }}>
+    {# A reset is one IP change and may wait for staff approval (IpSeats, CF-56): the page reloads to show either. #}
+    {% set seats = service.seats %}
+    <a class="list-row" {{ fb_api_link({href: 'servicelicense/reset'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans, content: seats.approval ? 'Our staff approve each change first.'|trans : ''}, reload: true}) }}>
         <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg></span>
         <span class="min-w-0">
             <span class="list-row-title d-block">{{ 'Reset License'|trans }}</span>
-            <span class="list-row-meta d-block">{{ 'Moved servers? Clear the saved IPs and domains.'|trans }}</span>
+            <span class="list-row-meta d-block">{% if seats.changes is same as(0) %}{{ 'Only our staff can change these IP addresses. Please open a ticket.'|trans }}{% elseif seats.changes is not null %}{{ 'IP changes left: :left of :count in 30 days.'|trans({':left': seats.changes_left, ':count': seats.changes}) }}{% else %}{{ 'Moved servers? Clear the saved IPs and domains.'|trans }}{% endif %}</span>
         </span>
         <svg class="icon icon-sm bf-chev" aria-hidden="true"><use href="#chevron-right"/></svg>
     </a>

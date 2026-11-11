@@ -202,6 +202,7 @@ final class Notifications
             // Staff: problems.
             'action_failed' => __trans('An action failed on order #:id: :title', $v),
             'cancel_request' => __trans('Cancellation requested for order #:id: :title', $v),
+            'ip_request' => __trans('IP address change requested for order #:id: :title', $v),
             'payment_failed' => __trans('A payment could not be processed (transaction #:id)', $v),
             'email_failed' => __trans('Emails could not be sent: check the email settings', $v),
             'mail_import_failed' => __trans('Email import cannot read the mailbox of :helpdesk', $v),
@@ -224,6 +225,8 @@ final class Notifications
             'network_issue' => __trans('Network issue: :title', $v),
             'upgrade_done' => __trans(':title was changed', $v),
             'credit_added' => __trans(':amount was added to your account credit', $v),
+            'ip_request_approved' => __trans('Your IP address change for :title was approved', $v),
+            'ip_request_refused' => __trans('Your IP address change for :title was refused', $v),
             default => __trans('Notification'),
         };
     }

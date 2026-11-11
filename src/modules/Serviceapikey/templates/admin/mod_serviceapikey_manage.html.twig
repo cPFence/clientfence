@@ -30,6 +30,9 @@
     </div>
 </div>
 
+{# ClientFence core patch: the client IP addresses, their changes and a request waiting for approval (IpSeats, CF-56). #}
+{% if service.seats is defined %}{{ include('mod_order_ip_seats.html.twig', { 'seats': service.seats, 'order': order, 'api': 'serviceapikey' }) }}{% endif %}
+
 <div class="card-body border-top">
     <form method="post" action="{{ 'serviceapikey/update_ips'|api_url }}" {{ fb_api_form({message: 'Saved'|trans}) }}>
         <h3 class="card-title mb-1">{{ 'Allowed IPs'|trans }}</h3>

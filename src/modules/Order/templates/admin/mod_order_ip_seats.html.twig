@@ -1,0 +1,58 @@
+{# ClientFence: the client IP addresses of a licence or API key on its order tab (IpSeats, CF-56): servers used, the
+   list with its dates, the client's IP changes with Clear, and the request waiting for approval. `seats` (the
+   service's seats), `order`, `api` (servicelicense or serviceapikey). Staff edit the list in the form below it. #}
+{% set p = seats.pending %}
+<div class="card-body border-top">
+    <div class="mb-3">
+        <h3 class="card-title mb-1">{{ 'Client IP Addresses'|trans }}</h3>
+        <p class="text-secondary mb-0">{% if seats.ip_seats %}{{ ':used of :seats servers used'|trans({':used': seats.ips|length, ':seats': seats.ip_seats}) }}{% else %}{{ 'This product has no server limit.'|trans }}{% endif %}</p>
+    </div>
+
+    {% if p %}
+        {% set ip = '<bdi dir="ltr">' ~ p.ip|e ~ '</bdi>' %}
+        <div class="alert alert-warning">
+            <p class="mb-2">
+                {% if p.type == 'add' %}{{ 'Waiting for approval: add :ip'|trans_html({}, {':ip': ip}) }}{% elseif p.type == 'remove' %}{{ 'Waiting for approval: remove :ip'|trans_html({}, {':ip': ip}) }}{% else %}{{ 'Waiting for approval: reset the license'|trans }}{% endif %}
+                <span class="text-secondary">(<bdi>{{ p.at|format_datetime }}</bdi>)</span>
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-success" {{ fb_api_link({href: (api ~ '/ip_request_approve')|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Approve this IP change?'|trans}, reload: true}) }}>{{ 'Approve'|trans }}</a>
+                <form class="d-flex flex-wrap gap-2" method="post" action="{{ (api ~ '/ip_request_refuse')|api_url }}" {{ fb_api_form({reload: true}) }}>
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <input type="text" class="form-control w-auto" name="reason" maxlength="500" placeholder="{{ 'Reason (optional, sent to the client)'|trans }}" aria-label="{{ 'Reason'|trans }}">
+                    <button class="btn btn-outline-danger" type="submit">{{ 'Refuse'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if seats.ips %}
+        <div class="table-responsive mb-3">
+            <table class="table card-table table-vcenter table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ 'IP'|trans }}</th>
+                        <th>{{ 'Added'|trans }}</th>
+                        {% if api == 'servicelicense' %}<th>{{ 'Last check'|trans }}</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in seats.ips %}
+                        <tr>
+                            <td class="font-monospace text-nowrap" dir="ltr">{{ row.ip }}</td>
+                            <td class="text-nowrap">{{ row.added_at ? row.added_at|format_datetime : '-' }}</td>
+                            {% if api == 'servicelicense' %}<td class="text-nowrap">{{ row.last_check ? row.last_check|format_datetime : 'Never'|trans }}</td>{% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <div class="d-flex flex-wrap align-items-center gap-2">
+        <span>{{ seats.changes is null ? 'Client IP changes in the last 30 days: :used (no limit)'|trans({':used': seats.changes_used}) : 'Client IP changes in the last 30 days: :used of :count'|trans({':used': seats.changes_used, ':count': seats.changes}) }}</span>
+        {% if seats.changes_used %}
+            <a class="btn btn-outline-secondary btn-sm" {{ fb_api_link({href: (api ~ '/ip_changes_clear')|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Clear the IP change count?'|trans, content: 'The client can make the full number of IP changes again.'|trans}, reload: true}) }}>{{ 'Clear'|trans }}</a>
+        {% endif %}
+    </div>
+</div>

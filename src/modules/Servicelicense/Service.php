@@ -17,6 +17,7 @@ use ClientFence\Mod\Product\Entity\Product;
 use ClientFence\Mod\Servicelicense\Entity\ServiceLicense;
 use ClientFence\Mod\Servicelicense\Repository\ServiceLicenseRepository;
 use ClientFence\InjectionAwareInterface;
+use ClientFence\IpSeats;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
@@ -279,6 +280,73 @@ class Service implements InjectionAwareInterface
         return in_array($value, $defined);
     }
 
+    /**
+     * ClientFence core patch: with "Servers (IP addresses)" on the product, the licence's seat list
+     * decides (IpSeats), whatever validate_ip says, and a new IP may take a free place; without, isValidIp().
+     */
+    public function isAllowedIp(ServiceLicense $model, string $ip): bool
+    {
+        $seats = $this->ipSeats($model);
+        if (!$seats->limited()) {
+            return $this->isValidIp($model, $ip);
+        }
+        $changed = $seats->check($ip, time());
+        if (!$changed) {
+            return $changed !== null;
+        }
+
+        // A bind is saved under the order's lock, on the list and plan as they are now.
+        return IpSeats::locked($this->di, $this->di['mod_service']('order')->getServiceOrder($model), $model, function () use ($model, $ip): bool {
+            $seats = $this->ipSeats($model);
+            $changed = $seats->check($ip, time());
+            if ($changed) {
+                $this->ipSave($model, $seats);
+            }
+
+            return $changed !== null;
+        });
+    }
+
+    /** ClientFence: the IP seats of the licence, with the rules of its product as it is now (IpSeats). */
+    public function ipSeats(ServiceLicense $model): IpSeats
+    {
+        return IpSeats::of($this->productConfig($model), true, $model->getAllowedIps(), $model->getConfig());
+    }
+
+    public function productConfig(ServiceLicense $model): array
+    {
+        return IpSeats::productConfig($this->di, $this->di['mod_service']('order')->getServiceOrder($model));
+    }
+
+    /**
+     * ClientFence: an IP seat action (IpSeats::act()): the client's add, remove, reset or withdraw,
+     * staff's approve, refuse or clear; saved, then written to the order's history (and told).
+     */
+    public function ipAction(ServiceLicense $model, string $action, string $ip = '', string $reason = ''): bool
+    {
+        $order = $this->di['mod_service']('order')->getServiceOrder($model);
+        $event = IpSeats::locked($this->di, $order, $model, function () use ($model, $order, $action, $ip, $reason): array {
+            $seats = $this->ipSeats($model);
+            $event = $seats->act($action, $ip, $reason, time());
+            if ($event['done'] && $event['type'] === IpSeats::RESET) {
+                $this->reset($model);
+            }
+            $this->ipSave($model, $seats);
+            IpSeats::tell($this->di, $order, $event);
+
+            return $event;
+        });
+
+        return IpSeats::approved($action, $event);
+    }
+
+    private function ipSave(ServiceLicense $model, IpSeats $seats): void
+    {
+        $model->setIps(json_encode($seats->ips));
+        $model->setConfig($seats->config($model->getConfig()));
+        $this->di['em']->flush();
+    }
+
     public function isValidVersion(ServiceLicense $model, $value)
     {
         $defined = $model->getAllowedVersions();
@@ -387,6 +455,17 @@ class Service implements InjectionAwareInterface
         if ($identity instanceof \Model_Admin) {
             $result['plugin'] = $model->getPlugin();
         }
+        // ClientFence core patch: the IP seats and recent checks of the service page and the order's licence tab (CF-56).
+        if ($deep) {
+            $id = (int) $model->getId();
+            $days = min(30, CheckLog::days($this->di) ?: 30);
+            $stats = CheckLog::stats($this->di, $id, date('Y-m-d H:i:s', time() - $days * 86400));
+            $seats = $this->ipSeats($model)->view(time());
+            foreach ($seats['ips'] as $i => $row) {
+                $seats['ips'][$i]['last_check'] = $stats['last'][$row['ip']] ?? null;
+            }
+            $result += ['seats' => $seats, 'recent_checks' => CheckLog::recent($this->di, $id, 10), 'checks' => $stats['count'], 'checks_days' => $days];
+        }
 
         return $result;
     }
@@ -448,8 +527,14 @@ class Service implements InjectionAwareInterface
             if (isset($data[$key])) {
                 $array = explode(PHP_EOL, $data[$key]);
                 $array = array_map(trim(...), $array);
-                $array = array_diff($array, ['']);
-                $json = json_encode(array_values($array));
+                $array = array_values(array_diff($array, ['']));
+                $json = json_encode($array);
+                if ($key === 'ips') {
+                    // ClientFence core patch: staff set the list freely; it keeps each IP's added date (IpSeats).
+                    $seats = IpSeats::of([], true, $s->getAllowedIps(), $s->getConfig());
+                    $seats->setList($array, time());
+                    $s->setConfig($seats->config($s->getConfig()));
+                }
                 match ($key) {
                     'ips' => $s->setIps($json),
                     'hosts' => $s->setHosts($json),

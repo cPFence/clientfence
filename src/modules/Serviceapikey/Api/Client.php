@@ -33,6 +33,27 @@ class Client extends \ClientFence\Api\AbstractApi
         return $this->getService()->setAllowedIps($this->getOwnApiKey($data), $data['allowed_ips'] ?? '');
     }
 
+    /**
+     * ClientFence core patch: adds an IP address (order_id, ip) into a free place of a product with "Servers (IP
+     * addresses)"; true when done or waiting for staff approval (order_service seats.pending).
+     */
+    public function ip_add($data): bool
+    {
+        return $this->getService()->ipAction($this->getOwnApiKey($data), \ClientFence\IpSeats::ADD, (string) ($data['ip'] ?? ''));
+    }
+
+    /** ClientFence: removes an IP address (order_id, ip): one IP change, free in its first 24 hours while no check has used it. */
+    public function ip_remove($data): bool
+    {
+        return $this->getService()->ipAction($this->getOwnApiKey($data), \ClientFence\IpSeats::REMOVE, (string) ($data['ip'] ?? ''));
+    }
+
+    /** ClientFence: takes back the IP change request waiting for staff approval (order_id). */
+    public function ip_request_withdraw($data): bool
+    {
+        return $this->getService()->ipAction($this->getOwnApiKey($data), 'withdraw');
+    }
+
     private function getOwnApiKey(array $data): \ClientFence\Mod\Serviceapikey\Entity\ServiceApiKey
     {
         $model = $this->getService()->findApiKey($data);

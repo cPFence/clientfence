@@ -15,6 +15,7 @@ use ClientFence\Mod\Order\Entity\Order;
 use ClientFence\Mod\Product\Entity\Product;
 use ClientFence\Mod\Serviceapikey\Entity\ServiceApiKey;
 use ClientFence\InjectionAwareInterface;
+use ClientFence\IpSeats;
 use Symfony\Component\HttpFoundation\IpUtils;
 
 class Service implements InjectionAwareInterface
@@ -126,9 +127,10 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public function toApiArray(ServiceApiKey $model): array
+    public function toApiArray(ServiceApiKey $model, bool $deep = false): array
     {
-        return [
+        // ClientFence core patch: the IP seats of the service page and the order's API key tab (CF-56).
+        return ($deep ? ['seats' => $this->ipSeats($model)->view(time())] : []) + [
             'id' => $model->getId(),
             'created_at' => $model->getCreatedAt()?->format('Y-m-d H:i:s'),
             'updated_at' => $model->getUpdatedAt()?->format('Y-m-d H:i:s'),
@@ -157,13 +159,36 @@ class Service implements InjectionAwareInterface
             throw new \ClientFence\Exception('API key does not exist');
         }
 
+        // ClientFence core patch: with "Servers (IP addresses)" on the product, the key's seat list decides
+        // and an active key may give a new IP a free place (IpSeats); without, the IPs or ranges, empty: all.
+        $ip = (string) $this->di['request']->getClientIp();
+        $seats = $this->ipSeats($model);
         $allowedIps = $model->getAllowedIps();
-        if ($allowedIps !== [] && !IpUtils::checkIp((string) $this->di['request']->getClientIp(), $allowedIps)) {
+        if (!$seats->limited() && $allowedIps !== [] && !IpUtils::checkIp($ip, $allowedIps)) {
             return false;
         }
 
         if (!$this->isActive($model)) {
             return false;
+        }
+
+        if ($seats->limited()) {
+            $changed = $seats->check($ip, time());
+            if ($changed) {
+                // A bind is saved under the order's lock, on the list and plan as they are now.
+                $changed = IpSeats::locked($this->di, $this->ipOrder($model), $model, function () use ($model, $ip): ?bool {
+                    $seats = $this->ipSeats($model);
+                    $changed = $seats->check($ip, time());
+                    if ($changed) {
+                        $this->ipSave($model, $seats);
+                    }
+
+                    return $changed;
+                });
+            }
+            if ($changed === null) {
+                return false;
+            }
         }
 
         $this->di['em']->getConnection()->executeStatement(
@@ -213,26 +238,75 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function setAllowedIps(ServiceApiKey $model, mixed $input): bool
+    /**
+     * ClientFence core patch: with "Servers (IP addresses)" on the product (IpSeats), the list holds
+     * single IP addresses, staff may set more than 20 (or than the limit), and clients add and remove
+     * one at a time (ip_add, ip_remove) instead.
+     */
+    public function setAllowedIps(ServiceApiKey $model, mixed $input, bool $staff = false): bool
     {
+        $seats = $this->ipSeats($model);
+        if ($seats->limited() && !$staff) {
+            throw new \ClientFence\InformationException('This plan has a server limit: add or remove one IP address at a time.');
+        }
         $entries = is_array($input) ? $input : preg_split('/[\s,]+/', (string) $input, -1, PREG_SPLIT_NO_EMPTY);
         $ips = [];
         foreach ($entries as $entry) {
             if (!is_string($entry) || !self::isIpOrRange($entry)) {
                 throw new \ClientFence\InformationException('This is not an IP address or range: :ip', [':ip' => is_string($entry) ? $entry : '']);
             }
+            if ($seats->limited() && str_contains($entry, '/')) {
+                throw new \ClientFence\InformationException('With a server limit, the list holds single IP addresses, not ranges: :ip', [':ip' => $entry]);
+            }
             $ips[] = $entry;
         }
 
         $ips = array_values(array_unique($ips));
-        if (count($ips) > 20) {
+        if (count($ips) > 20 && !$seats->limited()) {
             throw new \ClientFence\InformationException('You can add at most 20 IP addresses or ranges.');
         }
 
-        $model->setAllowedIps($ips);
-        $this->di['em']->flush();
+        $seats->setList($ips, time());
+        $this->ipSave($model, $seats);
 
         return true;
+    }
+
+    /** ClientFence: the IP seats of the key, with the rules of its product as it is now (IpSeats). */
+    public function ipSeats(ServiceApiKey $model): IpSeats
+    {
+        return IpSeats::of(IpSeats::productConfig($this->di, $this->ipOrder($model)), false, $model->getAllowedIps(), $model->getConfig());
+    }
+
+    /**
+     * ClientFence: an IP seat action (IpSeats::act()): the client's add, remove or withdraw, staff's
+     * approve, refuse or clear; saved, then written to the order's history (and told).
+     */
+    public function ipAction(ServiceApiKey $model, string $action, string $ip = '', string $reason = ''): bool
+    {
+        $order = $this->ipOrder($model);
+        $event = IpSeats::locked($this->di, $order, $model, function () use ($model, $order, $action, $ip, $reason): array {
+            $seats = $this->ipSeats($model);
+            $event = $seats->act($action, $ip, $reason, time());
+            $this->ipSave($model, $seats);
+            IpSeats::tell($this->di, $order, $event);
+
+            return $event;
+        });
+
+        return IpSeats::approved($action, $event);
+    }
+
+    private function ipSave(ServiceApiKey $model, IpSeats $seats): void
+    {
+        $model->setAllowedIps($seats->ips);
+        $model->setConfig($seats->config($model->getConfig()));
+        $this->di['em']->flush();
+    }
+
+    private function ipOrder(ServiceApiKey $model): ?Order
+    {
+        return $this->getOrderRepository()->findOneBy(['serviceId' => $model->getId(), 'serviceType' => \ClientFence\Mod\Product\Service::APIKEY]);
     }
 
     /**
@@ -264,7 +338,9 @@ class Service implements InjectionAwareInterface
             throw new \ClientFence\Exception('To change the API key, please use the reset function rather than updating it.');
         }
 
-        $config = !empty($data['config']) ? json_encode($data['config']) : $model->getConfig();
+        // ClientFence core patch: the key's IP seat state (IpSeats) stays when staff save its settings.
+        $state = array_intersect_key(json_decode($model->getConfig() ?? '', true) ?: [], ['ip_state' => true]);
+        $config = !empty($data['config']) ? json_encode($data['config'] + $state) : $model->getConfig();
         $model->setConfig($config);
         $this->di['em']->flush();
 

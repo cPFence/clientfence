@@ -1,35 +1,104 @@
-{# ClientFence: the licence card of the service page (overrides the module's plain table): the key and the limits it
-   is checked against. Copy and Reset are in mod_servicelicense_head. #}
+{# ClientFence: the licence card of the service page (overrides the module's plain table), in tabs: the key with its
+   checks; the allowed IPs (the client's seat list with a server limit, IpSeats, CF-56, else the limits it is checked
+   against); the recent checks; how to check. Copy and Reset are in mod_servicelicense_head. #}
 {% if order.status == 'active' %}
+{% set seats = service.seats %}
 {% set limits = [] %}
-{% if service.validate_ip %}{% set limits = limits|merge([{ label: 'Valid IPs'|trans, values: service.ips, all: 'All IPs'|trans }]) %}{% endif %}
+{% if service.validate_ip and not seats.ip_seats %}{% set limits = limits|merge([{ label: 'Valid IPs'|trans, values: service.ips, all: 'All IPs'|trans }]) %}{% endif %}
 {% if service.validate_host %}{% set limits = limits|merge([{ label: 'Valid Domains'|trans, values: service.hosts, all: 'All Hosts'|trans }]) %}{% endif %}
 {% if service.validate_version %}{% set limits = limits|merge([{ label: 'Valid Versions'|trans, values: service.versions, all: 'All Versions'|trans }]) %}{% endif %}
 {% if service.validate_path %}{% set limits = limits|merge([{ label: 'Valid Installation Paths'|trans, values: service.paths, all: 'All Paths'|trans }]) %}{% endif %}
-<section class="card mb-4" aria-labelledby="bf-licence-title">
-    <div class="card-header"><h2 id="bf-licence-title">{{ 'License Details'|trans }}</h2></div>
-    <div class="card-body">
-        <span class="bf-licence-label">{{ 'Key'|trans }}</span>
-        <div class="bf-key">
-            <code class="bf-licence-code flex-grow-1" dir="ltr">{{ service.license_key }}</code>
-            <button class="btn btn-sm btn-outline-secondary" type="button" data-bf-copy="{{ service.license_key }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg> {{ 'Copy'|trans }}</button>
+<section class="card mb-4" aria-label="{{ 'License Details'|trans }}">
+    <ul class="nav bf-card-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#bf-licence-key" role="tab" aria-controls="bf-licence-key" aria-selected="true"><svg class="icon icon-sm" aria-hidden="true"><use href="#key"/></svg>{{ 'License Key'|trans }}</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#bf-licence-ips" role="tab" aria-controls="bf-licence-ips" aria-selected="false"><svg class="icon icon-sm" aria-hidden="true"><use href="#shield-check"/></svg>{{ 'Allowed IPs'|trans }}</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#bf-licence-checks" role="tab" aria-controls="bf-licence-checks" aria-selected="false"><svg class="icon icon-sm" aria-hidden="true"><use href="#history"/></svg>{{ 'Recent checks'|trans }}</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#bf-licence-how" role="tab" aria-controls="bf-licence-how" aria-selected="false"><svg class="icon icon-sm" aria-hidden="true"><use href="#info-circle"/></svg>{{ 'How to check'|trans }}</button>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="bf-licence-key" role="tabpanel">
+            <div class="card-body">
+                <span class="bf-licence-label">{{ 'Key'|trans }}</span>
+                <div class="bf-key">
+                    <code class="bf-licence-code flex-grow-1" dir="ltr">{{ service.license_key }}</code>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bf-copy="{{ service.license_key }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg> {{ 'Copy'|trans }}</button>
+                </div>
+            </div>
+            <dl class="bf-facts border-top">
+                <div class="bf-fact"><dt>{{ 'Last checked'|trans }}</dt><dd>{{ service.pinged_at ? service.pinged_at|format_datetime : 'Never'|trans }}</dd></div>
+                <div class="bf-fact"><dt>{{ 'Checks in the last :days days'|trans({':days': service.checks_days}) }}</dt><dd>{{ service.checks }}</dd></div>
+            </dl>
+        </div>
+
+        <div class="tab-pane fade" id="bf-licence-ips" role="tabpanel">
+            {% if seats.ip_seats %}
+                <div class="card-body">{{ include('partials/ip_seats.html.twig', { 'seats': seats, 'order': order, 'api': 'servicelicense' }) }}</div>
+            {% elseif seats.pending %}
+                {# A reset waiting for approval on a licence without a server limit. #}
+                <div class="card-body pb-0">{{ include('partials/ip_request.html.twig', { 'p': seats.pending, 'order': order, 'api': 'servicelicense' }) }}</div>
+            {% endif %}
+            {% if not seats.ip_seats and not seats.pending and not limits %}
+                <div class="card-body"><p class="text-body-secondary mb-0">{{ 'This licence is not tied to IP addresses or domains.'|trans }}</p></div>
+            {% endif %}
+            {% if limits %}
+                <dl class="bf-facts{% if seats.ip_seats %} border-top{% endif %}">
+                    {% for limit in limits %}
+                        <div class="bf-fact">
+                            <dt>{{ limit.label }}</dt>
+                            <dd class="flex-wrap">
+                                {% for value in limit.values %}
+                                    <span class="bf-licence-chip" dir="ltr">{{ value }}</span>
+                                {% else %}
+                                    <span class="text-body-secondary">{{ limit.all }}</span>
+                                {% endfor %}
+                            </dd>
+                        </div>
+                    {% endfor %}
+                </dl>
+            {% endif %}
+        </div>
+
+        <div class="tab-pane fade card-body" id="bf-licence-checks" role="tabpanel">
+            {% if service.recent_checks %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>{{ 'Date'|trans }}</th>
+                                <th>{{ 'Domain'|trans }}</th>
+                                <th>{{ 'IP'|trans }}</th>
+                                <th>{{ 'Result'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for check in service.recent_checks %}
+                                <tr>
+                                    <td class="text-nowrap">{{ check.created_at|format_datetime }}</td>
+                                    <td class="text-break" dir="ltr">{{ check.host|default('-') }}</td>
+                                    <td class="text-break font-monospace" dir="ltr">{{ check.ip|default('-') }}</td>
+                                    <td>{% if check.result == 'Valid' %}<span class="badge text-bg-success">{{ 'Valid'|trans }}</span>{% else %}<span class="text-danger text-break">{{ check.result }}</span>{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-body-secondary mb-0">{{ 'No checks yet'|trans }}</p>
+            {% endif %}
+        </div>
+
+        <div class="tab-pane fade card-body" id="bf-licence-how" role="tabpanel">
+            <p class="small text-body-secondary">{{ 'Your software sends the key, its domain, install path and version to this address. The answer has "valid": true when the licence passes.'|trans }}</p>
+            <code class="bf-licence-code small" dir="ltr">curl -d "license=YOUR_LICENSE_KEY" -d "host=example.com" -d "path=/var/www/app" -d "version=1.0" {{ 'servicelicense/check'|api_url(role: 'guest') }}</code>
         </div>
     </div>
-    {% if limits %}
-        <dl class="bf-facts border-top">
-            {% for limit in limits %}
-                <div class="bf-fact">
-                    <dt>{{ limit.label }}</dt>
-                    <dd class="flex-wrap">
-                        {% for value in limit.values %}
-                            <span class="bf-licence-chip" dir="ltr">{{ value }}</span>
-                        {% else %}
-                            <span class="text-body-secondary">{{ limit.all }}</span>
-                        {% endfor %}
-                    </dd>
-                </div>
-            {% endfor %}
-        </dl>
-    {% endif %}
 </section>
 {% endif %}

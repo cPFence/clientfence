@@ -103,7 +103,8 @@ class Server implements \ClientFence\InjectionAwareInterface
             throw new \LogicException('License is not active', 1006);
         }
 
-        if (!$service->isValidIp($model, $ip)) {
+        // ClientFence core patch: with "Servers (IP addresses)" on the product, the licence's seat list decides (IpSeats).
+        if (!$service->isAllowedIp($model, $ip)) {
             throw new \LogicException(sprintf('Ip "%s" is not allowed for this license', $ip), 1007);
         }
 

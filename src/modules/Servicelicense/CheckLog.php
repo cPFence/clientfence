@@ -64,6 +64,25 @@ final class CheckLog
         ], $rows);
     }
 
+    /**
+     * How many checks came since `$since`, and each IP address's last check (the service page's IP seats).
+     *
+     * @return array{count: int, last: array<string, string>}
+     */
+    public static function stats(\Pimple\Container $di, int $licenseId, string $since): array
+    {
+        try {
+            $db = self::db($di);
+
+            return [
+                'count' => (int) $db->fetchOne('SELECT COUNT(*) FROM ' . self::TABLE . ' WHERE service_license_id = ? AND created_at >= ?', [$licenseId, $since]),
+                'last' => $db->fetchAllKeyValue('SELECT ip, MAX(created_at) FROM ' . self::TABLE . ' WHERE service_license_id = ? GROUP BY ip', [$licenseId]),
+            ];
+        } catch (\Throwable) {
+            return ['count' => 0, 'last' => []];
+        }
+    }
+
     /** How many days lines are kept (0: kept). */
     public static function days(\Pimple\Container $di): int
     {

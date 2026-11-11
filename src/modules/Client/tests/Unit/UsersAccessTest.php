@@ -35,6 +35,9 @@ test('authorized users can call product actions with their assigned permission',
     expect(Users::checkCall($this->di, $this->client, $module, $method))->toBeNull();
 })->with([
     'API key allowed IPs' => ['serviceapikey', 'update_ips', 'manageproducts'],
+    'API key IP add' => ['serviceapikey', 'ip_add', 'manageproducts'],
+    'licence IP remove' => ['servicelicense', 'ip_remove', 'manageproducts'],
+    'licence IP request withdraw' => ['servicelicense', 'ip_request_withdraw', 'manageproducts'],
     'order options quote' => ['order', 'upgrade_options_quote', 'products'],
     'new Support PIN' => ['client', 'support_pin_new', 'profile'],
 ]);

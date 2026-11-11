@@ -6,6 +6,7 @@ namespace ClientFence\Mod\Order;
 
 use Doctrine\DBAL\Connection;
 use ClientFence\InformationException;
+use ClientFence\IpSeats;
 use ClientFence\Mod\Clientfence\Whmcs\Money;
 use ClientFence\Mod\Product\Options;
 use ClientFence\Mod\Product\Translations;
@@ -187,10 +188,22 @@ final class Upgrades
 
         $options = [];
         $locale = self::clientLocale($db, (int) $order->client_id);
+        $ips = null;
+        $tooManyIps = false;
         foreach (array_unique(array_merge([(int) $order->product_id], $from['upgrades'])) as $productId) {
             $to = $productId === (int) $order->product_id ? ($from['on_sale'] ? $from : null) : self::catalog($db, $productId, true, (string) $order->currency);
             if ($to === null || !self::compatible($from, $to)) {
                 continue;
+            }
+            // ClientFence core patch: a licence cannot move to a plan whose "Servers (IP addresses)" its IP list does not fit (IpSeats).
+            $seats = IpSeats::seatsOf($to['config']);
+            if ($productId !== (int) $order->product_id && $to['type'] === 'license' && $seats > 0) {
+                $ips ??= count(json_decode((string) $db->fetchOne('SELECT ips FROM service_license WHERE id = ?', [(int) $order->service_id]), true) ?: []);
+                if ($ips > $seats) {
+                    $tooManyIps = true;
+
+                    continue;
+                }
             }
             if ($productId !== (int) $order->product_id && !$di['mod_service']('product')->isStockAvailable($productId, $quantity)) {
                 continue;
@@ -235,8 +248,8 @@ final class Upgrades
         }
 
         return $options === []
-            ? $none('There is nothing to change this service to.', null, $offered)
-            : ['available' => true, 'reason' => '', 'notice' => false, 'current' => $current, 'options' => $options, 'waiting' => null, 'options_change' => $offered !== [], 'product_options' => $offered];
+            ? ($tooManyIps ? $none(__trans('To move to a plan with fewer servers, first remove the IP addresses it cannot hold.'), null, $offered, true) : $none('There is nothing to change this service to.', null, $offered))
+            : ['available' => true, 'reason' => $tooManyIps ? __trans('To move to a plan with fewer servers, first remove the IP addresses it cannot hold.') : '', 'notice' => false, 'current' => $current, 'options' => $options, 'waiting' => null, 'options_change' => $offered !== [], 'product_options' => $offered];
     }
 
     /**
@@ -519,6 +532,11 @@ final class Upgrades
                 }
                 $quantity = max(1, (int) ($order->quantity ?? 1));
                 $productChanged = (int) $up['to_product_id'] !== (int) $up['from_product_id'];
+                // ClientFence core patch: the licence's IPs, counted again under this lock (IP changes take it too), must fit the new plan.
+                $seats = IpSeats::seatsOf($to['config']);
+                if ($productChanged && $order->service_type === 'license' && $seats > 0 && count(json_decode((string) $db->fetchOne('SELECT ips FROM service_license WHERE id = ?', [(int) $order->service_id]), true) ?: []) > $seats) {
+                    throw new InformationException('To move to a plan with fewer servers, first remove the IP addresses it cannot hold.');
+                }
                 if ($productChanged) {
                     $productService = $di['mod_service']('product');
                     $productService->reduceStock((int) $up['to_product_id'], $quantity);

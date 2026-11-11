@@ -55,6 +55,56 @@
 
         <hr class="my-4" />
 
+        {# ClientFence core patch: client IP self-service limits of API keys (IpSeats, CF-56). #}
+        <div class="mb-4">
+            <div class="mb-3">
+                <h3 class="card-title mb-1">{{ 'Client IP Addresses'|trans }}</h3>
+                <p class="text-secondary mb-0">{{ 'Let clients add and remove the IP addresses of their key within these limits.'|trans }}</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-lg-3">
+                    <label class="form-label" for="cf-ip-seats">{{ 'Servers (IP addresses)'|trans }}</label>
+                    <input type="number" class="form-control" id="cf-ip-seats" name="config[ip_seats]" min="0" value="{{ product.config.ip_seats|default('') }}">
+                    <div class="form-text">{{ 'Empty: no limit (up to 20 IP addresses or ranges). With a limit, single IP addresses only.'|trans }}</div>
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label" for="cf-ip-changes">{{ 'IP changes per 30 days'|trans }}</label>
+                    <input type="number" class="form-control" id="cf-ip-changes" name="config[ip_changes]" min="0" value="{{ product.config.ip_changes ?? '' }}">
+                    <div class="form-text">{{ 'Removing an IP address. Empty: no limit. 0: only staff.'|trans }}</div>
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label">{{ 'Bind on first check'|trans }}</label>
+                    <div class="d-flex flex-wrap gap-3 pt-1">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[ip_bind]" value="1"{% if product.config.ip_bind ?? 0 %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[ip_bind]" value="0"{% if not (product.config.ip_bind ?? 0) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="form-text">{{ 'A check from a new IP address takes a free place by itself.'|trans }}</div>
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label">{{ 'Changes need staff approval'|trans }}</label>
+                    <div class="d-flex flex-wrap gap-3 pt-1">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[ip_approval]" value="1"{% if product.config.ip_approval|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[ip_approval]" value="0"{% if not product.config.ip_approval|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="form-text">{{ 'Client changes wait until staff approve them.'|trans }}</div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4" />
+
         <div class="mb-4">
             <div class="mb-3">
                 <h3 class="card-title mb-1">{{ 'Custom Parameters'|trans }}</h3>

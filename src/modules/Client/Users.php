@@ -111,7 +111,7 @@ final class Users
             // Cancellation requests (Order/CancelRequests.php).
             'cancel_request' => 'orders', 'cancel_request_get' => 'products', 'cancel_request_withdraw' => 'orders'],
         'profile' => ['get' => '*', 'logout' => '*', 'update' => 'profile'],
-        'serviceapikey' => ['reset' => 'manageproducts', 'update_ips' => 'manageproducts'],
+        'serviceapikey' => ['reset' => 'manageproducts', 'update_ips' => 'manageproducts', 'ip_add' => 'manageproducts', 'ip_remove' => 'manageproducts', 'ip_request_withdraw' => 'manageproducts'],
         'servicecustom' => ['call' => 'manageproducts'],
         'servicedomain' => [
             'sync' => 'domains', 'update_nameservers' => 'managedomains', 'update_contacts' => 'managedomains',
@@ -128,7 +128,7 @@ final class Users
             'email_webmail' => 'productsso',
             'change_password' => 'manageproducts', 'hp_get_pairs' => 'products', 'get_login_url' => 'productsso',
         ],
-        'servicelicense' => ['reset' => 'manageproducts'],
+        'servicelicense' => ['reset' => 'manageproducts', 'ip_add' => 'manageproducts', 'ip_remove' => 'manageproducts', 'ip_request_withdraw' => 'manageproducts'],
         'support' => [
             // Help desk names: the service page's request forms list them while it renders.
             'ticket_get_list' => 'tickets', 'ticket_get' => 'tickets', 'helpdesk_get_pairs' => '*',

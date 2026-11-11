@@ -5126,5 +5126,77 @@
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
         "done": "ClientFence core patch: the totals' labels translated (they were English in every language)."
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: with \"Servers (IP addresses)\" on the product, the licence's seat list"
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: the IP seats and recent checks of the service page and the order's licence tab (CF-56)."
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: staff set the list freely; it keeps each IP's added date (IpSeats)."
+    },
+    {
+        "file": "modules/Servicelicense/Server.php",
+        "done": "ClientFence core patch: with \"Servers (IP addresses)\" on the product, the licence's seat list decides (IpSeats)."
+    },
+    {
+        "file": "modules/Servicelicense/Api/Client.php",
+        "done": "ClientFence core patch: counts as one IP change and may need staff approval (IpSeats, CF-56)."
+    },
+    {
+        "file": "modules/Servicelicense/Api/Admin.php",
+        "done": "ClientFence core patch: clears the client's IP change count of a licence (order_id; IpSeats, CF-56)."
+    },
+    {
+        "file": "modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig",
+        "done": "ClientFence core patch: client IP self-service limits of licences (IpSeats, CF-56)."
+    },
+    {
+        "file": "modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig",
+        "done": "ClientFence core patch: the client IP addresses, their changes and a request waiting for approval (IpSeats, CF-56)."
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch: the IP seats of the service page and the order's API key tab (CF-56)."
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch: with \"Servers (IP addresses)\" on the product, the key's seat list decides"
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch: with \"Servers (IP addresses)\" on the product (IpSeats), the list holds"
+    },
+    {
+        "file": "modules/Serviceapikey/Service.php",
+        "done": "ClientFence core patch: the key's IP seat state (IpSeats) stays when staff save its settings."
+    },
+    {
+        "file": "modules/Serviceapikey/Api/Admin.php",
+        "done": "ClientFence core patch: clears the client's IP change count of a key (order_id; IpSeats, CF-56)."
+    },
+    {
+        "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig",
+        "done": "ClientFence core patch: client IP self-service limits of API keys (IpSeats, CF-56)."
+    },
+    {
+        "file": "modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig",
+        "done": "ClientFence core patch: the client IP addresses, their changes and a request waiting for approval (IpSeats, CF-56)."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: a licence cannot move to a plan whose \"Servers (IP addresses)\" its IP list does not fit (IpSeats)."
+    },
+    {
+        "file": "modules/Serviceapikey/Api/Client.php",
+        "done": "ClientFence core patch: adds an IP address (order_id, ip) into a free place of a product with \"Servers (IP"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: the licence's IPs, counted again under this lock (IP changes take it too), must fit the new plan."
     }
 ]

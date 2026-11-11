@@ -11,6 +11,7 @@
 declare(strict_types=1);
 
 use ClientFence\Mod\Order\Entity\Order;
+use ClientFence\Mod\Product\Entity\Product;
 use ClientFence\Mod\Serviceapikey\Entity\ServiceApiKey;
 use ClientFence\Mod\Serviceapikey\Repository\ServiceApiKeyRepository;
 use ClientFence\Mod\Serviceapikey\Service;
@@ -217,18 +218,34 @@ test('clientSettableConfigKeys returns the apikey allowlist', function (): void 
 });
 
 /**
- * A service whose key KEY-1 (client 5) belongs to an order with the given status.
+ * A service whose key KEY-1 (client 5) belongs to an order with the given status; with `$product`, the order's
+ * product (#4) has that config.
  *
  * @return array{Service, ServiceApiKey, Mockery\MockInterface}
  */
-function apiKeyService(string $status = Order::STATUS_ACTIVE, string $ip = '127.0.0.1', array $config = []): array
+function apiKeyService(string $status = Order::STATUS_ACTIVE, string $ip = '127.0.0.1', array $config = [], array $product = [], array $waitingTo = []): array
 {
     $entity = createEntity(ServiceApiKey::class);
     $entity->id = 3;
     $entity->setClientId(5)->setApiKey('KEY-1')->setConfig(json_encode($config + ['length' => '16', 'split' => '1', 'split_interval' => '4', 'case' => 'upper']));
 
-    $order = new Order();
+    $order = createEntity(Order::class);
+    $order->id = 9;
     $order->setStatus($status);
+    $order->setProductId($product === [] ? null : 4);
+    $productRepo = Mockery::mock(EntityRepository::class);
+    $productRepo->shouldReceive('find')->with(4)->andReturn((new Product())->setConfig(json_encode($product)));
+    $productRepo->shouldReceive('find')->with(6)->andReturn((new Product())->setConfig(json_encode($waitingTo)));
+    // A plan change to product 6 waiting for payment of its invoice (Order\Upgrades), when $waitingTo is given.
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_order_upgrade (id INTEGER PRIMARY KEY, order_id INTEGER, to_product_id INTEGER, status TEXT, invoice_id INTEGER)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
+    $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, product_id INTEGER)');
+    $db->insert('client_order', ['id' => 9, 'product_id' => $product === [] ? null : 4]);
+    if ($waitingTo !== []) {
+        $db->insert('invoice', ['id' => 1, 'status' => 'unpaid']);
+        $db->insert('client_order_upgrade', ['order_id' => 9, 'to_product_id' => 6, 'status' => 'pending', 'invoice_id' => 1]);
+    }
 
     $repo = Mockery::mock(ServiceApiKeyRepository::class);
     $repo->shouldReceive('findByApiKey')->with('KEY-1')->andReturn($entity);
@@ -239,10 +256,13 @@ function apiKeyService(string $status = Order::STATUS_ACTIVE, string $ip = '127.
     $em = Mockery::mock(EntityManagerInterface::class);
     $em->shouldReceive('getRepository')->with(ServiceApiKey::class)->andReturn($repo);
     $em->shouldReceive('getRepository')->with(Order::class)->andReturn($orderRepo);
+    $em->shouldReceive('getRepository')->with(Product::class)->andReturn($productRepo);
     $em->shouldReceive('flush');
+    $em->shouldReceive('refresh');
 
     $di = container();
     $di['em'] = $em;
+    $di['dbal'] = $db;
     $di['request'] = fn (): Symfony\Component\HttpFoundation\Request => Symfony\Component\HttpFoundation\Request::create('http://localhost/', server: ['REMOTE_ADDR' => $ip]);
     $service = new Service();
     $service->setDi($di);
@@ -367,3 +387,47 @@ test('allowed IPs refuse what is not an address or range, and more than 20', fun
     'nested list' => [[['10.0.0.1']], 'not an IP address or range'],
     'too many' => [implode("\n", array_map(fn (int $i): string => "10.0.0.{$i}", range(1, 21))), 'at most 20'],
 ]);
+
+// ClientFence (CF-56): "Servers (IP addresses)" on the product.
+test('with a server limit staff set single IP addresses only, may pass 20, and clients add one at a time', function (): void {
+    [$service, $entity] = apiKeyService(product: ['ip_seats' => 30]);
+
+    expect(fn (): bool => $service->setAllowedIps($entity, '10.0.0.0/8', true))->toThrow(ClientFence\InformationException::class, 'not ranges')
+        ->and(fn (): bool => $service->setAllowedIps($entity, '203.0.113.10'))->toThrow(ClientFence\InformationException::class, 'add or remove one IP address at a time');
+
+    $service->setAllowedIps($entity, implode("\n", array_map(fn (int $i): string => "10.0.0.{$i}", range(1, 21))), true);
+    expect($entity->getAllowedIps())->toHaveCount(21);
+});
+
+test('with a server limit an active key binds a new IP into a free place, and a full list refuses others', function (string $ip, array $listed, bool $valid, array $after): void {
+    [$service, $entity, $em] = apiKeyService(Order::STATUS_ACTIVE, $ip, product: ['ip_seats' => 1, 'ip_bind' => '1']);
+    $entity->setAllowedIps($listed);
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $connection->shouldReceive('transactional')->andReturnUsing(fn (callable $change): mixed => $change());
+    $em->shouldReceive('getConnection')->andReturn($connection);
+
+    expect($service->isValid(['key' => 'KEY-1']))->toBe($valid)
+        ->and($entity->getAllowedIps())->toBe($after);
+})->with([
+    'free place' => ['203.0.113.20', [], true, ['203.0.113.20']],
+    'listed' => ['203.0.113.20', ['203.0.113.20'], true, ['203.0.113.20']],
+    'full' => ['203.0.113.21', ['203.0.113.20'], false, ['203.0.113.20']],
+]);
+
+test('while a change to a plan with fewer servers waits for payment, its limit holds', function (): void {
+    [$service, $entity] = apiKeyService(Order::STATUS_ACTIVE, '198.51.100.2', ['ip_state' => []], ['ip_seats' => 10, 'ip_bind' => '1'], ['ip_seats' => 1]);
+    $entity->setAllowedIps(['198.51.100.1']);
+
+    expect($service->isValid(['key' => 'KEY-1']))->toBeFalse()
+        ->and($entity->getAllowedIps())->toBe(['198.51.100.1']);
+});
+
+
+test('the server limit comes from the order row, not an order loaded before a plan change applied', function (): void {
+    [$service, $entity] = apiKeyService(product: ['ip_seats' => 10], waitingTo: ['ip_seats' => 1]);
+    $db = $service->getDi()['dbal'];
+    $db->executeStatement('DELETE FROM client_order_upgrade');
+    $db->update('client_order', ['product_id' => 6], ['id' => 9]);
+
+    expect($service->ipSeats($entity)->seats)->toBe(1);
+});

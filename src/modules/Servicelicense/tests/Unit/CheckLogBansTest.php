@@ -19,11 +19,11 @@ use Symfony\Component\Filesystem\Path;
 
 /**
  * An install with one licence (key KEY-1, IP and host validated, nothing bound yet) and the licence
- * check served from $ip.
+ * check served from $ip (the request's `ip`, which a test may change); `$product`: the config of its product.
  *
  * @return array{0: EntityManager, 1: Pimple\Container, 2: Server}
  */
-function licenceCheckFixture(string $ip = '203.0.113.5'): array
+function licenceCheckFixture(string $ip = '203.0.113.5', array $product = []): array
 {
     $config = ORMSetup::createAttributeMetadataConfig([Path::join(__DIR__, '..', '..', 'Entity')], true);
     $config->setProxyDir(sys_get_temp_dir());
@@ -52,7 +52,7 @@ function licenceCheckFixture(string $ip = '203.0.113.5'): array
         }
     };
     $di['request'] = new class($ip) {
-        public function __construct(private readonly string $ip)
+        public function __construct(public string $ip)
         {
         }
 
@@ -66,6 +66,8 @@ function licenceCheckFixture(string $ip = '203.0.113.5'): array
     $service->shouldReceive('isLicenseActive')->andReturn(true);
     $service->shouldReceive('getOwnerName')->andReturn('Client');
     $service->shouldReceive('getExpirationDate')->andReturn(null);
+    $service->shouldReceive('productConfig')->andReturn($product);
+    $service->shouldReceive('getServiceOrder')->andReturn(null);
     $di['mod_service'] = $di->protect(static fn (string $name): object => $service);
     $server = new Server();
     $server->setDi($di);
@@ -184,4 +186,20 @@ test('a banned domain or IP address never passes and binds nothing to the licenc
     expect($server->process(['license' => 'KEY-1', 'host' => 'fine.test', 'version' => '2.0', 'path' => '/'])['valid'])->toBeTrue();
     $em->clear();
     expect($em->getRepository(ServiceLicense::class)->findByLicenseKey('KEY-1')->getAllowedHosts())->toBe(['fine.test']);
+});
+
+// ClientFence (CF-56): "Servers (IP addresses)" on the product.
+test('with a server limit a check binds new IPs into the free places, whatever validate_ip says, and no more', function (): void {
+    [$em, $di, $server] = licenceCheckFixture('203.0.113.5', ['ip_seats' => 2]);
+    $data = ['license' => 'KEY-1', 'host' => 'example.com', 'version' => '2.0', 'path' => '/home/site'];
+
+    expect($server->process($data)['valid'])->toBeTrue();
+    $di['request']->ip = '203.0.113.6';
+    expect($server->process($data)['valid'])->toBeTrue();
+    $di['request']->ip = '203.0.113.7';
+    expect(fn () => $server->process($data))->toThrow(LogicException::class, 'Ip "203.0.113.7" is not allowed for this license');
+
+    $licence = $em->getRepository(ServiceLicense::class)->findByLicenseKey('KEY-1');
+    expect($licence->getAllowedIps())->toBe(['203.0.113.5', '203.0.113.6'])
+        ->and(array_keys(json_decode((string) $licence->getConfig(), true)['ip_state']['added']))->toBe(['203.0.113.5', '203.0.113.6']);
 });

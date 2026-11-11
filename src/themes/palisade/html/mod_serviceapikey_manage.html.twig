@@ -30,6 +30,10 @@
         </div>
 
         <div class="tab-pane fade card-body" id="cf-apikey-allowed" role="tabpanel">
+            {# With a server limit, the client's seat list (IpSeats, CF-56); without, the whole list in one field. #}
+            {% if service.seats.ip_seats %}
+                {{ include('partials/ip_seats.html.twig', { 'seats': service.seats, 'order': order, 'api': 'serviceapikey' }) }}
+            {% else %}
             <form method="post" action="{{ 'serviceapikey/update_ips'|api_url }}" {{ fb_api_form({message: 'Saved'|trans}) }}>
                 <label class="h6 d-block mb-1" for="cf-apikey-ips">{{ 'Allowed IPs'|trans }}</label>
                 <p class="small text-body-secondary">{{ 'One IP address or CIDR range per line, at most 20. A check from any other IP answers as invalid. Leave empty to allow all IPs.'|trans }}</p>
@@ -37,6 +41,7 @@
                 <input type="hidden" name="order_id" value="{{ order.id }}">
                 <button class="btn btn-primary mt-3" type="submit">{{ 'Save'|trans }}</button>
             </form>
+            {% endif %}
         </div>
 
         <div class="tab-pane fade card-body" id="cf-apikey-check" role="tabpanel">

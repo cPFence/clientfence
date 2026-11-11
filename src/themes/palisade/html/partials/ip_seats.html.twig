@@ -1,0 +1,61 @@
+{# ClientFence: the client's IP addresses of a licence or API key with a server limit (IpSeats, CF-56): servers
+   used, the list with Remove, Add, the IP changes left and a request waiting for approval with Withdraw. `seats`
+   (the service's seats), `order`, `api` (servicelicense or serviceapikey). Every action reloads the page. #}
+{% set p = seats.pending %}
+{% set used = seats.ips|length %}
+<p class="fw-semibold mb-2">{{ ':used of :seats servers used'|trans({':used': used, ':seats': seats.ip_seats}) }}</p>
+
+{{ include('partials/ip_request.html.twig', { 'p': p, 'order': order, 'api': api }) }}
+
+{% if seats.ips %}
+    <div class="table-responsive mb-3">
+        <table class="table table-sm align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>{{ 'IP'|trans }}</th>
+                    <th>{{ 'Added'|trans }}</th>
+                    {% if api == 'servicelicense' %}<th>{{ 'Last check'|trans }}</th>{% endif %}
+                    <th><span class="visually-hidden">{{ 'Actions'|trans }}</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in seats.ips %}
+                    <tr>
+                        <td class="font-monospace text-nowrap" dir="ltr">{{ row.ip }}</td>
+                        <td>{{ row.added_at ? row.added_at|format_date : '-' }}</td>
+                        {% if api == 'servicelicense' %}<td>{{ row.last_check ? row.last_check|format_datetime : 'Never'|trans }}</td>{% endif %}
+                        <td class="text-end">
+                            {% if not p and seats.changes is not same as(0) %}
+                                <a class="btn btn-sm btn-outline-danger" {{ fb_api_link({href: (api ~ '/ip_remove')|api_url(query: {order_id: order.id, ip: row.ip}), modal: {type: 'confirm', title: 'Remove this IP address?'|trans, content: seats.changes is not null and not row.free and used <= seats.ip_seats ? 'This uses one of your IP changes.'|trans : ''}, reload: true}) }}>
+                                    <svg class="icon icon-sm" aria-hidden="true"><use href="#trash"/></svg>{{ 'Remove'|trans }}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+{% if not p and used < seats.ip_seats %}
+    <form class="d-flex flex-wrap gap-2 mb-3" method="post" action="{{ (api ~ '/ip_add')|api_url }}" {{ fb_api_form({reload: true}) }}>
+        <input type="hidden" name="order_id" value="{{ order.id }}">
+        <input type="text" class="form-control font-monospace w-auto flex-grow-1" name="ip" required dir="ltr" placeholder="203.0.113.10" aria-label="{{ 'IP address'|trans }}">
+        <button class="btn btn-primary" type="submit"><svg class="icon icon-sm" aria-hidden="true"><use href="#plus"/></svg>{{ 'Add'|trans }}</button>
+    </form>
+{% elseif not p and seats.changes is not same as(0) %}
+    <p class="small text-body-secondary">{{ 'All :count places are in use. Remove an IP address first.'|trans({':count': seats.ip_seats}) }}</p>
+{% endif %}
+
+<p class="small text-body-secondary mb-0">
+    {% if seats.bind %}{{ 'A check from a new server takes a free place by itself.'|trans }}{% endif %}
+    {% if seats.approval %}{{ 'Our staff approve each change first.'|trans }}{% endif %}
+    {% if seats.changes is same as(0) %}
+        {{ 'Only our staff can change these IP addresses. Please open a ticket.'|trans }}
+    {% elseif seats.changes_left == 0 and seats.next_free_change %}
+        {{ 'You have used your :count IP changes for 30 days. The next one is free on :date.'|trans_html({':count': seats.changes}, {':date': '<bdi>' ~ seats.next_free_change|format_date|e ~ '</bdi>'}) }}
+    {% elseif seats.changes is not null %}
+        {{ 'IP changes left: :left of :count in 30 days. Removing an IP address in the first 24 hours, before any check has used it, is free.'|trans({':left': seats.changes_left, ':count': seats.changes}) }}
+    {% endif %}
+</p>

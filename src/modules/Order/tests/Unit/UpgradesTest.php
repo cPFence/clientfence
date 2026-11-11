@@ -1761,3 +1761,43 @@ test('a Change Package the panel refuses moves nothing and gives the stock back'
     expect(fn () => Upgrades::staffMove($di, 5, 21, true, true))->toThrow(RuntimeException::class, 'Panel down')
         ->and($db->fetchAssociative('SELECT product_id, price FROM client_order WHERE id = 5'))->toBe(['product_id' => 20, 'price' => 100.0]);
 });
+
+// ClientFence (CF-56): "Servers (IP addresses)" on the target licence product.
+test('a licence is not offered a plan whose server limit its IP addresses do not fit, and says why', function (): void {
+    $db = upgradesDb();
+    $db->executeStatement('CREATE TABLE service_license (id INTEGER PRIMARY KEY, ips TEXT)');
+    $db->insert('service_license', ['id' => 101, 'ips' => json_encode(['198.51.100.1', '198.51.100.2', '198.51.100.3'])]);
+    $db->update('product', ['type' => 'license'], ['id' => 1]);
+    $db->update('product', ['type' => 'license', 'config' => json_encode(['ip_seats' => 2])], ['id' => 8]);
+    $db->update('product', ['config' => json_encode(['ip_seats' => '1'])], ['id' => 6]);
+    $db->update('product_payment', ['a_enabled' => 0], ['id' => 1]);
+    $db->update('client_order', ['service_type' => 'license'], ['id' => 1]);
+    $di = upgradesContainer($db);
+
+    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))
+        ->toMatchArray(['available' => false, 'reason' => 'To move to a plan with fewer servers, first remove the IP addresses it cannot hold.', 'notice' => true]);
+
+    $db->update('product', ['config' => json_encode(['ip_seats' => 3])], ['id' => 8]);
+    $options = Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW);
+    expect(array_column($options['options'], 'product_id'))->toBe([8])
+        ->and($options['reason'])->toBe('To move to a plan with fewer servers, first remove the IP addresses it cannot hold.');
+});
+
+test('a licence plan change counts the IP addresses again when it applies, and fails when they no longer fit', function (): void {
+    $db = upgradesDb();
+    $db->executeStatement('CREATE TABLE service_license (id INTEGER PRIMARY KEY, ips TEXT)');
+    $db->insert('service_license', ['id' => 101, 'ips' => json_encode(['198.51.100.1'])]);
+    $db->update('product', ['type' => 'license'], ['id' => 1]);
+    $db->update('product', ['type' => 'license', 'config' => json_encode(['ip_seats' => 1])], ['id' => 2]);
+    $db->update('client_order', ['service_type' => 'license'], ['id' => 1]);
+    $di = upgradesContainer($db);
+
+    $result = Upgrades::request($di, upgradesOrder($di, 1), 2, '1y', UPGRADES_NOW);
+    // An IP added after the change was asked (the client's add racing it).
+    $db->update('service_license', ['ips' => json_encode(['198.51.100.1', '198.51.100.2'])], ['id' => 101]);
+    upgradesPay($db, $result['id']);
+    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
+
+    expect($db->fetchAssociative('SELECT status, error FROM ' . Upgrades::TABLE))->toBe(['status' => 'failed', 'error' => 'To move to a plan with fewer servers, first remove the IP addresses it cannot hold.'])
+        ->and($db->fetchOne('SELECT product_id FROM client_order WHERE id = 1'))->toBe(1);
+});

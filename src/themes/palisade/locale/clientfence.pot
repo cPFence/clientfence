@@ -790,6 +790,10 @@ msgstr ""
 msgid ":used of :quota"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid ":used of :seats servers used"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid ":used used, no limit"
 msgstr ""
@@ -862,12 +866,24 @@ msgstr ""
 msgid "A cancelled domain was deleted at the registrar and cannot be brought back here. Order it again (register or transfer)."
 msgstr ""
 
+#: src/library/ClientFence/IpSeats.php
+msgid "A change of these IP addresses is already waiting for approval."
+msgstr ""
+
 #: src/modules/Order/Upgrades.php
 msgid "A change of this service is waiting for payment. Pay its invoice, or ask us to cancel it."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "A check from a banned domain (with or without www.) or IP address fails whatever licence key it sends, and nothing is bound to the licence."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A check from a new IP address takes a free place by itself."
+msgstr ""
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "A check from a new server takes a free place by itself."
 msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
@@ -1530,8 +1546,12 @@ msgstr ""
 msgid "Adapter Settings"
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
 msgid "Add"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Add %ip%"
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
@@ -1786,7 +1806,7 @@ msgstr ""
 msgid "Add-on modules"
 msgstr ""
 
-#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
 msgid "Added"
 msgstr ""
 
@@ -2032,6 +2052,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig …
 msgid "All"
+msgstr ""
+
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "All :count places are in use. Remove an IP address first."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -2302,7 +2326,7 @@ msgstr ""
 msgid "Allow transfer:"
 msgstr ""
 
-#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/themes/palisade/html/mod_serviceapikey_manage.html.twig
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/themes/palisade/html/mod_serviceapikey_manage.html.twig …
 msgid "Allowed IPs"
 msgstr ""
 
@@ -3098,8 +3122,12 @@ msgstr ""
 msgid "Applying patches..."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
 msgid "Approve"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Approve this IP change?"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Invoice/templates/admin/mod_invoice_transactions.html.twig src/themes/admin_default/html/macro_functions.html.twig
@@ -3676,6 +3704,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
 msgid "Billing periods"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Bind on first check"
 msgstr ""
 
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
@@ -4370,6 +4402,10 @@ msgstr ""
 msgid "Changes at your DNS provider can take up to a day to show everywhere."
 msgstr ""
 
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Changes need staff approval"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Changes saved"
 msgstr ""
@@ -4504,6 +4540,10 @@ msgstr ""
 
 #: src/modules/Security/Checks/phpVersion.php
 msgid "Checks if the PHP version ClientFence is running on is still receiving security support."
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Checks in the last :days days"
 msgstr ""
 
 #: src/modules/Security/Checks/dangerousFunctions.php
@@ -4926,12 +4966,16 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
 msgid "Clear"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clear compiled templates and cached system state when you need configuration or theme changes to take effect immediately."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Clear the IP change count?"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -5002,6 +5046,18 @@ msgstr ""
 msgid "Client ID was not passed"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client IP Addresses"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used (no limit)"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Client IP changes in the last 30 days: :used of :count"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Client Invoices"
 msgstr ""
@@ -5056,6 +5112,10 @@ msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig …
 msgid "Client area"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Client changes wait until staff approve them."
 msgstr ""
 
 #: src/modules/Cart/Service.php src/modules/Client/Service.php
@@ -8230,6 +8290,14 @@ msgstr ""
 msgid "Emergency and above"
 msgstr ""
 
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Empty: no limit (up to 20 IP addresses or ranges). With a limit, single IP addresses only."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Empty: no limit. With a limit, the IP address is always checked, whatever Validate IP says."
+msgstr ""
+
 #: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
 msgid "Empty: no link."
 msgstr ""
@@ -10626,6 +10694,10 @@ msgstr ""
 msgid "How much?"
 msgstr ""
 
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "How to check"
+msgstr ""
+
 #: src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/themes/palisade/html/mod_serviceapikey_manage.html.twig
 msgid "How to check a key"
 msgstr ""
@@ -10742,8 +10814,28 @@ msgstr ""
 msgid "IP Lookup"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
 msgid "IP address"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change approved: %title%"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "IP address change refused: %title%"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "IP address change requested for order #:id: :title"
 msgstr ""
 
 #: src/modules/Antispam/Api/Admin.php
@@ -10752,6 +10844,18 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "IP addresses, one per line"
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig
+msgid "IP changes left: :left of :count in 30 days."
+msgstr ""
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "IP changes left: :left of :count in 30 days. Removing an IP address in the first 24 hours, before any check has used it, is free."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "IP changes per 30 days"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
@@ -11990,6 +12094,14 @@ msgstr ""
 msgid "Last backup"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Last check"
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Last checked"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
 msgid "Last emailed %date% to %count% clients."
 msgstr ""
@@ -12182,6 +12294,14 @@ msgstr ""
 msgid "Less than a month"
 msgstr ""
 
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Let clients add and remove the IP addresses of their key within these limits."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Let clients add and remove the IP addresses of their licence within these limits."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
 msgid "Let clients add other secrets (API keys, logins)"
 msgstr ""
@@ -12226,7 +12346,7 @@ msgstr ""
 msgid "License Details"
 msgstr ""
 
-#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "License Key"
 msgstr ""
 
@@ -12266,7 +12386,7 @@ msgstr ""
 msgid "License product"
 msgstr ""
 
-#: src/modules/Servicelicense/templates/client/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_servicelicense_head.html.twig
+#: src/modules/Servicelicense/templates/client/mod_servicelicense_manage.html.twig
 msgid "License was reset"
 msgstr ""
 
@@ -13058,7 +13178,7 @@ msgstr ""
 msgid "Manage reusable support responses and organize them into categories."
 msgstr ""
 
-#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_renewed.html.twig …
+#: src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Order/templates/email/mod_order_ip_request.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig …
 msgid "Manage service"
 msgstr ""
 
@@ -14430,6 +14550,10 @@ msgstr ""
 msgid "No checks are logged for this licence."
 msgstr ""
 
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "No checks yet"
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "No client matched the audience."
 msgstr ""
@@ -15354,6 +15478,10 @@ msgstr ""
 msgid "Only needed if the Redis server's certificate isn't signed by a CA your system already trusts."
 msgstr ""
 
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Only our staff can change these IP addresses. Please open a ticket."
+msgstr ""
+
 #: src/modules/Order/Api/Client.php
 msgid "Only pending and failed setup orders can be deleted."
 msgstr ""
@@ -15928,6 +16056,18 @@ msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
 msgid "Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services."
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_head.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Our staff approve each change first."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff approved your IP address change for %title%:"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Our staff refused your IP address change for %title%:"
 msgstr ""
 
 #: src/modules/Support/templates/email/mod_support_ticket_staff_open.html.twig
@@ -18218,8 +18358,12 @@ msgstr ""
 msgid "Reading the global webmail domain from Enhance…"
 msgstr ""
 
-#: src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig …
+#: src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig …
 msgid "Reason"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Reason (optional, sent to the client)"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -18232,6 +18376,10 @@ msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
 msgid "Reason given:"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Reason: %reason%"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -18290,7 +18438,7 @@ msgstr ""
 msgid "Recent activity"
 msgstr ""
 
-#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "Recent checks"
 msgstr ""
 
@@ -18444,6 +18592,10 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "Refuse"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
@@ -18682,6 +18834,10 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig
+msgid "Remove %ip%"
+msgstr ""
+
 #: src/themes/palisade/html/mod_cart_index.html.twig
 msgid "Remove :item"
 msgstr ""
@@ -18734,6 +18890,10 @@ msgstr ""
 msgid "Remove the promo code"
 msgstr ""
 
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "Remove this IP address?"
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Remove this PayPal account?"
 msgstr ""
@@ -18772,6 +18932,14 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_message_files.html.twig src/themes/palisade/html/partials/ticket_files.html.twig
 msgid "Removed by staff"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Removing an IP address or a reset. Empty: no limit. 0: only staff."
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
+msgid "Removing an IP address. Empty: no limit. 0: only staff."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -19098,7 +19266,7 @@ msgstr ""
 msgid "Reset IP"
 msgstr ""
 
-#: src/modules/Servicelicense/templates/client/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_servicelicense_head.html.twig
+#: src/modules/Order/templates/email/mod_order_ip_request.html.twig src/modules/Servicelicense/templates/client/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_servicelicense_head.html.twig
 msgid "Reset License"
 msgstr ""
 
@@ -20452,6 +20620,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Servers"
+msgstr ""
+
+#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Servers (IP addresses)"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
@@ -22526,6 +22698,10 @@ msgstr ""
 msgid "The change could not be made yet; our staff will finish it"
 msgstr ""
 
+#: src/library/ClientFence/IpSeats.php
+msgid "The change no longer fits, so it was refused and the client was told: :reason"
+msgstr ""
+
 #: src/modules/Security/Service.php
 msgid "The check :checkName: does not exist."
 msgstr ""
@@ -22556,6 +22732,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
 msgid "The client asked to cancel this service"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "The client can make the full number of IP changes again."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
@@ -23631,6 +23811,10 @@ msgstr ""
 msgid "There is a new reply on your ticket \"%subject%\"."
 msgstr ""
 
+#: src/library/ClientFence/IpSeats.php
+msgid "There is no IP address request waiting."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "There is nothing to pay."
 msgstr ""
@@ -23693,6 +23877,14 @@ msgstr ""
 
 #: src/modules/Client/Google.php
 msgid "This Google account is linked to another sign-in here."
+msgstr ""
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is already on the list."
+msgstr ""
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This IP address is not on the list."
 msgstr ""
 
 #: src/themes/admin_default/html/mod_index_dashboard.html.twig
@@ -23963,6 +24155,10 @@ msgstr ""
 msgid "This is a protected system group. Its permissions are controlled by ClientFence and cannot be edited."
 msgstr ""
 
+#: src/library/ClientFence/IpSeats.php
+msgid "This is not a single IP address: :ip"
+msgstr ""
+
 #: src/modules/Serviceapikey/Service.php
 msgid "This is not an IP address or range: :ip"
 msgstr ""
@@ -24001,6 +24197,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/partial_email_template_version.html.twig
 msgid "This language is turned off: this version is not sent"
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "This licence is not tied to IP addresses or domains."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -24063,12 +24263,24 @@ msgstr ""
 msgid "This payment gateway does not support any of the payment methods available for this invoice. Please choose a different payment gateway."
 msgstr ""
 
+#: src/modules/Serviceapikey/Service.php
+msgid "This plan has a server limit: add or remove one IP address at a time."
+msgstr ""
+
+#: src/library/ClientFence/IpSeats.php
+msgid "This plan has no server limit, so its IP addresses are not added or removed one at a time."
+msgstr ""
+
 #: src/modules/News/templates/admin/mod_news_index.html.twig
 msgid "This post will be deleted:"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
 msgid "This product has already been added"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+msgid "This product has no server limit."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_currency_prices.html.twig
@@ -24281,6 +24493,10 @@ msgstr ""
 
 #: src/modules/Client/Users.php
 msgid "This user is switched off: switch the user on first."
+msgstr ""
+
+#: src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "This uses one of your IP changes."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -24613,6 +24829,10 @@ msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
 msgid "To get started, choose your password with the button below."
+msgstr ""
+
+#: src/modules/Order/Upgrades.php
+msgid "To move to a plan with fewer servers, first remove the IP addresses it cannot hold."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -26051,7 +26271,7 @@ msgstr ""
 msgid "VAT reverse charge: the buyer accounts for the VAT (Article 196, Directive 2006/112/EC)."
 msgstr ""
 
-#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "Valid"
 msgstr ""
 
@@ -26437,6 +26657,18 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/themes/admin_default/html/mod_index_dashboard.html.twig
 msgid "Waiting for Staff Reply"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_request.html.twig
+msgid "Waiting for approval: add :ip"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_request.html.twig
+msgid "Waiting for approval: remove :ip"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_request.html.twig
+msgid "Waiting for approval: reset the license"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -26851,16 +27083,24 @@ msgstr ""
 msgid "With Selected:"
 msgstr ""
 
+#: src/modules/Serviceapikey/Service.php
+msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "With the current settings, your ClientFence instance will have an external IP address of: "
 msgstr ""
 
-#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig src/themes/palisade/html/partials/ip_request.html.twig
 msgid "Withdraw Request"
 msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Withdraw the cancellation request?"
+msgstr ""
+
+#: src/themes/palisade/html/partials/ip_request.html.twig
+msgid "Withdraw the request?"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_quote.html.twig src/themes/palisade/html/mod_invoice_quotes.html.twig
@@ -27271,6 +27511,10 @@ msgstr ""
 msgid "You have to complete the CAPTCHA to continue"
 msgstr ""
 
+#: src/library/ClientFence/IpSeats.php src/themes/palisade/html/partials/ip_seats.html.twig
+msgid "You have used your :count IP changes for 30 days. The next one is free on :date."
+msgstr ""
+
 #: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
 msgid "You may not pay a deposit invoice with this payment gateway."
 msgstr ""
@@ -27453,6 +27697,14 @@ msgstr ""
 
 #: src/modules/Antispam/Service.php
 msgid "Your IP address (:ip) is blocked. Please contact our support to lift your block."
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was approved"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your IP address change for :title was refused"
 msgstr ""
 
 #: src/modules/Antispam/Service.php
@@ -27769,6 +28021,10 @@ msgstr ""
 
 #: src/modules/Client/Google.php
 msgid "Your sign-in here is linked to another Google account. Use that Google account, or your password."
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Your software sends the key, its domain, install path and version to this address. The answer has \"valid\": true when the licence passes."
 msgstr ""
 
 #: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
