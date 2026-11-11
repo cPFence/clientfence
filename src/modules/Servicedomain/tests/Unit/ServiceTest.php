@@ -2259,7 +2259,9 @@ test('removes registrar', function (): void {
     // The registrar's price list and fetch state go with it.
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
     $dbal->shouldReceive('delete')->once()->with('tld_registrar_cost', ['tld_registrar_id' => 1])->andReturn(1);
-    $dbal->shouldReceive('delete')->once()->with('mod_clientfence_state', ['name' => 'tld_prices_1'])->andReturn(1);
+    foreach (['tld_prices_1', 'tld_sync_1', 'tld_sync_mail_1'] as $name) {
+        $dbal->shouldReceive('delete')->once()->with('mod_clientfence_state', ['name' => $name])->andReturn(1);
+    }
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getConnection')->andReturn($dbal);
     $di['em'] = $em;

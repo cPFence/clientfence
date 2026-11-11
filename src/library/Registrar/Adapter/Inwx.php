@@ -15,7 +15,7 @@ use ClientFence\Mod\Invoice\EuVat;
 use Symfony\Component\Intl\Countries;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract
+class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     private const LIVE_URL = 'https://api.domrobot.com/jsonrpc/';
     private const OTE_URL = 'https://api.ote.domrobot.com/jsonrpc/';
@@ -209,6 +209,26 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract
         $this->request('domain.update', ['domain' => $domain->getName(), 'transferLock' => 0]);
 
         return true;
+    }
+
+    /** The account's price per year without VAT (domain.getPrices); promotions are left out, they end. */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $year = static fn (mixed $p): ?float => is_numeric($p) ? (float) $p : null;
+        $currency = '';
+        $prices = [];
+        foreach ((array) ($this->request('domain.getPrices', ['vat' => false])['price'] ?? []) as $row) {
+            $tld = strtolower(ltrim((string) ($row['tld'] ?? ''), '.'));
+            if ($tld !== '') {
+                $prices['.' . $tld] = ['register' => $year($row['createPrice'] ?? null), 'renew' => $year($row['renewalPrice'] ?? null), 'transfer' => $year($row['transferPrice'] ?? null)];
+                $currency = $currency !== '' ? $currency : strtoupper((string) ($row['currency'] ?? ''));
+            }
+        }
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+
+        return ['currency' => $currency !== '' ? $currency : 'EUR', 'prices' => $prices, 'remaining' => []];
     }
 
     /** One API call; returns its resData. Codes 1000 and 1001 (accepted, pending at the registry) are success. */

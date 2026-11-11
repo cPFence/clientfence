@@ -71,3 +71,31 @@ test('Namecheap sends the requested registrar lock change', function (string $op
     'unlock a locked domain' => ['unlock', 'true', 'UNLOCK'],
     'lock an unlocked domain' => ['lock', 'false', 'LOCK'],
 ]);
+
+test('the Namecheap price list reads the account price of one year plus the ICANN fee, without logging the reply', function (): void {
+    $price = fn (int $years, string $yours, string $fee = '0.18'): string => '<Price Duration="' . $years . '" DurationType="YEAR" Price="' . $yours . '" RegularPrice="15.98"'
+        . ' YourPrice="' . $yours . '" YourAdditonalCost="' . $fee . '" PromotionPrice="0.0" Currency="USD"/>';
+    $this->httpClient->setResponseFactory(function (string $method, string $url) use ($price): MockResponse {
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $params);
+        expect($params)->toMatchArray(['Command' => 'namecheap.users.getPricing', 'ProductType' => 'DOMAIN']);
+
+        return new MockResponse('<ApiResponse Status="OK" xmlns="http://api.namecheap.com/xml.response"><CommandResponse Type="namecheap.users.getPricing">'
+            . '<UserGetPricingResult><ProductType Name="domains">'
+            . '<ProductCategory Name="register"><Product Name="com">' . $price(2, '22.40') . $price(1, '11.20') . '</Product><Product Name="ch">' . $price(1, '9.98', '0') . '</Product></ProductCategory>'
+            . '<ProductCategory Name="renew"><Product Name="com">' . $price(1, '12.20') . '</Product><Product Name="ch">' . $price(1, '9.98', '0') . '</Product></ProductCategory>'
+            . '<ProductCategory Name="transfer"><Product Name="com">' . $price(1, '10.20') . '</Product></ProductCategory>'
+            . '<ProductCategory Name="reactivate"><Product Name="com">' . $price(1, '99.00') . '</Product></ProductCategory>'
+            . '</ProductType></UserGetPricingResult></CommandResponse></ApiResponse>');
+    });
+
+    $result = $this->adapter->getTldPrices();
+    expect($result['currency'])->toBe('USD')
+        ->and($result['remaining'])->toBe([])
+        ->and(array_keys($result['prices']))->toBe(['.com', '.ch'])
+        ->and($result['prices']['.com']['register'])->toEqualWithDelta(11.38, 0.0001)
+        ->and($result['prices']['.com']['renew'])->toEqualWithDelta(12.38, 0.0001)
+        ->and($result['prices']['.com']['transfer'])->toEqualWithDelta(10.38, 0.0001)
+        ->and($result['prices']['.ch'])->toBe(['register' => 9.98, 'renew' => 9.98, 'transfer' => null])
+        ->and(array_keys($this->adapter->getTldPrices(['.ch'])['prices']))->toBe(['.ch'])
+        ->and(json_encode($this->logger->calls))->not->toContain('API RESULT');
+});

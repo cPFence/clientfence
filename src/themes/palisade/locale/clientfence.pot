@@ -90,6 +90,10 @@ msgstr ""
 msgid "%count% of them pay by a gateway subscription with a fixed amount: it keeps charging the old price until the client subscribes again."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "%count% of these TLDs also have fixed prices in other currencies: the sync leaves those alone."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "%count% opted out of marketing email and will be skipped."
 msgstr ""
@@ -132,6 +136,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
 msgid "%period% year(s)"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "%registrar% now charges %count% of your TLDs in another currency. The sync stopped following them: get the price list and apply them once to set their prices again."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_canned_category.html.twig src/modules/Support/templates/admin/mod_support_canned_responses.html.twig src/modules/Support/templates/admin/mod_support_kb_article.html.twig …
@@ -3086,6 +3094,10 @@ msgstr ""
 msgid "Applicable Products (Select None to Apply to All)"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "Applied"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Applies To"
 msgstr ""
@@ -3676,6 +3688,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Being imported"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "Below cost"
 msgstr ""
 
 #: src/library/Payment/Adapter/Stripe.php
@@ -6140,6 +6156,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "Correct the linked invoice and stored payment amount for this transaction."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "Costs are in the registrar's currency for one year, your prices in your default currency."
 msgstr ""
 
 #: src/modules/Servicedomain/Service.php
@@ -14130,6 +14150,10 @@ msgstr ""
 msgid "Needs the client ID and secret. Off, no Google button is shown anywhere."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "Needs your review"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Negative Invoice - Generate refund invoice continuing paid invoices numbering"
 msgstr ""
@@ -15326,6 +15350,10 @@ msgstr ""
 msgid "Notifications could not be loaded"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Notify only"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_options.html.twig
 msgid "Now"
 msgstr ""
@@ -15460,6 +15488,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Once a day the cron makes a backup of the whole database (a gzip SQL file) and keeps it or sends it by each method that is on. Turn a method on with Save & Activate; its connection is tested first. The file is not encrypted and holds all client data: send it only to places you trust. Old backups are not removed from the remote server."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Once a day. Follows the TLDs you imported from this registrar; TLDs marked Keep my price are skipped. Apply holds a change of more than 50% for you."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
@@ -15820,6 +15852,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Open the invoice to pay"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "Open the price list"
 msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
@@ -18966,7 +19002,7 @@ msgstr ""
 msgid "Registrar code is missing"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Registrar cost"
 msgstr ""
 
@@ -18994,7 +19030,7 @@ msgstr ""
 msgid "Registrars"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Registration"
 msgstr ""
 
@@ -19206,7 +19242,7 @@ msgstr ""
 msgid "Renew Now"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Renewal"
 msgstr ""
 
@@ -20264,6 +20300,10 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Scheduled for %time%."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Scheduled sync"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -22018,6 +22058,10 @@ msgstr ""
 msgid "Suggest one"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "Suggested"
+msgstr ""
+
 #: src/modules/Support/templates/client/mod_support_kb_suggestions.html.twig
 msgid "Suggested knowledge base articles"
 msgstr ""
@@ -22254,7 +22298,7 @@ msgstr ""
 msgid "System name"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "TLD"
 msgstr ""
 
@@ -22296,6 +22340,10 @@ msgstr ""
 
 #: src/modules/Product/Api/Admin.php src/modules/Servicedomain/Api/Admin.php src/modules/Servicedomain/Api/Guest.php …
 msgid "TLD not found"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "TLD price changes"
 msgstr ""
 
 #: src/modules/Servicedomain/Api/Admin.php
@@ -23164,6 +23212,14 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "The currently selected network interface does not appear to be able to reach the internet!"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "The daily price sync with %registrar% found these changes. Nothing was changed in your store: apply them from the price list if they are right."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "The daily price sync with %registrar% found these changes. Rows marked Applied are your new prices; rows marked Needs your review changed by more than half, or the registrar no longer prices them, and wait for you."
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -28321,6 +28377,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Api/Client.php
 msgid "Your plan allows :limit mailboxes, and all are in use."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
+msgid "Your price"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig

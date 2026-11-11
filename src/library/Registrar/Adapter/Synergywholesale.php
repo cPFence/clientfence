@@ -9,7 +9,7 @@ declare(strict_types=1);
  * IP addresses allowed to call it. .au names ask for the registry's eligibility details on the order form
  * (getDomainFields()). Synergy Wholesale has no test system, so test mode refuses every call.
  */
-class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract
+class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     private const URL = 'https://api.synergywholesale.com/?wsdl';
 
@@ -256,6 +256,26 @@ class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract
         $this->request($this->lockCommand($domain, 'unlockDomain'), ['domainName' => $domain->getName()]);
 
         return true;
+    }
+
+    /** The reseller's one-year cost per action (getDomainPricing); Synergy Wholesale bills in AUD and the reply names no currency. */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $year = static fn (mixed $p): ?float => is_numeric($p) ? (float) $p : null;
+        $prices = [];
+        foreach ((array) ($this->request('getDomainPricing', [])->pricing ?? []) as $row) {
+            $row = (array) $row;
+            $prices['.' . strtolower(ltrim((string) ($row['tld'] ?? ''), '.'))] = [
+                'register' => $year($row['register_1_year'] ?? null),
+                'renew' => $year($row['renew'] ?? null),
+                'transfer' => $year($row['transfer'] ?? null),
+            ];
+        }
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+
+        return ['currency' => 'AUD', 'prices' => $prices, 'remaining' => []];
     }
 
     /** The SOAP client; a test replaces it. */

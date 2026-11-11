@@ -52,6 +52,15 @@
                 </div>
                 {% endfor %}
                 <div class="col-md-4">
+                    <label class="form-label" for="cf-sync-mode">{{ 'Scheduled sync'|trans }}</label>
+                    <select class="form-select" id="cf-sync-mode" name="mode" aria-describedby="cf-sync-mode-help">
+                        {% for mode, label in { off: 'Off'|trans, notify: 'Notify only'|trans, apply: 'Apply'|trans } %}
+                        <option value="{{ mode }}"{% if prices.settings.mode == mode %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-hint" id="cf-sync-mode-help">{{ 'Once a day. Follows the TLDs you imported from this registrar; TLDs marked Keep my price are skipped. Apply holds a change of more than 50% for you.'|trans }}</div>
+                </div>
+                <div class="col-md-4">
                     <label class="form-label" for="cf-rounding">{{ 'Rounding'|trans }}</label>
                     <select class="form-select" id="cf-rounding" name="rounding">
                         <option value=""{% if prices.settings.rounding == '' %} selected{% endif %}>{{ 'None'|trans }}</option>
@@ -61,7 +70,6 @@
                     </select>
                 </div>
             </div>
-            <input type="hidden" name="mode" value="{{ prices.settings.mode }}">
             <input type="hidden" name="id" value="{{ prices.id }}">
         </div>
         <div class="card-footer text-end">

@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract
+class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     private const LIVE_URL = 'https://api.openprovider.eu/v1beta';
     private const SANDBOX_URL = 'http://api.sandbox.openprovider.nl:8480/v1beta';
@@ -200,6 +200,31 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract
         $this->request('PUT', '/domains/' . $this->domainId($domain), ['is_locked' => false]);
 
         return true;
+    }
+
+    /** The account's one-year price per action of the active TLDs (GET /tlds), in the reseller's currency ("reseller", not the TLD's "product" currency). */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $year = static fn (mixed $p): ?float => is_numeric($p['reseller']['price'] ?? null) ? (float) $p['reseller']['price'] : null;
+        $currency = '';
+        $prices = [];
+        $offset = 0;
+        do {
+            // 1000 is Openprovider's largest page.
+            $page = $this->request('GET', '/tlds', ['status' => 'ACT', 'with_price' => 'true', 'limit' => 1000, 'offset' => $offset]);
+            $rows = is_array($page['results'] ?? null) ? $page['results'] : [];
+            foreach ($rows as $row) {
+                $p = is_array($row['prices'] ?? null) ? $row['prices'] : [];
+                $prices['.' . strtolower(ltrim((string) ($row['name'] ?? ''), '.'))] =['register' => $year($p['create_price'] ?? null), 'renew' => $year($p['renew_price'] ?? null), 'transfer' => $year($p['transfer_price'] ?? null)];
+                $currency = $currency !== '' ? $currency : strtoupper((string) ($p['create_price']['reseller']['currency'] ?? ''));
+            }
+            $offset += count($rows);
+        } while ($rows !== [] && $offset < (int) ($page['total'] ?? 0));
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+
+        return ['currency' => $currency !== '' ? $currency : 'EUR', 'prices' => $prices, 'remaining' => []];
     }
 
     /** One API call; returns its data. A refusal (code other than 0) is a registrar error with Openprovider's reason. */

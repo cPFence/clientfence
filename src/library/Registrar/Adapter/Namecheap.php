@@ -5,7 +5,7 @@ use GeoIp2\Model\Domain;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
+class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     public $config = [
         'api-user-id' => null,
@@ -119,7 +119,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
      *
      * @throws Registrar_Exception
      */
-    protected function _makeRequest($params = [], $method = 'GET')
+    protected function _makeRequest($params = [], $method = 'GET', bool $logResult = true)
     {
         $params = $this->includeAuthorizationParams($params);
 
@@ -149,7 +149,10 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
             throw $e;
         }
 
-        $this->getLog()->info('API RESULT: ' . $data);
+        // ClientFence core patch: the domain price list is megabytes long; it is not logged.
+        if ($logResult) {
+            $this->getLog()->info('API RESULT: ' . $data);
+        }
 
         $result = simplexml_load_string($data);
 
@@ -701,5 +704,37 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract
             '.nom.es', '.org', '.org.es', '.org.pe', '.org.uk', '.pe', '.tv', '.us',
         ])
             && !$this->isDomainAvailable($domain);
+    }
+
+    /**
+     * ClientFence core patch: the account's one-year cost per action (Registrar_TldPrices, Servicedomain/PriceSync.php).
+     * YourPrice is the account's own (tier) price; YourAdditonalCost (sic) is the ICANN fee Namecheap adds at purchase.
+     */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $result = $this->_makeRequest(['Command' => 'namecheap.users.getPricing', 'ProductType' => 'DOMAIN'], 'GET', false);
+        $currency = '';
+        $prices = [];
+        foreach ($result->CommandResponse->UserGetPricingResult->ProductType->ProductCategory ?? [] as $category) {
+            $action = strtolower((string) $category['Name']);
+            if (!in_array($action, ['register', 'renew', 'transfer'], true)) {
+                continue;
+            }
+            foreach ($category->Product as $product) {
+                $tld = '.' . strtolower((string) $product['Name']);
+                foreach ($product->Price as $price) {
+                    if ((string) $price['Duration'] === '1' && strtoupper((string) $price['DurationType']) === 'YEAR' && is_numeric((string) $price['YourPrice'])) {
+                        $prices[$tld] ??= ['register' => null, 'renew' => null, 'transfer' => null];
+                        $prices[$tld][$action] = (float) $price['YourPrice'] + (float) $price['YourAdditonalCost'];
+                        $currency = $currency !== '' ? $currency : strtoupper((string) $price['Currency']);
+                    }
+                }
+            }
+        }
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+
+        return ['currency' => $currency !== '' ? $currency : 'USD', 'prices' => $prices, 'remaining' => []];
     }
 }

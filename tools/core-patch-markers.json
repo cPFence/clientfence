@@ -5260,6 +5260,10 @@
         "done": "ClientFence core patch: its price list costs and fetch state go with it."
     },
     {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the scheduled TLD price sync runs after the billing tasks (PriceSync::runIfDue())."
+    },
+    {
         "file": "modules/Servicedomain/Api/Admin.php",
         "done": "ClientFence core patch: a registrar's TLD price settings and price list state (PriceSync.php)."
     },
@@ -5282,5 +5286,21 @@
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig",
         "done": "ClientFence core patch: \"Keep my price\" (Servicedomain/PriceSync.php)."
+    },
+    {
+        "file": "library/Registrar/Adapter/Namecheap.php",
+        "done": "ClientFence core patch: the domain price list is megabytes long; it is not logged."
+    },
+    {
+        "file": "library/Registrar/Adapter/Namecheap.php",
+        "done": "ClientFence core patch: the account's one-year cost per action (Registrar_TldPrices, Servicedomain/PriceSync.php)"
+    },
+    {
+        "file": "library/Registrar/Adapter/Internetbs.php",
+        "done": "ClientFence core patch: the account's one-year cost per action (Registrar_TldPrices, Servicedomain/PriceSync.php)"
+    },
+    {
+        "file": "library/Registrar/Adapter/Internetbs.php",
+        "done": "ClientFence core patch: the price list nests products and periods, which only its JSON reply can carry."
     }
 ]

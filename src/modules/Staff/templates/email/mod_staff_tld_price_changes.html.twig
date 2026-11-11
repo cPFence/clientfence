@@ -1,0 +1,56 @@
+{% block subject %}[{{ guest.system_company.name }}] {{ 'TLD price changes'|trans }}{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="{{ locale }}" dir="{{ dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>{{ 'TLD price changes'|trans }}</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f1f4f8;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
+	<tr><td style="padding:20px 32px; border-bottom:3px solid {{ guest.system_company.brand_color|default('#2563eb') }};">
+		{% if guest.system_company.logo_url|default('') %}
+		<img src="{{ guest.system_company.logo_url }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
+		{% else %}
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#0f172a;">{{ guest.system_company.name }}</span>
+		{% endif %}
+	</td></tr>
+	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
+		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'TLD price changes'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': staff.name|default('')}) }}</p>
+		{% if sync.rows|default([])|length > 0 %}
+		<p style="margin:0 0 16px;">{% if sync.mode|default('') == 'apply' %}{{ 'The daily price sync with %registrar% found these changes. Rows marked Applied are your new prices; rows marked Needs your review changed by more than half, or the registrar no longer prices them, and wait for you.'|trans_html({}, {'%registrar%': '<strong>' ~ (sync.registrar|default(''))|e ~ '</strong>'}) }}{% else %}{{ 'The daily price sync with %registrar% found these changes. Nothing was changed in your store: apply them from the price list if they are right.'|trans_html({}, {'%registrar%': '<strong>' ~ (sync.registrar|default(''))|e ~ '</strong>'}) }}{% endif %}</p>
+		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; border:1px solid #e2e8f0; border-radius:6px; font-size:13px; line-height:20px;">
+			<tr style="background-color:#f8fafc;"><th align="left" style="padding:8px 12px;">{{ 'TLD'|trans }}</th><th align="left" style="padding:8px 12px;">{{ 'Registrar cost'|trans }}</th><th align="left" style="padding:8px 12px;">{{ 'Your price'|trans }}</th></tr>
+			{% for row in sync.rows %}
+			<tr><td colspan="3" style="padding:8px 12px 0; border-top:1px solid #e2e8f0;"><strong>{{ row.tld }}</strong> &middot; {% if row.what == 'applied' %}{{ 'Applied'|trans }}{% elseif row.what == 'review' %}{{ 'Needs your review'|trans }}{% else %}{{ 'Suggested'|trans }}{% endif %}{% if row.below %} &middot; <span style="color:#b91c1c;">{{ 'Below cost'|trans }}</span>{% endif %}</td></tr>
+			{% for action, a in row.actions %}
+			<tr><td style="padding:2px 12px;">{% if action == 'register' %}{{ 'Registration'|trans }}{% elseif action == 'renew' %}{{ 'Renewal'|trans }}{% else %}{{ 'Transfer'|trans }}{% endif %}</td><td style="padding:2px 12px;">{{ a.cost_old is null ? '–' : a.cost_old|format_number({min_fraction_digit: 2, max_fraction_digit: 4}) }} &rarr; {{ a.cost_new is null ? '–' : a.cost_new|format_number({min_fraction_digit: 2, max_fraction_digit: 4}) }}</td><td style="padding:2px 12px;">{{ a.price_now|format_number({fraction_digit: 2}) }} &rarr; {{ a.price_new|format_number({fraction_digit: 2}) }}</td></tr>
+			{% endfor %}
+			{% endfor %}
+		</table>
+		<p style="margin:0 0 16px; font-size:13px; color:#64748b;">{{ 'Costs are in the registrar\'s currency for one year, your prices in your default currency.'|trans }}{% if sync.fixed|default(0) > 0 %} {{ '%count% of these TLDs also have fixed prices in other currencies: the sync leaves those alone.'|trans({'%count%': sync.fixed}) }}{% endif %}</p>
+		{% endif %}
+		{% if sync.rebase|default(0) > 0 %}
+		<p style="margin:0 0 16px;">{{ '%registrar% now charges %count% of your TLDs in another currency. The sync stopped following them: get the price list and apply them once to set their prices again.'|trans_html({}, {'%registrar%': '<strong>' ~ (sync.registrar|default(''))|e ~ '</strong>', '%count%': (sync.rebase)|e}) }}</p>
+		{% endif %}
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
+				<a href="{{ sync.url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open the price list'|trans }}</a>
+			</td></tr>
+		</table>
+	</td></tr>
+	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
+		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
+	</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>
+{% endblock %}

@@ -124,3 +124,16 @@ test('test mode refuses every call', function (): void {
     expect(fn () => $adapter->renewDomain(synergyDomain('.com')))->toThrow(Registrar_Exception::class)
         ->and($adapter->calls)->toBe([]);
 });
+
+test('the price list reads the one-year costs in AUD from getDomainPricing; a missing price is null', function (): void {
+    $adapter = synergyAdapter(['getDomainPricing' => (object) ['status' => 'OK', 'errorMessage' => '', 'pricing' => [
+        (object) ['tld' => 'com.au', 'minPeriod' => 1, 'maxPeriod' => 5, 'register_1_year' => '11.25', 'register_2_year' => '22.50', 'renew' => '11.25', 'transfer' => '0.00'],
+        (object) ['tld' => 'ai', 'minPeriod' => 2, 'maxPeriod' => 10, 'register_1_year' => null, 'register_2_year' => '150.00', 'renew' => '75.00', 'transfer' => '75.00'],
+    ]]]);
+
+    expect($adapter->getTldPrices())->toBe(['currency' => 'AUD', 'prices' => [
+        '.com.au' => ['register' => 11.25, 'renew' => 11.25, 'transfer' => 0.0],
+        '.ai' => ['register' => null, 'renew' => 75.0, 'transfer' => 75.0],
+    ], 'remaining' => []])
+        ->and(array_keys($adapter->getTldPrices(['.ai'])['prices']))->toBe(['.ai']);
+});

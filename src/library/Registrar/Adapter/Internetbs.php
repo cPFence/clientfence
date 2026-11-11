@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
-class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract
+class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     public $config = [
         'apikey' => null,
@@ -322,6 +322,32 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract
     }
 
     /**
+     * ClientFence core patch: the account's one-year cost per action (Registrar_TldPrices, Servicedomain/PriceSync.php),
+     * from the price list (version 2: every product with its price per period), in the account's currency.
+     */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $result = $this->_process('/Account/PriceList/Get', ['version' => 2, 'ResponseFormat' => 'JSON']);
+        $actions = ['registration' => 'register', 'renewal' => 'renew', 'transfer' => 'transfer'];
+        $prices = [];
+        foreach (is_array($result['product'] ?? null) ? $result['product'] : [] as $product) {
+            $action = $actions[$product['operation'] ?? ''] ?? null;
+            $price = $product['period'][1] ?? null;
+            if ($action !== null && is_numeric($price)) {
+                $tld = '.' . strtolower(ltrim((string) ($product['type'] ?? ''), '.'));
+                $prices[$tld] ??= ['register' => null, 'renew' => null, 'transfer' => null];
+                $prices[$tld][$action] = (float) $price;
+            }
+        }
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+        $currency = strtoupper(trim((string) ($result['currency'] ?? '')));
+
+        return ['currency' => $currency !== '' ? $currency : 'USD', 'prices' => $prices, 'remaining' => []];
+    }
+
+    /**
      * Runs an api command and returns parsed data.
      *
      * @param string $command
@@ -348,6 +374,16 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract
         }
 
         $data = $response->getContent();
+
+        // ClientFence core patch: the price list nests products and periods, which only its JSON reply can carry.
+        if (($params['ResponseFormat'] ?? null) === 'JSON') {
+            $result = (array) json_decode($data, true);
+            if (($result['status'] ?? '') === 'FAILURE') {
+                throw new Registrar_Exception((string) ($result['message'] ?? ''));
+            }
+
+            return $result;
+        }
 
         return $this->_parseResult($data);
     }

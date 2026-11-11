@@ -161,6 +161,7 @@ $paths = [
     'modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig',
     'modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig',
     'modules/Staff/templates/email/mod_staff_order_action_failed.html.twig',
+    'modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig',
     'modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig',
     'modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig',
     'modules/Staff/templates/email/mod_staff_quote_answered.html.twig',

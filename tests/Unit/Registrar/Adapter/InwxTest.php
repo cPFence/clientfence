@@ -159,3 +159,17 @@ test('the order form asks the .us and .eu questions only', function (): void {
         ->and(Registrar_Adapter_Inwx::getDomainFields('.eu')['eu_citizenship']['required'] ?? false)->toBeFalse()
         ->and(Registrar_Adapter_Inwx::getDomainFields('.com'))->toBe([]);
 });
+
+test('the price list reads the yearly prices without VAT from domain.getPrices; a missing action is null', function (): void {
+    $adapter = inwxAdapter(['domain.getPrices' => ['price' => [
+        ['tld' => 'com', 'currency' => 'EUR', 'createPrice' => 9.4, 'renewalPrice' => 10.9, 'transferPrice' => 9.4, 'createPeriod' => 1, 'promo' => ['createPrice' => 1.0]],
+        ['tld' => 'de', 'currency' => 'EUR', 'createPrice' => '3.90', 'renewalPrice' => '3.90'],
+    ]]]);
+
+    expect($adapter->getTldPrices())->toBe(['currency' => 'EUR', 'prices' => [
+        '.com' => ['register' => 9.4, 'renew' => 10.9, 'transfer' => 9.4],
+        '.de' => ['register' => 3.9, 'renew' => 3.9, 'transfer' => null],
+    ], 'remaining' => []])
+        ->and(inwxCall('domain.getPrices')[1])->toBe(['vat' => false])
+        ->and(array_keys($adapter->getTldPrices(['.de'])['prices']))->toBe(['.de']);
+});

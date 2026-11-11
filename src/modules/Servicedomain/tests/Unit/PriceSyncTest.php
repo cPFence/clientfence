@@ -22,9 +22,14 @@ final class PriceSyncFakeRegistrar implements Registrar_TldPrices
     {
     }
 
+    public ?string $fail = null;
+
     public function getTldPrices(array $tlds = []): array
     {
         ++$this->calls;
+        if ($this->fail !== null) {
+            throw new Registrar_Exception($this->fail);
+        }
         $wanted = $tlds === [] ? [...$this->unpriced, ...array_keys($this->prices)] : $tlds;
         $now = $this->slice > 0 ? array_slice($wanted, 0, $this->slice) : $wanted;
 
@@ -265,4 +270,143 @@ test('apply changes nothing when the preview is stale or a ticked row cannot be 
     expect(fn () => PriceSync::apply($di, 1, ['.com'], [], $preview['fingerprint'], null))->toThrow(ClientFence\InformationException::class, 'changed since the preview')
         ->and($db->fetchAllAssociative('SELECT * FROM tld ORDER BY id'))->toBe($before)
         ->and($db->fetchOne('SELECT COUNT(*) FROM tld_registrar_cost WHERE applied_renew IS NOT NULL'))->toEqual(0);
+});
+
+/**
+ * The import applied .com and created .io for registrar 1 at USD 1.25; the sync then runs with $mode.
+ *
+ * @return array{0: Pimple\Container, 1: Doctrine\DBAL\Connection, 2: PriceSyncFakeRegistrar, 3: ArrayObject}
+ */
+function priceSyncScheduled(string $mode, int $slice = 0): array
+{
+    [$di, $db, $registrar] = priceSyncFixture(new PriceSyncFakeRegistrar(PRICE_LIST, 'USD', $slice));
+    PriceSync::fetch($di, 1, 30);
+    PriceSync::apply($di, 1, ['.com', '.io'], [], PriceSync::preview($di, 1)['fingerprint'], null);
+    // A TLD priced by hand on the same registrar: never followed.
+    $db->insert('tld', ['tld' => '.dev', 'tld_registrar_id' => 1, 'price_registration' => 1.0, 'price_renew' => 1.0, 'price_transfer' => 1.0, 'active' => 1, 'allow_register' => 1, 'allow_transfer' => 1, 'require_transfer_code' => 0, 'min_years' => 1]);
+    $registrar->prices['.dev'] = ['register' => 50.0, 'renew' => 50.0, 'transfer' => 50.0];
+    PriceSync::saveSettings($di, 1, ['mode' => $mode]);
+    $registrar->calls = 0;
+
+    $emails = new ArrayObject();
+    $service = $di['mod_service']('servicedomain');
+    $email = new class($emails) {
+        public function __construct(private ArrayObject $emails)
+        {
+        }
+
+        public function sendTemplate(array $data): bool
+        {
+            $this->emails->append($data);
+
+            return true;
+        }
+    };
+    $di['mod_service'] = $di->protect(static fn (string $name) => $name === 'email' ? $email : $service);
+    $di['url'] = new class {
+        public function adminLink(string $path): string
+        {
+            return '/admin/' . $path;
+        }
+    };
+
+    return [$di, $db, $registrar, $emails];
+}
+
+function priceSyncTomorrow(Doctrine\DBAL\Connection $db): void
+{
+    $db->update('mod_clientfence_state', ['value' => json_encode(['remaining' => null, 'done_at' => date('Y-m-d H:i:s', strtotime('-1 day'))])], ['name' => 'tld_sync_1']);
+}
+
+test('the scheduled sync is off by default and then calls no registrar', function (): void {
+    [$di, , $registrar, $emails] = priceSyncScheduled('off');
+    PriceSync::runIfDue($di);
+
+    expect($registrar->calls)->toBe(0)->and($emails)->toHaveCount(0);
+});
+
+test('notify only emails a cost change once and writes nothing; an exchange rate move alone is ignored', function (): void {
+    [$di, $db, $registrar, $emails] = priceSyncScheduled('notify');
+    $db->update('currency', ['conversion_rate' => 1.5], ['code' => 'USD']);
+    PriceSync::runIfDue($di);
+    expect($emails)->toHaveCount(0)->and($registrar->calls)->toBe(1);
+    $db->update('currency', ['conversion_rate' => 1.25], ['code' => 'USD']);
+
+    $registrar->prices['.com']['renew'] = 13.75;
+    priceSyncTomorrow($db);
+    PriceSync::runIfDue($di);
+    PriceSync::runIfDue($di);
+    expect($emails)->toHaveCount(1)->and($registrar->calls)->toBe(2)
+        ->and($emails[0]['code'])->toBe('mod_staff_tld_price_changes')
+        ->and(array_column($emails[0]['sync']['rows'], 'tld'))->toBe(['.com'])
+        ->and($emails[0]['sync']['rows'][0]['what'])->toBe('suggested')
+        ->and($emails[0]['sync']['rows'][0]['actions']['renew'])->toMatchArray(['cost_old' => 12.5, 'cost_new' => 13.75, 'price_now' => 10.0, 'price_new' => 11.0])
+        ->and((float) $db->fetchOne("SELECT price_renew FROM tld WHERE tld = '.com'"))->toBe(10.0);
+
+    // The next day the same set is not emailed again, even when the daily rate update moved the suggested price.
+    $db->update('currency', ['conversion_rate' => 1.26], ['code' => 'USD']);
+    priceSyncTomorrow($db);
+    PriceSync::runIfDue($di);
+    expect($emails)->toHaveCount(1)->and($registrar->calls)->toBe(3);
+});
+
+test('apply writes changes and below-cost prices, holds a jump over half, and skips locked and hand-priced TLDs', function (): void {
+    [$di, $db, $registrar, $emails] = priceSyncScheduled('apply');
+    // The rate moved too: only the renewal, whose cost changed, gets a new price (at today's rate).
+    $db->update('currency', ['conversion_rate' => 1.3], ['code' => 'USD']);
+    $registrar->prices['.com']['renew'] = 13.75;
+    $registrar->prices['.io']['register'] = 80.0;
+    $registrar->prices['.dev']['register'] = 99.0;
+    PriceSync::runIfDue($di);
+
+    $rows = array_column($emails[0]['sync']['rows'], null, 'tld');
+    expect(array_keys($rows))->toBe(['.com', '.io'])
+        ->and($rows['.com']['what'])->toBe('applied')
+        ->and($db->fetchAssociative("SELECT price_registration, price_renew FROM tld WHERE tld = '.com'"))->toEqual(['price_registration' => 8.0, 'price_renew' => 10.58])
+        ->and($rows['.io']['what'])->toBe('review')
+        ->and((float) $db->fetchOne("SELECT price_registration FROM tld WHERE tld = '.io'"))->toBe(32.0)
+        ->and((float) $db->fetchOne("SELECT price_registration FROM tld WHERE tld = '.dev'"))->toBe(1.0);
+
+    // Applied changes are the new baseline; the held one stays and is not emailed again.
+    priceSyncTomorrow($db);
+    PriceSync::runIfDue($di);
+    expect($emails)->toHaveCount(1);
+
+    // A price staff lowered below cost is raised back; a locked TLD is left alone.
+    $db->update('tld', ['price_renew' => 10.0], ['tld' => '.com']);
+    $db->update('tld', ['price_locked' => 1], ['tld' => '.io']);
+    priceSyncTomorrow($db);
+    PriceSync::runIfDue($di);
+    expect($emails)->toHaveCount(2)
+        ->and(array_column($emails[1]['sync']['rows'], 'tld'))->toBe(['.com'])
+        ->and($emails[1]['sync']['rows'][0])->toMatchArray(['below' => true, 'what' => 'applied'])
+        ->and((float) $db->fetchOne("SELECT price_renew FROM tld WHERE tld = '.com'"))->toBe(10.58);
+});
+
+test('a registrar error changes nothing and is tried again the next day; the time limit stops a run', function (): void {
+    [$di, $db, $registrar, $emails] = priceSyncScheduled('apply', 1);
+    $registrar->fail = 'down';
+    PriceSync::runIfDue($di);
+    PriceSync::runIfDue($di);
+    expect($registrar->calls)->toBe(1)->and($emails)->toHaveCount(0)
+        ->and($di['logger']->lines)->toContain('TLD price sync of registrar #1 failed: down');
+
+    $registrar->fail = null;
+    $registrar->prices['.com']['renew'] = 13.75;
+    priceSyncTomorrow($db);
+    PriceSync::runIfDue($di, 0);
+    expect($registrar->calls)->toBe(2)->and($emails)->toHaveCount(0);
+    PriceSync::runIfDue($di, 0);
+    expect($registrar->calls)->toBe(3)->and($emails)->toHaveCount(1)
+        ->and((float) $db->fetchOne("SELECT price_renew FROM tld WHERE tld = '.com'"))->toBe(11.0);
+});
+
+test('a sync that sees a new registrar currency makes the page get its list again', function (): void {
+    [$di, $db, $registrar] = priceSyncScheduled('notify');
+    $db->insert('currency', ['id' => 3, 'code' => 'GBP', 'is_default' => 0, 'conversion_rate' => 0.9]);
+    $registrar->currency = 'GBP';
+    PriceSync::runIfDue($di);
+
+    expect(fn () => PriceSync::preview($di, 1))->toThrow(ClientFence\InformationException::class, 'Get the price list first.')
+        ->and($db->fetchOne("SELECT applied_rate FROM tld_registrar_cost WHERE tld = '.com'"))->toBeNull();
 });

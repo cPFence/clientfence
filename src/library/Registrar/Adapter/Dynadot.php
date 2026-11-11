@@ -17,7 +17,7 @@ declare(strict_types=1);
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract
+class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     private const LIVE_URL = 'https://api.dynadot.com/api3.json';
     private const SANDBOX_URL = 'https://api-sandbox.dynadot.com/api3.json';
@@ -304,6 +304,28 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract
         return true;
     }
 
+    /** The account's one-year price per action (tld_price, at the account's price level) in the configured currency. */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $result = $this->request('tld_price', ['currency' => $this->config['currency']]);
+        $year = static fn (mixed $p): ?float => is_numeric($p) ? (float) $p : null;
+        $prices = [];
+        foreach (is_array($result['TldPrice'] ?? null) ? $result['TldPrice'] : [] as $row) {
+            $price = is_array($row['Price'] ?? null) ? $row['Price'] : [];
+            $prices['.' . strtolower(ltrim((string) ($row['Tld'] ?? ''), '.'))] = [
+                'register' => $year($price['Register'] ?? null),
+                'renew' => $year($price['Renew'] ?? null),
+                'transfer' => $year($price['Transfer'] ?? null),
+            ];
+        }
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+        $currency = strtoupper(trim((string) ($result['Currency'] ?? '')));
+
+        return ['currency' => $currency !== '' ? $currency : $this->config['currency'], 'prices' => $prices, 'remaining' => []];
+    }
+
     /**
      * Calls one API3 command and returns the body of its "<Command>Response" object.
      *
@@ -332,7 +354,8 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract
             throw new Registrar_Exception('Could not reach Dynadot for :command', [':command' => $command]);
         }
 
-        if ($command !== 'get_transfer_auth_code') {
+        // Auth codes are secret; the price list is hundreds of kilobytes.
+        if (!in_array($command, ['get_transfer_auth_code', 'tld_price'], true)) {
             $this->getLog()->debug('Dynadot response: ' . $command . ' ' . $body);
         }
         $decoded = json_decode($body, true);

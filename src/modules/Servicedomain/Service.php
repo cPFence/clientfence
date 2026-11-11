@@ -894,6 +894,19 @@ class Service implements \ClientFence\InjectionAwareInterface
         return [$d, $adapter];
     }
 
+    /**
+     * ClientFence core patch: the scheduled TLD price sync runs after the billing tasks (PriceSync::runIfDue()).
+     */
+    public static function onAfterAdminCronRun(\ClientFence\Event $event): void
+    {
+        $di = $event->getDi();
+        try {
+            PriceSync::runIfDue($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('The TLD price sync failed: %s', $e->getMessage());
+        }
+    }
+
     public static function onBeforeAdminCronRun(\ClientFence\Event $event): bool
     {
         try {

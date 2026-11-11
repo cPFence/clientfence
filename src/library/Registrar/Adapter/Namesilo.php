@@ -15,7 +15,7 @@ use ClientFence\Mod\Invoice\EuVat;
 use Symfony\Component\Intl\Countries;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract
+class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     private const LIVE_URL = 'https://www.namesilo.com/api/';
     private const SANDBOX_URL = 'https://sandbox.namesilo.com/api/';
@@ -239,6 +239,23 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract
         $this->request('domainUnlock', ['domain' => $domain->getName()]);
 
         return true;
+    }
+
+    /** The account's one-year cost per action in USD (getPrices: one element per TLD in the reply, beside code and detail). */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $year = static fn (SimpleXMLElement $p): ?float => is_numeric((string) $p) ? (float) $p : null;
+        $prices = [];
+        foreach ($this->request('getPrices', [])->reply->children() as $name => $p) {
+            if ($name !== 'code' && $name !== 'detail') {
+                $prices['.' . strtolower($name)] = ['register' => $year($p->registration), 'renew' => $year($p->renew), 'transfer' => $year($p->transfer)];
+            }
+        }
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+
+        return ['currency' => 'USD', 'prices' => $prices, 'remaining' => []];
     }
 
     /**

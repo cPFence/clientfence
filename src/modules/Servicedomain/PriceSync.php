@@ -37,6 +37,8 @@ final class PriceSync
     public const CACHE_SECONDS = 86400;
     public const MAX_PERCENT = 1000;
     public const MAX_AMOUNT = 100000;
+    /** The scheduled sync leaves a price change above this share (0.5 = 50%) to staff. */
+    public const MAX_JUMP = 0.5;
 
     public const CHANGE = 'change';
     public const SAME = 'same';
@@ -102,9 +104,22 @@ final class PriceSync
      */
     public static function fetch(\Pimple\Container $di, int $registrarId, int $seconds, bool $refresh = false): array
     {
+        return self::pull($di, $registrarId, 'tld_prices_' . $registrarId, [], $seconds, $refresh);
+    }
+
+    /**
+     * fetch() for the page ($name tld_prices_ID, every TLD) and for the scheduled sync (tld_sync_ID,
+     * only $only), each with its own progress.
+     *
+     * @param list<string> $only
+     *
+     * @return array{done: bool, priced: int, remaining: int, fetched_at: ?string}
+     */
+    private static function pull(\Pimple\Container $di, int $registrarId, string $name, array $only, int $seconds, bool $refresh): array
+    {
         $db = self::db($di);
         $adapter = self::adapter($di, self::registrar($di, $registrarId));
-        $state = self::state($db, $registrarId);
+        $state = self::state($db, $name);
         $fresh = $state['done_at'] !== null && time() - (int) strtotime($state['done_at']) < self::CACHE_SECONDS;
         if ($refresh || ($state['remaining'] === null && !$fresh)) {
             $state = ['since' => date('Y-m-d H:i:s'), 'remaining' => [], 'first' => true, 'done_at' => $state['done_at']];
@@ -112,7 +127,7 @@ final class PriceSync
 
         $deadline = microtime(true) + $seconds;
         while ($state['remaining'] !== null) {
-            $result = $adapter->getTldPrices($state['first'] ? [] : $state['remaining']);
+            $result = $adapter->getTldPrices($state['first'] ? $only : $state['remaining']);
             $prices = is_array($result['prices'] ?? null) ? $result['prices'] : [];
             $remaining = array_values(array_map('strval', is_array($result['remaining'] ?? null) ? $result['remaining'] : []));
             // No progress, or a finished run that priced nothing (TLDs with no price may fill a whole slice).
@@ -123,13 +138,16 @@ final class PriceSync
             if (self::rate($db, $currency) === null) {
                 throw new InformationException('The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs.', [':code' => $currency !== '' ? $currency : '?']);
             }
-            self::store($di, $registrarId, $currency, $prices);
+            // A sync that sees a new registrar currency makes the page's list stale: it is fetched again.
+            if (self::store($di, $registrarId, $currency, $prices) && $name !== 'tld_prices_' . $registrarId) {
+                $db->delete('mod_clientfence_state', ['name' => 'tld_prices_' . $registrarId]);
+            }
             $state['first'] = false;
             $state['remaining'] = $remaining === [] ? null : $remaining;
             if ($state['remaining'] === null) {
                 $state['done_at'] = date('Y-m-d H:i:s');
             }
-            self::saveState($db, $registrarId, $state);
+            self::saveState($db, $name, $state);
             if (microtime(true) >= $deadline) {
                 break;
             }
@@ -152,7 +170,7 @@ final class PriceSync
     {
         $db = self::db($di);
         self::registrar($di, $registrarId);
-        $state = self::state($db, $registrarId);
+        $state = self::state($db, 'tld_prices_' . $registrarId);
         // An unfinished refresh holds only part of the list: it is finished with "Get the price list".
         if ($state['done_at'] === null || $state['since'] === null || $state['remaining'] !== null) {
             throw new InformationException('Get the price list first.');
@@ -307,6 +325,174 @@ final class PriceSync
         return $done;
     }
 
+    /**
+     * The scheduled sync (Service::onAfterAdminCronRun()): once a day for each registrar whose mode is
+     * not off, for the TLDs applied once through the import (applied_rate set) and not locked. A TLD
+     * counts when the registrar changed a cost since it was applied, or its price is below cost at
+     * today's rate; an exchange rate move alone is ignored (the import re-bases on demand). Notify only
+     * emails staff; Apply writes the new prices, except a change of more than MAX_JUMP, which waits
+     * for staff. One email per new set of changes. At most $seconds of registrar calls per cron run.
+     */
+    public static function runIfDue(\Pimple\Container $di, int $seconds = 30): void
+    {
+        $db = self::db($di);
+        $deadline = microtime(true) + $seconds;
+        foreach ($db->fetchAllAssociative('SELECT id, name, price_sync FROM tld_registrar WHERE price_sync IS NOT NULL ORDER BY id') as $registrar) {
+            $id = (int) $registrar['id'];
+            $settings = self::clean(json_decode((string) $registrar['price_sync'], true) ?: [], false);
+            $state = self::state($db, 'tld_sync_' . $id);
+            if ($settings['mode'] === 'off' || ($state['remaining'] === null && str_starts_with((string) $state['done_at'], date('Y-m-d')))) {
+                continue;
+            }
+            $tlds = array_keys(self::synced($di, $id));
+            try {
+                if ($tlds === []) {
+                    self::saveState($db, 'tld_sync_' . $id, ['since' => null, 'remaining' => null, 'first' => false, 'done_at' => date('Y-m-d H:i:s')]);
+
+                    continue;
+                }
+                // At least one slice per registrar; then the time left.
+                $pulled = self::pull($di, $id, 'tld_sync_' . $id, $tlds, max(0, (int) ($deadline - microtime(true))), $state['remaining'] === null);
+                if ($pulled['done']) {
+                    self::compare($di, $id, (string) $registrar['name'], $settings, $tlds);
+                }
+                if (microtime(true) >= $deadline) {
+                    return;
+                }
+            } catch (\Throwable $e) {
+                // Tried again tomorrow.
+                self::saveState($db, 'tld_sync_' . $id, ['since' => null, 'remaining' => null, 'first' => false, 'done_at' => date('Y-m-d H:i:s')]);
+                $di['logger']->error('TLD price sync of registrar #%s failed: %s', $id, $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * The store's TLDs on the registrar that the sync follows, by TLD, with their cost row.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private static function synced(\Pimple\Container $di, int $registrarId): array
+    {
+        $db = self::db($di);
+        $service = $di['mod_service']('servicedomain');
+        $costs = [];
+        foreach ($db->fetchAllAssociative('SELECT * FROM tld_registrar_cost WHERE tld_registrar_id = ? AND applied_rate IS NOT NULL', [$registrarId]) as $cost) {
+            $costs[(string) $cost['tld']] = $cost;
+        }
+        $synced = [];
+        foreach ($db->fetchAllAssociative('SELECT id, tld, price_registration, price_renew, price_transfer FROM tld WHERE tld_registrar_id = ? AND price_locked = 0', [$registrarId]) as $tld) {
+            try {
+                $name = $service->normalizeTld((string) $tld['tld']);
+            } catch (InformationException) {
+                continue;
+            }
+            if (isset($costs[$name])) {
+                $synced[$name] = $tld + ['cost' => $costs[$name]];
+            }
+        }
+        ksort($synced);
+
+        return $synced;
+    }
+
+    /**
+     * After a complete sync fetch: finds the changes, applies them in Apply mode and emails staff.
+     *
+     * @param array{mode: string, markup: array<string, array{type: string, value: float}>, rounding: string} $settings
+     * @param list<string>                                                                                       $asked
+     */
+    private static function compare(\Pimple\Container $di, int $registrarId, string $name, array $settings, array $asked): void
+    {
+        $db = self::db($di);
+        $synced = self::synced($di, $registrarId);
+        // A changed registrar currency cleared these baselines (store()): only the import sets new ones.
+        $rebase = count(array_diff($asked, array_keys($synced)));
+        $rows = [];
+        foreach ($synced as $tld => $item) {
+            $rate = self::rate($db, (string) $item['cost']['currency']);
+            if ($rate === null) {
+                throw new InformationException('The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs.', [':code' => (string) $item['cost']['currency']]);
+            }
+            $row = ['tld' => $tld, 'tld_id' => (int) $item['id'], 'rate' => $rate, 'changed' => false, 'below' => false, 'held' => false];
+            foreach (self::ACTIONS as $action => $column) {
+                $cost = $item['cost']['cost_' . $action] === null ? null : (float) $item['cost']['cost_' . $action];
+                $applied = $item['cost']['applied_' . $action] === null ? null : (float) $item['cost']['applied_' . $action];
+                $now = round((float) $item[$column], 2);
+                $changed = $cost !== $applied;
+                $below = $cost !== null && $now < self::price($cost, $rate, ['type' => 'fixed', 'value' => 0.0], '');
+                // Only the actions the registrar changed, or that sell below cost, get a new price.
+                $new = $changed || $below ? self::price($cost, $rate, $settings['markup'][$action], $settings['rounding']) ?? $now : $now;
+                $row['changed'] = $row['changed'] || $changed;
+                $row['below'] = $row['below'] || $below;
+                // A big jump, or a registrar that stopped pricing register or renew, waits for staff.
+                $row['held'] = $row['held'] || ($now > 0 && abs($new - $now) / $now > self::MAX_JUMP) || ($cost === null && $action !== 'transfer');
+                $row['actions'][$action] = ['cost_old' => $applied, 'cost_new' => $cost, 'price_now' => $now, 'price_new' => $new];
+            }
+            if ($row['changed'] || $row['below']) {
+                $row['what'] = $settings['mode'] === 'notify' ? 'suggested' : ($row['held'] ? 'review' : 'applied');
+                $rows[] = $row;
+            }
+        }
+
+        $applied = array_values(array_filter($rows, static fn (array $r): bool => $r['what'] === 'applied'));
+        if ($applied !== []) {
+            $service = $di['mod_service']('servicedomain');
+            $db->beginTransaction();
+            try {
+                $db->fetchOne('SELECT id FROM tld_registrar WHERE id = ?' . (self::isMysql($db) ? ' FOR UPDATE' : ''), [$registrarId]);
+                // Staff may have left Apply while the registrar answered.
+                if (self::settings($di, $registrarId)['mode'] !== 'apply') {
+                    $db->rollBack();
+
+                    return;
+                }
+                foreach ($applied as $row) {
+                    $service->tldUpdate($service->tldFindOneById($row['tld_id']), array_combine(array_values(self::ACTIONS), array_column($row['actions'], 'price_new')));
+                    $db->executeStatement(
+                        'UPDATE tld_registrar_cost SET applied_register = cost_register, applied_renew = cost_renew, applied_transfer = cost_transfer, applied_rate = ? WHERE tld_registrar_id = ? AND tld = ?',
+                        [$row['rate'], $registrarId, $row['tld']]
+                    );
+                }
+                $db->commit();
+            } catch (\Throwable $e) {
+                if ($db->isTransactionActive()) {
+                    $db->rollBack();
+                }
+
+                throw $e;
+            }
+            $di['logger']->info('TLD prices of registrar #%s applied by the scheduled sync: %s', $registrarId, implode('; ', array_map(static fn (array $r): string => $r['tld'] . ' ' . json_encode(array_column($r['actions'], 'price_new')), $applied)));
+        }
+
+        // Staff hear of every apply, and of the changes left to them once per new set.
+        $waiting = array_values(array_filter($rows, static fn (array $r): bool => $r['what'] !== 'applied'));
+        // Costs and status make a set; the suggested price moves with the daily exchange rate update.
+        $set = $waiting === [] && $rebase === 0 ? '' : hash('sha256', json_encode([$rebase, array_map(static fn (array $r): array => [$r['tld'], $r['what'], $r['below'], array_map(static fn (array $a): array => [$a['cost_old'], $a['cost_new']], $r['actions'])], $waiting)]));
+        $sent = json_decode((string) $db->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', ['tld_sync_mail_' . $registrarId]), true)['sent'] ?? '';
+        if ($applied === [] && $set === $sent) {
+            return;
+        }
+        if ($rows !== [] || $rebase > 0) {
+            $fixed = $db->createSchemaManager()->tablesExist(['product_currency_price'])
+                ? $db->fetchFirstColumn("SELECT DISTINCT ref_id FROM product_currency_price WHERE kind = 'tld' AND price IS NOT NULL")
+                : [];
+            $di['mod_service']('email')->sendTemplate([
+                'to_staff' => true,
+                'code' => 'mod_staff_tld_price_changes',
+                'sync' => [
+                    'registrar' => $name,
+                    'mode' => $settings['mode'],
+                    'rows' => $rows,
+                    'rebase' => $rebase,
+                    'fixed' => count(array_intersect(array_column($rows, 'tld_id'), array_map('intval', $fixed))),
+                    'url' => $di['url']->adminLink('servicedomain/registrar/' . $registrarId . '/prices'),
+                ],
+            ]);
+        }
+        self::saveState($db, 'tld_sync_mail_' . $registrarId, ['sent' => $set]);
+    }
+
     /** Whether the registrar's adapter has a price list. */
     public static function supported(\Pimple\Container $di, \Model_TldRegistrar $registrar): bool
     {
@@ -347,9 +533,14 @@ final class PriceSync
         return $settings;
     }
 
-    /** @param array<string, mixed> $prices */
-    private static function store(\Pimple\Container $di, int $registrarId, string $currency, array $prices): void
+    /**
+     * Saves the costs; true when a TLD's costs came in another currency than before.
+     *
+     * @param array<string, mixed> $prices
+     */
+    private static function store(\Pimple\Container $di, int $registrarId, string $currency, array $prices): bool
     {
+        $changed = false;
         $db = self::db($di);
         $service = $di['mod_service']('servicedomain');
         $now = date('Y-m-d H:i:s');
@@ -373,16 +564,19 @@ final class PriceSync
                 if ($old['currency'] !== $currency) {
                     // Costs in another currency: the old baseline no longer compares.
                     $values += ['applied_register' => null, 'applied_renew' => null, 'applied_transfer' => null, 'applied_rate' => null];
+                    $changed = true;
                 }
                 $db->update('tld_registrar_cost', $values, ['id' => $old['id']]);
             }
         }
+
+        return $changed;
     }
 
     /** @return array{since: ?string, remaining: ?list<string>, first: bool, done_at: ?string} */
-    private static function state(Connection $db, int $registrarId): array
+    private static function state(Connection $db, string $name): array
     {
-        $state = json_decode((string) $db->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', ['tld_prices_' . $registrarId]), true);
+        $state = json_decode((string) $db->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', [$name]), true);
         $state = is_array($state) ? $state : [];
 
         return [
@@ -394,9 +588,8 @@ final class PriceSync
     }
 
     /** @param array<string, mixed> $state */
-    private static function saveState(Connection $db, int $registrarId, array $state): void
+    private static function saveState(Connection $db, string $name, array $state): void
     {
-        $name = 'tld_prices_' . $registrarId;
         $now = date('Y-m-d H:i:s');
         if ($db->executeStatement('UPDATE mod_clientfence_state SET value = ?, updated_at = ? WHERE name = ?', [json_encode($state), $now, $name]) === 0
             && $db->fetchOne('SELECT 1 FROM mod_clientfence_state WHERE name = ?', [$name]) === false) {
@@ -409,7 +602,9 @@ final class PriceSync
     {
         $db = self::db($di);
         $db->delete('tld_registrar_cost', ['tld_registrar_id' => $registrarId]);
-        $db->delete('mod_clientfence_state', ['name' => 'tld_prices_' . $registrarId]);
+        foreach (['tld_prices_', 'tld_sync_', 'tld_sync_mail_'] as $name) {
+            $db->delete('mod_clientfence_state', ['name' => $name . $registrarId]);
+        }
     }
 
     private static function registrar(\Pimple\Container $di, int $registrarId): \Model_TldRegistrar

@@ -170,3 +170,20 @@ test('the order form asks the .us questions only, for registrations and transfer
         ->and(array_keys(Registrar_Adapter_Openprovider::getDomainFields('.us', 'transfer')))->toBe(['nexus_category', 'nexus_country', 'app_purpose'])
         ->and(Registrar_Adapter_Openprovider::getDomainFields('.com'))->toBe([]);
 });
+
+test('the price list reads the reseller-currency prices of every page of active TLDs; a missing action is null', function (): void {
+    $price = fn (float $usd, float $eur): array => ['product' => ['currency' => 'USD', 'price' => $usd], 'reseller' => ['currency' => 'EUR', 'price' => $eur]];
+    // total 3 with 2 rows per reply: a second page is asked from offset 2.
+    $adapter = openproviderAdapter(['GET /tlds' => ['total' => 3, 'results' => [
+        ['name' => 'com', 'status' => 'ACT', 'prices' => ['create_price' => $price(10.5, 9.7), 'renew_price' => $price(11.0, 10.15), 'transfer_price' => $price(10.5, 9.7)]],
+        ['name' => 'ch', 'status' => 'ACT', 'prices' => ['create_price' => $price(8.0, 7.4), 'renew_price' => $price(8.0, 7.4)]],
+    ]]]);
+
+    expect($adapter->getTldPrices())->toBe(['currency' => 'EUR', 'prices' => [
+        '.com' => ['register' => 9.7, 'renew' => 10.15, 'transfer' => 9.7],
+        '.ch' => ['register' => 7.4, 'renew' => 7.4, 'transfer' => null],
+    ], 'remaining' => []])
+        ->and(array_column(array_column(array_slice($GLOBALS['openprovider_calls'], 1), 1), 'offset'))->toBe(['0', '2'])
+        ->and(openproviderCall('GET /tlds')[1])->toMatchArray(['status' => 'ACT', 'with_price' => 'true', 'limit' => '1000'])
+        ->and(array_keys($adapter->getTldPrices(['.ch'])['prices']))->toBe(['.ch']);
+});

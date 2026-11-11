@@ -141,3 +141,14 @@ test('the order form asks the .us and .eu questions only', function (): void {
         ->and(Registrar_Adapter_Namesilo::getDomainFields('.eu')['eu_citizenship']['options'])->toHaveKey('DE')
         ->and(Registrar_Adapter_Namesilo::getDomainFields('.com'))->toBe([]);
 });
+
+test('the price list reads each TLD of getPrices in USD; a missing action is null and the filter keeps the asked TLDs', function (): void {
+    $adapter = namesiloAdapter(['getPrices' => '<com><registration>9.95</registration><transfer>9.95</transfer><renew>10.95</renew></com>'
+        . '<co.uk><registration>6.49</registration><renew>6.49</renew></co.uk>']);
+
+    expect($adapter->getTldPrices())->toBe(['currency' => 'USD', 'prices' => [
+        '.com' => ['register' => 9.95, 'renew' => 10.95, 'transfer' => 9.95],
+        '.co.uk' => ['register' => 6.49, 'renew' => 6.49, 'transfer' => null],
+    ], 'remaining' => []])
+        ->and(array_keys($adapter->getTldPrices(['.co.uk', '.net'])['prices']))->toBe(['.co.uk']);
+});
