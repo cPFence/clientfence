@@ -41,7 +41,8 @@ class Client extends \ClientFence\Api\AbstractApi
         $orderService->assertOrderUsable($order);
         $s = $orderService->getOrderService($order);
         if (!$s instanceof \Model_ServiceDownloadable || $order->status !== 'active') {
-            throw new \ClientFence\Exception('Order is not activated');
+            // ClientFence core patch: 404, the theme's not-found page (it was a 500 error page).
+            throw new \ClientFence\InformationException('Order is not activated', null, 404);
         }
 
         $service = $this->getService();

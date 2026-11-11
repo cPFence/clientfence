@@ -5094,5 +5094,37 @@
     {
         "file": "modules/Invoice/templates/client/mod_invoice_banklink.html.twig",
         "done": "ClientFence core patch: a payment form is headed by its invoice and amount; only the redirect step is \"processing\" (GitHub #11)."
+    },
+    {
+        "file": "modules/Cookieconsent/Service.php",
+        "done": "ClientFence core patch (ext cookieconsent): before 1.0.45 the form saved the built-in texts in the admin's"
+    },
+    {
+        "file": "modules/Cookieconsent/Api/Admin.php",
+        "done": "ClientFence core patch (ext cookieconsent): the saved settings for the form, with the language versions and"
+    },
+    {
+        "file": "modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig",
+        "done": "ClientFence core patch (ext cookieconsent): the message and button per language (blank: the built-in text)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: nor bell notifications, whose link would open a \"not found\" page."
+    },
+    {
+        "file": "modules/Client/Controller/Admin.php",
+        "done": "ClientFence core patch: no /client/create page (it had no handler: a 500); staff add clients in the New Client dialog."
+    },
+    {
+        "file": "modules/Servicedownloadable/Service.php",
+        "done": "ClientFence core patch: a missing file is the 404 page (InformationException), not a 500 error page."
+    },
+    {
+        "file": "modules/Servicedownloadable/Api/Client.php",
+        "done": "ClientFence core patch: 404, the theme's not-found page (it was a 500 error page)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: the totals' labels translated (they were English in every language)."
     }
 ]

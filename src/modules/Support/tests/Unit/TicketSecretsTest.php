@@ -26,6 +26,7 @@ function ticketSecretsContainer(array $config = []): Pimple\Container
         'CREATE TABLE support_ticket_secret (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, kind TEXT NOT NULL, label TEXT NOT NULL, data TEXT NOT NULL, added_by_client_id INTEGER, created_at TEXT NOT NULL)',
         'CREATE TABLE support_ticket_secret_event (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, secret_label TEXT NOT NULL, action TEXT NOT NULL, admin_id INTEGER, client_id INTEGER, created_at TEXT NOT NULL)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
+        'CREATE TABLE mod_clientfence_notification (id INTEGER PRIMARY KEY, url TEXT)',
     ] as $sql) {
         $db->executeStatement($sql);
     }

@@ -209,6 +209,17 @@ test('a deleted order or invoice takes its notifications with it', function (): 
     expect($db->fetchFirstColumn('SELECT url FROM ' . Notifications::TABLE))->toBe(['order/service/manage/33']);
 });
 
+test('a deleted ticket takes its notifications with it', function (): void {
+    [$di, $db] = notificationsContainer();
+    Notifications::staff($di, 'ticket_new', ['id' => 4, 'subject' => 'Help'], 'support/ticket/4', 'support');
+    Notifications::client($di, 9, 'ticket_answered', ['id' => 4, 'subject' => 'Help'], 'support/ticket/4');
+    Notifications::client($di, 9, 'ticket_answered', ['id' => 44, 'subject' => 'Other'], 'support/ticket/44');
+
+    Notifications::ticketDeleted($di, 4);
+
+    expect($db->fetchFirstColumn('SELECT url FROM ' . Notifications::TABLE))->toBe(['support/ticket/44']);
+});
+
 test('every kind has its own text and an unknown kind reads generic', function (): void {
     expect(Notifications::text('ticket_escalated', ['id' => 5, 'rule' => 'No reply in 4 hours']))->toBe('Ticket #5 needs attention: No reply in 4 hours')
         ->and(Notifications::text('credit_added', ['amount' => '3.00 USD']))->toBe('3.00 USD was added to your account credit')

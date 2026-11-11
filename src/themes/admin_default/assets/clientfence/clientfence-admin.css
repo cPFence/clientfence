@@ -576,7 +576,8 @@ a.bf-row:hover { background: var(--bf-surface-2); color: var(--bf-ink); text-dec
 .bf-tab:focus-visible { outline: 2px solid var(--bf-brand); outline-offset: 1px; }
 /* A card's own tabs (Recent activity): a full row under the title, equal widths. */
 .bf-tabs-wide { flex: 1 1 100%; order: 3; }
-.bf-tabs-wide .bf-tab { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A long label (Arabic on a phone) wraps inside its tab instead of being cut. */
+.bf-tabs-wide .bf-tab { flex: 1 1 0; min-width: 0; padding-block: 4px; line-height: 1.2; overflow-wrap: anywhere; }
 .bf-income-total { display: flex; flex-direction: column; padding: 0 20px; }
 .bf-income-value { font-size: 22px; font-weight: 800; text-align: start; }
 .bf-income-chart { padding: 8px 12px 14px; min-height: 200px; }

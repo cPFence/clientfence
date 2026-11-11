@@ -461,9 +461,10 @@
                         {% endfor %}
                     </tbody>
                     <tfoot>
+                        {# ClientFence core patch: the totals' labels translated (they were English in every language). #}
                         <tr>
                             <td colspan="5" class="text-end fw-bold">
-                                Subtotal: {{ invoice.subtotal|format_currency(invoice.currency ?? default_currency) }}
+                                {{ 'Subtotal'|trans }}: {{ invoice.subtotal|format_currency(invoice.currency ?? default_currency) }}
                             </td>
                         </tr>
                         <tr>
@@ -473,7 +474,7 @@
                         </tr>
                         <tr>
                             <td colspan="5" class="text-end fw-bold">
-                                Total: {{ invoice.total|format_currency(invoice.currency ?? default_currency) }}
+                                {{ 'Total'|trans }}: {{ invoice.total|format_currency(invoice.currency ?? default_currency) }}
                             </td>
                         </tr>
                     </tfoot>

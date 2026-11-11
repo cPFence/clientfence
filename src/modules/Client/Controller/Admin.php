@@ -64,7 +64,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/client/login/:id', 'get_login', ['id' => '[0-9]+'], static::class);
         $app->get('/client/manage/:id', 'get_manage', ['id' => '[0-9]+'], static::class);
         $app->get('/client/group/:id', 'get_group', ['id' => '[0-9]+'], static::class);
-        $app->get('/client/create', 'get_create', [], static::class);
+        // ClientFence core patch: no /client/create page (it had no handler: a 500); staff add clients in the New Client dialog.
         $app->get('/client/logins', 'get_history', [], static::class);
         // ClientFence core patch: a client's data as a JSON file (Privacy.php).
         $app->get('/client/privacy-export/:id', 'get_privacy_export', ['id' => '[0-9]+'], static::class);

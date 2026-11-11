@@ -452,6 +452,12 @@ final class Notifications
         }
     }
 
+    /** A deleted ticket's notifications go (staff and client links are both support/ticket/N). */
+    public static function ticketDeleted(\Pimple\Container $di, int $ticketId): void
+    {
+        self::forget($di, ['support/ticket/' . $ticketId]);
+    }
+
     private static function forget(\Pimple\Container $di, array $urls): void
     {
         self::db($di)->executeStatement('DELETE FROM ' . self::TABLE . ' WHERE url IN (?)', [array_values($urls)], [\Doctrine\DBAL\ArrayParameterType::STRING]);

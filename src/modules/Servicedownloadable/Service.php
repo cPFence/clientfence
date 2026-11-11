@@ -519,17 +519,18 @@ class Service implements InjectionAwareInterface
         return preg_replace('~[^\x20-\x7E]|[%/\\\\]~u', '_', $fileName);
     }
 
+    // ClientFence core patch: a missing file is the 404 page (InformationException), not a 500 error page.
     public function sendFile(\Model_ServiceDownloadable $serviceDownloadable): Response
     {
         $fileName = $serviceDownloadable->filename;
         $storedFilename = $serviceDownloadable->stored_filename;
         if (!$storedFilename) {
-            throw new \ClientFence\Exception('File cannot be downloaded at the moment. Please contact support.', null, 404);
+            throw new \ClientFence\InformationException('File cannot be downloaded at the moment. Please contact support.', null, 404);
         }
 
         $filePath = $this->getStoredFilePath($storedFilename);
         if (!$this->filesystem->exists($filePath)) {
-            throw new \ClientFence\Exception('File cannot be downloaded at the moment. Please contact support.', null, 404);
+            throw new \ClientFence\InformationException('File cannot be downloaded at the moment. Please contact support.', null, 404);
         }
 
         // Increase download hit count.
@@ -575,14 +576,14 @@ class Service implements InjectionAwareInterface
         $config = json_decode($product->getConfig() ?? '', true) ?: [];
 
         if (!isset($config['filename'], $config[self::STORED_FILENAME_CONFIG_KEY])) {
-            throw new \ClientFence\Exception('No file associated with this product.', null, 404);
+            throw new \ClientFence\InformationException('No file associated with this product.', null, 404);
         }
 
         $fileName = $config['filename'];
         $filePath = $this->getStoredFilePath($config[self::STORED_FILENAME_CONFIG_KEY]);
 
         if (!$this->filesystem->exists($filePath)) {
-            throw new \ClientFence\Exception('File cannot be downloaded at the moment. Please contact support.', null, 404);
+            throw new \ClientFence\InformationException('File cannot be downloaded at the moment. Please contact support.', null, 404);
         }
 
         $response = new BinaryFileResponse($filePath);

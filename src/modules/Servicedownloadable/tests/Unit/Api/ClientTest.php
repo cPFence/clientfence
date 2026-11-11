@@ -80,7 +80,7 @@ test('throws exception when sending file with order not activated', function ():
     $api->setIdentity($modelClient);
 
     expect(fn (): bool => $api->send_file($data))
-        ->toThrow(ClientFence\Exception::class, 'Order is not activated');
+        ->toThrow(ClientFence\InformationException::class, 'Order is not activated');
 });
 
 test('sends file', function (): void {

@@ -486,6 +486,8 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         // ClientFence core patch: a deleted ticket retains neither secrets nor opening history.
         TicketSecrets::forgetTicket($em->getConnection(), (int) $id, true);
+        // ClientFence core patch: nor bell notifications, whose link would open a "not found" page.
+        \ClientFence\Mod\Clientfence\Notifications::ticketDeleted($this->di, (int) $id);
         foreach ($this->getSupportTicketNoteRepository()->findByTicketId($id ?? 0) as $note) {
             $em->remove($note);
         }
