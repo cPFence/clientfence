@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.45 (2026-11-11)
+
+### Added
+
+- Licences and API keys for a set number of servers: clients add and remove their own IP addresses, with a limit of changes per 30 days and optional staff approval (product Configuration, Client IP Addresses).
+- The licence page shows the allowed IPs and domains, the recent checks and how to check a licence.
+
+### Changed
+
+- A new client service page: the main facts at the top, a Manage panel with the actions, and the service in tabs, for every service type.
+- A licence is not offered a plan with fewer servers than its IP addresses.
+- Cookie Consent settings take a message and button text per language; left blank, visitors see the built-in text in their own language.
+
+### Fixed
+
+- Deleting a ticket also removes its notifications.
+- The admin invoice page's "Subtotal" is translated, and the admin dashboard tabs fit on a phone in right-to-left languages.
+- Two addresses no longer give a server error: the old admin client create page and the download of an order without a file.
+- System Health also checks the files of the newer registrars, payment gateways and email templates.
+
 ## 1.0.44 (2026-11-11)
 
 ### Added
