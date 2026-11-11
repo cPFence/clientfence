@@ -12,7 +12,7 @@
     {% set texts = admin.product_translations_get({ kind: kind, id: item.id }) %}
     {% set langs = language_names|keys|filter(l => l != texts.default_locale)|merge(texts.translations|keys)|reduce((all, l) => l in all ? all : all|merge([l]), []) %}
     {% if part == 'bar' %}
-        <div class="d-flex flex-wrap align-items-center gap-2 mb-3 pb-2 border-bottom" data-cf-text-langs role="tablist" aria-label="{{ 'Names and descriptions in other languages'|trans }}">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3 pb-2 border-bottom" id="cf-langs-{{ kind }}-{{ item.id }}" data-cf-text-langs role="tablist" aria-label="{{ 'Names and descriptions in other languages'|trans }}">
             <button class="btn btn-sm btn-primary" type="button" role="tab" aria-selected="true" data-cf-lang="">{{ 'Default'|trans }} <span class="ms-1 opacity-75">{{ language_names[texts.default_locale] ?? texts.default_locale }}</span></button>
             {% for lang in langs %}
                 <button class="btn btn-sm btn-outline-secondary{% if language_names[lang] is not defined %} text-decoration-line-through{% endif %}" type="button" role="tab" aria-selected="false" data-cf-lang="{{ lang }}"{% if language_names[lang] is defined %} data-cf-on{% endif %}{% if texts.translations[lang] is not defined %} hidden{% endif %}>{{ language_names[lang] ?? lang }}</button>
@@ -72,7 +72,8 @@
                     }
                     show('');
                 });
-            })(document.currentScript.previousElementSibling);
+            // By id, not by position: a proxy (Cloudflare's email obfuscation) can insert its own script before this one.
+            })(document.getElementById('cf-langs-{{ kind }}-{{ item.id }}'));
         </script>
     {% else %}
         {% for lang in langs %}
