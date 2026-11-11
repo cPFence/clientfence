@@ -61,3 +61,20 @@ test('a template has no versions before the table exists', function (): void {
 
     expect(Translations::forTemplate($di, 7))->toBe([]);
 });
+
+test('localize writes a template out in a language: plain texts as text, texts with values keep their filter', function (): void {
+    $previous = Locale::getDefault();
+    (new ClientFence\Translate())->setLocale('en_US')->setup();
+    try {
+        $source = "<p>{{ 'Invoice Number'|trans }}: {{ invoice.nr }}</p>{% set p = {'%id%': quote.id} %}{{ 'Quote #%id% accepted: %subject%'|trans(p) }} {{ 'A & B'|trans }} {{ 'a {b}'|trans }}";
+
+        expect(Translations::localize($source, 'de_DE'))->toBe("<p>Rechnungsnummer: {{ invoice.nr }}</p>{% set p = {'%id%': quote.id} %}{{ 'Angebot #%id% angenommen: %subject%'|trans(p) }} A &amp; B {{ 'a {b}'|trans }}")
+            ->and(Locale::getDefault())->toBe('en_US');
+
+        // An inline image: a long text without quotes must not empty the version.
+        $logo = '<img src="data:image/png;base64,' . str_repeat('A', 200000) . '">';
+        expect(Translations::localize($logo . "{{ 'Invoice Number'|trans }}", 'de_DE'))->toBe($logo . 'Rechnungsnummer');
+    } finally {
+        (new ClientFence\Translate())->setLocale($previous ?: 'en_US')->setup();
+    }
+});

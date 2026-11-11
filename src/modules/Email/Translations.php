@@ -75,6 +75,27 @@ final class Translations
         });
     }
 
+    /**
+     * A template text written out in $locale, the start of a new version: `{{ 'Text'|trans }}` becomes that
+     * language's text and any other `'Text'|trans` keeps its filter (for its values) with the translated text,
+     * so staff edit what the recipient reads.
+     */
+    public static function localize(string $source, string $locale): string
+    {
+        return \ClientFence\Translate::with($locale, function () use ($source): string {
+            $translate = fn (string $literal): string => _gettext(stripcslashes($literal));
+            // Possessive, so a long text without quotes (an inline image) cannot exhaust PCRE; a failed pass keeps its input.
+            // Printed as Twig prints it (quotes stay readable); a text with { stays inside the filter, never Twig code.
+            $source = preg_replace_callback("/\\{\\{\\s*'((?:[^'\\\\]++|\\\\.)*+)'\\s*\\|\\s*trans\\s*\\}\\}/", function (array $m) use ($translate): string {
+                $text = $translate($m[1]);
+
+                return str_contains($text, '{') ? $m[0] : htmlspecialchars($text, ENT_COMPAT | ENT_SUBSTITUTE, 'UTF-8');
+            }, $source) ?? $source;
+
+            return preg_replace_callback("/'((?:[^'\\\\]++|\\\\.)*+)'(\\s*\\|\\s*trans\\b)/", fn (array $m): string => "'" . addcslashes($translate($m[1]), "'\\") . "'" . $m[2], $source) ?? $source;
+        });
+    }
+
     /** Drops a template's versions (the template was deleted). */
     public static function forget(\Pimple\Container $di, int $templateId): void
     {

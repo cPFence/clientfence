@@ -53,6 +53,12 @@
                     }
                     bar.querySelector('[data-cf-lang="' + lang + '"]').hidden = false;
                     add.selectedOptions[0].remove();
+                    // A new language starts as a copy of the default texts (each field's hint).
+                    form.querySelectorAll('[data-cf-text-pane="' + lang + '"] [data-cf-field]').forEach(function (field) {
+                        if (field.value === '') {
+                            field.value = field.placeholder;
+                        }
+                    });
                     show(lang);
                 });
                 // Removing empties the language's fields: saved blank, it shows the default texts.

@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 show(button.dataset.cfLang);
             }
         });
-        // A new version starts as a copy of the default subject and message.
+        // A new version starts as the default subject and message written out in its language (email/template_localize).
         add?.addEventListener('change', function () {
             const lang = add.value;
             if (lang === '') {
@@ -442,6 +442,19 @@ document.addEventListener('DOMContentLoaded', function() {
             add.before(button);
             option.remove();
             show(lang);
+            const fields = {};
+            ['subject', 'content'].forEach(function (field) {
+                fields[field] = pane.querySelector('[data-cf-field="' + field + '"]');
+            });
+            const copy = { lang: lang, subject: fields.subject.value, content: fields.content.value };
+            ClientFence.api.admin.post('email/template_localize', copy, function (texts) {
+                // Unless staff already started typing in the copy.
+                ['subject', 'content'].forEach(function (field) {
+                    if (fields[field].value === copy[field]) {
+                        fields[field].value = texts[field];
+                    }
+                });
+            });
         });
         panes.addEventListener('click', function (e) {
             const remove = e.target.closest('[data-cf-remove-lang]');

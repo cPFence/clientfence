@@ -248,6 +248,26 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: the start of a new language version, the subject and message written out in `lang`.
+     *
+     * @return array{subject: string, content: string}
+     */
+    public function template_localize($data): array
+    {
+        $this->checkPermissions('email', 'manage_templates');
+        $lang = $data['lang'] ?? '';
+        if (!in_array($lang, \ClientFence\i18n::getLocales(), true)) {
+            throw new \ClientFence\InformationException('Invalid locale code: :code', [':code' => is_string($lang) ? $lang : '']);
+        }
+        $text = fn (string $key): string => is_string($data[$key] ?? null) ? $data[$key] : '';
+
+        return [
+            'subject' => \ClientFence\Mod\Email\Translations::localize($text('subject'), $lang),
+            'content' => \ClientFence\Mod\Email\Translations::localize($text('content'), $lang),
+        ];
+    }
+
+    /**
      * List the staff groups a template is restricted to.
      *
      * @return array
