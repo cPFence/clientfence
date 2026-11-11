@@ -2036,8 +2036,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return ['checked' => count($rows), 'found' => $found, 'next' => count($rows) < $limit ? null : (int) end($rows)['id']];
     }
 
-    /** ClientFence: the client's "Save this card" choice on invoice $invoiceId's card form, set on the payment before it is confirmed (GitHub #7). */
-    public function cardSaveChoice(int $clientId, int $invoiceId, string $paymentIntentId, bool $save): void
+    /** ClientFence: the client's "Save this card" choice (and "Use this card for automatic payments", GitHub #11) on invoice $invoiceId's card form, set on the payment before it is confirmed (GitHub #7). */
+    public function cardSaveChoice(int $clientId, int $invoiceId, string $paymentIntentId, bool $save, bool $makeDefault): void
     {
         $intent = $this->stripe->paymentIntents->retrieve($paymentIntentId, []);
         $customerId = $this->ownedCustomer($clientId);
@@ -2046,10 +2046,11 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             || !in_array($intent->status, ['requires_payment_method', 'requires_confirmation', 'requires_action'], true)) {
             throw new ClientFence\InformationException('This payment cannot be changed. Reload the page and try again.');
         }
-        $this->stripe->paymentIntents->update($paymentIntentId, ['payment_method_options' => ['card' => ['setup_future_usage' => $save ? 'off_session' : '']]]);
+        // ClientFence core patch: the metadata only the server sets tells rememberPaidCard() to make the paid card the automatic one (GitHub #11).
+        $this->stripe->paymentIntents->update($paymentIntentId, ['payment_method_options' => ['card' => ['setup_future_usage' => $save ? 'off_session' : '']], 'metadata' => ['make_default' => $makeDefault ? '1' : '']]);
     }
 
-    /** A successful payment the client chose to save the card with: keeps the card (default when none). */
+    /** A successful payment the client chose to save the card with: keeps the card (default when none, or when the client chose it). */
     private function rememberPaidCard(object $paymentIntent, int $clientId): void
     {
         $save = ($paymentIntent->setup_future_usage ?? null) === 'off_session' || ($paymentIntent->payment_method_options->card->setup_future_usage ?? null) === 'off_session';
@@ -2060,8 +2061,12 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         }
         $method = is_string($paymentIntent->payment_method) ? $paymentIntent->payment_method : $paymentIntent->payment_method->id;
 
+        // A payment already recorded is a replay (webhook retry, old return link): it must not undo a default chosen since.
+        $makeDefault = ($paymentIntent->metadata->make_default ?? '') === '1'
+            && !$this->di['dbal']->fetchOne('SELECT 1 FROM `transaction` WHERE txn_id = ? AND status = ? LIMIT 1', [$paymentIntent->id, Model_Transaction::STATUS_PROCESSED]);
+
         try {
-            $this->rememberCard($clientId, $method, false);
+            $this->rememberCard($clientId, $method, $makeDefault);
         } catch (Throwable $e) {
             // Keeping the card must never stop the payment being recorded; the client can add it again.
             $this->di['logger']->warning('Stripe: the card saved with payment %s was not kept: %s', $paymentIntent->id ?? '', $e->getMessage());
@@ -2190,10 +2195,12 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         // one), through a customer session.
         $customerSession = null;
         $saveCard = null;
+        $autoCard = null;
         $user = ClientFence\Mod\Client\Users::context($this->di);
         if ((int) ($this->di['session']->get('client_id') ?? 0) === (int) $invoice->client_id && ($user === null || $user['owner'])) {
             try {
                 $customerId = $this->clientCustomer((int) $invoice->client_id);
+                $autoCard = $this->savedCard((int) $invoice->client_id);
                 $customerSession = $this->stripe->customerSessions->create([
                     'customer' => $customerId,
                     'components' => ['payment_element' => ['enabled' => true, 'features' => [
@@ -2265,14 +2272,29 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                     paymentElement.mount(\'#payment-element\');
 
                     const form = document.getElementById(\'payment-form\');
+                    const saveCard = document.getElementById(\'cf-save-card\');
+                    const cardDefault = document.getElementById(\'cf-card-default\');
+                    let newCard = true;
+                    if (saveCard) {
+                        // The save boxes are for a new card only: not a saved method (payment_method) or a bank debit.
+                        paymentElement.on(\'change\', (event) => {
+                            newCard = event.value.type === \'card\' && !event.value.payment_method;
+                            document.getElementById(\'cf-save-card-box\').hidden = !newCard;
+                        });
+                        saveCard.addEventListener(\'change\', () => {
+                            if (cardDefault) {
+                                document.getElementById(\'cf-card-default-box\').hidden = !saveCard.checked;
+                            }
+                        });
+                    }
 
                     form.addEventListener(\'submit\', async (event) => {
                     event.preventDefault();
 
-                    const saveCard = document.getElementById(\'cf-save-card\');
                     if (saveCard) {
+                        const save = newCard && saveCard.checked;
                         try {
-                            await new Promise((resolve, reject) => ClientFence.api.client.post(\'invoice/card_save_choice\', {hash: \':invoice_hash\', gateway_id: :gateway_id, intent: \':intent_id\', save: saveCard.checked ? 1 : 0}, resolve, reject));
+                            await new Promise((resolve, reject) => ClientFence.api.client.post(\'invoice/card_save_choice\', {hash: \':invoice_hash\', gateway_id: :gateway_id, intent: \':intent_id\', save: save ? 1 : 0, make_default: save && cardDefault && cardDefault.checked ? 1 : 0}, resolve, reject));
                             const updated = await elements.fetchUpdates();
                             if (updated.error) {
                                 throw updated.error;
@@ -2310,11 +2332,19 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             ':intent_secret' => $intent->client_secret,
             ':intent_id' => $intent->id,
             ':gateway_id' => (string) $this->gatewayId(),
+            // ClientFence core patch: a client with an automatic card chooses whether the new card replaces it (GitHub #11).
             ':save_card' => $saveCard === null ? '' : sprintf(
-                '<div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="cf-save-card"%s><label class="form-check-label" for="cf-save-card">%s</label><div class="form-text">%s</div></div>',
+                '<div id="cf-save-card-box" class="mt-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="cf-save-card"%s><label class="form-check-label" for="cf-save-card">%s</label><div class="form-text">%s</div></div>%s</div>',
                 $saveCard ? ' checked' : '',
                 htmlspecialchars(__trans('Save this card for future invoices'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
-                htmlspecialchars(__trans('A saved card can pay this account\'s invoices automatically. You can remove it on the Payment methods page.'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                htmlspecialchars($autoCard === null
+                    ? __trans('This card will pay this account\'s invoices automatically. You can remove it on the Payment methods page.')
+                    : __trans('A saved card can pay this account\'s invoices automatically. You can remove it on the Payment methods page.'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                $autoCard === null ? '' : sprintf(
+                    '<div class="form-check" id="cf-card-default-box"%s><input class="form-check-input" type="checkbox" id="cf-card-default"><label class="form-check-label" for="cf-card-default">%s</label></div>',
+                    $saveCard ? '' : ' hidden',
+                    htmlspecialchars(__trans('Use this card for automatic payments instead of :card', [':card' => $autoCard['card']]), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                )
             ),
             ':buyer_email' => self::encodeJsString((string) $invoice->buyer_email),
             ':buyer_name' => self::encodeJsString(trim($invoice->buyer_first_name . ' ' . $invoice->buyer_last_name)),

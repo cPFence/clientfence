@@ -404,7 +404,7 @@ class Client extends \ClientFence\Api\AbstractApi
         return ['paid' => $result['paid'], 'message' => (string) ($result['error'] ?? '')];
     }
 
-    /** ClientFence: the "Save this card" choice (`save`) for the card payment (`intent`) of the client's own unpaid invoice (`hash`) at Stripe gateway `gateway_id`. */
+    /** ClientFence: the "Save this card" choice (`save`, and `make_default`: it replaces the automatic card) for the card payment (`intent`) of the client's own unpaid invoice (`hash`) at Stripe gateway `gateway_id`. */
     #[RequiredParams(['hash' => 'Invoice hash was not passed', 'gateway_id' => 'Payment gateway ID was not passed', 'intent' => 'Payment ID was not passed'])]
     public function card_save_choice($data): bool
     {
@@ -421,7 +421,7 @@ class Client extends \ClientFence\Api\AbstractApi
         if (!$adapter instanceof \Payment_Adapter_Stripe) {
             throw new \ClientFence\InformationException('Saved cards are not available.');
         }
-        $adapter->cardSaveChoice($clientId, (int) $invoice->id, (string) $data['intent'], !empty($data['save']));
+        $adapter->cardSaveChoice($clientId, (int) $invoice->id, (string) $data['intent'], !empty($data['save']), !empty($data['make_default']));
 
         return true;
     }

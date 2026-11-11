@@ -5070,5 +5070,25 @@
     {
         "file": "themes/palisade/html/mod_order_manage.html.twig",
         "done": "ClientFence core patch: an unpaid renewal invoice is paid here; Renew Now would only open it again (Invoice Service generateForOrder())."
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: as in WHMCS, an unconfirmed client may still order and pay"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: several statuses (the client's cancelled and refunded invoices)"
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: the metadata only the server sets tells rememberPaidCard() to make the paid card the automatic one (GitHub #11)."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a client with an automatic card chooses whether the new card replaces it (GitHub #11)."
+    },
+    {
+        "file": "modules/Invoice/templates/client/mod_invoice_banklink.html.twig",
+        "done": "ClientFence core patch: a payment form is headed by its invoice and amount; only the redirect step is \"processing\" (GitHub #11)."
     }
 ]

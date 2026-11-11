@@ -1,7 +1,10 @@
 {% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
 {% set active_menu = 'invoices' %}
 
-{% block meta_title %}{{ 'Processing Payment...'|trans }}{% endblock %}
+{# ClientFence core patch: a payment form is headed by its invoice and amount; only the redirect step is "processing" (GitHub #11). #}
+{% set heading = payment.type == 'form' ? 'Processing Payment...'|trans : 'Pay invoice :number'|trans({ ':number': '#' ~ invoice.serie_nr }) %}
+
+{% block meta_title %}{{ heading }}{% endblock %}
 
     {% block breadcrumb %}
         <li class="breadcrumb-item"><a href="{{ 'invoice'|url }}">{{ 'Invoices'|trans }}</a></li>
@@ -13,9 +16,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
-            <div class="card-header">
-                <h1>{{ 'Processing Payment...'|trans }}</h1>
-                <p>{{ 'Thank you for your patience.'|trans }}</p>
+            <div class="card-header d-block">
+                <h1>{{ heading }}</h1>
+                <p class="mb-0">{{ payment.type == 'form' ? 'Thank you for your patience.'|trans : 'Amount due: :amount'|trans({ ':amount': invoice.balance_due|format_currency(invoice.currency) }) }}</p>
             </div>
             <div class="card-body">
                 {% if payment.type == 'html' %}

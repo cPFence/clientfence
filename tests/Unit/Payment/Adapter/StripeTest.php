@@ -2906,7 +2906,10 @@ describe('saved cards', function (): void {
             ->and(fn () => $this->adapter->cardDefault(9, 'pm_2'))->toThrow(ClientFence\InformationException::class, 'Payment method not found.');
     });
 
-    test('the payment form lists every saved card of the client (GitHub #6) and saves the card unless unticked; staff tick it themselves (GitHub #7)', function (?array $admin, ?string $usage, string $box): void {
+    test('the payment form lists every saved card of the client (GitHub #6) and saves the card unless unticked; staff tick it themselves (GitHub #7)', function (?array $admin, ?string $usage, string $box, ?string $autoCard = null): void {
+        if ($autoCard !== null) {
+            $this->cards->update('pay_gateway_customer', ['default_payment_method' => 'pm_1', 'default_card' => $autoCard], ['client_id' => 9]);
+        }
         $this->adapter->getDi()['session']->shouldReceive('get')->with('client_id')->andReturn(9);
         $this->adapter->getDi()['session']->shouldReceive('get')->with('admin')->andReturn($admin);
         $this->stripe->customerSessions = Mockery::mock();
@@ -2925,20 +2928,40 @@ describe('saved cards', function (): void {
     })->with([
         'the client' => [null, 'off_session', 'id="cf-save-card" checked>'],
         'staff signed in as the client' => [['id' => 1], null, 'id="cf-save-card">'],
+        'no automatic card: this card will pay (GitHub #11)' => [null, 'off_session', 'This card will pay this account&#039;s invoices automatically.'],
+        'an automatic card: the client may replace it (GitHub #11)' => [null, 'off_session', '<div class="form-check" id="cf-card-default-box"><input class="form-check-input" type="checkbox" id="cf-card-default"><label class="form-check-label" for="cf-card-default">Use this card for automatic payments instead of Visa •••• 4242 (03/2030)</label>', 'Visa •••• 4242 (03/2030)'],
     ]);
 
-    test('the Save this card choice is set on the client\'s own unconfirmed payment only (GitHub #7)', function (array $intent, ?string $usage): void {
+    test('a card paid with "Use this card for automatic payments" replaces the automatic card; without it the automatic card stays (GitHub #11)', function (): void {
+        $this->cards->update('pay_gateway_customer', ['default_payment_method' => 'pm_1', 'default_card' => 'Visa'], ['client_id' => 9]);
+        $paid = ['status' => 'succeeded', 'customer' => 'cus_9', 'payment_method_options' => (object) ['card' => (object) ['setup_future_usage' => 'off_session']]];
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) (['payment_method' => 'pm_2', 'metadata' => (object) ['make_default' => '']] + $paid), 9]);
+        expect($this->adapter->savedCard(9)['payment_method'])->toBe('pm_1');
+
+        $this->cards->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, txn_id TEXT, status TEXT)');
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) (['id' => 'pi_3', 'payment_method' => 'pm_3', 'metadata' => (object) ['make_default' => '1']] + $paid), 9]);
+        expect($this->adapter->savedCard(9)['payment_method'])->toBe('pm_3');
+
+        // The client chose pm_1 again; a replay of the recorded pi_3 (webhook retry, old return link) leaves it.
+        $this->cards->update('pay_gateway_customer', ['default_payment_method' => 'pm_1', 'default_card' => 'Visa'], ['client_id' => 9]);
+        $this->cards->executeStatement("INSERT INTO `transaction` (txn_id, status) VALUES ('pi_3', 'processed')");
+        invokePrivateMethod($this->adapter, 'rememberPaidCard', [(object) (['id' => 'pi_3', 'payment_method' => 'pm_3', 'metadata' => (object) ['make_default' => '1']] + $paid), 9]);
+        expect($this->adapter->savedCard(9)['payment_method'])->toBe('pm_1');
+    });
+
+    test('the Save this card choice is set on the client\'s own unconfirmed payment only (GitHub #7)', function (array $intent, ?string $usage, string $makeDefault = ''): void {
         $this->stripe->paymentIntents = Mockery::mock();
         $this->stripe->paymentIntents->shouldReceive('retrieve')->once()->with('pi_70', [])
             ->andReturn((object) ($intent + ['metadata' => ['invoice_id' => '70', 'gateway_id' => '1'], 'customer' => 'cus_9', 'status' => 'requires_payment_method']));
         $usage === null
             ? $this->stripe->paymentIntents->shouldNotReceive('update')
-            : $this->stripe->paymentIntents->shouldReceive('update')->once()->with('pi_70', ['payment_method_options' => ['card' => ['setup_future_usage' => $usage]]]);
+            : $this->stripe->paymentIntents->shouldReceive('update')->once()->with('pi_70', ['payment_method_options' => ['card' => ['setup_future_usage' => $usage]], 'metadata' => ['make_default' => $makeDefault]]);
 
-        $choice = fn () => $this->adapter->cardSaveChoice(9, 70, 'pi_70', $usage !== '');
+        $choice = fn () => $this->adapter->cardSaveChoice(9, 70, 'pi_70', $usage !== '', $makeDefault === '1');
         $usage === null ? expect($choice)->toThrow(ClientFence\InformationException::class, 'This payment cannot be changed.') : $choice();
     })->with([
         'save' => [[], 'off_session'],
+        'save as the automatic card (GitHub #11)' => [[], 'off_session', '1'],
         'do not save' => [[], ''],
         'back from a bank page' => [['status' => 'requires_action'], ''],
         'another invoice' => [['metadata' => ['invoice_id' => '71', 'gateway_id' => '1']], null],

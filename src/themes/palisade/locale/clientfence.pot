@@ -2148,8 +2148,12 @@ msgstr ""
 msgid "All issues"
 msgstr ""
 
-#: src/modules/Invoice/templates/client/mod_invoice_index.html.twig src/themes/palisade/html/mod_invoice_index.html.twig
+#: src/modules/Invoice/templates/client/mod_invoice_index.html.twig
 msgid "All of your invoices can be found here. You can choose to see either paid or unpaid invoices by clicking corresponding button."
+msgstr ""
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "All of your invoices: unpaid, paid, and cancelled or refunded, each in its tab."
 msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_list.html.twig
@@ -2754,6 +2758,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
 msgid "Amount due"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
+msgid "Amount due: :amount"
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -4026,6 +4034,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Cancelled"
+msgstr ""
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Cancelled and refunded"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_canned_response.html.twig
@@ -5698,6 +5710,10 @@ msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_confirm.html.twig
 msgid "Confirm your email address"
+msgstr ""
+
+#: src/themes/palisade/html/layout_default.html.twig
+msgid "Confirm your email address to use your whole account. We sent you a link."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -16320,7 +16336,7 @@ msgstr ""
 msgid "Pay invoice"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Pay invoice :number"
 msgstr ""
 
@@ -18984,7 +19000,7 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+#: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Resend Verification Email"
 msgstr ""
 
@@ -23665,6 +23681,10 @@ msgstr ""
 msgid "This cancellation request is no longer waiting."
 msgstr ""
 
+#: src/library/Payment/Adapter/Stripe.php
+msgid "This card will pay this account's invoices automatically. You can remove it on the Payment methods page."
+msgstr ""
+
 #: src/modules/Order/Upgrades.php
 msgid "This change is not available for this service."
 msgstr ""
@@ -25841,6 +25861,10 @@ msgstr ""
 msgid "Use these values when your control panel supports account prefixes or other optional provisioning defaults."
 msgstr ""
 
+#: src/library/Payment/Adapter/Stripe.php
+msgid "Use this card for automatic payments instead of :card"
+msgstr ""
+
 #: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_manage.html.twig
 msgid "Use this function to replace the existing order file. The client will be able to download the new file from the client area."
 msgstr ""
@@ -26049,7 +26073,7 @@ msgstr ""
 msgid "Variables"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+#: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Verification Email Re-sent"
 msgstr ""
 
@@ -27233,7 +27257,7 @@ msgstr ""
 msgid "You must specify an IP address to reset."
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+#: src/modules/Client/templates/client/mod_client_profile.html.twig
 msgid "You must verify your email address before you may access our services."
 msgstr ""
 
