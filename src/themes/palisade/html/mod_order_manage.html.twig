@@ -130,9 +130,15 @@
                         </div>
                     {% endif %}
                     {% if order.period and order.status in ['active', 'suspended'] %}
+                        {# ClientFence core patch: an unpaid renewal invoice is paid here; Renew Now would only open it again (Invoice Service generateForOrder()). #}
+                        {% set open_invoice = order.unpaid_invoice_id and (not clientfence_user or clientfence_user.owner or 'invoices' in clientfence_user.permissions) ? client.invoice_get_list({ 'id': order.unpaid_invoice_id, 'status': 'unpaid', 'per_page': 1 }).list|first : null %}
+                        {% if open_invoice %}
+                        <a class="btn btn-primary btn-sm" href="{{ 'invoice'|url }}/{{ open_invoice.hash }}">{{ 'Pay invoice :number'|trans({ ':number': open_invoice.serie_nr }) }}</a>
+                        {% else %}
                         <a class="btn btn-primary btn-sm"
                            {{ fb_api_link({href: 'invoice/renewal_invoice'|api_url(query: {order_id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans, content: 'This will generate new invoice. Are you sure you want to continue?'|trans}, callback: 'onRenewalInvoiceCreated'}) }}>{{ 'Renew Now'|trans }}</a>
                         <script nonce="{{ csp_nonce|raw }}">window.onRenewalInvoiceCreated = (hash) => { window.location = "{{ 'invoice'|url }}/" + hash; };</script>
+                        {% endif %}
                     {% endif %}
                     {% if upgrade.available %}
                         <button class="btn btn-outline-primary btn-sm" type="button" id="request-upgrade" data-bs-toggle="modal" data-bs-target="#upgrade-modal">{{ 'Upgrade / Downgrade'|trans }}</button>

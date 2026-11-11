@@ -881,8 +881,13 @@ class Admin extends \ClientFence\Api\AbstractApi
         foreach (['company_tel', 'company_address_1', 'company_address_2', 'company_address_3'] as $key) {
             $params[$key] = trim((string) ($data[$key] ?? ''));
         }
+        $saved = (bool) $this->getDi()['api_admin']->system_update_params($params);
+        if ($email !== '') {
+            // New ticket notices of the installer's help desk would go to its placeholder address.
+            $this->getDi()['em']->getConnection()->executeStatement('UPDATE support_helpdesk SET email = ? WHERE email = ?', [$email, Setup::PLACEHOLDER_EMAIL]);
+        }
 
-        return (bool) $this->getDi()['api_admin']->system_update_params($params);
+        return $saved;
     }
 
     /** Uploads the logo, the logo for dark backgrounds or the square icon (`kind`, multipart "file"). */

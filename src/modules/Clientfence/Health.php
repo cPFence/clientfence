@@ -493,6 +493,11 @@ final class Health
         };
         yield self::check('services', 'svc_mail', self::msg('Email delivery'), $state, $detail, 'extension/settings/email', [':port' => $port, ':mailer' => $mailer]);
 
+        // A help desk's new ticket notices go to its email address (Staff\Service::onAfterClientOpenTicket()): the installer's placeholder reaches nobody.
+        foreach ($db->fetchAllAssociative('SELECT id, name FROM support_helpdesk WHERE email = ?', [Setup::PLACEHOLDER_EMAIL]) as $row) {
+            yield self::check('services', 'svc_helpdesk_' . $row['id'], self::msg('Help desk: :name'), 'warn', self::msg('Its email address is still :email, so new ticket notices go there instead of to your staff. Set your own address in Support > Help desks.'), 'support/helpdesk/' . $row['id'], [':name' => $row['name'], ':email' => Setup::PLACEHOLDER_EMAIL]);
+        }
+
         foreach ($db->fetchAllAssociative("SELECT id, name FROM tld_registrar WHERE registrar = 'Dynadot'") as $row) {
             $model = $di['db']->load('TldRegistrar', (int) $row['id']);
             try {

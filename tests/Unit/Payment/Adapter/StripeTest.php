@@ -1463,6 +1463,36 @@ test('logs PaymentIntent lock timeouts with lock context', function (): void {
         ->and($logger->calls[0]['params'][2])->toBe($lockName);
 });
 
+test('a payment_intent.succeeded webhook that times out on the lock is dropped when the return path already holds the payment', function (bool $recorded): void {
+    $tx = buildTransaction();
+    $tx->id = 300;
+    $paymentIntent = (object) ['id' => 'pi_slow', 'status' => 'succeeded', 'metadata' => (object) ['invoice_id' => '10', 'client_id' => '3']];
+    $event = (object) ['data' => (object) ['object' => $paymentIntent]];
+    $existing = buildTransaction();
+    $existing->id = 299;
+    $existing->status = Model_Transaction::STATUS_PROCESSING;
+
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(:lock_name, 10)', Mockery::any())->andReturn(0);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')->once()
+        ->with('Transaction', Mockery::pattern('/status IN \(:s1, :s2, :s3\)/'), Mockery::on(fn (array $p): bool => $p[':txn_id'] === 'pi_slow' && $p[':gateway_id'] === 1 && $p[':id'] === 300))
+        ->andReturn($recorded ? $existing : null);
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['dbal'] = $dbalMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $this->adapter->setDi($di);
+
+    $handle = fn (): mixed => invokePrivateMethod($this->adapter, 'handlePaymentIntentSucceededWebhook', [Mockery::mock(), $tx, $event, 1]);
+    if ($recorded) {
+        // processWebhookEvent() trashes the transaction of a handler that returns false.
+        expect($handle())->toBeFalse();
+    } else {
+        expect($handle)->toThrow(ClientFence\Exception::class, 'Timed out waiting to process this Stripe payment');
+    }
+})->with(['already recorded' => true, 'not recorded' => false]);
+
 describe('handleSetupIntentSucceededWebhook', function (): void {
     test('does not credit when the Stripe invoice is already claimed', function (): void {
         $tx = buildTransaction();
@@ -2729,8 +2759,12 @@ test('a transaction retried after paying its invoice reuses its balance credit',
     $invoiceService->shouldReceive('getBalanceDue')->twice()->andReturn(50.0);
     $invoiceService->shouldReceive('validatePaymentAmount')->twice()->with(50.0, 50.0, $invoice);
     $invoiceService->shouldReceive('isInvoiceTypeDeposit')->once()->with($invoice)->andReturnFalse();
+    $stores = 0;
+    $interrupted = false;
     $invoiceService->shouldReceive('payInvoiceWithCredits')->once()->with($invoice)
-        ->andReturnUsing(function () use ($invoice): void {
+        ->andReturnUsing(function () use ($invoice, $method, &$stores): void {
+            // The return path saves the PaymentIntent ID before paying, for a webhook that times out on the lock.
+            expect($stores)->toBe($method === 'processPaymentIntentUnderLock' ? 1 : 0);
             $invoice->status = Model_Invoice::STATUS_PAID;
         });
     $transactionService = Mockery::mock();
@@ -2739,9 +2773,12 @@ test('a transaction retried after paying its invoice reuses its balance credit',
     $db->shouldReceive('findOne')->with('Invoice', 'id = :id', [':id' => 42])->andReturn($invoice);
     $db->shouldReceive('findOne')->with('Transaction', Mockery::any(), Mockery::any())->andReturnNull();
     $db->shouldReceive('getExistingModelById')->twice()->with('Client', 7)->andReturn($client);
-    $stores = 0;
-    $db->shouldReceive('store')->twice()->with($tx)->andReturnUsing(function () use (&$stores): int {
-        if (++$stores === 1) {
+    // The save after paying the invoice is the one interrupted.
+    $db->shouldReceive('store')->with($tx)->andReturnUsing(function () use (&$stores, &$interrupted, $invoice): int {
+        ++$stores;
+        if (!$interrupted && $invoice->status === Model_Invoice::STATUS_PAID) {
+            $interrupted = true;
+
             throw new RuntimeException('Transaction save interrupted');
         }
 

@@ -425,6 +425,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             }
 
             $tx->status = Model_Transaction::STATUS_PROCESSING;
+            // ClientFence core patch: the PaymentIntent ID is saved before paying, so a webhook that times out on the lock finds this payment.
+            $this->di['db']->store($tx);
         }
 
         // ClientFence core patch: a distinct payment for a paid invoice belongs in the client's balance.
@@ -1067,7 +1069,20 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return $this->withStripeObjectLock(
             $paymentIntent->id,
             $gateway_id,
-            fn (): bool => $this->handlePaymentIntentSucceededWebhookUnderLock($tx, $paymentIntent, $gateway_id)
+            fn (): bool => $this->handlePaymentIntentSucceededWebhookUnderLock($tx, $paymentIntent, $gateway_id),
+            // ClientFence core patch: while the return path still pays the invoice (order activation can outlast the lock wait), its transaction is this payment, so this webhook is dropped as a duplicate.
+            fn (): bool => $this->di['db']->findOne(
+                'Transaction',
+                'txn_id = :txn_id AND gateway_id = :gateway_id AND id != :id AND status IN (:s1, :s2, :s3)',
+                [
+                    ':txn_id' => $paymentIntent->id,
+                    ':gateway_id' => $gateway_id,
+                    ':id' => $tx->id,
+                    ':s1' => Model_Transaction::STATUS_RECEIVED,
+                    ':s2' => Model_Transaction::STATUS_PROCESSING,
+                    ':s3' => Model_Transaction::STATUS_PROCESSED,
+                ]
+            ) instanceof Model_Transaction
         );
     }
 
@@ -1136,7 +1151,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return true;
     }
 
-    private function withStripeObjectLock(string $objectId, int $gatewayId, callable $callback): mixed
+    private function withStripeObjectLock(string $objectId, int $gatewayId, callable $callback, ?callable $isDuplicate = null): mixed
     {
         $lockName = 'fb:stripe:' . substr(hash('sha256', $gatewayId . ':' . $objectId), 0, 54);
         $waitStartedAt = hrtime(true);
@@ -1154,6 +1169,11 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 $waitDurationMs,
                 $lockName
             );
+
+            // The handler's false drops the transaction (processWebhookEvent()).
+            if ($isDuplicate !== null && $isDuplicate()) {
+                return false;
+            }
 
             throw new ClientFence\Exception('Timed out waiting to process this Stripe payment');
         }

@@ -147,14 +147,15 @@ final class Panels
 
     /**
      * The client's active and suspended hosting orders (no panel calls): the order title, the
-     * domain, the hosting plan's name and when the order renews (null: never).
+     * domain, the hosting plan's name, when the order renews (null: never) and whether the plan allows
+     * email accounts (its email accounts limit is not 0).
      *
-     * @return list<array{order_id: int, title: string, domain: string, plan: string, status: string, expires_at: ?string}>
+     * @return list<array{order_id: int, title: string, domain: string, plan: string, status: string, expires_at: ?string, email: bool}>
      */
     public static function clientAccounts(\Pimple\Container $di, int $clientId): array
     {
         $rows = $di['em']->getConnection()->fetchAllAssociative(
-            "SELECT o.id, o.title, o.status, o.expires_at, CONCAT(COALESCE(h.sld, ''), COALESCE(h.tld, '')) AS domain, COALESCE(hp.name, '') AS plan
+            "SELECT o.id, o.title, o.status, o.expires_at, CONCAT(COALESCE(h.sld, ''), COALESCE(h.tld, '')) AS domain, COALESCE(hp.name, '') AS plan, hp.max_pop
              FROM client_order o LEFT JOIN service_hosting h ON h.id = o.service_id
              LEFT JOIN service_hosting_hp hp ON hp.id = h.service_hosting_hp_id
              WHERE o.client_id = ? AND o.service_type = 'hosting' AND o.status IN ('active', 'suspended')
@@ -163,7 +164,8 @@ final class Panels
         );
 
         return array_map(static fn (array $r): array => ['order_id' => (int) $r['id'], 'title' => (string) $r['title'], 'domain' => (string) $r['domain'],
-            'plan' => (string) $r['plan'], 'status' => (string) $r['status'], 'expires_at' => $r['expires_at'] !== null ? (string) $r['expires_at'] : null], $rows);
+            'plan' => (string) $r['plan'], 'status' => (string) $r['status'], 'expires_at' => $r['expires_at'] !== null ? (string) $r['expires_at'] : null,
+            'email' => (string) $r['max_pop'] !== '0'], $rows);
     }
 
     /**

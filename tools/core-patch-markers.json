@@ -5046,5 +5046,29 @@
     {
         "file": "themes/palisade/html/mod_order_product.html.twig",
         "done": "ClientFence core patch: the cart holds only this plan with the link's code (applied here before a sign-in or a reload): the link applies it again without asking."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: the PaymentIntent ID is saved before paying, so a webhook that times out on the lock finds this payment."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: while the return path still pays the invoice (order activation can outlast the lock wait), its transaction is this payment, so this webhook is dropped as a duplicate."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: the address a hosting account's website is served from"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: on a panel cluster the website runs on an app server, not at the hosting server's IP."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: an unchanged copy of the 1.0.42-1.0.43 hosting activation email takes the new one (the website's IP)."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: an unpaid renewal invoice is paid here; Renew Now would only open it again (Invoice Service generateForOrder())."
     }
 ]

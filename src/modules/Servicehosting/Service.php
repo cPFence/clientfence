@@ -718,6 +718,28 @@ class Service implements InjectionAwareInterface
         return [$adapter, $server_account, $linkError];
     }
 
+    /**
+     * ClientFence core patch: the address a hosting account's website is served from: the panel's first IPv4 for it, as
+     * the client Domains tab shows. Null when the account is on no panel that is on, or the panel cannot answer (logged).
+     */
+    public function websiteIp(int $serviceId): ?string
+    {
+        try {
+            ['manager' => $manager, 'account' => $account] = Panel\Panels::forService($this->di, $serviceId, 'dns');
+            foreach ($manager->clientfenceDomains($account)['web_ips'] as $ip) {
+                if (!str_contains($ip, ':')) {
+                    return $ip;
+                }
+            }
+        } catch (InformationException) {
+            // Not on a panel that is on: the server's own address is the right one.
+        } catch (\Throwable $e) {
+            $this->di['logger']->warning('ClientFence: the website address of hosting service #%s is unavailable: %s', $serviceId, $e->getMessage());
+        }
+
+        return null;
+    }
+
     public function toApiArray(\Model_ServiceHosting $model, $deep = false, $identity = null): array
     {
         $serviceHostingServerModel = $this->di['db']->load('ServiceHostingServer', $model->service_hosting_server_id);

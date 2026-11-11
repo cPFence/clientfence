@@ -2,7 +2,7 @@
    then three tabs: Overview, its usage, loaded from /hosting/:id/usage
    (mod_servicehosting_account_usage.html.twig) so the page shows at once; Domains, their DNS status,
    loaded from /hosting/:id/domains (mod_servicehosting_account_domains.html.twig) when the tab first
-   opens; Email (mod_servicehosting_account_email.html.twig); and Backups, loaded from /hosting/:id/backups
+   opens; Email (mod_servicehosting_account_email.html.twig), unless the plan allows no email accounts; and Backups, loaded from /hosting/:id/backups
    (mod_servicehosting_account_backups.html.twig) when the tab first opens. #clientfence-hosting-domains and
    #clientfence-hosting-email open a tab. `account` is one row of client.servicehosting_accounts (the controller checks
    that it is the client's). #}
@@ -64,12 +64,14 @@
             {{ 'Domains'|trans }}
         </button>
     </li>
+    {% if account.email %}
     <li class="nav-item" role="presentation">
         <button type="button" class="nav-link" data-bs-toggle="pill" data-bs-target="#clientfence-hosting-email" role="tab" aria-controls="clientfence-hosting-email" aria-selected="false">
             <svg class="icon icon-sm" aria-hidden="true"><use href="#mail"/></svg>
             {{ 'Email'|trans }}
         </button>
     </li>
+    {% endif %}
     <li class="nav-item" role="presentation">
         <button type="button" class="nav-link" data-bs-toggle="pill" data-bs-target="#clientfence-hosting-backups" role="tab" aria-controls="clientfence-hosting-backups" aria-selected="false">
             <svg class="icon icon-sm" aria-hidden="true"><use href="#history"/></svg>
@@ -99,9 +101,11 @@
             </div>
         </div>
     </div>
+    {% if account.email %}
     <div class="tab-pane fade" id="clientfence-hosting-email" role="tabpanel" tabindex="0">
         {% include 'mod_servicehosting_account_email.html.twig' with { 'account': account } %}
     </div>
+    {% endif %}
     <div class="tab-pane fade" id="clientfence-hosting-backups" role="tabpanel" tabindex="0">
         <div class="clientfence-hosting-backups-content" data-fragment-url="{{ ('hosting/' ~ account.order_id ~ '/backups')|url }}" aria-live="polite">
             <div class="card">

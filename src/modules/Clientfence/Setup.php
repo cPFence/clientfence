@@ -21,6 +21,8 @@ final class Setup
 {
     public const string STATE = 'clientfence_setup';
     public const array STEPS = ['company', 'email', 'payments', 'security', 'product'];
+    /** The email address of the help desk a new install starts with (install/sql/content.sql). */
+    public const string PLACEHOLDER_EMAIL = 'info@yourcompany.com';
 
     /** Top-level addresses of the site besides the modules' client pages (files, API, folders). */
     private const array RESERVED_PATHS = ['api', 'public', 'themes', 'modules', 'library', 'install', 'data', 'vendor',

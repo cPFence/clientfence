@@ -574,6 +574,7 @@ class UpdatePatcher implements InjectionAwareInterface
             123 => 'patch123',
             124 => 'patch124',
             125 => 'patch125',
+            126 => 'patch126',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2705,6 +2706,14 @@ class UpdatePatcher implements InjectionAwareInterface
         if (!$this->tableHasColumn('pay_gateway_customer', 'auto_pay_at')) {
             $this->executeSql('ALTER TABLE `pay_gateway_customer` ADD COLUMN `auto_pay_at` datetime DEFAULT NULL');
         }
+    }
+
+    private function patch126(): void
+    {
+        // ClientFence core patch: an unchanged copy of the 1.0.42-1.0.43 hosting activation email takes the new one (the website's IP).
+        $this->restoreLegacyDefaultEmailTemplates([
+            'mod_servicehosting_activated' => ['3847a655efb596abb88403311f84fcc01141226fcf51e16c03acb10dd35c5383', '6f7da136091eaa1a6b59838cbaedcf694be4016b22acf6fba56b27b1676594a9'],
+        ]);
     }
 
     /**

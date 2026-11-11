@@ -253,3 +253,28 @@ test('a served data folder shows under private paths (Nginx without the rules)',
     expect($check['state'])->toBe('bad')
         ->and($check['params'][':list'])->toBe('/data/index.html');
 });
+
+test('a help desk still on the installer placeholder email is a warning that links to it', function (): void {
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->allows('fetchAssociative')->andReturn(['waiting' => 0, 'failed' => 0, 'oldest' => null]);
+    $connection->allows('fetchAllAssociative')->with('SELECT id, name FROM support_helpdesk WHERE email = ?', ['info@yourcompany.com'])->andReturn([['id' => 1, 'name' => 'General']]);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->allows('getConnection')->andReturn($connection);
+    $service = Mockery::mock();
+    $service->allows('getParamValue')->andReturn(date('Y-m-d H:i:s'));
+    $service->allows('getConfig')->andReturn([]);
+    $di = new Pimple\Container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn () => $service);
+
+    $found = null;
+    foreach ((new ReflectionMethod(Health::class, 'services'))->invoke(null, $di) as $check) {
+        if (str_starts_with($check['id'], 'svc_helpdesk_')) {
+            $found = $check;
+
+            break;
+        }
+    }
+
+    expect($found)->toMatchArray(['id' => 'svc_helpdesk_1', 'state' => 'warn', 'url' => 'support/helpdesk/1', 'params' => [':name' => 'General', ':email' => 'info@yourcompany.com']]);
+});

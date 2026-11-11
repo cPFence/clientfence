@@ -145,3 +145,30 @@ test('the Store step keeps the store title, subtitle and opening cycle', functio
 
     expect($di['api_admin']->saved)->toMatchArray(['store_mode' => 'public', 'store_title' => 'Plans', 'store_subtitle' => 'Pick one', 'store_cycle' => '1Y']);
 });
+
+test('the company step gives its email to the help desks that still have the installer placeholder', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE support_helpdesk (id INTEGER PRIMARY KEY, email TEXT)');
+    $db->insert('support_helpdesk', ['id' => 1, 'email' => 'info@yourcompany.com']);
+    $db->insert('support_helpdesk', ['id' => 2, 'email' => 'sales@example.com']);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->allows('getConnection')->andReturn($db);
+    $staff = new class {
+        public function isSuperAdministrator(int $id): bool
+        {
+            return true;
+        }
+    };
+    $di = new Pimple\Container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (string $name) => $staff);
+    $di['loggedin_admin'] = (object) ['id' => 1];
+    $di['api_admin'] = Mockery::mock();
+    $di['api_admin']->allows('system_update_params')->andReturnTrue();
+    $api = new ClientFence\Mod\Clientfence\Api\Admin();
+    $api->setDi($di);
+
+    $api->setup_company(['company_name' => 'Acme', 'company_email' => 'help@acme.test']);
+
+    expect($db->fetchAllKeyValue('SELECT id, email FROM support_helpdesk ORDER BY id'))->toBe([1 => 'help@acme.test', 2 => 'sales@example.com']);
+});

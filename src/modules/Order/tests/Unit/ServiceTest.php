@@ -300,6 +300,41 @@ test('onAfterAdminOrderActivate logs exceptions', function (): void {
     $serviceMock->onAfterAdminOrderActivate($eventMock);
 });
 
+test('the hosting activation email gives the website IP from the panel, else the server IP', function (?string $websiteIp, string $shown): void {
+    $eventMock = Mockery::mock(\ClientFence\Event::class);
+    $eventMock->shouldReceive('getParameters')->andReturn(['id' => 1]);
+
+    $sent = null;
+    $emailServiceMock = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $emailServiceMock->shouldReceive('sendTemplate')->once()->andReturnUsing(function (array $email) use (&$sent): bool {
+        $sent = $email;
+
+        return true;
+    });
+    $hostingServiceMock = Mockery::mock();
+    $hostingServiceMock->shouldReceive('websiteIp')->once()->with(5)->andReturn($websiteIp);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('getOrderServiceData')->andReturn(['server' => ['ip' => '198.51.100.1', 'name' => 'Panel']]);
+    $serviceMock->shouldReceive('toApiArray')->andReturn(['id' => 1, 'client' => ['id' => 1], 'service_type' => 'hosting']);
+
+    $di = container();
+    $di['em']->getRepository(Order::class)->shouldReceive('find')->andReturn(createEntity(Order::class, ['id' => 1, 'service_id' => 5]));
+    $di['mod_service'] = $di->protect(fn ($name) => match ($name) {
+        'email' => $emailServiceMock,
+        'order' => $serviceMock,
+        'servicehosting' => $hostingServiceMock,
+    });
+    $eventMock->shouldReceive('getDi')->andReturn($di);
+
+    Service::onAfterAdminOrderActivate($eventMock);
+
+    expect($sent['service']['server']['ip'])->toBe($shown);
+})->with([
+    'panel answers' => ['203.0.113.7', '203.0.113.7'],
+    'no panel or it failed' => [null, '198.51.100.1'],
+]);
+
 test('onAfterAdminOrderRenew fires template', function (): void {
     $params = ['id' => 1];
 

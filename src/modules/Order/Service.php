@@ -293,6 +293,10 @@ class Service implements InjectionAwareInterface
             }
             $s = $service->getOrderServiceData($order);
             $orderArr = $service->toApiArray($order, true);
+            // ClientFence core patch: on a panel cluster the website runs on an app server, not at the hosting server's IP.
+            if ($orderArr['service_type'] === 'hosting' && isset($s['server'])) {
+                $s['server']['ip'] = $di['mod_service']('servicehosting')->websiteIp((int) $order->getServiceId()) ?? $s['server']['ip'];
+            }
 
             $email = $params;
             $email['to_client'] = $order->getClientId();
