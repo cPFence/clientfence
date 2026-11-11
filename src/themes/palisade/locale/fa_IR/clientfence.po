@@ -25122,3 +25122,168 @@ msgstr "مجوز شما بر اساس واحدهایی که نرم‌افزار�
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "reported on :date"
 msgstr "گزارش‌شده در :date"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid ":currency price stays"
+msgstr "قیمت :currency ثابت می‌ماند"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid ":tld cannot be applied. Nothing was changed."
+msgstr "اعمال :tld ممکن نیست. چیزی تغییر نکرد."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Apply the ticked TLDs (:count)? New TLDs are created inactive. Existing domains of a changed TLD renew at the new price; unpaid invoices keep their amount. A moved TLD changes the registrar for new orders only."
+msgstr "پسوندهای علامت‌خورده (:count) اعمال شوند؟ پسوندهای جدید غیرفعال ایجاد می‌شوند. دامنه‌های موجود یک پسوند تغییرکرده با قیمت جدید تمدید می‌شوند؛ فاکتورهای پرداخت‌نشده مبلغ خود را حفظ می‌کنند. پسوند منتقل‌شده فقط برای سفارش‌های جدید ثبت کننده را عوض می‌کند."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Changes"
+msgstr "تغییرات"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Check the preview first"
+msgstr "ابتدا پیش‌نمایش را بررسی کنید"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Done: :created created, :updated updated, :moved moved."
+msgstr "انجام شد: :created ایجاد، :updated به‌روزرسانی، :moved منتقل شد."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Each price is the registrar's cost for one year, converted to :currency with your own exchange rate, plus the markup. Prices are never below cost."
+msgstr "هر قیمت، هزینه یک‌ساله ثبت کننده است که با نرخ ارز خودتان به :currency تبدیل شده و حاشیه سود به آن افزوده می‌شود. قیمت‌ها هرگز زیر هزینه نیستند."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Enter TLD prices by hand on the Top Level Domains tab."
+msgstr "قیمت پسوندها را به‌صورت دستی در زبانه دامنه‌های سطح بالا وارد کنید."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Enter each markup as a number from 0 with up to 2 decimals (at most :max)."
+msgstr "هر حاشیه سود را به‌صورت عددی از 0 با حداکثر 2 رقم اعشار وارد کنید (حداکثر :max)."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Exchange rate only"
+msgstr "فقط نرخ ارز"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Fixed amount"
+msgstr "مبلغ ثابت"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get it again"
+msgstr "دریافت دوباره"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get the price list"
+msgstr "دریافت فهرست قیمت"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Get the price list first."
+msgstr "ابتدا فهرست قیمت را دریافت کنید."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Getting the price list: :done TLDs so far…"
+msgstr "در حال دریافت فهرست قیمت: تاکنون :done پسوند…"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "Keep my price"
+msgstr "نگه داشتن قیمت من"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup and rounding"
+msgstr "حاشیه سود و رند کردن"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup type"
+msgstr "نوع حاشیه سود"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Move here"
+msgstr "انتقال به اینجا"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price"
+msgstr "بدون قیمت"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price list yet."
+msgstr "هنوز فهرست قیمتی نیست."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No transfers"
+msgstr "بدون انتقال"
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Not supported by this registrar."
+msgstr "این ثبت کننده پشتیبانی نمی‌کند."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Nothing to show."
+msgstr "چیزی برای نمایش نیست."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar"
+msgstr "ثبت کننده دیگر"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar: :name"
+msgstr "ثبت کننده دیگر: :name"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Percent"
+msgstr "درصد"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list"
+msgstr "فهرست قیمت"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list of :date."
+msgstr "فهرست قیمت :date."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Prices changed since the preview. Check the preview again before applying."
+msgstr "قیمت‌ها از زمان پیش‌نمایش تغییر کرده‌اند. پیش از اعمال، پیش‌نمایش را دوباره بررسی کنید."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registrar cost"
+msgstr "هزینه ثبت کننده"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registration / renewal / transfer, one year."
+msgstr "ثبت / تمدید / انتقال، یک سال."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Rounding"
+msgstr "رند کردن"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Search TLDs"
+msgstr "جستجوی پسوندها"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "TLDs and prices"
+msgstr "پسوندها و قیمت‌ها"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "The price import and the scheduled sync leave this extension's prices alone."
+msgstr "درون‌ریزی قیمت و همگام‌سازی زمان‌بندی‌شده قیمت‌های این پسوند را تغییر نمی‌دهند."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs."
+msgstr "ثبت کننده به :code حساب می‌کند که یکی از ارزهای شما نیست. ابتدا :code را در بخش ارز اضافه کنید: نرخ آن هزینه‌ها را تبدیل می‌کند."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar returned no prices. Nothing was changed; try again later."
+msgstr "ثبت کننده هیچ قیمتی برنگرداند. چیزی تغییر نکرد؛ بعداً دوباره تلاش کنید."
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Tick at least one TLD."
+msgstr "دست‌کم یک پسوند را علامت بزنید."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Unknown sync mode or rounding."
+msgstr "حالت همگام‌سازی یا رند کردن ناشناخته است."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Up to :ending"
+msgstr "رو به بالا تا :ending"

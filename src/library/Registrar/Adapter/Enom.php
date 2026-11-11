@@ -12,8 +12,10 @@ declare(strict_types=1);
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Enom extends Registrar_AdapterAbstract
+class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
+    /** TLDs priced per getTldPrices() call: Enom prices one TLD and action per request. */
+    private const PRICE_SLICE = 5;
     private const LIVE_URL = 'https://reseller.enom.com/interface.asp';
     private const TEST_URL = 'https://resellertest.enom.com/interface.asp';
 
@@ -221,6 +223,50 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract
     }
 
     /** One API call; returns the XML reply. ErrCount above 0 is a registrar error with Enom's messages. */
+    /**
+     * The wholesale cost of one year (PE_GetProductPrice: 10 register, 16 renew, 19 transfer) for the account's TLDs
+     * (GetTLDList), PRICE_SLICE TLDs per call. A TLD whose register and renew costs both fail is left out.
+     */
+    public function getTldPrices(array $tlds = []): array
+    {
+        if ($tlds === []) {
+            foreach ($this->request('GetTLDList', [])->tldlist->tld ?? [] as $entry) {
+                $tld = strtolower(trim((string) $entry->tld, " \t\n\r\0\x0B."));
+                if ($tld !== '') {
+                    $tlds[] = '.' . $tld;
+                }
+            }
+        }
+        // shortcut: one request at a time (15 per slice); send a slice's requests together if Enom proves slow.
+        $now = array_slice($tlds, 0, self::PRICE_SLICE);
+        $prices = [];
+        foreach ($now as $tld) {
+            $row = [];
+            foreach (['register' => 10, 'renew' => 16, 'transfer' => 19] as $action => $type) {
+                $row[$action] = $this->productPrice($tld, $type);
+            }
+            if ($row['register'] !== null || $row['renew'] !== null) {
+                $prices[$tld] = $row;
+            }
+        }
+
+        return ['currency' => 'USD', 'prices' => $prices, 'remaining' => array_slice($tlds, count($now))];
+    }
+
+    private function productPrice(string $tld, int $type): ?float
+    {
+        try {
+            $price = $this->request('PE_GetProductPrice', ['tld' => ltrim($tld, '.'), 'ProductType' => $type, 'Years' => 1])->productprice;
+        } catch (Registrar_Exception) {
+            return null;
+        }
+        if (strtolower(trim((string) $price->productenabled)) === 'false' || !is_numeric((string) $price->price)) {
+            return null;
+        }
+
+        return (float) $price->price > 0 ? (float) $price->price : null;
+    }
+
     private function request(string $command, array $params): SimpleXMLElement
     {
         try {

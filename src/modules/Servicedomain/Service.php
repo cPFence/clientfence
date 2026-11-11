@@ -960,6 +960,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         $model->allow_transfer = isset($data['allow_transfer']) ? (bool) $data['allow_transfer'] : true;
         $model->require_transfer_code = isset($data['require_transfer_code']) && (bool) $data['require_transfer_code'];
         $model->active = isset($data['active']) ? (bool) $data['active'] : true;
+        // ClientFence core patch: "Keep my price" (the TLD price import and sync leave it alone: PriceSync.php).
+        $model->price_locked = !empty($data['price_locked']);
         $model->updated_at = date('Y-m-d H:i:s');
         $model->created_at = date('Y-m-d H:i:s');
 
@@ -990,6 +992,10 @@ class Service implements \ClientFence\InjectionAwareInterface
         $model->allow_transfer = $data['allow_transfer'] ?? $model->allow_transfer;
         $model->require_transfer_code = array_key_exists('require_transfer_code', $data) ? (bool) $data['require_transfer_code'] : $model->require_transfer_code;
         $model->active = $data['active'] ?? $model->active;
+        // ClientFence core patch: "Keep my price" (PriceSync.php).
+        if (array_key_exists('price_locked', $data)) {
+            $model->price_locked = (bool) $data['price_locked'];
+        }
         $model->updated_at = date('Y-m-d H:i:s');
 
         $this->di['db']->store($model);
@@ -1105,6 +1111,13 @@ class Service implements \ClientFence\InjectionAwareInterface
             $where[] = 'allow_transfer = 1';
         }
 
+        // ClientFence core patch: the TLD list's search box.
+        $search = trim((string) ($data['search'] ?? ''));
+        if ($search !== '') {
+            $where[] = 'tld LIKE :search';
+            $bindings[':search'] = '%' . addcslashes(ltrim($search, '.'), '%_\\') . '%';
+        }
+
         if (!empty($where)) {
             $query = $query . ' WHERE ' . implode(' AND ', $where);
         }
@@ -1170,6 +1183,8 @@ class Service implements \ClientFence\InjectionAwareInterface
                 'id' => $model->tld_registrar_id,
                 'title' => $tldRegistrar instanceof \Model_TldRegistrar ? $tldRegistrar->name : null,
             ];
+            // ClientFence core patch: "Keep my price" (PriceSync.php).
+            $result['price_locked'] = (bool) $model->price_locked;
         }
 
         return $result;
@@ -1488,6 +1503,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
 
         $name = $model->name;
+        // ClientFence core patch: its price list costs and fetch state go with it.
+        PriceSync::forget($this->di, (int) $model->id);
 
         $this->di['db']->trash($model);
 

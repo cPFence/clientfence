@@ -25104,3 +25104,168 @@ msgstr "您的许可证按您的软件报告的单位数计费。请确保您的
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "reported on :date"
 msgstr "报告于 :date"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid ":currency price stays"
+msgstr ":currency 价格保持不变"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid ":tld cannot be applied. Nothing was changed."
+msgstr "无法应用 :tld。未做任何更改。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Apply the ticked TLDs (:count)? New TLDs are created inactive. Existing domains of a changed TLD renew at the new price; unpaid invoices keep their amount. A moved TLD changes the registrar for new orders only."
+msgstr "应用已勾选的 TLD（:count）？新 TLD 将以未启用状态创建。已更改 TLD 的现有域名将按新价格续费；未支付的账单保持原金额。已转移的 TLD 仅对新订单更换注册商。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Changes"
+msgstr "变更"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Check the preview first"
+msgstr "请先检查预览"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Done: :created created, :updated updated, :moved moved."
+msgstr "完成：已创建 :created 个，已更新 :updated 个，已转移 :moved 个。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Each price is the registrar's cost for one year, converted to :currency with your own exchange rate, plus the markup. Prices are never below cost."
+msgstr "每个价格是注册商一年的成本，按您自己的汇率换算为 :currency，再加上加价。价格不会低于成本。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Enter TLD prices by hand on the Top Level Domains tab."
+msgstr "请在“顶级域名”标签页手动输入 TLD 价格。"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Enter each markup as a number from 0 with up to 2 decimals (at most :max)."
+msgstr "请将每个加价输入为从 0 开始、最多 2 位小数的数字（最大 :max）。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Exchange rate only"
+msgstr "仅汇率变动"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Fixed amount"
+msgstr "固定金额"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get it again"
+msgstr "重新获取"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get the price list"
+msgstr "获取价格表"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Get the price list first."
+msgstr "请先获取价格表。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Getting the price list: :done TLDs so far…"
+msgstr "正在获取价格表：目前 :done 个 TLD…"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "Keep my price"
+msgstr "保留我的价格"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup and rounding"
+msgstr "加价与取整"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup type"
+msgstr "加价类型"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Move here"
+msgstr "转移到此处"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price"
+msgstr "无价格"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price list yet."
+msgstr "尚无价格表。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No transfers"
+msgstr "不支持转移"
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Not supported by this registrar."
+msgstr "此注册商不支持。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Nothing to show."
+msgstr "无内容可显示。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar"
+msgstr "其他注册商"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar: :name"
+msgstr "其他注册商：:name"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Percent"
+msgstr "百分比"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list"
+msgstr "价格表"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list of :date."
+msgstr ":date 的价格表。"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Prices changed since the preview. Check the preview again before applying."
+msgstr "自预览以来价格已更改。应用前请重新检查预览。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registrar cost"
+msgstr "注册商成本"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registration / renewal / transfer, one year."
+msgstr "注册 / 续费 / 转移，一年。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Rounding"
+msgstr "取整"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Search TLDs"
+msgstr "搜索 TLD"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "TLDs and prices"
+msgstr "TLD 与价格"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "The price import and the scheduled sync leave this extension's prices alone."
+msgstr "价格导入和定时同步不会改动此 TLD 的价格。"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs."
+msgstr "注册商以 :code 计费，而它不是您的币种之一。请先在“币种”中添加 :code：其汇率用于换算成本。"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar returned no prices. Nothing was changed; try again later."
+msgstr "注册商未返回任何价格。未做任何更改；请稍后重试。"
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Tick at least one TLD."
+msgstr "请至少勾选一个 TLD。"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Unknown sync mode or rounding."
+msgstr "未知的同步模式或取整方式。"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Up to :ending"
+msgstr "向上取整到 :ending"

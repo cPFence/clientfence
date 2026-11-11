@@ -16,7 +16,8 @@ declare(strict_types=1);
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
-class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract
+// ClientFence core patch: the reseller cost price list (Registrar_TldPrices, Servicedomain/PriceSync.php).
+class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implements Registrar_TldPrices
 {
     public $config = [
         'userid' => null,
@@ -581,6 +582,40 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract
         return $data['currentstatus'] == 'Active';
     }
 
+    /**
+     * ClientFence core patch: the reseller's cost of one year per action, from the product keys' TLD
+     * mapping (domorder) and the reseller cost prices, in the reseller's selling currency.
+     */
+    public function getTldPrices(array $tlds = []): array
+    {
+        $mapping = $this->_makeRequest('products/category-keys-mapping', [], 'GET', 'json', false);
+        $costs = $this->_makeRequest('products/reseller-cost-price', [], 'GET', 'json', false);
+        $details = $this->_makeRequest('resellers/details', [], 'GET', 'json', false);
+        $year = static fn (mixed $p): ?float => is_array($p) && is_numeric($p[1] ?? null) ? (float) $p[1] : null;
+        $prices = [];
+        foreach (is_array($mapping) && is_array($mapping['domorder'] ?? null) ? $mapping['domorder'] : [] as $group) {
+            foreach (is_array($group) ? $group : [] as $key => $names) {
+                $cost = is_array($costs) ? ($costs[$key] ?? null) : null;
+                if (!is_array($cost)) {
+                    continue;
+                }
+                foreach ((array) $names as $name) {
+                    $prices['.' . strtolower(ltrim(trim((string) $name), '.'))] = [
+                        'register' => $year($cost['addnewdomain'] ?? null),
+                        'renew' => $year($cost['renewdomain'] ?? null),
+                        'transfer' => $year($cost['addtransferdomain'] ?? null),
+                    ];
+                }
+            }
+        }
+        if ($tlds !== []) {
+            $prices = array_intersect_key($prices, array_flip($tlds));
+        }
+        $currency = is_array($details) ? strtoupper(trim((string) ($details['parentsellingcurrencysymbol'] ?? ''))) : '';
+
+        return ['currency' => $currency !== '' ? $currency : 'USD', 'prices' => $prices, 'remaining' => []];
+    }
+
     public function isTestEnv()
     {
         return $this->_testMode;
@@ -612,7 +647,7 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract
      *
      * @throws Registrar_Exception
      */
-    protected function _makeRequest($url, $params = [], $method = 'GET', $type = 'json'): array|string
+    protected function _makeRequest($url, $params = [], $method = 'GET', $type = 'json', bool $logResult = true): array|string
     {
         $params = $this->includeAuthorizationParams($params);
 
@@ -631,7 +666,10 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract
                 $result = $client->request('GET', $callUrl . '?' . $this->_formatParams($params));
                 $this->getLog()->debug('API REQUEST: ' . $callUrl . '?' . $this->_formatParams($this->_redactAuthParams($params)));
             }
-            $this->getLog()->info('API RESULT: ' . $result->getContent(false));
+            // ClientFence core patch: price lists are hundreds of kilobytes; they are not logged.
+            if ($logResult) {
+                $this->getLog()->info('API RESULT: ' . $result->getContent(false));
+            }
         } catch (HttpExceptionInterface $error) {
             $e = new Registrar_Exception("HttpClientException: {$error->getMessage()}.");
             $this->getLog()->error($e->getMessage());

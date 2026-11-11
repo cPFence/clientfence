@@ -162,3 +162,47 @@ test('the order form asks the .us questions only, for registrations and transfer
     expect(array_keys(Registrar_Adapter_Enom::getDomainFields('.us', 'transfer')))->toBe(['nexus_category', 'nexus_country', 'app_purpose'])
         ->and(Registrar_Adapter_Enom::getDomainFields('.com'))->toBe([]);
 });
+
+test('the price list asks for the account\'s TLDs, then the one-year wholesale cost of each action, a slice at a time', function (): void {
+    $calls = [];
+    $client = new MockHttpClient(function (string $method, string $url, array $options) use (&$calls): MockResponse {
+        parse_str((string) ($options['body'] ?? ''), $body);
+        $calls[] = $body;
+        $reply = '';
+        if ($body['command'] === 'GetTLDList') {
+            $reply = '<tldlist>' . implode('', array_map(static fn (int $i): string => "<tld><tld>t{$i}</tld></tld>", range(1, 11))) . '<tld><tld>com</tld></tld><tldcount>12</tldcount></tldlist>';
+        } elseif ($body['command'] === 'PE_GetProductPrice') {
+            // .t2 offers no transfer; .t3 has no price at all.
+            $enabled = !($body['tld'] === 't2' && $body['ProductType'] === '19') && $body['tld'] !== 't3';
+            $reply = '<productprice><price>' . ['10' => '8.95', '16' => '9.50', '19' => '8.00'][$body['ProductType']] . '</price><productenabled>' . ($enabled ? 'True' : 'False') . '</productenabled></productprice>';
+        }
+
+        return new MockResponse('<?xml version="1.0"?><interface-response><ErrCount>0</ErrCount>' . $reply . '<Done>true</Done></interface-response>');
+    });
+    $adapter = new class(['uid' => 'reseller', 'pw' => 'secret-token'], $client) extends Registrar_Adapter_Enom {
+        public function __construct(array $options, private readonly HttpClientInterface $client)
+        {
+            parent::__construct($options);
+        }
+
+        public function getHttpClient(): HttpClientInterface
+        {
+            return $this->client;
+        }
+    };
+    $adapter->setLog(new Tests\Helpers\TestLogger());
+
+    $first = $adapter->getTldPrices();
+    expect($first['currency'])->toBe('USD')
+        ->and($first['prices']['.t1'])->toBe(['register' => 8.95, 'renew' => 9.5, 'transfer' => 8.0])
+        ->and($first['prices']['.t2'])->toBe(['register' => 8.95, 'renew' => 9.5, 'transfer' => null])
+        ->and($first['prices'])->not->toHaveKey('.t3')
+        ->and(array_keys($first['prices']))->toBe(['.t1', '.t2', '.t4', '.t5'])
+        ->and($first['remaining'])->toBe(['.t6', '.t7', '.t8', '.t9', '.t10', '.t11', '.com'])
+        ->and($calls[1])->toMatchArray(['command' => 'PE_GetProductPrice', 'tld' => 't1', 'ProductType' => '10', 'Years' => '1'])
+        ->and(count($calls))->toBe(1 + 15);
+
+    $rest = $adapter->getTldPrices(['.t11', '.com']);
+    expect(array_keys($rest['prices']))->toBe(['.t11', '.com'])
+        ->and($rest['remaining'])->toBe([]);
+});

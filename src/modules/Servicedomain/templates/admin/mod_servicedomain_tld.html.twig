@@ -115,6 +115,15 @@
                             </label>
                         </div>
                     </div>
+                    {# ClientFence core patch: "Keep my price" (Servicedomain/PriceSync.php). #}
+                    <div class="col-lg-5">
+                        <input type="hidden" name="price_locked" value="0">
+                        <label class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="price_locked" value="1"{% if tld.price_locked %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Keep my price'|trans }}</span>
+                        </label>
+                        <div class="form-hint">{{ 'The price import and the scheduled sync leave this extension\'s prices alone.'|trans }}</div>
+                    </div>
                 </div>
                 {# ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php), per year. #}
                 {{ include('mod_product_currency_prices.html.twig', { kind: 'tld', id: tld.id, setup: false, rows: [

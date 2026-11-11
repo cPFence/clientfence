@@ -443,3 +443,30 @@ test('registerDomain applies the .fr handling for an uppercase .FR tld', functio
     expect($body['attr-name1'])->toBe('tnc');
     expect($body['attr-value1'])->toBe('Y');
 });
+
+test('the price list maps product keys to TLDs and reads the one-year reseller cost, without logging the replies', function (): void {
+    $replies = [
+        'products/category-keys-mapping' => ['domorder' => [['domcno' => ['com', 'net']], ['dotin' => ['in']], ['dotxyz' => ['xyz']]]],
+        'products/reseller-cost-price' => [
+            'domcno' => ['addnewdomain' => ['1' => '9.20', '2' => '18.40'], 'renewdomain' => ['1' => 9.7], 'addtransferdomain' => ['1' => 9.2]],
+            'dotin' => ['addnewdomain' => ['1' => 5.5], 'renewdomain' => ['1' => 6.0]],
+        ],
+        'resellers/details' => ['parentsellingcurrencysymbol' => 'INR'],
+    ];
+    $httpClient = new MockHttpClient(function (string $method, string $url) use ($replies): MockResponse {
+        $path = (string) preg_replace('#^https://test\.httpapi\.com/api/|^https://httpapi\.com/api/|\.json\?.*$#', '', $url);
+
+        return new MockResponse(json_encode($replies[$path]));
+    });
+    $adapter = createResellerclubAdapter($httpClient);
+    $log = new Tests\Helpers\TestLogger();
+    $adapter->setLog($log);
+
+    expect($adapter->getTldPrices())->toBe(['currency' => 'INR', 'prices' => [
+        '.com' => ['register' => 9.2, 'renew' => 9.7, 'transfer' => 9.2],
+        '.net' => ['register' => 9.2, 'renew' => 9.7, 'transfer' => 9.2],
+        '.in' => ['register' => 5.5, 'renew' => 6.0, 'transfer' => null],
+    ], 'remaining' => []])
+        ->and(array_keys($adapter->getTldPrices(['.in'])['prices']))->toBe(['.in'])
+        ->and(json_encode($log->calls))->not->toContain('API RESULT');
+});

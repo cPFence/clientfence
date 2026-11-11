@@ -1,0 +1,148 @@
+{% extends 'layout_default.html.twig' %}
+
+{# ClientFence: a registrar's TLDs and prices (Servicedomain/PriceSync.php; the table is filled by clientfence-admin.js). #}
+
+{% block meta_title %}{{ 'TLDs and prices'|trans }} · {{ prices.name }}{% endblock %}
+
+{% set active_menu = 'system' %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ '/'|url }}">
+                <svg class="icon">
+                    <use href="#home" />
+                </svg>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ 'servicedomain'|url }}">{{ 'Domain Management'|trans }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ ('servicedomain/registrar/' ~ prices.id)|url }}">{{ prices.name }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ 'TLDs and prices'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block content %}
+<div class="p-3 d-flex flex-column gap-3">
+    {% if not prices.supported %}
+        <div class="alert alert-info mb-0">{{ 'Not supported by this registrar.'|trans }} {{ 'Enter TLD prices by hand on the Top Level Domains tab.'|trans }}</div>
+    {% else %}
+    <form method="post" action="{{ 'servicedomain/price_sync_update'|api_url }}" {{ fb_api_form({ callback: 'cfPricesSaved' }) }} class="card">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Markup and rounding'|trans }}</h3>
+                <p class="text-secondary mb-0">{{ 'Each price is the registrar\'s cost for one year, converted to :currency with your own exchange rate, plus the markup. Prices are never below cost.'|trans({ ':currency': prices.currency }) }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for action, label in { register: 'Registration'|trans, renew: 'Renewal'|trans, transfer: 'Transfer'|trans } %}
+                <div class="col-md-4">
+                    <label class="form-label" for="cf-markup-{{ action }}">{{ label }}</label>
+                    <div class="input-group">
+                        <select class="form-select" name="markup[{{ action }}][type]" aria-label="{{ 'Markup type'|trans }}">
+                            <option value="percent"{% if prices.settings.markup[action].type == 'percent' %} selected{% endif %}>{{ 'Percent'|trans }}</option>
+                            <option value="fixed"{% if prices.settings.markup[action].type == 'fixed' %} selected{% endif %}>{{ 'Fixed amount'|trans }}</option>
+                        </select>
+                        <input class="form-control" id="cf-markup-{{ action }}" type="number" min="0" step="0.01" name="markup[{{ action }}][value]" value="{{ prices.settings.markup[action].value }}">
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="col-md-4">
+                    <label class="form-label" for="cf-rounding">{{ 'Rounding'|trans }}</label>
+                    <select class="form-select" id="cf-rounding" name="rounding">
+                        <option value=""{% if prices.settings.rounding == '' %} selected{% endif %}>{{ 'None'|trans }}</option>
+                        {% for ending in ['.00', '.50', '.95', '.99'] %}
+                        <option value="{{ ending }}"{% if prices.settings.rounding == ending %} selected{% endif %}>{{ 'Up to :ending'|trans({ ':ending': ending }) }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <input type="hidden" name="mode" value="{{ prices.settings.mode }}">
+            <input type="hidden" name="id" value="{{ prices.id }}">
+        </div>
+        <div class="card-footer text-end">
+            <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+        </div>
+    </form>
+
+    <div class="card" data-cf-prices data-id="{{ prices.id }}" data-fetched="{{ prices.fetched_at ? 1 : 0 }}" data-texts="{{ {
+        fetching: 'Getting the price list: :done TLDs so far…'|trans,
+        fetched: 'Price list of :date.'|trans,
+        none: 'No price list yet.'|trans,
+        change: 'Change'|trans,
+        same: 'Same'|trans,
+        new: 'New'|trans,
+        locked: 'Keep my price'|trans,
+        other: 'Other registrar: :name'|trans,
+        others: 'Other registrar'|trans,
+        no_price: 'No price'|trans,
+        move: 'Move here'|trans,
+        rate_only: 'Exchange rate only'|trans,
+        fixed: ':currency price stays'|trans,
+        no_transfer: 'No transfers'|trans,
+        empty: 'Nothing to show.'|trans,
+        confirm: 'Apply the ticked TLDs (:count)? New TLDs are created inactive. Existing domains of a changed TLD renew at the new price; unpaid invoices keep their amount. A moved TLD changes the registrar for new orders only.'|trans,
+        applied: 'Done: :created created, :updated updated, :moved moved.'|trans,
+        tick: 'Tick at least one TLD.'|trans,
+        saved: 'Saved.'|trans,
+    }|json_encode }}">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Price list'|trans }}</h3>
+                <p class="text-secondary mb-0" data-cf-prices-status>{% if prices.fetched_at %}{{ 'Price list of :date.'|trans({ ':date': prices.fetched_at|format_datetime }) }}{% else %}{{ 'No price list yet.'|trans }}{% endif %}</p>
+            </div>
+            <div class="card-actions d-flex flex-wrap gap-2">
+                <button class="btn btn-primary" type="button" data-cf-prices-fetch="0">{{ 'Get the price list'|trans }}</button>
+                <button class="btn" type="button" data-cf-prices-fetch="1">{{ 'Get it again'|trans }}</button>
+            </div>
+        </div>
+        <div class="card-body border-bottom" data-cf-prices-tools hidden>
+            <div class="row g-2 align-items-center">
+                <div class="col-sm-auto">
+                    <select class="form-select" data-cf-prices-filter aria-label="{{ 'Show'|trans }}">
+                        <option value="change">{{ 'Changes'|trans }}</option>
+                        <option value="new">{{ 'New'|trans }}</option>
+                        <option value="all">{{ 'All'|trans }}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <input class="form-control" type="search" data-cf-prices-search placeholder="{{ 'Search TLDs'|trans }}" aria-label="{{ 'Search TLDs'|trans }}">
+                </div>
+                <div class="col-12 text-secondary" data-cf-prices-counts></div>
+            </div>
+        </div>
+        <div class="table-responsive" data-cf-prices-table hidden>
+            <table class="table card-table table-vcenter text-nowrap">
+                <thead>
+                    <tr>
+                        <th class="w-1"><span class="visually-hidden">{{ 'Apply'|trans }}</span></th>
+                        <th>{{ 'TLD'|trans }}</th>
+                        <th>{{ 'Status'|trans }}</th>
+                        <th>{{ 'Registrar cost'|trans }} <span class="text-secondary" data-cf-prices-currency></span></th>
+                        <th>{{ 'Current price'|trans }}</th>
+                        <th>{{ 'New price'|trans }}</th>
+                        <th>{{ 'Note'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody data-cf-prices-rows></tbody>
+            </table>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 align-items-center" data-cf-prices-actions hidden>
+            <span class="text-secondary me-auto">{{ 'Registration / renewal / transfer, one year.'|trans }}</span>
+            <button class="btn btn-primary" type="button" data-cf-prices-apply>{{ 'Apply'|trans }}</button>
+        </div>
+        <div class="card-footer" data-cf-prices-confirm hidden>
+            <p class="mb-2" data-cf-prices-confirm-text></p>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="button" data-cf-prices-confirm-yes>{{ 'Apply'|trans }}</button>
+                <button class="btn" type="button" data-cf-prices-confirm-no>{{ 'Cancel'|trans }}</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

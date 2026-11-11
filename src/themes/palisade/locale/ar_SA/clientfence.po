@@ -24994,3 +24994,168 @@ msgstr "تُحتسب فاتورة ترخيصك حسب الوحدات التي ي
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "reported on :date"
 msgstr "تم الإبلاغ في :date"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid ":currency price stays"
+msgstr "سعر :currency يبقى كما هو"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid ":tld cannot be applied. Nothing was changed."
+msgstr "تعذّر تطبيق :tld. لم يتم تغيير أي شيء."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Apply the ticked TLDs (:count)? New TLDs are created inactive. Existing domains of a changed TLD renew at the new price; unpaid invoices keep their amount. A moved TLD changes the registrar for new orders only."
+msgstr "هل تريد تطبيق نطاقات TLD المحددة (:count)؟ تُنشأ نطاقات TLD الجديدة غير نشطة. تُجدَّد النطاقات الحالية لأي TLD تغيّر بالسعر الجديد؛ وتحتفظ الفواتير غير المدفوعة بمبلغها. ويغيّر TLD المنقول المسجل للطلبات الجديدة فقط."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Changes"
+msgstr "التغييرات"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Check the preview first"
+msgstr "تحقق من المعاينة أولاً"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Done: :created created, :updated updated, :moved moved."
+msgstr "تم: أُنشئ :created، وحُدّث :updated، ونُقل :moved."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Each price is the registrar's cost for one year, converted to :currency with your own exchange rate, plus the markup. Prices are never below cost."
+msgstr "كل سعر هو تكلفة المسجل لمدة سنة واحدة، محوّلة إلى :currency بسعر الصرف الخاص بك، مضافًا إليها هامش الربح. لا تقل الأسعار أبدًا عن التكلفة."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Enter TLD prices by hand on the Top Level Domains tab."
+msgstr "أدخل أسعار TLD يدويًا في تبويب النطاقات عالية المستوى."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Enter each markup as a number from 0 with up to 2 decimals (at most :max)."
+msgstr "أدخل كل هامش ربح كرقم يبدأ من 0 بحد أقصى منزلتين عشريتين (بحد أقصى :max)."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Exchange rate only"
+msgstr "سعر الصرف فقط"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Fixed amount"
+msgstr "مبلغ ثابت"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get it again"
+msgstr "جلب مرة أخرى"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get the price list"
+msgstr "جلب قائمة الأسعار"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Get the price list first."
+msgstr "اجلب قائمة الأسعار أولاً."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Getting the price list: :done TLDs so far…"
+msgstr "جارٍ جلب قائمة الأسعار: :done TLD حتى الآن…"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "Keep my price"
+msgstr "الاحتفاظ بسعري"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup and rounding"
+msgstr "هامش الربح والتقريب"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup type"
+msgstr "نوع هامش الربح"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Move here"
+msgstr "نقل إلى هنا"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price"
+msgstr "بلا سعر"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price list yet."
+msgstr "لا توجد قائمة أسعار بعد."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No transfers"
+msgstr "بلا نقل"
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Not supported by this registrar."
+msgstr "غير مدعوم من هذا المسجل."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Nothing to show."
+msgstr "لا شيء للعرض."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar"
+msgstr "مسجل آخر"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar: :name"
+msgstr "مسجل آخر: :name"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Percent"
+msgstr "نسبة مئوية"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list"
+msgstr "قائمة الأسعار"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list of :date."
+msgstr "قائمة الأسعار بتاريخ :date."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Prices changed since the preview. Check the preview again before applying."
+msgstr "تغيّرت الأسعار منذ المعاينة. تحقق من المعاينة مرة أخرى قبل التطبيق."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registrar cost"
+msgstr "تكلفة المسجل"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registration / renewal / transfer, one year."
+msgstr "التسجيل / التجديد / النقل، لمدة سنة."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Rounding"
+msgstr "التقريب"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Search TLDs"
+msgstr "بحث في TLD"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "TLDs and prices"
+msgstr "TLD والأسعار"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "The price import and the scheduled sync leave this extension's prices alone."
+msgstr "لا يغيّر استيراد الأسعار ولا المزامنة المجدولة أسعار هذا TLD."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs."
+msgstr "يحاسب المسجل بعملة :code وهي ليست إحدى عملاتك. أضف :code ضمن العملات أولاً: يحوّل سعر صرفها التكاليف."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar returned no prices. Nothing was changed; try again later."
+msgstr "لم يُرجع المسجل أي أسعار. لم يتم تغيير أي شيء؛ حاول مرة أخرى لاحقًا."
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Tick at least one TLD."
+msgstr "حدد TLD واحدًا على الأقل."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Unknown sync mode or rounding."
+msgstr "وضع مزامنة أو تقريب غير معروف."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Up to :ending"
+msgstr "تقريب لأعلى إلى :ending"

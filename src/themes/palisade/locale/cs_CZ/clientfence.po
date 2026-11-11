@@ -25402,3 +25402,168 @@ msgstr "Vaše licence se účtuje podle jednotek, které váš software hlásí.
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "reported on :date"
 msgstr "nahlášeno :date"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid ":currency price stays"
+msgstr "Cena v :currency zůstává"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid ":tld cannot be applied. Nothing was changed."
+msgstr ":tld nelze použít. Nic se nezměnilo."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Apply the ticked TLDs (:count)? New TLDs are created inactive. Existing domains of a changed TLD renew at the new price; unpaid invoices keep their amount. A moved TLD changes the registrar for new orders only."
+msgstr "Použít označené TLD (:count)? Nová TLD se vytvoří jako neaktivní. Stávající domény změněného TLD se prodlužují za novou cenu; nezaplacené faktury si ponechají částku. Přesunuté TLD mění registrátora jen u nových objednávek."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Changes"
+msgstr "Změny"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Check the preview first"
+msgstr "Nejprve zkontrolujte náhled"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Done: :created created, :updated updated, :moved moved."
+msgstr "Hotovo: :created vytvořeno, :updated aktualizováno, :moved přesunuto."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Each price is the registrar's cost for one year, converted to :currency with your own exchange rate, plus the markup. Prices are never below cost."
+msgstr "Každá cena je roční cena registrátora, přepočtená na :currency vaším vlastním směnným kurzem, plus přirážka. Ceny nikdy nejsou pod nákladovou cenou."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Enter TLD prices by hand on the Top Level Domains tab."
+msgstr "Ceny TLD zadejte ručně na kartě Domény nejvyšší úrovně."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Enter each markup as a number from 0 with up to 2 decimals (at most :max)."
+msgstr "Každou přirážku zadejte jako číslo od 0 s nejvýše 2 desetinnými místy (nejvýše :max)."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Exchange rate only"
+msgstr "Pouze směnný kurz"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Fixed amount"
+msgstr "Pevná částka"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get it again"
+msgstr "Načíst znovu"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get the price list"
+msgstr "Načíst ceník"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Get the price list first."
+msgstr "Nejprve načtěte ceník."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Getting the price list: :done TLDs so far…"
+msgstr "Načítání ceníku: zatím :done TLD…"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "Keep my price"
+msgstr "Ponechat moji cenu"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup and rounding"
+msgstr "Přirážka a zaokrouhlení"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup type"
+msgstr "Typ přirážky"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Move here"
+msgstr "Přesunout sem"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price"
+msgstr "Bez ceny"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price list yet."
+msgstr "Zatím žádný ceník."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No transfers"
+msgstr "Bez převodů"
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Not supported by this registrar."
+msgstr "Tento registrátor nepodporuje."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Nothing to show."
+msgstr "Není co zobrazit."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar"
+msgstr "Jiný registrátor"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar: :name"
+msgstr "Jiný registrátor: :name"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Percent"
+msgstr "Procento"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list"
+msgstr "Ceník"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list of :date."
+msgstr "Ceník z :date."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Prices changed since the preview. Check the preview again before applying."
+msgstr "Ceny se od náhledu změnily. Před použitím znovu zkontrolujte náhled."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registrar cost"
+msgstr "Cena registrátora"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registration / renewal / transfer, one year."
+msgstr "Registrace / prodloužení / převod, jeden rok."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Rounding"
+msgstr "Zaokrouhlení"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Search TLDs"
+msgstr "Hledat TLD"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "TLDs and prices"
+msgstr "TLD a ceny"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "The price import and the scheduled sync leave this extension's prices alone."
+msgstr "Import cen a plánovaná synchronizace ceny tohoto TLD nemění."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs."
+msgstr "Registrátor účtuje v :code, což není žádná z vašich měn. Nejprve přidejte :code v části Měny: její kurz přepočítá náklady."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar returned no prices. Nothing was changed; try again later."
+msgstr "Registrátor nevrátil žádné ceny. Nic se nezměnilo; zkuste to později."
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Tick at least one TLD."
+msgstr "Označte alespoň jedno TLD."
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Unknown sync mode or rounding."
+msgstr "Neznámý režim synchronizace nebo zaokrouhlení."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Up to :ending"
+msgstr "Nahoru na :ending"

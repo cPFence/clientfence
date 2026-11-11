@@ -530,6 +530,10 @@ msgstr ""
 msgid ":count warnings"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid ":currency price stays"
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid ":database."
 msgstr ""
@@ -748,6 +752,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/Service.php
 msgid ":tld can only be registered for :periods years"
+msgstr ""
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid ":tld cannot be applied. Nothing was changed."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -1528,10 +1536,6 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Active since"
-msgstr ""
-
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
-msgid "Active:"
 msgstr ""
 
 #: src/modules/Activity/Controller/Admin.php src/modules/Activity/manifest.json
@@ -3094,7 +3098,7 @@ msgstr ""
 msgid "Applies to Any State"
 msgstr ""
 
-#: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Apply"
 msgstr ""
 
@@ -3128,6 +3132,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Apply the pending database patches to keep this installation aligned with the installed ClientFence files."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Apply the ticked TLDs (:count)? New TLDs are created inactive. Existing domains of a changed TLD renew at the new price; unpaid invoices keep their amount. A moved TLD changes the registrar for new orders only."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -4334,7 +4342,7 @@ msgstr ""
 msgid "Category title not passed"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig …
 msgid "Change"
 msgstr ""
 
@@ -4424,6 +4432,10 @@ msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Change this if you suspect bots are bypassing the honeypot field."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Changes"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -4520,6 +4532,10 @@ msgstr ""
 
 #: src/modules/Support/MailImport.php
 msgid "Check the email import numbers: limits are :min to :max."
+msgstr ""
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Check the preview first"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
@@ -6642,7 +6658,7 @@ msgstr ""
 msgid "Current password required"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "Current price"
 msgstr ""
 
@@ -7462,7 +7478,7 @@ msgstr ""
 msgid "Domain Details"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_config.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig …
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_config.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig …
 msgid "Domain Management"
 msgstr ""
 
@@ -7714,6 +7730,10 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Done: :created created, :updated updated, :moved moved."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Downgrade"
 msgstr ""
@@ -7872,6 +7892,10 @@ msgstr ""
 
 #: src/modules/Client/Files.php src/modules/Support/TicketFiles.php src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig …
 msgid "Each file must be smaller than :size MB."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Each price is the registrar's cost for one year, converted to :currency with your own exchange rate, plus the markup. Prices are never below cost."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_reports.html.twig
@@ -8522,6 +8546,10 @@ msgstr ""
 msgid "Enter Custom Transaction ID"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Enter TLD prices by hand on the Top Level Domains tab."
+msgstr ""
+
 #: src/library/Payment/Adapter/Custom.php
 msgid "Enter Your Text for Single Payment Information"
 msgstr ""
@@ -8644,6 +8672,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Enter domain transfer code"
+msgstr ""
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Enter each markup as a number from 0 with up to 2 decimals (at most :max)."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
@@ -9056,6 +9088,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "Excellent"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Exchange rate only"
 msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
@@ -9574,6 +9610,10 @@ msgstr ""
 msgid "Fixed"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Fixed amount"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Fixed and regional taxes, other tax rates for companies, domain transfer prices, exchange rates and billing periods other than 1, 3, 6, 12, 24 or 36 months: the warnings name them. Tax rates by country come over with tax switched off."
 msgstr ""
@@ -10014,12 +10054,28 @@ msgstr ""
 msgid "Get beta releases"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get it again"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get the price list"
+msgstr ""
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Get the price list first."
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig
 msgid "Gets copies of"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_contacts_page.html.twig
 msgid "Gets no emails"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Getting the price list: :done TLDs so far…"
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_ticket.html.twig
@@ -11954,6 +12010,10 @@ msgstr ""
 msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "Keep my price"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "Keep the current count?"
 msgstr ""
@@ -13466,6 +13526,14 @@ msgstr ""
 msgid "Marking an invoice as paid requires the order to issue an invoice."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup and rounding"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup type"
+msgstr ""
+
 #: src/modules/Massmailer/Controller/Admin.php src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Mass Mail"
 msgstr ""
@@ -13906,6 +13974,10 @@ msgstr ""
 msgid "Move from another billing system"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Move here"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Move this account onto a different hosting plan available on the current server."
 msgstr ""
@@ -14138,7 +14210,7 @@ msgstr ""
 msgid "Never synced with registrar"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig src/modules/System/templates/admin/mod_system_update.html.twig src/themes/admin_default/html_custom/layout_default.html.twig …
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig src/modules/System/templates/admin/mod_system_update.html.twig …
 msgid "New"
 msgstr ""
 
@@ -14382,7 +14454,7 @@ msgstr ""
 msgid "New password required"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/email/mod_order_price_changed.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "New price"
 msgstr ""
 
@@ -14874,6 +14946,14 @@ msgstr ""
 msgid "No potentially dangerous PHP functions were detected as enabled"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price list yet."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_index.html.twig
 msgid "No products are available yet."
 msgstr ""
@@ -14978,6 +15058,10 @@ msgstr ""
 msgid "No tickets selected"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No transfers"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig
 msgid "No upgrades or downgrades yet."
 msgstr ""
@@ -15026,7 +15110,7 @@ msgstr ""
 msgid "Non-profit organisation"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Staff/templates/admin/mod_staff_group.html.twig …
+#: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig …
 msgid "None"
 msgstr ""
 
@@ -15110,6 +15194,10 @@ msgstr ""
 msgid "Not submitted yet"
 msgstr ""
 
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Not supported by this registrar."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Not switched on"
 msgstr ""
@@ -15188,6 +15276,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_report.html.twig
 msgid "Nothing to show for these filters."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Nothing to show."
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -16148,6 +16240,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar: :name"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
@@ -17198,6 +17298,10 @@ msgstr ""
 msgid "Per-unit licences: the secret the software sends with its usage reports to /licence/report. Empty keeps the saved one."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Percent"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Percentage"
 msgstr ""
@@ -17678,6 +17782,14 @@ msgstr ""
 msgid "Price for Period"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list of :date."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Price override"
 msgstr ""
@@ -17712,6 +17824,10 @@ msgstr ""
 
 #: src/modules/Order/Proration.php
 msgid "Prices cannot be negative."
+msgstr ""
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Prices changed since the preview. Check the preview again before applying."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_currency_prices.html.twig
@@ -18850,6 +18966,10 @@ msgstr ""
 msgid "Registrar code is missing"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registrar cost"
+msgstr ""
+
 #: src/modules/Servicedomain/Api/Admin.php
 msgid "Registrar is not available for installation."
 msgstr ""
@@ -18874,8 +18994,12 @@ msgstr ""
 msgid "Registrars"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "Registration"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registration / renewal / transfer, one year."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
@@ -19082,7 +19206,7 @@ msgstr ""
 msgid "Renew Now"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_promo.html.twig
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "Renewal"
 msgstr ""
 
@@ -19702,6 +19826,10 @@ msgstr ""
 msgid "Revoke All Permissions"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Rounding"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Rows"
 msgstr ""
@@ -19846,7 +19974,7 @@ msgstr ""
 msgid "Sales Tax Liability"
 msgstr ""
 
-#: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Same"
 msgstr ""
 
@@ -20164,6 +20292,10 @@ msgstr ""
 
 #: src/themes/admin_default/html/partial_search.html.twig src/themes/admin_default/html/partial_search_action.html.twig
 msgid "Search Settings"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Search TLDs"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_tickets.html.twig
@@ -21034,7 +21166,7 @@ msgstr ""
 msgid "Shopping cart not found"
 msgstr ""
 
-#: src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/mod_invoice_statement.html.twig …
+#: src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig …
 msgid "Show"
 msgstr ""
 
@@ -22122,7 +22254,7 @@ msgstr ""
 msgid "System name"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "TLD"
 msgstr ""
 
@@ -22172,6 +22304,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
 msgid "TLDs"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "TLDs and prices"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -23615,6 +23751,10 @@ msgstr ""
 msgid "The price follows the count your software reports: :price per unit a month, at least :minimum. An invoice uses the count of the day it is issued."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "The price import and the scheduled sync leave this extension's prices alone."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "The price is added when the client turns the option on."
 msgstr ""
@@ -23695,8 +23835,16 @@ msgstr ""
 msgid "The registrant contact is missing."
 msgstr ""
 
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs."
+msgstr ""
+
 #: src/modules/Servicedomain/Service.php
 msgid "The registrar did not accept the domain request."
+msgstr ""
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar returned no prices. Nothing was changed; try again later."
 msgstr ""
 
 #: src/library/ClientFence/Update.php
@@ -24689,6 +24837,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "This year"
+msgstr ""
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Tick at least one TLD."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -25703,6 +25855,10 @@ msgstr ""
 msgid "Unknown status."
 msgstr ""
 
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Unknown sync mode or rounding."
+msgstr ""
+
 #: src/modules/Invoice/ServiceTransaction.php
 msgid "Unknown transaction #:id type: :type"
 msgstr ""
@@ -25805,6 +25961,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig src/themes/palisade/html/partials/ticket_upload.html.twig
 msgid "Up to :count files, :size MB each: :types."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Up to :ending"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig

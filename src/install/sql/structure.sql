@@ -1491,6 +1491,7 @@ CREATE TABLE `tld` (
   `active` tinyint(1) DEFAULT '1',
   `min_years` tinyint(4) DEFAULT NULL,
   `periods` varchar(255) DEFAULT NULL,
+  `price_locked` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1511,6 +1512,7 @@ CREATE TABLE `tld_registrar` (
   `registrar` varchar(255) DEFAULT NULL,
   `test_mode` tinyint(4) DEFAULT '0',
   `config` mediumtext,
+  `price_sync` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1891,6 +1893,7 @@ CREATE TABLE `support_ticket_secret_event` (`id` bigint(20) NOT NULL AUTO_INCREM
 
 -- ClientFence core patch: the client's Support PIN (Client/SupportPin.php).
 CREATE TABLE `client_support_pin` (`client_id` bigint(20) NOT NULL, `pin` char(8) NOT NULL, PRIMARY KEY (`client_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `tld_registrar_cost` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `tld_registrar_id` bigint(20) NOT NULL, `tld` varchar(64) NOT NULL, `currency` char(3) NOT NULL, `cost_register` decimal(18,4) DEFAULT NULL, `cost_renew` decimal(18,4) DEFAULT NULL, `cost_transfer` decimal(18,4) DEFAULT NULL, `applied_register` decimal(18,4) DEFAULT NULL, `applied_renew` decimal(18,4) DEFAULT NULL, `applied_transfer` decimal(18,4) DEFAULT NULL, `applied_rate` decimal(18,8) DEFAULT NULL, `fetched_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `tld_registrar_cost_tld` (`tld_registrar_id`, `tld`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -30,6 +30,7 @@ final class Migrations
         4 => 'm4ClientRecords',
         5 => 'm5TicketSecrets',
         6 => 'm6SupportPin',
+        7 => 'm7TldSync',
     ];
 
     public static function latest(): int
@@ -138,5 +139,19 @@ final class Migrations
     private static function m6SupportPin(\Pimple\Container $di): void
     {
         Service::ensureTables($di, true);
+    }
+
+    /** 7: tld_registrar_cost, tld.price_locked ("Keep my price") and tld_registrar.price_sync (Servicedomain/PriceSync.php). */
+    private static function m7TldSync(\Pimple\Container $di): void
+    {
+        Service::ensureTables($di, true);
+        $db = $di['em']->getConnection();
+        $columns = static fn (string $table): array => array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns($table));
+        if (!in_array('price_locked', $columns('tld'), true)) {
+            $db->executeStatement("ALTER TABLE `tld` ADD COLUMN `price_locked` tinyint(1) NOT NULL DEFAULT '0'");
+        }
+        if (!in_array('price_sync', $columns('tld_registrar'), true)) {
+            $db->executeStatement('ALTER TABLE `tld_registrar` ADD COLUMN `price_sync` text');
+        }
     }
 }

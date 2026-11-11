@@ -45,6 +45,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/servicedomain', 'get_index', null, static::class);
         $app->get('/servicedomain/id/:id', 'get_tld_id', ['id' => '[0-9]+'], static::class);
         $app->get('/servicedomain/registrar/:id', 'get_registrar', ['id' => '[0-9]+'], static::class);
+        // ClientFence core patch: a registrar's TLDs and prices page (PriceSync.php).
+        $app->get('/servicedomain/registrar/:id/prices', 'get_registrar_prices', ['id' => '[0-9]+'], static::class);
     }
 
     public function get_index(\ClientFence\App $app): string
@@ -68,5 +70,12 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $registrar = $api->servicedomain_registrar_get(['id' => $id]);
 
         return $app->render('mod_servicedomain_registrar', ['registrar' => $registrar]);
+    }
+
+    public function get_registrar_prices(\ClientFence\App $app, $id): string
+    {
+        $prices = $this->di['api_admin']->servicedomain_price_sync_get(['id' => $id]);
+
+        return $app->render('mod_servicedomain_prices', ['prices' => $prices]);
     }
 }

@@ -23430,3 +23430,168 @@ msgstr "ใบอนุญาตของคุณเรียกเก็บเ
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "reported on :date"
 msgstr "รายงานเมื่อ :date"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid ":currency price stays"
+msgstr "ราคา :currency คงเดิม"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid ":tld cannot be applied. Nothing was changed."
+msgstr "ไม่สามารถนำ :tld ไปใช้ได้ ไม่มีการเปลี่ยนแปลงใด ๆ"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Apply the ticked TLDs (:count)? New TLDs are created inactive. Existing domains of a changed TLD renew at the new price; unpaid invoices keep their amount. A moved TLD changes the registrar for new orders only."
+msgstr "นำ TLD ที่เลือก (:count) ไปใช้หรือไม่ TLD ใหม่จะถูกสร้างเป็นไม่ใช้งาน โดเมนที่มีอยู่ของ TLD ที่เปลี่ยนจะต่ออายุตามราคาใหม่ ใบแจ้งหนี้ที่ยังไม่ชำระคงยอดเดิม TLD ที่ย้ายจะเปลี่ยนผู้รับจดทะเบียนสำหรับคำสั่งซื้อใหม่เท่านั้น"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Changes"
+msgstr "การเปลี่ยนแปลง"
+
+#: src/modules/Servicedomain/Api/Admin.php
+msgid "Check the preview first"
+msgstr "โปรดตรวจสอบตัวอย่างก่อน"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Done: :created created, :updated updated, :moved moved."
+msgstr "เสร็จสิ้น: สร้าง :created อัปเดต :updated ย้าย :moved"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Each price is the registrar's cost for one year, converted to :currency with your own exchange rate, plus the markup. Prices are never below cost."
+msgstr "แต่ละราคาคือต้นทุนหนึ่งปีของผู้รับจดทะเบียน แปลงเป็น :currency ด้วยอัตราแลกเปลี่ยนของคุณเอง บวกส่วนเพิ่ม ราคาจะไม่ต่ำกว่าต้นทุน"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Enter TLD prices by hand on the Top Level Domains tab."
+msgstr "กรอกราคา TLD ด้วยตนเองที่แท็บโดเมนระดับบนสุด"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Enter each markup as a number from 0 with up to 2 decimals (at most :max)."
+msgstr "กรอกส่วนเพิ่มแต่ละรายการเป็นตัวเลขตั้งแต่ 0 ทศนิยมไม่เกิน 2 ตำแหน่ง (สูงสุด :max)"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Exchange rate only"
+msgstr "เฉพาะอัตราแลกเปลี่ยน"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Fixed amount"
+msgstr "จำนวนคงที่"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get it again"
+msgstr "ดึงอีกครั้ง"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Get the price list"
+msgstr "ดึงรายการราคา"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Get the price list first."
+msgstr "ดึงรายการราคาก่อน"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Getting the price list: :done TLDs so far…"
+msgstr "กำลังดึงรายการราคา: ตอนนี้ได้ :done TLD…"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "Keep my price"
+msgstr "คงราคาของฉัน"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup and rounding"
+msgstr "ส่วนเพิ่มและการปัดเศษ"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Markup type"
+msgstr "ประเภทส่วนเพิ่ม"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Move here"
+msgstr "ย้ายมาที่นี่"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price"
+msgstr "ไม่มีราคา"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No price list yet."
+msgstr "ยังไม่มีรายการราคา"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "No transfers"
+msgstr "ไม่มีการโอนย้าย"
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Not supported by this registrar."
+msgstr "ผู้รับจดทะเบียนรายนี้ไม่รองรับ"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Nothing to show."
+msgstr "ไม่มีข้อมูลให้แสดง"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar"
+msgstr "ผู้รับจดทะเบียนรายอื่น"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Other registrar: :name"
+msgstr "ผู้รับจดทะเบียนรายอื่น: :name"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Percent"
+msgstr "เปอร์เซ็นต์"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list"
+msgstr "รายการราคา"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Price list of :date."
+msgstr "รายการราคาเมื่อ :date"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Prices changed since the preview. Check the preview again before applying."
+msgstr "ราคาเปลี่ยนไปตั้งแต่ดูตัวอย่าง โปรดตรวจสอบตัวอย่างอีกครั้งก่อนนำไปใช้"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registrar cost"
+msgstr "ต้นทุนผู้รับจดทะเบียน"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Registration / renewal / transfer, one year."
+msgstr "การลงทะเบียน / การต่ออายุ / การโอนย้าย หนึ่งปี"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Rounding"
+msgstr "การปัดเศษ"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Search TLDs"
+msgstr "ค้นหา TLD"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "TLDs and prices"
+msgstr "TLD และราคา"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
+msgid "The price import and the scheduled sync leave this extension's prices alone."
+msgstr "การนำเข้าราคาและการซิงค์ตามกำหนดจะไม่แตะต้องราคาของ TLD นี้"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar charges in :code, which is not one of your currencies. Add :code under Currencies first: its rate converts the costs."
+msgstr "ผู้รับจดทะเบียนคิดเงินเป็น :code ซึ่งไม่ใช่สกุลเงินของคุณ โปรดเพิ่ม :code ในสกุลเงินก่อน: อัตราของสกุลนั้นใช้แปลงต้นทุน"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "The registrar returned no prices. Nothing was changed; try again later."
+msgstr "ผู้รับจดทะเบียนไม่ส่งราคากลับมา ไม่มีการเปลี่ยนแปลงใด ๆ โปรดลองใหม่ภายหลัง"
+
+#: src/modules/Servicedomain/PriceSync.php src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Tick at least one TLD."
+msgstr "เลือก TLD อย่างน้อยหนึ่งรายการ"
+
+#: src/modules/Servicedomain/PriceSync.php
+msgid "Unknown sync mode or rounding."
+msgstr "โหมดการซิงค์หรือการปัดเศษไม่รู้จัก"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+msgid "Up to :ending"
+msgstr "ปัดขึ้นเป็น :ending"

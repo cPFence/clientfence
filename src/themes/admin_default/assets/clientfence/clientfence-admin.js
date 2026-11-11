@@ -1360,3 +1360,141 @@ document.querySelectorAll('[data-bf-client-files] input[type="file"]').forEach((
     });
   });
 });
+
+// ---- Domain Management (Servicedomain/PriceSync.php). The TLD list's Active switch saves at once;
+// the TLDs and prices page gets the registrar's price list in slices, shows the preview and applies
+// the ticked rows after a confirm step.
+function apiCall(endpoint, data) {
+  return new Promise((resolve) => {
+    window.ClientFence.api.admin.post(endpoint, data, (result) => resolve({ result }), (error) => resolve({ error: String(error?.message || '') }), false);
+  });
+}
+function notifyError(message) {
+  window.ClientFence.ui?.notify?.(message, 'error');
+}
+document.querySelectorAll('[data-cf-tld-active]').forEach((input) => {
+  input.addEventListener('change', async () => {
+    input.disabled = true;
+    const { error } = await apiCall('servicedomain/tld_update', { tld: input.dataset.cfTldActive, active: input.checked ? 1 : 0 });
+    input.disabled = false;
+    if (error !== undefined) {
+      input.checked = !input.checked;
+      notifyError(error);
+    }
+  });
+});
+
+const prices = document.querySelector('[data-cf-prices]');
+if (prices) {
+  const id = prices.dataset.id;
+  const t = readJson(prices, 'texts', {});
+  const say = (text, values = {}) => Object.entries(values).reduce((s, [k, v]) => s.split(`:${k}`).join(String(v)), String(text || ''));
+  const part = (name) => prices.querySelector(`[data-cf-prices-${name}]`);
+  const money = new Intl.NumberFormat(document.documentElement.lang || undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const trio = (p) => (p ? ['register', 'renew', 'transfer'].map((a) => (p[a] === null || p[a] === undefined ? '–' : money.format(p[a]))).join(' / ') : '–');
+  let preview = null;
+
+  const cell = (row, text, className) => {
+    const td = document.createElement('td');
+    td.textContent = text;
+    if (className) td.className = className;
+    row.append(td);
+    return td;
+  };
+  const tickable = (r) => ['change', 'new', 'other'].includes(r.status);
+  const render = () => {
+    const filter = part('filter').value;
+    const search = part('search').value.trim().toLowerCase().replace(/^\./, '');
+    const body = part('rows');
+    body.replaceChildren();
+    const rows = preview.rows.filter((r) => (filter === 'all' || (filter === 'new' ? r.status === 'new' : r.status === 'change'))
+      && (search === '' || r.tld.includes(search)));
+    rows.forEach((r) => {
+      const tr = document.createElement('tr');
+      const box = document.createElement('td');
+      if (tickable(r)) {
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'form-check-input';
+        input.checked = r.ticked;
+        input.setAttribute('aria-label', r.tld);
+        input.addEventListener('change', () => { r.ticked = input.checked; });
+        box.append(input);
+      }
+      tr.append(box);
+      cell(tr, r.tld, 'fw-bold');
+      const status = cell(tr, r.status === 'other' ? say(t.other, { name: r.registrar }) : t[r.status]);
+      if (r.status === 'change' || r.status === 'new') status.className = 'text-primary';
+      cell(tr, trio(r.cost));
+      cell(tr, trio(r.current));
+      cell(tr, trio(r.new));
+      const notes = [];
+      if (r.rate_only) notes.push(t.rate_only);
+      if (!r.offers_transfer) notes.push(t.no_transfer);
+      r.fixed_currencies.forEach((c) => notes.push(say(t.fixed, { currency: c })));
+      cell(tr, notes.join(' · '), 'text-secondary');
+      body.append(tr);
+    });
+    if (rows.length === 0) {
+      const tr = document.createElement('tr');
+      cell(tr, t.empty, 'text-secondary').colSpan = 7;
+      body.append(tr);
+    }
+    part('counts').textContent = Object.entries(preview.counts).filter(([, n]) => n > 0).map(([s, n]) => `${t[s === 'other' ? 'others' : s] || s}: ${n}`).join(' · ');
+  };
+  const load = async (quiet = false) => {
+    const { result, error } = await apiCall('servicedomain/price_sync_preview', { id });
+    if (error !== undefined) { if (!quiet) notifyError(error); return; }
+    preview = result;
+    preview.rows.forEach((r) => { r.ticked = r.status === 'change'; });
+    part('currency').textContent = `(${preview.currency})`;
+    part('status').textContent = say(t.fetched, { date: preview.fetched_at });
+    ['tools', 'table', 'actions'].forEach((n) => { part(n).hidden = false; });
+    render();
+  };
+  const fetchList = async (refresh) => {
+    prices.querySelectorAll('[data-cf-prices-fetch]').forEach((b) => { b.disabled = true; });
+    let first = true;
+    for (;;) {
+      const { result, error } = await apiCall('servicedomain/price_sync_fetch', { id, refresh: first && refresh ? 1 : 0 });
+      first = false;
+      if (error !== undefined) { notifyError(error); break; }
+      part('status').textContent = say(t.fetching, { done: result.priced });
+      if (result.done) { await load(); break; }
+    }
+    prices.querySelectorAll('[data-cf-prices-fetch]').forEach((b) => { b.disabled = false; });
+  };
+  prices.querySelectorAll('[data-cf-prices-fetch]').forEach((b) => b.addEventListener('click', () => fetchList(b.dataset.cfPricesFetch === '1')));
+  part('filter').addEventListener('change', render);
+  part('search').addEventListener('input', render);
+  const ticked = () => (preview ? preview.rows.filter((r) => r.ticked && tickable(r)) : []);
+  part('apply').addEventListener('click', () => {
+    if (ticked().length === 0) { notifyError(t.tick); return; }
+    part('confirm-text').textContent = say(t.confirm, { count: ticked().length });
+    part('confirm').hidden = false;
+    part('confirm-yes').focus();
+  });
+  part('confirm-no').addEventListener('click', () => { part('confirm').hidden = true; });
+  part('confirm-yes').addEventListener('click', async () => {
+    const rows = ticked();
+    part('confirm-yes').disabled = true;
+    const { result, error } = await apiCall('servicedomain/price_sync_apply', {
+      id,
+      fingerprint: preview.fingerprint,
+      tlds: rows.map((r) => r.tld),
+      move: rows.filter((r) => r.status === 'other').map((r) => r.tld),
+    });
+    part('confirm-yes').disabled = false;
+    part('confirm').hidden = true;
+    if (error !== undefined) { notifyError(error); return; }
+    window.ClientFence.ui?.notify?.(say(t.applied, result), 'success');
+    await load();
+  });
+  // The markup form's callback: the preview shows the saved markup (Apply refuses a stale one).
+  window.cfPricesSaved = () => {
+    window.ClientFence.ui?.notify?.(t.saved, 'success');
+    if (preview) load();
+  };
+  // A list from earlier opens at once (an unfinished one waits for "Get the price list").
+  if (prices.dataset.fetched === '1') load(true);
+}

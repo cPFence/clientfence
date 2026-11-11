@@ -274,6 +274,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'product_option_group', 'product_option_group_product', 'product_option', 'product_option_value', 'promo_option',
         'client_order_upgrade_option', 'client_contact', 'product_currency_price', 'email_template_translation', 'product_translation',
         'service_license_log', 'service_license_ban',
+        // ClientFence core patch: registrar costs for the TLD price import (Servicedomain/PriceSync.php).
+        'tld_registrar_cost',
     ];
 
     /**

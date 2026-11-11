@@ -2256,6 +2256,13 @@ test('removes registrar', function (): void {
     $di = container();
     $di['db'] = $dbMock;
     $di['logger'] = new Tests\Helpers\TestLogger();
+    // The registrar's price list and fetch state go with it.
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('delete')->once()->with('tld_registrar_cost', ['tld_registrar_id' => 1])->andReturn(1);
+    $dbal->shouldReceive('delete')->once()->with('mod_clientfence_state', ['name' => 'tld_prices_1'])->andReturn(1);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($dbal);
+    $di['em'] = $em;
     $service->setDi($di);
 
     $model = new Model_TldRegistrar();

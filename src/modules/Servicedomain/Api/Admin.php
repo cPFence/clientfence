@@ -454,6 +454,74 @@ class Admin extends \ClientFence\Api\AbstractApi
         return $this->getService()->registrarUpdate($model, $data);
     }
 
+    /**
+     * ClientFence core patch: a registrar's TLD price settings and price list state (PriceSync.php).
+     */
+    #[RequiredParams(['id' => 'Registrar ID is missing'])]
+    public function price_sync_get($data): array
+    {
+        $this->checkPermissions('servicedomain', 'manage_tlds');
+        $registrar = $this->getDi()['db']->getExistingModelById('TldRegistrar', $data['id'], 'Registrar not found');
+        $db = $this->getDi()['em']->getConnection();
+
+        return [
+            'id' => (int) $registrar->id,
+            'name' => (string) $registrar->name,
+            'supported' => \ClientFence\Mod\Servicedomain\PriceSync::supported($this->getDi(), $registrar),
+            'settings' => \ClientFence\Mod\Servicedomain\PriceSync::settings($this->getDi(), (int) $registrar->id),
+            'fetched_at' => $db->fetchOne('SELECT MAX(fetched_at) FROM tld_registrar_cost WHERE tld_registrar_id = ?', [$registrar->id]) ?: null,
+            'currency' => $db->fetchOne('SELECT code FROM currency WHERE is_default = 1') ?: null,
+        ];
+    }
+
+    /** ClientFence core patch: saves a registrar's markups, rounding and scheduled sync mode. */
+    #[RequiredParams(['id' => 'Registrar ID is missing'])]
+    public function price_sync_update($data): array
+    {
+        $this->checkPermissions('servicedomain', 'manage_tlds');
+
+        return \ClientFence\Mod\Servicedomain\PriceSync::saveSettings($this->getDi(), (int) $data['id'], $data);
+    }
+
+    /** ClientFence core patch: gets the registrar's price list for up to 15 seconds; call again until `done`. */
+    #[RequiredParams(['id' => 'Registrar ID is missing'])]
+    public function price_sync_fetch($data): array
+    {
+        $this->checkPermissions('servicedomain', 'manage_tlds');
+
+        return \ClientFence\Mod\Servicedomain\PriceSync::fetch($this->getDi(), (int) $data['id'], 15, !empty($data['refresh']));
+    }
+
+    /** ClientFence core patch: old and new prices of every TLD in the registrar's price list. */
+    #[RequiredParams(['id' => 'Registrar ID is missing'])]
+    public function price_sync_preview($data): array
+    {
+        $this->checkPermissions('servicedomain', 'manage_tlds');
+
+        return \ClientFence\Mod\Servicedomain\PriceSync::preview($this->getDi(), (int) $data['id']);
+    }
+
+    /**
+     * ClientFence core patch: applies the ticked TLDs (`tlds`; `move`: ticked TLDs of other
+     * registrars to move here) of a preview whose `fingerprint` still matches.
+     */
+    #[RequiredParams(['id' => 'Registrar ID is missing', 'fingerprint' => 'Check the preview first'])]
+    public function price_sync_apply($data): array
+    {
+        $this->checkPermissions('servicedomain', 'manage_tlds');
+        $list = static fn (mixed $v): array => array_values(array_filter(array_map('strval', is_array($v) ? $v : explode(',', (string) $v)), static fn (string $t): bool => trim($t) !== ''));
+        $identity = $this->getIdentity();
+
+        return \ClientFence\Mod\Servicedomain\PriceSync::apply(
+            $this->getDi(),
+            (int) $data['id'],
+            $list($data['tlds'] ?? []),
+            $list($data['move'] ?? []),
+            (string) $data['fingerprint'],
+            $identity instanceof \Model_Admin ? (int) $identity->id : null,
+        );
+    }
+
     #[RequiredParams(['order_id' => 'Order ID is missing'])]
     protected function _getService($data)
     {
