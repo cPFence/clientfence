@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.0.44 (2026-11-11)
+
+### Added
+
+- Add New Order works as in WHMCS: staff order several products and domains on one invoice, with a promo code, a payment method and a live order summary.
+- Email templates, products, help desks and order form questions in each language; emails go out in the recipient's language.
+- Support PIN for every client, shown on the client dashboard and the staff client page.
+- Ticket limit per client: how many tickets a client may open in a period (Support settings).
+- Your own links at the end of the client menu (Palisade theme settings).
+- Store links that open a product with a billing cycle and a promo code already applied.
+- "Store opens on" in the Orders settings: the billing cycle the store shows first, for example yearly.
+- A store category's description shows as a note on its tab.
+- Clients see cancelled and refunded invoices in a third tab ([#12](https://github.com/cPFence/clientfence/issues/12)).
+- "Use this card for automatic payments" when a client saves a new card and already has an automatic one ([#11](https://github.com/cPFence/clientfence/issues/11)).
+
+### Changed
+
+- With email confirmation required, a new client can still order and pay, as in WHMCS; a banner asks them to confirm ([#12](https://github.com/cPFence/clientfence/issues/12)).
+- Creating an account from the checkout returns to the cart ([#12](https://github.com/cPFence/clientfence/issues/12)).
+- The card payment page is headed "Pay invoice" with the amount due, and the save boxes show only for a new card ([#11](https://github.com/cPFence/clientfence/issues/11)).
+- With a renewal invoice open, the service page shows "Pay invoice" instead of "Renew Now" ([#14](https://github.com/cPFence/clientfence/issues/14)).
+- The hosting page hides the Email tab when the plan allows no email accounts ([#14](https://github.com/cPFence/clientfence/issues/14)).
+- Quick setup gives your business email to the help desk that still has the installer's address, and System Health warns about one ([#14](https://github.com/cPFence/clientfence/issues/14)).
+- Clearer bank transfer texts: the client uploads their own transfer receipt ([#13](https://github.com/cPFence/clientfence/issues/13)).
+- Imports from Blesta, Upmind and ClientExec keep each client's language.
+
+### Fixed
+
+- The hosting activation email gives the website's own IP on an Enhance cluster, not the control panel's ([#14](https://github.com/cPFence/clientfence/issues/14)).
+- A Stripe payment no longer leaves an error transaction when order setup takes longer than 10 seconds ([#14](https://github.com/cPFence/clientfence/issues/14)).
+- Radio buttons no longer look dark on the light theme when the device is in dark mode ([#13](https://github.com/cPFence/clientfence/issues/13)).
+- Security review fixes: plan change credit with recurring promotions, adding funds, payment notices and domain registration years.
+- The Blesta import copies ticket attachments only from Blesta's support folder.
+
 ## 1.0.43 (2026-11-10)
 
 ### Changed
