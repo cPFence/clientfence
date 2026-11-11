@@ -233,7 +233,7 @@ test('licence, custom, one-time and free products; add-ons and upgrade paths', f
     $setup = whmcsProductByTitle($target, 'Setup service');
     $free = $target->fetchAssociative("SELECT p.slug, pp.type FROM product p JOIN product_payment pp ON pp.id = p.product_payment_id WHERE p.title = 'Starter' ORDER BY p.id DESC");
     expect($licence)->toMatchArray(['type' => 'license', 'hidden' => 1, 'setup' => 'after_order'])
-        ->and(json_decode((string) $licence['config'], true)['plugin'])->toBe('Simple')
+        ->and(json_decode((string) $licence['config'], true))->toMatchArray(['plugin' => 'Simple', 'whmcs_check' => true])
         ->and($setup)->toMatchArray(['type' => 'custom', 'status' => 'disabled', 'payment_type' => 'once', 'once_price' => 99.0, 'once_setup_price' => 1.0, 'setup' => 'manual'])
         // Two WHMCS products may share a name: the slug does not.
         ->and($free)->toBe(['slug' => 'starter-2', 'type' => 'free']);
@@ -520,6 +520,8 @@ test('services become orders with their hosting account, licence or custom servi
         ->and($target->fetchAssociative('SELECT * FROM service_license WHERE id = ?', [$licence['service_id']]))->toMatchArray([
             'license_key' => 'LIC-ONE', 'validate_ip' => 1, 'validate_host' => 1, 'validate_path' => 0, 'plugin' => 'Simple',
             'ips' => '["1.2.3.4","5.6.7.8"]', 'hosts' => '["a.test"]', 'paths' => '["\/home\/a"]', 'checked_at' => '2026-10-18 10:00:00',
+            // The WHMCS ids its software knows, for WHMCS-style checks.
+            'config' => '{"whmcs":{"service_id":2,"product_id":2,"billingcycle":"Annually"}}',
         ]);
 
     // 3: completed one-time work stays active and never renews; 4: terminated is canceled with its reason.

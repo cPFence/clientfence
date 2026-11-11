@@ -43,6 +43,8 @@ class AppClient extends \ClientFence\App
             'my-data' => 'client', 'unsubscribe' => 'client',
             // ClientFence: the script policy's violation reports (Clientfence/CspReports.php).
             'csp-report' => 'clientfence',
+            // ClientFence: WHMCS Licensing Addon checks (Servicelicense/WhmcsCheck.php).
+            'licence' => 'servicelicense',
         ][$this->mod] ?? null;
         if ($pageModule !== null) {
             $this->di['mod']($pageModule)->registerClientRoutes($this);

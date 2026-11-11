@@ -181,7 +181,7 @@ final class Services
 
         $serviceId = match ($type) {
             'hosting' => $this->hosting($row, $client['id'], $productConfig, $sld, $tld, $status, $name),
-            'license' => $this->licence($id, $client['id'], $productConfig, $name),
+            'license' => $this->licence($id, (int) ($row['packageid'] ?? 0), (string) ($row['billingcycle'] ?? ''), $client['id'], $productConfig, $name),
             default => $this->custom($client['id'], $config),
         };
         $this->db->update('client_order', ['service_id' => $serviceId], ['id' => $orderId]);
@@ -348,7 +348,7 @@ final class Services
      *
      * @param array<string, mixed> $productConfig
      */
-    private function licence(int $serviceId, int $clientId, array $productConfig, string $name): int
+    private function licence(int $serviceId, int $whmcsProductId, string $whmcsCycle, int $clientId, array $productConfig, string $name): int
     {
         $licence = $this->source->hasTable('mod_licensing')
             ? $this->source->rows('SELECT * FROM mod_licensing WHERE serviceid = ? ORDER BY id DESC LIMIT 1', [$serviceId])[0] ?? null
@@ -375,7 +375,8 @@ final class Services
             'hosts' => $list($licence['validdomain'] ?? ''),
             'paths' => $list($licence['validdirectory'] ?? ''),
             'versions' => '[]',
-            'config' => null,
+            // The WHMCS ids its software already knows, for WHMCS-style check answers (Servicelicense/WhmcsCheck.php).
+            'config' => json_encode(['whmcs' => ['service_id' => $serviceId, 'product_id' => $whmcsProductId, 'billingcycle' => $whmcsCycle]]),
             'plugin' => (string) ($productConfig['plugin'] ?? 'Simple'),
             'checked_at' => Accounts::date($licence['lastaccess'] ?? null),
             'pinged_at' => null,

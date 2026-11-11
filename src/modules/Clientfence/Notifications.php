@@ -203,6 +203,9 @@ final class Notifications
             'action_failed' => __trans('An action failed on order #:id: :title', $v),
             'cancel_request' => __trans('Cancellation requested for order #:id: :title', $v),
             'ip_request' => __trans('IP address change requested for order #:id: :title', $v),
+            // ClientFence: per-unit licences (Servicelicense/Units.php).
+            'usage_held' => __trans('A big drop in the reported units of order #:id waits for approval: :title', $v),
+            'usage_missing' => __trans('No usage report for order #:id: :title', $v),
             'payment_failed' => __trans('A payment could not be processed (transaction #:id)', $v),
             'email_failed' => __trans('Emails could not be sent: check the email settings', $v),
             'mail_import_failed' => __trans('Email import cannot read the mailbox of :helpdesk', $v),

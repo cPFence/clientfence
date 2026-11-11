@@ -25392,3 +25392,216 @@ msgstr "Hátralévő IP-módosítások: :left / :count 30 napon belül. Az IP-c�
 #: src/library/ClientFence/IpSeats.php
 msgid "The change no longer fits, so it was refused and the client was told: :reason"
 msgstr "A módosítás már nem fér bele, ezért elutasítottuk, és értesítettük az ügyfelet: :reason"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid "A big drop in the reported units of order #:id waits for approval: :title"
+msgstr "A(z) #:id megrendelés jelentett egységeinek nagy csökkenése jóváhagyásra vár: :title"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "A report on :date dropped the count from :old to :new; the price waits for your approval."
+msgstr "A(z) :date dátumú jelentés :old értékről :new értékre csökkentette a darabszámot; az ár az Ön jóváhagyására vár."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A report that lowers the count by more than this waits for staff approval; rises apply at once."
+msgstr "Az a jelentés, amely ennél nagyobb mértékben csökkenti a darabszámot, a személyzet jóváhagyására vár; a növekedések azonnal érvénybe lépnek."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After"
+msgstr "Után"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After a WHMCS import, where these were custom fields of the service."
+msgstr "WHMCS-importálás után, ahol ezek a szolgáltatás egyéni mezői voltak."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer WHMCS checks"
+msgstr "Válasz a WHMCS-ellenőrzésekre"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the count"
+msgstr "Válaszmező a darabszámhoz"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the per-unit switch"
+msgstr "Válaszmező az egységenkénti számlázás kapcsolójához"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Days"
+msgstr "Nap"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Drop in percent"
+msgstr "Csökkenés százalékban"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For licences of this product that have no per-unit switch yet: the order form answers under the two field names above set it and the count. Prices stay as imported."
+msgstr "Az ilyen termék azon licenceihez, amelyeknek még nincs egységenkénti számlázás kapcsolójuk: a megrendelőlap válaszai a fenti két mezőnév alatt beállítják azt és a darabszámot. Az árak a beimportáltak maradnak."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format."
+msgstr "A WHMCS-sel értékesített szoftverhez: válaszoljon az ellenőrzéseire a /modules/servers/licensing/verify.php címen WHMCS-formátumban."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "For software that cannot report: no warning or suspension until it reports. The next report replaces it."
+msgstr "Olyan szoftverhez, amely nem tud jelenteni: nincs figyelmeztetés vagy felfüggesztés, amíg nem jelent. A következő jelentés felváltja."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software that reports a count (for example websites): with per-unit billing on for a licence, its price becomes the count times the unit price a month, at least the minimum, from each report."
+msgstr "Darabszámot jelentő szoftverhez (például webhelyek): ha egy licencnél be van kapcsolva az egységenkénti számlázás, az ára minden jelentéskor a darabszám szorozva az egységárral havonta, legalább a minimum."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Hold big drops"
+msgstr "Nagy csökkenések visszatartása"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "In the default currency. Empty: no per-unit billing."
+msgstr "Az alapértelmezett pénznemben. Üres: nincs egységenkénti számlázás."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Keep the current count?"
+msgstr "Megtartja a jelenlegi darabszámot?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Last report"
+msgstr "Utolsó jelentés"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Minimum a month"
+msgstr "Minimum havonta"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Monthly price"
+msgstr "Havi ár"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "More than"
+msgstr "Több mint"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Next renewal price"
+msgstr "A következő megújítás ára"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report"
+msgstr "Nincs használati jelentés"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "No usage report for order #:id: :title"
+msgstr "Nincs használati jelentés a(z) #:id megrendeléshez: :title"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report: %title%"
+msgstr "Nincs használati jelentés: %title%"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=count\"."
+msgstr "Opcionális, WHMCS-ellenőrzésekhez: a customfields mezőben küldi, \"name=count\" formában."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=on\" while per-unit billing is on."
+msgstr "Opcionális, WHMCS-ellenőrzésekhez: a customfields mezőben küldi, \"name=on\" formában, amíg az egységenkénti számlázás be van kapcsolva."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Per-unit billing"
+msgstr "Egységenkénti számlázás"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Per-unit licences: the secret the software sends with its usage reports to /licence/report. Empty keeps the saved one."
+msgstr "Egységenkénti licencek: a titkos kulcs, amelyet a szoftver a használati jelentéseivel együtt küld a /licence/report címre. Üresen hagyva a mentett marad."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Price per Unit"
+msgstr "Ár egységenként"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Price per unit a month"
+msgstr "Ár egységenként havonta"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Reported IP addresses"
+msgstr "Jelentett IP-címek"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Saved; type a new one to change it"
+msgstr "Mentve; újat beírva módosíthatja"
+
+#: src/modules/Servicelicense/Units.php
+msgid "Set the answer field names first."
+msgstr "Először állítsa be a válaszmezők neveit."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Suspend when reports stop"
+msgstr "Felfüggesztés, ha a jelentések elmaradnak"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take from imported answers"
+msgstr "Átvétel az importált válaszokból"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take the switch and counts from imported answers?"
+msgstr "Átveszi a kapcsolót és a darabszámokat az importált válaszokból?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The answer follows the order: Active while it is active, Suspended or Expired once suspended or canceled. IP addresses follow the rules on this page; the domain and folder are checked only when the software sends them."
+msgstr "A válasz követi a megrendelést: Active, amíg aktív, Suspended vagy Expired, ha felfüggesztették vagy lemondták. Az IP-címek az ezen az oldalon lévő szabályokat követik; a domaint és a mappát csak akkor ellenőrzi, ha a szoftver elküldi."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The client gets an email and staff a notice, once per gap."
+msgstr "Az ügyfél e-mailt, a személyzet értesítést kap, szünetenként egyszer."
+
+#: src/modules/Servicelicense/Units.php
+msgid "The count must be a whole number from 0 to :max."
+msgstr "A darabszámnak 0 és :max közötti egész számnak kell lennie."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The order is suspended. A suspended licence cannot report, so staff unsuspend it; the time starts again then."
+msgstr "A megrendelés fel van függesztve. A felfüggesztett licenc nem tud jelenteni, ezért a személyzet visszaállítja; az idő ilyenkor újraindul."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "The price follows the count your software reports: :price per unit a month, at least :minimum. An invoice uses the count of the day it is issued."
+msgstr "Az ár a szoftver által jelentett darabszámot követi: :price egységenként havonta, legalább :minimum. A számla a kiállítása napjának darabszámát használja."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Unit name"
+msgstr "Egység neve"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Units"
+msgstr "Egységek"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Usage report secret"
+msgstr "Használati jelentések titkos kulcsa"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Use the lower count?"
+msgstr "Az alacsonyabb darabszámot használja?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "WHMCS Licensing Addon Checks"
+msgstr "A WHMCS Licensing Addon ellenőrzései"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Warn when reports stop"
+msgstr "Figyelmeztetés, ha a jelentések elmaradnak"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% since %date%."
+msgstr "%date% óta nem kaptunk használati jelentést a(z) %title% esetében."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% yet."
+msgstr "Még nem kaptunk használati jelentést a(z) %title% esetében."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "With per-unit billing on, each usage report sets the order price: the count times :price a month, at least :minimum."
+msgstr "Bekapcsolt egységenkénti számlázásnál minden használati jelentés beállítja a megrendelés árát: a darabszám szorozva :price összeggel havonta, legalább :minimum."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "Your licence is billed by the units your software reports. Please make sure your software can send its report, or contact us."
+msgstr "Az Ön licence a szoftvere által jelentett egységek szerint kerül számlázásra. Kérjük, győződjön meg róla, hogy a szoftvere el tudja küldeni a jelentését, vagy lépjen kapcsolatba velünk."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "reported on :date"
+msgstr "jelentve: :date"

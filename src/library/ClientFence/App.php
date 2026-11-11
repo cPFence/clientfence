@@ -398,6 +398,9 @@ class App
             '/api/guest/staff/login_code',
             '/api/guest/staff/login_code_email',
             '/api/guest/staff/login_pin_app',
+            // ClientFence core patch: licence servers keep checking during maintenance (Servicelicense/WhmcsCheck.php).
+            '/licence/verify',
+            '/licence/report',
             '/api/admin',
             'api/admin',
             '/index.php?_url=/api/admin/',

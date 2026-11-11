@@ -17,6 +17,11 @@
                     </div>
                     <small class="form-hint">{{ '0 keeps every check.'|trans }}</small>
                 </div>
+                <div class="col-sm-6 col-lg-5">
+                    <label class="form-label" for="lic-report-secret">{{ 'Usage report secret'|trans }}</label>
+                    <input class="form-control" type="password" id="lic-report-secret" name="report_secret" autocomplete="new-password" placeholder="{{ licences.report_secret_set ? 'Saved; type a new one to change it'|trans : '' }}">
+                    <small class="form-hint">{{ 'Per-unit licences: the secret the software sends with its usage reports to /licence/report. Empty keeps the saved one.'|trans }}</small>
+                </div>
             </div>
         </div>
         <div class="card-footer d-flex justify-content-end">

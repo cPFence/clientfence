@@ -35,7 +35,15 @@
             <dl class="bf-facts border-top">
                 <div class="bf-fact"><dt>{{ 'Last checked'|trans }}</dt><dd>{{ service.pinged_at ? service.pinged_at|format_datetime : 'Never'|trans }}</dd></div>
                 <div class="bf-fact"><dt>{{ 'Checks in the last :days days'|trans({':days': service.checks_days}) }}</dt><dd>{{ service.checks }}</dd></div>
+                {# ClientFence: per-unit billing (Servicelicense/Units.php): the reported count and the next price. #}
+                {% if service.units.billing|default(false) and service.units.priced %}
+                    <div class="bf-fact"><dt>{{ service.units.unit ?: 'Units'|trans }}</dt><dd>{{ service.units.count ?? '-' }}{% if service.units.at %} ({{ 'reported on :date'|trans({':date': service.units.at|format_date}) }}){% endif %}</dd></div>
+                    <div class="bf-fact"><dt>{{ 'Next renewal price'|trans }}</dt><dd>{{ order.total|format_currency(order.currency) }}</dd></div>
+                {% endif %}
             </dl>
+            {% if service.units.billing|default(false) and service.units.priced %}
+                <p class="card-body text-body-secondary small mb-0 border-top">{{ 'The price follows the count your software reports: :price per unit a month, at least :minimum. An invoice uses the count of the day it is issued.'|trans({':price': service.units.unit_price|format_currency(default_currency), ':minimum': (service.units.minimum ?? 0)|format_currency(default_currency)}) }}</p>
+            {% endif %}
         </div>
 
         <div class="tab-pane fade" id="bf-licence-ips" role="tabpanel">

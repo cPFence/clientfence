@@ -25905,3 +25905,216 @@ msgstr "剩餘 IP 變更次數：30 天內 :left / :count。在最初 24 小時�
 #: src/library/ClientFence/IpSeats.php
 msgid "The change no longer fits, so it was refused and the client was told: :reason"
 msgstr "該變更已不符合限制，因此已被拒絕並已通知客戶：:reason"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid "A big drop in the reported units of order #:id waits for approval: :title"
+msgstr "訂單 #:id 回報的單位數大幅下降，等待核准：:title"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "A report on :date dropped the count from :old to :new; the price waits for your approval."
+msgstr ":date 的一份報告將數量從 :old 降到 :new；價格等待您的核准。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A report that lowers the count by more than this waits for staff approval; rises apply at once."
+msgstr "使數量下降超過此值的報告需等待員工核准；上升則立即生效。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After"
+msgstr "經過"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After a WHMCS import, where these were custom fields of the service."
+msgstr "從 WHMCS 匯入後，這些原本是服務的自訂欄位。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer WHMCS checks"
+msgstr "回應 WHMCS 檢查"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the count"
+msgstr "數量的回應欄位"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the per-unit switch"
+msgstr "依單位計費開關的回應欄位"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Days"
+msgstr "天數"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Drop in percent"
+msgstr "下降百分比"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For licences of this product that have no per-unit switch yet: the order form answers under the two field names above set it and the count. Prices stay as imported."
+msgstr "對於此產品中尚無依單位計費開關的授權：上述兩個欄位名稱下的訂購表單答案會設定該開關與數量。價格維持匯入時的樣子。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format."
+msgstr "對於隨 WHMCS 銷售的軟體：在 /modules/servers/licensing/verify.php 以 WHMCS 格式回應其檢查。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "For software that cannot report: no warning or suspension until it reports. The next report replaces it."
+msgstr "對於無法回報的軟體：在其回報之前不會警告或停用。下一次回報會取代它。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software that reports a count (for example websites): with per-unit billing on for a licence, its price becomes the count times the unit price a month, at least the minimum, from each report."
+msgstr "對於回報數量的軟體（例如網站）：當某個授權開啟依單位計費後，每次回報都會把其價格設為數量乘以每月單價，且不低於最低金額。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Hold big drops"
+msgstr "暫扣大幅下降"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "In the default currency. Empty: no per-unit billing."
+msgstr "使用預設貨幣。留空：不依單位計費。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Keep the current count?"
+msgstr "保留目前數量？"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Last report"
+msgstr "最近一次回報"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Minimum a month"
+msgstr "每月最低金額"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Monthly price"
+msgstr "月費"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "More than"
+msgstr "超過"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Next renewal price"
+msgstr "下次續約價格"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report"
+msgstr "沒有使用報告"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "No usage report for order #:id: :title"
+msgstr "訂單 #:id 沒有使用報告：:title"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report: %title%"
+msgstr "沒有使用報告：%title%"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=count\"."
+msgstr "選填，用於 WHMCS 檢查：在 customfields 中以 \"name=count\" 形式傳送。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=on\" while per-unit billing is on."
+msgstr "選填，用於 WHMCS 檢查：依單位計費開啟時，在 customfields 中以 \"name=on\" 形式傳送。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Per-unit billing"
+msgstr "依單位計費"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Per-unit licences: the secret the software sends with its usage reports to /licence/report. Empty keeps the saved one."
+msgstr "依單位計費的授權：軟體隨使用報告一起傳送到 /licence/report 的密鑰。留空則保留已儲存的密鑰。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Price per Unit"
+msgstr "每單位價格"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Price per unit a month"
+msgstr "每單位每月價格"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Reported IP addresses"
+msgstr "已回報的 IP 位址"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Saved; type a new one to change it"
+msgstr "已儲存；輸入新值即可變更"
+
+#: src/modules/Servicelicense/Units.php
+msgid "Set the answer field names first."
+msgstr "請先設定回應欄位名稱。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Suspend when reports stop"
+msgstr "回報停止時停用"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take from imported answers"
+msgstr "從已匯入的答案中取得"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take the switch and counts from imported answers?"
+msgstr "從已匯入的答案中取得開關與數量？"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The answer follows the order: Active while it is active, Suspended or Expired once suspended or canceled. IP addresses follow the rules on this page; the domain and folder are checked only when the software sends them."
+msgstr "回應跟隨訂單：有效時為 Active，被停用或取消後為 Suspended 或 Expired。IP 位址遵循本頁的規則；僅當軟體傳送網域與資料夾時才會檢查。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The client gets an email and staff a notice, once per gap."
+msgstr "客戶會收到電子郵件，員工會收到通知，每次中斷一次。"
+
+#: src/modules/Servicelicense/Units.php
+msgid "The count must be a whole number from 0 to :max."
+msgstr "數量必須是 0 到 :max 之間的整數。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The order is suspended. A suspended licence cannot report, so staff unsuspend it; the time starts again then."
+msgstr "訂單已停用。已停用的授權無法回報，因此需要員工解除停用；屆時計時重新開始。"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "The price follows the count your software reports: :price per unit a month, at least :minimum. An invoice uses the count of the day it is issued."
+msgstr "價格跟隨您的軟體回報的數量：每單位每月 :price，不低於 :minimum。發票使用開立當天的數量。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Unit name"
+msgstr "單位名稱"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Units"
+msgstr "單位"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Usage report secret"
+msgstr "使用報告密鑰"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Use the lower count?"
+msgstr "使用較低的數量？"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "WHMCS Licensing Addon Checks"
+msgstr "WHMCS Licensing Addon 檢查"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Warn when reports stop"
+msgstr "回報停止時警告"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% since %date%."
+msgstr "自 %date% 起，我們未收到 %title% 的使用報告。"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% yet."
+msgstr "我們尚未收到 %title% 的使用報告。"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "With per-unit billing on, each usage report sets the order price: the count times :price a month, at least :minimum."
+msgstr "開啟依單位計費後，每次使用報告都會設定訂單價格：數量乘以每月 :price，不低於 :minimum。"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "Your licence is billed by the units your software reports. Please make sure your software can send its report, or contact us."
+msgstr "您的授權依您的軟體回報的單位數計費。請確保您的軟體能夠傳送報告，或與我們聯繫。"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "reported on :date"
+msgstr "回報於 :date"

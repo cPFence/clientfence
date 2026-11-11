@@ -86,6 +86,38 @@ class Admin extends \ClientFence\Api\AbstractApi
         return $this->getService()->ipAction($this->_getService($data), 'clear');
     }
 
+    /**
+     * ClientFence core patch: per-unit billing of a licence (order_id; Units.php): billing (the staff switch),
+     * count (staff's own count), held (approve or refuse a held drop). The order's price follows.
+     */
+    public function units_update($data): bool
+    {
+        $this->checkPermissions('servicelicense', 'manage');
+        $licence = $this->_getService($data);
+        $order = $this->getDi()['mod_service']('order')->getServiceOrder($licence);
+        \ClientFence\Mod\Servicelicense\Units::update($this->getDi(), $licence, $order, $data);
+        $this->getDi()['logger']->info('Updated per-unit billing of order #%s', $order->getId());
+
+        return true;
+    }
+
+    /**
+     * ClientFence core patch: after a WHMCS import, takes the per-unit switch and counts of a product's
+     * licences from their imported answers (product_id; Units::fromAnswers()). Returns how many were set.
+     */
+    public function units_from_answers($data): int
+    {
+        $this->checkPermissions('servicelicense', 'manage');
+        $product = $this->getDi()['em']->getRepository(\ClientFence\Mod\Product\Entity\Product::class)->find((int) ($data['product_id'] ?? 0));
+        if (!$product instanceof \ClientFence\Mod\Product\Entity\Product) {
+            throw new \ClientFence\InformationException('Product not found');
+        }
+        $set = \ClientFence\Mod\Servicelicense\Units::fromAnswers($this->getDi(), (int) $product->getId(), json_decode($product->getConfig() ?? '', true) ?: []);
+        $this->getDi()['logger']->info('Per-unit billing of product #%s: %s licences set from imported answers', $product->getId(), $set);
+
+        return $set;
+    }
+
     /** ClientFence: applies the client's IP change request (order_id); false when it could no longer be applied and was refused. */
     public function ip_request_approve($data): bool
     {
@@ -122,7 +154,9 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('servicelicense', 'manage');
 
-        return ['log_days' => CheckLog::days($this->getDi()), 'bans' => Bans::all($this->getDi())];
+        $secret = $this->getDi()['dbal']->fetchOne('SELECT value FROM setting WHERE param = ?', [\ClientFence\Mod\Servicelicense\Units::SECRET]);
+
+        return ['log_days' => CheckLog::days($this->getDi()), 'bans' => Bans::all($this->getDi()), 'report_secret_set' => (string) $secret !== ''];
     }
 
     /**
@@ -132,6 +166,19 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('servicelicense', 'manage');
         CheckLog::saveDays($this->getDi(), $data['log_days'] ?? '');
+        // ClientFence core patch: the usage report secret (Units.php): empty keeps the saved one; it is never shown again.
+        $secret = is_string($data['report_secret'] ?? null) ? trim($data['report_secret']) : '';
+        if ($secret !== '') {
+            $db = $this->getDi()['dbal'];
+            $param = \ClientFence\Mod\Servicelicense\Units::SECRET;
+            $now = date('Y-m-d H:i:s');
+            if ($db->fetchOne('SELECT 1 FROM setting WHERE param = ?', [$param]) === false) {
+                $db->insert('setting', ['param' => $param, 'value' => $secret, 'public' => 0, 'created_at' => $now, 'updated_at' => $now]);
+            } else {
+                $db->update('setting', ['value' => $secret, 'updated_at' => $now], ['param' => $param]);
+            }
+            \ClientFence\RequestCache::forget($this->getDi(), 'setting.');
+        }
         $this->getDi()['logger']->info('Updated the licence check log setting');
 
         return true;

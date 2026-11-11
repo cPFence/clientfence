@@ -91,6 +91,130 @@
 
         <hr class="my-4" />
 
+        {# ClientFence core patch: WHMCS Licensing Addon checks (WhmcsCheck.php). #}
+        <div class="mb-4">
+            <div class="mb-3">
+                <h3 class="card-title mb-1">{{ 'WHMCS Licensing Addon Checks'|trans }}</h3>
+                <p class="text-secondary mb-0">{{ 'For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format.'|trans }}</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-lg-6">
+                    <label class="form-label">{{ 'Answer WHMCS checks'|trans }}</label>
+                    <div class="d-flex flex-wrap gap-3 pt-1">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[whmcs_check]" value="1"{% if config.whmcs_check|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[whmcs_check]" value="0"{% if not config.whmcs_check|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="form-text">{{ 'The answer follows the order: Active while it is active, Suspended or Expired once suspended or canceled. IP addresses follow the rules on this page; the domain and folder are checked only when the software sends them.'|trans }}</div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4" />
+
+        {# ClientFence core patch: per-unit billing of licences (Units.php). #}
+        <div class="mb-4">
+            <div class="mb-3">
+                <h3 class="card-title mb-1">{{ 'Price per Unit'|trans }}</h3>
+                <p class="text-secondary mb-0">{{ 'For software that reports a count (for example websites): with per-unit billing on for a licence, its price becomes the count times the unit price a month, at least the minimum, from each report.'|trans }}</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-lg-4">
+                    <label class="form-label" for="cf-unit-name">{{ 'Unit name'|trans }}</label>
+                    <input type="text" class="form-control" id="cf-unit-name" name="config[unit_name]" maxlength="40" value="{{ config.unit_name|default('') }}">
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label" for="cf-unit-price">{{ 'Price per unit a month'|trans }}</label>
+                    <input type="number" class="form-control" id="cf-unit-price" name="config[unit_price]" min="0" step="0.0001" value="{{ config.unit_price|default('') }}">
+                    <div class="form-text">{{ 'In the default currency. Empty: no per-unit billing.'|trans }}</div>
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label" for="cf-unit-min">{{ 'Minimum a month'|trans }}</label>
+                    <input type="number" class="form-control" id="cf-unit-min" name="config[unit_minimum]" min="0" step="0.01" value="{{ config.unit_minimum|default('') }}">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="cf-unit-field">{{ 'Answer field for the per-unit switch'|trans }}</label>
+                    <input type="text" class="form-control" id="cf-unit-field" name="config[unit_field]" maxlength="100" value="{{ config.unit_field|default('') }}">
+                    <div class="form-text">{{ 'Optional, for WHMCS checks: sent in customfields as "name=on" while per-unit billing is on.'|trans }}</div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="cf-unit-count-field">{{ 'Answer field for the count'|trans }}</label>
+                    <input type="text" class="form-control" id="cf-unit-count-field" name="config[unit_count_field]" maxlength="100" value="{{ config.unit_count_field|default('') }}">
+                    <div class="form-text">{{ 'Optional, for WHMCS checks: sent in customfields as "name=count".'|trans }}</div>
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label">{{ 'Hold big drops'|trans }}</label>
+                    <div class="d-flex flex-wrap gap-3 pt-1">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[unit_hold]" value="1"{% if config.unit_hold|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[unit_hold]" value="0"{% if not config.unit_hold|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="input-group mt-2">
+                        <span class="input-group-text">{{ 'More than'|trans }}</span>
+                        <input type="number" class="form-control" name="config[unit_hold_percent]" min="1" max="99" value="{{ config.unit_hold_percent|default(50) }}" aria-label="{{ 'Drop in percent'|trans }}">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="form-text">{{ 'A report that lowers the count by more than this waits for staff approval; rises apply at once.'|trans }}</div>
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label">{{ 'Warn when reports stop'|trans }}</label>
+                    <div class="d-flex flex-wrap gap-3 pt-1">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[unit_warn]" value="1"{% if config.unit_warn|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[unit_warn]" value="0"{% if not config.unit_warn|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="input-group mt-2">
+                        <span class="input-group-text">{{ 'After'|trans }}</span>
+                        <input type="number" class="form-control" name="config[unit_warn_days]" min="1" max="365" value="{{ config.unit_warn_days|default(2) }}" aria-label="{{ 'Days'|trans }}">
+                        <span class="input-group-text">{{ 'days'|trans }}</span>
+                    </div>
+                    <div class="form-text">{{ 'The client gets an email and staff a notice, once per gap.'|trans }}</div>
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label">{{ 'Suspend when reports stop'|trans }}</label>
+                    <div class="d-flex flex-wrap gap-3 pt-1">
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[unit_suspend]" value="1"{% if config.unit_suspend|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="radio" name="config[unit_suspend]" value="0"{% if not config.unit_suspend|default(false) %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                        </label>
+                    </div>
+                    <div class="input-group mt-2">
+                        <span class="input-group-text">{{ 'After'|trans }}</span>
+                        <input type="number" class="form-control" name="config[unit_suspend_days]" min="1" max="365" value="{{ config.unit_suspend_days|default(7) }}" aria-label="{{ 'Days'|trans }}">
+                        <span class="input-group-text">{{ 'days'|trans }}</span>
+                    </div>
+                    <div class="form-text">{{ 'The order is suspended. A suspended licence cannot report, so staff unsuspend it; the time starts again then.'|trans }}</div>
+                </div>
+            </div>
+            {% if config.unit_field|default('') or config.unit_count_field|default('') %}
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                <a class="btn btn-outline-secondary" {{ fb_api_link({href: 'servicelicense/units_from_answers'|api_url(query: {product_id: product.id}), modal: {type: 'confirm', title: 'Take the switch and counts from imported answers?'|trans, content: 'For licences of this product that have no per-unit switch yet: the order form answers under the two field names above set it and the count. Prices stay as imported.'|trans}, reload: true}) }}>{{ 'Take from imported answers'|trans }}</a>
+                <span class="form-text m-0">{{ 'After a WHMCS import, where these were custom fields of the service.'|trans }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <hr class="my-4" />
+
         {# ClientFence core patch: client IP self-service limits of licences (IpSeats, CF-56). #}
         <div class="mb-4">
             <div class="mb-3">

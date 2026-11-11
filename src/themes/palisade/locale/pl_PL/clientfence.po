@@ -25566,3 +25566,216 @@ msgstr "Pozostałe zmiany IP: :left z :count na 30 dni. Usunięcie adresu IP w c
 #: src/library/ClientFence/IpSeats.php
 msgid "The change no longer fits, so it was refused and the client was told: :reason"
 msgstr "Zmiana już się nie mieści, więc została odrzucona, a klient został powiadomiony: :reason"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid "A big drop in the reported units of order #:id waits for approval: :title"
+msgstr "Duży spadek zgłoszonych jednostek w zamówieniu #:id czeka na zatwierdzenie: :title"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "A report on :date dropped the count from :old to :new; the price waits for your approval."
+msgstr "Raport z dnia :date obniżył liczbę z :old do :new; cena czeka na zatwierdzenie."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A report that lowers the count by more than this waits for staff approval; rises apply at once."
+msgstr "Raport obniżający liczbę o więcej niż ta wartość czeka na zatwierdzenie przez personel; wzrosty obowiązują od razu."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After"
+msgstr "Po"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After a WHMCS import, where these were custom fields of the service."
+msgstr "Po imporcie z WHMCS, gdzie były to pola niestandardowe usługi."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer WHMCS checks"
+msgstr "Odpowiadanie na sprawdzenia WHMCS"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the count"
+msgstr "Pole odpowiedzi dla liczby"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the per-unit switch"
+msgstr "Pole odpowiedzi dla przełącznika rozliczania za jednostkę"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Days"
+msgstr "Dni"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Drop in percent"
+msgstr "Spadek w procentach"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For licences of this product that have no per-unit switch yet: the order form answers under the two field names above set it and the count. Prices stay as imported."
+msgstr "Dla licencji tego produktu, które nie mają jeszcze przełącznika rozliczania za jednostkę: odpowiedzi z formularza zamówienia w dwóch powyższych polach ustawiają go oraz liczbę. Ceny zostają takie, jak zaimportowano."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format."
+msgstr "Dla oprogramowania sprzedawanego z WHMCS: odpowiadanie na jego sprawdzenia pod adresem /modules/servers/licensing/verify.php w formacie WHMCS."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "For software that cannot report: no warning or suspension until it reports. The next report replaces it."
+msgstr "Dla oprogramowania, które nie może wysyłać raportów: bez ostrzeżenia i zawieszenia, dopóki nie wyśle raportu. Następny raport je zastępuje."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software that reports a count (for example websites): with per-unit billing on for a licence, its price becomes the count times the unit price a month, at least the minimum, from each report."
+msgstr "Dla oprogramowania zgłaszającego liczbę (na przykład witryn): gdy rozliczanie za jednostkę jest włączone dla licencji, jej cena z każdym raportem staje się liczbą razy cena za jednostkę miesięcznie, co najmniej minimum."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Hold big drops"
+msgstr "Wstrzymywanie dużych spadków"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "In the default currency. Empty: no per-unit billing."
+msgstr "W walucie domyślnej. Puste: bez rozliczania za jednostkę."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Keep the current count?"
+msgstr "Zachować bieżącą liczbę?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Last report"
+msgstr "Ostatni raport"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Minimum a month"
+msgstr "Minimum miesięcznie"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Monthly price"
+msgstr "Cena miesięczna"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "More than"
+msgstr "Więcej niż"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Next renewal price"
+msgstr "Cena następnego odnowienia"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report"
+msgstr "Brak raportu użycia"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "No usage report for order #:id: :title"
+msgstr "Brak raportu użycia dla zamówienia #:id: :title"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report: %title%"
+msgstr "Brak raportu użycia: %title%"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=count\"."
+msgstr "Opcjonalnie, dla sprawdzeń WHMCS: wysyłane w customfields jako \"name=count\"."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=on\" while per-unit billing is on."
+msgstr "Opcjonalnie, dla sprawdzeń WHMCS: wysyłane w customfields jako \"name=on\", gdy rozliczanie za jednostkę jest włączone."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Per-unit billing"
+msgstr "Rozliczanie za jednostkę"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Per-unit licences: the secret the software sends with its usage reports to /licence/report. Empty keeps the saved one."
+msgstr "Licencje rozliczane za jednostkę: sekret, który oprogramowanie wysyła z raportami użycia na /licence/report. Puste zachowuje zapisany."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Price per Unit"
+msgstr "Cena za jednostkę"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Price per unit a month"
+msgstr "Cena za jednostkę miesięcznie"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Reported IP addresses"
+msgstr "Zgłoszone adresy IP"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Saved; type a new one to change it"
+msgstr "Zapisano; aby zmienić, należy wpisać nowy"
+
+#: src/modules/Servicelicense/Units.php
+msgid "Set the answer field names first."
+msgstr "Najpierw należy ustawić nazwy pól odpowiedzi."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Suspend when reports stop"
+msgstr "Zawieszanie, gdy raporty ustaną"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take from imported answers"
+msgstr "Pobierz z zaimportowanych odpowiedzi"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take the switch and counts from imported answers?"
+msgstr "Pobrać przełącznik i liczby z zaimportowanych odpowiedzi?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The answer follows the order: Active while it is active, Suspended or Expired once suspended or canceled. IP addresses follow the rules on this page; the domain and folder are checked only when the software sends them."
+msgstr "Odpowiedź zależy od zamówienia: Active, gdy jest aktywne, Suspended lub Expired po zawieszeniu lub anulowaniu. Adresy IP podlegają zasadom z tej strony; domena i folder są sprawdzane tylko wtedy, gdy oprogramowanie je wyśle."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The client gets an email and staff a notice, once per gap."
+msgstr "Klient dostaje e-mail, a personel powiadomienie, raz na każdą przerwę."
+
+#: src/modules/Servicelicense/Units.php
+msgid "The count must be a whole number from 0 to :max."
+msgstr "Liczba musi być liczbą całkowitą od 0 do :max."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The order is suspended. A suspended licence cannot report, so staff unsuspend it; the time starts again then."
+msgstr "Zamówienie jest zawieszone. Zawieszona licencja nie może wysyłać raportów, więc personel ją odwiesza; czas liczy się wtedy od nowa."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "The price follows the count your software reports: :price per unit a month, at least :minimum. An invoice uses the count of the day it is issued."
+msgstr "Cena zależy od liczby zgłaszanej przez oprogramowanie: :price za jednostkę miesięcznie, co najmniej :minimum. Faktura używa liczby z dnia jej wystawienia."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Unit name"
+msgstr "Nazwa jednostki"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Units"
+msgstr "Jednostki"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Usage report secret"
+msgstr "Sekret raportów użycia"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Use the lower count?"
+msgstr "Użyć niższej liczby?"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "WHMCS Licensing Addon Checks"
+msgstr "Sprawdzenia WHMCS Licensing Addon"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Warn when reports stop"
+msgstr "Ostrzeganie, gdy raporty ustaną"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% since %date%."
+msgstr "Od dnia %date% nie otrzymaliśmy raportu użycia dla %title%."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% yet."
+msgstr "Nie otrzymaliśmy jeszcze raportu użycia dla %title%."
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "With per-unit billing on, each usage report sets the order price: the count times :price a month, at least :minimum."
+msgstr "Gdy rozliczanie za jednostkę jest włączone, każdy raport użycia ustala cenę zamówienia: liczba razy :price miesięcznie, co najmniej :minimum."
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "Your licence is billed by the units your software reports. Please make sure your software can send its report, or contact us."
+msgstr "Licencja jest rozliczana według jednostek zgłaszanych przez oprogramowanie. Prosimy upewnić się, że oprogramowanie może wysłać raport, lub skontaktować się z nami."
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "reported on :date"
+msgstr "zgłoszono dnia :date"

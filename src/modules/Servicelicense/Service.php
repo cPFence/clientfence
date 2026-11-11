@@ -168,6 +168,12 @@ class Service implements InjectionAwareInterface
      */
     public function action_unsuspend(\Model_ClientOrder $order): bool
     {
+        // ClientFence core patch: per-unit billing gives the server time to report again (Units.php).
+        $model = $this->_getOrderService($order, false);
+        if ($model instanceof ServiceLicense) {
+            Units::unsuspended($this->di, $model);
+        }
+
         return true;
     }
 
@@ -210,6 +216,12 @@ class Service implements InjectionAwareInterface
             CheckLog::prune($di);
         } catch (\Throwable $e) {
             $di['logger']->error('Licences: pruning the check log failed: %s', $e->getMessage());
+        }
+        // ClientFence core patch: per-unit licences without usage reports are warned about or suspended (Units.php).
+        try {
+            Units::cron($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('Licences: the usage report check failed: %s', $e->getMessage());
         }
     }
 
@@ -465,6 +477,8 @@ class Service implements InjectionAwareInterface
                 $seats['ips'][$i]['last_check'] = $stats['last'][$row['ip']] ?? null;
             }
             $result += ['seats' => $seats, 'recent_checks' => CheckLog::recent($this->di, $id, 10), 'checks' => $stats['count'], 'checks_days' => $days];
+            // ClientFence core patch: the per-unit billing view (Units.php).
+            $result['units'] = Units::view($model, $this->productConfig($model));
         }
 
         return $result;

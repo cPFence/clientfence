@@ -31,6 +31,60 @@
 {# ClientFence core patch: the client IP addresses, their changes and a request waiting for approval (IpSeats, CF-56). #}
 {% if service.seats is defined %}{{ include('mod_order_ip_seats.html.twig', { 'seats': service.seats, 'order': order, 'api': 'servicelicense' }) }}{% endif %}
 
+{# ClientFence core patch: per-unit billing of the licence (Units.php). #}
+{% if service.units is defined and (service.units.priced or service.units.billing) %}
+{% set units = service.units %}
+<div class="card-body border-top">
+    <div class="mb-3">
+        <h3 class="card-title mb-1">{{ 'Price per Unit'|trans }}</h3>
+        {% if units.priced %}<p class="text-secondary mb-0">{{ 'With per-unit billing on, each usage report sets the order price: the count times :price a month, at least :minimum.'|trans({':price': units.unit_price|format_currency(default_currency), ':minimum': (units.minimum ?? 0)|format_currency(default_currency)}) }}</p>{% endif %}
+    </div>
+    {% if units.held %}
+    <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2">
+        <span class="me-auto">{{ 'A report on :date dropped the count from :old to :new; the price waits for your approval.'|trans({':date': units.held.at|format_date, ':old': units.count, ':new': units.held.count}) }}</span>
+        <a class="btn btn-success" {{ fb_api_link({href: 'servicelicense/units_update'|api_url(query: {order_id: order.id, held: 'approve'}), modal: {type: 'confirm', title: 'Use the lower count?'|trans}, reload: true}) }}>{{ 'Approve'|trans }}</a>
+        <a class="btn btn-outline-secondary" {{ fb_api_link({href: 'servicelicense/units_update'|api_url(query: {order_id: order.id, held: 'refuse'}), modal: {type: 'confirm', title: 'Keep the current count?'|trans}, reload: true}) }}>{{ 'Refuse'|trans }}</a>
+    </div>
+    {% endif %}
+    <form method="post" action="{{ 'servicelicense/units_update'|api_url }}" {{ fb_api_form({message: 'Saved.'|trans, reload: true}) }}>
+        <div class="row g-3">
+            <div class="col-lg-3">
+                <label class="form-label">{{ 'Per-unit billing'|trans }}</label>
+                <div class="d-flex flex-wrap gap-3 pt-1">
+                    <label class="form-check">
+                        <input class="form-check-input" type="radio" name="billing" value="1"{% if units.billing %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'On'|trans }}</span>
+                    </label>
+                    <label class="form-check">
+                        <input class="form-check-input" type="radio" name="billing" value="0"{% if not units.billing %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Off'|trans }}</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <label class="form-label" for="cf-units-count">{{ 'Count'|trans }}{% if units.unit %} ({{ units.unit }}){% endif %}</label>
+                <input type="number" class="form-control" id="cf-units-count" name="count" min="0" value="{{ units.count ?? '' }}">
+                <div class="form-text">{{ 'For software that cannot report: no warning or suspension until it reports. The next report replaces it.'|trans }}</div>
+            </div>
+            <div class="col-lg-6">
+                <dl class="row mb-0">
+                    <dt class="col-5">{{ 'Last report'|trans }}</dt>
+                    <dd class="col-7">{{ units.at ? units.at|format_date : '-' }}</dd>
+                    <dt class="col-5">{{ 'Reported IP addresses'|trans }}</dt>
+                    <dd class="col-7" dir="ltr">{{ units.ips ? units.ips|join(', ') : '-' }}</dd>
+                    <dt class="col-5">{{ 'Monthly price'|trans }}</dt>
+                    <dd class="col-7">{{ units.monthly is not null ? units.monthly|format_currency(default_currency) : '-' }}</dd>
+                </dl>
+            </div>
+        </div>
+        <input type="hidden" name="order_id" value="{{ order.id }}">
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+        </div>
+    </form>
+</div>
+{% endif %}
+
 <div class="card-body">
     <form method="post" action="{{ 'servicelicense/update'|api_url }}" {{ fb_api_form({message: 'License Updated'|trans}) }}>
         <div class="mb-5">

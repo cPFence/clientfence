@@ -313,7 +313,8 @@ final class Catalogue
         if ($module === 'licensing') {
             $this->warn(sprintf('Product "%s" is a WHMCS Licensing product: it is a licence product; check its licence settings (validation of IP, domain, directory).', $title));
 
-            return ['license', ['plugin' => 'Simple', 'validate_ip' => true, 'validate_host' => true, 'validate_path' => false, 'validate_version' => false]];
+            // Its software checks at WHMCS's address: those checks get WHMCS-style answers (Servicelicense/WhmcsCheck.php).
+            return ['license', ['plugin' => 'Simple', 'validate_ip' => true, 'validate_host' => true, 'validate_path' => false, 'validate_version' => false, 'whmcs_check' => true]];
         }
         $manager = self::SERVER_MANAGERS[$module] ?? null;
         if ($manager === null) {

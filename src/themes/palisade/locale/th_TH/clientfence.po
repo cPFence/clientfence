@@ -23217,3 +23217,216 @@ msgstr "การเปลี่ยน IP ที่เหลือ: :left จา
 #: src/library/ClientFence/IpSeats.php
 msgid "The change no longer fits, so it was refused and the client was told: :reason"
 msgstr "การเปลี่ยนแปลงนี้ไม่พอดีกับขีดจำกัดอีกต่อไป จึงถูกปฏิเสธและแจ้งลูกค้าแล้ว: :reason"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid "A big drop in the reported units of order #:id waits for approval: :title"
+msgstr "ยอดหน่วยที่รายงานของคำสั่งซื้อ #:id ลดลงมากและรอการอนุมัติ: :title"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "A report on :date dropped the count from :old to :new; the price waits for your approval."
+msgstr "รายงานเมื่อ :date ลดจำนวนจาก :old เหลือ :new ราคารอการอนุมัติจากคุณ"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A report that lowers the count by more than this waits for staff approval; rises apply at once."
+msgstr "รายงานที่ลดจำนวนมากกว่าค่านี้จะรอการอนุมัติจากเจ้าหน้าที่ ส่วนการเพิ่มมีผลทันที"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After"
+msgstr "หลังจาก"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After a WHMCS import, where these were custom fields of the service."
+msgstr "หลังนำเข้าจาก WHMCS ซึ่งเดิมเป็นฟิลด์กำหนดเองของบริการ"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer WHMCS checks"
+msgstr "ตอบการตรวจสอบของ WHMCS"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the count"
+msgstr "ฟิลด์คำตอบสำหรับจำนวน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the per-unit switch"
+msgstr "ฟิลด์คำตอบสำหรับสวิตช์การเรียกเก็บเงินตามหน่วย"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Days"
+msgstr "วัน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Drop in percent"
+msgstr "ลดลงเป็นเปอร์เซ็นต์"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For licences of this product that have no per-unit switch yet: the order form answers under the two field names above set it and the count. Prices stay as imported."
+msgstr "สำหรับใบอนุญาตของผลิตภัณฑ์นี้ที่ยังไม่มีสวิตช์การเรียกเก็บเงินตามหน่วย: คำตอบของแบบฟอร์มคำสั่งซื้อภายใต้ชื่อฟิลด์ทั้งสองข้างต้นจะกำหนดสวิตช์และจำนวน ราคายังคงเป็นไปตามที่นำเข้า"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format."
+msgstr "สำหรับซอฟต์แวร์ที่ขายผ่าน WHMCS: ตอบการตรวจสอบของซอฟต์แวร์ที่ /modules/servers/licensing/verify.php ในรูปแบบ WHMCS"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "For software that cannot report: no warning or suspension until it reports. The next report replaces it."
+msgstr "สำหรับซอฟต์แวร์ที่รายงานไม่ได้: ไม่มีคำเตือนหรือการระงับจนกว่าจะรายงาน รายงานถัดไปจะมาแทนที่ค่านี้"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software that reports a count (for example websites): with per-unit billing on for a licence, its price becomes the count times the unit price a month, at least the minimum, from each report."
+msgstr "สำหรับซอฟต์แวร์ที่รายงานจำนวน (เช่น เว็บไซต์): เมื่อเปิดการเรียกเก็บเงินตามหน่วยสำหรับใบอนุญาต ราคาจะเท่ากับจำนวนคูณราคาต่อหน่วยต่อเดือนตามรายงานแต่ละครั้ง และไม่ต่ำกว่าขั้นต่ำ"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Hold big drops"
+msgstr "พักการลดลงมาก"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "In the default currency. Empty: no per-unit billing."
+msgstr "ใช้สกุลเงินเริ่มต้น เว้นว่าง: ไม่เรียกเก็บเงินตามหน่วย"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Keep the current count?"
+msgstr "คงจำนวนปัจจุบันไว้หรือไม่"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Last report"
+msgstr "รายงานล่าสุด"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Minimum a month"
+msgstr "ขั้นต่ำต่อเดือน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Monthly price"
+msgstr "ราคารายเดือน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "More than"
+msgstr "มากกว่า"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Next renewal price"
+msgstr "ราคาต่ออายุครั้งถัดไป"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report"
+msgstr "ไม่มีรายงานการใช้งาน"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "No usage report for order #:id: :title"
+msgstr "ไม่มีรายงานการใช้งานสำหรับคำสั่งซื้อ #:id: :title"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report: %title%"
+msgstr "ไม่มีรายงานการใช้งาน: %title%"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=count\"."
+msgstr "ไม่บังคับ สำหรับการตรวจสอบของ WHMCS: ส่งใน customfields ในรูป \"name=count\""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=on\" while per-unit billing is on."
+msgstr "ไม่บังคับ สำหรับการตรวจสอบของ WHMCS: ส่งใน customfields ในรูป \"name=on\" ขณะที่เปิดการเรียกเก็บเงินตามหน่วย"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Per-unit billing"
+msgstr "การเรียกเก็บเงินตามหน่วย"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Per-unit licences: the secret the software sends with its usage reports to /licence/report. Empty keeps the saved one."
+msgstr "ใบอนุญาตตามหน่วย: ข้อมูลลับที่ซอฟต์แวร์ส่งพร้อมรายงานการใช้งานไปยัง /licence/report เว้นว่างเพื่อใช้ค่าที่บันทึกไว้"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Price per Unit"
+msgstr "ราคาต่อหน่วย"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Price per unit a month"
+msgstr "ราคาต่อหน่วยต่อเดือน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Reported IP addresses"
+msgstr "ที่อยู่ IP ที่รายงาน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Saved; type a new one to change it"
+msgstr "บันทึกแล้ว พิมพ์ค่าใหม่เพื่อเปลี่ยน"
+
+#: src/modules/Servicelicense/Units.php
+msgid "Set the answer field names first."
+msgstr "ตั้งชื่อฟิลด์คำตอบก่อน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Suspend when reports stop"
+msgstr "ระงับเมื่อรายงานหยุด"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take from imported answers"
+msgstr "ดึงจากคำตอบที่นำเข้า"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take the switch and counts from imported answers?"
+msgstr "ดึงสวิตช์และจำนวนจากคำตอบที่นำเข้าหรือไม่"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The answer follows the order: Active while it is active, Suspended or Expired once suspended or canceled. IP addresses follow the rules on this page; the domain and folder are checked only when the software sends them."
+msgstr "คำตอบเป็นไปตามคำสั่งซื้อ: Active ขณะที่ยังใช้งานอยู่ Suspended หรือ Expired เมื่อถูกระงับหรือยกเลิก ที่อยู่ IP เป็นไปตามกฎในหน้านี้ โดเมนและโฟลเดอร์จะถูกตรวจสอบเฉพาะเมื่อซอฟต์แวร์ส่งมา"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The client gets an email and staff a notice, once per gap."
+msgstr "ลูกค้าจะได้รับอีเมลและเจ้าหน้าที่จะได้รับการแจ้งเตือน ครั้งเดียวต่อช่วงที่ขาดหาย"
+
+#: src/modules/Servicelicense/Units.php
+msgid "The count must be a whole number from 0 to :max."
+msgstr "จำนวนต้องเป็นจำนวนเต็มตั้งแต่ 0 ถึง :max"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The order is suspended. A suspended licence cannot report, so staff unsuspend it; the time starts again then."
+msgstr "คำสั่งซื้อถูกระงับ ใบอนุญาตที่ถูกระงับรายงานไม่ได้ เจ้าหน้าที่จึงต้องยกเลิกการระงับ และเวลาจะเริ่มนับใหม่ในตอนนั้น"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "The price follows the count your software reports: :price per unit a month, at least :minimum. An invoice uses the count of the day it is issued."
+msgstr "ราคาเป็นไปตามจำนวนที่ซอฟต์แวร์ของคุณรายงาน: :price ต่อหน่วยต่อเดือน อย่างน้อย :minimum ใบแจ้งหนี้ใช้จำนวนของวันที่ออกใบแจ้งหนี้"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Unit name"
+msgstr "ชื่อหน่วย"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Units"
+msgstr "หน่วย"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Usage report secret"
+msgstr "ข้อมูลลับของรายงานการใช้งาน"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Use the lower count?"
+msgstr "ใช้จำนวนที่ต่ำกว่าหรือไม่"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "WHMCS Licensing Addon Checks"
+msgstr "การตรวจสอบของ WHMCS Licensing Addon"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Warn when reports stop"
+msgstr "เตือนเมื่อรายงานหยุด"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% since %date%."
+msgstr "เราไม่ได้รับรายงานการใช้งานของ %title% ตั้งแต่ %date%"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% yet."
+msgstr "เรายังไม่ได้รับรายงานการใช้งานของ %title%"
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "With per-unit billing on, each usage report sets the order price: the count times :price a month, at least :minimum."
+msgstr "เมื่อเปิดการเรียกเก็บเงินตามหน่วย รายงานการใช้งานแต่ละครั้งจะกำหนดราคาคำสั่งซื้อ: จำนวนคูณ :price ต่อเดือน อย่างน้อย :minimum"
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "Your licence is billed by the units your software reports. Please make sure your software can send its report, or contact us."
+msgstr "ใบอนุญาตของคุณเรียกเก็บเงินตามหน่วยที่ซอฟต์แวร์ของคุณรายงาน โปรดตรวจสอบว่าซอฟต์แวร์ของคุณส่งรายงานได้ หรือติดต่อเรา"
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "reported on :date"
+msgstr "รายงานเมื่อ :date"

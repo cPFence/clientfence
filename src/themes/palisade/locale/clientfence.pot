@@ -862,6 +862,10 @@ msgstr ""
 msgid "A bank payment of :amount from :date is clearing."
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "A big drop in the reported units of order #:id waits for approval: :title"
+msgstr ""
+
 #: src/modules/Servicedomain/Service.php
 msgid "A cancelled domain was deleted at the registrar and cannot be brought back here. Order it again (register or transfer)."
 msgstr ""
@@ -1088,6 +1092,14 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
 msgid "A reply to a closed ticket is refused and the sender told. Help desks where clients cannot reopen tickets always refuse them."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "A report on :date dropped the count from :old to :new; the price waits for your approval."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "A report that lowers the count by more than this waits for staff approval; rises apply at once."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
@@ -1990,12 +2002,20 @@ msgstr ""
 msgid "Affects"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig src/modules/Product/templates/admin/mod_product_addons.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "After Order is Placed"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig src/modules/Product/templates/admin/mod_product_addons.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "After Payment is Received"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "After a WHMCS import, where these were custom fields of the service."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
@@ -2974,6 +2994,18 @@ msgstr ""
 msgid "Another update appears to already be in progress. Please wait for it to finish before trying again."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer WHMCS checks"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the count"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Answer field for the per-unit switch"
+msgstr ""
+
 #: src/modules/Support/templates/email/mod_support_helpdesk_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_open.html.twig src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig …
 msgid "Answered"
 msgstr ""
@@ -3122,7 +3154,7 @@ msgstr ""
 msgid "Applying patches..."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "Approve"
 msgstr ""
 
@@ -6178,7 +6210,7 @@ msgstr ""
 msgid "Couldn't find a valid download URL for the extension."
 msgstr ""
 
-#: src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
 msgid "Count"
 msgstr ""
 
@@ -6884,6 +6916,10 @@ msgstr ""
 
 #: src/themes/admin_default/html/mod_index_dashboard.html.twig
 msgid "Date/Time"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Days"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_ticket_files.html.twig
@@ -7760,6 +7796,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Drop an image here or click to choose"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Drop in percent"
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig …
@@ -9602,6 +9642,10 @@ msgstr ""
 msgid "For example: WordPress admin login"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For licences of this product that have no per-unit switch yet: the order form answers under the two field names above set it and the count. Prices stay as imported."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "For light backgrounds. Wide, up to 1200 × 400."
 msgstr ""
@@ -9612,6 +9656,18 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "For renewal or any change to this domain, open a support ticket."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "For software that cannot report: no warning or suspension until it reports. The next report replaces it."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "For software that reports a count (for example websites): with per-unit billing on for a licence, its price becomes the count times the unit price a month, at least the minimum, from each report."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option_group.html.twig
@@ -10466,6 +10522,10 @@ msgstr ""
 msgid "History"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Hold big drops"
+msgstr ""
+
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Home"
 msgstr ""
@@ -11128,6 +11188,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "In the default currency. Empty: no per-unit billing."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -11890,6 +11954,10 @@ msgstr ""
 msgid "Keep it somewhere safe: it signs you in once if you lose your phone. It is shown only now."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Keep the current count?"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Keep the current setting"
 msgstr ""
@@ -12124,6 +12192,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Last read"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Last report"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -13646,6 +13718,10 @@ msgstr ""
 msgid "Minimum Years of Registration"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Minimum a month"
+msgstr ""
+
 #: src/library/ClientFence/Validate.php
 msgid "Minimum password length is 8 characters."
 msgstr ""
@@ -13770,6 +13846,10 @@ msgstr ""
 msgid "Monthly Transactions"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Monthly price"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Monthly recurring revenue"
 msgstr ""
@@ -13796,6 +13876,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "More information"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "More than"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
@@ -14422,6 +14506,10 @@ msgstr ""
 msgid "Next renewal"
 msgstr ""
 
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Next renewal price"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Next steps"
 msgstr ""
@@ -14892,6 +14980,18 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig
 msgid "No upgrades or downgrades yet."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "No usage report for order #:id: :title"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "No usage report: %title%"
 msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
@@ -15752,6 +15852,14 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Namesilo.php
 msgid "Optional verified NameSilo payment profile. Empty: account funds pay."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=count\"."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Optional, for WHMCS checks: sent in customfields as \"name=on\" while per-unit billing is on."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
@@ -17082,6 +17190,14 @@ msgstr ""
 msgid "Per unit, in the services' currency. Not used with the product price."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Per-unit billing"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Per-unit licences: the secret the software sends with its usage reports to /licence/report. Empty keeps the saved one."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Percentage"
 msgstr ""
@@ -17564,6 +17680,14 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Price override"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Price per Unit"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Price per unit a month"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_index.html.twig
@@ -18594,7 +18718,7 @@ msgstr ""
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
+#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "Refuse"
 msgstr ""
 
@@ -19044,6 +19168,10 @@ msgstr ""
 
 #: src/modules/Support/NetworkIssues.php
 msgid "Reported"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Reported IP addresses"
 msgstr ""
 
 #: src/modules/Invoice/Controller/Admin.php src/modules/Invoice/templates/admin/mod_invoice_reports.html.twig
@@ -19978,6 +20106,10 @@ msgstr ""
 msgid "Saved; the connection works."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Saved; type a new one to change it"
+msgstr ""
+
 #: src/modules/Invoice/Controller/Client.php
 msgid "Saving a card with PayTabs is not available."
 msgstr ""
@@ -20780,6 +20912,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Set the URL to https:// and security.force_https to true in config.php."
+msgstr ""
+
+#: src/modules/Servicelicense/Units.php
+msgid "Set the answer field names first."
 msgstr ""
 
 #: src/modules/Order/Service.php
@@ -21834,6 +21970,10 @@ msgstr ""
 msgid "Suspend After Due Date"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Suspend when reports stop"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
 msgid "Suspended"
 msgstr ""
@@ -22038,8 +22178,16 @@ msgstr ""
 msgid "Tables"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take from imported answers"
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_password_reset.html.twig src/modules/Staff/templates/admin/mod_staff_password_update.html.twig
 msgid "Take me back to the login screen."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Take the switch and counts from imported answers?"
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -22614,6 +22762,10 @@ msgstr ""
 msgid "The amount was added to your account credit."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The answer follows the order: Active while it is active, Suspended or Expired once suspended or canceled. IP addresses follow the rules on this page; the domain and folder are checked only when the software sends them."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Import.php
 msgid "The attachments folder must be an absolute path to a folder this site can read."
 msgstr ""
@@ -22746,6 +22898,10 @@ msgstr ""
 msgid "The client email :email: is a staff login on the :panel: server. Give the client a different email address."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The client gets an email and staff a notice, once per gap."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "The client group allowed to order while the store is open to a custom group. Add clients to it under Clients, or make a new group under Clients → Groups."
 msgstr ""
@@ -22832,6 +22988,10 @@ msgstr ""
 
 #: src/modules/Support/MailImport.php
 msgid "The copy of this email could not be read."
+msgstr ""
+
+#: src/modules/Servicelicense/Units.php
+msgid "The count must be a whole number from 0 to :max."
 msgstr ""
 
 #: src/modules/Clientfence/SignInSecurity.php
@@ -23335,6 +23495,10 @@ msgstr ""
 msgid "The order is saved."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "The order is suspended. A suspended licence cannot report, so staff unsuspend it; the time starts again then."
+msgstr ""
+
 #: src/modules/Order/Service.php
 msgid "The order must be in the client's currency (:currency)."
 msgstr ""
@@ -23445,6 +23609,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "The preview link is off."
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "The price follows the count your software reports: :price per unit a month, at least :minimum. An invoice uses the count of the day it is issued."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
@@ -25403,12 +25571,20 @@ msgstr ""
 msgid "Unit"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Unit name"
+msgstr ""
+
 #: src/library/ClientFence/Period.php
 msgid "Unit not defined"
 msgstr ""
 
 #: src/modules/Invoice/QuotePdf.php src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/themes/palisade/html/mod_invoice_quote.html.twig
 msgid "Unit price"
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "Units"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
@@ -26059,6 +26235,10 @@ msgstr ""
 msgid "Usage is unavailable right now."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
+msgid "Usage report secret"
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Use 0 for unlimited."
 msgstr ""
@@ -26125,6 +26305,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Use the details below and write :ref as the reference."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "Use the lower count?"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
@@ -26643,6 +26827,10 @@ msgstr ""
 msgid "WHMCS Licensing (licence keys, check log and bans)"
 msgstr ""
 
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "WHMCS Licensing Addon Checks"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "WHMCS database"
 msgstr ""
@@ -26681,6 +26869,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Wallet balance"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
+msgid "Warn when reports stop"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig src/modules/Security/templates/admin/mod_security_rate_limits.html.twig …
@@ -26773,6 +26965,14 @@ msgstr ""
 
 #: src/modules/Order/CancelRequests.php src/modules/Support/Service.php
 msgid "We have already received this request."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% since %date%."
+msgstr ""
+
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "We have not received a usage report for %title% yet."
 msgstr ""
 
 #: src/modules/Support/templates/email/mod_support_ticket_open.html.twig
@@ -27085,6 +27285,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/Service.php
 msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
+msgstr ""
+
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+msgid "With per-unit billing on, each usage report sets the order price: the count times :price a month, at least :minimum."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -27911,6 +28115,10 @@ msgstr ""
 msgid "Your invoices, payments and account credit with the running balance."
 msgstr ""
 
+#: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
+msgid "Your licence is billed by the units your software reports. Please make sure your software can send its report, or contact us."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
 msgid "Your license is active"
 msgstr ""
@@ -28453,6 +28661,10 @@ msgstr ""
 
 #: src/modules/Support/Service.php
 msgid "rel_new_value must be a valid positive integer product ID, received: :value"
+msgstr ""
+
+#: src/themes/palisade/html/mod_servicelicense_manage.html.twig
+msgid "reported on :date"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Namecheap.php

@@ -5198,5 +5198,53 @@
     {
         "file": "modules/Order/Upgrades.php",
         "done": "ClientFence core patch: the licence's IPs, counted again under this lock (IP changes take it too), must fit the new plan."
+    },
+    {
+        "file": ".htaccess",
+        "done": "ClientFence core patch: the WHMCS Licensing Addon check address (Servicelicense/WhmcsCheck.php); old clients send \"//\"."
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch: licence servers keep checking during maintenance (Servicelicense/WhmcsCheck.php)."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "'licence' => 'servicelicense',"
+    },
+    {
+        "file": "modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig",
+        "done": "ClientFence core patch: WHMCS Licensing Addon checks (WhmcsCheck.php)."
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: per-unit billing gives the server time to report again (Units.php)."
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: per-unit licences without usage reports are warned about or suspended (Units.php)."
+    },
+    {
+        "file": "modules/Servicelicense/Service.php",
+        "done": "ClientFence core patch: the per-unit billing view (Units.php)."
+    },
+    {
+        "file": "modules/Servicelicense/Api/Admin.php",
+        "done": "ClientFence core patch: the usage report secret (Units.php): empty keeps the saved one; it is never shown again."
+    },
+    {
+        "file": "modules/Servicelicense/Api/Admin.php",
+        "done": "ClientFence core patch: per-unit billing of a licence (order_id; Units.php): billing (the staff switch),"
+    },
+    {
+        "file": "modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig",
+        "done": "ClientFence core patch: per-unit billing of licences (Units.php)."
+    },
+    {
+        "file": "modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig",
+        "done": "ClientFence core patch: per-unit billing of the licence (Units.php)."
+    },
+    {
+        "file": "modules/Servicelicense/Api/Admin.php",
+        "done": "ClientFence core patch: after a WHMCS import, takes the per-unit switch and counts of a product's"
     }
 ]
