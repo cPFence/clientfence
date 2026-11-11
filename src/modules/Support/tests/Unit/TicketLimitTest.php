@@ -96,16 +96,16 @@ test('the client ticket over the limit in the period is refused, and one is allo
     $api = ticketLimitClientApi($di);
 
     // One left: the warning's date is when the oldest leaves the period.
-    expect($api->ticket_limit())->toBe(['max' => 2, 'days' => 7, 'left' => 1, 'date' => date('Y-m-d H:i:s', strtotime($oldest) + 7 * 86400)])
+    expect($api->ticket_limit())->toMatchArray(['max' => 2, 'days' => 7, 'left' => 1, 'date' => date('Y-m-d H:i:s', strtotime($oldest) + 7 * 86400)])
         ->and($api->ticket_create(ticketLimitForm()))->toBe(10);
 
     $newest = ticketLimitTicket($di, 1);
     expect($api->ticket_limit())->toMatchArray(['left' => 0, 'date' => date('Y-m-d H:i:s', strtotime($oldest) + 7 * 86400)])
-        ->and(fn () => $api->ticket_create(ticketLimitForm()))->toThrow(InformationException::class, 'You can open 2 tickets every 7 days. You can open a new ticket on ');
+        ->and(fn () => $api->ticket_create(ticketLimitForm()))->toThrow(InformationException::class, 'You have reached your limit of 2 ticket');
 
     // The oldest leaves the period: one more again, until the next oldest leaves.
     $di['em']->getConnection()->update('support_ticket', ['created_at' => date('Y-m-d H:i:s', time() - 8 * 86400)], ['created_at' => $oldest]);
-    expect($api->ticket_limit())->toBe(['max' => 2, 'days' => 7, 'left' => 1, 'date' => date('Y-m-d H:i:s', strtotime($newest) + 7 * 86400)])
+    expect($api->ticket_limit())->toMatchArray(['max' => 2, 'days' => 7, 'left' => 1, 'date' => date('Y-m-d H:i:s', strtotime($newest) + 7 * 86400)])
         ->and($api->ticket_create(ticketLimitForm()))->toBe(10);
 });
 

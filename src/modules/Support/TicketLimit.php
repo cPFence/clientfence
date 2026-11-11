@@ -20,10 +20,11 @@ use ClientFence\InformationException;
 final class TicketLimit
 {
     /**
-     * The client's limit for the client area's banners: max, days, left and date (when a ticket can
-     * be opened again once none is left); null when the client has no limit.
+     * The client's limit for the client area's banners: max, days, limit (both written out, "2 tickets in
+     * 7 days"), left and date (when a ticket can be opened again once none is left); null when the client
+     * has no limit.
      *
-     * @return array{max: int, days: int, left: int, date: string}|null
+     * @return array{max: int, days: int, limit: string, left: int, date: string}|null
      */
     public static function status(\Pimple\Container $di, \Model_Client $client): ?array
     {
@@ -41,7 +42,13 @@ final class TicketLimit
         // The ticket whose leaving the window frees a place once the last one is used (none counted: one opened now).
         $from = $times[max(0, count($times) - $max)] ?? date('Y-m-d H:i:s');
 
-        return ['max' => $max, 'days' => $days, 'left' => max(0, $max - count($times)), 'date' => date('Y-m-d H:i:s', strtotime((string) $from) + $days * 86400)];
+        // Each count in its own plural form (Twig has none), so the banner reads "1 ticket in 1 day".
+        $limit = __trans(':tickets in :days', [
+            ':tickets' => __pluralTrans(':count ticket', ':count tickets', $max, [':count' => $max]),
+            ':days' => __pluralTrans(':count day', ':count days', $days, [':count' => $days]),
+        ]);
+
+        return ['max' => $max, 'days' => $days, 'limit' => $limit, 'left' => max(0, $max - count($times)), 'date' => date('Y-m-d H:i:s', strtotime((string) $from) + $days * 86400)];
     }
 
     /** Refuses the client's new ticket when none is left (core patch in Api\Client::ticket_create()). */
@@ -59,9 +66,8 @@ final class TicketLimit
             i18n::getActiveTimezone($di['request'], $client->timezone),
         );
 
-        throw new InformationException('You can open :max tickets every :days days. You can open a new ticket on :date.', [
-            ':max' => $status['max'],
-            ':days' => $status['days'],
+        throw new InformationException('You have reached your limit of :limit. You can open a new ticket on :date.', [
+            ':limit' => $status['limit'],
             ':date' => $format->format(new \DateTimeImmutable($status['date'])),
         ]);
     }

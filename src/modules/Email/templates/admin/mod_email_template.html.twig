@@ -426,7 +426,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.id += lang;
                 label.htmlFor = input.id;
                 input.lang = lang.slice(0, 2);
-                if (['ar', 'he', 'fa'].includes(input.lang)) {
+                // The message is HTML code: only the subject reads right to left.
+                if (field === 'subject' && ['ar', 'he', 'fa'].includes(input.lang)) {
                     input.dir = 'rtl';
                 }
                 input.value = panes.querySelector('[data-cf-lang-pane=""] [data-cf-field="' + field + '"]').value;

@@ -418,7 +418,7 @@ msgstr ""
 msgid ":count core patches applied."
 msgstr ""
 
-#: src/modules/Clientfence/Health.php
+#: src/modules/Clientfence/Health.php src/modules/Support/TicketLimit.php
 msgid ":count day"
 msgid_plural ":count days"
 msgstr[0] ""
@@ -511,6 +511,12 @@ msgstr ""
 #: src/modules/Clientfence/Health.php
 msgid ":count rule blocks in place."
 msgstr ""
+
+#: src/modules/Support/TicketLimit.php
+msgid ":count ticket"
+msgid_plural ":count tickets"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid ":count unpaid, :overdue overdue"
@@ -698,6 +704,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":state business number"
+msgstr ""
+
+#: src/modules/Support/TicketLimit.php
+msgid ":tickets in :days"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
@@ -26981,10 +26991,6 @@ msgstr ""
 msgid "You can only manage staff accounts in lower groups"
 msgstr ""
 
-#: src/modules/Support/TicketLimit.php src/themes/palisade/html/partials/ticket_limit.html.twig
-msgid "You can open :max tickets every :days days. You can open a new ticket on :date."
-msgstr ""
-
 #: src/themes/palisade/html/partials/ticket_limit.html.twig
 msgid "You can open one more ticket until :date."
 msgstr ""
@@ -27187,6 +27193,10 @@ msgstr ""
 
 #: src/modules/Invoice/Api/Client.php
 msgid "You have not set up automatic payments with PayPal."
+msgstr ""
+
+#: src/modules/Support/TicketLimit.php src/themes/palisade/html/partials/ticket_limit.html.twig
+msgid "You have reached your limit of :limit. You can open a new ticket on :date."
 msgstr ""
 
 #: src/library/ClientFence/Update.php src/modules/System/Api/Admin.php

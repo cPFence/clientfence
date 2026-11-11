@@ -21,7 +21,7 @@
         </div>
         <div class="col-12">
             <label class="form-label" for="email-template-{{ lang }}">{{ 'Email Message'|trans }}</label>
-            <textarea class="form-control" name="translations[{{ lang }}][content]" id="email-template-{{ lang }}" data-cf-field="content" rows="10" lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}{% if not can_edit %} readonly{% endif %}>{{ content }}</textarea>
+            <textarea class="form-control" name="translations[{{ lang }}][content]" id="email-template-{{ lang }}" data-cf-field="content" rows="10" lang="{{ lang[:2] }}" dir="ltr"{% if not can_edit %} readonly{% endif %}>{{ content }}</textarea>
         </div>
     </div>
 </div>
