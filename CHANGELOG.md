@@ -5,7 +5,7 @@
 ### Added
 
 - Add New Order works as in WHMCS: staff order several products and domains on one invoice, with a promo code, a payment method and a live order summary.
-- Email templates, products, help desks and order form questions in each language; emails go out in the recipient's language.
+- Email templates, products, help desks and order form questions in each language; a new language starts from the default text (an email template already in that language), and emails go out in the recipient's language.
 - Support PIN for every client, shown on the client dashboard and the staff client page.
 - Ticket limit per client: how many tickets a client may open in a period (Support settings).
 - Your own links at the end of the client menu (Palisade theme settings).
