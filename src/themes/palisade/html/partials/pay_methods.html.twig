@@ -15,11 +15,11 @@
         {% elseif m.converts %}
             {% set note = context == 'wallet'
                 ? 'Converted at today’s rate. Added after we confirm.'|trans
-                : (context == 'checkout' ? 'Shown in :currency at today’s rate. Send us the receipt.'|trans({ ':currency': 'EGP' }) : 'Converted at today’s rate. Send us the receipt.'|trans) %}
+                : (context == 'checkout' ? 'Shown in :currency at today’s rate. Then send us your transfer receipt.'|trans({ ':currency': 'EGP' }) : 'Converted at today’s rate. Then send us your transfer receipt.'|trans) %}
         {% else %}
             {% set note = context == 'wallet'
                 ? 'Transfer in :currency. Added after we confirm.'|trans({ ':currency': currency })
-                : 'Transfer in :currency. Send us the receipt.'|trans({ ':currency': currency }) %}
+                : 'Transfer in :currency, then send us your transfer receipt.'|trans({ ':currency': currency }) %}
         {% endif %}
         <label class="bf-pay">
             <input type="radio" name="gateway_id" value="{{ m.id }}"{% if m.id ~ '' == picked %} checked{% endif %}

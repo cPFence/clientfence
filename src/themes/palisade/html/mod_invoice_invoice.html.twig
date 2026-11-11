@@ -137,10 +137,10 @@
                                 {% endif %}
                                 {% if receipt_upload %}
                                 <form class="bf-receipt" data-bf-receipt="{{ m.id }}" novalidate>
-                                    <label class="bf-label bf-stack" for="bf-receipt-{{ m.id }}">{{ 'Receipt (image or PDF)'|trans }}
+                                    <label class="bf-label bf-stack" for="bf-receipt-{{ m.id }}">{{ 'Your transfer receipt (image or PDF)'|trans }}
                                         <input class="form-control" id="bf-receipt-{{ m.id }}" type="file" name="receipt" accept="image/jpeg,image/png,image/webp,application/pdf" required>
                                     </label>
-                                    <button type="submit" class="btn btn-primary bf-btn-lg bf-self-start">{{ 'I have paid, send the receipt'|trans }}</button>
+                                    <button type="submit" class="btn btn-primary bf-btn-lg bf-self-start">{{ 'I have paid, upload my transfer receipt'|trans }}</button>
                                 </form>
                                 {% endif %}
                             </section>

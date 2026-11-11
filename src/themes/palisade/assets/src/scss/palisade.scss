@@ -116,6 +116,11 @@ $link-hover-color-dark: #8bbaff;
   --bf-topbar-bg: rgba(244, 246, 251, .86);
 }
 
+// Native controls (radios, checkboxes, scrollbars) follow the page's mode, not the device's (meta color-scheme "light dark").
+[data-bs-theme="light"] {
+  color-scheme: light;
+}
+
 [data-bs-theme="dark"] {
   --bf-sidebar-bg: #{$navy-950};
   --bf-surface: #{$navy-850};
