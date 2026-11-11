@@ -6,7 +6,7 @@
 #   <out>/latest.json                 the feed: version, release_date, minimum_php_version,
 #                                     download_url, sha256, notes
 #
-#   tools/build-release.sh [--out DIR] [--url BASE] [--notes FILE] [--date YYYY-MM-DD]
+#   tools/build-release.sh [--out DIR] [--url BASE] [--notes FILE] [--date YYYY-MM-DD] [--test-build]
 #
 # The version is Version::CLIENTFENCE of this checkout. --url is the feed folder (default
 # https://clientfence.com/releases/): the archive must be published next to latest.json there.
@@ -15,7 +15,8 @@
 # A beta is the same build: publish it with clientfence-feed.sh --beta (beta.json, opt in on
 # System → Update) and later --promote it to stable unchanged.
 # The bundled GeoIP databases must be at most 7 days old: run tools/update-geoip.sh and commit
-# them first when the build says so.
+# them first when the build says so. --test-build skips only that age check, for an archive that
+# install tests use and nobody publishes.
 set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -25,12 +26,14 @@ OUT="$ROOT/build/release"
 BASE="https://clientfence.com/releases/"
 NOTES=""
 DATE=$(date -u +%F)
+TEST_BUILD=""
 while [[ $# -gt 0 ]]; do
   case $1 in
     --out) OUT=$2; shift 2 ;;
     --url) BASE=$2; shift 2 ;;
     --notes) NOTES=$2; shift 2 ;;
     --date) DATE=$2; shift 2 ;;
+    --test-build) TEST_BUILD=1; shift ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
 done
@@ -41,7 +44,7 @@ work=$(mktemp -d)
 trap 'rm -rf -- "$work"' EXIT
 mkdir -p "$OUT"
 
-"$ROOT/tools/update-geoip.sh" --check 7 || { echo "the bundled GeoIP databases are not current: run tools/update-geoip.sh" >&2; exit 1; }
+[[ -n $TEST_BUILD ]] || "$ROOT/tools/update-geoip.sh" --check 7 || { echo "the bundled GeoIP databases are not current: run tools/update-geoip.sh" >&2; exit 1; }
 python3 "$ROOT/tools/locales.py" verify || exit 1
 
 docker buildx build --quiet --target release-artifact --output "type=local,dest=$work/tree" "$ROOT" >/dev/null
