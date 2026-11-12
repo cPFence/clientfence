@@ -212,6 +212,9 @@ final class Notifications
             'backup_failed' => __trans('The database backup failed', $v),
             'health_bad' => __trans('System health: a check needs attention', $v),
             'domain_expiring' => __trans('Domain :domain expires on :date', $v),
+            // ClientFence: the daily domain sync and tracked transfers (Servicedomain/DomainSync.php).
+            'domain_expires_early' => __trans('Domain :domain expires at the registrar on :date, before its next due date :due', $v),
+            'transfer_completed' => __trans('Domain transfer completed: :domain', $v),
             // Clients.
             'invoice_new' => __trans('New invoice :number: :amount', $v),
             'invoice_due' => __trans('Invoice :number is due on :date', $v),

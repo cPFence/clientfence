@@ -41,6 +41,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#tab-nameservers" data-bs-toggle="tab">{{ 'Nameservers'|trans }}</a>
                         </li>
+                        {# ClientFence core patch: the daily domain sync and transfer tracking (DomainSync.php). #}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#tab-sync" data-bs-toggle="tab">{{ 'Sync'|trans }}</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="tab-content border-top">
@@ -220,6 +224,43 @@
 
                                     {% block form_actions %}
                                         <button class="btn btn-primary" type="submit">{{ 'Update Nameservers'|trans }}</button>
+                                    {% endblock %}
+                                {% endembed %}
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab-sync" role="tabpanel">
+                        <div class="p-3">
+                            <form method="post" action="{{ 'system/update_params'|api_url }}" {{ fb_api_form({message: 'Saved.'|trans}) }}>
+                                {% embed 'partial_admin_form_card.html.twig' with {
+                                    title: 'Sync with registrars'|trans,
+                                    subtitle: 'Both are off until you turn them on. They need the cron job.'|trans
+                                } %}
+                                    {% block form_content %}
+                                        {% set params = admin.system_get_params %}
+                                        <div class="d-flex flex-column gap-3">
+                                            <div>
+                                                <input type="hidden" name="servicedomain_daily_sync" value="0">
+                                                <label class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" name="servicedomain_daily_sync" value="1"{% if params.servicedomain_daily_sync|default('0') == '1' %} checked{% endif %}>
+                                                    <span class="form-check-label">{{ 'Sync expiry dates every day'|trans }}</span>
+                                                </label>
+                                                <div class="form-hint">{{ 'Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order\'s next due date is a notification for you; the order\'s date is never changed. Off: the old monthly run.'|trans }}</div>
+                                            </div>
+                                            <div>
+                                                <input type="hidden" name="servicedomain_track_transfers" value="0">
+                                                <label class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" name="servicedomain_track_transfers" value="1"{% if params.servicedomain_track_transfers|default('0') == '1' %} checked{% endif %}>
+                                                    <span class="form-check-label">{{ 'Track transfers until they complete'|trans }}</span>
+                                                </label>
+                                                <div class="form-hint">{{ 'With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it.'|trans }}</div>
+                                            </div>
+                                        </div>
+                                    {% endblock %}
+
+                                    {% block form_actions %}
+                                        <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
                                     {% endblock %}
                                 {% endembed %}
                             </form>

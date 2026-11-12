@@ -27,6 +27,8 @@ $paths = [
     'library/Registrar/TldPrices.php',
     'library/Registrar/TransferStatus.php',
     'modules/Servicedomain/PriceSync.php',
+    'modules/Servicedomain/DomainSync.php',
+    'modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig',
     'modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig',
     'library/Server/Manager/Enhance.php',
     'library/ClientFence/Twig/Extension/RtlDateExtension.php',

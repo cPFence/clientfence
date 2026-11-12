@@ -1108,6 +1108,8 @@ CREATE TABLE `service_domain` (
   `expires_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `sync_error` text,
+  `transfer_since` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `client_id_idx` (`client_id`),
   KEY `tld_registrar_id_idx` (`tld_registrar_id`)

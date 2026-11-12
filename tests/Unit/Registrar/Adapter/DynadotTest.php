@@ -43,3 +43,24 @@ test('the price list reads the one-year price per action from tld_price, without
         ->and(array_keys($adapter->getTldPrices(['.ch'])['prices']))->toBe(['.ch'])
         ->and(json_encode($adapter->getLog()->calls))->not->toContain('9.99');
 });
+
+test('the transfer status is the newest incoming transfer\'s: completed, cancelled failed, anything else pending', function (string $text, string $status): void {
+    $httpClient = new MockHttpClient(function (string $method, string $url) use ($text): MockResponse {
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $query);
+        expect($query)->toMatchArray(['command' => 'get_transfer_status', 'domain' => 'example.com', 'transfer_type' => 'in']);
+
+        return new MockResponse((string) json_encode(['GetTransferStatusResponse' => ['ResponseCode' => 0, 'Status' => 'success', 'TransferList' => [
+            ['OrderId' => '100', 'TransferStatus' => 'completed'],
+            ['OrderId' => '200', 'TransferStatus' => $text],
+        ]]]));
+    });
+
+    expect(createDynadotAdapter($httpClient)->getTransferStatus((new Registrar_Domain())->setSld('example')->setTld('.com')))
+        ->toBe(['status' => $status, 'message' => $text]);
+})->with([
+    'completed' => ['completed', Registrar_TransferStatus::COMPLETED],
+    'cancelled' => ['cancelled', Registrar_TransferStatus::FAILED],
+    'pending' => ['waiting', Registrar_TransferStatus::PENDING],
+    'bad code' => ['auth code needed', Registrar_TransferStatus::PENDING],
+    'unknown' => ['something new', Registrar_TransferStatus::PENDING],
+]);

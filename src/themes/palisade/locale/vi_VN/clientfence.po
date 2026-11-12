@@ -25840,3 +25840,96 @@ msgstr "Đồng bộ giá hằng ngày với %registrar% đã tìm thấy các t
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Your price"
 msgstr "Giá của bạn"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr "Trước ngày đến hạn tiếp theo %date%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
+msgstr "Cả hai đều tắt cho đến khi bạn bật. Chúng cần cron job."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr "Tên miền :domain hết hạn tại nhà đăng ký vào :date, trước ngày đến hạn tiếp theo :due"
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr "Chuyển tên miền về"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr "Đã hoàn tất chuyển tên miền về: :domain"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
+msgstr "Đã hoàn tất chuyển tên miền %domain% về"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
+msgstr "Mỗi ngày, một phần tên miền lấy ngày hết hạn từ nhà đăng ký, nên mỗi tên miền được kiểm tra khoảng một lần mỗi tháng mà không cần một lượt chạy lớn. Ngày tại nhà đăng ký sớm hơn ngày đến hạn tiếp theo của đơn hàng là một thông báo dành cho bạn; ngày của đơn hàng không bao giờ bị thay đổi. Tắt: lượt chạy hằng tháng như trước."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr "Đồng bộ"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr "Đồng bộ ngày hết hạn mỗi ngày"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
+msgstr "Đồng bộ với nhà đăng ký"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
+msgstr "Cảm ơn bạn đã đặt hàng. Việc chuyển %title% về chỗ chúng tôi đã bắt đầu. Thường mất vài ngày; chúng tôi sẽ gửi email cho bạn khi hoàn tất."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr "Việc chuyển %domain% về chỗ chúng tôi đã hoàn tất."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr "Việc chuyển %domain% về chỗ chúng tôi đã hoàn tất. Bây giờ bạn có thể quản lý tên miền trong khu vực khách hàng."
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
+msgstr "Tên miền này không có lượt chuyển nào để thử lại."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr "Theo dõi các lượt chuyển cho đến khi hoàn tất"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr "Đang chuyển tên miền"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr "Đang chuyển tên miền: chúng tôi sẽ gửi email cho bạn khi nhà đăng ký hoàn tất."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr "Chuyển chưa hoàn tất: nhóm của chúng tôi đang xem xét."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr "Chuyển chưa hoàn tất: xem Đơn hàng > Thao tác thất bại"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
+msgstr "Đã bắt đầu chuyển %title%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr "Với nhà đăng ký có báo trạng thái, lượt chuyển vẫn ở trạng thái đang thực hiện cho đến khi nhà đăng ký hoàn tất: khi đó khách hàng được gửi email. Lượt chuyển thất bại sẽ vào Đơn hàng > Thao tác thất bại. Tắt: lượt chuyển được tính là xong ngay khi nhà đăng ký chấp nhận."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr "Việc chuyển tên miền của bạn đã bắt đầu"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
+msgstr "Việc chuyển tên miền của bạn đã hoàn tất"

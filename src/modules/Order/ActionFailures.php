@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Order;
 
 use ClientFence\Mod\Order\Entity\Order;
+use ClientFence\Mod\Servicedomain\DomainSync;
 use ClientFence\Mod\Servicehosting\Panel\StatusCheck;
 use Doctrine\DBAL\Connection;
 use ClientFence\InformationException;
@@ -36,6 +37,8 @@ final class ActionFailures
         // A paid upgrade or downgrade that could not be applied (Upgrades.php).
         Upgrades::ACTION,
         StatusCheck::ACTION,
+        // ClientFence core patch: a domain transfer the registrar reports failed or stuck (Servicedomain/DomainSync.php).
+        DomainSync::ACTION,
     ];
 
     public const STATUS_OPEN = 'open';
@@ -180,6 +183,7 @@ final class ActionFailures
             Order::ACTION_UNCANCEL => [Order::STATUS_CANCELED],
             Upgrades::ACTION => [Order::STATUS_ACTIVE],
             StatusCheck::ACTION => [Order::STATUS_ACTIVE, Order::STATUS_SUSPENDED],
+            DomainSync::ACTION => [Order::STATUS_ACTIVE],
             default => null,
         };
     }
@@ -283,6 +287,7 @@ final class ActionFailures
                 Order::ACTION_DELETE => $service->deleteFromOrder($order),
                 Upgrades::ACTION => Upgrades::retryForOrder($di, $orderId),
                 StatusCheck::ACTION => StatusCheck::check($di, $orderId) || throw new InformationException('The hosting status still differs from the panel.'),
+                DomainSync::ACTION => DomainSync::retryTransfer($di, $orderId),
                 default => throw new InformationException('This action cannot be retried.'),
             };
         }

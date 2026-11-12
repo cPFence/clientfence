@@ -17,7 +17,7 @@ declare(strict_types=1);
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     private const LIVE_URL = 'https://api.dynadot.com/api3.json';
     private const SANDBOX_URL = 'https://api-sandbox.dynadot.com/api3.json';
@@ -152,6 +152,24 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
         $this->request('transfer', $params);
 
         return true;
+    }
+
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $latest = [];
+        foreach ($this->request('get_transfer_status', ['domain' => $domain->getName(), 'transfer_type' => 'in'])['TransferList'] ?? [] as $transfer) {
+            if ($latest === [] || (int) ($transfer['OrderId'] ?? 0) > (int) ($latest['OrderId'] ?? 0)) {
+                $latest = $transfer;
+            }
+        }
+        $status = trim((string) ($latest['TransferStatus'] ?? ''));
+
+        return ['status' => match (true) {
+            // Dynadot documents only some of these texts ("none", "approved", "waiting", "auth code needed").
+            preg_match('/\bcompleted?\b/i', $status) === 1 => Registrar_TransferStatus::COMPLETED,
+            preg_match('/\b(cancell?ed|rejected|failed|denied)\b/i', $status) === 1 => Registrar_TransferStatus::FAILED,
+            default => Registrar_TransferStatus::PENDING,
+        }, 'message' => $status];
     }
 
     public function getDomainDetails(Registrar_Domain $domain): Registrar_Domain

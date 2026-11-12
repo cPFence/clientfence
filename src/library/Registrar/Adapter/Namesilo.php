@@ -15,7 +15,7 @@ use ClientFence\Mod\Invoice\EuVat;
 use Symfony\Component\Intl\Countries;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     private const LIVE_URL = 'https://www.namesilo.com/api/';
     private const SANDBOX_URL = 'https://sandbox.namesilo.com/api/';
@@ -143,6 +143,19 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
             + $this->contact($domain->getContactRegistrar()) + $this->eligibility($domain) + $this->payment()));
 
         return true;
+    }
+
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $reply = $this->request('checkTransferStatus', ['domain' => $domain->getName()])->reply;
+        $status = trim((string) ($reply->status ?? ''));
+
+        return ['status' => match (true) {
+            // NameSilo documents no list of these texts, only the reply's fields.
+            preg_match('/\bcompleted?\b/i', $status) === 1 => Registrar_TransferStatus::COMPLETED,
+            preg_match('/\b(cancell?ed|rejected|failed|denied)\b/i', $status) === 1 => Registrar_TransferStatus::FAILED,
+            default => Registrar_TransferStatus::PENDING,
+        }, 'message' => trim($status . ' ' . trim((string) ($reply->message ?? '')))];
     }
 
     public function getDomainDetails(Registrar_Domain $domain): Registrar_Domain

@@ -117,6 +117,12 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('servicedomain', 'manage_domains');
 
         $s = $this->_getService($data);
+        // ClientFence core patch: Sync on a tracked transfer asks the registrar where it stands (DomainSync.php).
+        if ($s->action === \ClientFence\Mod\Servicedomain\DomainSync::PENDING) {
+            \ClientFence\Mod\Servicedomain\DomainSync::checkOne($this->di, $s);
+
+            return true;
+        }
         $this->getService()->synchronizeDomain($s);
 
         return true;

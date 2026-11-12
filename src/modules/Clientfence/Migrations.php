@@ -141,7 +141,10 @@ final class Migrations
         Service::ensureTables($di, true);
     }
 
-    /** 7: tld_registrar_cost, tld.price_locked ("Keep my price") and tld_registrar.price_sync (Servicedomain/PriceSync.php). */
+    /**
+     * 7: tld_registrar_cost, tld.price_locked ("Keep my price") and tld_registrar.price_sync (Servicedomain/PriceSync.php);
+     * service_domain.sync_error and transfer_since (Servicedomain/DomainSync.php).
+     */
     private static function m7TldSync(\Pimple\Container $di): void
     {
         Service::ensureTables($di, true);
@@ -152,6 +155,9 @@ final class Migrations
         }
         if (!in_array('price_sync', $columns('tld_registrar'), true)) {
             $db->executeStatement('ALTER TABLE `tld_registrar` ADD COLUMN `price_sync` text');
+        }
+        if (!in_array('sync_error', $columns('service_domain'), true)) {
+            $db->executeStatement('ALTER TABLE `service_domain` ADD COLUMN `sync_error` text, ADD COLUMN `transfer_since` datetime DEFAULT NULL');
         }
     }
 }

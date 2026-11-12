@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
-class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     public $config = [
         'apikey' => null,
@@ -150,6 +150,20 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
 
         // ClientFence core patch: an accepted transfer may await registry approval.
         return ($result['status'] == 'PENDING') || ($result['status'] == 'SUCCESS');
+    }
+
+    /**
+     * ClientFence core patch: where an incoming transfer stands (Registrar_TransferStatus, Servicedomain/DomainSync.php).
+     * Domain/Info shows PENDING TRANSFER until the name is in the account; it names no failed state.
+     */
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $status = (string) ($this->_process('/Domain/Info', ['domain' => $domain->getName()])['domainstatus'] ?? '');
+
+        return [
+            'status' => in_array($status, ['REGISTERED', 'REGISTRAR LOCKED'], true) ? Registrar_TransferStatus::COMPLETED : Registrar_TransferStatus::PENDING,
+            'message' => $status,
+        ];
     }
 
     public function getDomainDetails(Registrar_Domain $domain)

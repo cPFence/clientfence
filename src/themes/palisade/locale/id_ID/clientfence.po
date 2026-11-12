@@ -25990,3 +25990,96 @@ msgstr "Sinkronisasi harga harian dengan %registrar% menemukan perubahan ini. Ba
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Your price"
 msgstr "Harga Anda"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr "Sebelum jatuh tempo berikutnya %date%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
+msgstr "Keduanya nonaktif sampai Anda mengaktifkannya. Keduanya memerlukan cron job."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr "Domain :domain kedaluwarsa di registrar pada :date, sebelum jatuh tempo berikutnya :due"
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr "Pemindahan domain"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr "Pemindahan domain selesai: :domain"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
+msgstr "Pemindahan domain %domain% selesai"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
+msgstr "Setiap hari sebagian domain mengambil tanggal kedaluwarsanya dari registrar, sehingga setiap domain diperiksa sekitar sebulan sekali tanpa satu proses besar. Tanggal di registrar yang lebih awal dari jatuh tempo berikutnya pesanan adalah pemberitahuan untuk Anda; tanggal pesanan tidak pernah diubah. Nonaktif: proses bulanan yang lama."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr "Sinkronisasi"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr "Sinkronkan tanggal kedaluwarsa setiap hari"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
+msgstr "Sinkronisasi dengan registrar"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
+msgstr "Terima kasih atas pesanan Anda. Pemindahan %title% ke kami telah dimulai. Biasanya butuh beberapa hari; kami akan mengirim email saat selesai."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr "Pemindahan %domain% ke kami telah selesai."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr "Pemindahan %domain% ke kami telah selesai. Sekarang Anda dapat mengelolanya di area klien Anda."
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
+msgstr "Domain ini tidak memiliki pemindahan yang dapat dicoba ulang."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr "Lacak pemindahan sampai selesai"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr "Pemindahan sedang berlangsung"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr "Pemindahan sedang berlangsung: kami akan mengirim email saat registrar menyelesaikannya."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr "Pemindahan belum selesai: tim kami sedang menanganinya."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr "Pemindahan belum selesai: lihat Pesanan > Tindakan gagal"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
+msgstr "Pemindahan %title% dimulai"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr "Dengan registrar yang melaporkannya, pemindahan tetap berlangsung sampai registrar menyelesaikannya: lalu klien dikirimi email. Pemindahan yang gagal masuk ke Pesanan > Tindakan gagal. Nonaktif: pemindahan dianggap selesai begitu registrar menerimanya."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr "Pemindahan domain Anda telah dimulai"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
+msgstr "Pemindahan domain Anda telah selesai"

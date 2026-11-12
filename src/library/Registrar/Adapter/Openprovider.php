@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     private const LIVE_URL = 'https://api.openprovider.eu/v1beta';
     private const SANDBOX_URL = 'http://api.sandbox.openprovider.nl:8480/v1beta';
@@ -110,6 +110,18 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
         ] + $this->handles($domain));
 
         return true;
+    }
+
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $status = (string) ($this->request('GET', '/domains/' . $this->domainId($domain))['status'] ?? '');
+
+        // ACT active, FAI failed; REQ (requested), SCH (scheduled) and PEN (awaiting approval) are still under way.
+        return ['status' => match ($status) {
+            'ACT' => Registrar_TransferStatus::COMPLETED,
+            'FAI' => Registrar_TransferStatus::FAILED,
+            default => Registrar_TransferStatus::PENDING,
+        }, 'message' => $status];
     }
 
     public function getDomainDetails(Registrar_Domain $domain): Registrar_Domain

@@ -137,3 +137,16 @@ test('the price list reads the one-year costs in AUD from getDomainPricing; a mi
     ], 'remaining' => []])
         ->and(array_keys($adapter->getTldPrices(['.ai'])['prices']))->toBe(['.ai']);
 });
+
+test('the transfer status reads domainInfo: an active name completed, a rejected, cancelled or timed out transfer failed, anything else pending', function (array $info, string $status, string $message): void {
+    $adapter = synergyAdapter(['domainInfo' => (object) $info]);
+
+    expect($adapter->getTransferStatus(synergyDomain('.com.au')))->toBe(['status' => $status, 'message' => $message])
+        ->and($adapter->calls[0])->toBe(['domainInfo', ['resellerID' => '1234', 'apiKey' => 'secret', 'domainName' => 'example.com.au']]);
+})->with([
+    'completed' => [['status' => 'OK', 'domain_status' => 'clientTransferProhibited'], Registrar_TransferStatus::COMPLETED, 'clientTransferProhibited'],
+    'failed' => [['status' => 'OK', 'domain_status' => 'transfer_rejected'], Registrar_TransferStatus::FAILED, 'transfer_rejected'],
+    'failed, no domain status' => [['status' => 'OK_TRANSFER_TIMEOUT', 'transfer_status' => 'Transfer timed out'], Registrar_TransferStatus::FAILED, 'Transfer timed out'],
+    'pending' => [['status' => 'OK', 'transfer_status' => 'Pending registrant approval'], Registrar_TransferStatus::PENDING, 'Pending registrant approval'],
+    'unknown' => [['status' => 'OK', 'domain_status' => 'somethingNew'], Registrar_TransferStatus::PENDING, 'somethingNew'],
+]);

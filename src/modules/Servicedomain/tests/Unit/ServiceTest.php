@@ -11,6 +11,7 @@
 declare(strict_types=1);
 
 use ClientFence\Mod\Order\Service as OrderService;
+use ClientFence\Mod\Servicedomain\DomainSync;
 use ClientFence\Mod\Servicedomain\Service;
 use ClientFence\Mod\System\Service as SystemService;
 
@@ -1661,7 +1662,9 @@ test('handles on before admin cron run event', function (): void {
     $serviceMock->shouldReceive('batchSyncExpirationDates')
         ->atLeast()->once()
         ->andReturn(true);
-    $di['mod_service'] = $di->protect(fn ($serviceName): Mockery\MockInterface => $serviceMock);
+    $systemServiceMock = Mockery::mock(SystemService::class);
+    $systemServiceMock->shouldReceive('getParamValue')->with(DomainSync::DAILY, '0')->andReturn('0');
+    $di['mod_service'] = $di->protect(fn ($serviceName): Mockery\MockInterface => $serviceName === 'system' ? $systemServiceMock : $serviceMock);
 
     $boxEventMock = Mockery::mock('ClientFence\Event');
     $boxEventMock->shouldReceive('getDi')
@@ -1716,6 +1719,8 @@ test('advances the last sync marker when a domain sync fails', function (): void
 
     $lastSync = null;
     $systemServiceMock = Mockery::mock(SystemService::class);
+    // The daily sync (DomainSync.php) is off: the monthly run below.
+    $systemServiceMock->shouldReceive('getParamValue')->with(DomainSync::DAILY, '0')->andReturn('0');
     $systemServiceMock->shouldReceive('getParamValue')
         ->twice()
         ->andReturnUsing(static function () use (&$lastSync): ?string {
@@ -1751,6 +1756,8 @@ test('advances the last sync marker when a domain sync fails', function (): void
 test('returns false when batch sync already run today', function (): void {
     $service = new Service();
     $systemServiceMock = Mockery::mock(SystemService::class);
+    // The daily sync (DomainSync.php) is off: the monthly run below.
+    $systemServiceMock->shouldReceive('getParamValue')->with(DomainSync::DAILY, '0')->andReturn('0');
     $systemServiceMock->shouldReceive('getParamValue')
         ->atLeast()->once()
         ->andReturn(date('Y-m-d H:i:s'));
@@ -2811,6 +2818,8 @@ test('handles domain sync failures without blocking other domains', function (Th
 
     $lastSync = null;
     $systemServiceMock = Mockery::mock(SystemService::class);
+    // The daily sync (DomainSync.php) is off: the monthly run below.
+    $systemServiceMock->shouldReceive('getParamValue')->with(DomainSync::DAILY, '0')->andReturn('0');
     $systemServiceMock->shouldReceive('getParamValue')
         ->times(3)
         ->andReturnUsing(static function () use (&$lastSync): ?string {

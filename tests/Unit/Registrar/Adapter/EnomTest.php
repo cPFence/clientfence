@@ -206,3 +206,16 @@ test('the price list asks for the account\'s TLDs, then the one-year wholesale c
     expect(array_keys($rest['prices']))->toBe(['.t11', '.com'])
         ->and($rest['remaining'])->toBe([]);
 });
+
+test('the transfer status is the newest transfer order\'s: 5 completed, a "Canceled" state failed, anything else pending', function (string $latest, string $status, string $message): void {
+    $older = '<TransferOrder><orderid>100</orderid><statusid>5</statusid><statusdesc>Transferred successfully</statusdesc></TransferOrder>';
+    $adapter = enomAdapter(['TP_GetDetailsByDomain' => $latest . $older]);
+
+    expect($adapter->getTransferStatus(enomDomain()))->toBe(['status' => $status, 'message' => $message])
+        ->and($GLOBALS['enom_calls'][0][1])->toMatchArray(['SLD' => 'example', 'TLD' => 'com']);
+})->with([
+    'completed' => ['<TransferOrder><orderid>200</orderid><statusid>5</statusid><statusdesc>Transferred successfully</statusdesc></TransferOrder>', Registrar_TransferStatus::COMPLETED, 'Transferred successfully'],
+    'failed' => ['<TransferOrder><orderid>200</orderid><statusid>32</statusid><statusdesc>Canceled - Invalid EPP/authorization key</statusdesc></TransferOrder>', Registrar_TransferStatus::FAILED, 'Canceled - Invalid EPP/authorization key'],
+    'pending' => ['<TransferOrder><orderid>200</orderid><statusid>14</statusid><statusdesc>Domain transfer initiated and awaiting approval</statusdesc></TransferOrder>', Registrar_TransferStatus::PENDING, 'Domain transfer initiated and awaiting approval'],
+    'unknown' => ['<TransferOrder><orderid>200</orderid><statusid>77</statusid><statusdesc>Something new</statusdesc></TransferOrder>', Registrar_TransferStatus::PENDING, 'Something new'],
+]);

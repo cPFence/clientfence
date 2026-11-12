@@ -1,5 +1,11 @@
 {# ClientFence: the domain card of the service page (CF-52): Nameservers first, Contact, Protection (lock and
    privacy) and Transfer. Dates are in the page's tiles; Sync Now and Renew Now are in mod_servicedomain_head. #}
+{# A tracked incoming transfer (Servicedomain/DomainSync.php). #}
+{% if service.transfer_status == 'pending' %}
+<div class="alert alert-info">{{ 'Transfer in progress: we will email you when the registrar completes it.'|trans }}</div>
+{% elseif service.transfer_status == 'failed' %}
+<div class="alert alert-warning">{{ 'Transfer not completed: our team is looking into it.'|trans }}</div>
+{% endif %}
 {% if order.status == 'active' %}
 <div class="card mb-4">
     <ul class="nav bf-card-tabs" role="tablist">

@@ -5302,5 +5302,81 @@
     {
         "file": "library/Registrar/Adapter/Internetbs.php",
         "done": "ClientFence core patch: the price list nests products and periods, which only its JSON reply can carry."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a tracked transfer is not sent again by a second activation (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: with tracking on, an accepted transfer waits for the registrar's result (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: where a tracked transfer stands (DomainSync.php); null when the registrar cannot tell."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: sends a failed or stuck transfer again (DomainSync::retryTransfer())."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a tracked transfer (DomainSync.php): null, pending or failed."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the daily sync's last error for this domain (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the daily domain sync and the transfer check (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: with the daily sync on, one batch of it runs instead (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the daily sync runs after the billing tasks instead (onAfterAdminCronRun())."
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "ClientFence core patch: Sync on a tracked transfer asks the registrar where it stands (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig",
+        "done": "ClientFence core patch: the daily domain sync and transfer tracking (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
+        "done": "ClientFence core patch: a registrar expiry before the order's next due date (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig",
+        "done": "ClientFence core patch: a tracked incoming transfer (Servicedomain/DomainSync.php)."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: an unchanged copy of the 1.0.45 domain activation email takes the new one (transfer started)."
+    },
+    {
+        "file": "library/Registrar/Adapter/Namecheap.php",
+        "done": "ClientFence core patch: where an incoming transfer stands (Registrar_TransferStatus, Servicedomain/DomainSync.php)."
+    },
+    {
+        "file": "library/Registrar/Adapter/Internetbs.php",
+        "done": "ClientFence core patch: where an incoming transfer stands (Registrar_TransferStatus, Servicedomain/DomainSync.php)."
+    },
+    {
+        "file": "library/Registrar/Adapter/Resellerclub.php",
+        "done": "ClientFence core patch: where an incoming transfer stands (Registrar_TransferStatus, Servicedomain/DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a sync that works clears the daily sync's last error (DomainSync.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: an expiry sync that works clears the daily sync's last error (DomainSync.php)."
     }
 ]

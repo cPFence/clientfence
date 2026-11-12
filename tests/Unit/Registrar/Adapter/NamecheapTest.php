@@ -99,3 +99,24 @@ test('the Namecheap price list reads the account price of one year plus the ICAN
         ->and(array_keys($this->adapter->getTldPrices(['.ch'])['prices']))->toBe(['.ch'])
         ->and(json_encode($this->logger->calls))->not->toContain('API RESULT');
 });
+
+test('the transfer status is the domain\'s newest transfer in the list: COMPLETED, CANCELLED failed, anything else pending', function (string $latest, string $status, string $message): void {
+    $this->httpClient->setResponseFactory(function (string $method, string $url) use ($latest): MockResponse {
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $params);
+        expect($params)->toMatchArray(['Command' => 'namecheap.domains.transfer.getList', 'SearchTerm' => 'example.com']);
+
+        return new MockResponse('<ApiResponse Status="OK" xmlns="http://api.namecheap.com/xml.response"><CommandResponse Type="namecheap.domains.transfer.getList"><TransferGetListResult>'
+            . '<Transfer ID="90" Domainname="myexample.com" StatusID="5" Status="COMPLETED" StatusDescription="Transferred and paid successfully"/>'
+            . $latest
+            . '<Transfer ID="10" Domainname="example.com" StatusID="5" Status="COMPLETED" StatusDescription="Transferred and paid successfully"/>'
+            . '</TransferGetListResult></CommandResponse></ApiResponse>');
+    });
+    $domain = (new Registrar_Domain())->setSld('example')->setTld('.com');
+
+    expect($this->adapter->getTransferStatus($domain))->toBe(['status' => $status, 'message' => $message]);
+})->with([
+    'completed' => ['<Transfer ID="20" Domainname="example.com" StatusID="5" Status="COMPLETED" StatusDescription="Transferred and paid successfully"/>', Registrar_TransferStatus::COMPLETED, 'Transferred and paid successfully'],
+    'failed' => ['<Transfer ID="20" Domainname="example.com" StatusID="32" Status="CANCELLED" StatusDescription="Canceled - Invalid EPP/authorization key"/>', Registrar_TransferStatus::FAILED, 'Canceled - Invalid EPP/authorization key'],
+    'pending' => ['<Transfer ID="20" Domainname="example.com" StatusID="-1" Status="INPROGRESS" StatusDescription="Queued for submission"/>', Registrar_TransferStatus::PENDING, 'Queued for submission'],
+    'unknown' => ['<Transfer ID="20" Domainname="example.com" StatusID="99" Status="SOMETHINGNEW" StatusDescription="Something new"/>', Registrar_TransferStatus::PENDING, 'Something new'],
+]);

@@ -575,6 +575,7 @@ class UpdatePatcher implements InjectionAwareInterface
             124 => 'patch124',
             125 => 'patch125',
             126 => 'patch126',
+            127 => 'patch127',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2713,6 +2714,14 @@ class UpdatePatcher implements InjectionAwareInterface
         // ClientFence core patch: an unchanged copy of the 1.0.42-1.0.43 hosting activation email takes the new one (the website's IP).
         $this->restoreLegacyDefaultEmailTemplates([
             'mod_servicehosting_activated' => ['3847a655efb596abb88403311f84fcc01141226fcf51e16c03acb10dd35c5383', '6f7da136091eaa1a6b59838cbaedcf694be4016b22acf6fba56b27b1676594a9'],
+        ]);
+    }
+
+    private function patch127(): void
+    {
+        // ClientFence core patch: an unchanged copy of the 1.0.45 domain activation email takes the new one (transfer started).
+        $this->restoreLegacyDefaultEmailTemplates([
+            'mod_servicedomain_activated' => ['d126c5677d78ff411aff745f05b1933ba13578e61c1a2af91fec708af7e6a54c', '94a6b068271de1b56207ff4bc63365ccd3dcf690b34a5c42e50e3adf26b2cea1'],
         ]);
     }
 

@@ -23928,3 +23928,96 @@ msgstr "%registrar% bilan kunlik narxlar sinxronlashi bu o'zgarishlarni topdi. â
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Your price"
 msgstr "Sizning narxingiz"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr "Keyingi to'lov muddatidan oldin: %date%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
+msgstr "Ikkalasi ham siz yoqmaguningizcha o'chiq. Ularga cron vazifasi kerak."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr ":domain domeni registratorda :date da tugaydi, keyingi to'lov muddati :due dan oldin"
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr "Domenni o'tkazish"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr "Domenni o'tkazish yakunlandi: :domain"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
+msgstr "%domain% domenini o'tkazish yakunlandi"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
+msgstr "Har kuni domenlarning bir qismi tugash sanasini registratordan oladi, shuning uchun har bir domen bitta katta ishga tushirishsiz taxminan oyda bir marta tekshiriladi. Registratordagi sana buyurtmaning keyingi to'lov muddatidan oldin bo'lsa, bu siz uchun bildirishnoma; buyurtma sanasi hech qachon o'zgartirilmaydi. O'chiq: eski oylik ishga tushirish."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr "Sinxronlash"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr "Tugash sanalarini har kuni sinxronlash"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
+msgstr "Registratorlar bilan sinxronlash"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
+msgstr "Buyurtmangiz uchun rahmat. %title% ni biz tomonga o'tkazish boshlandi. Odatda bir necha kun davom etadi; yakunlanganda sizga email yuboramiz."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr "%domain% ni biz tomonga o'tkazish yakunlandi."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr "%domain% ni biz tomonga o'tkazish yakunlandi. Endi uni mijoz hududingizda boshqarishingiz mumkin."
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
+msgstr "Bu domenda qayta urinib ko'riladigan o'tkazish yo'q."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr "O'tkazishlarni yakunlanguncha kuzatish"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr "O'tkazish jarayonda"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr "O'tkazish jarayonda: registrator yakunlaganda sizga email yuboramiz."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr "O'tkazish yakunlanmadi: jamoamiz ko'rib chiqmoqda."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr "O'tkazish yakunlanmadi: Buyurtmalar > Muvaffaqiyatsiz amallar bo'limiga qarang"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
+msgstr "%title% ni o'tkazish boshlandi"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr "Holatni bildiradigan registratorda o'tkazish registrator yakunlaguncha jarayonda qoladi: shundan so'ng mijozga email yuboriladi. Muvaffaqiyatsiz o'tkazish Buyurtmalar > Muvaffaqiyatsiz amallar bo'limiga tushadi. O'chiq: o'tkazish registrator qabul qilishi bilan bajarilgan hisoblanadi."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr "Domeningizni o'tkazish boshlandi"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
+msgstr "Domeningizni o'tkazish yakunlandi"

@@ -338,6 +338,11 @@ class Service implements \ClientFence\InjectionAwareInterface
             throw new \ClientFence\Exception('Could not activate order. Service was not created');
         }
 
+        // ClientFence core patch: a tracked transfer is not sent again by a second activation (DomainSync.php).
+        if (in_array($model->action, [DomainSync::PENDING, DomainSync::FAILED], true)) {
+            return $model;
+        }
+
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
         // ClientFence core patch: rejected registrar requests must remain retryable.
@@ -347,6 +352,16 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         if ($model->action == 'transfer' && $adapter->transferDomain($domain) === false) {
             throw new \Registrar_Exception('The registrar did not accept the domain request.');
+        }
+
+        // ClientFence core patch: with tracking on, an accepted transfer waits for the registrar's result (DomainSync.php).
+        if ($model->action == 'transfer' && $adapter instanceof \Registrar_TransferStatus && DomainSync::on($this->di, DomainSync::TRACK)) {
+            $model->action = DomainSync::PENDING;
+            $model->transfer_since = date('Y-m-d H:i:s');
+            $model->updated_at = date('Y-m-d H:i:s');
+            $this->di['db']->store($model);
+
+            return $model;
         }
 
         // reset action
@@ -508,9 +523,32 @@ class Service implements \ClientFence\InjectionAwareInterface
             $model->registered_at = $this->formatRegistrarTimestamp($whois->getRegistrationTime());
         }
         $model->synced_at = date('Y-m-d H:i:s');
+        // ClientFence core patch: a sync that works clears the daily sync's last error (DomainSync.php).
+        $model->sync_error = null;
         $model->updated_at = date('Y-m-d H:i:s');
 
         $this->di['db']->store($model);
+    }
+
+    /**
+     * ClientFence core patch: where a tracked transfer stands (DomainSync.php); null when the registrar cannot tell.
+     *
+     * @return array{status: string, message: string}|null
+     */
+    public function transferStatus(\Model_ServiceDomain $model): ?array
+    {
+        [$domain, $adapter] = $this->_getD($model);
+
+        return $adapter instanceof \Registrar_TransferStatus ? $adapter->getTransferStatus($domain) : null;
+    }
+
+    /** ClientFence core patch: sends a failed or stuck transfer again (DomainSync::retryTransfer()). */
+    public function transferAgain(\Model_ServiceDomain $model): void
+    {
+        [$domain, $adapter] = $this->_getD($model);
+        if ($adapter->transferDomain($domain) === false) {
+            throw new \Registrar_Exception('The registrar did not accept the domain request.');
+        }
     }
 
     public function synchronizeDomain(\Model_ServiceDomain $model): void
@@ -739,6 +777,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         if ($expiresAt !== null) {
             $model->expires_at = $expiresAt;
         }
+        // ClientFence core patch: an expiry sync that works clears the daily sync's last error (DomainSync.php).
+        $model->sync_error = null;
 
         $this->di['db']->store($model);
     }
@@ -759,6 +799,12 @@ class Service implements \ClientFence\InjectionAwareInterface
             'registered_at' => $model->registered_at,
             'expires_at' => $model->expires_at,
             'synced_at' => $model->synced_at,
+            // ClientFence core patch: a tracked transfer (DomainSync.php): null, pending or failed.
+            'transfer_status' => match ($model->action) {
+                DomainSync::PENDING => 'pending',
+                DomainSync::FAILED => 'failed',
+                default => null,
+            },
             'contact' => [
                 'first_name' => $model->contact_first_name,
                 'last_name' => $model->contact_last_name,
@@ -777,6 +823,8 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         if ($identity instanceof \Model_Admin) {
             $data['transfer_code'] = $model->transfer_code;
+            // ClientFence core patch: the daily sync's last error for this domain (DomainSync.php).
+            $data['sync_error'] = $model->sync_error;
 
             $tldRegistrar = $this->di['db']->load('TldRegistrar', $model->tld_registrar_id);
             $data['registrar'] = $tldRegistrar instanceof \Model_TldRegistrar ? $tldRegistrar->name : null;
@@ -905,14 +953,22 @@ class Service implements \ClientFence\InjectionAwareInterface
         } catch (\Throwable $e) {
             $di['logger']->error('The TLD price sync failed: %s', $e->getMessage());
         }
+        // ClientFence core patch: the daily domain sync and the transfer check (DomainSync.php).
+        try {
+            DomainSync::runIfDue($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('The domain sync failed: %s', $e->getMessage());
+        }
     }
 
     public static function onBeforeAdminCronRun(\ClientFence\Event $event): bool
     {
         try {
             $di = $event->getDi();
-            $domainService = $di['mod_service']('servicedomain');
-            $domainService->batchSyncExpirationDates();
+            // ClientFence core patch: the daily sync runs after the billing tasks instead (onAfterAdminCronRun()).
+            if (!DomainSync::on($di, DomainSync::DAILY)) {
+                $di['mod_service']('servicedomain')->batchSyncExpirationDates();
+            }
         } catch (\Throwable $e) {
             error_log($e->getMessage());
         }
@@ -922,6 +978,13 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function batchSyncExpirationDates(): bool
     {
+        // ClientFence core patch: with the daily sync on, one batch of it runs instead (DomainSync.php).
+        if (DomainSync::on($this->di, DomainSync::DAILY)) {
+            DomainSync::batch($this->di, 45);
+
+            return true;
+        }
+
         $key = 'servicedomain_last_sync';
 
         $ss = $this->di['mod_service']('system');

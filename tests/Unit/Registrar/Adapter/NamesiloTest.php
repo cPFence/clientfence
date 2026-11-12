@@ -152,3 +152,16 @@ test('the price list reads each TLD of getPrices in USD; a missing action is nul
     ], 'remaining' => []])
         ->and(array_keys($adapter->getTldPrices(['.co.uk', '.net'])['prices']))->toBe(['.co.uk']);
 });
+
+test('the transfer status maps NameSilo\'s status text: completed, cancelled or rejected failed, anything else pending', function (string $text, string $status): void {
+    $adapter = namesiloAdapter(['checkTransferStatus' => '<date>2026-01-01 12:30:59</date><status>' . $text . '</status><message>Details.</message>']);
+
+    expect($adapter->getTransferStatus(namesiloDomain('.com')))->toBe(['status' => $status, 'message' => $text . ' Details.'])
+        ->and($GLOBALS['namesilo_calls'][0][1])->toMatchArray(['domain' => 'example.com']);
+})->with([
+    'completed' => ['Transfer Completed', Registrar_TransferStatus::COMPLETED],
+    'cancelled' => ['Transfer Cancelled', Registrar_TransferStatus::FAILED],
+    'rejected' => ['Transfer Rejected', Registrar_TransferStatus::FAILED],
+    'pending' => ['Pending at Registry', Registrar_TransferStatus::PENDING],
+    'unknown' => ['Something New', Registrar_TransferStatus::PENDING],
+]);

@@ -3686,6 +3686,10 @@ msgstr ""
 msgid "Bcc Email"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Being imported"
 msgstr ""
@@ -3856,6 +3860,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Blocked: spam list"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -7447,6 +7455,10 @@ msgid "Domain"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
 msgid "Domain :domain expires on :date"
 msgstr ""
 
@@ -7718,6 +7730,10 @@ msgstr ""
 msgid "Domain synchronized with registrar"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig
 msgid "Domain transfer code"
 msgstr ""
@@ -7726,8 +7742,16 @@ msgstr ""
 msgid "Domain transfer code is: "
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr ""
+
 #: src/modules/Servicehosting/Service.php
 msgid "Domain transfer is not available for this product."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/themes/palisade/html/partials/i18n.html.twig
@@ -7904,6 +7928,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php
 msgid "EU country of citizenship of the registrant"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
 msgstr ""
 
 #: src/modules/Support/MailImport.php
@@ -9170,7 +9198,7 @@ msgstr ""
 msgid "Expiring soon"
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_post.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+#: src/modules/News/templates/admin/mod_news_post.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
 msgid "Expiry date"
 msgstr ""
 
@@ -13162,7 +13190,7 @@ msgstr ""
 msgid "Manage custom services"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_unsuspended.html.twig
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_renewed.html.twig src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig …
 msgid "Manage domain"
 msgstr ""
 
@@ -22230,8 +22258,20 @@ msgstr ""
 msgid "Switched off by staff"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_head.html.twig
 msgid "Sync Now"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
@@ -22652,6 +22692,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
 msgid "Thank you for your interest. Please find our quote for %subject% below; the PDF is attached to this email."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
 msgstr ""
 
 #: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
@@ -24031,6 +24075,14 @@ msgstr ""
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr ""
+
 #: src/library/ClientFence/Update.php
 msgid "The update archive contains an unsafe file path and cannot be extracted."
 msgstr ""
@@ -24357,6 +24409,10 @@ msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "This database is updated daily and provided free of charge by the FakeFilter project under the BSD 3-Clause License."
+msgstr ""
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
 msgstr ""
 
 #: src/modules/Servicehosting/Service.php
@@ -25351,6 +25407,10 @@ msgstr ""
 msgid "Track the client’s support tickets and open a new ticket without leaving the client profile."
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr ""
+
 #: src/modules/Activity/manifest.json
 msgid "Tracks and displays system activity logs for staff, clients, orders, invoices, and other administrative events."
 msgstr ""
@@ -25455,7 +25515,7 @@ msgstr ""
 msgid "Transactions Received"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig …
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig …
 msgid "Transfer"
 msgstr ""
 
@@ -25497,6 +25557,26 @@ msgstr ""
 
 #: src/themes/palisade/html/partials/pay_methods.html.twig
 msgid "Transfer in :currency. Added after we confirm."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
@@ -27499,6 +27579,10 @@ msgstr ""
 msgid "With Selected:"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr ""
+
 #: src/modules/Serviceapikey/Service.php
 msgid "With a server limit, the list holds single IP addresses, not ranges: :ip"
 msgstr ""
@@ -28269,6 +28353,14 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
 msgid "Your domain is active"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
 msgstr ""
 
 #: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig

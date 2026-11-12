@@ -25930,3 +25930,96 @@ msgstr "Ο ημερήσιος συγχρονισμός τιμών με τον κ
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Your price"
 msgstr "Η τιμή σας"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr "Πριν από την επόμενη ημερομηνία οφειλής %date%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
+msgstr "Και τα δύο είναι ανενεργά μέχρι να τα ενεργοποιήσετε. Χρειάζονται την εργασία cron."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr "Το όνομα χώρου :domain λήγει στον καταχωρητή στις :date, πριν από την επόμενη ημερομηνία οφειλής του :due"
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr "Μεταφορά ονόματος χώρου"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr "Η μεταφορά ονόματος χώρου ολοκληρώθηκε: :domain"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
+msgstr "Η μεταφορά του ονόματος χώρου %domain% ολοκληρώθηκε"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
+msgstr "Κάθε μέρα ένα μέρος των ονομάτων χώρου παίρνει την ημερομηνία λήξης του από τον καταχωρητή, έτσι ώστε κάθε όνομα χώρου να ελέγχεται περίπου μία φορά τον μήνα χωρίς μία μεγάλη εκτέλεση. Μια ημερομηνία στον καταχωρητή πριν από την επόμενη ημερομηνία οφειλής της παραγγελίας είναι ειδοποίηση για εσάς· η ημερομηνία της παραγγελίας δεν αλλάζει ποτέ. Ανενεργό: η παλιά μηνιαία εκτέλεση."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr "Συγχρονισμός"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr "Συγχρονισμός ημερομηνιών λήξης κάθε μέρα"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
+msgstr "Συγχρονισμός με καταχωρητές"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
+msgstr "Σας ευχαριστούμε για την παραγγελία σας. Η μεταφορά του %title% σε εμάς ξεκίνησε. Συνήθως διαρκεί μερικές ημέρες· θα σας στείλουμε email όταν ολοκληρωθεί."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr "Η μεταφορά του %domain% σε εμάς ολοκληρώθηκε."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr "Η μεταφορά του %domain% σε εμάς ολοκληρώθηκε. Μπορείτε πλέον να το διαχειριστείτε στην περιοχή πελάτη σας."
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
+msgstr "Αυτό το όνομα χώρου δεν έχει μεταφορά για επανάληψη."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr "Παρακολούθηση μεταφορών μέχρι την ολοκλήρωσή τους"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr "Μεταφορά σε εξέλιξη"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr "Μεταφορά σε εξέλιξη: θα σας στείλουμε email όταν την ολοκληρώσει ο καταχωρητής."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr "Η μεταφορά δεν ολοκληρώθηκε: η ομάδα μας το διερευνά."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr "Η μεταφορά δεν ολοκληρώθηκε: δείτε Παραγγελίες > Αποτυχημένες ενέργειες"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
+msgstr "Η μεταφορά του %title% ξεκίνησε"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr "Με καταχωρητή που το αναφέρει, μια μεταφορά παραμένει σε εξέλιξη μέχρι να την ολοκληρώσει ο καταχωρητής· τότε ο πελάτης λαμβάνει email. Μια αποτυχημένη μεταφορά πηγαίνει στο Παραγγελίες > Αποτυχημένες ενέργειες. Ανενεργό: μια μεταφορά θεωρείται ολοκληρωμένη μόλις την αποδεχτεί ο καταχωρητής."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr "Η μεταφορά του ονόματος χώρου σας ξεκίνησε"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
+msgstr "Η μεταφορά του ονόματος χώρου σας ολοκληρώθηκε"

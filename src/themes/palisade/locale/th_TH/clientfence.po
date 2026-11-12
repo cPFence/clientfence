@@ -23656,3 +23656,96 @@ msgstr "การซิงค์ราคารายวันกับ %registr
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Your price"
 msgstr "ราคาของคุณ"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr "ก่อนวันครบกำหนดถัดไป %date%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
+msgstr "ทั้งสองอย่างปิดอยู่จนกว่าคุณจะเปิด ต้องใช้ cron job"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr "โดเมน :domain หมดอายุที่ผู้รับจดทะเบียนในวันที่ :date ก่อนวันครบกำหนดถัดไป :due"
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr "การโอนย้ายโดเมน"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr "การโอนย้ายโดเมนเสร็จสมบูรณ์: :domain"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
+msgstr "การโอนย้ายโดเมน %domain% เสร็จสมบูรณ์"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
+msgstr "ทุกวัน โดเมนส่วนหนึ่งจะรับวันหมดอายุจากผู้รับจดทะเบียน ทำให้ทุกโดเมนถูกตรวจสอบประมาณเดือนละครั้งโดยไม่ต้องรันครั้งใหญ่ครั้งเดียว วันที่ที่ผู้รับจดทะเบียนซึ่งอยู่ก่อนวันครบกำหนดถัดไปของคำสั่งซื้อจะเป็นการแจ้งเตือนสำหรับคุณ วันที่ของคำสั่งซื้อจะไม่ถูกเปลี่ยนเลย ปิด: การรันรายเดือนแบบเดิม"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr "การซิงค์"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr "ซิงค์วันหมดอายุทุกวัน"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
+msgstr "ซิงค์กับผู้รับจดทะเบียน"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
+msgstr "ขอบคุณสำหรับคำสั่งซื้อ การโอนย้าย %title% มายังเราเริ่มแล้ว โดยปกติใช้เวลาไม่กี่วัน เราจะส่งอีเมลถึงคุณเมื่อเสร็จสมบูรณ์"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr "การโอนย้าย %domain% มายังเราเสร็จสมบูรณ์แล้ว"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr "การโอนย้าย %domain% มายังเราเสร็จสมบูรณ์แล้ว ตอนนี้คุณสามารถจัดการได้ในพื้นที่ลูกค้าของคุณ"
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
+msgstr "โดเมนนี้ไม่มีการโอนย้ายให้ลองใหม่"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr "ติดตามการโอนย้ายจนกว่าจะเสร็จสมบูรณ์"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr "กำลังโอนย้าย"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr "กำลังโอนย้าย: เราจะส่งอีเมลถึงคุณเมื่อผู้รับจดทะเบียนดำเนินการเสร็จ"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr "การโอนย้ายยังไม่เสร็จสมบูรณ์: ทีมของเรากำลังตรวจสอบ"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr "การโอนย้ายยังไม่เสร็จสมบูรณ์: ดูที่ คำสั่งซื้อ > การดำเนินการที่ล้มเหลว"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
+msgstr "เริ่มการโอนย้าย %title% แล้ว"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr "กับผู้รับจดทะเบียนที่รายงานสถานะ การโอนย้ายจะคงสถานะกำลังดำเนินการจนกว่าผู้รับจดทะเบียนจะดำเนินการเสร็จ จากนั้นลูกค้าจะได้รับอีเมล การโอนย้ายที่ล้มเหลวจะไปที่ คำสั่งซื้อ > การดำเนินการที่ล้มเหลว ปิด: การโอนย้ายนับว่าเสร็จเมื่อผู้รับจดทะเบียนยอมรับ"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr "การโอนย้ายโดเมนของคุณเริ่มแล้ว"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
+msgstr "การโอนย้ายโดเมนของคุณเสร็จสมบูรณ์แล้ว"

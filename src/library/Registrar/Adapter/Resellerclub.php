@@ -17,7 +17,7 @@ use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 // ClientFence core patch: the reseller cost price list (Registrar_TldPrices, Servicedomain/PriceSync.php).
-class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     public $config = [
         'userid' => null,
@@ -207,6 +207,20 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
         ];
 
         return $this->_makeRequest('domains/orderid', $required_params);
+    }
+
+    // ClientFence core patch: where an incoming transfer stands (Registrar_TransferStatus, Servicedomain/DomainSync.php).
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $data = $this->_makeRequest('domains/details', ['order-id' => $this->_getDomainOrderId($domain), 'options' => 'All']);
+        $message = (string) ($data['actionstatusdesc'] ?? '');
+
+        return ['status' => match (true) {
+            ($data['currentstatus'] ?? '') === 'Active' => Registrar_TransferStatus::COMPLETED,
+            // A deleted (later archived) order can no longer complete.
+            in_array($data['currentstatus'] ?? '', ['Deleted', 'Archived'], true), ($data['actionstatus'] ?? '') === 'Failed' => Registrar_TransferStatus::FAILED,
+            default => Registrar_TransferStatus::PENDING,
+        }, 'message' => $message];
     }
 
     public function getDomainDetails(Registrar_Domain $d)

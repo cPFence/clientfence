@@ -5,7 +5,7 @@ use GeoIp2\Model\Domain;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     public $config = [
         'api-user-id' => null,
@@ -299,6 +299,34 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         }
 
         return false;
+    }
+
+    /**
+     * ClientFence core patch: where an incoming transfer stands (Registrar_TransferStatus, Servicedomain/DomainSync.php).
+     * transfer.getStatus needs the transfer ID, which is not kept: the domain's newest transfer in the list is used.
+     */
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $result = $this->_makeRequest([
+            'Command' => 'namecheap.domains.transfer.getList',
+            'ListType' => 'ALL',
+            'SearchTerm' => $domain->getName(),
+            'PageSize' => 100,
+            'SortBy' => 'TRANSFERDATE_DESC',
+        ]);
+        $latest = null;
+        foreach ($result->CommandResponse->TransferGetListResult->Transfer ?? [] as $transfer) {
+            // The search term also matches longer names.
+            if (strcasecmp((string) $transfer['Domainname'], $domain->getName()) === 0 && ($latest === null || (int) $transfer['ID'] > (int) $latest['ID'])) {
+                $latest = $transfer;
+            }
+        }
+
+        return ['status' => match (strtoupper((string) ($latest['Status'] ?? ''))) {
+            'COMPLETED' => Registrar_TransferStatus::COMPLETED,
+            'CANCELLED', 'CANCELED' => Registrar_TransferStatus::FAILED,
+            default => Registrar_TransferStatus::PENDING,
+        }, 'message' => (string) ($latest['StatusDescription'] ?? '')];
     }
 
     /**

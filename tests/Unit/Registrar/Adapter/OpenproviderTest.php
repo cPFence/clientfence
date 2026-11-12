@@ -187,3 +187,16 @@ test('the price list reads the reseller-currency prices of every page of active 
         ->and(openproviderCall('GET /tlds')[1])->toMatchArray(['status' => 'ACT', 'with_price' => 'true', 'limit' => '1000'])
         ->and(array_keys($adapter->getTldPrices(['.ch'])['prices']))->toBe(['.ch']);
 });
+
+test('the transfer status reads the domain\'s status: ACT completed, FAI failed, REQ, SCH, PEN or anything else pending', function (string $code, string $status): void {
+    $adapter = openproviderAdapter(['GET /domains/42' => ['id' => 42, 'status' => $code]]);
+
+    expect($adapter->getTransferStatus(openproviderDomain()))->toBe(['status' => $status, 'message' => $code])
+        ->and(openproviderCall('GET /domains')[1])->toMatchArray(['full_name' => 'example.com']);
+})->with([
+    'completed' => ['ACT', Registrar_TransferStatus::COMPLETED],
+    'failed' => ['FAI', Registrar_TransferStatus::FAILED],
+    'requested' => ['REQ', Registrar_TransferStatus::PENDING],
+    'awaiting approval' => ['PEN', Registrar_TransferStatus::PENDING],
+    'unknown' => ['XYZ', Registrar_TransferStatus::PENDING],
+]);

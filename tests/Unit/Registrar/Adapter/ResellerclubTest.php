@@ -470,3 +470,22 @@ test('the price list maps product keys to TLDs and reads the one-year reseller c
         ->and(array_keys($adapter->getTldPrices(['.in'])['prices']))->toBe(['.in'])
         ->and(json_encode($log->calls))->not->toContain('API RESULT');
 });
+
+test('the transfer status reads the order: Active completed, a deleted order or failed action failed, anything else pending', function (array $details, string $status): void {
+    $urls = [];
+    $httpClient = new MockHttpClient(function (string $method, string $url) use (&$urls, $details): MockResponse {
+        $urls[] = $url;
+
+        return new MockResponse(str_contains($url, 'domains/orderid') ? '98765' : (string) json_encode($details + ['orderid' => '98765']));
+    });
+
+    expect(createResellerclubAdapter($httpClient)->getTransferStatus(createResellerclubDomain()))
+        ->toBe(['status' => $status, 'message' => $details['actionstatusdesc'] ?? ''])
+        ->and($urls[1])->toContain('domains/details.json')->toContain('order-id=98765');
+})->with([
+    'completed' => [['currentstatus' => 'Active'], Registrar_TransferStatus::COMPLETED],
+    'deleted' => [['currentstatus' => 'Deleted', 'actiontype' => 'AddTransferDomain', 'actionstatusdesc' => 'Transfer cancelled'], Registrar_TransferStatus::FAILED],
+    'failed action' => [['currentstatus' => 'InActive', 'actiontype' => 'AddTransferDomain', 'actionstatus' => 'Failed', 'actionstatusdesc' => 'Transfer rejected by the losing registrar'], Registrar_TransferStatus::FAILED],
+    'pending' => [['currentstatus' => 'InActive', 'actiontype' => 'AddTransferDomain', 'actionstatus' => 'RFASent', 'actionstatusdesc' => 'Transfer waiting for Admin Contact Approval'], Registrar_TransferStatus::PENDING],
+    'unknown' => [['currentstatus' => 'Something new'], Registrar_TransferStatus::PENDING],
+]);

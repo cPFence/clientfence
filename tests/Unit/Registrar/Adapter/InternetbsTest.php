@@ -146,3 +146,21 @@ test('Internetbs turns a failed JSON reply into a registrar error', function ():
 
     expect(fn () => $adapter->getTldPrices())->toThrow(Registrar_Exception::class, 'Invalid API key');
 });
+
+test('the transfer status reads Domain/Info: a registered name completed, PENDING TRANSFER or anything else pending', function (string $domainStatus, string $status): void {
+    $httpClient = new MockHttpClient(function (string $method, string $url, array $options) use ($domainStatus): MockResponse {
+        parse_str($options['body'], $params);
+        expect($url)->toEndWith('/Domain/Info')
+            ->and($params)->toMatchArray(['domain' => 'example.com']);
+
+        return new MockResponse("transactid=abc\nstatus=SUCCESS\ndomain=example.com\ndomainstatus=" . $domainStatus);
+    });
+    $domain = (new Registrar_Domain())->setSld('example')->setTld('.com');
+
+    expect(createInternetbsAdapter($httpClient)->getTransferStatus($domain))->toBe(['status' => $status, 'message' => $domainStatus]);
+})->with([
+    'completed' => ['REGISTERED', Registrar_TransferStatus::COMPLETED],
+    'completed and locked' => ['REGISTRAR LOCKED', Registrar_TransferStatus::COMPLETED],
+    'pending' => ['PENDING TRANSFER', Registrar_TransferStatus::PENDING],
+    'unknown' => ['SOMETHING NEW', Registrar_TransferStatus::PENDING],
+]);

@@ -15,7 +15,7 @@ use ClientFence\Mod\Invoice\EuVat;
 use Symfony\Component\Intl\Countries;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     private const LIVE_URL = 'https://api.domrobot.com/jsonrpc/';
     private const OTE_URL = 'https://api.ote.domrobot.com/jsonrpc/';
@@ -114,6 +114,22 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
             + ['ns' => $this->nameservers($domain), 'renewalMode' => $this->renewalMode($domain)] + $this->handles($domain) + $this->extData($domain));
 
         return true;
+    }
+
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        try {
+            $status = (string) ($this->request('domain.info', ['domain' => $domain->getName()])['status'] ?? '');
+        } catch (Registrar_Exception $e) {
+            // 2303: the domain is no longer in the account, so the transfer ended without it (as INWX's WHMCS module reads it).
+            if ($e->getCode() === 2303) {
+                return ['status' => Registrar_TransferStatus::FAILED, 'message' => $e->getMessage()];
+            }
+
+            throw $e;
+        }
+
+        return ['status' => $status === 'OK' ? Registrar_TransferStatus::COMPLETED : Registrar_TransferStatus::PENDING, 'message' => $status];
     }
 
     public function getDomainDetails(Registrar_Domain $domain): Registrar_Domain
@@ -265,7 +281,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
             $reason = trim(($reply['msg'] ?? '') . (isset($reply['reason']) ? ': ' . $reply['reason'] : ''));
             $this->getLog()->err(sprintf('INWX %s refused: %s %s', $method, $reply['code'], $reason));
 
-            throw new Registrar_Exception(':registrar refused the request: :error', [':registrar' => 'INWX', ':error' => $reason !== '' ? $reason : (string) $reply['code']]);
+            throw new Registrar_Exception(':registrar refused the request: :error', [':registrar' => 'INWX', ':error' => $reason !== '' ? $reason : (string) $reply['code']], (int) $reply['code']);
         }
         if ($method === 'account.login' && $this->session === null) {
             throw new Registrar_Exception('INWX returned an unreadable response for :command', [':command' => $method]);

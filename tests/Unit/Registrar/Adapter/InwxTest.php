@@ -173,3 +173,18 @@ test('the price list reads the yearly prices without VAT from domain.getPrices; 
         ->and(inwxCall('domain.getPrices')[1])->toBe(['vat' => false])
         ->and(array_keys($adapter->getTldPrices(['.de'])['prices']))->toBe(['.de']);
 });
+
+test('the transfer status reads domain.info: OK completed, a domain no longer there (2303) failed, a transfer state pending', function (array $reply, string $status, string $message): void {
+    expect(inwxAdapter(['domain.info' => $reply])->getTransferStatus(inwxDomain()))->toBe(['status' => $status, 'message' => $message])
+        ->and(inwxCall('domain.info')[1])->toBe(['domain' => 'example.com']);
+})->with([
+    'completed' => [['status' => 'OK'], Registrar_TransferStatus::COMPLETED, 'OK'],
+    'failed' => [['code' => 2303, 'msg' => 'Object does not exist'], Registrar_TransferStatus::FAILED, 'INWX refused the request: Object does not exist'],
+    'pending' => [['status' => 'TRANSFER REQUESTED'], Registrar_TransferStatus::PENDING, 'TRANSFER REQUESTED'],
+    'unknown' => [['status' => 'SOMETHING NEW'], Registrar_TransferStatus::PENDING, 'SOMETHING NEW'],
+]);
+
+test('a refused transfer status request other than 2303 is a registrar error, checked again later', function (): void {
+    expect(fn () => inwxAdapter(['domain.info' => ['code' => 2400, 'msg' => 'Command failed']])->getTransferStatus(inwxDomain()))
+        ->toThrow(Registrar_Exception::class, 'Command failed');
+});

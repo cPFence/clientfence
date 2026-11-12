@@ -25278,3 +25278,96 @@ msgstr "La synchronisation quotidienne des prix avec %registrar% a trouvé ces c
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Your price"
 msgstr "Votre prix"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr "Avant la prochaine échéance du %date%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
+msgstr "Les deux sont désactivés tant que vous ne les activez pas. Ils nécessitent la tâche cron."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr "Le domaine :domain expire chez le bureau d’enregistrement le :date, avant sa prochaine échéance du :due"
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr "Transfert de domaine"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr "Transfert de domaine terminé : :domain"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
+msgstr "Transfert du domaine %domain% terminé"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
+msgstr "Chaque jour, une partie des domaines reçoit sa date d’expiration du bureau d’enregistrement ; chaque domaine est ainsi vérifié environ une fois par mois, sans un gros traitement. Une date chez le bureau d’enregistrement antérieure à la prochaine échéance de la commande vous est signalée par une notification ; la date de la commande n’est jamais modifiée. Désactivé : l’ancien traitement mensuel."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr "Synchronisation"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr "Synchroniser les dates d’expiration chaque jour"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
+msgstr "Synchronisation avec les bureaux d’enregistrement"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
+msgstr "Merci pour votre commande. Le transfert de %title% vers nous a commencé. Il prend généralement quelques jours ; nous vous enverrons un e-mail lorsqu’il sera terminé."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr "Le transfert de %domain% vers nous est terminé."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr "Le transfert de %domain% vers nous est terminé. Vous pouvez maintenant le gérer dans votre espace client."
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
+msgstr "Ce domaine n’a aucun transfert à relancer."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr "Suivre les transferts jusqu’à leur fin"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr "Transfert en cours"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr "Transfert en cours : nous vous enverrons un e-mail lorsque le bureau d’enregistrement l’aura terminé."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr "Transfert non terminé : notre équipe s’en occupe."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr "Transfert non terminé : voir Commandes > Actions en échec"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
+msgstr "Transfert de %title% commencé"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr "Avec un bureau d’enregistrement qui le signale, un transfert reste en cours jusqu’à ce que le bureau d’enregistrement le termine : le client reçoit alors un e-mail. Un transfert échoué va dans Commandes > Actions en échec. Désactivé : un transfert est considéré comme terminé dès que le bureau d’enregistrement l’accepte."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr "Votre transfert de domaine a commencé"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
+msgstr "Votre transfert de domaine est terminé"

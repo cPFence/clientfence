@@ -9,7 +9,7 @@ declare(strict_types=1);
  * IP addresses allowed to call it. .au names ask for the registry's eligibility details on the order form
  * (getDomainFields()). Synergy Wholesale has no test system, so test mode refuses every call.
  */
-class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     private const URL = 'https://api.synergywholesale.com/?wsdl';
 
@@ -148,6 +148,20 @@ class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract imple
             + $this->contact($domain->getContactRegistrar(), ''));
 
         return true;
+    }
+
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $info = $this->request('domainInfo', ['domainName' => $domain->getName()]);
+        $domainStatus = strtolower((string) ($info->domain_status ?? ''));
+
+        // The states Synergy Wholesale's own WHMCS module reads as a finished or an ended transfer.
+        return ['status' => match (true) {
+            in_array($domainStatus, ['ok', 'clienttransferprohibited', 'clienthold', 'expired', 'inactive'], true) => Registrar_TransferStatus::COMPLETED,
+            in_array($domainStatus, ['transfer_rejected', 'transfer_cancelled', 'transfer_rejected_registry', 'transfer_timeout'], true),
+            in_array((string) ($info->status ?? ''), ['OK_TRANSFER_TIMEOUT', 'OK_TRANSFER_REJECTED', 'OK_TRANSFER_CANCELLED'], true) => Registrar_TransferStatus::FAILED,
+            default => Registrar_TransferStatus::PENDING,
+        }, 'message' => (string) ($info->transfer_status ?? $info->domain_status ?? '')];
     }
 
     public function getDomainDetails(Registrar_Domain $domain): Registrar_Domain

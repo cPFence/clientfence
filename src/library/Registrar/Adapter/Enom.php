@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Registrar_TldPrices
+class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     /** TLDs priced per getTldPrices() call: Enom prices one TLD and action per request. */
     private const PRICE_SLICE = 5;
@@ -115,6 +115,24 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
         $this->getLog()->info(sprintf('Enom transfer order %s for %s: %s', $reply->transferorder->transferorderid ?? '', $domain->getName(), $reply->transferorder->statusdesc ?? ''));
 
         return true;
+    }
+
+    public function getTransferStatus(Registrar_Domain $domain): array
+    {
+        $latest = null;
+        foreach ($this->request('TP_GetDetailsByDomain', $this->name($domain))->TransferOrder ?? [] as $order) {
+            if ($latest === null || (int) $order->orderid > (int) $latest->orderid) {
+                $latest = $order;
+            }
+        }
+        $message = trim((string) ($latest->statusdesc ?? ''));
+
+        return ['status' => match (true) {
+            (int) ($latest->statusid ?? -1) === 5 => Registrar_TransferStatus::COMPLETED,
+            // Every Enom cancel state reads "Canceled - <reason>"; not all of their ids are documented.
+            str_starts_with($message, 'Canceled') => Registrar_TransferStatus::FAILED,
+            default => Registrar_TransferStatus::PENDING,
+        }, 'message' => $message];
     }
 
     public function getDomainDetails(Registrar_Domain $domain): Registrar_Domain

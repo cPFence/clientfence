@@ -59,11 +59,26 @@
                     </tr>
                     <tr>
                         <td class="text-end">{{ 'Expires At'|trans }}:</td>
-                        <td>{{ service.expires_at|format_date }}</td>
+                        <td>
+                            {{ service.expires_at|format_date }}
+                            {# ClientFence core patch: a registrar expiry before the order's next due date (DomainSync.php). #}
+                            {% if service.expires_at and order.expires_at and service.expires_at|slice(0, 10) < order.expires_at|slice(0, 10) %}
+                                <span class="badge bg-warning-lt ms-1">{{ 'Before the next due date %date%'|trans({'%date%': order.expires_at|format_date}) }}</span>
+                            {% endif %}
+                        </td>
                     </tr>
+                    {% if service.transfer_status %}
+                    <tr>
+                        <td class="text-end">{{ 'Transfer'|trans }}:</td>
+                        <td>{% if service.transfer_status == 'pending' %}<span class="badge bg-azure-lt">{{ 'Transfer in progress'|trans }}</span>{% else %}<span class="badge bg-danger-lt">{{ 'Transfer not completed: see Orders > Failed actions'|trans }}</span>{% endif %}</td>
+                    </tr>
+                    {% endif %}
                     <tr>
                         <td class="text-end">{{ 'Last Synced'|trans }}:</td>
-                        <td id="synced-at-value">{{ service.synced_at ? service.synced_at|format_date : 'Never'|trans }}</td>
+                        <td id="synced-at-value">
+                            {{ service.synced_at ? service.synced_at|format_date : 'Never'|trans }}
+                            {% if service.sync_error %}<div class="text-danger text-wrap small">{{ service.sync_error }}</div>{% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>

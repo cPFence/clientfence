@@ -25831,3 +25831,96 @@ msgstr "A(z) %registrar% regisztrátorral végzett napi ársinkronizálás ezeke
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Your price"
 msgstr "Az Ön ára"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Before the next due date %date%"
+msgstr "A következő esedékesség előtt: %date%"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Both are off until you turn them on. They need the cron job."
+msgstr "Mindkettő kikapcsolt, amíg be nem kapcsolja őket. Szükségük van a cron feladatra."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain :domain expires at the registrar on :date, before its next due date :due"
+msgstr "A(z) :domain domain a regisztrátornál :date napon lejár, a következő esedékessége (:due) előtt"
+
+#: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
+msgid "Domain transfer"
+msgstr "Domain átvitel"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed: :domain"
+msgstr "Domain átvitel befejezve: :domain"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Domain transfer of %domain% completed"
+msgstr "A(z) %domain% domain átvitele befejeződött"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
+msgstr "Minden nap a domainek egy része lekéri a lejárati dátumát a regisztrátortól, így minden domaint nagyjából havonta egyszer ellenőriz a rendszer egyetlen nagy futtatás nélkül. A regisztrátornál lévő, a megrendelés következő esedékessége előtti dátum értesítés az Ön számára; a megrendelés dátuma soha nem változik. Ki: a régi havi futtatás."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync"
+msgstr "Szinkronizálás"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync expiry dates every day"
+msgstr "Lejárati dátumok szinkronizálása naponta"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Sync with registrars"
+msgstr "Szinkronizálás a regisztrátorokkal"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Thank you for your order. The transfer of %title% to us has started. It usually takes a few days; we will email you when it is complete."
+msgstr "Köszönjük a megrendelését. A(z) %title% átvitele hozzánk megkezdődött. Általában néhány napot vesz igénybe; e-mailt küldünk, amikor befejeződött."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete."
+msgstr "A(z) %domain% átvitele hozzánk befejeződött."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "The transfer of %domain% to us is complete. You can now manage it in your client area."
+msgstr "A(z) %domain% átvitele hozzánk befejeződött. Mostantól kezelheti az ügyfélterületén."
+
+#: src/modules/Servicedomain/DomainSync.php
+msgid "This domain has no transfer to retry."
+msgstr "Ennek a domainnek nincs újrapróbálható átvitele."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Track transfers until they complete"
+msgstr "Átvitelek követése a befejezésükig"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress"
+msgstr "Átvitel folyamatban"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer in progress: we will email you when the registrar completes it."
+msgstr "Átvitel folyamatban: e-mailt küldünk, amikor a regisztrátor befejezi."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: our team is looking into it."
+msgstr "Az átvitel nem fejeződött be: csapatunk foglalkozik vele."
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+msgid "Transfer not completed: see Orders > Failed actions"
+msgstr "Az átvitel nem fejeződött be: lásd Megrendelések > Sikertelen műveletek"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Transfer of %title% started"
+msgstr "A(z) %title% átvitele elindult"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "With a registrar that reports it, a transfer stays in progress until the registrar completes it: then the client is emailed. A failed transfer goes to Orders > Failed actions. Off: a transfer counts as done once the registrar accepts it."
+msgstr "Az állapotot jelentő regisztrátornál az átvitel folyamatban marad, amíg a regisztrátor be nem fejezi: ekkor az ügyfél e-mailt kap. A sikertelen átvitel a Megrendelések > Sikertelen műveletek alá kerül. Ki: az átvitel késznek számít, amint a regisztrátor elfogadja."
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig
+msgid "Your domain transfer has started"
+msgstr "Az Ön domain átvitele elindult"
+
+#: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
+msgid "Your domain transfer is complete"
+msgstr "Az Ön domain átvitele befejeződött"
