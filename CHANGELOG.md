@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.47 (2026-11-12)
+
+### Added
+
+- eWAY payment gateway: payments on eWAY's secure page, saved cards for renewals and pay-now, and refunds (not yet tested with a live eWAY account).
+- Payment method fees: per gateway a percentage and a fixed amount, an option to tax the fee, and client groups that pay none. The fee follows the payment method the invoice is paid with, and checkout and the staff Order Summary show it before paying.
+- `php console.php clientfence:staff-password` sets a staff member's password from the server, for an owner locked out of the admin area.
+- "Show Client Balance" has a third choice, "Only when not zero" ([#17](https://github.com/cPFence/clientfence/issues/17)).
+
+### Changed
+
+- Staff cancelling or deleting an order also cancels its unpaid first invoice, as in WHMCS, and frees the credit applied to it.
+
+### Fixed
+
+- New customers return to the checkout after signing up and after confirming their email ([#16](https://github.com/cPFence/clientfence/issues/16)).
+- The count badges on the client Invoices tabs sit in the middle of their labels ([#15](https://github.com/cPFence/clientfence/issues/15)).
+
 ## 1.0.46 (2026-11-12)
 
 ### Added
