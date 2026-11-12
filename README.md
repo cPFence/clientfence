@@ -26,16 +26,23 @@ payments, orders, domains, hosting accounts and support tickets in one client ar
   (Arabic, Hebrew and Persian), in 30 languages.
 - **Accounts:** authorized users with their own permissions, two-factor sign-in and
   Google sign-in; staff groups with detailed permissions and sign-in security rules.
-- **Billing:** invoices with part payments, credit and part refunds, an optional "prices
-  include tax" mode, payment receipts, order form answers, cancellation requests, Stripe,
-  PayPal and a manual payment gateway.
+- **Billing:** invoices with part payments, credit and part refunds, quotes, an optional
+  "prices include tax" mode, EU VAT reverse charge, payment receipts, payment method fees, order
+  form answers and cancellation requests. Payments through Stripe (cards and Direct Debit),
+  PayPal, PayPal Auto-Pay, PayTabs, eWAY and manual gateways, with saved cards that pay
+  invoices on the due date.
 - **Hosting and domains:** an Enhance server manager with client pages for each hosting
-  account (including Enhance backups), a daily status check, Change Product, and a Dynadot
-  registrar.
-- **Support:** tickets with file attachments, and ticket secrets: server logins a client adds
-  to a ticket, stored encrypted and opened only by staff with that permission.
+  account (including Enhance backups) and a daily status check; server managers for cPanel/WHM,
+  Plesk, DirectAdmin, CWP and HestiaCP; Change Product; 12 domain registrars with TLD price
+  sync.
+- **Software licences:** licence keys with client IP limits, per-unit billing and checks
+  compatible with the WHMCS Licensing Addon.
+- **Support:** tickets with file attachments, email-to-ticket, ticket merge, a network status
+  page, and ticket secrets: server logins a client adds to a ticket, stored encrypted and
+  opened only by staff with that permission.
 - **Moving from WHMCS, Upmind, Blesta or ClientExec:** an import of clients, products, services,
-  invoices and tickets from a WHMCS, Blesta or ClientExec database, or from Upmind through its API.
+  domains, invoices, payments and tickets from a WHMCS, Blesta or ClientExec database, or from
+  Upmind through its API.
 - **Security and health:** security hardening and a system health page, built in.
 - **Updates:** a daily check of the ClientFence release list on clientfence.com (it sends
   nothing about your site, and System → Update turns it off), a dashboard notice and a staff
@@ -96,7 +103,7 @@ By hand:
    php console.php system:run-patcher
    ```
 
-System → Settings → System, Health tab, shows "Database updates" pending until they are
+System → Settings → System, System Health tab, shows "Database updates" pending until they are
 applied.
 
 ## Development
