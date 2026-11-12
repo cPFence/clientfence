@@ -215,6 +215,9 @@
                                 <use href="#filter" />
                             </svg>
                         </a>
+                    {% elseif not event.ip %}
+                        {# ClientFence core patch: entries the server writes (cron, console) have no IP: label them System, as WHMCS does. #}
+                        {{ 'System'|trans }}
                     {% else %}
                         {{ 'Guest'|trans }}
                     {% endif %}

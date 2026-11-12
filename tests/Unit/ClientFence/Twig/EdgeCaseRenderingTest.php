@@ -258,7 +258,7 @@ test('activity index renders a staff-only event (no client key)', function (): v
     expect($html)->toBeString();
 });
 
-test('activity index renders a system event (no client, no staff)', function (): void {
+test('activity index labels a server event System and a visitor with an IP Guest', function (?string $ip, string $label): void {
     $html = (new StrictTemplateRenderer())->renderTemplate(
         PATH_MODS . '/Activity/templates/admin/mod_activity_index.html.twig',
         [
@@ -271,7 +271,7 @@ test('activity index renders a system event (no client, no staff)', function ():
                             'id' => 1,
                             'priority' => 6,
                             'message' => 'System cron ran',
-                            'ip' => '127.0.0.1',
+                            'ip' => $ip,
                             'created_at' => '2026-01-01 00:00:00',
                             'client_id' => null,
                             'admin_id' => null,
@@ -287,8 +287,11 @@ test('activity index renders a system event (no client, no staff)', function ():
         ],
     );
 
-    expect($html)->toBeString();
-});
+    expect($html)->toMatch('~<td>\\s*' . $label . '\\s*</td>~');
+})->with([
+    'cron, no IP' => [null, 'System'],
+    'visitor' => ['127.0.0.1', 'Guest'],
+]);
 
 test('activity index renders a mixed list of all three event shapes', function (): void {
     $html = (new StrictTemplateRenderer())->renderTemplate(
