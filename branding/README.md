@@ -10,6 +10,7 @@ The ClientFence logo (by cPFence), with a transparent background:
 | `clientfence-logo-stacked.png` | stacked logo (icon above the name) for light backgrounds |
 | `clientfence-logo-stacked-dark.png` | stacked logo for dark backgrounds |
 | `clientfence-icon.png` | the C icon alone (square) |
+| `clientfence-banner.png` | the general banner (1600 × 900) at the top of the project README |
 
 The variants are cut from the sheet, each with a 14 px margin for its soft shadow. The
 application's default branding is made from them: `src/public/branding/logo.png`,

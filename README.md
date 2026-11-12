@@ -1,8 +1,5 @@
 <h1>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="branding/clientfence-logo-dark.png">
-    <img src="branding/clientfence-logo.png" alt="ClientFence by cPFence" width="360">
-  </picture>
+  <img src="branding/clientfence-banner.png" alt="ClientFence by cPFence is open source: free billing and client portal for hosting businesses">
 </h1>
 
 The open-source billing platform built for hosting providers.
