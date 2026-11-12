@@ -448,37 +448,8 @@ class Payment_Adapter_PayPalAutoPay implements ClientFence\InjectionAwareInterfa
             $paid = (float) ($this->call('GetTransactionDetails', ['TRANSACTIONID' => $paymentId])['AMT'] ?? 0) ?: $amount;
             $amount = round((float) $payment['amount'] * $amount / $paid, 2);
         }
-        $service = $this->di['mod_service']('Invoice');
-        $text = sprintf('PayPal chargeback %s of payment %s.', $reversalId, $paymentId);
-        try {
-            $full = abs($amount - $service->getTotalWithTax($invoice)) < 0.01;
-            $service->refundInvoice($invoice, $text, $full ? null : $amount);
-        } catch (ClientFence\InformationException $e) {
-            $service->addNote($invoice, $text . ' ' . $e->getMessage());
 
-            return $text . ' Not refunded here: ' . $e->getMessage();
-        }
-        $moved = [];
-        $items = $db->fetchAllAssociative("SELECT rel_id, period FROM invoice_item WHERE invoice_id = ? AND type = 'order' AND task = ? AND status = 'executed'", [(int) $invoice->id, Model_InvoiceItem::TASK_RENEW]);
-        foreach ($items as $item) {
-            $order = $db->fetchAssociative('SELECT id, expires_at, period FROM client_order WHERE id = ?', [(int) $item['rel_id']]);
-            $code = (string) ($item['period'] ?: ($order['period'] ?? ''));
-            if ($order === false || empty($order['expires_at']) || $code === '') {
-                continue;
-            }
-            $period = new ClientFence\Period($code);
-            $unit = match ($period->getUnit()) {
-                ClientFence\Period::UNIT_DAY => 'days', ClientFence\Period::UNIT_WEEK => 'weeks', ClientFence\Period::UNIT_YEAR => 'years', default => 'months',
-            };
-            $expires = date('Y-m-d H:i:s', strtotime('-' . $period->getQty() . ' ' . $unit, strtotime((string) $order['expires_at'])));
-            $db->update('client_order', ['expires_at' => $expires, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $order['id']]);
-            $moved[] = sprintf('order #%d due %s', $order['id'], substr($expires, 0, 10));
-        }
-        $text .= $moved === [] ? '' : ' Due dates moved back: ' . implode(', ', $moved) . '.';
-        $service->addNote($invoice, $text);
-        $this->di['logger']->warning('Invoice #%s: %s', $invoice->id, $text);
-
-        return $text;
+        return $this->di['mod_service']('Invoice')->chargeback($invoice, $amount, sprintf('PayPal chargeback %s of payment %s.', $reversalId, $paymentId));
     }
 
     /** Payments of $txnId still waiting for PayPal (Payment pending). */

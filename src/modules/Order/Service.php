@@ -2166,6 +2166,25 @@ class Service implements InjectionAwareInterface
                         AND COALESCE(other.rel_id, :none) IN (:' . implode(', :', array_keys($in)) . '))))',
             ['canceled' => \Model_Invoice::STATUS_CANCELED, 'now' => date('Y-m-d H:i:s'), 'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'activate' => $firstInvoice ? \Model_InvoiceItem::TASK_ACTIVATE : \Model_InvoiceItem::TASK_RENEW, 'fee' => \ClientFence\Mod\Invoice\GatewayFees::TASK, 'discount' => 'discount', 'setup' => 'service', 'none' => ''] + $in,
         );
+        // ClientFence core patch: a renewal invoice shared with other services (one invoice per due date) loses this order's lines instead, as in WHMCS.
+        $db = $this->di['dbal'];
+        $shared = $db->fetchFirstColumn('SELECT DISTINCT ii.invoice_id FROM invoice_item ii JOIN invoice i ON i.id = ii.invoice_id
+            WHERE i.status = :unpaid AND ii.type = :type AND ii.rel_id = :order_id AND ii.task = :renew AND ii.status = :pending
+            AND EXISTS (SELECT 1 FROM invoice_item other WHERE other.invoice_id = ii.invoice_id AND other.type = :type AND other.rel_id <> :order_id)', [
+            'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'pending' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT,
+        ]);
+        foreach ($shared as $invoiceId) {
+            $db->executeStatement('DELETE FROM invoice_item WHERE invoice_id = :id AND rel_id = :order_id AND status = :pending AND (type = :type OR COALESCE(unit, :none) IN (:discount, :setup))', [
+                'id' => (int) $invoiceId, 'order_id' => (string) $orderId, 'pending' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'none' => '', 'discount' => 'discount', 'setup' => 'service',
+            ]);
+            // The tax-inclusive cents were for all the invoice's lines, as in rmInvoiceItemByOrder().
+            $db->executeStatement('UPDATE invoice SET tax_adjust = 0, updated_at = :now WHERE id = :id', ['now' => date('Y-m-d H:i:s'), 'id' => (int) $invoiceId]);
+            $db->executeStatement('UPDATE client_order SET unpaid_invoice_id = NULL WHERE id = :order_id AND unpaid_invoice_id = :id', ['order_id' => $orderId, 'id' => (int) $invoiceId]);
+            $invoice = $this->di['db']->load('Invoice', (int) $invoiceId);
+            if ($invoice instanceof \Model_Invoice && $invoice->gateway_id) {
+                \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, (int) $invoice->gateway_id);
+            }
+        }
     }
 
     public function uncancelFromOrder(Order|\Model_ClientOrder $order): bool

@@ -2993,8 +2993,8 @@ test('deleteFromOrder cancels subscriptions before deletion and cancels open inv
 
 test('cancelOpenInvoices cancels discounted renewals with a gateway fee, the first invoice only when staff cancel, and preserves invoices with other charges', function (bool $firstInvoice, array $expected): void {
     $connection = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $connection->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, updated_at TEXT)');
-    $connection->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, unit TEXT, title TEXT)');
+    $connection->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, updated_at TEXT, tax_adjust REAL)');
+    $connection->executeStatement("CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, unit TEXT, title TEXT, status TEXT DEFAULT 'pending_payment')");
     foreach ([40, 41] as $id) {
         $connection->insert('invoice', ['id' => $id, 'status' => 'unpaid']);
         $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'order', 'rel_id' => '1', 'task' => 'renew', 'unit' => 'service']);
@@ -3004,7 +3004,7 @@ test('cancelOpenInvoices cancels discounted renewals with a gateway fee, the fir
     // The gateway fee of a payment the client started (Invoice/GatewayFees.php, no rel_id) does not keep the renewal open.
     $connection->insert('invoice_item', ['invoice_id' => 40, 'type' => 'custom', 'task' => 'gateway_fee']);
     // The first invoice, with its setup fee, as WHMCS; shared with order 2 (still active) it stays, with order 3 (cancelled) it goes.
-    $connection->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT)');
+    $connection->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT, unpaid_invoice_id INTEGER)');
     $connection->insert('client_order', ['id' => 2, 'status' => 'active']);
     $connection->insert('client_order', ['id' => 3, 'status' => 'canceled']);
     foreach ([42 => null, 43 => '2', 44 => '3'] as $id => $other) {
@@ -3023,7 +3023,7 @@ test('cancelOpenInvoices cancels discounted renewals with a gateway fee, the fir
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
     $dbal->shouldReceive('fetchAllAssociative')->once()->andReturn([]);
     $dbal->shouldReceive('fetchFirstColumn')->andReturnUsing(fn (string $sql, array $params = [], array $types = []): array => $connection->fetchFirstColumn($sql, $params, $types));
-    $dbal->shouldReceive('executeStatement')->once()->andReturnUsing(function (string $sql, array $params) use ($connection): int {
+    $dbal->shouldReceive('executeStatement')->andReturnUsing(function (string $sql, array $params) use ($connection): int {
         // SQLite requires an explicit alias and unqualified assignment columns.
         $sql = str_replace(['UPDATE invoice i SET i.status', 'i.updated_at ='], ['UPDATE invoice AS i SET status', 'updated_at ='], $sql);
 
@@ -3031,12 +3031,15 @@ test('cancelOpenInvoices cancels discounted renewals with a gateway fee, the fir
     });
     $di = container();
     $di['dbal'] = $dbal;
+    $di['db']->shouldReceive('load')->andReturnNull();
     $service = new Service();
     $service->setDi($di);
 
     (new ReflectionMethod(Service::class, 'cancelOpenInvoices'))->invoke($service, 1, 'The order was cancelled.', $firstInvoice);
 
-    expect($connection->fetchFirstColumn('SELECT status FROM invoice ORDER BY id'))->toBe($expected);
+    // The renewal invoice shared with order 2 (one invoice per due date) stays for order 2 alone.
+    expect($connection->fetchFirstColumn('SELECT status FROM invoice ORDER BY id'))->toBe($expected)
+        ->and($connection->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 41'))->toBe(['2']);
 })->with([
     'staff cancel or delete' => [true, ['canceled', 'unpaid', 'canceled', 'unpaid', 'canceled', 'unpaid']],
     // At the period end (or by the cron) the service was used: its first invoice stays due.
@@ -3078,6 +3081,7 @@ test('cancelFromOrder cancels linked subscriptions before the service action', f
         ->with(Mockery::pattern('/^UPDATE invoice i SET i.status = :canceled/'), Mockery::on(fn (array $p): bool => $p['canceled'] === Model_Invoice::STATUS_CANCELED && $p['unpaid'] === Model_Invoice::STATUS_UNPAID && $p['order_id'] === (string) $clientOrderModel->id && $p['renew'] === Model_InvoiceItem::TASK_RENEW));
     // ... and its waiting upgrade invoice.
     $connectionMock->shouldReceive('fetchAllAssociative')->once()->with(Mockery::pattern('/FROM client_order_upgrade u/'), [10, 'pending', Model_Invoice::STATUS_UNPAID])->andReturn([]);
+    $connectionMock->shouldReceive('fetchFirstColumn')->once()->andReturn([]);
     $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $emMock->shouldIgnoreMissing();
     $dbMock = Mockery::mock(\ClientFence\Database::class);
@@ -3164,6 +3168,8 @@ test('scheduleCancellationFromOrder keeps the service active, with or without a 
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
     $dbal->shouldReceive('fetchAllAssociative')->once()->andReturn([]);
     $dbal->shouldReceive('executeStatement')->once()->with(Mockery::pattern('/^UPDATE invoice i SET i.status = :canceled/'), Mockery::on(fn (array $p): bool => $p['order_id'] === '10' && $p['renew'] === 'renew'));
+    // No renewal invoice shared with other services.
+    $dbal->shouldReceive('fetchFirstColumn')->once()->andReturn([]);
     $di['dbal'] = $dbal;
 
     $service = Mockery::mock(Service::class)->makePartial();

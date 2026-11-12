@@ -49,7 +49,8 @@ function autopayWorld(array $replies, array $config = []): object
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 3, 'client_id' => 7, 'test_mode' => 1, 'external_customer_id' => '', 'saved_cards' => 1, 'default_payment_method' => 'B-OLD', 'default_card' => 'PayPal old@example.com', 'auto_pay_at' => '2026-11-01 00:00:00']);
     $world->db = $db;
 
-    $invoices = Mockery::mock();
+    // The real chargeback() runs on the refund and note mocks.
+    $invoices = Mockery::mock(ClientFence\Mod\Invoice\Service::class)->makePartial();
     $invoices->allows('getBalanceDue')->andReturn(12.5);
     $invoices->allows('toApiArray')->andReturn(['serie_nr' => 'INV-00005']);
     $invoices->allows('getTotalWithTax')->andReturn(12.5);
@@ -86,6 +87,7 @@ function autopayWorld(array $replies, array $config = []): object
     $redbean = Mockery::mock();
     $redbean->allows('getExistingModelById')->andReturnUsing(fn (string $type, int $id): Model_Invoice => autopayInvoice(['id' => $id]));
     $di['db'] = $redbean;
+    $invoices->setDi($di);
     $world->di = $di;
     $world->adapter = new Payment_Adapter_PayPalAutoPay(['gateway_id' => 3, 'test_mode' => true, 'test_api_username' => 'sb_api1', 'test_api_password' => 'pw', 'test_api_signature' => 'sig'] + $config);
     $world->adapter->setDi($di);
@@ -240,6 +242,19 @@ test('a chargeback refunds the payment on its invoice and moves the renewed serv
     expect($world->db->fetchOne('SELECT expires_at FROM client_order WHERE id = 9'))->toBe('2026-11-15 10:00:00')
         ->and($world->db->fetchOne('SELECT expires_at FROM client_order WHERE id = 10'))->toBe('2027-11-01 10:00:00')
         ->and($world->db->fetchOne('SELECT note FROM `transaction` WHERE id = 51'))->toContain('PayPal chargeback 7RV of payment 8AB.');
+});
+
+test('a partial chargeback refunds its part and leaves the due dates for staff', function (): void {
+    $world = autopayWorld([]);
+    $world->db->insert('`transaction`', ['id' => 50, 'gateway_id' => 3, 'invoice_id' => 5, 'txn_id' => '8AB', 'status' => 'processed', 'txn_status' => 'Completed', 'amount' => '6.25']);
+    $world->db->insert('`transaction`', ['id' => 51, 'gateway_id' => 3, 'status' => 'received']);
+    $world->db->insert('invoice_item', ['invoice_id' => 5, 'type' => 'order', 'rel_id' => '9', 'task' => 'renew', 'status' => 'executed', 'period' => '1M']);
+    $world->db->insert('client_order', ['id' => 9, 'expires_at' => '2026-12-15 10:00:00', 'period' => '1M']);
+    $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', 6.25);
+    $world->invoices->shouldReceive('addNote')->once()->with(Mockery::type(Model_Invoice::class), Mockery::on(fn (string $note): bool => str_contains($note, 'due dates not moved')));
+
+    $world->adapter->processTransaction(Mockery::mock(), 51, ['post' => ['payment_status' => 'Reversed', 'txn_id' => '7RV', 'parent_txn_id' => '8AB', 'mc_gross' => '-6.25']], 3);
+    expect($world->db->fetchOne('SELECT expires_at FROM client_order WHERE id = 9'))->toBe('2026-12-15 10:00:00');
 });
 
 test('reads the PayPal balance and refunds a payment through the NVP API', function (): void {

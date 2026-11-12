@@ -53,6 +53,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         'payment_intent.payment_failed',
         'setup_intent.succeeded',
         'setup_intent.setup_failed',
+        'charge.dispute.funds_withdrawn',
+        'charge.dispute.funds_reinstated',
     ];
 
     /** ClientFence: the bank debit clients can save for each currency, besides cards (Stripe needs it on in the dashboard). */
@@ -756,6 +758,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 'payment_intent.payment_failed' => $this->handlePaymentIntentFailedWebhook($api_admin, $tx, $event),
                 'setup_intent.succeeded' => $this->handleSetupIntentSucceededWebhook($api_admin, $tx, $event, $gateway_id),
                 'setup_intent.setup_failed' => $this->handleSetupIntentFailedWebhook($api_admin, $tx, $event),
+                'charge.dispute.funds_withdrawn', 'charge.dispute.funds_reinstated' => $this->handleDispute($tx, $event, $gateway_id),
             };
         } catch (Stripe\Exception\CardException|Stripe\Exception\InvalidRequestException|Stripe\Exception\AuthenticationException|Stripe\Exception\ApiConnectionException|Stripe\Exception\ApiErrorException $e) {
             $this->logError($e, $tx);
@@ -777,11 +780,59 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $this->di['db']->store($tx);
     }
 
+    /** ClientFence core patch: the payment recorded here that a Stripe dispute takes back (by its charge or PaymentIntent). */
+    private function disputedPayment(object $dispute, int $gatewayId): ?array
+    {
+        $charge = is_string($dispute->charge ?? null) ? $dispute->charge : '';
+        $intent = is_string($dispute->payment_intent ?? null) ? $dispute->payment_intent : '';
+        if ($charge === '' && $intent === '') {
+            return null;
+        }
+        $row = $this->di['dbal']->fetchAssociative(
+            'SELECT invoice_id, amount FROM `transaction` WHERE txn_id IN (?, ?) AND gateway_id = ? AND status = ? AND invoice_id IS NOT NULL ORDER BY id LIMIT 1',
+            [$charge, $intent, $gatewayId, Model_Transaction::STATUS_PROCESSED]
+        );
+
+        return $row === false ? null : $row;
+    }
+
+    /**
+     * ClientFence core patch: a chargeback, as with PayPal: when Stripe takes the disputed funds, the payment is refunded
+     * on its invoice and the services it renewed go back by their period; funds returned (a won dispute) leave a note.
+     */
+    private function handleDispute(object $tx, object $event, int $gatewayId): bool
+    {
+        // Stripe resends an event until it is answered: it counts once.
+        if ($this->di['dbal']->fetchOne('SELECT id FROM `transaction` WHERE txn_id = ? AND gateway_id = ? AND status = ? AND id != ?', [$event->id, $gatewayId, Model_Transaction::STATUS_PROCESSED, (int) $tx->id]) !== false) {
+            return false;
+        }
+        $dispute = $event->data->object;
+        $payment = $this->disputedPayment($dispute, $gatewayId) ?? throw new ClientFence\Exception('Disputed Stripe payment not found');
+        $invoice = $this->di['db']->getExistingModelById('Invoice', (int) $payment['invoice_id'], 'Invoice not found');
+        $service = $this->di['mod_service']('Invoice');
+        $tx->invoice_id = $invoice->id;
+        if ($event->type === 'charge.dispute.funds_reinstated') {
+            $tx->note = sprintf('Stripe returned the funds of dispute %s (the dispute was won): check invoice #%d.', $dispute->id, $invoice->id);
+            $service->addNote($invoice, $tx->note);
+        } elseif (strtoupper((string) $dispute->currency) !== strtoupper((string) $invoice->currency)) {
+            $tx->note = sprintf('Stripe dispute %s must be settled by hand: it is not in the invoice currency.', $dispute->id);
+            $service->addNote($invoice, $tx->note);
+        } else {
+            $amount = min($this->getAmountFromMinorUnits((int) $dispute->amount, (string) $dispute->currency), (float) $payment['amount']);
+            $tx->note = $service->chargeback($invoice, $amount, sprintf('Stripe dispute %s of payment %s.', $dispute->id, $dispute->charge));
+        }
+
+        return true;
+    }
+
     private function eventBelongsToGateway(object $event, int $gatewayId): bool
     {
         $stripeObject = $event->data->object ?? null;
         if (!is_object($stripeObject)) {
             return false;
+        }
+        if (str_starts_with((string) ($event->type ?? ''), 'charge.dispute.')) {
+            return $this->disputedPayment($stripeObject, $gatewayId) !== null;
         }
 
         $eventGatewayId = $this->getGatewayIdFromStripeObject($stripeObject);

@@ -775,7 +775,8 @@ class Server_Manager_Directadmin extends Server_Manager
             'user' => $account->getUsername(),
         ];
 
-        return $this->request('API_SHOW_USER_CONFIG', $fields);
+        // ClientFence core patch: DirectAdmin takes this command only as GET, so the user name goes in the query string.
+        return $this->request('API_SHOW_USER_CONFIG', $fields, false);
     }
 
     /**
@@ -787,7 +788,7 @@ class Server_Manager_Directadmin extends Server_Manager
      */
     private function getUserPackages(): array
     {
-        $results = $this->request('API_PACKAGES_USER');
+        $results = $this->request('API_PACKAGES_USER', [], false);
 
         if (isset($results['error']) && $results['error'] == 1) {
             throw new Server_Exception('Failed to retrieve user packages: ' . $results['text'] . ': ' . $results['details']);

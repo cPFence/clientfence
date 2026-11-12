@@ -318,6 +318,59 @@ test('settles only full PayPal refunds against the parent payment invoice', func
     'invoice settled from account credit before payment' => [120.0, 120.0, null, false, true],
 ]);
 
+test('a PayPal chargeback refunds its payment on the invoice once, and a resent notice changes nothing', function (bool $resent, ?string $txnType = null): void {
+    $tx = ['invoice_id' => 26, 'type' => null, 'txn_id' => 'REV-1', 'txn_status' => 'Reversed', 'amount' => -120, 'currency' => 'USD'];
+    $api = Mockery::mock();
+    $api->shouldReceive('invoice_transaction_get')->with(['id' => 42])->andReturn($tx);
+    $api->shouldReceive('invoice_get')->with(['id' => 26])->andReturn(['id' => 26, 'client' => ['id' => 9]]);
+    $api->shouldReceive('invoice_transaction_update')->andReturnUsing(function (array $update) use (&$tx): void {
+        $tx = array_replace($tx, $update);
+    });
+    $db = paypalDbMocks(fn (string $type, string $where): mixed => match (true) {
+        str_contains($where, 'txn_status = :txn_status') => paypalBean(Model_Transaction::class, ['id' => 41, 'invoice_id' => 26, 'amount' => 120]),
+        str_contains($where, 'id != :id') && $resent => paypalBean(Model_Transaction::class, ['id' => 40, 'txn_id' => 'REV-1']),
+        default => null,
+    });
+    $db->shouldReceive('load')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26, 'currency' => 'USD']));
+    $di = container();
+    $di['db'] = $db;
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldReceive('chargeback')->times($resent ? 0 : 1)->with(Mockery::type(Model_Invoice::class), 120.0, 'PayPal chargeback REV-1 of payment TXN-1.');
+    $di['mod_service'] = $di->protect(fn () => $invoiceService);
+
+    paypalProcessAdapter($di)->processTransaction($api, 42, [
+        'get' => signedPayPalGet(26, 2),
+        'post' => ['payment_status' => 'Reversed', 'reason_code' => 'chargeback', 'txn_id' => 'REV-1', 'parent_txn_id' => 'TXN-1', 'mc_gross' => -120, 'mc_currency' => 'USD'] + ($txnType === null ? [] : ['txn_type' => $txnType]),
+    ], 2);
+
+    expect($tx['status'])->toBe(Model_Transaction::STATUS_PROCESSED)->and($tx['error'])->toBe('');
+})->with(['first notice' => [false], 'resent notice' => [true], 'notice with the payment type' => [false, 'web_accept']]);
+
+test('a won PayPal dispute leaves a note on the refunded invoice for staff', function (): void {
+    $tx = ['invoice_id' => 26, 'type' => null, 'txn_id' => 'CR-1', 'txn_status' => 'Canceled_Reversal', 'amount' => 120, 'currency' => 'USD'];
+    $api = Mockery::mock();
+    $api->shouldReceive('invoice_transaction_get')->andReturn($tx);
+    $api->shouldReceive('invoice_get')->andReturn(['id' => 26, 'client' => ['id' => 9]]);
+    $api->shouldReceive('invoice_transaction_update')->andReturnUsing(function (array $update) use (&$tx): void {
+        $tx = array_replace($tx, $update);
+    });
+    $db = paypalDbMocks(fn (string $type, string $where): mixed => str_contains($where, 'txn_status = :txn_status') ? paypalBean(Model_Transaction::class, ['id' => 41, 'invoice_id' => 26, 'amount' => 120]) : null);
+    $db->shouldReceive('load')->with('Invoice', 26)->andReturn(paypalBean(Model_Invoice::class, ['id' => 26, 'currency' => 'USD']));
+    $di = container();
+    $di['db'] = $db;
+    $invoiceService = Mockery::mock();
+    $invoiceService->shouldNotReceive('chargeback');
+    $invoiceService->shouldReceive('addNote')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal cancelled the reversal of payment TXN-1 (the dispute was won): check its invoice.');
+    $di['mod_service'] = $di->protect(fn () => $invoiceService);
+
+    paypalProcessAdapter($di)->processTransaction($api, 42, [
+        'get' => signedPayPalGet(26, 2),
+        'post' => ['payment_status' => 'Canceled_Reversal', 'txn_id' => 'CR-1', 'parent_txn_id' => 'TXN-1', 'mc_gross' => 120, 'mc_currency' => 'USD'],
+    ], 2);
+
+    expect($tx['error'])->toContain('the dispute was won');
+});
+
 test('keeps a PayPal subscription active while a failed renewal is retried, and never counts it as paid (WHMCS)', function (): void {
     $tx = [
         'invoice_id' => 16, 'type' => 'subscr_failed', 'txn_id' => null,

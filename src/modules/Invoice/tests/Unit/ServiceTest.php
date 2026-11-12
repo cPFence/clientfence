@@ -3882,6 +3882,52 @@ test('does not invoice or charge an order renewed since the expiring-order selec
         ->and($locked)->toBeFalse();
 });
 
+test('renews a client\'s orders due on the same day on one invoice, and leaves a subscription order its own', function (): void {
+    $orderService = Mockery::mock(OrderService::class);
+    $due = date('Y-m-d', strtotime('+5 days'));
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->with([])->andReturn([
+        ['id' => 1, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 10:00:00'],
+        ['id' => 2, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 18:00:00'],
+        ['id' => 3, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 12:00:00'],
+    ]);
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->andReturnUsing(fn (array $f): array => [['id' => $f['id']]]);
+    $orders = [];
+    foreach ([1, 2, 3] as $id) {
+        $orders[$id] = new Model_ClientOrder();
+        $orders[$id]->loadBean(new Tests\Helpers\DummyBean());
+        $orders[$id]->id = $id;
+    }
+    $subscriptions = Mockery::mock(ServiceSubscription::class);
+    $subscriptions->shouldReceive('hasGatewaySubscriptionForOrder')->andReturnUsing(fn (Model_ClientOrder $o): bool => $o->id === 3);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = ''): object => $sub === 'Subscription' ? $subscriptions : $orderService);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['db']->shouldReceive('getExistingModelById')->andReturnUsing(fn (string $type, int $id): Model_ClientOrder => $orders[$id]);
+    $di['db']->shouldReceive('load')->andReturnNull();
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\SQLitePlatform());
+    $dbal->shouldReceive('fetchOne')->andReturn(false);
+    $di['dbal'] = $dbal;
+
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 40;
+    $calls = [];
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('generateForOrderLocked')->andReturnUsing(function (Model_ClientOrder $o, $days, ?Model_Invoice $into, bool $finish) use (&$calls, $invoice): Model_Invoice {
+        $calls[] = [$o->id, $into?->id, $finish];
+
+        return $invoice;
+    });
+    $service->shouldReceive('finishRenewalInvoice')->once();
+    $service->shouldReceive('generateForOrder')->once()->with($orders[3])->andReturn($invoice);
+    $service->shouldReceive('approveInvoice')->twice();
+    $service->setDi($di);
+
+    expect($service->generateInvoicesForExpiringOrders())->toBeTrue()
+        ->and($calls)->toBe([[1, null, false], [2, 40, false]]);
+});
+
 test('activates paid invoices in batch', function (): void {
     $service = new Service();
     $invoiceItemModel = new Model_InvoiceItem();

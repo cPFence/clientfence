@@ -5458,5 +5458,21 @@
     {
         "file": "modules/Activity/templates/admin/mod_activity_index.html.twig",
         "done": "ClientFence core patch: entries the server writes (cron, console) have no IP: label them System, as WHMCS does."
+    },
+    {
+        "file": "library/Server/Manager/Directadmin.php",
+        "done": "ClientFence core patch: DirectAdmin takes this command only as GET, so the user name goes in the query string."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: a client cannot order a domain again while their earlier order for it waits for setup."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a client's renewals due on the same day go on one invoice, as in WHMCS. An order billed"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a renewal invoice shared with other services (one invoice per due date) loses this order's lines instead, as in WHMCS."
     }
 ]

@@ -408,6 +408,44 @@ test('keeps a subscription active after an invoice payment failure, and keeps th
         ->and($tx->error)->toBe('Stripe subscription payment failed (Stripe invoice in_retry, attempt 2); Stripe retries it.');
 });
 
+test('a Stripe dispute takes its payment back on the invoice once; won funds only leave a note', function (string $type, bool $resent, int $chargebacks): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, gateway_id INTEGER, txn_id TEXT, status TEXT, amount TEXT)');
+    $dbal->insert('`transaction`', ['id' => 5, 'invoice_id' => 26, 'gateway_id' => 1, 'txn_id' => 'pi_paid', 'status' => Model_Transaction::STATUS_PROCESSED, 'amount' => '120.00']);
+    if ($resent) {
+        $dbal->insert('`transaction`', ['id' => 6, 'gateway_id' => 1, 'txn_id' => 'evt_dispute', 'status' => Model_Transaction::STATUS_PROCESSED]);
+    }
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 26;
+    $invoice->currency = 'USD';
+    $invoices = Mockery::mock();
+    $invoices->shouldReceive('chargeback')->times($chargebacks)->with($invoice, 50.0, 'Stripe dispute dp_1 of payment ch_paid.')->andReturn('refunded');
+    $invoices->shouldReceive('addNote')->times($type === 'charge.dispute.funds_reinstated' && !$resent ? 1 : 0);
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(fn () => $invoices);
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 26, 'Invoice not found')->andReturn($invoice);
+    $this->adapter->setDi($di);
+    $rawBody = json_encode([
+        'id' => 'evt_dispute',
+        'type' => $type,
+        'data' => ['object' => ['id' => 'dp_1', 'object' => 'dispute', 'charge' => 'ch_paid', 'payment_intent' => 'pi_paid', 'amount' => 5000, 'currency' => 'usd', 'metadata' => []]],
+    ]);
+    $tx = buildTransaction();
+    $di['db']->shouldReceive('store')->times($resent ? 0 : 1)->with($tx);
+    $di['db']->shouldReceive('trash')->times($resent ? 1 : 0)->with($tx);
+
+    invokePrivateMethod($this->adapter, 'processWebhookEvent', [Mockery::mock(), $tx, [
+        'http_raw_post_data' => $rawBody,
+        'server' => ['HTTP_STRIPE_SIGNATURE' => signStripeWebhookPayload($rawBody)],
+    ], 1]);
+})->with([
+    'funds withdrawn' => ['charge.dispute.funds_withdrawn', false, 1],
+    'resent event' => ['charge.dispute.funds_withdrawn', true, 0],
+    'funds reinstated' => ['charge.dispute.funds_reinstated', false, 0],
+]);
+
 test('keeps a failed one-time Stripe payment on its invoice with Stripe\'s answer; a subscription\'s own one is left to its invoice event', function (array $metadata, bool $kept): void {
     $tx = buildTransaction();
     $event = (object) ['data' => (object) ['object' => (object) [

@@ -2373,3 +2373,23 @@ describe('resolveFamilyGroupId', function (): void {
             ->and($orphanAddon)->toBe('5_3');
     });
 });
+
+test('a client cannot order a domain again while their earlier order for it waits for setup', function (): void {
+    $service = new ClientFence\Mod\Cart\Service();
+    $di = container();
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('getAll')->andReturn([
+        ['config' => json_encode(['action' => 'register', 'register_sld' => 'example', 'register_tld' => '.com'])],
+        ['config' => json_encode(['action' => 'transfer', 'register_sld' => '', 'register_tld' => '.com', 'transfer_sld' => 'pending', 'transfer_tld' => '.net'])],
+    ]);
+    $di['db'] = $db;
+    $service->setDi($di);
+    $check = new ReflectionMethod($service, 'assertDomainNotPending');
+
+    $check->invoke($service, 5, ['register_sld' => 'other', 'register_tld' => '.com']);
+    // The order form sends both tabs: a transfer with an empty register field is another domain.
+    $check->invoke($service, 5, ['action' => 'transfer', 'register_sld' => '', 'register_tld' => '.com', 'transfer_sld' => 'moving', 'transfer_tld' => '.com']);
+    expect(fn () => $check->invoke($service, 5, ['register_sld' => 'example', 'register_tld' => '.com']))
+        ->toThrow(ClientFence\InformationException::class, 'example.com is already in your orders');
+});
+

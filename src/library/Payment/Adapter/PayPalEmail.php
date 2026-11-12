@@ -232,7 +232,7 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                     ]);
 
                     // ClientFence core patch: pending payments must remain retryable by a later Completed IPN (a refund goes on to the refund below).
-                    if (($ipn['payment_status'] ?? '') !== 'Refunded') {
+                    if (!in_array($ipn['payment_status'] ?? '', ['Refunded', 'Reversed', 'Canceled_Reversal'], true)) {
                         return;
                     }
 
@@ -387,6 +387,32 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
                         'note' => 'PayPal refund ' . $ipn['parent_txn_id'],
                     ]);
                 }
+            }
+        } elseif (($ipn['payment_status'] ?? '') === 'Reversed' && !empty($ipn['parent_txn_id']) && !empty($ipn['txn_id'])) {
+            // ClientFence core patch: a chargeback refunds the payment on its invoice and moves the renewed services back.
+            $payment = $this->di['db']->findOne(
+                'Transaction',
+                'txn_id = :txn AND gateway_id = :gateway AND status = :status AND txn_status = :txn_status',
+                [':txn' => $ipn['parent_txn_id'], ':gateway' => $gateway_id, ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed']
+            );
+            $amount = abs((float) ($ipn['mc_gross'] ?? 0));
+            $invoice = $payment instanceof Model_Transaction && $payment->invoice_id ? $this->di['db']->load('Invoice', (int) $payment->invoice_id) : null;
+            // PayPal resends a notice until it is answered: the reversal counts once.
+            $seen = $this->di['db']->findOne('Transaction', 'txn_id = :txn AND gateway_id = :gateway AND status = :status AND id != :id', [':txn' => (string) ($ipn['txn_id'] ?? ''), ':gateway' => $gateway_id, ':status' => Model_Transaction::STATUS_PROCESSED, ':id' => $id]);
+            if ($seen instanceof Model_Transaction) {
+                $refundError = '';
+            } elseif (!$invoice instanceof Model_Invoice || strtoupper((string) ($ipn['mc_currency'] ?? '')) !== strtoupper((string) $invoice->currency)) {
+                $refundError = sprintf('PayPal chargeback of %s %s must be settled by hand: its payment is not recorded here in that currency.', number_format($amount, 2, '.', ''), $ipn['mc_currency'] ?? '');
+            } else {
+                $this->di['mod_service']('Invoice')->chargeback($invoice, min($amount, (float) $payment->amount), sprintf('PayPal chargeback %s of payment %s.', $ipn['txn_id'] ?? '', $ipn['parent_txn_id']));
+            }
+        } elseif (($ipn['payment_status'] ?? '') === 'Canceled_Reversal' && !empty($ipn['parent_txn_id'])) {
+            // A won dispute: PayPal gives the money back, so staff settle the refunded invoice by hand.
+            $payment = $this->di['db']->findOne('Transaction', 'txn_id = :txn AND gateway_id = :gateway AND status = :status AND txn_status = :txn_status', [':txn' => $ipn['parent_txn_id'], ':gateway' => $gateway_id, ':status' => Model_Transaction::STATUS_PROCESSED, ':txn_status' => 'Completed']);
+            $invoice = $payment instanceof Model_Transaction && $payment->invoice_id ? $this->di['db']->load('Invoice', (int) $payment->invoice_id) : null;
+            $refundError = sprintf('PayPal cancelled the reversal of payment %s (the dispute was won): check its invoice.', $ipn['parent_txn_id']);
+            if ($invoice instanceof Model_Invoice) {
+                $this->di['mod_service']('Invoice')->addNote($invoice, $refundError);
             }
         }
 

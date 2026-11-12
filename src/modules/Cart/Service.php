@@ -899,6 +899,30 @@ class Service implements InjectionAwareInterface
      * @param array|null $staff ClientFence core patch: staff Add New Order (staffOrder()): `invoice` (issue the first one), `activate`,
      *                          `quote` (stop once the invoice is prepared) and the Order\Service::approveStaffInvoice() fields
      */
+    /**
+     * ClientFence core patch: a client cannot order a domain again while their earlier order for it waits for setup.
+     *
+     * @throws \ClientFence\InformationException
+     */
+    private function assertDomainNotPending(int $clientId, array $item): void
+    {
+        // The order form sends both tabs' fields, so the action picks the domain (Servicedomain generateOrderTitle()).
+        $name = static fn (array $c): string => strtolower(($c['action'] ?? '') === 'transfer' ? ($c['transfer_sld'] ?? '') . ($c['transfer_tld'] ?? '') : ($c['register_sld'] ?? '') . ($c['register_tld'] ?? ''));
+        $domain = $name($item);
+        $rows = $this->di['db']->getAll('SELECT config FROM client_order WHERE client_id = :client_id AND service_type = :type AND status IN (:pending, :failed)', [
+            ':client_id' => $clientId,
+            ':type' => 'domain',
+            ':pending' => Order::STATUS_PENDING_SETUP,
+            ':failed' => Order::STATUS_FAILED_SETUP,
+        ]);
+        foreach ($rows as $row) {
+            $config = json_decode((string) $row['config'], true) ?: [];
+            if ($name($config) === $domain) {
+                throw new \ClientFence\InformationException(':domain is already in your orders, waiting for setup.', [':domain' => $domain]);
+            }
+        }
+    }
+
     public function createFromCart(Client|\Model_Client $client, $gateway_id = null, Cart|\Model_Cart|null $cart = null, ?array $staff = null): array
     {
         $cart ??= $this->getSessionCart();
@@ -996,6 +1020,10 @@ class Service implements InjectionAwareInterface
 
                         // Domain TLD must begin with a period - add if not present for owndomain.
                         $item['domain']['owndomain_tld'] = (isset($item['domain']['owndomain_tld'])) ? (str_contains((string) $item['domain']['owndomain_tld'], '.') ? $item['domain']['owndomain_tld'] : '.' . $item['domain']['owndomain_tld']) : null;
+                    }
+
+                    if ($staff === null && $item['type'] === 'domain' && in_array($item['action'] ?? null, ['register', 'transfer'], true)) {
+                        $this->assertDomainNotPending($this->clientId($client), $item);
                     }
 
                     $order = new Order();

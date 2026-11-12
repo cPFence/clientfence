@@ -2350,6 +2350,45 @@ class Service implements InjectionAwareInterface
         $db->update('invoice', ['tax_adjust' => $invoice->tax_adjust], ['id' => (int) $invoice->id]);
     }
 
+    /**
+     * ClientFence: a chargeback, as WHMCS with "change due dates": the payment is refunded on its invoice (a credit
+     * note) and the services it renewed go back by their period. $text names the gateway's case. Returns the note for staff.
+     */
+    public function chargeback(\Model_Invoice $invoice, float $amount, string $text): string
+    {
+        $db = $this->di['dbal'];
+        try {
+            $full = abs($amount - $this->getTotalWithTax($invoice)) < 0.01;
+            $this->refundInvoice($invoice, $text, $full ? null : $amount);
+        } catch (InformationException $e) {
+            $this->addNote($invoice, $text . ' ' . $e->getMessage());
+
+            return $text . ' Not refunded here: ' . $e->getMessage();
+        }
+        $moved = [];
+        // A part taken back leaves the rest paying for the period: staff settle the service by hand.
+        $items = $full ? $db->fetchAllAssociative("SELECT rel_id, period FROM invoice_item WHERE invoice_id = ? AND type = 'order' AND task = ? AND status = 'executed'", [(int) $invoice->id, \Model_InvoiceItem::TASK_RENEW]) : [];
+        foreach ($items as $item) {
+            $order = $db->fetchAssociative('SELECT id, expires_at, period FROM client_order WHERE id = ?', [(int) $item['rel_id']]);
+            $code = (string) ($item['period'] ?: ($order['period'] ?? ''));
+            if ($order === false || empty($order['expires_at']) || $code === '') {
+                continue;
+            }
+            $period = new \ClientFence\Period($code);
+            $unit = match ($period->getUnit()) {
+                \ClientFence\Period::UNIT_DAY => 'days', \ClientFence\Period::UNIT_WEEK => 'weeks', \ClientFence\Period::UNIT_YEAR => 'years', default => 'months',
+            };
+            $expires = date('Y-m-d H:i:s', strtotime('-' . $period->getQty() . ' ' . $unit, strtotime((string) $order['expires_at'])));
+            $db->update('client_order', ['expires_at' => $expires, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $order['id']]);
+            $moved[] = sprintf('order #%d due %s', $order['id'], substr($expires, 0, 10));
+        }
+        $text .= $moved === [] ? ($full ? '' : ' Part of the payment was taken back: due dates not moved, check the services.') : ' Due dates moved back: ' . implode(', ', $moved) . '.';
+        $this->addNote($invoice, $text);
+        $this->di['logger']->warning('Invoice #%s: %s', $invoice->id, $text);
+
+        return $text;
+    }
+
     /** ClientFence: a paid or refunded invoice has its payment and income booked, so its amount is fixed. */
     public function isBooked(\Model_Invoice $model): bool
     {
@@ -2518,7 +2557,8 @@ class Service implements InjectionAwareInterface
         });
     }
 
-    private function generateForOrderLocked(\Model_ClientOrder $order, $due_days = null)
+    /** ClientFence core patch: $into adds the renewal to an invoice already made; $finish = false leaves tax and due date to the caller. */
+    protected function generateForOrderLocked(\Model_ClientOrder $order, $due_days = null, ?\Model_Invoice $into = null, bool $finish = true)
     {
         // check if we do have invoice prepared already
         if ($order->unpaid_invoice_id !== null) {
@@ -2582,16 +2622,19 @@ class Service implements InjectionAwareInterface
         }
 
         // generate proforma after validating the resolved renewal amount
-        $proforma = $this->di['db']->dispense('Invoice');
-        $proforma->client_id = $client->id;
-        $proforma->status = \Model_Invoice::STATUS_UNPAID;
-        $proforma->currency = $order->currency;
-        $proforma->approved = false;
-        $proforma->created_at = date('Y-m-d H:i:s');
-        $proforma->updated_at = date('Y-m-d H:i:s');
-        $this->di['db']->store($proforma);
+        $proforma = $into;
+        if ($proforma === null) {
+            $proforma = $this->di['db']->dispense('Invoice');
+            $proforma->client_id = $client->id;
+            $proforma->status = \Model_Invoice::STATUS_UNPAID;
+            $proforma->currency = $order->currency;
+            $proforma->approved = false;
+            $proforma->created_at = date('Y-m-d H:i:s');
+            $proforma->updated_at = date('Y-m-d H:i:s');
+            $this->di['db']->store($proforma);
 
-        $this->setInvoiceDefaults($proforma);
+            $this->setInvoiceDefaults($proforma);
+        }
 
         $invoiceItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
         // ClientFence core patch: an order that was never activated (staff create orders with an invoice,
@@ -2601,6 +2644,15 @@ class Service implements InjectionAwareInterface
             ? \Model_InvoiceItem::TASK_ACTIVATE
             : \Model_InvoiceItem::TASK_RENEW;
         $invoiceItemService->generateFromOrder($proforma, $order, $task, $price, $line);
+        if ($finish) {
+            $this->finishRenewalInvoice($proforma, $order, $due_days);
+        }
+
+        return $proforma;
+    }
+
+    protected function finishRenewalInvoice(\Model_Invoice $proforma, \Model_ClientOrder $order, $due_days = null): void
+    {
         // ClientFence core patch: catalog prices that include tax (WHMCS Inclusive Tax).
         $this->applyInclusiveTax($proforma);
 
@@ -2612,8 +2664,50 @@ class Service implements InjectionAwareInterface
             $proforma->due_at = $order->expires_at;
             $this->di['db']->store($proforma);
         }
+    }
 
-        return $proforma;
+    /**
+     * ClientFence core patch: a client's renewals due on the same day go on one invoice, as in WHMCS. An order billed
+     * by a gateway subscription, or with an unpaid invoice already, keeps its own: those are returned for the
+     * one-by-one path.
+     */
+    protected function renewTogether(array $ids, $orderService): array
+    {
+        $subscriptions = $this->di['mod_service']('Invoice', 'Subscription');
+        $alone = [];
+        $invoice = $first = null;
+        foreach ($ids as $id) {
+            try {
+                Tools::withLock($this->di, 'fb:renewal:order:' . $id, function () use ($id, $orderService, $subscriptions, &$alone, &$invoice, &$first): void {
+                    if ($orderService->getSoonExpiringActiveOrders(['id' => $id]) === []) {
+                        return;
+                    }
+                    $order = $this->di['db']->getExistingModelById('ClientOrder', $id);
+                    $unpaid = $this->di['dbal']->fetchOne('SELECT unpaid_invoice_id FROM client_order WHERE id = ?', [$id]);
+                    $order->unpaid_invoice_id = $unpaid ? (int) $unpaid : null;
+                    $existing = $unpaid ? $this->di['db']->load('Invoice', (int) $unpaid) : null;
+                    if (($existing instanceof \Model_Invoice && $existing->status === \Model_Invoice::STATUS_UNPAID) || $subscriptions->hasGatewaySubscriptionForOrder($order)) {
+                        $alone[] = $id;
+
+                        return;
+                    }
+                    $invoice = $this->generateForOrderLocked($order, null, $invoice, false);
+                    $first ??= $order;
+                });
+            } catch (\Exception $e) {
+                $this->di['logger']->warning($e->getMessage());
+            }
+        }
+        if ($invoice instanceof \Model_Invoice && $first instanceof \Model_ClientOrder) {
+            try {
+                $this->finishRenewalInvoice($invoice, $first);
+                $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
+            } catch (\Exception $e) {
+                $this->di['logger']->warning($e->getMessage());
+            }
+        }
+
+        return $alone;
     }
 
     // ClientFence core patch: selected renewals preserve the single-order generation and locking path.
@@ -2664,7 +2758,17 @@ class Service implements InjectionAwareInterface
             return true;
         }
 
+        $groups = [];
         foreach ($orders as $order) {
+            $groups[($order['client_id'] ?? '') . '|' . ($order['currency'] ?? '') . '|' . substr((string) ($order['expires_at'] ?? ''), 0, 10)][] = (int) $order['id'];
+        }
+        $single = [];
+        foreach ($groups as $ids) {
+            array_push($single, ...(count($ids) > 1 ? $this->renewTogether($ids, $orderService) : $ids));
+        }
+
+        foreach ($single as $id) {
+            $order = ['id' => $id];
             try {
                 // ClientFence core patch: due-order selection can change before the renewal lock is acquired.
                 Tools::withLock($this->di, 'fb:renewal:order:' . (int) $order['id'], function () use ($order, $orderService): void {

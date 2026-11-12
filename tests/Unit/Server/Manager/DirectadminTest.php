@@ -165,3 +165,19 @@ test('DirectAdmin password fields stay in the POST body', function (): void {
     $manager = createDirectadminManager($client);
     (new ReflectionMethod($manager, 'request'))->invoke($manager, 'API_PASSWD', ['passwd' => 'test-password', 'passwd2' => 'test-password']);
 });
+
+test('DirectAdmin read-only commands go as GET with their fields in the query string', function (): void {
+    $requests = [];
+    $httpClient = new MockHttpClient(function (string $method, string $url, array $options) use (&$requests): MockResponse {
+        $requests[] = ['method' => $method, 'url' => $url];
+
+        return new MockResponse(str_contains($url, 'CMD_API_PACKAGES_USER') ? 'list%5B%5D=basic' : 'suspended=no');
+    });
+    $manager = createDirectadminManager($httpClient);
+
+    expect($manager->suspendAccount((new Server_Account())->setUsername('client1')))->toBeTrue()
+        ->and($requests[0]['method'])->toBe('GET')
+        ->and(parse_url($requests[0]['url'], PHP_URL_QUERY))->toContain('user=client1')
+        ->and((new ReflectionMethod($manager, 'getUserPackages'))->invoke($manager))->toBe(['basic'])
+        ->and($requests[2]['method'])->toBe('GET');
+});
