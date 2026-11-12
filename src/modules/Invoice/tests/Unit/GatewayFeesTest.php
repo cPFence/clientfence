@@ -177,3 +177,18 @@ test('the fee is a share of the balance without the fee and the tax it adds to t
 
     expect(GatewayFees::base($world->di, $world->invoice))->toBe(12.51);
 });
+
+test('the staff order summary adds what the fee line will add: the fee and its tax', function (): void {
+    $world = feeWorld();
+    // 2.95 on 100.00 plus 10% tax on it (0.295, rounded with the invoice's other taxed lines: none here).
+    expect(GatewayFees::charge($world->di, $world->invoice, 3, 100.0))->toBe(3.25)
+        // On what credit leaves: 2.5% of 40 + 0.45 = 1.45, plus 0.15 tax.
+        ->and(GatewayFees::charge($world->di, $world->invoice, 3, 40.0))->toBe(1.6)
+        ->and(GatewayFees::charge($world->di, $world->invoice, 4, 100.0))->toBe(0.0)
+        ->and(GatewayFees::charge($world->di, $world->invoice, 6, 100.0))->toBe(0.0)
+        ->and(GatewayFees::charge($world->di, $world->invoice, 99, 100.0))->toBe(0.0);
+
+    // The same as the line the approval adds.
+    GatewayFees::apply($world->di, $world->invoice, 3);
+    expect(round((float) $world->line->price * 1.1, 2))->toBe(3.25);
+});

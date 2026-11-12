@@ -56,6 +56,18 @@ final class GatewayFees
         return round($base * $fee['percent'] / 100 + $fixed, 2);
     }
 
+    /** What paying $base of $invoice with gateway $gatewayId adds to it: the fee, and its tax when the fee is taxed. */
+    public static function charge(\Pimple\Container $di, \Model_Invoice $invoice, int $gatewayId, float $base): float
+    {
+        $gateway = $di['db']->load('PayGateway', $gatewayId);
+        if (!$gateway instanceof \Model_PayGateway || !$gateway->id) {
+            return 0.0;
+        }
+        $fee = self::fee($di, $gateway, $base, (string) $invoice->currency, (int) $invoice->client_id);
+
+        return round($fee + ($fee > 0 && self::settings($gateway)['taxable'] ? self::tax($di, $invoice, $fee) : 0.0), 2);
+    }
+
     /** The invoice's balance due without its fee line: what a fee is a share of. */
     public static function base(\Pimple\Container $di, \Model_Invoice $invoice): float
     {

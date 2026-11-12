@@ -1257,6 +1257,11 @@ class Service implements InjectionAwareInterface
                 [$cart, $invoice] = $run();
                 $invoiceService = $this->di['mod_service']('Invoice');
                 $rate = $currency->getConversionRate();
+                $total = $invoice instanceof \Model_Invoice ? $invoiceService->getTotalWithTax($invoice) : 0.0;
+                $credit = $invoiceService->getFreeCredit((int) $client->id);
+                // The invoice gets its payment method's fee on approval (GatewayFees), after the credit staff apply.
+                $fee = fn (float $base): float => $invoice instanceof \Model_Invoice && $gatewayId && $base > 0 ? \ClientFence\Mod\Invoice\GatewayFees::charge($this->di, $invoice, $gatewayId, $base) : 0.0;
+                $gateway = $gatewayId ? $this->di['db']->load('PayGateway', $gatewayId) : null;
 
                 return [
                     'currency' => $currency->getCode(),
@@ -1270,8 +1275,11 @@ class Service implements InjectionAwareInterface
                     'tax' => $invoice instanceof \Model_Invoice ? $invoiceService->getTax($invoice) : 0.0,
                     'tax_name' => $invoice instanceof \Model_Invoice ? (string) $invoice->taxname : '',
                     'tax_included' => $invoiceService->pricesIncludeTax(),
-                    'total' => $invoice instanceof \Model_Invoice ? $invoiceService->getTotalWithTax($invoice) : 0.0,
-                    'credit' => $invoiceService->getFreeCredit((int) $client->id),
+                    'total' => $total,
+                    'credit' => $credit,
+                    'fee' => $fee($total),
+                    'fee_with_credit' => $fee(round($total - min($credit, $total), 2)),
+                    'fee_title' => $gateway instanceof \Model_PayGateway && $gateway->id ? __trans(':gateway fee', [':gateway' => (string) $gateway->name]) : '',
                 ];
             } finally {
                 $this->di['dbal']->rollBack();

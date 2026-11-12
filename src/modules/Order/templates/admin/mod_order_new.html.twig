@@ -324,6 +324,8 @@
             $('cf-credit-label').textContent = fill(text.creditLabel, { amount: money(q.credit) });
         }
         const credit = $('use_credit')?.checked && !$('cf-credit-wrap').hidden ? Math.min(q.credit, q.total) : 0;
+        // The invoice gets the payment method's fee on what the credit leaves; none without an invoice.
+        const fee = !$('invoice').checked ? 0 : (credit ? q.fee_with_credit : q.fee);
         $('cf-lines').innerHTML = q.items.map((l) => `<li><span class="fw-medium">${esc(l.title)}${l.quantity > 1 ? ' × ' + esc(l.quantity) : ''}</span>
             <span class="cf-order-amount">${esc(money(l.total + l.setup_price))}</span>
             <small class="text-secondary">${[l.period ? PERIODS[l.period] || l.period : '', l.setup_price ? text.setup + ' ' + money(l.setup_price) : '', l.discount ? '−' + money(l.discount) : ''].filter(Boolean).map(esc).join(' · ')}</small></li>`).join('');
@@ -332,9 +334,10 @@
             row(text.subtotal, money(q.subtotal)),
             q.discount ? row(fill(text.discount, { code: q.promocode || '' }), '−' + money(q.discount), 'text-success') : '',
             q.tax ? row(q.tax_included ? fill(text.taxIncluded, { tax: q.tax_name || text.tax }) : (q.tax_name || text.tax), money(q.tax)) : '',
+            fee ? row(q.fee_title, money(fee)) : '',
             credit ? row(text.credit, '−' + money(credit), 'text-success') : '',
         ].join('');
-        $('cf-total').textContent = money(q.total - credit);
+        $('cf-total').textContent = money(q.total + fee - credit);
     }
 
     function quote() {
