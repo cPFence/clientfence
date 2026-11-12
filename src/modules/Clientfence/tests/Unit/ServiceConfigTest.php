@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use ClientFence\Mod\Clientfence\Service;
+use Symfony\Component\HttpFoundation\Request;
 
 use function Tests\Helpers\container;
 
@@ -67,11 +68,40 @@ test('a closed store answers no store call, configurable options included', func
             return null;
         }
     };
+    $di['request'] = Request::create('/order');
 
     expect(Service::storeGate($di, 'guest', 'product', $method, new stdClass(), []))->toBe($answer);
 })->with([
     'options' => ['options', ['result' => []]],
     'list' => ['get_pairs', ['result' => []]],
+]);
+
+test('a closed store lists its TLDs on admin pages to signed-in staff only', function (string $path, bool $staff, ?array $answer): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'closed'] : []);
+    $di['session'] = new class {
+        public function get(string $key): mixed
+        {
+            return null;
+        }
+    };
+    $di['request'] = Request::create($path);
+    $di['auth'] = new class($staff) {
+        public function __construct(private readonly bool $staff)
+        {
+        }
+
+        public function isAdminLoggedIn(): bool
+        {
+            return $this->staff;
+        }
+    };
+
+    expect(Service::storeGate($di, 'guest', 'servicedomain', 'tlds', new stdClass(), []))->toBe($answer);
+})->with([
+    'Add New Order, staff' => [ADMIN_PREFIX . '/order/new', true, null],
+    'admin page, no staff' => [ADMIN_PREFIX . '/order/new', false, ['result' => []]],
+    'public page, staff' => ['/order', true, ['result' => []]],
 ]);
 
 test('a closed store answers a product page with 404', function (): void {
@@ -83,6 +113,7 @@ test('a closed store answers a product page with 404', function (): void {
             return null;
         }
     };
+    $di['request'] = Request::create('/order');
 
     expect(fn () => Service::storeGate($di, 'guest', 'product', 'get', new stdClass(), ['id' => 1]))
         ->toThrow(fn (ClientFence\InformationException $e) => expect([$e->getMessage(), $e->getCode()])->toBe(['Product not found', 404]));

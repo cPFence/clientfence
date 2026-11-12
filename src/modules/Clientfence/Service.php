@@ -491,6 +491,10 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         if ($deny === null) {
             return null;
         }
+        // Admin pages list TLDs through guest calls (Add New Order, a hosting product's free domains): the gate closes the public store only.
+        if ($role === 'guest' && strncasecmp(\ClientFence\Http\RequestFactory::getRoutePath($di['request']), ADMIN_PREFIX, strlen(ADMIN_PREFIX)) === 0 && $di['auth']->isAdminLoggedIn()) {
+            return null;
+        }
 
         $clientId = match ($role) {
             'client' => (int) (method_exists($identity, 'getId') ? $identity->getId() : ($identity->id ?? 0)),
