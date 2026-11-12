@@ -1404,6 +1404,13 @@ a.list-group-item {
   font-weight: 500;
 }
 
+// The invoice tabs' count badges sit centred beside their labels.
+#invoice-tab .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
   color: var(--bs-secondary-color);
 }
