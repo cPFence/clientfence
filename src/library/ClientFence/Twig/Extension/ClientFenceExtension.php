@@ -425,7 +425,8 @@ class ClientFenceExtension
             return sprintf('%d %s', $numberOfUnits, $text);
         }
 
-        return '';
+        // ClientFence core patch: a time of this very second reads "0 seconds", so "Last run :time ago" never shows an empty time.
+        return sprintf('%d %s', 0, __trans('seconds'));
     }
 
     #[AsTwigFilter('trans')]

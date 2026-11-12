@@ -101,6 +101,12 @@ test('daysleft returns 0 for null', function (): void {
     expect($extension->daysleft(null))->toBe(0);
 });
 
+test('timeago shows 0 seconds for the current second', function (): void {
+    $extension = makeClientFenceTwigExtension();
+    expect($extension->timeago(date('Y-m-d H:i:s')))->toMatch('/^[01] \\S+$/')
+        ->and($extension->timeago(date('Y-m-d H:i:s', time() - 120)))->toStartWith('2 ');
+});
+
 test('fileSize returns formatted string for a size', function (): void {
     $extension = makeClientFenceTwigExtension();
     expect($extension->fileSize(1024))->toBe(ClientFence\Tools::humanReadableBytes(1024));
