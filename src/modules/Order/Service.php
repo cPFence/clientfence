@@ -1978,7 +1978,7 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
-    public function cancelFromOrder(Order|\Model_ClientOrder $order, $reason = null, $skipEvent = false): bool
+    public function cancelFromOrder(Order|\Model_ClientOrder $order, $reason = null, $skipEvent = false, bool $firstInvoice = false): bool
     {
         $orderId = $this->orderId($order);
         $this->assertOrderCanBeCanceled($order);
@@ -1988,7 +1988,7 @@ class Service implements InjectionAwareInterface
         $subscriptionService->cancelForOrder($order instanceof Order ? $this->getLegacyOrder($order) : $order);
 
         $this->beginCancellation($order, $skipEvent);
-        $this->completeCancellation($order, $reason, $skipEvent);
+        $this->completeCancellation($order, $reason, $skipEvent, $firstInvoice);
 
         $productService = $this->di['mod_service']('Product');
         $productService->releaseReservedPromoRedemptionsForOrder($order, 'order_canceled');
@@ -2000,7 +2000,7 @@ class Service implements InjectionAwareInterface
             $this->di['events_manager']->fire(['event' => 'onAfterAdminOrderCancel', 'params' => ['id' => $orderId]]);
         }
 
-        $this->cancelAddons($order, $reason, $skipEvent);
+        $this->cancelAddons($order, $reason, $skipEvent, $firstInvoice);
 
         $this->di['logger']->info('Canceled order #%s', $orderId);
 
@@ -2009,7 +2009,7 @@ class Service implements InjectionAwareInterface
 
     // ClientFence core patch: the addons go with their service. They stayed active, and the cron kept
     // invoicing them and paying them from the client's credit.
-    private function cancelAddons(Order|\Model_ClientOrder $order, $reason, bool $skipEvent): void
+    private function cancelAddons(Order|\Model_ClientOrder $order, $reason, bool $skipEvent, bool $firstInvoice = false): void
     {
         if (!$this->orderIsGroupMaster($order)) {
             return;
@@ -2017,7 +2017,7 @@ class Service implements InjectionAwareInterface
         foreach ($this->getOrderAddonsList($order) as $addon) {
             if (in_array($this->orderStatus($addon), [Order::STATUS_ACTIVE, Order::STATUS_SUSPENDED, Order::STATUS_FAILED_RENEW], true)) {
                 try {
-                    $this->cancelFromOrder($addon, $reason, $skipEvent);
+                    $this->cancelFromOrder($addon, $reason, $skipEvent, $firstInvoice);
                 } catch (\Throwable $e) {
                     $this->di['logger']->warning('Could not cancel addon order #%s of #%s: %s', $this->orderId($addon), $this->orderId($order), $e->getMessage());
                 }
@@ -2110,7 +2110,7 @@ class Service implements InjectionAwareInterface
         $this->_callOnService($order, Order::ACTION_CANCEL);
     }
 
-    private function completeCancellation(Order|\Model_ClientOrder $order, $reason, bool $skipEvent): void
+    private function completeCancellation(Order|\Model_ClientOrder $order, $reason, bool $skipEvent, bool $firstInvoice = false): void
     {
         $orderId = $this->orderId($order);
 
@@ -2135,23 +2135,36 @@ class Service implements InjectionAwareInterface
             ['order_id' => $orderId, 'name' => self::META_CANCEL_AT_PERIOD_END],
         );
 
-        $this->cancelOpenInvoices($orderId, 'The order was cancelled.');
+        $this->cancelOpenInvoices($orderId, 'The order was cancelled.', $firstInvoice);
     }
 
     /**
      * ClientFence core patch: the order's open renewal invoice (one per order) and its waiting upgrade invoice
      * are cancelled when the order is cancelled or deleted. They stayed payable: the next credit paid them for
-     * a service that was gone, or brought the cancelled order back for a new period.
+     * a service that was gone, or brought the cancelled order back for a new period. When staff cancel or delete
+     * the order, as WHMCS, its unpaid first invoice too ($firstInvoice), once every order on it is cancelled; a
+     * cancellation at the period end (or by the cron) keeps it due, since the service was used. A line of no order
+     * (a staff or imported charge) keeps an invoice open; the gateway fee does not.
      */
-    private function cancelOpenInvoices(int $orderId, string $why): void
+    private function cancelOpenInvoices(int $orderId, string $why, bool $firstInvoice = false): void
     {
         Upgrades::cancelWaiting($this->di, $orderId, $why);
+        // One checkout makes one invoice for several orders: the ones already cancelled count as this one.
+        $orders = [(string) $orderId];
+        $others = !$firstInvoice ? [] : $this->di['dbal']->fetchFirstColumn('SELECT DISTINCT other.rel_id FROM invoice_item ii JOIN invoice_item other ON other.invoice_id = ii.invoice_id AND other.type = ii.type
+            WHERE ii.type = :type AND ii.rel_id = :order_id AND other.rel_id <> :order_id', ['type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId]);
+        if ($others !== []) {
+            $orders = array_merge($orders, array_map('strval', $this->di['dbal']->fetchFirstColumn('SELECT id FROM client_order WHERE id IN (?) AND status = ?', [array_map('intval', $others), Order::STATUS_CANCELED], [\Doctrine\DBAL\ArrayParameterType::INTEGER])));
+        }
+        $in = array_combine(array_map(static fn (int $i): string => 'order' . $i, array_keys($orders)), $orders);
         // ClientFence core patch: a renewal's recurring discount belongs to the same order.
         $this->di['dbal']->executeStatement(
             'UPDATE invoice i SET i.status = :canceled, i.updated_at = :now WHERE i.status = :unpaid
-                AND EXISTS (SELECT 1 FROM invoice_item ii WHERE ii.invoice_id = i.id AND ii.type = :type AND ii.rel_id = :order_id AND ii.task = :renew)
-                AND NOT EXISTS (SELECT 1 FROM invoice_item other WHERE other.invoice_id = i.id AND NOT (other.rel_id = :order_id AND (other.type = :type OR other.unit = :discount)))',
-            ['canceled' => \Model_Invoice::STATUS_CANCELED, 'now' => date('Y-m-d H:i:s'), 'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'discount' => 'discount'],
+                AND EXISTS (SELECT 1 FROM invoice_item ii WHERE ii.invoice_id = i.id AND ii.type = :type AND ii.rel_id = :order_id AND ii.task IN (:renew, :activate))
+                AND NOT EXISTS (SELECT 1 FROM invoice_item other WHERE other.invoice_id = i.id AND NOT (COALESCE(other.task, :none) = :fee
+                    OR ((other.type = :type OR COALESCE(other.unit, :none) IN (:discount, :setup))
+                        AND COALESCE(other.rel_id, :none) IN (:' . implode(', :', array_keys($in)) . '))))',
+            ['canceled' => \Model_Invoice::STATUS_CANCELED, 'now' => date('Y-m-d H:i:s'), 'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'activate' => $firstInvoice ? \Model_InvoiceItem::TASK_ACTIVATE : \Model_InvoiceItem::TASK_RENEW, 'fee' => \ClientFence\Mod\Invoice\GatewayFees::TASK, 'discount' => 'discount', 'setup' => 'service', 'none' => ''] + $in,
         );
     }
 
@@ -2272,7 +2285,7 @@ class Service implements InjectionAwareInterface
             $this->di['logger']->info("{$e->getMessage()} in {$e->getFile()} : {$e->getFile()}");
         }
         if ($orderStatus != Order::STATUS_PENDING_SETUP) {
-            $this->cancelOpenInvoices($orderId, 'The order was deleted.');
+            $this->cancelOpenInvoices($orderId, 'The order was deleted.', true);
         }
 
         $productService = $this->di['mod_service']('Product');

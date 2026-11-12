@@ -443,7 +443,7 @@ test('cancels an order immediately when cancellation timing is omitted', functio
     $service = Mockery::mock(Service::class);
     $service->shouldReceive('cancelFromOrder')
         ->once()
-        ->with($order, 'Customer request', false)
+        ->with($order, 'Customer request', false, true)
         ->andReturn(true);
 
     $api->setService($service);

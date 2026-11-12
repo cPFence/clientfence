@@ -305,7 +305,8 @@ class Admin extends \ClientFence\Api\AbstractApi
             return $this->getService()->scheduleCancellationFromOrder($order, $reason);
         }
 
-        return $this->getService()->cancelFromOrder($order, $reason, $skip_event);
+        // Staff cancelling the order also cancel its unpaid first invoice, as WHMCS.
+        return $this->getService()->cancelFromOrder($order, $reason, $skip_event, true);
     }
 
     /**

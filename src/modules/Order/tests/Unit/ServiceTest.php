@@ -2951,7 +2951,7 @@ test('a cancellation scheduled at the period end covers the active addons, and t
     $service->shouldReceive('getOrderAddonsList')->with($master)->andReturn([$addon, $gone]);
     $service->shouldReceive('updateOrderMeta')->once()->with($master, [Service::META_CANCEL_AT_PERIOD_END => '1']);
     $service->shouldReceive('updateOrderMeta')->once()->with($addon, [Service::META_CANCEL_AT_PERIOD_END => '1']);
-    $service->shouldReceive('cancelFromOrder')->once()->with($addon, 'Subscription ended at the payment gateway', false)->andReturn(true);
+    $service->shouldReceive('cancelFromOrder')->once()->with($addon, 'Subscription ended at the payment gateway', false, false)->andReturn(true);
     $service->shouldNotReceive('cancelFromOrder')->with($gone, Mockery::any(), Mockery::any());
     $service->setDi($di);
 
@@ -2991,10 +2991,10 @@ test('deleteFromOrder cancels subscriptions before deletion and cancels open inv
     expect($serviceMock->deleteFromOrder($order))->toBeTrue();
 });
 
-test('cancelOpenInvoices cancels discounted renewals with a gateway fee and preserves invoices shared with another order', function (): void {
+test('cancelOpenInvoices cancels discounted renewals with a gateway fee, the first invoice only when staff cancel, and preserves invoices with other charges', function (bool $firstInvoice, array $expected): void {
     $connection = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $connection->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, updated_at TEXT)');
-    $connection->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, unit TEXT)');
+    $connection->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, unit TEXT, title TEXT)');
     foreach ([40, 41] as $id) {
         $connection->insert('invoice', ['id' => $id, 'status' => 'unpaid']);
         $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'order', 'rel_id' => '1', 'task' => 'renew', 'unit' => 'service']);
@@ -3003,9 +3003,26 @@ test('cancelOpenInvoices cancels discounted renewals with a gateway fee and pres
     $connection->insert('invoice_item', ['invoice_id' => 41, 'type' => 'order', 'rel_id' => '2', 'task' => 'renew', 'unit' => 'service']);
     // The gateway fee of a payment the client started (Invoice/GatewayFees.php, no rel_id) does not keep the renewal open.
     $connection->insert('invoice_item', ['invoice_id' => 40, 'type' => 'custom', 'task' => 'gateway_fee']);
+    // The first invoice, with its setup fee, as WHMCS; shared with order 2 (still active) it stays, with order 3 (cancelled) it goes.
+    $connection->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT)');
+    $connection->insert('client_order', ['id' => 2, 'status' => 'active']);
+    $connection->insert('client_order', ['id' => 3, 'status' => 'canceled']);
+    foreach ([42 => null, 43 => '2', 44 => '3'] as $id => $other) {
+        $connection->insert('invoice', ['id' => $id, 'status' => 'unpaid']);
+        $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'order', 'rel_id' => '1', 'task' => 'activate', 'unit' => 'service']);
+        $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'custom', 'rel_id' => '1', 'unit' => 'service']);
+        if ($other !== null) {
+            $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'order', 'rel_id' => $other, 'task' => 'activate', 'unit' => 'service']);
+        }
+    }
+    // A charge staff added on the invoice (no order, no unit) keeps it open.
+    $connection->insert('invoice', ['id' => 45, 'status' => 'unpaid']);
+    $connection->insert('invoice_item', ['invoice_id' => 45, 'type' => 'order', 'rel_id' => '1', 'task' => 'activate', 'unit' => 'service']);
+    $connection->insert('invoice_item', ['invoice_id' => 45, 'type' => 'custom', 'title' => 'Custom installation']);
 
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
     $dbal->shouldReceive('fetchAllAssociative')->once()->andReturn([]);
+    $dbal->shouldReceive('fetchFirstColumn')->andReturnUsing(fn (string $sql, array $params = [], array $types = []): array => $connection->fetchFirstColumn($sql, $params, $types));
     $dbal->shouldReceive('executeStatement')->once()->andReturnUsing(function (string $sql, array $params) use ($connection): int {
         // SQLite requires an explicit alias and unqualified assignment columns.
         $sql = str_replace(['UPDATE invoice i SET i.status', 'i.updated_at ='], ['UPDATE invoice AS i SET status', 'updated_at ='], $sql);
@@ -3017,10 +3034,14 @@ test('cancelOpenInvoices cancels discounted renewals with a gateway fee and pres
     $service = new Service();
     $service->setDi($di);
 
-    (new ReflectionMethod(Service::class, 'cancelOpenInvoices'))->invoke($service, 1, 'The order was cancelled.');
+    (new ReflectionMethod(Service::class, 'cancelOpenInvoices'))->invoke($service, 1, 'The order was cancelled.', $firstInvoice);
 
-    expect($connection->fetchFirstColumn('SELECT status FROM invoice ORDER BY id'))->toBe(['canceled', 'unpaid']);
-});
+    expect($connection->fetchFirstColumn('SELECT status FROM invoice ORDER BY id'))->toBe($expected);
+})->with([
+    'staff cancel or delete' => [true, ['canceled', 'unpaid', 'canceled', 'unpaid', 'canceled', 'unpaid']],
+    // At the period end (or by the cron) the service was used: its first invoice stays due.
+    'period end' => [false, ['canceled', 'unpaid', 'unpaid', 'unpaid', 'unpaid', 'unpaid']],
+]);
 
 test('cancelFromOrder cancels linked subscriptions before the service action', function (): void {
     $clientOrderModel = createEntity(Order::class);
@@ -3112,7 +3133,7 @@ test('cancelFromOrder cancels the addons of a RedBean order too (staff Retry)', 
     $serviceMock->shouldReceive('saveStatusChange');
     $serviceMock->shouldReceive('getOrderAddonsList')->once()->with($master)->andReturn([$addon, $done]);
     $serviceMock->shouldReceive('cancelFromOrder')->with($master, null, true)->passthru();
-    $serviceMock->shouldReceive('cancelFromOrder')->once()->with($addon, null, true)->andReturn(true);
+    $serviceMock->shouldReceive('cancelFromOrder')->once()->with($addon, null, true, false)->andReturn(true);
     $serviceMock->shouldNotReceive('cancelFromOrder')->with($done, Mockery::any(), Mockery::any());
     $serviceMock->setDi($di);
 
