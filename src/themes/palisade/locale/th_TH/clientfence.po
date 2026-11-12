@@ -23861,6 +23861,99 @@ msgid "Tax the fee"
 msgstr "คิดภาษีกับค่าธรรมเนียม"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "หลังคำสั่งซื้อฟรีที่ต่ออายุ (ทดลองใช้ฟรี) ลูกค้าที่ไม่มีวิธีการชำระเงินที่บันทึกไว้จะถูกส่งไปที่ eWAY เพื่อบันทึกบัตร"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "บัตร"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "การชำระเงินด้วยบัตรบนหน้าชำระเงินของ eWAY ลูกค้าบันทึกบัตรของตนที่นั่นได้ และใบแจ้งหนี้จะถูกเรียกเก็บจากบัตรนั้นโดยอัตโนมัติ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "บัตรที่บันทึกไว้กับ eWAY"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "ลูกค้าบันทึกบัตรในหน้า \"วิธีการชำระเงิน\" ได้โดยไม่ต้องชำระใบแจ้งหนี้"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "คีย์ API (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key. โหมดทดสอบใช้คีย์ API และรหัสผ่านของบัญชี sandbox eWAY ของคุณ [วิธีตั้งค่า eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "ในหน้าใบแจ้งหนี้ ลูกค้าที่มีบัตรที่บันทึกไว้ชำระเงินได้ทันทีโดยไม่ต้องไปที่ eWAY"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "คีย์ API (sandbox):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "บันทึกบัตรกับ eWAY แล้วใบแจ้งหนี้ของคุณจะถูกเรียกเก็บจากบัตรนั้นโดยอัตโนมัติ"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "การบันทึกบัตรกับ eWAY ไม่พร้อมใช้งาน"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "คุณไม่มีบัตรที่บันทึกไว้กับ eWAY"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "eWAY ไม่ตอบกลับ :path: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "eWAY ไม่ได้คืนเงิน: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "eWAY ไม่ได้บันทึกบัตร: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "eWAY ไม่ได้เริ่มการชำระเงิน: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY ไม่พร้อมใช้งาน"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "การชำระเงิน eWAY :id เป็นสกุลเงิน :currency ส่วนใบแจ้งหนี้เป็นสกุลเงิน :invoice"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "การชำระเงิน eWAY :id ไม่ใช่ของใบแจ้งหนี้ ClientFence"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "ไม่พบการชำระเงิน eWAY :id"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "eWAY ปฏิเสธคีย์ API หรือรหัสผ่าน (คีย์ใช้งานจริงและคีย์ sandbox ต่างกัน): :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "eWAY ปฏิเสธการชำระเงิน: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "การส่งกลับจาก eWAY ไม่ระบุการชำระเงิน"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "ยอดคงเหลือในบัญชี"

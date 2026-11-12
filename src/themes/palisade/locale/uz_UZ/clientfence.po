@@ -24133,6 +24133,99 @@ msgid "Tax the fee"
 msgstr "Komissiyaga soliq solish"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "Yangilanadigan bepul buyurtmadan (bepul sinov) keyin saqlangan to'lov usuli yo'q mijoz kartani saqlash uchun eWAY'ga yo'naltiriladi."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "Karta"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "eWAY to'lov sahifasida karta bilan to'lov. Mijozlar kartasini o'sha yerda saqlashi mumkin va hisob-fakturalari keyin shu kartadan avtomatik undiriladi."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "eWAY'da saqlangan karta"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "Mijozlar hisob-fakturani to'lamasdan \"To'lov usullari\" sahifasida kartani saqlashi mumkin."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "Jonli API kaliti:"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key. Test rejimi eWAY sandbox hisobingizning API kaliti va parolidan foydalanadi. [eWAY'ni qanday sozlash](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "Hisob-faktura sahifasida saqlangan kartasi bor mijoz eWAY'ga o'tmasdan darhol to'lashi mumkin."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "Sandbox API kaliti:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "eWAY'da kartani saqlang, shundan so'ng hisob-fakturalaringiz shu kartadan avtomatik undiriladi."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "eWAY bilan kartani saqlash mavjud emas."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "Sizda eWAY'da saqlangan karta yo'q."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "eWAY :path so'roviga javob bermadi: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "eWAY pulni qaytarmadi: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "eWAY kartani saqlamadi: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "eWAY to'lovni boshlamadi: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY mavjud emas."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "eWAY to'lovi :id :currency valyutasida, hisob-faktura esa :invoice valyutasida"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "eWAY to'lovi :id ClientFence hisob-fakturasi uchun emas"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "eWAY to'lovi :id topilmadi"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "eWAY API kaliti yoki parolni rad etdi (jonli va sandbox kalitlari farq qiladi): :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "eWAY to'lovni rad etdi: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "eWAY'dan qaytishda hech qanday to'lov ko'rsatilmagan"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "Hisob balansi"

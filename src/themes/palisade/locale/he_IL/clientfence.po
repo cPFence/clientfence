@@ -29707,6 +29707,99 @@ msgid "Tax the fee"
 msgstr "חיוב מס על העמלה"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "אחרי הזמנה חינמית שמתחדשת (ניסיון חינם), לקוח בלי אמצעי תשלום שמור מועבר ל-eWAY כדי לשמור כרטיס."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "כרטיס"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "תשלומי כרטיס בעמוד התשלום של eWAY. לקוחות יכולים לשמור שם את הכרטיס שלהם, ומאותו רגע החשבוניות שלהם מחויבות בו אוטומטית."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "כרטיס שמור ב-eWAY"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "לקוחות יכולים לשמור כרטיס בעמוד \"אמצעי תשלום\" בלי לשלם חשבונית."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "מפתח API (חי):"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key. מצב הבדיקה משתמש במפתח ה-API ובסיסמה של חשבון ה-sandbox שלכם ב-eWAY. [איך מגדירים את eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "בעמוד החשבונית, לקוח עם כרטיס שמור יכול לשלם מיד בלי לעבור ל-eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "מפתח API (sandbox):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "שמרו כרטיס ב-eWAY, ומאותו רגע החשבוניות שלכם יחויבו בו אוטומטית."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "שמירת כרטיס ב-eWAY אינה זמינה."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "אין לכם כרטיס שמור ב-eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "eWAY לא ענה ל-:path: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "eWAY לא ביצע את ההחזר: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "eWAY לא שמר את הכרטיס: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "eWAY לא התחיל את התשלום: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY אינו זמין."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "תשלום eWAY :id הוא ב-:currency, והחשבונית ב-:invoice"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "תשלום eWAY :id אינו של חשבונית ClientFence"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "תשלום eWAY :id לא נמצא"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "eWAY דחה את מפתח ה-API או את הסיסמה (מפתחות חי ו-sandbox שונים): :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "eWAY דחה את התשלום: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "החזרה מ-eWAY לא מציינת תשלום"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "יתרת חשבון"

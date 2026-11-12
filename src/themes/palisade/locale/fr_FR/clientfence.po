@@ -25483,6 +25483,99 @@ msgid "Tax the fee"
 msgstr "Appliquer la taxe aux frais"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "Après une commande gratuite qui se renouvelle (un essai gratuit), un client sans moyen de paiement enregistré est envoyé vers eWAY pour enregistrer une carte."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "Carte"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "Paiements par carte sur la page de paiement d'eWAY. Les clients peuvent y enregistrer leur carte et leurs factures sont ensuite débitées automatiquement sur celle-ci."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "Carte enregistrée chez eWAY"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "Les clients peuvent enregistrer une carte sur leur page « Moyens de paiement » sans payer de facture."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "Clé API live :"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key. Le mode test utilise la clé API et le mot de passe de votre compte sandbox eWAY. [Comment configurer eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "Sur la page de la facture, un client ayant une carte enregistrée peut payer immédiatement sans passer par eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "Clé API sandbox :"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "Enregistrez une carte chez eWAY et vos factures seront ensuite débitées automatiquement sur celle-ci."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "L'enregistrement d'une carte chez eWAY n'est pas disponible."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "Vous n'avez aucune carte enregistrée chez eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "eWAY n'a pas répondu à :path : :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "eWAY n'a pas effectué le remboursement : :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "eWAY n'a pas enregistré la carte : :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "eWAY n'a pas démarré le paiement : :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY n'est pas disponible."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "Le paiement eWAY :id est en :currency, la facture en :invoice"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "Le paiement eWAY :id ne concerne pas une facture ClientFence"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "Paiement eWAY :id introuvable"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "eWAY a refusé la clé API ou le mot de passe (les clés live et sandbox diffèrent) : :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "eWAY a refusé le paiement : :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "Le retour d'eWAY ne désigne aucun paiement"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "Solde du compte"

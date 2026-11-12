@@ -25425,6 +25425,99 @@ msgid "Tax the fee"
 msgstr "فرض ضريبة على الرسوم"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "بعد طلب مجاني يتجدد (فترة تجريبية مجانية)، يُحوَّل العميل الذي ليس لديه طريقة دفع محفوظة إلى eWAY لحفظ بطاقة."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "بطاقة"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "مدفوعات البطاقات على صفحة الدفع في eWAY. يمكن للعملاء حفظ بطاقتهم هناك فتُحصَّل فواتيرهم منها تلقائيًا."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "بطاقة محفوظة لدى eWAY"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "يمكن للعملاء حفظ بطاقة في صفحة «طرق الدفع» دون دفع فاتورة."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "مفتاح API (الإنتاج):"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key. يستخدم وضع الاختبار مفتاح API وكلمة المرور لحساب eWAY التجريبي (sandbox) الخاص بك. [كيفية إعداد eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "في صفحة الفاتورة، يمكن للعميل الذي لديه بطاقة محفوظة أن يدفع فورًا دون الذهاب إلى eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "مفتاح API التجريبي (sandbox):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "احفظ بطاقة لدى eWAY وستُحصَّل فواتيرك منها تلقائيًا بعد ذلك."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "حفظ بطاقة لدى eWAY غير متاح."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "ليس لديك بطاقة محفوظة لدى eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "لم يستجب eWAY للطلب :path: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "لم يُجرِ eWAY الاسترداد: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "لم يحفظ eWAY البطاقة: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "لم يبدأ eWAY الدفع: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY غير متاح."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "دفعة eWAY :id بعملة :currency، بينما الفاتورة بعملة :invoice"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "دفعة eWAY :id ليست لفاتورة في ClientFence"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "لم يتم العثور على دفعة eWAY :id"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "رفض eWAY مفتاح API أو كلمة المرور (مفتاحا الإنتاج والتجربة مختلفان): :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "رفض eWAY الدفعة: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "العودة من eWAY لا تحدد أي دفعة"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "رصيد الحساب"

@@ -26549,6 +26549,99 @@ msgid "Tax the fee"
 msgstr "對手續費課稅"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "續約的免費訂單（免費試用）結束後，沒有已儲存付款方式的客戶會被導向 eWAY 儲存信用卡。"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "信用卡"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "在 eWAY 的付款頁面使用信用卡付款。客戶可以在那裡儲存信用卡，之後發票會自動從該卡扣款。"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "已儲存在 eWAY 的卡片"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "客戶可以在「付款方式」頁面儲存信用卡，無需支付發票。"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "正式環境 API 金鑰："
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key。測試模式使用您的 eWAY 沙盒帳戶的 API 金鑰和密碼。[如何設定 eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "在發票頁面，已儲存信用卡的客戶可以直接付款，無需跳轉到 eWAY。"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "沙盒 API 金鑰："
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "在 eWAY 儲存一張信用卡，之後您的發票會自動從該卡扣款。"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "無法使用 eWAY 儲存信用卡。"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "您沒有儲存在 eWAY 的信用卡。"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "eWAY 未回應 :path：:error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "eWAY 未完成退款：:error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "eWAY 未儲存信用卡：:error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "eWAY 未發起付款：:error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY 無法使用。"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "eWAY 付款 :id 的幣別為 :currency，發票的幣別為 :invoice"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "eWAY 付款 :id 不屬於 ClientFence 發票"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "找不到 eWAY 付款 :id"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "eWAY 拒絕了 API 金鑰或密碼（正式環境和沙盒的金鑰不同）：:error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "eWAY 拒絕了付款：:error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "eWAY 的回傳未指明任何付款"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "帳戶餘額"

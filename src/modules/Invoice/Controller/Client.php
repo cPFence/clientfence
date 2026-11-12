@@ -68,6 +68,81 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/invoice/paytabs/:hash', 'get_invoice_paytabs', ['hash' => '[a-z0-9]+'], static::class);
         $app->get('/invoice/paytabs-paid', 'get_invoice_paytabs_paid', [], static::class);
         $app->post('/invoice/paytabs-paid', 'get_invoice_paytabs_paid', [], static::class);
+        // ClientFence: eWAY (Payment_Adapter_Eway), the same ways; eWAY sends no notices, its return carries the AccessCode.
+        $app->get('/payment-methods/eway', 'get_eway_save', [], static::class);
+        $app->get('/payment-methods/eway/saved', 'get_eway_saved', [], static::class);
+        $app->get('/invoice/eway/:hash', 'get_invoice_eway', ['hash' => '[a-z0-9]+'], static::class);
+        $app->get('/invoice/eway-paid', 'get_invoice_eway_paid', [], static::class);
+    }
+
+    /** ClientFence: sends the account owner to eWAY to save a card without paying; ?next= is where they go after. */
+    public function get_eway_save(\ClientFence\App $app): Response
+    {
+        $clientId = $this->ownerSignedIn();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::eway($this->di);
+        if ($adapter === null || !$adapter->option('save_only')) {
+            throw new InformationException('Saving a card with eWAY is not available.');
+        }
+        $next = (string) $app->getRequest()->query->get('next', '');
+        $next = preg_match('#^order/service/manage/\d+$#', $next) === 1 ? $next : 'payment-methods';
+
+        return $app->redirectUrl($adapter->cardSetup($clientId, (string) $this->di['url']->link('payment-methods/eway/saved', ['next' => $next])));
+    }
+
+    /** ClientFence: back from eWAY (without the session cookie): keeps the card for the client its setup names. */
+    public function get_eway_saved(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::eway($this->di) ?? throw new InformationException('Your card was not saved. Please try again.');
+        $adapter->cardSaved((string) $app->getRequest()->query->get('AccessCode', ''));
+        $next = (string) $app->getRequest()->query->get('next', '');
+
+        return $this->movesOn(preg_match('#^order/service/manage/\d+$#', $next) === 1 ? $next : 'payment-methods');
+    }
+
+    /** ClientFence: pays an unpaid invoice on eWAY's page: saving the card for its signed-in owner, or once (?once=1). */
+    public function get_invoice_eway(\ClientFence\App $app, $hash): Response
+    {
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::eway($this->di) ?? throw new InformationException('eWAY is not available.');
+        $once = (string) $app->getRequest()->query->get('once', '') === '1';
+        if ($once && !$adapter->option('pay_once')) {
+            throw new InformationException('eWAY is not available.');
+        }
+        $clientId = $once ? null : $this->ownerSignedIn();
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
+        if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
+            return $app->redirect('invoice');
+        }
+        // A charge of the saved card not recorded yet: a new payment would pay twice.
+        if (\ClientFence\Mod\Invoice\PendingPayments::forInvoice($this->di, (int) $invoice->id) !== null) {
+            return $app->redirect('invoice/' . $invoice->hash);
+        }
+
+        return $app->redirectUrl($adapter->checkout($invoice, !$once));
+    }
+
+    /** ClientFence: back from eWAY (without the session cookie): records the payment of its AccessCode and shows the invoice of the hash. */
+    public function get_invoice_eway_paid(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::eway($this->di);
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ?', [(string) $app->getRequest()->query->get('hash', '')]);
+        if ($adapter === null || !$invoice instanceof \Model_Invoice) {
+            return $this->movesOn('invoice');
+        }
+        try {
+            $this->di['mod_service']('Invoice', 'Transaction')->createAndProcess([
+                'invoice_id' => (int) $invoice->id,
+                'gateway_id' => $adapter->gatewayId(),
+                'source' => 'eway_return',
+                'get' => ['AccessCode' => (string) $app->getRequest()->query->get('AccessCode', '')],
+            ]);
+        } catch (\Payment_Exception) {
+            // Nothing paid (the client cancelled at eWAY): the error stays on the transaction, the client sees the invoice.
+        }
+        $paid = $this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $invoice->id]) === \Model_Invoice::STATUS_PAID;
+
+        return $this->movesOn(($paid ? 'invoice/thank-you/' : 'invoice/') . $invoice->hash);
     }
 
     /** ClientFence: sends the account owner to PayTabs to save a card without paying; ?next= is where they go after. */

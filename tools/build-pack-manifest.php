@@ -18,6 +18,7 @@ $paths = [
     'library/Payment/Adapter/CustomEgp.php',
     'library/Payment/Adapter/PayPalAutoPay.php',
     'library/Payment/Adapter/PayTabs.php',
+    'library/Payment/Adapter/Eway.php',
     'library/Registrar/Adapter/Dynadot.php',
     'library/Registrar/Adapter/Enom.php',
     'library/Registrar/Adapter/Inwx.php',

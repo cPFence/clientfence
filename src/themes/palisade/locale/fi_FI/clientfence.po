@@ -26471,6 +26471,99 @@ msgid "Tax the fee"
 msgstr "Veloita vero maksusta"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "Uusiutuvan ilmaistilauksen (ilmainen kokeilu) jälkeen asiakas, jolla ei ole tallennettua maksutapaa, ohjataan eWAY-palveluun kortin tallentamista varten."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "Kortti"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "Korttimaksut eWAY-palvelun maksusivulla. Asiakkaat voivat tallentaa korttinsa siellä, ja heidän laskunsa veloitetaan sen jälkeen automaattisesti kortilta."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "eWAY-palveluun tallennettu kortti"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "Asiakkaat voivat tallentaa kortin Maksutavat-sivullaan maksamatta laskua."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "Live API -avain:"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key. Testitila käyttää eWAY-sandbox-tilisi API-avainta ja salasanaa. [Näin otat eWAY-palvelun käyttöön](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "Laskusivulla asiakas, jolla on tallennettu kortti, voi maksaa heti menemättä eWAY-palveluun."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "Sandbox API -avain:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "Tallenna kortti eWAY-palveluun, niin laskusi veloitetaan sen jälkeen automaattisesti kortilta."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "Kortin tallentaminen eWAY-palveluun ei ole käytettävissä."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "Sinulla ei ole eWAY-palveluun tallennettua korttia."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "eWAY ei vastannut kutsuun :path: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "eWAY ei tehnyt hyvitystä: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "eWAY ei tallentanut korttia: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "eWAY ei aloittanut maksua: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY ei ole käytettävissä."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "eWAY-maksu :id on valuutassa :currency, lasku valuutassa :invoice"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "eWAY-maksu :id ei kuulu ClientFence-laskulle"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "eWAY-maksua :id ei löytynyt"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "eWAY hylkäsi API-avaimen tai salasanan (live- ja sandbox-avaimet eroavat): :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "eWAY hylkäsi maksun: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "eWAY-palvelun paluuviesti ei sisällä maksua"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "Tilin saldo"

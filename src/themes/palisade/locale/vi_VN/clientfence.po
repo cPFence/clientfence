@@ -26045,6 +26045,99 @@ msgid "Tax the fee"
 msgstr "Tính thuế trên phí"
 
 # To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr "Sau một đơn hàng miễn phí được gia hạn (dùng thử miễn phí), khách hàng chưa lưu phương thức thanh toán sẽ được chuyển sang eWAY để lưu thẻ."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr "Thẻ"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr "Thanh toán bằng thẻ trên trang thanh toán của eWAY. Khách hàng có thể lưu thẻ tại đó và hóa đơn của họ sau đó sẽ được tự động trừ vào thẻ này."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
+msgstr "Thẻ đã lưu với eWAY"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
+msgstr "Khách hàng có thể lưu thẻ trên trang Phương thức thanh toán mà không cần thanh toán hóa đơn."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr "Khóa API chính thức:"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+msgstr "MYeWAY: My Account, API Key. Chế độ thử nghiệm dùng khóa API và mật khẩu của tài khoản sandbox eWAY của bạn. [Cách thiết lập eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr "Trên trang hóa đơn, khách hàng có thẻ đã lưu có thể thanh toán ngay mà không cần sang eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr "Khóa API sandbox:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
+msgstr "Lưu thẻ với eWAY, sau đó hóa đơn của bạn sẽ được tự động trừ vào thẻ này."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
+msgstr "Lưu thẻ với eWAY không khả dụng."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr "Bạn chưa lưu thẻ nào với eWAY."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr "eWAY không phản hồi :path: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr "eWAY không thực hiện hoàn tiền: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr "eWAY không lưu thẻ: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr "eWAY không bắt đầu thanh toán: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr "eWAY không khả dụng."
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr "Khoản thanh toán eWAY :id bằng :currency, còn hóa đơn bằng :invoice"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr "Khoản thanh toán eWAY :id không dành cho hóa đơn ClientFence"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr "Không tìm thấy khoản thanh toán eWAY :id"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr "eWAY đã từ chối khóa API hoặc mật khẩu (khóa chính thức và khóa sandbox khác nhau): :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr "eWAY đã từ chối khoản thanh toán: :error"
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
+msgstr "Phản hồi trả về từ eWAY không nêu khoản thanh toán nào"
+
+# To translate (tools/locales.py starter).
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Account balance"
 msgstr "Số dư tài khoản"

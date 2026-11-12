@@ -1,4 +1,4 @@
-{# ClientFence: the client's saved cards, PayPal account, PayPal billing agreement and PayTabs card (/payment-methods, Invoice/SavedCards.php): the method
+{# ClientFence: the client's saved cards, PayPal account, PayPal billing agreement, PayTabs card and eWAY card (/payment-methods, Invoice/SavedCards.php): the method
    invoices are charged to automatically, other saved cards, adding a card with Stripe's card form, and
    removing one. The card form runs in assets/src/js/cards.js. cards comes from invoice_card_list. #}
 {% extends "layout_default.html.twig" %}
@@ -11,12 +11,12 @@
 {% block content %}
 <div class="page-heading">
     <h1>{{ 'Payment methods'|trans }}</h1>
-    {% if cards.available or cards.paypal or cards.autopay or cards.paytabs %}
+    {% if cards.available or cards.paypal or cards.autopay or cards.paytabs or cards.eway %}
     <p>{{ 'The payment method marked "Pays invoices automatically" pays your invoices when they are due. You can also save one when you pay an invoice.'|trans }}</p>
     {% endif %}
 </div>
 
-{% if not cards.available and not cards.paypal and not cards.autopay and not cards.paytabs %}
+{% if not cards.available and not cards.paypal and not cards.autopay and not cards.paytabs and not cards.eway %}
     <div class="alert alert-info" role="status">{{ 'Saved payment methods are not available.'|trans }}</div>
 {% else %}
 <div data-clientfence-cards data-return-url="{{ 'payment-methods'|url }}">
@@ -94,6 +94,32 @@
             <div class="card-body">
                 <p class="text-secondary">{{ 'Save a card at PayTabs and your invoices are then charged to it automatically.'|trans }}</p>
                 <a class="btn btn-primary" href="{{ 'payment-methods/paytabs'|url }}">{{ 'Save a card for automatic payments'|trans }}</a>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% if cards.eway and (cards.eway.account or cards.eway.add) %}
+    {# ClientFence: a card saved on eWAY's payment page (Payment_Adapter_Eway), here or while paying an invoice. #}
+    <div class="card mb-4">
+        <div class="card-header"><h2>{{ 'Card saved with eWAY'|trans }}</h2></div>
+        {% if cards.eway.account %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <span dir="ltr">{{ cards.eway.account }}</span>
+                    <span class="d-flex flex-wrap align-items-center gap-2">
+                        {% if cards.eway.default %}
+                            <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
+                        {% else %}
+                            <button class="btn btn-sm btn-outline-primary" type="button" data-clientfence-card-call="invoice/eway_default">{{ 'Use for invoices'|trans }}</button>
+                        {% endif %}
+                        <button class="btn btn-sm btn-outline-danger" type="button" data-clientfence-card-call="invoice/eway_remove" data-confirm="{{ 'Remove this card?'|trans }}">{{ 'Remove'|trans }}</button>
+                    </span>
+                </li>
+            </ul>
+        {% else %}
+            <div class="card-body">
+                <p class="text-secondary">{{ 'Save a card at eWAY and your invoices are then charged to it automatically.'|trans }}</p>
+                <a class="btn btn-primary" href="{{ 'payment-methods/eway'|url }}">{{ 'Save a card for automatic payments'|trans }}</a>
             </div>
         {% endif %}
     </div>

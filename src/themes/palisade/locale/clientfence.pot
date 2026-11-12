@@ -2054,6 +2054,10 @@ msgstr ""
 msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to PayTabs to save a card."
 msgstr ""
 
+#: src/library/Payment/Adapter/Eway.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to eWAY to save a card."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
 msgid "After a move from WHMCS with the same Stripe account: for each client without a saved card, takes the default card (or the newest card) of the Stripe customer with the client's email."
 msgstr ""
@@ -4306,6 +4310,10 @@ msgstr ""
 msgid "Captcha on public forms"
 msgstr ""
 
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card"
+msgstr ""
+
 #: src/modules/Invoice/Api/Client.php
 msgid "Card ID was not passed"
 msgstr ""
@@ -4322,8 +4330,16 @@ msgstr ""
 msgid "Card payments on PayTabs' payment page. Clients can save their card there and their invoices are then charged to it automatically (ask PayTabs to turn on Recurring mode for the profile)."
 msgstr ""
 
+#: src/library/Payment/Adapter/Eway.php
+msgid "Card payments on eWAY's payment page. Clients can save their card there and their invoices are then charged to it automatically."
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Card saved with PayTabs"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Card saved with eWAY"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -5470,7 +5486,7 @@ msgstr ""
 msgid "Clients can also pay an invoice with PayPal without setting up automatic payments."
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Clients can also pay an invoice with a card without setting up automatic payments."
 msgstr ""
 
@@ -5484,6 +5500,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayTabs.php
 msgid "Clients can save a card on their Payment methods page without paying an invoice (PayTabs checks the card without charging it)."
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "Clients can save a card on their Payment methods page without paying an invoice."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
@@ -9950,7 +9970,7 @@ msgstr ""
 msgid "Free disk space"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
 msgid "Free orders:"
 msgstr ""
 
@@ -11754,7 +11774,7 @@ msgstr ""
 msgid "Invoice #:id not found"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php src/modules/Invoice/Statement.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php …
 msgid "Invoice :number"
 msgstr ""
 
@@ -12718,7 +12738,11 @@ msgstr ""
 msgid "List the IP Addresses assigned to the server (One per line)"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php
+#: src/library/Payment/Adapter/Eway.php
+msgid "Live API key:"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Live API password:"
 msgstr ""
 
@@ -12976,6 +13000,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig
 msgid "Lowercase"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -15486,7 +15514,7 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/PayTabs.php …
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php …
 msgid "Off"
 msgstr ""
 
@@ -15530,7 +15558,7 @@ msgstr ""
 msgid "Offer subscriptions for renewing services"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/PayTabs.php …
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php …
 msgid "On"
 msgstr ""
 
@@ -15552,6 +15580,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayTabs.php
 msgid "On the invoice page, a client with a saved card can pay at once without going to PayTabs."
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -16906,7 +16938,7 @@ msgstr ""
 msgid "Pay now with :account"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay now with :card"
 msgstr ""
 
@@ -16914,7 +16946,7 @@ msgstr ""
 msgid "Pay once with PayPal"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay once with a card"
 msgstr ""
 
@@ -16922,7 +16954,7 @@ msgstr ""
 msgid "Pay once without an agreement:"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay once without saving the card:"
 msgstr ""
 
@@ -16950,7 +16982,7 @@ msgstr ""
 msgid "Pay with PayPal and set up automatic payments"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay with a card and set up automatic payments"
 msgstr ""
 
@@ -16958,7 +16990,7 @@ msgstr ""
 msgid "Pay with the saved agreement:"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay with the saved card:"
 msgstr ""
 
@@ -20142,7 +20174,11 @@ msgstr ""
 msgid "Sandbox API key"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php
+#: src/library/Payment/Adapter/Eway.php
+msgid "Sandbox API key:"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Sandbox API password:"
 msgstr ""
 
@@ -20180,6 +20216,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Save a card at PayTabs and your invoices are then charged to it automatically."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card at eWAY and your invoices are then charged to it automatically."
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
@@ -20392,6 +20432,10 @@ msgstr ""
 
 #: src/modules/Invoice/Controller/Client.php
 msgid "Saving a card with PayTabs is not available."
+msgstr ""
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a card with eWAY is not available."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
@@ -21246,7 +21290,7 @@ msgstr ""
 msgid "Set up automatic payments with PayPal"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
 msgid "Set up on the Payment methods page:"
 msgstr ""
 
@@ -21534,7 +21578,7 @@ msgstr ""
 msgid "Sign in as the account owner to pay with PayPal."
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Sign in as the account owner to pay with a card."
 msgstr ""
 
@@ -22846,7 +22890,7 @@ msgstr ""
 msgid "The \":driver\" cache driver requires an installation identifier (\"info.instance_id\" in the configuration file) so that installations sharing the same server don't collide. Reinstall or update ClientFence to have one generated automatically, or set it manually."
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php src/library/Payment/Adapter/PayTabs.php …
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php …
 msgid "The \":pay_gateway\" payment gateway is not fully configured. Please configure the :missing"
 msgstr ""
 
@@ -23246,7 +23290,7 @@ msgstr ""
 msgid "The client has no saved PayPal account."
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php src/library/Payment/Adapter/Stripe.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php src/library/Payment/Adapter/Stripe.php
 msgid "The client has no saved card."
 msgstr ""
 
@@ -28091,6 +28135,10 @@ msgstr ""
 msgid "You have no card saved with PayTabs."
 msgstr ""
 
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no card saved with eWAY."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
 msgid "You have no hosting accounts yet."
 msgstr ""
@@ -28603,7 +28651,7 @@ msgstr ""
 msgid "Your renewal date stays %date%: %charge% for the %left% days left, less %credit% unused."
 msgstr ""
 
-#: src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
 msgstr ""
 
@@ -28853,6 +28901,50 @@ msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
 msgid "e.g. new-page or https://example.com"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not answer :path: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not make the refund: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not save the card: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY did not start the payment: :error"
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "eWAY is not available."
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is in :currency, the invoice in :invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id is not for a ClientFence invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY payment :id was not found"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the API key or password (live and sandbox keys differ): :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY refused the payment: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Eway.php
+msgid "eWAY return names no payment"
 msgstr ""
 
 #: src/modules/Product/templates/client/mod_product_options_form.html.twig
