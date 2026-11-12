@@ -622,6 +622,10 @@ msgstr ""
 msgid ":function: is enabled, potentially being a security concern."
 msgstr ""
 
+#: src/modules/Invoice/GatewayFees.php
+msgid ":gateway fee"
+msgstr ""
+
 #: src/modules/Servicehosting/Service.php
 msgid ":hosting for :domain"
 msgstr ""
@@ -1076,6 +1080,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid "A payment could not be processed (transaction #:id)"
+msgstr ""
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "A payment fee of :fee is added to the invoice."
 msgstr ""
 
 #: src/modules/Invoice/SavedCards.php
@@ -3330,6 +3338,10 @@ msgstr ""
 msgid "At most :max tickets can be merged at once."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "At the invoice's tax rate."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Attach PDF Copy to Invoice Emails"
 msgstr ""
@@ -5238,6 +5250,10 @@ msgstr ""
 msgid "Client groups"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Client groups that pay no fee"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
 msgid "Client groups without a limit"
 msgstr ""
@@ -5520,6 +5536,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "Clients who can order"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Clients who pay with this gateway pay this fee: a line added to the invoice, changed when they pick another gateway. Credit pays no fee. Check that your card scheme and local law allow surcharges."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Run.php
@@ -9662,7 +9682,7 @@ msgstr ""
 msgid "Fixed"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "Fixed amount"
 msgstr ""
 
@@ -11310,8 +11330,16 @@ msgstr ""
 msgid "In use."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "In your default currency; other currencies at the exchange rates."
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_settings.html.twig src/themes/admin_default/html/macro_functions.html.twig
 msgid "Inactive"
+msgstr ""
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "Includes a payment fee of :fee."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
@@ -17178,6 +17206,10 @@ msgstr ""
 msgid "Payment amount does not match the expected invoice total. Expected :expected, received :received."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Payment fee"
+msgstr ""
+
 #: src/modules/Invoice/Statement.php
 msgid "Payment for invoice :number"
 msgstr ""
@@ -17408,6 +17440,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Percentage"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Percentage of the amount due"
 msgstr ""
 
 #: src/modules/Security/Checks/webserver.php
@@ -22548,6 +22584,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Tax rules"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Tax the fee"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig

@@ -23818,3 +23818,44 @@ msgstr "ผู้เยี่ยมชมและลูกค้าจะเห
 #: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
 msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
 msgstr "ขณะเปิดอยู่ ผู้เยี่ยมชมและลูกค้าจะเห็นหน้าบำรุงรักษา (หรือไปยังที่อยู่เปลี่ยนเส้นทาง) และ API จะตอบว่าระบบกำลังอยู่ระหว่างการบำรุงรักษา พื้นที่ผู้ดูแลระบบยังเปิดอยู่ และพนักงานที่เข้าสู่ระบบแล้วยังเห็นพื้นที่ลูกค้า การอัปเดตระบบจะเปิดโหมดนี้เองระหว่างที่ทำงาน"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/GatewayFees.php
+msgid ":gateway fee"
+msgstr "ค่าธรรมเนียม :gateway"
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "A payment fee of :fee is added to the invoice."
+msgstr "ใบแจ้งหนี้จะมีค่าธรรมเนียมการชำระเงิน :fee เพิ่มเข้ามา"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "At the invoice's tax rate."
+msgstr "ตามอัตราภาษีของใบแจ้งหนี้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Client groups that pay no fee"
+msgstr "กลุ่มลูกค้าที่ไม่ต้องจ่ายค่าธรรมเนียม"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Clients who pay with this gateway pay this fee: a line added to the invoice, changed when they pick another gateway. Credit pays no fee. Check that your card scheme and local law allow surcharges."
+msgstr "ลูกค้าที่ชำระเงินผ่านช่องทางนี้ต้องจ่ายค่าธรรมเนียมนี้: เป็นรายการที่เพิ่มในใบแจ้งหนี้ และจะเปลี่ยนเมื่อเลือกช่องทางอื่น การชำระด้วยเครดิตลูกค้าไม่มีค่าธรรมเนียม ตรวจสอบว่าระบบบัตรของคุณและกฎหมายท้องถิ่นอนุญาตให้เก็บค่าธรรมเนียมเพิ่มหรือไม่"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "In your default currency; other currencies at the exchange rates."
+msgstr "ในสกุลเงินเริ่มต้นของคุณ สกุลเงินอื่นตามอัตราแลกเปลี่ยน"
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "Includes a payment fee of :fee."
+msgstr "รวมค่าธรรมเนียมการชำระเงิน :fee"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Payment fee"
+msgstr "ค่าธรรมเนียมการชำระเงิน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Percentage of the amount due"
+msgstr "เปอร์เซ็นต์ของยอดที่ต้องชำระ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Tax the fee"
+msgstr "คิดภาษีกับค่าธรรมเนียม"

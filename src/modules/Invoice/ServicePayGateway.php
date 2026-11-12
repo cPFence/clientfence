@@ -287,6 +287,10 @@ class ServicePayGateway implements InjectionAwareInterface
                     ? $this->normalizeSecretValue($key, $value, $existingConfig[$key] ?? null, $model)
                     : $value;
             }
+            // ClientFence core patch: the gateway fee (GatewayFees.php) is saved in its bounds.
+            if (isset($data['config']['fee'])) {
+                $mergedConfig['fee'] = \ClientFence\Mod\Invoice\GatewayFees::clean((array) $data['config']['fee']);
+            }
         }
 
         if ($newEnabled) {
@@ -409,7 +413,15 @@ class ServicePayGateway implements InjectionAwareInterface
         if (!$replacement instanceof \Model_PayGateway || !$replacement->enabled) {
             throw new InformationException('Choose an enabled gateway for the unpaid invoices of this gateway.');
         }
+        $ids = $db->fetchFirstColumn('SELECT id FROM invoice WHERE gateway_id = ? AND status = ?', [$id, \Model_Invoice::STATUS_UNPAID]);
         $db->executeStatement('UPDATE invoice SET gateway_id = ? WHERE gateway_id = ? AND status = ?', [$replacementId, $id, \Model_Invoice::STATUS_UNPAID]);
+        // ClientFence core patch: the moved invoices take the replacement's fee instead of this gateway's (GatewayFees.php).
+        foreach ($ids as $invoiceId) {
+            $invoice = $this->di['db']->load('Invoice', (int) $invoiceId);
+            if ($invoice instanceof \Model_Invoice && $invoice->id) {
+                \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, (int) $replacementId);
+            }
+        }
     }
 
     /**

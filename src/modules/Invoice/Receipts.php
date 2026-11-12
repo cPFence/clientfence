@@ -49,12 +49,17 @@ class Receipts
      * added. Each has a two-letter mark and a colour (tone 0-4) for its card, and manual methods
      * that show the amount in another currency (CustomEgp) carry that quote and its rate.
      * single and recurrent: whether the method takes a one-time payment and, for a subscribable
-     * invoice, a subscription (the theme's "one-time or subscription" choice).
+     * invoice, a subscription (the theme's "one-time or subscription" choice). fee: the method's gateway fee
+     * (GatewayFees.php), and total what the client pays with it: for $invoice, its balance without its fee line plus
+     * this method's fee and its tax.
      */
-    public static function paymentMethods(\Pimple\Container $di, float $amount, string $currency, bool $subscribable = false): array
+    public static function paymentMethods(\Pimple\Container $di, float $amount, string $currency, bool $subscribable = false, ?\Model_Invoice $invoice = null): array
     {
         $gatewayService = $di['mod_service']('Invoice', 'PayGateway');
         $methods = [];
+        $clientId = $invoice !== null ? (int) $invoice->client_id : ((int) ($di['session']->get('client_id') ?? 0) ?: null);
+        $amount = $invoice !== null ? GatewayFees::base($di, $invoice) : $amount;
+        $deposit = $invoice !== null && $di['mod_service']('Invoice')->isInvoiceTypeDeposit($invoice);
         foreach ($di['db']->find('PayGateway', 'enabled = 1 ORDER BY id') as $gateway) {
             if (!in_array($currency, $gatewayService->getAcceptedCurrencies($gateway), true)
                 || !($gateway->allow_single || ($subscribable && $gateway->allow_recurrent))) {
@@ -65,10 +70,13 @@ class Receipts
                 continue;
             }
             $manual = is_a($class, \Payment_Adapter_Custom::class, true);
+            // Add funds invoices carry no fee (GatewayFees::apply()).
+            $fee = $deposit ? 0.0 : GatewayFees::fee($di, $gateway, $amount, $currency, $clientId);
+            $total = round($amount + $fee + ($invoice !== null && $fee > 0 && GatewayFees::settings($gateway)['taxable'] ? GatewayFees::tax($di, $invoice, $fee) : 0.0), 2);
             $quote = null;
             if ($manual && method_exists($class, 'egpAmount')) {
                 try {
-                    $egp = $gatewayService->getPaymentAdapter($gateway)->egpAmount($amount, $currency);
+                    $egp = $gatewayService->getPaymentAdapter($gateway)->egpAmount($total, $currency);
                     if (is_array($egp)) {
                         $quote = ['currency' => 'EGP', 'total' => $egp['total'], 'rate' => (float) $egp['rate']];
                     }
@@ -86,6 +94,8 @@ class Receipts
                 'mark' => self::paymentMark((string) $gateway->name),
                 'single' => (bool) $gateway->allow_single,
                 'recurrent' => $subscribable && (bool) $gateway->allow_recurrent,
+                'fee' => $fee,
+                'total' => $total,
             ];
         }
         usort($methods, static fn (array $a, array $b): int => [$a['manual'], $a['id']] <=> [$b['manual'], $b['id']]);
@@ -242,6 +252,8 @@ class Receipts
         // The client pays this invoice by transfer: as in WHMCS, the invoice takes that payment method, so the saved-card cron skips it.
         // Only these columns of an invoice still unpaid: a full store would write back the status loaded before a payment made meanwhile.
         $di['dbal']->executeStatement('UPDATE invoice SET gateway_id = ?, updated_at = ? WHERE id = ? AND status = ?', [(int) $gateway->id, date('Y-m-d H:i:s'), (int) $invoice->id, \Model_Invoice::STATUS_UNPAID]);
+        // The client was asked for the balance with this method's fee (paymentMethods()): the invoice now carries it.
+        GatewayFees::apply($di, $invoice, (int) $gateway->id);
         $di['logger']->info('Invoice: client #%s sent a receipt for invoice #%s (ticket #%s)', $client->id, $invoice->id, $ticketId);
 
         return (int) $ticketId;

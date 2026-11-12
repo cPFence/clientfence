@@ -1273,6 +1273,10 @@ class Service implements InjectionAwareInterface
         if (isset($data['use_credits']) && $data['use_credits']) {
             $this->tryPayWithCredits($invoice);
         }
+        // ClientFence core patch: an invoice issued with a gateway carries its fee on what credit left due (GatewayFees.php).
+        if ($invoice->gateway_id) {
+            GatewayFees::apply($this->di, $invoice, (int) $invoice->gateway_id);
+        }
 
         $params = $this->toApiArray($invoice, true, null, true);
         // ClientFence core patch: staff Add New Order may issue the invoice without its email (WHMCS "Send Email").
@@ -1458,30 +1462,44 @@ class Service implements InjectionAwareInterface
         if ($amount <= 0) {
             throw new InformationException('Enter an amount greater than zero.');
         }
-        $covered = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $amount): bool {
-            $current = $this->di['dbal']->fetchAssociative('SELECT * FROM invoice WHERE id = ?', [$invoice->id]);
-            if ($current === false || $current['status'] !== \Model_Invoice::STATUS_UNPAID) {
-                throw new InformationException('Credit can only be applied to an unpaid invoice.');
-            }
-            foreach ($current as $column => $value) {
-                $invoice->{$column} = $value;
-            }
-            if ($this->isInvoiceTypeDeposit($invoice)) {
-                throw new InformationException('You may not pay a deposit invoice with this payment gateway.');
-            }
-            $client = $this->di['db']->getExistingModelById('Client', (int) $invoice->client_id, 'Client not found');
-            if (strtoupper((string) $client->currency) !== strtoupper((string) $invoice->currency)) {
-                throw new InformationException('The credit is in :currency and cannot pay an invoice in another currency.', [':currency' => $client->currency]);
-            }
-            $due = $this->getBalanceDue($invoice);
-            $max = min($due, $this->getFreeCredit((int) $client->id));
-            if ($amount > $max) {
-                throw new InformationException('You can apply at most :amount.', [':amount' => number_format(max(0.0, $max), 2) . ' ' . $invoice->currency]);
-            }
-            $this->di['dbal']->insert('invoice_credit', ['invoice_id' => $invoice->id, 'client_id' => $client->id, 'amount' => $amount, 'created_at' => date('Y-m-d H:i:s')]);
+        // ClientFence core patch: credit pays without the gateway fee; what it leaves due gets it again (GatewayFees.php).
+        $fee = GatewayFees::remove($this->di, $invoice);
+        $covered = false;
 
-            return $amount >= $due;
-        });
+        try {
+            $covered = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $amount, $fee): bool {
+                $current = $this->di['dbal']->fetchAssociative('SELECT * FROM invoice WHERE id = ?', [$invoice->id]);
+                if ($current === false || $current['status'] !== \Model_Invoice::STATUS_UNPAID) {
+                    throw new InformationException('Credit can only be applied to an unpaid invoice.');
+                }
+                foreach ($current as $column => $value) {
+                    $invoice->{$column} = $value;
+                }
+                if ($this->isInvoiceTypeDeposit($invoice)) {
+                    throw new InformationException('You may not pay a deposit invoice with this payment gateway.');
+                }
+                $client = $this->di['db']->getExistingModelById('Client', (int) $invoice->client_id, 'Client not found');
+                if (strtoupper((string) $client->currency) !== strtoupper((string) $invoice->currency)) {
+                    throw new InformationException('The credit is in :currency and cannot pay an invoice in another currency.', [':currency' => $client->currency]);
+                }
+                $due = $this->getBalanceDue($invoice);
+                $max = min($due, $this->getFreeCredit((int) $client->id));
+                // ClientFence core patch: an amount asked with the fee still on the invoice pays what is due without it.
+                if ($amount <= round($due + $fee, 2)) {
+                    $amount = min($amount, $due);
+                }
+                if ($amount > $max) {
+                    throw new InformationException('You can apply at most :amount.', [':amount' => number_format(max(0.0, $max), 2) . ' ' . $invoice->currency]);
+                }
+                $this->di['dbal']->insert('invoice_credit', ['invoice_id' => $invoice->id, 'client_id' => $client->id, 'amount' => $amount, 'created_at' => date('Y-m-d H:i:s')]);
+
+                return $amount >= $due;
+            });
+        } finally {
+            if (!$covered && $invoice->gateway_id) {
+                GatewayFees::apply($this->di, $invoice, (int) $invoice->gateway_id);
+            }
+        }
         if ($covered) {
             $this->tryPayWithCredits($invoice);
         }
@@ -2156,6 +2174,7 @@ class Service implements InjectionAwareInterface
 
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminInvoiceUpdate', 'params' => $data]);
 
+        $previousGateway = $model->gateway_id;
         if (!empty($data['gateway_id'])) {
             $gateway = $this->di['db']->load('PayGateway', $data['gateway_id']);
             if (!$gateway instanceof \Model_PayGateway) {
@@ -2244,6 +2263,11 @@ class Service implements InjectionAwareInterface
         $model->updated_at = date('Y-m-d H:i:s');
 
         $this->di['db']->store($model);
+
+        // ClientFence core patch: the gateway fee follows a new gateway or new amounts of an unpaid invoice (GatewayFees.php).
+        if (!$markPaid && $model->status === \Model_Invoice::STATUS_UNPAID && ((int) $previousGateway !== (int) $model->gateway_id || $amountChanged)) {
+            GatewayFees::apply($this->di, $model, $model->gateway_id ? (int) $model->gateway_id : null);
+        }
 
         // ClientFence core patch: a paid status saved on Manage needs the same payment event and tasks.
         if ($markPaid) {
@@ -2886,6 +2910,8 @@ class Service implements InjectionAwareInterface
         if (!$subscribe && !$payGatewayService->canPerformSinglePayment($gtw)) {
             throw new \ClientFence\Exception('One-time payments are not enabled for the selected payment gateway', null, 815);
         }
+        // ClientFence core patch: paying with a gateway makes it the invoice's, with its fee (GatewayFees.php).
+        GatewayFees::apply($this->di, $invoice, (int) $gtw->id);
 
         $adapter = $payGatewayService->getPaymentAdapter($gtw, $invoice, $data);
         if (method_exists($adapter, 'setDi')) {

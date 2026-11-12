@@ -25993,3 +25993,44 @@ msgstr "A látogatók és az ügyfelek a karbantartási oldalt látják; a bejel
 #: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
 msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
 msgstr "Amíg be van kapcsolva, a látogatók és az ügyfelek a karbantartási oldalt látják (vagy az átirányítási címre kerülnek), az API pedig azt válaszolja, hogy a rendszer karbantartás alatt áll. Az adminfelület nyitva marad, a bejelentkezett személyzet pedig továbbra is az ügyfélfelületet látja. A rendszerfrissítések futásuk idejére maguktól bekapcsolják."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/GatewayFees.php
+msgid ":gateway fee"
+msgstr ":gateway díja"
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "A payment fee of :fee is added to the invoice."
+msgstr "A számlához :fee fizetési díj kerül hozzáadásra."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "At the invoice's tax rate."
+msgstr "A számla adókulcsával."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Client groups that pay no fee"
+msgstr "Díjat nem fizető ügyfélcsoportok"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Clients who pay with this gateway pay this fee: a line added to the invoice, changed when they pick another gateway. Credit pays no fee. Check that your card scheme and local law allow surcharges."
+msgstr "Az ezzel az átjáróval fizető ügyfelek ezt a díjat fizetik: egy számlához adott tétel, amely megváltozik, ha másik átjárót választanak. Az ügyfél-jóváírással fizetés díjmentes. Ellenőrizze, hogy a kártyarendszere és a helyi jogszabály engedi-e a felárat."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "In your default currency; other currencies at the exchange rates."
+msgstr "Az alapértelmezett pénznemében; a többi pénznem az árfolyamokon."
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "Includes a payment fee of :fee."
+msgstr "Tartalmaz :fee fizetési díjat."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Payment fee"
+msgstr "Fizetési díj"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Percentage of the amount due"
+msgstr "A fizetendő összeg százaléka"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Tax the fee"
+msgstr "A díj adózása"

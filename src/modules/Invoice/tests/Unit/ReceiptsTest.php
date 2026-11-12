@@ -72,6 +72,12 @@ test('a sent receipt sets the invoice to the transfer method, so the saved-card 
 
         return 1;
     });
+    // The gateway fee (GatewayFees::apply()): this method has none.
+    $dbal->allows('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\SQLitePlatform());
+    $dbal->allows('fetchAssociative')->andReturn(['status' => 'unpaid', 'gateway_id' => 4]);
+    $di['db'] = Mockery::mock();
+    $di['db']->allows('load')->andReturn($gateway);
+    $di['db']->allows('findOne')->andReturnNull();
     $di['dbal'] = $dbal;
     $di['logger'] = new class {
         public function __call(string $name, array $arguments): mixed
@@ -95,6 +101,7 @@ test('a sent receipt sets the invoice to the transfer method, so the saved-card 
     $support->allows('ticketCreateForClient')->andReturn(55);
     $invoices = Mockery::mock();
     $invoices->allows('toApiArray')->andReturn(['serie_nr' => 'INV-30', 'total' => 100]);
+    $invoices->allows('isInvoiceTypeDeposit')->andReturn(false);
     $di['mod_service'] = $di->protect(fn (string $mod) => strtolower($mod) === 'support' ? $support : $invoices);
 
     try {

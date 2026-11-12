@@ -26,9 +26,12 @@
                 data-title="{{ m.title|trans }}" data-manual="{{ m.manual ? 1 : 0 }}" data-code="{{ m.code }}"
                 {% if m.quote %}data-rate="{{ m.quote.rate }}" data-quote-currency="{{ m.quote.currency }}"{% endif %}>
             <span class="bf-pay-mark bf-tone-{{ m.tone }}" aria-hidden="true">{{ m.mark }}</span>
-            <span class="bf-pay-text"><strong>{{ m.title|trans }}</strong><span>{{ note }}</span></span>
+            <span class="bf-pay-text"><strong>{{ m.title|trans }}</strong><span>{{ note }}</span>
+                {# ClientFence: the method's gateway fee (GatewayFees.php); Add funds pays none. #}
+                {% if context != 'wallet' and m.fee|default(0) > 0 %}<span>{% if context == 'checkout' %}{{ 'A payment fee of :fee is added to the invoice.'|trans({ ':fee': sm.money(m.fee, currency) }) }}{% else %}{{ 'Includes a payment fee of :fee.'|trans({ ':fee': sm.money(m.fee, currency) }) }}{% endif %}</span>{% endif %}
+            </span>
             {% if context != 'checkout' %}
-                <span class="bf-pay-amount" data-pay-amount>{% if m.quote %}{{ m.quote.currency }} {{ m.quote.total }}{% else %}{{ sm.money(amount, currency) }}{% endif %}</span>
+                <span class="bf-pay-amount" data-pay-amount>{% if m.quote %}{{ m.quote.currency }} {{ m.quote.total }}{% else %}{{ sm.money(context == 'invoice' ? (m.total ?? amount) : amount, currency) }}{% endif %}</span>
             {% endif %}
         </label>
     {% else %}

@@ -5406,5 +5406,41 @@
     {
         "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
         "done": "ClientFence core patch: a time of this very second reads \"0 seconds\", so \"Last run :time ago\" never shows an empty time."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: an invoice issued with a gateway carries its fee on what credit left due (GatewayFees.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: credit pays without the gateway fee; what it leaves due gets it again (GatewayFees.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: an amount asked with the fee still on the invoice pays what is due without it."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the gateway fee follows a new gateway or new amounts of an unpaid invoice (GatewayFees.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: paying with a gateway makes it the invoice's, with its fee (GatewayFees.php)."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: the gateway fee (GatewayFees.php) is saved in its bounds."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: the moved invoices take the replacement's fee instead of this gateway's (GatewayFees.php)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
+        "done": "ClientFence core patch: the gateway fee, as HostBill's Gateway Fees (GatewayFees.php, config \"fee\")."
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: the gateway fee is part of each payment, not a line of its own period (GatewayFees.php)."
     }
 ]

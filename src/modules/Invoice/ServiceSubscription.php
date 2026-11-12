@@ -421,7 +421,7 @@ class ServiceSubscription implements InjectionAwareInterface
 
     private function getSubscriptionPeriodByInvoiceId(int $invoiceId): ?string
     {
-        $query = 'SELECT period, price, quantity, type, rel_id
+        $query = 'SELECT period, price, quantity, type, rel_id, task
             FROM invoice_item
             WHERE invoice_id = :id
             ORDER BY id ASC';
@@ -433,6 +433,10 @@ class ServiceSubscription implements InjectionAwareInterface
 
         $subscriptionPeriod = null;
         foreach ($items as $item) {
+            // ClientFence core patch: the gateway fee is part of each payment, not a line of its own period (GatewayFees.php).
+            if (($item['task'] ?? null) === \ClientFence\Mod\Invoice\GatewayFees::TASK) {
+                continue;
+            }
             // ClientFence core patch: renewal invoices must not create a second active subscription for an order.
             if ($item['type'] === \Model_InvoiceItem::TYPE_ORDER) {
                 $order = $this->di['db']->load('ClientOrder', $item['rel_id']);

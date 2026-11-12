@@ -23958,3 +23958,44 @@ msgstr "Посетители и клиенты видят страницу об�
 #: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
 msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
 msgstr "Пока режим включён, посетители и клиенты видят страницу обслуживания (или переходят на адрес перенаправления), а API отвечает, что система находится на обслуживании. Область администратора остаётся открытой, а вошедшие сотрудники по-прежнему видят клиентскую область. Обновления системы включают его сами на время работы."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/GatewayFees.php
+msgid ":gateway fee"
+msgstr "Комиссия :gateway"
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "A payment fee of :fee is added to the invoice."
+msgstr "К счёту добавляется комиссия за оплату в размере :fee."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "At the invoice's tax rate."
+msgstr "По налоговой ставке счёта."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Client groups that pay no fee"
+msgstr "Группы клиентов, не платящие комиссию"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Clients who pay with this gateway pay this fee: a line added to the invoice, changed when they pick another gateway. Credit pays no fee. Check that your card scheme and local law allow surcharges."
+msgstr "Клиенты, которые платят через этот шлюз, платят эту комиссию: строка, добавленная к счёту и изменяемая, когда они выбирают другой шлюз. Оплата кредитом клиента без комиссии. Убедитесь, что ваша карточная схема и местное законодательство разрешают надбавки."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "In your default currency; other currencies at the exchange rates."
+msgstr "В вашей валюте по умолчанию; другие валюты по курсам валют."
+
+#: src/themes/palisade/html/partials/pay_methods.html.twig
+msgid "Includes a payment fee of :fee."
+msgstr "Включает комиссию за оплату в размере :fee."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Payment fee"
+msgstr "Комиссия за оплату"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Percentage of the amount due"
+msgstr "Процент от суммы к оплате"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
+msgid "Tax the fee"
+msgstr "Облагать комиссию налогом"

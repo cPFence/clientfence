@@ -17,7 +17,7 @@ function savedCardsWorld(): object
     $world->recorded = [];
     $world->emails = [];
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, approved INTEGER, due_at TEXT, gateway_id INTEGER)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, approved INTEGER, due_at TEXT, gateway_id INTEGER, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id INTEGER)');
     $db->executeStatement('CREATE TABLE subscription (id INTEGER PRIMARY KEY, client_id INTEGER, pay_gateway_id INTEGER, sid TEXT, rel_type TEXT, rel_id INTEGER, status TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT, created_at TEXT, updated_at TEXT)');
@@ -75,6 +75,8 @@ function savedCardsWorld(): object
     });
     $invoices = Mockery::mock();
     $invoices->allows('toApiArray')->andReturn([]);
+    // The gateway fee (GatewayFees::apply()): the gateways here have none.
+    $invoices->allows('isInvoiceTypeDeposit')->andReturn(false);
     $invoices->allows('withBillingRecipient')->andReturnUsing(fn (array $email): array => $email);
     $email = Mockery::mock();
     $email->allows('sendTemplate')->andReturnUsing(function (array $data) use ($world): bool {

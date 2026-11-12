@@ -35,7 +35,8 @@
 {% set pending = unpaid ? invoice.pending_payment|default(null) : null %}
 {# ClientFence: a part-paid invoice asks for its balance due (WHMCS). #}
 {% set due = unpaid ? invoice.balance_due : invoice.total %}
-{% set methods = unpaid and not pending ? guest.invoice_payment_methods({ amount: due, currency: currency, subscribable: invoice.subscribable ? 1 : 0 }) : [] %}
+{# ClientFence: each method's total carries its gateway fee (GatewayFees.php). #}
+{% set methods = unpaid and not pending ? guest.invoice_payment_methods({ amount: due, currency: currency, subscribable: invoice.subscribable ? 1 : 0, hash: invoice.hash }) : [] %}
 {% set profile = client ? client.profile_get : null %}
 {# The client applies part or all of the account credit (WHMCS "Apply credit"); never to an Add funds invoice. #}
 {% set credit = profile and unpaid and not pending and due > 0 and profile.balance|default(0) > 0 and (profile.currency ?: currency) == currency and 'deposit' not in invoice.lines|map(l => l.type) ? min(profile.balance, due) : 0 %}
@@ -97,7 +98,7 @@
                     </section>
 
                     {% for m in methods %}
-                        {% set amount_text = m.quote ? m.quote.currency ~ ' ' ~ m.quote.total : sm.money(due, currency) %}
+                        {% set amount_text = m.quote ? m.quote.currency ~ ' ' ~ m.quote.total : sm.money(m.total ?? due, currency) %}
                         {% if not m.manual %}
                             {% set banklink = ('invoice/banklink/' ~ invoice.hash ~ '/' ~ m.id)|url %}
                             <section class="card bf-card bf-section" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
@@ -123,7 +124,7 @@
                             <section class="card bf-card bf-section" aria-labelledby="bf-h-steps-{{ m.id }}" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
                                 <h2 id="bf-h-steps-{{ m.id }}">{{ 'Pay by :method'|trans({ ':method': m.title|trans }) }}</h2>
                                 <ol class="bf-steps-list">
-                                    <li>{{ 'Send exactly :amount'|trans({ ':amount': '<strong>' ~ (amount_text|e) ~ '</strong>' })|raw }}{% if m.quote %} ({{ 'that is :amount at today’s rate, rounded up'|trans({ ':amount': sm.money(due, currency) }) }}){% endif %}.</li>
+                                    <li>{{ 'Send exactly :amount'|trans({ ':amount': '<strong>' ~ (amount_text|e) ~ '</strong>' })|raw }}{% if m.quote %} ({{ 'that is :amount at today’s rate, rounded up'|trans({ ':amount': sm.money(m.total ?? due, currency) }) }}){% endif %}.</li>
                                     <li>{{ 'Use the details below and write :ref as the reference.'|trans({ ':ref': '<strong class="bf-mono" dir="ltr">' ~ (nr|e) ~ '</strong>' })|raw }}</li>
                                     {# ClientFence core patch: the receipt upload opens a ticket, so while tickets are off (Support settings) the outside help desk link instead, if any. #}
                                     {% set receipt_upload = guest.support_tickets_enabled %}

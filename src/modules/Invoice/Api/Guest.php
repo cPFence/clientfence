@@ -121,7 +121,8 @@ class Guest extends \ClientFence\Api\AbstractApi
 
     /**
      * ClientFence: payment methods for an amount, as the theme's payment cards show them (see
-     * Receipts::paymentMethods()).
+     * Receipts::paymentMethods()). With an unpaid invoice's `hash`, each method's total is that invoice's
+     * balance with the method's gateway fee.
      */
     public function payment_methods($data): array
     {
@@ -131,7 +132,9 @@ class Guest extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\InformationException('Amount or currency is not valid.');
         }
 
-        return \ClientFence\Mod\Invoice\Receipts::paymentMethods($this->getDi(), (float) $amount, $currency, (bool) ($data['subscribable'] ?? false));
+        $invoice = isset($data['hash']) ? $this->getDi()['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $data['hash'], \Model_Invoice::STATUS_UNPAID]) : null;
+
+        return \ClientFence\Mod\Invoice\Receipts::paymentMethods($this->getDi(), (float) $amount, $currency, (bool) ($data['subscribable'] ?? false), $invoice instanceof \Model_Invoice && strtoupper((string) $invoice->currency) === $currency ? $invoice : null);
     }
 
     /**

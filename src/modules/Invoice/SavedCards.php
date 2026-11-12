@@ -273,6 +273,8 @@ final class SavedCards
             if (!$byStaff && $db->executeStatement('UPDATE invoice_card_charge SET attempts = attempts + 1, last_attempt_at = ? WHERE invoice_id = ?', [date('Y-m-d H:i:s'), (int) $invoice->id]) === 0) {
                 $db->insert('invoice_card_charge', ['invoice_id' => (int) $invoice->id, 'attempts' => 1, 'last_attempt_at' => date('Y-m-d H:i:s')]);
             }
+            // The saved method's gateway takes the payment, with its fee (GatewayFees.php).
+            GatewayFees::apply($di, $invoice, $adapter->gatewayId());
             $card = (string) ($adapter->savedCard((int) $invoice->client_id)['card'] ?? '');
 
             try {

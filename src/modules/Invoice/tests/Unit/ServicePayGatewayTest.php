@@ -245,6 +245,8 @@ test('turning a gateway off moves its unpaid invoices to an enabled replacement,
     $replacement->enabled = 1;
     $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
     $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM invoice/'), [5, 'unpaid'])->andReturn(2);
+    // The moved invoices' gateway fees (GatewayFees.php) are tested in GatewayFeesTest.
+    $connectionMock->allows('fetchFirstColumn')->andReturn([]);
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('load')->with('PayGateway', 6)->andReturn($replacement);
     if ($moves) {
@@ -418,6 +420,7 @@ test('deleting a gateway moves its unpaid invoices to an enabled replacement, an
     $connectionMock = Mockery::mock(Doctrine\DBAL\Connection::class);
     $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM (subscription|pay_gateway_customer)/'), [5])->andReturn(0);
     $connectionMock->shouldReceive('fetchOne')->with(Mockery::pattern('/FROM invoice/'), [5, 'unpaid'])->andReturn(3);
+    $connectionMock->allows('fetchFirstColumn')->andReturn([]);
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('load')->with('PayGateway', 6)->andReturn($replacement);
     if ($moves) {

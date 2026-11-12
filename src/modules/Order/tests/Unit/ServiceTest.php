@@ -2991,7 +2991,7 @@ test('deleteFromOrder cancels subscriptions before deletion and cancels open inv
     expect($serviceMock->deleteFromOrder($order))->toBeTrue();
 });
 
-test('cancelOpenInvoices cancels discounted renewals and preserves invoices shared with another order', function (): void {
+test('cancelOpenInvoices cancels discounted renewals with a gateway fee and preserves invoices shared with another order', function (): void {
     $connection = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $connection->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, updated_at TEXT)');
     $connection->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, unit TEXT)');
@@ -3001,6 +3001,8 @@ test('cancelOpenInvoices cancels discounted renewals and preserves invoices shar
         $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'custom', 'rel_id' => '1', 'unit' => 'discount']);
     }
     $connection->insert('invoice_item', ['invoice_id' => 41, 'type' => 'order', 'rel_id' => '2', 'task' => 'renew', 'unit' => 'service']);
+    // The gateway fee of a payment the client started (Invoice/GatewayFees.php, no rel_id) does not keep the renewal open.
+    $connection->insert('invoice_item', ['invoice_id' => 40, 'type' => 'custom', 'task' => 'gateway_fee']);
 
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
     $dbal->shouldReceive('fetchAllAssociative')->once()->andReturn([]);

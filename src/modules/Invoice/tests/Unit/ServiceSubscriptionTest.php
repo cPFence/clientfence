@@ -588,6 +588,8 @@ test('checks if invoice is subscribable', function (): void {
 
     $getAllResults = [
         ['type' => 'custom', 'period' => '1W', 'price' => 10, 'quantity' => 1],
+        // The gateway fee (GatewayFees.php) has no period and is paid with each payment.
+        ['type' => 'custom', 'period' => null, 'price' => 0.3, 'quantity' => 1, 'task' => 'gateway_fee'],
     ];
     $dbMock->shouldReceive('getAll')
         ->atLeast()->once()
