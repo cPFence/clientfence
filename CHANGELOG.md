@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.46 (2026-11-12)
+
+### Added
+
+- TLD prices from your registrar: get its price list, set a markup and rounding, preview the new prices and apply the TLDs you tick. For Enom, ResellerClub, Namecheap, NameSilo, Dynadot, Internet.bs, INWX, Openprovider and Synergy Wholesale (not yet fully tested with each registrar).
+- Scheduled TLD price sync per registrar: off, email the changes, or apply them. "Keep my price" leaves a TLD's price as you set it.
+- Daily domain expiry sync: a share of the domains each day instead of one big monthly run (a switch, off by default).
+- Domain transfer tracking: a transfer stays "in progress" until the registrar completes it, then the client is emailed; a failed or stuck transfer goes to Failed actions (a switch, off by default; not yet fully tested with each registrar).
+- Licences answer the checks of software sold with the WHMCS Licensing Addon, so installed software keeps working after a move from WHMCS.
+- Per-unit billing of licences: the licence reports its usage and the monthly price follows the count, with switches to hold big drops, warn and suspend.
+
+### Changed
+
+- The WHMCS import keeps each licence's WHMCS service and product numbers.
+- The TLD list has a search, pages and an Active switch.
+
 ## 1.0.45 (2026-11-11)
 
 ### Added
