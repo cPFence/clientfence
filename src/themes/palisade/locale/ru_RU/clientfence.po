@@ -23889,3 +23889,72 @@ msgstr "Перенос вашего домена начался"
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
 msgid "Your domain transfer is complete"
 msgstr "Перенос вашего домена завершён"
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Admin.php
+msgid "\":ip\" is not an IP address or range."
+msgstr "«:ip» — не IP-адрес и не диапазон."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "IP addresses that still see the site"
+msgstr "IP-адреса, которые по-прежнему видят сайт"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Maintenance"
+msgstr "Обслуживание"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode"
+msgstr "Режим обслуживания"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode is on"
+msgstr "Режим обслуживания включён"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance mode is on."
+msgstr "Режим обслуживания включён."
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance settings"
+msgstr "Настройки обслуживания"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Message to visitors"
+msgstr "Сообщение для посетителей"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "One IP address or range per line. Your IP address now: :ip"
+msgstr "Один IP-адрес или диапазон на строку. Ваш IP-адрес сейчас: :ip"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Optional: send visitors to this page on another site (a status page, for example) instead of showing the maintenance page."
+msgstr "Необязательно: направляйте посетителей на эту страницу другого сайта (например, страницу статуса) вместо страницы обслуживания."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Redirect address"
+msgstr "Адрес перенаправления"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Shown on the maintenance page under its title. Empty shows the standard text."
+msgstr "Показывается на странице обслуживания под её заголовком. Если пусто, показывается стандартный текст."
+
+#: src/modules/System/Api/Admin.php
+msgid "The message can be at most 2000 characters."
+msgstr "Сообщение может содержать не более 2000 символов."
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be a full address starting with https:// or http://."
+msgstr "Адрес перенаправления должен быть полным адресом, начинающимся с https:// или http://."
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be on another site: this portal is closed during maintenance."
+msgstr "Адрес перенаправления должен вести на другой сайт: во время обслуживания этот портал закрыт."
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Visitors and clients see the maintenance page; signed-in staff still see the client area."
+msgstr "Посетители и клиенты видят страницу обслуживания; вошедшие сотрудники по-прежнему видят клиентскую область."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
+msgstr "Пока режим включён, посетители и клиенты видят страницу обслуживания (или переходят на адрес перенаправления), а API отвечает, что система находится на обслуживании. Область администратора остаётся открытой, а вошедшие сотрудники по-прежнему видят клиентскую область. Обновления системы включают его сами на время работы."

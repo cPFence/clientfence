@@ -183,6 +183,65 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: maintenance mode as WHMCS (System > Settings > Maintenance), kept in config.php
+     * maintenance_mode, which the updater also turns on and restores.
+     */
+    public function maintenance_get(): array
+    {
+        $this->checkPermissions('system', 'manage_settings');
+        $mode = Config::getProperty('maintenance_mode', []);
+
+        return [
+            'enabled' => Tools::normalizeBoolean($mode['enabled'] ?? false, false),
+            'message' => (string) ($mode['message'] ?? ''),
+            'redirect_url' => (string) ($mode['redirect_url'] ?? ''),
+            'allowed_ips' => implode("\n", array_map('strval', (array) ($mode['allowed_ips'] ?? []))),
+            'my_ip' => (string) $this->getDi()['request']->getClientIp(),
+        ];
+    }
+
+    public function maintenance_update($data): bool
+    {
+        $this->checkPermissions('system', 'update_params');
+
+        $ips = array_values(array_unique(array_filter(preg_split('/[\s,]+/', (string) ($data['allowed_ips'] ?? '')) ?: [])));
+        foreach ($ips as $ip) {
+            [$address, $bits] = array_pad(explode('/', $ip, 2), 2, null);
+            $max = str_contains((string) $address, ':') ? 128 : 32;
+            if (filter_var($address, FILTER_VALIDATE_IP) === false || ($bits !== null && (!ctype_digit($bits) || (int) $bits > $max))) {
+                throw new \ClientFence\InformationException('":ip" is not an IP address or range.', [':ip' => $ip]);
+            }
+        }
+        $url = trim((string) ($data['redirect_url'] ?? ''));
+        if ($url !== '') {
+            if (filter_var($url, FILTER_VALIDATE_URL) === false || !in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)) {
+                throw new \ClientFence\InformationException('The redirect address must be a full address starting with https:// or http://.');
+            }
+            // The portal's own pages are closed too: sending visitors there would loop.
+            if (strcasecmp((string) parse_url($url, PHP_URL_HOST), (string) parse_url(SYSTEM_URL, PHP_URL_HOST)) === 0) {
+                throw new \ClientFence\InformationException('The redirect address must be on another site: this portal is closed during maintenance.');
+            }
+        }
+        $message = trim((string) ($data['message'] ?? ''));
+        if (mb_strlen($message) > 2000) {
+            throw new \ClientFence\InformationException('The message can be at most 2000 characters.');
+        }
+        $enabled = Tools::normalizeBoolean($data['enabled'] ?? false, false);
+
+        $config = Config::getConfig();
+        $config['maintenance_mode'] = array_merge((array) ($config['maintenance_mode'] ?? []), [
+            'enabled' => $enabled,
+            'allowed_ips' => $ips,
+            'message' => $message,
+            'redirect_url' => $url,
+        ]);
+        Config::setConfig($config, false);
+        $this->getDi()['logger']->info($enabled ? 'Turned maintenance mode on' : 'Saved maintenance mode (off)');
+
+        return true;
+    }
+
+    /**
      * System messages about working environment.
      *
      * @return array

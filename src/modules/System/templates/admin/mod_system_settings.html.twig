@@ -37,6 +37,8 @@
     {% set bf_health = guest.extension_is_on({ 'mod': 'clientfence' }) and has_permission('system', 'manage_settings') ? admin.clientfence_health_page : null %}
     {# ClientFence core patch: the licence check log and bans as a tab here (Servicelicense CheckLog.php, Bans.php; licence managers). #}
     {% set bf_licences = has_permission('servicelicense', 'manage') ? admin.servicelicense_settings_get : null %}
+    {# ClientFence core patch: maintenance mode as WHMCS (System Api maintenance_get/maintenance_update). #}
+    {% set bf_maintenance = has_permission('system', 'manage_settings') ? admin.system_maintenance_get : null %}
     {# ClientFence core patch: sign-in security moved to Security > Settings; old #tab-signin links land there (clientfence-admin.js). #}
     <div class="card" data-cf-moved-tabs="{{ { 'tab-signin': 'extension/settings/security'|url ~ '#tab-signin' }|json_encode }}">
         <div class="card-header">
@@ -62,6 +64,11 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" href="#tab-cache" data-bs-toggle="tab" role="tab">{{ 'Cache'|trans }}</a>
                 </li>
+                {% if bf_maintenance %}
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="#tab-maintenance" data-bs-toggle="tab" role="tab">{{ 'Maintenance'|trans }}</a>
+                </li>
+                {% endif %}
                 {% if bf_health %}
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" href="#tab-health" data-bs-toggle="tab" role="tab">{{ 'System Health'|trans }}</a>
@@ -483,6 +490,14 @@
                 <div class="tab-pane fade" id="tab-backups" role="tabpanel">
                     <div class="card-body">
                         {% include 'mod_clientfence_backups_panel.html.twig' with { 'backups': bf_backups } %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if bf_maintenance %}
+                <div class="tab-pane fade" id="tab-maintenance" role="tabpanel">
+                    <div class="card-body">
+                        {% include 'mod_system_maintenance_panel.html.twig' with { 'maintenance': bf_maintenance, 'can_update': can_update_params } %}
                     </div>
                 </div>
                 {% endif %}

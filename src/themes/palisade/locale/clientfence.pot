@@ -14,6 +14,10 @@ msgstr ""
 msgid " Years @ "
 msgstr ""
 
+#: src/modules/System/Api/Admin.php
+msgid "\":ip\" is not an IP address or range."
+msgstr ""
+
 #: src/modules/Servicelicense/Bans.php
 msgid "\":value\" is already banned."
 msgstr ""
@@ -11006,6 +11010,10 @@ msgstr ""
 msgid "IP address is required"
 msgstr ""
 
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "IP addresses that still see the site"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "IP addresses, one per line"
 msgstr ""
@@ -13010,6 +13018,26 @@ msgstr ""
 msgid "Maintain the registrar transfer code and renewal period stored for this service."
 msgstr ""
 
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Maintenance"
+msgstr ""
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode"
+msgstr ""
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode is on"
+msgstr ""
+
+#: src/themes/admin_default/html/layout_default.html.twig src/themes/admin_default/html_custom/layout_default.html.twig
+msgid "Maintenance mode is on."
+msgstr ""
+
+#: src/themes/admin_default/html/layout_default.html.twig src/themes/admin_default/html_custom/layout_default.html.twig
+msgid "Maintenance settings"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Make a new Support PIN?"
 msgstr ""
@@ -13764,6 +13792,10 @@ msgstr ""
 
 #: src/modules/Massmailer/Api/Admin.php
 msgid "Message subject was not passed"
+msgstr ""
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Message to visitors"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig
@@ -15534,6 +15566,10 @@ msgstr ""
 msgid "One IP address or CIDR range per line, at most 20. A check from any other IP answers as invalid. Leave empty to allow all IPs."
 msgstr ""
 
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "One IP address or range per line. Your IP address now: :ip"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "One IP address per line"
 msgstr ""
@@ -16018,6 +16054,10 @@ msgstr ""
 msgid "Optional, for WHMCS checks: sent in customfields as \"name=on\" while per-unit billing is on."
 msgstr ""
 
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Optional: send visitors to this page on another site (a status page, for example) instead of showing the maintenance page."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
 msgid "Optionally add a canned response when a ticket remains unanswered for a configured number of hours."
 msgstr ""
@@ -16350,7 +16390,7 @@ msgstr ""
 msgid "Our support team has posted a new reply to your ticket %subject%. You can read the reply and answer it from the link below."
 msgstr ""
 
-#: src/modules/System/templates/client/mod_system_maintenance.html.twig src/themes/palisade/html/mod_system_maintenance.html.twig
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig src/modules/System/templates/client/mod_system_maintenance.html.twig src/themes/palisade/html/mod_system_maintenance.html.twig
 msgid "Our systems are undergoing maintenance. We'll be back soon."
 msgstr ""
 
@@ -18824,6 +18864,10 @@ msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
 msgid "Redirect added."
+msgstr ""
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Redirect address"
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -21422,6 +21466,10 @@ msgstr ""
 msgid "Shown on invoices, emails and the client area."
 msgstr ""
 
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Shown on the maintenance page under its title. Empty shows the standard text."
+msgstr ""
+
 #: src/modules/Cookieconsent/manifest.json
 msgid "Shows a cookie notice with an Accept button to visitors of the client area."
 msgstr ""
@@ -23631,6 +23679,10 @@ msgstr ""
 msgid "The maximum cannot be below the minimum."
 msgstr ""
 
+#: src/modules/System/Api/Admin.php
+msgid "The message can be at most 2000 characters."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "The message is a draft again."
 msgstr ""
@@ -23917,6 +23969,14 @@ msgstr ""
 
 #: src/modules/Invoice/Receipts.php src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "The receipt must be smaller than 5 MB."
+msgstr ""
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be a full address starting with https:// or http://."
+msgstr ""
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be on another site: this portal is closed during maintenance."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayTabs.php
@@ -27107,6 +27167,10 @@ msgstr ""
 msgid "Visitors"
 msgstr ""
 
+#: src/themes/admin_default/html/layout_default.html.twig src/themes/admin_default/html_custom/layout_default.html.twig
+msgid "Visitors and clients see the maintenance page; signed-in staff still see the client area."
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid "Visitors connect directly: no proxy in front of the portal."
 msgstr ""
@@ -27509,6 +27573,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig
 msgid "Whether the client can move this service to another product or billing cycle. Follow Product uses the product's rule and Settings > Orders."
+msgstr ""
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig

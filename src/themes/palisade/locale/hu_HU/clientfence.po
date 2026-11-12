@@ -25924,3 +25924,72 @@ msgstr "Az Ön domain átvitele elindult"
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
 msgid "Your domain transfer is complete"
 msgstr "Az Ön domain átvitele befejeződött"
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Admin.php
+msgid "\":ip\" is not an IP address or range."
+msgstr "A(z) „:ip” nem IP-cím és nem is tartomány."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "IP addresses that still see the site"
+msgstr "IP-címek, amelyek továbbra is látják a webhelyet"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Maintenance"
+msgstr "Karbantartás"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode"
+msgstr "Karbantartási mód"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode is on"
+msgstr "A karbantartási mód be van kapcsolva"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance mode is on."
+msgstr "A karbantartási mód be van kapcsolva."
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance settings"
+msgstr "Karbantartási beállítások"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Message to visitors"
+msgstr "Üzenet a látogatóknak"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "One IP address or range per line. Your IP address now: :ip"
+msgstr "Soronként egy IP-cím vagy tartomány. Az Ön IP-címe most: :ip"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Optional: send visitors to this page on another site (a status page, for example) instead of showing the maintenance page."
+msgstr "Nem kötelező: a karbantartási oldal helyett irányítsa a látogatókat erre a másik webhelyen lévő oldalra (például egy állapotoldalra)."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Redirect address"
+msgstr "Átirányítási cím"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Shown on the maintenance page under its title. Empty shows the standard text."
+msgstr "A karbantartási oldalon jelenik meg a cím alatt. Üresen a szokásos szöveg jelenik meg."
+
+#: src/modules/System/Api/Admin.php
+msgid "The message can be at most 2000 characters."
+msgstr "Az üzenet legfeljebb 2000 karakter hosszú lehet."
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be a full address starting with https:// or http://."
+msgstr "Az átirányítási címnek teljes címnek kell lennie, amely https:// vagy http:// kezdetű."
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be on another site: this portal is closed during maintenance."
+msgstr "Az átirányítási címnek másik webhelyre kell mutatnia: ez a portál karbantartás alatt zárva van."
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Visitors and clients see the maintenance page; signed-in staff still see the client area."
+msgstr "A látogatók és az ügyfelek a karbantartási oldalt látják; a bejelentkezett személyzet továbbra is az ügyfélfelületet látja."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
+msgstr "Amíg be van kapcsolva, a látogatók és az ügyfelek a karbantartási oldalt látják (vagy az átirányítási címre kerülnek), az API pedig azt válaszolja, hogy a rendszer karbantartás alatt áll. Az adminfelület nyitva marad, a bejelentkezett személyzet pedig továbbra is az ügyfélfelületet látja. A rendszerfrissítések futásuk idejére maguktól bekapcsolják."

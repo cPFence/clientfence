@@ -28,7 +28,8 @@
 
     <div style="margin: 50px 40px; font-size: 16px; text-align: center;">
         <h1>{{ 'System Undergoing Maintenance'|trans }}</h1>
-        <p>{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}</p>
+        {# ClientFence core patch: maintenance mode as WHMCS: the staff's own message on the fallback page. #}
+        <p>{% if maintenance_message|default('') %}{{ maintenance_message|nl2br }}{% else %}{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}{% endif %}</p>
         <hr>
         <h4>{{ "While we're away, you can still reach us over other channels."|trans }}</h4>
         <ul style="list-style-type: none; padding: 0;">

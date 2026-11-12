@@ -429,3 +429,42 @@ test('update finalization status does not mask unrelated errors from isSuperAdmi
     expect(fn (): array => $api->update_finalization_status())
         ->toThrow(RuntimeException::class, 'unexpected failure');
 });
+
+// ClientFence: maintenance mode as WHMCS (System > Settings > Maintenance), kept in config.php maintenance_mode.
+test('maintenance settings are saved in the config and read back', function (): void {
+    $original = Config::getConfig();
+    try {
+        $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+        $di = $api->getDi();
+        $di['request'] = Symfony\Component\HttpFoundation\Request::create('/', 'GET', [], [], [], ['REMOTE_ADDR' => '203.0.113.7']);
+
+        expect($api->maintenance_update(['enabled' => '1', 'message' => " Back at 10:00.\nSorry! ", 'redirect_url' => 'https://status.example.org/', 'allowed_ips' => "192.0.2.10\n198.51.100.0/24, 2001:db8::/32 192.0.2.10"]))->toBeTrue();
+
+        $mode = Config::getConfig()['maintenance_mode'];
+        expect($mode['enabled'])->toBeTrue()
+            ->and($mode['allowed_ips'])->toBe(['192.0.2.10', '198.51.100.0/24', '2001:db8::/32'])
+            ->and($mode['allowed_urls'])->toBe($original['maintenance_mode']['allowed_urls'] ?? [])
+            ->and($api->maintenance_get())->toBe(['enabled' => true, 'message' => "Back at 10:00.\nSorry!", 'redirect_url' => 'https://status.example.org/', 'allowed_ips' => "192.0.2.10\n198.51.100.0/24\n2001:db8::/32", 'my_ip' => '203.0.113.7']);
+
+        $api->maintenance_update([]);
+        expect(Config::getConfig()['maintenance_mode']['enabled'])->toBeFalse();
+    } finally {
+        Config::setConfig($original, false);
+    }
+});
+
+test('maintenance settings refuse a bad IP and a redirect that would loop', function (array $data, string $message): void {
+    $original = Config::getConfig();
+    try {
+        expect(fn () => apiEndpoint(new ClientFence\Mod\System\Api\Admin())->maintenance_update($data))
+            ->toThrow(ClientFence\InformationException::class, $message);
+        expect(Config::getConfig())->toBe($original);
+    } finally {
+        Config::setConfig($original, false);
+    }
+})->with([
+    'bad IP' => [['allowed_ips' => '192.0.2.300'], 'is not an IP address or range'],
+    'bad range' => [['allowed_ips' => '192.0.2.0/33'], 'is not an IP address or range'],
+    'not a web address' => [['redirect_url' => 'javascript:alert(1)'], 'must be a full address'],
+    'this portal' => [['redirect_url' => rtrim(SYSTEM_URL, '/') . '/status'], 'must be on another site'],
+]);

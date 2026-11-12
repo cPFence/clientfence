@@ -23749,3 +23749,72 @@ msgstr "การโอนย้ายโดเมนของคุณเริ
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
 msgid "Your domain transfer is complete"
 msgstr "การโอนย้ายโดเมนของคุณเสร็จสมบูรณ์แล้ว"
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Admin.php
+msgid "\":ip\" is not an IP address or range."
+msgstr "“:ip” ไม่ใช่ที่อยู่ IP หรือช่วง IP"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "IP addresses that still see the site"
+msgstr "ที่อยู่ IP ที่ยังเห็นเว็บไซต์"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Maintenance"
+msgstr "การบำรุงรักษา"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode"
+msgstr "โหมดบำรุงรักษา"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode is on"
+msgstr "โหมดบำรุงรักษาเปิดอยู่"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance mode is on."
+msgstr "โหมดบำรุงรักษาเปิดอยู่"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance settings"
+msgstr "การตั้งค่าการบำรุงรักษา"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Message to visitors"
+msgstr "ข้อความถึงผู้เยี่ยมชม"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "One IP address or range per line. Your IP address now: :ip"
+msgstr "หนึ่งที่อยู่ IP หรือหนึ่งช่วงต่อบรรทัด ที่อยู่ IP ของคุณตอนนี้: :ip"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Optional: send visitors to this page on another site (a status page, for example) instead of showing the maintenance page."
+msgstr "ไม่บังคับ: ส่งผู้เยี่ยมชมไปยังหน้านี้บนเว็บไซต์อื่น (เช่น หน้าสถานะ) แทนการแสดงหน้าบำรุงรักษา"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Redirect address"
+msgstr "ที่อยู่เปลี่ยนเส้นทาง"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Shown on the maintenance page under its title. Empty shows the standard text."
+msgstr "แสดงบนหน้าบำรุงรักษาใต้ชื่อเรื่อง หากเว้นว่างจะแสดงข้อความมาตรฐาน"
+
+#: src/modules/System/Api/Admin.php
+msgid "The message can be at most 2000 characters."
+msgstr "ข้อความยาวได้ไม่เกิน 2000 อักขระ"
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be a full address starting with https:// or http://."
+msgstr "ที่อยู่เปลี่ยนเส้นทางต้องเป็นที่อยู่แบบเต็มที่ขึ้นต้นด้วย https:// หรือ http://"
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be on another site: this portal is closed during maintenance."
+msgstr "ที่อยู่เปลี่ยนเส้นทางต้องอยู่บนเว็บไซต์อื่น: พอร์ทัลนี้ปิดระหว่างการบำรุงรักษา"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Visitors and clients see the maintenance page; signed-in staff still see the client area."
+msgstr "ผู้เยี่ยมชมและลูกค้าจะเห็นหน้าบำรุงรักษา ส่วนพนักงานที่เข้าสู่ระบบแล้วยังเห็นพื้นที่ลูกค้า"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
+msgstr "ขณะเปิดอยู่ ผู้เยี่ยมชมและลูกค้าจะเห็นหน้าบำรุงรักษา (หรือไปยังที่อยู่เปลี่ยนเส้นทาง) และ API จะตอบว่าระบบกำลังอยู่ระหว่างการบำรุงรักษา พื้นที่ผู้ดูแลระบบยังเปิดอยู่ และพนักงานที่เข้าสู่ระบบแล้วยังเห็นพื้นที่ลูกค้า การอัปเดตระบบจะเปิดโหมดนี้เองระหว่างที่ทำงาน"

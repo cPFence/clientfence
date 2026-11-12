@@ -488,7 +488,8 @@ class App
          */
         if (Config::getProperty('maintenance_mode.enabled', false)) {
             // Check the allowlists
-            if ($this->checkAdminPrefix() && $this->checkAllowedURLs() && $this->checkAllowedIPs()) {
+            // ClientFence core patch: maintenance mode as WHMCS (System > Settings > Maintenance): signed-in staff still use the client area, visitors get the message or the redirect.
+            if ($this->checkAdminPrefix() && $this->checkAllowedURLs() && $this->checkAllowedIPs() && !$this->di['auth']->isAdminLoggedIn()) {
                 if ($this->mod == 'api') {
                     $exc = new \ClientFence\InformationException('The system is undergoing maintenance. Please try again later', [], 503);
                     $apiController = new \ClientFence\Mod\Api\Controller\Client();
@@ -496,8 +497,12 @@ class App
 
                     return $apiController->renderJson(null, $exc);
                 }
+                $redirect = (string) Config::getProperty('maintenance_mode.redirect_url', '');
+                if ($redirect !== '') {
+                    return new RedirectResponse($redirect, 302);
+                }
 
-                return $this->renderResponse('mod_system_maintenance', [], 503);
+                return $this->renderResponse('mod_system_maintenance', ['maintenance_message' => (string) Config::getProperty('maintenance_mode.message', '')], 503);
             }
         }
 

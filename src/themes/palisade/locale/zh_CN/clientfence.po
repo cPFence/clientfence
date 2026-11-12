@@ -25423,3 +25423,72 @@ msgstr "您的域名转移已开始"
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
 msgid "Your domain transfer is complete"
 msgstr "您的域名转移已完成"
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Admin.php
+msgid "\":ip\" is not an IP address or range."
+msgstr "“:ip”不是 IP 地址或范围。"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "IP addresses that still see the site"
+msgstr "仍可看到网站的 IP 地址"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Maintenance"
+msgstr "维护"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode"
+msgstr "维护模式"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode is on"
+msgstr "维护模式已开启"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance mode is on."
+msgstr "维护模式已开启。"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance settings"
+msgstr "维护设置"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Message to visitors"
+msgstr "给访客的消息"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "One IP address or range per line. Your IP address now: :ip"
+msgstr "每行一个 IP 地址或范围。您当前的 IP 地址：:ip"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Optional: send visitors to this page on another site (a status page, for example) instead of showing the maintenance page."
+msgstr "可选：将访客转到另一个网站上的此页面（例如状态页），而不是显示维护页面。"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Redirect address"
+msgstr "重定向地址"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Shown on the maintenance page under its title. Empty shows the standard text."
+msgstr "显示在维护页面的标题下方。留空则显示标准文字。"
+
+#: src/modules/System/Api/Admin.php
+msgid "The message can be at most 2000 characters."
+msgstr "消息最多 2000 个字符。"
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be a full address starting with https:// or http://."
+msgstr "重定向地址必须是以 https:// 或 http:// 开头的完整地址。"
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be on another site: this portal is closed during maintenance."
+msgstr "重定向地址必须在另一个网站上：维护期间此门户已关闭。"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Visitors and clients see the maintenance page; signed-in staff still see the client area."
+msgstr "访客和客户会看到维护页面；已登录的工作人员仍可看到客户区。"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
+msgstr "开启后，访客和客户会看到维护页面（或转到重定向地址），API 会回复系统正在维护。管理区保持开放，已登录的工作人员仍可看到客户区。系统更新运行期间会自动将其开启。"

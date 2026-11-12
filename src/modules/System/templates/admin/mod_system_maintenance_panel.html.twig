@@ -1,0 +1,37 @@
+{# ClientFence: System Settings > Maintenance: maintenance mode as WHMCS (System Api maintenance_get/maintenance_update, App::processRequest()). #}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Maintenance mode'|trans }}</h3>
+            <p class="card-subtitle">{{ 'While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'system/maintenance_update'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, reload: true }) }}>
+        <div class="card-body">
+            <label class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" name="enabled" value="1" {% if maintenance.enabled %}checked{% endif %}{% if not can_update %} disabled{% endif %}>
+                <span class="form-check-label">{{ 'Maintenance mode is on'|trans }}</span>
+            </label>
+            <div class="mb-3">
+                <label class="form-label" for="maintenance-message">{{ 'Message to visitors'|trans }}</label>
+                <textarea class="form-control" id="maintenance-message" name="message" rows="4" maxlength="2000" placeholder="{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}">{{ maintenance.message }}</textarea>
+                <small class="form-hint">{{ 'Shown on the maintenance page under its title. Empty shows the standard text.'|trans }}</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="maintenance-redirect">{{ 'Redirect address'|trans }}</label>
+                <input class="form-control" type="url" id="maintenance-redirect" name="redirect_url" value="{{ maintenance.redirect_url }}" placeholder="https://status.example.com/">
+                <small class="form-hint">{{ 'Optional: send visitors to this page on another site (a status page, for example) instead of showing the maintenance page.'|trans }}</small>
+            </div>
+            <div>
+                <label class="form-label" for="maintenance-ips">{{ 'IP addresses that still see the site'|trans }}</label>
+                <textarea class="form-control" id="maintenance-ips" name="allowed_ips" rows="3" placeholder="192.0.2.10&#10;198.51.100.0/24">{{ maintenance.allowed_ips }}</textarea>
+                <small class="form-hint">{{ 'One IP address or range per line. Your IP address now: :ip'|trans({':ip': maintenance.my_ip}) }}</small>
+            </div>
+        </div>
+        {% if can_update %}
+        <div class="card-footer d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+        </div>
+        {% endif %}
+    </form>
+</div>

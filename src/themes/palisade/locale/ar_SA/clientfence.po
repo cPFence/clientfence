@@ -25313,3 +25313,72 @@ msgstr "بدأ نقل نطاقك"
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
 msgid "Your domain transfer is complete"
 msgstr "اكتمل نقل نطاقك"
+
+# To translate (tools/locales.py starter).
+#: src/modules/System/Api/Admin.php
+msgid "\":ip\" is not an IP address or range."
+msgstr "«:ip» ليس عنوان IP ولا نطاقًا."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "IP addresses that still see the site"
+msgstr "عناوين IP التي ما زالت ترى الموقع"
+
+#: src/modules/System/templates/admin/mod_system_settings.html.twig
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode"
+msgstr "وضع الصيانة"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Maintenance mode is on"
+msgstr "وضع الصيانة مفعّل"
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance mode is on."
+msgstr "وضع الصيانة مفعّل."
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Maintenance settings"
+msgstr "إعدادات الصيانة"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Message to visitors"
+msgstr "رسالة إلى الزوار"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "One IP address or range per line. Your IP address now: :ip"
+msgstr "عنوان IP أو نطاق واحد في كل سطر. عنوان IP الحالي لديك: :ip"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Optional: send visitors to this page on another site (a status page, for example) instead of showing the maintenance page."
+msgstr "اختياري: وجّه الزوار إلى هذه الصفحة على موقع آخر (صفحة الحالة مثلًا) بدلًا من عرض صفحة الصيانة."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Redirect address"
+msgstr "عنوان إعادة التوجيه"
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "Shown on the maintenance page under its title. Empty shows the standard text."
+msgstr "تظهر في صفحة الصيانة تحت عنوانها. إذا تُركت فارغة يظهر النص القياسي."
+
+#: src/modules/System/Api/Admin.php
+msgid "The message can be at most 2000 characters."
+msgstr "يجب ألا تزيد الرسالة على 2000 حرف."
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be a full address starting with https:// or http://."
+msgstr "يجب أن يكون عنوان إعادة التوجيه عنوانًا كاملًا يبدأ بـ https:// أو http://."
+
+#: src/modules/System/Api/Admin.php
+msgid "The redirect address must be on another site: this portal is closed during maintenance."
+msgstr "يجب أن يكون عنوان إعادة التوجيه على موقع آخر: هذه البوابة مغلقة أثناء الصيانة."
+
+#: src/themes/admin_default/html/layout_default.html.twig
+msgid "Visitors and clients see the maintenance page; signed-in staff still see the client area."
+msgstr "يرى الزوار والعملاء صفحة الصيانة، بينما يواصل الموظفون المسجّلون الدخول رؤية منطقة العملاء."
+
+#: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
+msgid "While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run."
+msgstr "أثناء تفعيله يرى الزوار والعملاء صفحة الصيانة (أو يُحوَّلون إلى عنوان إعادة التوجيه) وترد واجهة API بأن النظام قيد الصيانة. تبقى لوحة الإدارة مفتوحة، ويواصل الموظفون المسجّلون الدخول رؤية منطقة العملاء. تفعّله تحديثات النظام تلقائيًا أثناء تشغيلها."

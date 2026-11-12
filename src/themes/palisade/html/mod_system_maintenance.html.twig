@@ -8,7 +8,8 @@
 {% embed 'partials/auth_shell.html.twig' %}
     {% block auth_content %}
         <h1>{{ 'System Undergoing Maintenance'|trans }}</h1>
-        <p class="auth-lead">{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}</p>
+        {# ClientFence core patch: maintenance mode as WHMCS: the staff's own message (System > Settings > Maintenance). #}
+        <p class="auth-lead">{% if maintenance_message|default('') %}{{ maintenance_message|nl2br }}{% else %}{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}{% endif %}</p>
         {% set support_email = guest.system_company.email|default('') %}
         <p class="mb-0">{{ "While we're away, you can still reach us over other channels."|trans }}
             {% if support_email %}<a href="mailto:{{ support_email }}">{{ support_email }}</a>{% endif %}</p>

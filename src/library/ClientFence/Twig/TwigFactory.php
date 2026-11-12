@@ -157,6 +157,8 @@ class TwigFactory
         $twig->addGlobal('app_area', AppArea::ADMIN->value);
         $twig->addGlobal('admin', $this->di['auth']->isAdminLoggedIn() ? $this->di['api_admin'] : null);
         $twig->addGlobal('client', $this->di['auth']->isClientLoggedIn() ? $this->di['api_client'] : null);
+        // ClientFence core patch: maintenance mode as WHMCS: every admin page shows a banner while it is on.
+        $twig->addGlobal('maintenance_mode_on', Tools::normalizeBoolean(Config::getProperty('maintenance_mode.enabled', false), false));
 
         $this->configureDebugging($twig, $debugBar);
 

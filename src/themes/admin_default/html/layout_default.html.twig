@@ -199,6 +199,14 @@
                         </ol>
                         {% endblock %}
                     </nav>
+                    {# ClientFence core patch: maintenance mode as WHMCS: a banner on every admin page while it is on. #}
+                    {% if maintenance_mode_on|default(false) %}
+                    <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2" role="alert">
+                        <strong>{{ 'Maintenance mode is on.'|trans }}</strong>
+                        <span>{{ 'Visitors and clients see the maintenance page; signed-in staff still see the client area.'|trans }}</span>
+                        <a class="alert-link ms-auto" href="{{ 'extension/settings/system'|url }}#tab-maintenance">{{ 'Maintenance settings'|trans }}</a>
+                    </div>
+                    {% endif %}
                     {{ render_widgets('admin.theme.content.before') }}
                     {% block top_content %}{% endblock %}
                     {% block content %}{% endblock %}

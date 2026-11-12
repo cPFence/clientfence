@@ -5378,5 +5378,29 @@
     {
         "file": "modules/Servicedomain/Service.php",
         "done": "ClientFence core patch: an expiry sync that works clears the daily sync's last error (DomainSync.php)."
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch: maintenance mode as WHMCS (System > Settings > Maintenance): signed-in staff still use the client area, visitors get the message or the redirect."
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "ClientFence core patch: maintenance mode as WHMCS: every admin page shows a banner while it is on."
+    },
+    {
+        "file": "modules/System/Api/Admin.php",
+        "done": "ClientFence core patch: maintenance mode as WHMCS (System > Settings > Maintenance), kept in config.php"
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch: maintenance mode as WHMCS (System Api maintenance_get/maintenance_update)."
+    },
+    {
+        "file": "themes/admin_default/html/layout_default.html.twig",
+        "done": "ClientFence core patch: maintenance mode as WHMCS: a banner on every admin page while it is on."
+    },
+    {
+        "file": "modules/System/templates/client/mod_system_maintenance.html.twig",
+        "done": "ClientFence core patch: maintenance mode as WHMCS: the staff's own message on the fallback page."
     }
 ]
