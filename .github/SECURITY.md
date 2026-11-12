@@ -13,8 +13,8 @@ do with it. A proof of concept helps.
 ## Supported versions
 
 Security fixes go into the latest ClientFence release only: update with System → Update (or
-the release archive at clientfence.com) to get them. Before 1.0.0, older pre-releases
-(1.0.0-alpha, -beta and -rc versions) get no fixes of their own.
+the release archive at clientfence.com) to get them. Beta releases (X.Y.Z-beta.N) get no
+fixes of their own: update to the next beta or the stable release.
 
 | Version | Security fixes |
 | --- | --- |

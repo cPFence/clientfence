@@ -32,4 +32,4 @@ docker run --rm clientfence-test ./src/vendor/bin/phpstan analyse --configuratio
 docker run --rm clientfence-test ./src/vendor/bin/pest --test-directory ../tests --configuration phpunit.xml.dist --ci
 ```
 
-Format PHP with `composer cs:fix` (PSR-12).
+Format PHP with `composer cs:fix` (PHP CS Fixer with the rules in `.php-cs-fixer.dist.php`).
