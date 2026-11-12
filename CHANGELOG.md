@@ -21,6 +21,7 @@
 
 - When the store is closed, or open to testers only, staff can add domains in Add New Order, and a hosting product's free domain list shows its TLDs.
 - Domain and hosting activation emails leave out the Nameservers, Account details and Control panel sections when they have nothing to show.
+- System Health shows "Last run 0 seconds ago" right after you run the checks, instead of "Last run ago".
 
 ## 1.0.45 (2026-11-11)
 
