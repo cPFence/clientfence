@@ -16,6 +16,10 @@
 - The WHMCS import keeps each licence's WHMCS service and product numbers.
 - The TLD list has a search, pages and an Active switch.
 
+### Fixed
+
+- When the store is closed, or open to testers only, staff can add domains in Add New Order, and a hosting product's free domain list shows its TLDs.
+
 ## 1.0.45 (2026-11-11)
 
 ### Added
