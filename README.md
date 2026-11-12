@@ -47,7 +47,8 @@ payments, orders, domains, hosting accounts and support tickets in one client ar
 - PHP 8.3, 8.4 or 8.5 (64-bit), with the curl, dom, gd, iconv, intl, json, openssl,
   pdo_mysql, xml and zlib extensions. mbstring and OPcache are recommended.
 - MySQL or MariaDB.
-- A web server that reads `.htaccess` rules, such as Apache or LiteSpeed.
+- Apache, LiteSpeed or OpenLiteSpeed, which read the `.htaccess` file, or Nginx with
+  [its server block](https://clientfence.com/docs/getting-started/nginx/).
 - Cron, to run the scheduled tasks every five minutes.
 
 ## Building a release
