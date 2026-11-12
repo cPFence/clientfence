@@ -10,6 +10,7 @@
 - Domain transfer tracking: a transfer stays "in progress" until the registrar completes it, then the client is emailed; a failed or stuck transfer goes to Failed actions (a switch, off by default; not yet fully tested with each registrar).
 - Licences answer the checks of software sold with the WHMCS Licensing Addon, so installed software keeps working after a move from WHMCS.
 - Per-unit billing of licences: the licence reports its usage and the monthly price follows the count, with switches to hold big drops, warn and suspend.
+- Maintenance mode in System > Settings, as in WHMCS: a switch, your own message to visitors, an optional redirect address and IP addresses that still see the site. Signed-in staff keep the client area, and every admin page shows a banner while it is on.
 
 ### Changed
 
@@ -19,6 +20,7 @@
 ### Fixed
 
 - When the store is closed, or open to testers only, staff can add domains in Add New Order, and a hosting product's free domain list shows its TLDs.
+- Domain and hosting activation emails leave out the Nameservers, Account details and Control panel sections when they have nothing to show.
 
 ## 1.0.45 (2026-11-11)
 
