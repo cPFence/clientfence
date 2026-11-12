@@ -226,7 +226,9 @@
                 <span class="bf-hint" data-bf-egp-line hidden></span>
                 <dl class="bf-kv bf-kv-row">
                     <dt>{{ 'Billed to'|trans }}</dt><dd>{{ buyer.first_name }} {{ buyer.last_name }}</dd>
-                    {% if profile %}<dt>{{ 'Wallet balance'|trans }}</dt><dd>{{ sm.money(profile.balance|default(0), profile.currency ?: currency) }}</dd>{% endif %}
+                    {# The theme's Show Client Balance setting, as the sidebar (ClientFence). #}
+                    {% set show_balance = settings.sidebar_balance_enabled|default('1') %}
+                    {% if profile and show_balance and (show_balance != 'nonzero' or profile.balance|default(0) != 0) %}<dt>{{ 'Account balance'|trans }}</dt><dd>{{ sm.money(profile.balance|default(0), profile.currency ?: currency) }}</dd>{% endif %}
                 </dl>
                 <div class="bf-done-actions">
                     <a class="btn bf-btn-ghost" href="{{ ('invoice/pdf/' ~ invoice.hash)|url }}" target="_blank" rel="noopener">{{ 'Download PDF'|trans }}</a>

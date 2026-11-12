@@ -54,8 +54,9 @@
                         {{ include('partial_menu.html.twig') }}
                     </ul>
                 </nav>
-                {# An authorized user without the invoices permission cannot see the balance (ClientFence). #}
-                {% if client and settings.sidebar_balance_enabled|default('1') and profile and profile.currency is not null and (not clientfence_user or clientfence_user.owner or 'invoices' in clientfence_user.permissions) %}
+                {# An authorized user without the invoices permission cannot see the balance; "Only when not zero" hides a zero balance (ClientFence). #}
+                {% set show_balance = settings.sidebar_balance_enabled|default('1') %}
+                {% if client and show_balance and profile and profile.currency is not null and (show_balance != 'nonzero' or profile.balance|default(0) != 0) and (not clientfence_user or clientfence_user.owner or 'invoices' in clientfence_user.permissions) %}
                     <div class="sidebar-balance">
                         <span>{{ 'Account Balance'|trans }}</span>
                         <div class="sidebar-balance-row">
