@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.48 (2026-11-12)
+
+### Added
+
+- Chargebacks: a Stripe dispute or a PayPal reversal refunds the payment on its invoice and moves the renewed services' due dates back. A dispute you win, or one that takes back only part of the invoice, leaves a note on the invoice for you.
+
+### Changed
+
+- A client's services due on the same day renew on one invoice, as in WHMCS. A service paid by a gateway subscription keeps its own invoice.
+
+### Fixed
+
+- DirectAdmin: creating accounts, suspend, unsuspend and package changes work again.
+- A client cannot order a domain again while their earlier order for it waits for setup.
+- System Activity shows "System" instead of "Guest" for entries the server writes, such as cron.
+
 ## 1.0.47 (2026-11-12)
 
 ### Added
