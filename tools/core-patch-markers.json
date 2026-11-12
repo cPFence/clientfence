@@ -5442,5 +5442,17 @@
     {
         "file": "modules/Invoice/ServiceSubscription.php",
         "done": "ClientFence core patch: the gateway fee is part of each payment, not a line of its own period (GatewayFees.php)."
+    },
+    {
+        "file": "load.php",
+        "done": "ClientFence core patch: save the session before the response ends the request (send() finishes it on"
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: a signed-in client on the sign-in or sign-up page goes on to its ?back= page (the"
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "ClientFence core patch: back to the checkout when this browser's cart holds the order the client started."
     }
 ]

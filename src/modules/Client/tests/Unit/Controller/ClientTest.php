@@ -38,3 +38,21 @@ test('password reset confirmation passes the validated hash to the template', fu
 
     expect($controller->get_reset_password_confirm($boxAppMock, $hash))->toBe('rendered');
 });
+
+test('the email confirmation link goes back to the checkout when this browser has a cart', function (int $items, string $to): void {
+    $client = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $client->shouldReceive('approveClientEmailByHash')->once()->with('abc');
+    $cart = Mockery::mock(ClientFence\Mod\Cart\Service::class);
+    $cart->shouldReceive('countSessionCartItems')->andReturn($items);
+    $di = container();
+    $di['mod_service'] = $di->protect(moduleService(['client' => $client, 'cart' => $cart]));
+    $controller = new Client();
+    $controller->setDi($di);
+    $app = Mockery::mock('ClientFence\App');
+    $app->shouldReceive('redirect')->once()->with($to)->andReturn(new Symfony\Component\HttpFoundation\RedirectResponse($to));
+
+    expect($controller->get_client_confirmation($app, 'abc')->headers->get('Location'))->toBe($to);
+})->with([
+    'a cart' => [2, '/cart'],
+    'no cart' => [0, '/'],
+]);

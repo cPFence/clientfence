@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @param list<string> $activeExtensions extensions the stub reports as on (ClientFence)
  */
-function appClientWithRender(callable $render, bool $clientLoggedIn = false, array $activeExtensions = [], ?object $module = null): \ClientFence\AppClient
+function appClientWithRender(callable $render, bool $clientLoggedIn = false, array $activeExtensions = [], ?object $module = null, ?Request $request = null): \ClientFence\AppClient
 {
     $app = new class($render) extends \ClientFence\AppClient {
         /** @var callable */
@@ -63,7 +63,7 @@ function appClientWithRender(callable $render, bool $clientLoggedIn = false, arr
             return in_array($id, $this->active, true);
         }
     };
-    $di['request'] = Request::create('http://localhost/test');
+    $di['request'] = $request ?? Request::create('http://localhost/test');
     // ClientFence's checks on every client page: nobody signed in, default settings.
     $di['session'] = Mockery::mock(ClientFence\Session::class)->shouldIgnoreMissing();
     $di['mod'] = $di->protect(static fn (): object => $module ?? Mockery::mock(ClientFence\Module::class)
@@ -98,17 +98,25 @@ test('get_custom_page returns XML content type for sitemap', function (): void {
         ->and($response->getContent())->toBe('<urlset></urlset>');
 });
 
-test('get_custom_page redirects authenticated clients away from login', function (): void {
+test('get_custom_page sends signed-in clients from sign-in and sign-up to their back page', function (string $page, string $query, string $location): void {
     $app = appClientWithRender(
-        static fn (): never => throw new RuntimeException('The login page should not be rendered.'),
+        static fn (): never => throw new RuntimeException('The page should not be rendered.'),
         clientLoggedIn: true,
+        // ClientFence: the checkout's ?back= (an unconfirmed client may open /cart, not / or the sign-in page).
+        request: Request::create('http://localhost/' . $page . $query),
     );
 
-    $response = $app->get_custom_page('login');
+    $response = $app->get_custom_page($page);
 
     expect($response->getStatusCode())->toBe(302)
-        ->and($response->headers->get('Location'))->toBe('/');
-});
+        ->and($response->headers->get('Location'))->toBe($location);
+})->with([
+    'sign-in' => ['login', '', '/'],
+    'sign-in back to the cart' => ['login', '?back=/cart', '/cart'],
+    'sign-up back to the cart' => ['signup', '?back=/cart', '/cart'],
+    'another site' => ['signup', '?back=//evil.example/cart', '/'],
+    'a full address' => ['login', '?back=/x?u=https://evil.example', '/'],
+]);
 
 test('get_custom_page returns 500 (not 404) when the template throws a RuntimeError (regression for #3818)', function (): void {
     $app = appClientWithRender(function (string $fileName): string {

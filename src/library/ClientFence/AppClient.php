@@ -111,8 +111,12 @@ class AppClient extends \ClientFence\App
             $page = substr((string) $page, 0, strpos((string) $page, '.'));
         }
 
-        if ($page === 'login' && $this->di['auth']->isClientLoggedIn()) {
-            return $this->redirect('/');
+        // ClientFence core patch: a signed-in client on the sign-in or sign-up page goes on to its ?back= page (the
+        // checkout), the same path check as the pages' own forms.
+        if (in_array($page, ['login', 'signup'], true) && $this->di['auth']->isClientLoggedIn()) {
+            $back = $this->getRequest()->query->get('back');
+
+            return $this->redirect(is_string($back) && preg_match('#^/(?![/\\\\])[^\s\\\\]*$#', $back) === 1 && !str_contains($back, '://') ? $back : '/');
         }
 
         $page = str_replace('/', '_', $page);

@@ -149,7 +149,7 @@
                     {% if top_register or settings.top_menu_profile|default('1') %}
                     <div class="user-menu">
                         {% if top_register %}
-                            <a class="btn btn-sm btn-outline-primary bf-topbar-register" href="{{ 'signup'|url }}">{{ 'Register'|trans }}</a>
+                            <a class="btn btn-sm btn-outline-primary bf-topbar-register" href="{{ 'signup'|url(cart_count|default(0) ? {back: '/cart'} : {}) }}">{{ 'Register'|trans }}</a>
                         {% endif %}
                         {% if settings.top_menu_profile|default('1') %}
                             <a class="btn btn-sm btn-primary" href="{{ 'login'|url }}">{{ 'Sign in'|trans }}</a>

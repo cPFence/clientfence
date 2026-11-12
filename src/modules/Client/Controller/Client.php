@@ -86,7 +86,8 @@ class Client implements \ClientFence\InjectionAwareInterface
             RandomizedTimeFloor::apply($startedAt);
         }
 
-        return $app->redirect('/');
+        // ClientFence core patch: back to the checkout when this browser's cart holds the order the client started.
+        return $app->redirect($this->di['mod_service']('cart')->countSessionCartItems() > 0 ? '/cart' : '/');
     }
 
     public function get_client_logout(\ClientFence\App $app): Response

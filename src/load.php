@@ -35,6 +35,12 @@ function sendResponse(Response $response): void
 {
     global $request;
 
+    // ClientFence core patch: save the session before the response ends the request (send() finishes it on
+    // PHP-FPM and LiteSpeed); PHP saves it after every shutdown function, so after the emails sent after the response.
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
+
     $currentRequest = $request instanceof Request ? $request : Request::createFromGlobals();
     $response->prepare($currentRequest)->send();
 }

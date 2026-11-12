@@ -247,7 +247,7 @@
                         </div>
                     </div>
                 {% elseif signup_page %}
-                    <p class="mb-0">{{ 'Create your account first, then come back to this page.'|trans }} <a href="{{ 'signup'|url }}">{{ 'Sign up'|trans }}</a> · <a href="{{ 'login'|url({back: '/' ~ back}) }}">{{ 'Sign in'|trans }}</a></p>
+                    <p class="mb-0">{{ 'Create your account first, then come back to this page.'|trans }} <a href="{{ 'signup'|url({back: '/' ~ back}) }}">{{ 'Sign up'|trans }}</a> · <a href="{{ 'login'|url({back: '/' ~ back}) }}">{{ 'Sign in'|trans }}</a></p>
                 {% elseif store.signup|default(false) %}
                     {# Shown once the account is made but the sign-up did not sign in (checkout.js). #}
                     <div class="alert alert-info" role="status" tabindex="-1" data-bf-account-ready hidden>
