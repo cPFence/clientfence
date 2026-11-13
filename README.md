@@ -30,7 +30,8 @@ payments, orders, domains, hosting accounts and support tickets in one client ar
   "prices include tax" mode, EU VAT reverse charge, payment receipts, payment method fees, order
   form answers and cancellation requests. Payments through Stripe (cards and Direct Debit),
   PayPal, PayPal Auto-Pay, PayTabs, eWAY and manual gateways, with saved cards that pay
-  invoices on the due date.
+  invoices on the due date. An accounting sync sends approved invoices with their clients,
+  payments and refunds to [Xero, FreeAgent or QuickBooks Online](https://clientfence.com/docs/clients-and-billing/accounting-sync/).
 - **Hosting and domains:** an Enhance server manager with client pages for each hosting
   account (including Enhance backups) and a daily status check; server managers for cPanel/WHM,
   Plesk, DirectAdmin, CWP and HestiaCP; Change Product; 18 domain registrars (including Enom,
