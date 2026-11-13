@@ -8,7 +8,7 @@
 <div class="card mt-3 clientfence-settings" id="accounting" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<div class="clientfence-settings-intro">
 		<h3>{{ 'Accounting'|trans }}</h3>
-		<p>{{ 'Sends clients, approved invoices, their payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes.'|trans }}</p>
+		<p>{{ 'Sends approved invoices with their clients, payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes.'|trans }}</p>
 	</div>
 	{% if acct.notice %}
 		<div class="alert alert-info mx-3" role="status">{{ acct.notice }}</div>
