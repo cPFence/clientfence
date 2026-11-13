@@ -107,7 +107,7 @@ final class Users
             'payment_details' => 'invoices', 'receipt_send' => 'invoices', 'statement' => 'invoices', 'statement_pdf' => 'invoices',
             'quote_get_list' => 'quotes',
         ],
-        'order' => ['get_list' => 'products', 'get' => 'products', 'addons' => 'products', 'service' => 'products', 'upgradables' => 'products', 'upgrade_options' => 'products', 'upgrade_options_quote' => 'products', 'upgrade' => 'orders', 'delete' => 'orders',
+        'order' => ['get_list' => 'products', 'get' => 'products', 'addons' => 'products', 'service' => 'products', 'upgradables' => 'products', 'upgrade_options' => 'products', 'upgrade_options_quote' => 'products', 'upgrade' => 'orders', 'addon_offers' => 'products', 'addon_order' => 'orders', 'delete' => 'orders',
             // Cancellation requests (Order/CancelRequests.php).
             'cancel_request' => 'orders', 'cancel_request_get' => 'products', 'cancel_request_withdraw' => 'orders'],
         'profile' => ['get' => '*', 'logout' => '*', 'update' => 'profile'],

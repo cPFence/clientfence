@@ -24,6 +24,8 @@
 
 {% set service_partial = 'mod_service' ~ order.service_type ~ '_manage.html.twig' %}
 {% set addons = order.group_master == 1 ? admin.order_addons({ 'id': order.id }) : [] %}
+{# ClientFence core patch: Add Add-on for this service (Order/AddonOrders.php). #}
+{% set addon_offers = order.status == 'active' ? admin.order_addon_offers({ 'id': order.id }) : [] %}
 {# ClientFence core patch: configurable options (Product/Options.php) on their own tab. #}
 {% set order_options = admin.order_options_get({ 'id': order.id }) %}
 {% if order.status == 'active' or order.status == 'failed_renew' %}
@@ -59,7 +61,7 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-invoices" data-bs-toggle="tab" role="tab">{{ 'Invoices'|trans }}</a>
                     </li>
-                    {% if addons|length > 0 %}
+                    {% if addons|length > 0 or addon_offers|length > 0 %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-addons" data-bs-toggle="tab" role="tab">{{ 'Addons'|trans }}</a>
                     </li>
@@ -638,6 +640,32 @@
                             </tbody>
                         </table>
                     </div>
+                    {% if addon_offers|length > 0 %}
+                    <form method="post" action="{{ 'order/create_many'|api_url }}" class="card-body border-top" {{ fb_api_form({ reload: true }) }}>
+                        <input type="hidden" name="client_id" value="{{ order.client_id }}">
+                        <input type="hidden" name="items[0][addon_for]" value="{{ order.id }}">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-6">
+                                <label class="form-label" for="addon-product">{{ 'Add Add-on'|trans }}</label>
+                                <select class="form-select" id="addon-product" name="items[0][product_id]" required>
+                                    {% for offer in addon_offers %}
+                                    <option value="{{ offer.id }}">{{ offer.title }}: {{ (offer.now + offer.setup)|format_currency(order.currency) }}{% if offer.period %} {{ 'to :date'|trans({':date': offer.due|format_date}) }}, {{ 'then'|trans }} {{ offer.price|format_currency(order.currency) }} {{ offer.period|period_title }}{% endif %}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="hidden" name="invoice" value="0">
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="invoice" value="1" checked>
+                                    <span class="form-check-label">{{ 'Issue an invoice'|trans }}</span>
+                                </label>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" type="submit">{{ 'Add'|trans }}</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
         </div>

@@ -197,6 +197,24 @@
                 {% endfor %}
             </div>
             {% endif %}
+
+            {# ClientFence core patch: add-ons ordered for this service (Order/AddonOrders.php), through the cart. #}
+            {% set addon_offers = client.order_addon_offers({ "id": order.id }) %}
+            {% if addon_offers|length > 0 %}
+            <div class="card mb-4" id="order-addons">
+                <div class="card-header"><h2>{{ 'Order Add-ons'|trans }}</h2></div>
+                {% for offer in addon_offers %}
+                    <div class="list-row">
+                        <div class="min-w-0">
+                            <div class="list-row-title">{{ offer.title }}</div>
+                            <div class="list-row-meta">{{ 'Due now'|trans }}: {{ (offer.now + offer.setup)|format_currency(order.currency) }}{% if offer.period %} {{ 'to :date'|trans({':date': offer.due|format_date}) }} · {{ 'Then'|trans }}: {{ offer.price|format_currency(order.currency) }} {{ offer.period|period_title }}{% endif %}</div>
+                        </div>
+                        <a class="btn btn-primary btn-sm" {{ fb_api_link({href: 'order/addon_order'|api_url(query: {id: order.id, product_id: offer.id}), redirect: 'cart'|url}) }}>{{ 'Order'|trans }}</a>
+                    </div>
+                {% endfor %}
+                <div class="card-footer small text-secondary">{{ 'Add-ons are charged to this service\'s due date, then renew with it.'|trans }}</div>
+            </div>
+            {% endif %}
         </div>
 
         <div class="col-lg-4">

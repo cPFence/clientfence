@@ -173,6 +173,20 @@ class Admin extends \ClientFence\Api\AbstractApi
         ] + $data);
     }
 
+    /**
+     * ClientFence: the add-ons this service can take now (Order/AddonOrders.php), for Add Add-on on the order page; staff
+     * order one with create_many (an item with `addon_for`: this order's id).
+     *
+     * @return list<array<string, mixed>>
+     */
+    #[RequiredParams(['id' => 'Order ID was not passed'])]
+    public function addon_offers($data): array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\AddonOrders::offers($this->getDi(), $this->getDi()['db']->getExistingModelById('ClientOrder', (int) $data['id'], 'Order Not Found'));
+    }
+
     private function staffOrder(array $data, ?array $staff): array
     {
         $client = $this->getDi()['db']->getExistingModelById('Client', (int) $data['client_id'], 'Client not found');

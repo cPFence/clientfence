@@ -1220,7 +1220,7 @@ final class Upgrades
      * can start a new cycle on its own day, so then only the first period is walked from it; later ones are the month before
      * the expiry.
      */
-    private static function anchorFor(\Pimple\Container $di, \Model_ClientOrder $order): ?string
+    public static function anchorFor(\Pimple\Container $di, \Model_ClientOrder $order): ?string
     {
         $anchor = self::periodAnchor(self::db($di), $order);
         $logic = $di['mod_config']('order')['order_renewal_logic'] ?? '';
@@ -1238,8 +1238,11 @@ final class Upgrades
         if ($change !== false) {
             return substr((string) $change['to_expires_at'], 0, 10) === substr((string) $order->expires_at, 0, 10) ? (string) $change['applied_at'] : (string) $change['to_expires_at'];
         }
+        // An add-on ordered for a service renews on that service's day (Order\Service::orderActivatedAt()).
+        $parent = (int) ((json_decode((string) $order->config, true) ?? [])['addon_for'] ?? 0);
+        $activated = $parent > 0 ? $db->fetchOne('SELECT activated_at FROM client_order WHERE id = ?', [$parent]) : $order->activated_at;
 
-        return $order->activated_at !== null && $order->activated_at !== '' ? (string) $order->activated_at : null;
+        return $activated !== null && $activated !== false && $activated !== '' ? (string) $activated : null;
     }
 
     /** QA r10 D-09: takes the client's money lock (MySQL only, as Tools::withLock()); false when there is none to take. */
@@ -1479,7 +1482,7 @@ final class Upgrades
     private static function repricedSincePaid(\Pimple\Container $di, Connection $db, \Model_ClientOrder $order, bool $price = true): bool
     {
         $last = $db->fetchAssociative(
-            'SELECT i.status, i.taxrate, i.paid_at, ii.price * ii.quantity AS amount FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
+            'SELECT i.status, i.taxrate, i.paid_at, ii.task, ii.price * ii.quantity AS amount FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
              WHERE ii.type = ? AND ii.rel_id = ? AND ii.price >= 0 AND i.status IN (?, ?) ORDER BY i.id DESC LIMIT 1',
             [\Model_InvoiceItem::TYPE_ORDER, (string) $order->id, \Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED],
         );
@@ -1499,6 +1502,10 @@ final class Upgrades
                 }
             }
             $paid = (float) $last['amount'] * (100 + max(0.0, $rate)) / 100;
+            // ClientFence core patch: an add-on's first invoice charged part of a period (Order/AddonOrders.php), not a lower price.
+            if ($last['task'] === \Model_InvoiceItem::TASK_ACTIVATE && !empty((json_decode((string) $order->config, true) ?? [])['addon_due'])) {
+                $paid = self::orderTotal($order);
+            }
         }
         // A plan or cycle change applied since was paid at its new price, an options change only at the options' difference.
         $changes = $db->fetchAllAssociative(

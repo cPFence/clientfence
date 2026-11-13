@@ -2376,12 +2376,15 @@ class Service implements InjectionAwareInterface
         // A part taken back leaves the rest paying for the period: staff settle the service by hand.
         $items = $full ? $db->fetchAllAssociative("SELECT rel_id, period FROM invoice_item WHERE invoice_id = ? AND type = 'order' AND task = ? AND status = 'executed'", [(int) $invoice->id, \Model_InvoiceItem::TASK_RENEW]) : [];
         foreach ($items as $item) {
-            $order = $db->fetchAssociative('SELECT id, expires_at, period, activated_at FROM client_order WHERE id = ?', [(int) $item['rel_id']]);
+            $order = $db->fetchAssociative('SELECT id, expires_at, period, activated_at, config FROM client_order WHERE id = ?', [(int) $item['rel_id']]);
             $code = (string) ($item['period'] ?: ($order['period'] ?? ''));
             if ($order === false || empty($order['expires_at']) || $code === '') {
                 continue;
             }
-            $expires = date('Y-m-d H:i:s', $this->di['mod_service']('order')->periodEnd($code, (int) strtotime((string) $order['expires_at']), $order['activated_at'], -1));
+            // ClientFence core patch: an add-on goes back on its service's renewal day, as it renews (Order/AddonOrders.php).
+            $parentId = (int) (json_decode((string) $order['config'], true)['addon_for'] ?? 0);
+            $activated = ($parentId > 0 ? $db->fetchOne('SELECT activated_at FROM client_order WHERE id = ?', [$parentId]) : false) ?: $order['activated_at'];
+            $expires = date('Y-m-d H:i:s', $this->di['mod_service']('order')->periodEnd($code, (int) strtotime((string) $order['expires_at']), $activated, -1));
             $db->update('client_order', ['expires_at' => $expires, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $order['id']]);
             $moved[] = sprintf('order #%d due %s', $order['id'], substr($expires, 0, 10));
         }

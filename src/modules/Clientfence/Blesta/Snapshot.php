@@ -240,20 +240,34 @@ final class Snapshot extends Base
         $group = $this->blesta->value('SELECT package_group_id FROM package_group WHERE package_id = ? ORDER BY `order` LIMIT 1', [$id]);
         [$description, $descriptions] = $this->texts('SELECT lang, text FROM package_descriptions WHERE package_id = ?', $id);
         $onetime = $pricing !== [] && array_filter($pricing, static fn (array $x): bool => $x['period'] !== 'onetime') === [];
-        $this->db->insert('tblproducts', [
-            'id' => $id, 'type' => 'other', 'gid' => $group === false ? 0 : (int) $group, 'name' => $name !== '' ? $name : 'Package #' . $id,
-            'description' => $description,
-            'hidden' => (int) $p['hidden'], 'stockcontrol' => $p['qty'] !== null ? 1 : 0, 'qty' => (int) ($p['qty'] ?? 0), 'paytype' => $onetime ? 'onetime' : 'recurring',
-            'retired' => $p['status'] === 'inactive' ? 1 : 0, 'tax' => (int) $p['taxable'],
-        ]);
-        $this->translate('product', $id, 'name', $names);
-        $this->translate('product', $id, 'description', $descriptions);
+        // A package in an add-on group is a WHMCS add-on of the packages in the group's parent groups.
+        $parents = $this->blesta->hasTable('package_group_parents') ? $this->blesta->rows(
+            "SELECT DISTINCT pg.package_id FROM package_group a JOIN package_groups g ON g.id = a.package_group_id AND g.type = 'addon' JOIN package_group_parents gp ON gp.group_id = a.package_group_id JOIN package_group pg ON pg.package_group_id = gp.parent_group_id WHERE a.package_id = ? ORDER BY pg.package_id",
+            [$id],
+        ) : [];
+        $kind = $parents === [] ? 'product' : 'addon';
+        if ($kind === 'addon') {
+            $this->db->insert('tbladdons', [
+                'id' => $id, 'packages' => implode(',', array_column($parents, 'package_id')), 'name' => $name !== '' ? $name : 'Package #' . $id,
+                'description' => $description, 'billingcycle' => $onetime ? 'onetime' : 'recurring', 'allowqty' => 0, 'showorder' => 1,
+                'hidden' => (int) $p['hidden'], 'retired' => $p['status'] === 'inactive' ? 1 : 0, 'autoactivate' => '', 'module' => '', 'weight' => 0, 'tax' => (int) $p['taxable'],
+            ]);
+        } else {
+            $this->db->insert('tblproducts', [
+                'id' => $id, 'type' => 'other', 'gid' => $group === false ? 0 : (int) $group, 'name' => $name !== '' ? $name : 'Package #' . $id,
+                'description' => $description,
+                'hidden' => (int) $p['hidden'], 'stockcontrol' => $p['qty'] !== null ? 1 : 0, 'qty' => (int) ($p['qty'] ?? 0), 'paytype' => $onetime ? 'onetime' : 'recurring',
+                'retired' => $p['status'] === 'inactive' ? 1 : 0, 'tax' => (int) $p['taxable'],
+            ]);
+        }
+        $this->translate('product' . ($kind === 'addon' ? '_addon' : ''), $id, 'name', $names);
+        $this->translate('product' . ($kind === 'addon' ? '_addon' : ''), $id, 'description', $descriptions);
         $rows = [];
         $unbilled = [];
         foreach ($pricing as $price) {
             $months = self::months((string) $price['period'], (int) $price['term']);
             $currency = $this->currency((string) $price['currency']);
-            $rows[$currency] ??= ['type' => 'product', 'currency' => $currency, 'relid' => $id, 'msetupfee' => 0, 'qsetupfee' => 0, 'ssetupfee' => 0, 'asetupfee' => 0, 'bsetupfee' => 0, 'tsetupfee' => 0];
+            $rows[$currency] ??= ['type' => $kind, 'currency' => $currency, 'relid' => $id, 'msetupfee' => 0, 'qsetupfee' => 0, 'ssetupfee' => 0, 'asetupfee' => 0, 'bsetupfee' => 0, 'tsetupfee' => 0];
             if ($months === 0 && !$onetime) {
                 $unbilled['onetime'] = sprintf('Package "%s": its one-time price was not imported (the package also renews, and ClientFence bills a product either once or on renewal).', $name);
 
@@ -426,11 +440,26 @@ final class Snapshot extends Base
 
             return;
         }
+        $cycle = $months === 0 ? 'One Time' : self::CYCLES[$months];
+        $terminated = $status === 'canceled' && $cancels !== '' ? $cancels : null;
+        if ((int) ($s['parent_service_id'] ?? 0) > 0 && $this->db->fetchOne('SELECT id FROM tbladdons WHERE id = ?', [(int) $s['package_id']]) !== false) {
+            // An add-on service: the WHMCS step links it to its parent service.
+            $this->db->insert('tblhostingaddons', [
+                'id' => $id, 'orderid' => 0, 'hostingid' => (int) $s['parent_service_id'], 'addonid' => (int) $s['package_id'], 'userid' => $client,
+                'name' => '', 'qty' => $qty, 'recurring' => $amount, 'billingcycle' => $cycle, 'status' => self::SERVICE_STATUSES[$status] ?? 'Pending',
+                'regdate' => $start, 'nextduedate' => $due ?: $start, 'termination_date' => $terminated, 'notes' => '', 'subscriptionid' => '',
+            ]);
+            if ($status !== 'canceled' && $cancels !== '') {
+                $this->warn(sprintf('Add-on service #%d of client #%d is set to cancel on %s in Blesta: cancel it again in ClientFence.', $id, $client, $cancels));
+            }
+
+            return;
+        }
         $this->db->insert('tblhosting', [
             'id' => $id, 'userid' => $client, 'packageid' => (int) $s['package_id'], 'regdate' => $start,
             'domain' => (string) ($this->blesta->value("SELECT value FROM service_fields WHERE service_id = ? AND encrypted = 0 AND `key` LIKE '%domain%' LIMIT 1", [$id]) ?: ''),
-            'qty' => $qty, 'firstpaymentamount' => $amount, 'amount' => $amount, 'billingcycle' => $months === 0 ? 'One Time' : self::CYCLES[$months],
-            'nextduedate' => $due ?: $start, 'termination_date' => $status === 'canceled' && $cancels !== '' ? $cancels : null,
+            'qty' => $qty, 'firstpaymentamount' => $amount, 'amount' => $amount, 'billingcycle' => $cycle,
+            'nextduedate' => $due ?: $start, 'termination_date' => $terminated,
             'domainstatus' => self::SERVICE_STATUSES[$status] ?? 'Pending', 'suspendreason' => (string) ($s['suspension_reason'] ?? ''),
         ]);
         // A cancellation set for a later date: the WHMCS step puts it in Cancellation Requests, so it does not renew.
@@ -481,6 +510,7 @@ final class Snapshot extends Base
             $type = match (true) {
                 $service === 0 || isset($renews[$service]) => '',
                 $this->db->fetchOne('SELECT 1 FROM tbldomains WHERE id = ?', [$service]) !== false => 'Domain',
+                $this->db->fetchOne('SELECT 1 FROM tblhostingaddons WHERE id = ?', [$service]) !== false => 'Addon',
                 default => 'Hosting',
             };
             $renews[$service] = true;

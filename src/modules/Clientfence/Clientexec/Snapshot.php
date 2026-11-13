@@ -162,12 +162,15 @@ final class Snapshot extends Base
         }
         $counts = [
             'coupons' => $this->cexec->count('coupons', 'coupons_archive = 0'),
-            'package add-ons' => $this->cexec->count('packageaddon'),
-            'recurring charges that are not a package\'s (add-ons, discounts and others)' => $this->cexec->count('recurringfee', 'billingtypeid <> -1 AND recurring = 1'),
+            'recurring charges that are not a package\'s or an add-on\'s (discounts and others)' => $this->cexec->count('recurringfee', 'billingtypeid <> -1 AND recurring = 1 AND packageaddon_prices_id = 0'),
             'ticket attachments' => $this->cexec->count('troubleticket_files'),
         ];
         foreach (array_filter($counts) as $what => $count) {
             $this->warn(sprintf('ClientExec has %d %s: they were not imported.', $count, $what));
+        }
+        $addons = $this->cexec->count('packageaddon');
+        if ($addons > 0) {
+            $this->warn(sprintf('ClientExec has %d package add-ons: the add-ons your clients have were imported with their packages, but new orders do not offer them; add them as add-on products.', $addons));
         }
 
         return 1;
@@ -366,7 +369,7 @@ final class Snapshot extends Base
         foreach ($this->cexec->rows('SELECT c.subGroupId, c.name, o.value FROM object_customField o JOIN customField c ON c.id = o.customFieldId WHERE c.groupId = 2 AND o.objectid = ?', [$id]) as $f) {
             $fields[$f['subGroupId'] . ':' . $f['name']] = trim((string) ($f['value'] ?? ''));
         }
-        $fee = $this->cexec->rows('SELECT * FROM recurringfee WHERE appliestoid = ? AND billingtypeid = -1 ORDER BY id LIMIT 1', [$id])[0] ?? null;
+        $fee = $this->cexec->rows('SELECT * FROM recurringfee WHERE appliestoid = ? AND billingtypeid = -1 AND packageaddon_prices_id = 0 ORDER BY id LIMIT 1', [$id])[0] ?? null;
         $amount = $fee !== null ? round((float) $fee['amount'] * (float) $fee['quantity'], 2) : ((int) $d['use_custom_price'] === 1 ? (float) $d['custom_price'] : 0.0);
         $once = $fee === null || (int) $fee['recurring'] === 0;
         $months = $once ? 0 : $this->months((int) $fee['paymentterm']);
@@ -392,6 +395,9 @@ final class Snapshot extends Base
             if ($domain === '') {
                 $this->warn(sprintf('Domain package #%d of client #%d has no domain name in ClientExec.', $id, $client));
             }
+            if ($this->cexec->count('recurringfee', 'appliestoid = ? AND packageaddon_prices_id > 0', [$id]) > 0) {
+                $this->warn(sprintf('Domain package #%d (%s) of client #%d has add-ons in ClientExec: they were not imported (ClientFence links add-ons to services only).', $id, $domain, $client));
+            }
 
             return;
         }
@@ -409,6 +415,34 @@ final class Snapshot extends Base
         // A pending cancellation: the WHMCS step puts it in Cancellation Requests, so it does not renew.
         if ($cancel !== null) {
             $this->db->insert('tblcancelrequests', ['date' => $cancel['date'], 'relid' => $id, 'reason' => $cancel['reason'], 'type' => 'End of Billing Period']);
+        }
+        $this->addons($id, $client, self::SERVICE_STATUSES[$status] ?? 'Pending', $start);
+    }
+
+    /**
+     * A package's add-on charges (a chosen value of a ClientExec add-on) as WHMCS service add-ons: the WHMCS step
+     * links each to the package's service, with its own price, cycle and due date.
+     */
+    private function addons(int $service, int $client, string $status, string $start): void
+    {
+        $fees = $this->cexec->rows(
+            'SELECT f.*, a.name, v.detail FROM recurringfee f LEFT JOIN packageaddon_prices v ON v.id = f.packageaddon_prices_id LEFT JOIN packageaddon a ON a.id = v.packageaddon_id WHERE f.appliestoid = ? AND f.packageaddon_prices_id > 0 ORDER BY f.id',
+            [$service],
+        );
+        foreach ($fees as $fee) {
+            $title = implode(': ', array_filter([trim((string) ($fee['name'] ?? '')), trim((string) ($fee['detail'] ?? ''))])) ?: trim((string) ($fee['description'] ?? '')) ?: 'Add-on';
+            $months = (int) $fee['recurring'] === 0 ? 0 : $this->months((int) $fee['paymentterm']);
+            if ($months === null) {
+                $this->warn(sprintf('Add-on "%s" of package #%d was not imported: it renews every %s, which ClientFence does not bill.', $title, $service, $this->cycleName((int) $fee['paymentterm'])));
+
+                continue;
+            }
+            $this->db->insert('tblhostingaddons', [
+                'id' => (int) $fee['id'], 'orderid' => 0, 'hostingid' => $service, 'addonid' => 0, 'userid' => $client, 'name' => $title,
+                'qty' => max(1, (int) $fee['quantity']), 'recurring' => round((float) $fee['amount'] * max(1.0, (float) $fee['quantity']), 2),
+                'billingcycle' => $months === 0 ? 'One Time' : self::CYCLES[$months], 'status' => $status,
+                'regdate' => $start, 'nextduedate' => self::day($fee['nextbilldate'] ?? null) ?: $start, 'termination_date' => null, 'notes' => '', 'subscriptionid' => '',
+            ]);
         }
     }
 
@@ -463,14 +497,21 @@ final class Snapshot extends Base
         $renews = [];
         foreach ($lines as $line) {
             $service = (int) $line['appliestoid'];
+            // An add-on charge's line renews that add-on (its fee is the imported add-on's id).
+            $fee = (int) ($line['recurringappliesto'] ?? 0);
+            $addon = $fee > 0 && $this->db->fetchOne('SELECT 1 FROM tblhostingaddons WHERE id = ?', [$fee]) !== false;
+            if ($addon) {
+                $service = $fee;
+            }
             // Paying a package's line renews it: only its first package line on the invoice.
             $type = match (true) {
+                $addon => isset($renews['addon:' . $fee]) ? '' : 'Addon',
                 (int) $line['billingtypeid'] !== -1 || $service === 0 || isset($renews[$service]) => '',
                 $this->db->fetchOne('SELECT 1 FROM tbldomains WHERE id = ?', [$service]) !== false => 'Domain',
                 $this->db->fetchOne('SELECT 1 FROM tblhosting WHERE id = ?', [$service]) !== false => 'Hosting',
                 default => '',
             };
-            $renews[$service] = true;
+            $renews[$type === 'Addon' ? 'addon:' . $fee : $service] = true;
             $qty = (float) $line['quantity'];
             $detail = trim((string) $line['detail']);
             $this->db->insert('tblinvoiceitems', [

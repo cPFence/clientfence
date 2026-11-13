@@ -185,8 +185,15 @@ class Service implements InjectionAwareInterface
         return ($di['mod_config']('order')['renewal_day'] ?? 'keep') !== 'calendar';
     }
 
-    private function orderActivatedAt(Order|\Model_ClientOrder $order): ?string
+    public function orderActivatedAt(Order|\Model_ClientOrder $order): ?string
     {
+        // ClientFence core patch: an add-on ordered for a service keeps that service's renewal day (Order/AddonOrders.php).
+        $parentId = (int) ($this->getConfig($order)['addon_for'] ?? 0);
+        $parent = $parentId > 0 ? $this->di['db']->load('ClientOrder', $parentId) : null;
+        if ($parent instanceof \Model_ClientOrder && $parent->id) {
+            return $parent->activated_at;
+        }
+
         return $order instanceof Order ? $order->getActivatedAt()?->format('Y-m-d H:i:s') : $order->activated_at;
     }
 
@@ -1488,7 +1495,10 @@ class Service implements InjectionAwareInterface
             if (!empty($period)) {
                 $from_time = ($expiresAt === null) ? time() : ($order instanceof Order ? ($expiresAt->getTimestamp() ?? time()) : strtotime((string) $expiresAt));
 
-                $newExpires = date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order)));
+                // ClientFence core patch: an add-on ordered for a service was charged to the service's due date then
+                // (Order/AddonOrders.php): it first runs to that date, then renews with the service.
+                $addonDue = $expiresAt === null ? (string) ($this->getConfig($order)['addon_due'] ?? '') : '';
+                $newExpires = $addonDue !== '' ? $addonDue : date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order)));
                 if ($order instanceof Order) {
                     $order->setExpiresAt(new \DateTime($newExpires));
                 } else {

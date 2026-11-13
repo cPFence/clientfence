@@ -193,6 +193,42 @@
                 </div>
             {% endif %}
 
+            {# ClientFence core patch: add-ons ordered for this service (Order/AddonOrders.php), through the cart. #}
+            {% set addon_offers = client.order_addon_offers({ "id": order.id }) %}
+            {% if addon_offers|length > 0 %}
+            <div class="card mb-4" id="order-addons">
+                <div class="card-header py-3">
+                    <h1 class="mb-1">{{ 'Order Add-ons'|trans }}</h1>
+                    <span class="small text-secondary">{{ 'Add-ons are charged to this service\'s due date, then renew with it.'|trans }}</span>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-bordered table-sm">
+                        <thead>
+                        <tr>
+                            <th>{{ 'Add-on'|trans }}</th>
+                            <th>{{ 'Due now'|trans }}</th>
+                            <th>{{ 'Then'|trans }}</th>
+                            <th>{{ 'Actions'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for offer in addon_offers %}
+                            <tr>
+                                <td>{{ offer.title }}{% if offer.description %}<div class="small text-secondary">{{ offer.description|striptags }}</div>{% endif %}</td>
+                                <td>{{ (offer.now + offer.setup)|format_currency(order.currency) }}{% if offer.due %}<div class="small text-secondary">{{ 'to :date'|trans({':date': offer.due|format_date}) }}</div>{% endif %}</td>
+                                <td>{% if offer.period %}{{ offer.price|format_currency(order.currency) }} {{ offer.period|period_title }}{% else %}{{ 'One time'|trans }}{% endif %}</td>
+                                <td class="actions">
+                                    <a class="btn btn-primary btn-sm"
+                                       {{ fb_api_link({href: 'order/addon_order'|api_url(query: {id: order.id, product_id: offer.id}), redirect: 'cart'|url}) }}>{{ 'Order'|trans }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="modal fade" id="cancel-request-modal" tabindex="-1" role="dialog" aria-labelledby="cancel-modal" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">

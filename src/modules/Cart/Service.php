@@ -35,6 +35,9 @@ class Service implements InjectionAwareInterface
      */
     public const CART_FAMILY_KEY = '__cart_family';
 
+    /** ClientFence core patch: the client's service an add-on is ordered for (Order/AddonOrders.php); stamped by the server only. */
+    public const CART_ADDON_FOR_KEY = '__cart_addon_for';
+
     protected ?\Pimple\Container $di = null;
     /** ClientFence: the currency cartProductToApiArray() prices an item in (Product/CurrencyPrices.php). */
     private ?string $priceCurrency = null;
@@ -333,8 +336,15 @@ class Service implements InjectionAwareInterface
         return $cart;
     }
 
-    public function addItem(Cart|\Model_Cart $cart, Product $product, array $data): bool
+    public function addItem(Cart|\Model_Cart $cart, Product $product, array $data, ?\Model_ClientOrder $addonFor = null): bool
     {
+        unset($data[self::CART_ADDON_FOR_KEY]);
+        if ($addonFor !== null) {
+            // ClientFence core patch: an add-on for the client's service (Order/AddonOrders.php) comes in that service's cycle.
+            \ClientFence\Mod\Order\AddonOrders::offered($this->di, $addonFor, (int) $product->getId());
+            $data['period'] = $this->isRecurrentPricing($product) ? (string) $addonFor->period : null;
+            unset($data['addons'], $data['domain']);
+        }
         // ClientFence core patch: staff_order is set last, so a client's cart data cannot claim it.
         $event_params = [...$data, 'cart_id' => $this->cartId($cart), 'product_id' => $this->getProductId($product), 'staff_order' => $this->staffOrder];
         $this->di['events_manager']->fire(['event' => 'onBeforeProductAddedToCart', 'params' => $event_params]);
@@ -352,7 +362,8 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        $addons = $data['addons'] ?? [];
+        // ClientFence core patch: the service an add-on is for is stamped by the server only, never read from nested input.
+        $addons = array_map(fn (mixed $addon): mixed => is_array($addon) ? array_diff_key($addon, [self::CART_ADDON_FOR_KEY => true]) : $addon, (array) ($data['addons'] ?? []));
         unset($data['id']);
         unset($data['addons']);
 
@@ -441,6 +452,9 @@ class Service implements InjectionAwareInterface
             // prepareCartProductConfig() so the client-input filter can
             // neither strip it nor be bypassed with a forged value.
             $productFromListConfig[self::CART_FAMILY_KEY] = $familyToken;
+            if ($addonFor !== null) {
+                $productFromListConfig[self::CART_ADDON_FOR_KEY] = (int) $addonFor->id;
+            }
             $this->addProduct($cart, $productFromList, $productFromListConfig);
         }
 
@@ -760,6 +774,10 @@ class Service implements InjectionAwareInterface
             if ((float) ($item['total'] ?? 0) <= 0) {
                 continue;
             }
+            // ClientFence core patch: an add-on's first, prorated price is not what it renews at (Order/AddonOrders.php).
+            if (!empty($item['addon_due'])) {
+                return null;
+            }
 
             $period = $item['period'] ?? null;
             if (empty($period)) {
@@ -977,6 +995,7 @@ class Service implements InjectionAwareInterface
 
                 $orders = [];
                 $invoice_items = [];
+                $firstPeriodOnly = [];
                 $invoiceModel = null;
                 $master_order = null;
                 $requestedProductQuantities = [];
@@ -990,8 +1009,22 @@ class Service implements InjectionAwareInterface
                     // grouping, then keep it out of the stored order config.
                     $familyToken = $item[self::CART_FAMILY_KEY] ?? null;
                     unset($item[self::CART_FAMILY_KEY]);
-
+                    // ClientFence core patch: an add-on for the client's own service (Order/AddonOrders.php), checked again now.
+                    $addonFor = (int) ($item[self::CART_ADDON_FOR_KEY] ?? 0) > 0 ? $this->di['db']->load('ClientOrder', (int) $item[self::CART_ADDON_FOR_KEY]) : null;
+                    [$recurringPrice, $recurringDiscount] = [$item['recurring_price'], $item['recurring_discount']];
+                    unset($item[self::CART_ADDON_FOR_KEY], $item['recurring_price'], $item['recurring_discount']);
                     $product = $this->getProductService()->findProductById((int) $item['product_id']);
+                    if ($addonFor !== null) {
+                        if (!$addonFor instanceof \Model_ClientOrder || (int) $addonFor->client_id !== $this->clientId($client)) {
+                            throw new \ClientFence\InformationException('This add-on cannot be ordered for this service.');
+                        }
+                        \ClientFence\Mod\Order\AddonOrders::offered($this->di, $addonFor, (int) $item['product_id']);
+                        if (($item['period'] ?? null) !== ($this->isRecurrentPricing($product) ? (string) $addonFor->period : null)) {
+                            throw new \ClientFence\InformationException('This add-on cannot be ordered for this service.');
+                        }
+                        $item['addon_for'] = (int) $addonFor->id;
+                    }
+
                     // ClientFence core patch: staff may order a disabled product, as with order/create (staffOrder()).
                     if ($product->getStatus() !== 'enabled' && $staff === null) {
                         throw new \ClientFence\InformationException('Unable to complete order. One or more of the selected products are invalid.');
@@ -1036,9 +1069,9 @@ class Service implements InjectionAwareInterface
                     // the cart": one family shares one group_id, every
                     // non-addon order in it is a master, only genuine addons
                     // nest under one.
-                    $groupId = $this->resolveFamilyGroupId($cart, $item, $familyToken, $familyGroupIds, $lastGroupIdByProductId, $familyIndex);
+                    $groupId = $addonFor !== null ? $this->addonGroupId($addonFor) : $this->resolveFamilyGroupId($cart, $item, $familyToken, $familyGroupIds, $lastGroupIdByProductId, $familyIndex);
                     $order->setGroupId($groupId);
-                    $order->setGroupMaster(!$product->isAddon());
+                    $order->setGroupMaster($addonFor === null && !$product->isAddon());
                     $lastGroupIdByProductId[(int) $product->getId()] = $groupId;
                     $order->setInvoiceOption('issue-invoice');
                     $order->setTitle($item['title']);
@@ -1047,8 +1080,8 @@ class Service implements InjectionAwareInterface
                     $order->setUnit($item['unit'] ?? null);
                     $order->setPeriod($item['period'] ?? null);
                     $order->setQuantity($item['quantity'] ?? null);
-                    $order->setPrice($item['price'] * $currency->getConversionRate());
-                    $order->setDiscount($item['discount_price'] * $currency->getConversionRate());
+                    $order->setPrice(($addonFor !== null ? $recurringPrice : $item['price']) * $currency->getConversionRate());
+                    $order->setDiscount(($addonFor !== null ? $recurringDiscount : $item['discount_price']) * $currency->getConversionRate());
                     $order->setStatus(Order::STATUS_PENDING_SETUP);
                     $order->setNotes($item['notes'] ?? null);
                     $order->setConfig(json_encode($item));
@@ -1056,6 +1089,9 @@ class Service implements InjectionAwareInterface
                     $this->di['em']->flush();
 
                     $orders[] = $order;
+                    if ($addonFor !== null) {
+                        $firstPeriodOnly[] = $order->getId();
+                    }
 
                     // Reserve promo capacity at order creation time.
                     // ClientFence core patch: only for a line the promo discounts (every line of the cart used one: a
@@ -1071,8 +1107,10 @@ class Service implements InjectionAwareInterface
 
                     $invoice_items[] = [
                         // ClientFence core patch: configurable options (Product/Options.php) are listed on the line.
-                        'title' => \ClientFence\Mod\Product\Options::titleWith((string) $order->getTitle(), is_array($item['option_lines'] ?? null) ? $item['option_lines'] : []),
-                        'price' => $order->getPrice(),
+                        'title' => \ClientFence\Mod\Product\Options::titleWith((string) $order->getTitle(), is_array($item['option_lines'] ?? null) ? $item['option_lines'] : [])
+                            . (!empty($item['addon_due']) ? ' (' . date('Y-m-d') . ' - ' . substr((string) $item['addon_due'], 0, 10) . ')' : ''),
+                        // ClientFence core patch: an add-on for a service is charged to the service's due date (Order/AddonOrders.php).
+                        'price' => $addonFor !== null ? $item['price'] * $currency->getConversionRate() : $order->getPrice(),
                         'quantity' => $order->getQuantity(),
                         'unit' => $order->getUnit(),
                         'period' => $order->getPeriod(),
@@ -1082,10 +1120,11 @@ class Service implements InjectionAwareInterface
                         'task' => \Model_InvoiceItem::TASK_ACTIVATE,
                     ];
 
-                    if ($order->getDiscount() > 0) {
+                    $lineDiscount = $addonFor !== null ? $item['discount_price'] * $currency->getConversionRate() : $order->getDiscount();
+                    if ($lineDiscount > 0) {
                         $invoice_items[] = [
                             'title' => __trans('Discount: :product', [':product' => $order->getTitle()]),
-                            'price' => $order->getDiscount() * -1,
+                            'price' => $lineDiscount * -1,
                             'quantity' => 1,
                             'unit' => 'discount',
                             'rel_id' => $order->getId(),
@@ -1166,7 +1205,8 @@ class Service implements InjectionAwareInterface
                             $orderService->activateOrder($order);
                         }
 
-                        if ($ca['total'] <= 0 && $product->getSetup() == \ClientFence\Mod\Product\Service::SETUP_AFTER_PAYMENT && $oa['total'] - $oa['discount'] <= 0) {
+                        // ClientFence core patch: an add-on charged nothing for the days left to its service's due date is free now (Order/AddonOrders.php).
+                        if ($ca['total'] <= 0 && $product->getSetup() == \ClientFence\Mod\Product\Service::SETUP_AFTER_PAYMENT && ($oa['total'] - $oa['discount'] <= 0 || in_array($order->getId(), $firstPeriodOnly, true))) {
                             $orderService->activateOrder($order);
                         }
 
@@ -1247,7 +1287,12 @@ class Service implements InjectionAwareInterface
                     : $this->getProductService()->findProductById((int) $item['product_id']);
                 $before = array_map($this->cartProductId(...), $this->findCartProducts($cart));
                 $config = is_array($item['config'] ?? null) ? $item['config'] : [];
-                $this->addItem($cart, $product, ['period' => $item['period'] ?? null, 'quantity' => $item['quantity'] ?? 1] + $config);
+                // ClientFence core patch: Add Add-on on a service (Order/AddonOrders.php): only one of this client's services.
+                $addonFor = empty($item['addon_for']) ? null : $this->di['db']->getExistingModelById('ClientOrder', (int) $item['addon_for'], 'Order not found');
+                if ($addonFor !== null && (int) $addonFor->client_id !== (int) $client->id) {
+                    throw new \ClientFence\InformationException('Order not found');
+                }
+                $this->addItem($cart, $product, ['period' => $item['period'] ?? null, 'quantity' => $item['quantity'] ?? 1] + $config, $addonFor);
                 // The item's own line is the first one added; a hosting plan adds its domain after it.
                 $added = array_values(array_diff(array_map($this->cartProductId(...), $this->findCartProducts($cart)), $before));
                 foreach (['price' => 0, 'domain_price' => 1] as $key => $line) {
@@ -1434,6 +1479,16 @@ class Service implements InjectionAwareInterface
         $qty = $productView['quantity'];
 
         [$discount_price, $discount_setup] = $this->getProductDiscount($model, $setup, $cart, $cartProducts, $productView['options_setup_price']);
+        // ClientFence core patch: an add-on for the client's service (Order/AddonOrders.php) first runs to the service's due
+        // date: the price and its discount are for those days; the order keeps the full price for its renewals.
+        $recurringPrice = $price;
+        $recurringDiscount = $discount_price;
+        $addonFor = $this->addonParent($config, (int) $productView['product_id']);
+        if ($addonFor !== null && !empty($config['period'])) {
+            $factor = \ClientFence\Mod\Order\AddonOrders::factor($this->di, $addonFor);
+            $price *= $factor;
+            $discount_price *= $factor;
+        }
         // ClientFence core patch: a staff price override is the item's final price, without a promotion (WHMCS Add New Order).
         if (isset($this->staffPrices[$this->cartProductId($model)])) {
             $price = $this->staffPrices[$this->cartProductId($model)];
@@ -1465,7 +1520,30 @@ class Service implements InjectionAwareInterface
             'discount_price' => $discount_price,
             'discount_setup' => $discount_setup,
             'total' => $subtotal,
+            'recurring_price' => $recurringPrice,
+            'recurring_discount' => $recurringDiscount,
+            'addon_due' => $addonFor !== null && !empty($config['period']) ? (string) $addonFor->expires_at : null,
         ]);
+    }
+
+    /** ClientFence core patch: the order group of the service an add-on joins; a service ordered on its own gets one. */
+    private function addonGroupId(\Model_ClientOrder $parent): string
+    {
+        if ((string) $parent->group_id === '') {
+            $this->di['dbal']->update('client_order', ['group_id' => 'o' . $parent->id, 'group_master' => 1], ['id' => (int) $parent->id]);
+            $parent->group_id = 'o' . $parent->id;
+        }
+
+        return (string) $parent->group_id;
+    }
+
+    /** ClientFence core patch: the service an add-on cart item is for (Order/AddonOrders.php), while it can still take it. */
+    private function addonParent(array $config, int $productId): ?\Model_ClientOrder
+    {
+        $id = (int) ($config[self::CART_ADDON_FOR_KEY] ?? 0);
+        $order = $id > 0 ? $this->di['db']->load('ClientOrder', $id) : null;
+
+        return $order instanceof \Model_ClientOrder && $order->id && isset(\ClientFence\Mod\Order\AddonOrders::products($this->di, $order)[$productId]) ? $order : null;
     }
 
     public function getProductDiscount(

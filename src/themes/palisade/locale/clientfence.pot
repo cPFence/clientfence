@@ -1694,7 +1694,7 @@ msgstr ""
 msgid "Adapter Settings"
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig …
 msgid "Add"
 msgstr ""
 
@@ -1712,6 +1712,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Add :field to continue"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Add Add-on"
 msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
@@ -1950,7 +1954,7 @@ msgstr ""
 msgid "Add value"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig
 msgid "Add-on"
 msgstr ""
 
@@ -1960,6 +1964,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Add-on modules"
+msgstr ""
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Add-ons are charged to this service's due date, then renew with it."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
@@ -5122,6 +5130,10 @@ msgstr ""
 msgid "Choose the active client and admin themes, and open theme-specific settings where available."
 msgstr ""
 
+#: src/modules/Order/Api/Client.php
+msgid "Choose the add-on"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Choose the backend used for the application cache, rate limiter, and Doctrine ORM cache. Redis and Memcached require the corresponding PHP extension to be installed on the server."
 msgstr ""
@@ -8280,6 +8292,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
 msgid "Due date"
+msgstr ""
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Due now"
 msgstr ""
 
 #: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
@@ -12438,6 +12454,10 @@ msgstr ""
 msgid "Issue Invoices Manually"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Issue an invoice"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
 msgid "Issue deleted"
 msgstr ""
@@ -16290,7 +16310,7 @@ msgstr ""
 msgid "One per line. Text from the first of these on is an earlier, quoted message and is left out (\"On ... wrote:\" lines are always cut). Empty: the standard list."
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_option.html.twig
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "One time"
 msgstr ""
 
@@ -16802,6 +16822,10 @@ msgstr ""
 msgid "Order :id was canceled and its hosting account removed from the server. Restore the account, or refund the payment."
 msgstr ""
 
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Order Add-ons"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Order Addons"
 msgstr ""
@@ -16966,7 +16990,7 @@ msgstr ""
 msgid "Order new products and services"
 msgstr ""
 
-#: src/modules/Invoice/Api/Client.php src/modules/Order/Api/Client.php src/modules/Order/Service.php …
+#: src/modules/Cart/Service.php src/modules/Invoice/Api/Client.php src/modules/Order/Api/Client.php …
 msgid "Order not found"
 msgstr ""
 
@@ -25171,6 +25195,10 @@ msgstr ""
 msgid "Themes"
 msgstr ""
 
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Then"
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Then :amount :per, from :date."
 msgstr ""
@@ -25305,6 +25333,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "This action will delete the email template"
+msgstr ""
+
+#: src/modules/Cart/Service.php src/modules/Order/AddonOrders.php
+msgid "This add-on cannot be ordered for this service."
 msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Mail.php
@@ -30199,12 +30231,20 @@ msgstr ""
 msgid "the mailbox opens at once, signed in, on mail.<the client’s domain>."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/themes/palisade/html/mod_cart_index.html.twig
+msgid "then"
+msgstr ""
+
 #: src/modules/Clientfence/Backups.php
 msgid "this server"
 msgstr ""
 
 #: src/modules/Support/Api/Admin.php
 msgid "ticket_ID is missing"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_cart_index.html.twig …
+msgid "to :date"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/partial_clientfence_palette.html.twig

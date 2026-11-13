@@ -145,6 +145,10 @@
     },
     {
         "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: an add-on goes back on its service's renewal day, as it renews (Order/AddonOrders.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: guest invoice routes must respect the signed-in staff member's invoice access."
     },
     {
@@ -5530,5 +5534,65 @@
     {
         "file": "modules/Order/templates/admin/mod_order_settings.html.twig",
         "done": "ClientFence core patch: Renewal Day, the day of month renewals keep"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the client's service an add-on is ordered for (Order/AddonOrders.php)"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: an add-on for a service is charged to the service's due date (Order/AddonOrders.php)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: an add-on ordered for a service was charged to the service's due date then"
+    },
+    {
+        "file": "modules/Order/Api/Client.php",
+        "done": "ClientFence: puts an add-on for this service in the cart (Order/AddonOrders.php)"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence: the add-ons this service can take now (Order/AddonOrders.php), for Add Add-on on the order page"
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: add-ons ordered for this service (Order/AddonOrders.php), through the cart."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: Add Add-on for this service (Order/AddonOrders.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: add-ons ordered for this service (Order/AddonOrders.php), through the cart."
+    },
+    {
+        "file": "themes/palisade/html/mod_cart_index.html.twig",
+        "done": "ClientFence core patch: an add-on for a service is charged to the service's due date, then renews at its full price."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: an add-on ordered for a service keeps that service's renewal day"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: an add-on's first, prorated price is not what it renews at"
+    },
+    {
+        "file": "modules/Invoice/ServiceSubscription.php",
+        "done": "ClientFence core patch: an add-on's first invoice charges part of a period"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: an add-on charged nothing for the days left to its service's due date is free now"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: an add-on's first invoice charged part of a period (Order/AddonOrders.php), not a lower price."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the service an add-on is for is stamped by the server only, never read from nested input."
     }
 ]

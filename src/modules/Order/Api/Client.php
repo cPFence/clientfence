@@ -154,6 +154,30 @@ class Client extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence: the add-ons this service can take now (Order/AddonOrders.php), with the price to its due date.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function addon_offers($data): array
+    {
+        return \ClientFence\Mod\Order\AddonOrders::offers($this->getDi(), $this->upgradeOrder($data));
+    }
+
+    /**
+     * ClientFence: puts an add-on for this service in the cart (Order/AddonOrders.php): `product_id`. Checkout charges it
+     * to the service's due date; it then renews with the service.
+     */
+    #[RequiredParams(['product_id' => 'Choose the add-on'])]
+    public function addon_order($data): bool
+    {
+        $order = $this->upgradeOrder($data);
+        $addon = \ClientFence\Mod\Order\AddonOrders::offered($this->getDi(), $order, (int) $data['product_id']);
+        $cart = $this->getDi()['mod_service']('cart');
+
+        return $cart->addItem($cart->getSessionCart(), $addon, ['quantity' => 1], $order);
+    }
+
+    /**
      * Can delete only pending setup and failed setup orders.
      */
     public function delete($data)

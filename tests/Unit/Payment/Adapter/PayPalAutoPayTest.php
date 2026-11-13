@@ -45,7 +45,7 @@ function autopayWorld(array $replies, array $config = []): object
     $db->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT, created_at TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, gateway_id INTEGER, txn_id TEXT, txn_status TEXT, amount TEXT, currency TEXT, type TEXT, status TEXT, error TEXT, error_code INTEGER, note TEXT, created_at TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT, period TEXT)');
-    $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, expires_at TEXT, period TEXT, activated_at TEXT, updated_at TEXT)');
+    $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, expires_at TEXT, period TEXT, activated_at TEXT, updated_at TEXT, config TEXT)');
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 3, 'client_id' => 7, 'test_mode' => 1, 'external_customer_id' => '', 'saved_cards' => 1, 'default_payment_method' => 'B-OLD', 'default_card' => 'PayPal old@example.com', 'auto_pay_at' => '2026-11-01 00:00:00']);
     $world->db = $db;
 
@@ -241,12 +241,17 @@ test('a chargeback refunds the payment on its invoice and moves the renewed serv
     $world->db->insert('invoice_item', ['invoice_id' => 5, 'type' => 'order', 'rel_id' => '10', 'task' => 'activate', 'status' => 'executed', 'period' => '1Y']);
     $world->db->insert('client_order', ['id' => 9, 'expires_at' => '2026-12-15 10:00:00', 'period' => '1M']);
     $world->db->insert('client_order', ['id' => 10, 'expires_at' => '2027-11-01 10:00:00', 'period' => '1Y']);
+    // An add-on goes back on its service's renewal day (the 31st), not its own (the 1st).
+    $world->db->insert('invoice_item', ['invoice_id' => 5, 'type' => 'order', 'rel_id' => '11', 'task' => 'renew', 'status' => 'executed', 'period' => '1M']);
+    $world->db->insert('client_order', ['id' => 11, 'expires_at' => '2026-02-28 10:00:00', 'period' => '1M', 'activated_at' => '2026-01-01 10:00:00', 'config' => '{"addon_for":12}']);
+    $world->db->insert('client_order', ['id' => 12, 'expires_at' => '2026-02-28 10:00:00', 'period' => '1M', 'activated_at' => '2025-12-31 10:00:00']);
     $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', null);
     $world->invoices->shouldReceive('addNote')->once()->with(Mockery::type(Model_Invoice::class), Mockery::on(fn (string $note): bool => str_contains($note, 'order #9 due 2026-11-15')));
 
     $world->adapter->processTransaction(Mockery::mock(), 51, ['post' => ['payment_status' => 'Reversed', 'txn_id' => '7RV', 'parent_txn_id' => '8AB', 'mc_gross' => '-12.50']], 3);
     expect($world->db->fetchOne('SELECT expires_at FROM client_order WHERE id = 9'))->toBe('2026-11-15 10:00:00')
         ->and($world->db->fetchOne('SELECT expires_at FROM client_order WHERE id = 10'))->toBe('2027-11-01 10:00:00')
+        ->and($world->db->fetchOne('SELECT expires_at FROM client_order WHERE id = 11'))->toBe('2026-01-31 10:00:00')
         ->and($world->db->fetchOne('SELECT note FROM `transaction` WHERE id = 51'))->toContain('PayPal chargeback 7RV of payment 8AB.');
 });
 

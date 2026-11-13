@@ -60,6 +60,8 @@
                                 <strong dir="auto">{{ item.title }}</strong>
                                 <span>
                                     {%- if item.period|default(false) %}{{ sm.cycle_label(item.period) }}{% else %}{{ 'One-time payment'|trans }}{% endif -%}
+                                    {#- ClientFence core patch: an add-on for a service is charged to the service's due date, then renews at its full price. -#}
+                                    {%- if item.addon_due|default(false) %} · {{ 'to :date'|trans({':date': item.addon_due|format_date}) }}, {{ 'then'|trans }} {{ (item.recurring_price * rate)|format_currency(cur.code) }}{% endif -%}
                                     {%- if item.quantity > 1 %} · {{ 'Quantity'|trans }} {{ item.quantity }}{% endif -%}
                                     {%- if item.setup_price > 0 %} · {{ 'Setup fee'|trans }} {{ ((item.setup_price - item.discount_setup) * rate)|format_currency(cur.code) }}{% endif -%}
                                 </span>

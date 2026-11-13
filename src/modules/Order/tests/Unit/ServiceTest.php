@@ -2798,6 +2798,31 @@ test('periodEnd keeps the day the service started through short months, or adds 
     'from the due date' => ['keep', '2027-06-30 09:00:00', '2027-03-31 08:00:00', 1, '2027-07-31', 'from_expiration_date'],
 ]);
 
+test('an add-on ordered for a service takes that service\'s activation day as its renewal day', function (): void {
+    $parent = new Model_ClientOrder();
+    $parent->loadBean(new Tests\Helpers\DummyBean());
+    $parent->id = 5;
+    $parent->activated_at = '2026-12-31 09:00:00';
+    $addon = new Model_ClientOrder();
+    $addon->loadBean(new Tests\Helpers\DummyBean());
+    $addon->activated_at = '2027-01-01 09:00:00';
+    $addon->config = json_encode(['addon_for' => 5]);
+    $plain = new Model_ClientOrder();
+    $plain->loadBean(new Tests\Helpers\DummyBean());
+    $plain->activated_at = '2027-01-01 09:00:00';
+    $plain->config = '{}';
+
+    $db = Mockery::mock('\Box_Database');
+    $db->shouldReceive('load')->with('ClientOrder', 5)->andReturn($parent);
+    $di = container();
+    $di['db'] = $db;
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->orderActivatedAt($addon))->toBe('2026-12-31 09:00:00')
+        ->and($service->orderActivatedAt($plain))->toBe('2027-01-01 09:00:00');
+});
+
 test('renewFromOrder extends free first term on first paid renewal', function (): void {
     $clientOrderModel = createEntity(Order::class);
     $clientOrderModel->period = '1Y';

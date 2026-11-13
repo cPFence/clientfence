@@ -19,7 +19,7 @@ use Doctrine\DBAL\DriverManager;
 function clientexecFake(): array
 {
     $price = fn (int $item, string $currency, string $cycle, string $field, string $value): array => ['type' => 1, 'itemid' => $item, 'currency_abrv' => $currency, 'billing_cycle' => $cycle, 'field' => $field, 'value' => $value];
-    $fee = fn (int $id, int $client, int $service, float $amount, string $next, int $term, int $recurring = 1, int $type = -1): array => ['id' => $id, 'customerid' => $client, 'billingtypeid' => $type, 'amount' => $amount, 'quantity' => 1.0, 'appliestoid' => $service, 'nextbilldate' => $next, 'paymentterm' => $term, 'recurring' => $recurring];
+    $fee = fn (int $id, int $client, int $service, float $amount, string $next, int $term, int $recurring = 1, int $type = -1, int $addonPrice = 0): array => ['id' => $id, 'packageaddon_prices_id' => $addonPrice, 'customerid' => $client, 'billingtypeid' => $type, 'amount' => $amount, 'quantity' => 1.0, 'appliestoid' => $service, 'nextbilldate' => $next, 'paymentterm' => $term, 'recurring' => $recurring];
 
     return [
         'setting' => [['name' => 'ClientExec Version', 'value' => '7.3.0'], ['name' => 'Default Currency', 'value' => 'USD'], ['name' => 'Domains Taxable', 'value' => '0']],
@@ -38,7 +38,8 @@ function clientexecFake(): array
         'promotion' => [['id' => 5, 'name' => 'Web Hosting', 'type' => 1, 'groupOrder' => 1], ['id' => 2, 'name' => 'Domain Services', 'type' => 3, 'groupOrder' => 99]],
         'departments' => [['id' => 1, 'name' => 'General', 'is_generaldep' => 1], ['id' => 2, 'name' => 'Billing', 'is_generaldep' => 0]],
         'coupons' => [['coupons_id' => 1, 'coupons_archive' => 0], ['coupons_id' => 2, 'coupons_archive' => 1]],
-        'packageaddon' => [['id' => 1, 'package_id' => 1]],
+        'packageaddon' => [['id' => 1, 'package_id' => 1, 'name' => 'Extra disk']],
+        'packageaddon_prices' => [['id' => 1, 'packageaddon_id' => 1, 'detail' => '10 GB']],
         'troubleticket_files' => [],
         'billing_cycle' => [
             ['id' => 0, 'name' => 'One Time', 'time_unit' => 'm', 'amount_of_units' => 0],
@@ -106,6 +107,8 @@ function clientexecFake(): array
             $fee(4, 101, 4, 50.0, '2027-01-05', 12), $fee(5, 101, 5, 49.0, '0000-00-00', 0, 0), $fee(7, 101, 7, 50.0, '2030-01-05', 60),
             // An add-on's fee renews too, but it is not the package's.
             $fee(6, 101, 1, 3.0, '2026-12-05', 1, 1, -4),
+            // A chosen add-on value: a service add-on of package 1.
+            $fee(8, 101, 1, 4.0, '2026-12-05', 1, 1, -1, 1),
         ],
         'cancellations' => [],
         'invoice' => [
@@ -116,10 +119,12 @@ function clientexecFake(): array
             ['id' => 5, 'customerid' => 100, 'billdate' => '2026-11-10', 'datecreated' => '2026-11-03', 'datepaid' => null, 'currency' => 'USD', 'amount' => 1.0, 'subtotal' => 1.0, 'balance_due' => 1.0, 'status' => 0, 'tax' => 0.0, 'tax2' => 0.0, 'pluginused' => 'none', 'checknum' => '', 'note' => ''],
         ],
         'invoiceentry' => [
-            ['id' => 1, 'invoiceid' => 1, 'description' => 'Starter', 'detail' => '', 'billingtypeid' => -1, 'price' => 5.0, 'quantity' => 1.0, 'appliestoid' => 1, 'taxable' => 1],
+            ['id' => 1, 'invoiceid' => 1, 'description' => 'Starter', 'detail' => '', 'billingtypeid' => -1, 'price' => 5.0, 'quantity' => 1.0, 'appliestoid' => 1, 'taxable' => 1, 'recurringappliesto' => 1],
             ['id' => 2, 'invoiceid' => 1, 'description' => 'Setup fee', 'detail' => '', 'billingtypeid' => -1, 'price' => 2.0, 'quantity' => 1.0, 'appliestoid' => 0, 'taxable' => 1],
             ['id' => 3, 'invoiceid' => 2, 'description' => 'com', 'detail' => 'ann.com', 'billingtypeid' => -1, 'price' => 5.0, 'quantity' => 2.0, 'appliestoid' => 2, 'taxable' => 1],
             ['id' => 4, 'invoiceid' => 2, 'description' => 'Discount', 'detail' => '', 'billingtypeid' => -3, 'price' => 0.0, 'quantity' => 1.0, 'appliestoid' => 2, 'taxable' => 0],
+            // An add-on charge's line names its fee.
+            ['id' => 5, 'invoiceid' => 1, 'description' => 'Extra disk', 'detail' => '10 GB', 'billingtypeid' => -2, 'price' => 0.0, 'quantity' => 1.0, 'appliestoid' => 1, 'taxable' => 1, 'recurringappliesto' => 8],
         ],
         'invoicetransaction' => [
             ['id' => 1, 'invoiceid' => 1, 'accepted' => 1, 'transactiondate' => '2026-11-02 09:00:00', 'transactionid' => 'ch_1', 'action' => 'charge', 'amount' => 8.4],
@@ -232,6 +237,10 @@ test('ClientExec is read a page at a time into WHMCS\'s tables, and what cannot 
         ['id' => 5, 'packageid' => 2, 'amount' => 49.0, 'billingcycle' => 'One Time', 'domainstatus' => 'Active', 'nextduedate' => '2025-01-05', 'domain' => '', 'username' => ''],
     ])
         ->and($warnings)->toContain('Package #3 of client #101 was not imported: it renews every 1 Week')
+        // A chosen add-on renews on its own fee, linked to its package by the WHMCS step.
+        ->and($db->fetchAllAssociative('SELECT id, hostingid, name, recurring, billingcycle, status, nextduedate FROM tblhostingaddons'))->toBe([
+            ['id' => 8, 'hostingid' => 1, 'name' => 'Extra disk: 10 GB', 'recurring' => 4.0, 'billingcycle' => 'Monthly', 'status' => 'Active', 'nextduedate' => '2026-12-05'],
+        ])
         // A pending cancellation waits in Cancellation Requests.
         ->and($db->fetchAllAssociative('SELECT relid, reason, type FROM tblcancelrequests'))->toBe([['relid' => 4, 'reason' => 'Too slow', 'type' => 'End of Billing Period']])
         ->and($db->fetchAllAssociative('SELECT domain, recurringamount, registrationperiod, expirydate, nextduedate, status FROM tbldomains ORDER BY id'))->toBe([
@@ -252,6 +261,8 @@ test('ClientExec is read a page at a time into WHMCS\'s tables, and what cannot 
         ->and($db->fetchAllAssociative('SELECT type, relid, description, amount, taxed FROM tblinvoiceitems ORDER BY id'))->toBe([
             ['type' => 'Hosting', 'relid' => 1, 'description' => 'Starter', 'amount' => 5.0, 'taxed' => 1],
             ['type' => '', 'relid' => 0, 'description' => 'Setup fee', 'amount' => 2.0, 'taxed' => 1],
+            // An add-on charge's line renews the add-on (its fee).
+            ['type' => 'Addon', 'relid' => 8, 'description' => "Extra disk\n10 GB", 'amount' => 0.0, 'taxed' => 1],
             ['type' => 'Domain', 'relid' => 2, 'description' => "2 x com\nann.com", 'amount' => 10.0, 'taxed' => 1],
             // A discount line of the same package is a plain item: paying renews the domain once.
             ['type' => '', 'relid' => 0, 'description' => 'Discount', 'amount' => 0.0, 'taxed' => 0],

@@ -447,6 +447,12 @@ class ServiceSubscription implements InjectionAwareInterface
                 if ($others !== []) {
                     return null;
                 }
+                // ClientFence core patch: an add-on's first invoice charges part of a period (Order/AddonOrders.php); a
+                // subscription would repeat that part every period.
+                if ($order instanceof \Model_ClientOrder && !empty((json_decode($order->config ?? '', true) ?? [])['addon_due'])
+                    && $item['task'] === \Model_InvoiceItem::TASK_ACTIVATE) {
+                    return null;
+                }
                 // ClientFence core patch: domain subscriptions must charge the renewal price rather than a different registration price.
                 if ($order instanceof \Model_ClientOrder && $order->service_type === 'domain') {
                     $productService = $this->di['mod_service']('Product');

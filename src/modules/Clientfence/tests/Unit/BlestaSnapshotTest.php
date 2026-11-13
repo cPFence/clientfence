@@ -37,15 +37,18 @@ function blestaFake(): array
         ],
         'client_groups' => [['id' => 1, 'company_id' => 1, 'name' => 'General', 'color' => 'dd5555']],
         'gateways' => [['id' => 1, 'company_id' => 1, 'name' => 'Stripe', 'class' => 'Stripe_payments']],
-        'package_groups' => [['id' => 1, 'company_id' => 1, 'type' => 'standard', 'hidden' => 0], ['id' => 2, 'company_id' => 1, 'type' => 'standard', 'hidden' => 0]],
+        'package_groups' => [['id' => 1, 'company_id' => 1, 'type' => 'standard', 'hidden' => 0], ['id' => 2, 'company_id' => 1, 'type' => 'standard', 'hidden' => 0], ['id' => 3, 'company_id' => 1, 'type' => 'addon', 'hidden' => 0]],
+        // Add-on group 3 offers its packages to the packages of group 1.
+        'package_group_parents' => [['group_id' => 3, 'parent_group_id' => 1]],
         'package_group_names' => [['package_group_id' => 1, 'lang' => 'en_us', 'name' => 'Hosting'], ['package_group_id' => 2, 'lang' => 'en_us', 'name' => 'Domains']],
-        'package_group' => [['package_id' => 1, 'package_group_id' => 1, 'order' => 0], ['package_id' => 2, 'package_group_id' => 2, 'order' => 0], ['package_id' => 3, 'package_group_id' => 1, 'order' => 1]],
+        'package_group' => [['package_id' => 1, 'package_group_id' => 1, 'order' => 0], ['package_id' => 2, 'package_group_id' => 2, 'order' => 0], ['package_id' => 3, 'package_group_id' => 1, 'order' => 1], ['package_id' => 4, 'package_group_id' => 3, 'order' => 0]],
         'packages' => [
             ['id' => 1, 'company_id' => 1, 'qty' => null, 'taxable' => 1, 'status' => 'active', 'hidden' => 0],
             ['id' => 2, 'company_id' => 1, 'qty' => null, 'taxable' => 1, 'status' => 'active', 'hidden' => 0],
             ['id' => 3, 'company_id' => 1, 'qty' => null, 'taxable' => 0, 'status' => 'active', 'hidden' => 0],
+            ['id' => 4, 'company_id' => 1, 'qty' => null, 'taxable' => 1, 'status' => 'active', 'hidden' => 0],
         ],
-        'package_names' => [['package_id' => 1, 'lang' => 'en_us', 'name' => 'Starter'], ['package_id' => 2, 'lang' => 'en_us', 'name' => '.com'], ['package_id' => 3, 'lang' => 'en_us', 'name' => 'Weekly']],
+        'package_names' => [['package_id' => 1, 'lang' => 'en_us', 'name' => 'Starter'], ['package_id' => 2, 'lang' => 'en_us', 'name' => '.com'], ['package_id' => 3, 'lang' => 'en_us', 'name' => 'Weekly'], ['package_id' => 4, 'lang' => 'en_us', 'name' => 'Backups']],
         'package_descriptions' => [['package_id' => 1, 'lang' => 'en_us', 'text' => 'Small sites']],
         'pricings' => [
             ['id' => 1, 'company_id' => 1, 'term' => 1, 'period' => 'month', 'price' => 5, 'price_renews' => null, 'price_transfer' => null, 'setup_fee' => 2, 'currency' => 'USD'],
@@ -55,8 +58,9 @@ function blestaFake(): array
             ['id' => 5, 'company_id' => 1, 'term' => 1, 'period' => 'week', 'price' => 3, 'price_renews' => null, 'price_transfer' => null, 'setup_fee' => 0, 'currency' => 'USD'],
             ['id' => 6, 'company_id' => 1, 'term' => 1, 'period' => 'week', 'price' => 3, 'price_renews' => null, 'price_transfer' => null, 'setup_fee' => 0, 'currency' => 'EUR'],
             ['id' => 7, 'company_id' => 1, 'term' => 0, 'period' => 'onetime', 'price' => 100, 'price_renews' => null, 'price_transfer' => null, 'setup_fee' => 0, 'currency' => 'USD'],
+            ['id' => 8, 'company_id' => 1, 'term' => 1, 'period' => 'month', 'price' => 2, 'price_renews' => null, 'price_transfer' => null, 'setup_fee' => 0, 'currency' => 'USD'],
         ],
-        'package_pricing' => [['id' => 1, 'package_id' => 1, 'pricing_id' => 1], ['id' => 2, 'package_id' => 1, 'pricing_id' => 2], ['id' => 3, 'package_id' => 2, 'pricing_id' => 3], ['id' => 4, 'package_id' => 2, 'pricing_id' => 4], ['id' => 5, 'package_id' => 3, 'pricing_id' => 5], ['id' => 6, 'package_id' => 3, 'pricing_id' => 6], ['id' => 7, 'package_id' => 1, 'pricing_id' => 7]],
+        'package_pricing' => [['id' => 1, 'package_id' => 1, 'pricing_id' => 1], ['id' => 2, 'package_id' => 1, 'pricing_id' => 2], ['id' => 3, 'package_id' => 2, 'pricing_id' => 3], ['id' => 4, 'package_id' => 2, 'pricing_id' => 4], ['id' => 5, 'package_id' => 3, 'pricing_id' => 5], ['id' => 6, 'package_id' => 3, 'pricing_id' => 6], ['id' => 7, 'package_id' => 1, 'pricing_id' => 7], ['id' => 8, 'package_id' => 4, 'pricing_id' => 8]],
         'domains_tlds' => [['tld' => '.com', 'company_id' => 1, 'package_id' => 2]],
         'domains_domains' => [],
         'users' => [
@@ -81,10 +85,12 @@ function blestaFake(): array
             ['id' => 2, 'client_id' => 1, 'title' => 'Secret', 'description' => 'xyz', 'stickied' => 0, 'encrypted' => 1, 'date_added' => '2025-03-01 10:00:00', 'date_updated' => null],
         ],
         'services' => [
-            ['id' => 1, 'pricing_id' => 1, 'client_id' => 1, 'qty' => 1, 'override_price' => null, 'override_currency' => null, 'status' => 'active', 'suspension_reason' => null, 'cancellation_reason' => null, 'date_added' => '2025-01-05 10:00:00', 'date_renews' => '2026-12-05 10:00:00', 'date_canceled' => null],
+            ['id' => 1, 'parent_service_id' => null, 'pricing_id' => 1, 'client_id' => 1, 'qty' => 1, 'override_price' => null, 'override_currency' => null, 'status' => 'active', 'suspension_reason' => null, 'cancellation_reason' => null, 'date_added' => '2025-01-05 10:00:00', 'date_renews' => '2026-12-05 10:00:00', 'date_canceled' => null],
             ['id' => 2, 'pricing_id' => 3, 'client_id' => 1, 'qty' => 1, 'override_price' => null, 'override_currency' => null, 'status' => 'active', 'suspension_reason' => null, 'cancellation_reason' => null, 'date_added' => '2025-01-05 10:00:00', 'date_renews' => '2027-01-05 10:00:00', 'date_canceled' => null],
             ['id' => 3, 'pricing_id' => 5, 'client_id' => 1, 'qty' => 1, 'override_price' => null, 'override_currency' => null, 'status' => 'active', 'suspension_reason' => null, 'cancellation_reason' => null, 'date_added' => '2025-01-05 10:00:00', 'date_renews' => '2026-11-12 10:00:00', 'date_canceled' => null],
             ['id' => 4, 'pricing_id' => 2, 'client_id' => 1, 'qty' => 2, 'override_price' => 40, 'override_currency' => null, 'status' => 'active', 'suspension_reason' => null, 'cancellation_reason' => 'Moving away', 'date_added' => '2025-01-05 10:00:00', 'date_renews' => '2027-01-05 10:00:00', 'date_canceled' => '2027-01-05 10:00:00'],
+            // An add-on service of service 1.
+            ['id' => 5, 'parent_service_id' => 1, 'pricing_id' => 8, 'client_id' => 1, 'qty' => 1, 'override_price' => null, 'override_currency' => null, 'status' => 'active', 'suspension_reason' => null, 'cancellation_reason' => null, 'date_added' => '2025-02-05 10:00:00', 'date_renews' => '2026-12-05 10:00:00', 'date_canceled' => null],
         ],
         'service_fields' => [['service_id' => 1, 'key' => 'domain', 'value' => 'site.example', 'encrypted' => 0], ['service_id' => 2, 'key' => 'domain', 'value' => 'Ann.com', 'encrypted' => 0]],
         'invoices' => [
@@ -99,7 +105,8 @@ function blestaFake(): array
             ['id' => 2, 'invoice_id' => 1, 'service_id' => null, 'description' => 'Setup', 'qty' => 1, 'amount' => 2, 'order' => 1],
             ['id' => 3, 'invoice_id' => 2, 'service_id' => 2, 'description' => 'Ann.com', 'qty' => 2, 'amount' => 5, 'order' => 0],
             ['id' => 4, 'invoice_id' => 2, 'service_id' => 2, 'description' => 'Transfer lock', 'qty' => 1, 'amount' => 0, 'order' => 1],
-            ['id' => 5, 'invoice_id' => 5, 'service_id' => null, 'description' => 'Support hours', 'qty' => 1, 'amount' => 11, 'order' => 0],
+            ['id' => 5, 'invoice_id' => 5, 'service_id' => null, 'description' => 'Support hours', 'qty' => 1, 'amount' => 11, 'order' => 1],
+            ['id' => 6, 'invoice_id' => 5, 'service_id' => 5, 'description' => 'Backups', 'qty' => 1, 'amount' => 0, 'order' => 0],
         ],
         'invoice_line_taxes' => [['line_id' => 1, 'tax_id' => 1], ['line_id' => 2, 'tax_id' => 1], ['line_id' => 3, 'tax_id' => 1], ['line_id' => 5, 'tax_id' => 2]],
         'transaction_types' => [['id' => 1, 'name' => 'cash']],
@@ -221,6 +228,13 @@ test('Blesta is read a page at a time into WHMCS\'s tables, and what cannot come
         ['id' => 4, 'packageid' => 1, 'amount' => 80.0, 'billingcycle' => 'Annually', 'domainstatus' => 'Active', 'nextduedate' => '2027-01-05', 'domain' => ''],
     ])
         ->and($warnings)->toContain('Service #3 of client #1 was not imported: it renews every 1 week(s)')
+        // A package of an add-on group is an add-on of its parent group's packages; its service is linked to its parent.
+        ->and($db->fetchAllAssociative('SELECT id, packages, name, billingcycle FROM tbladdons'))->toBe([['id' => 4, 'packages' => '1,3', 'name' => 'Backups', 'billingcycle' => 'recurring']])
+        ->and($db->fetchOne("SELECT monthly FROM tblpricing WHERE type = 'addon' AND relid = 4"))->toBe(2.0)
+        ->and($db->fetchOne('SELECT COUNT(*) FROM tblproducts WHERE id = 4'))->toBe(0)
+        ->and($db->fetchAllAssociative('SELECT id, hostingid, addonid, recurring, billingcycle, status, nextduedate FROM tblhostingaddons'))->toBe([
+            ['id' => 5, 'hostingid' => 1, 'addonid' => 4, 'recurring' => 2.0, 'billingcycle' => 'Monthly', 'status' => 'Active', 'nextduedate' => '2026-12-05'],
+        ])
         // A cancellation set for a later date waits in Cancellation Requests.
         ->and($db->fetchAllAssociative('SELECT relid, reason, type FROM tblcancelrequests'))->toBe([['relid' => 4, 'reason' => 'Moving away', 'type' => 'End of Billing Period']])
         ->and($db->fetchAssociative('SELECT domain, recurringamount, registrationperiod, expirydate, status FROM tbldomains'))->toBe(['domain' => 'ann.com', 'recurringamount' => 12.0, 'registrationperiod' => 1, 'expirydate' => '2027-01-05', 'status' => 'Active']);
@@ -240,6 +254,8 @@ test('Blesta is read a page at a time into WHMCS\'s tables, and what cannot come
             ['type' => 'Domain', 'relid' => 2, 'description' => '2 x Ann.com', 'amount' => 10.0, 'taxed' => 1],
             // A second line of the same service is a plain item: paying the invoice renews the domain once.
             ['type' => '', 'relid' => 0, 'description' => 'Transfer lock', 'amount' => 0.0, 'taxed' => 0],
+            // An add-on service's line renews the add-on.
+            ['type' => 'Addon', 'relid' => 5, 'description' => 'Backups', 'amount' => 0.0, 'taxed' => 0],
             ['type' => '', 'relid' => 0, 'description' => 'Support hours', 'amount' => 11.0, 'taxed' => 1],
         ])
         ->and($db->fetchOne("SELECT value FROM tblconfiguration WHERE setting = 'SequentialInvoiceNumberFormat'"))->toBe('{NUMBER}')
