@@ -148,3 +148,20 @@ test('a period begun on the 29th-31st counts from that day, its periods walked f
     'a later period of a service activated on the 31st' => ['2026-08-31 10:00:00', '2026-12-01 10:00:00', '2026-11-11 11:00:00', ['period_start' => '2026-11-01', 'days_total' => 30, 'days_left' => 20, 'credit' => 20.0]],
     'the walk misses the expiry (moved by staff): the clamped month' => ['2027-01-31 10:00:00', '2027-03-05 10:00:00', '2027-02-10 11:00:00', ['period_start' => '2027-02-05', 'days_total' => 28]],
 ]);
+
+test('with the day kept (Order settings "Renewal Day") the periods are walked keeping the anchor day', function (?string $activated, string $expires, string $now, array $expected, string $period = '1M'): void {
+    expect(Proration::quote(30, $period, $expires, 10, $period, $now, null, $activated, true))->toMatchArray($expected);
+})->with([
+    // 31 January, 28 February, 31 March.
+    'the February period' => ['2027-01-31 10:00:00', '2027-02-28 10:00:00', '2027-02-10 11:00:00', ['period_start' => '2027-01-31', 'days_total' => 28, 'days_left' => 18]],
+    'back on the 31st after February' => ['2027-01-31 10:00:00', '2027-03-31 10:00:00', '2027-03-10 11:00:00', ['period_start' => '2027-02-28', 'days_total' => 31, 'days_left' => 21]],
+    'a yearly leap day' => ['2028-02-29 10:00:00', '2029-02-28 10:00:00', '2029-02-01 11:00:00', ['period_start' => '2028-02-29', 'days_total' => 365], '1Y'],
+    // Dates from before the setting (31 January + 1 month = 3 March): the clamped month.
+    'a date added by calendar months' => ['2027-01-31 10:00:00', '2027-04-03 10:00:00', '2027-03-10 11:00:00', ['period_start' => '2027-03-03', 'days_total' => 31]],
+    'the first period added by calendar months' => ['2027-01-31 10:00:00', '2027-03-03 10:00:00', '2027-02-01 11:00:00', ['period_start' => '2027-01-31', 'days_total' => 31, 'days_left' => 30]],
+]);
+
+test('with calendar months a period made by keeping the day is still measured from its start', function (): void {
+    expect(Proration::quote(30, '1M', '2027-02-28 10:00:00', 10, '1M', '2027-02-10 11:00:00', null, '2027-01-31 10:00:00', false))
+        ->toMatchArray(['period_start' => '2027-01-31', 'days_total' => 28]);
+});

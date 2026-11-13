@@ -159,6 +159,37 @@ class Service implements InjectionAwareInterface
         return $order instanceof Order ? $order->getPeriod() : $order->period;
     }
 
+    /**
+     * ClientFence core patch: the end of the period from $from (count -1: its start). Order settings "Renewal Day": keep the
+     * day the service started, on a short month's last day (31 January, 28 February, 31 March), or add calendar months
+     * (31 January + 1 month = 3 March, then the 3rd).
+     */
+    public function periodEnd(string $period, int $from, ?string $activatedAt = null, int $count = 1): int
+    {
+        $anchor = null;
+        if (self::keepsRenewalDay($this->di)) {
+            $anchor = (int) date('j', $from);
+            // On a month's last day a short month may have moved it back: the day the service started brings it back, unless
+            // renewals are counted from the payment day (Renewal Logic), which can start a cycle on a day of its own.
+            $restarts = in_array($this->di['mod_config']('order')['order_renewal_logic'] ?? '', ['from_today', 'from_greater'], true);
+            if (!$restarts && $activatedAt !== null && $activatedAt !== '' && $anchor === (int) date('t', $from)) {
+                $anchor = max($anchor, (int) date('j', (int) strtotime($activatedAt)));
+            }
+        }
+
+        return (int) $this->di['period']($period)->getExpirationTime($from, $anchor, $count);
+    }
+
+    public static function keepsRenewalDay(\Pimple\Container $di): bool
+    {
+        return ($di['mod_config']('order')['renewal_day'] ?? 'keep') !== 'calendar';
+    }
+
+    private function orderActivatedAt(Order|\Model_ClientOrder $order): ?string
+    {
+        return $order instanceof Order ? $order->getActivatedAt()?->format('Y-m-d H:i:s') : $order->activated_at;
+    }
+
     private function orderQuantity(Order|\Model_ClientOrder $order): int
     {
         return (int) ($order instanceof Order ? $order->getQuantity() : $order->quantity);
@@ -1457,8 +1488,7 @@ class Service implements InjectionAwareInterface
             if (!empty($period)) {
                 $from_time = ($expiresAt === null) ? time() : ($order instanceof Order ? ($expiresAt->getTimestamp() ?? time()) : strtotime((string) $expiresAt));
 
-                $periodObj = $this->di['period']($period);
-                $newExpires = date('Y-m-d H:i:s', $periodObj->getExpirationTime($from_time));
+                $newExpires = date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order)));
                 if ($order instanceof Order) {
                     $order->setExpiresAt(new \DateTime($newExpires));
                 } else {
@@ -1844,8 +1874,7 @@ class Service implements InjectionAwareInterface
                     $from_time = time();
                 }
             }
-            $periodObj = $this->di['period']($period);
-            $newExpires = date('Y-m-d H:i:s', $periodObj->getExpirationTime($from_time));
+            $newExpires = date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order)));
             if ($order instanceof Order) {
                 $order->setExpiresAt(new \DateTime($newExpires));
             } else {
@@ -2197,9 +2226,7 @@ class Service implements InjectionAwareInterface
         $expiresAt = null;
         $period = $this->orderPeriod($order);
         if ($period) {
-            $periodObj = $this->di['period']($period);
-            $expiresAt = $periodObj->getExpirationTime(time());
-            $expiresAt = date('Y-m-d H:i:s', $expiresAt);
+            $expiresAt = date('Y-m-d H:i:s', $this->periodEnd($period, time()));
         }
 
         if ($order instanceof Order) {

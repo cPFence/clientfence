@@ -184,7 +184,9 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
     $di['em'] = $em;
     $facade = new UpgradesTestDb($db);
     $di['db'] = $facade;
-    $di['mod_config'] = $di->protect(fn (string $mod): array => $mod === 'order' ? $orderConfig : []);
+    // The fixtures' dates add calendar months (31 January + 1 month = 3 March) unless a test keeps the day.
+    $di['mod_config'] = $di->protect(fn (string $mod): array => $mod === 'order' ? $orderConfig + ['renewal_day' => 'calendar'] : []);
+    $di['period'] = $di->protect(fn ($code): ClientFence\Period => new ClientFence\Period($code));
     $di['logger'] = new class {
         public function __call(string $name, array $args): void
         {
@@ -289,9 +291,17 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
                 return 20.0;
             }
         },
-        'order' => new class($di['status_notes']) {
-            public function __construct(private readonly ArrayObject $notes)
+        'order' => new class($di['status_notes'], $di) {
+            public function __construct(private readonly ArrayObject $notes, private readonly Pimple\Container $di)
             {
+            }
+
+            public function periodEnd(string $period, int $from, ?string $activatedAt = null, int $count = 1): int
+            {
+                $orders = new ClientFence\Mod\Order\Service();
+                $orders->setDi($this->di);
+
+                return $orders->periodEnd($period, $from, $activatedAt, $count);
             }
 
             public function saveStatusChange(Model_ClientOrder $order, string $notes): void
@@ -1496,6 +1506,22 @@ test('a period begun on the 31st is credited by its own days (D-01)', function (
         ->and(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', $now))->toMatchArray(['status' => 'applied', 'amount' => -40.0]);
 });
 
+test('with renewals counted from the payment day only the first period is walked from the start day', function (string $expires, string $now, string $day = 'keep', string $activated = '2027-03-31 12:00:00'): void {
+    $db = upgradesDb();
+    $db->executeStatement('ALTER TABLE client_order ADD COLUMN activated_at TEXT');
+    $di = upgradesContainer($db, ['renewal_day' => $day, 'order_renewal_logic' => 'from_greater']);
+    $db->update('client_order', ['expires_at' => $expires, 'activated_at' => $activated], ['id' => 3]);
+    // A full period left either way: 45 less 5.
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', $now))->toMatchArray(['status' => 'applied', 'amount' => -40.0]);
+})->with([
+    // 31 March to 30 April.
+    'the first period' => ['2027-04-30 12:00:00', '2027-03-31 13:00:00'],
+    // Renewed on the due dates, the day stays the 30th: 30 May to 30 June (the start day's walk would read 31 May).
+    'a later period' => ['2027-06-30 12:00:00', '2027-05-30 13:00:00'],
+    // Calendar months walk every period as before: 31 July, 31 August, 1 October.
+    'calendar months, a later period' => ['2027-10-01 12:00:00', '2027-08-31 13:00:00', 'calendar', '2027-07-31 12:00:00'],
+]);
+
 test('a recurring promotion credits the days left at the discounted recurring amount', function (): void {
     $db = upgradesDb();
     foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
@@ -1533,12 +1559,12 @@ test('days paid through a plan change are credited at the full price, not at the
     expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -40.0]);
 });
 
-test('a first-period promotion credits the first period at what was paid, the full price after a renewal', function (array $paid, bool $planChanged, float $amount, string $activated = '2027-01-31 12:00:00', string $expires = '2027-03-03 12:00:00'): void {
+test('a first-period promotion credits the first period at what was paid, the full price after a renewal', function (array $paid, bool $planChanged, float $amount, string $activated = '2027-01-31 12:00:00', string $expires = '2027-03-03 12:00:00', string $renewalDay = 'calendar'): void {
     $db = upgradesDb();
     foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
         $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
     }
-    $di = upgradesContainer($db);
+    $di = upgradesContainer($db, ['renewal_day' => $renewalDay]);
     // 45 a month, 20 off the first month only.
     $db->update('client_order', ['expires_at' => $expires, 'activated_at' => $activated, 'promo_id' => 7, 'promo_recurring' => 0, 'discount' => 20], ['id' => 3]);
     $db->executeStatement('DELETE FROM invoice_item WHERE rel_id = ?', ['3']);
@@ -1562,10 +1588,14 @@ test('a first-period promotion credits the first period at what was paid, the fu
     'free first period, then renewed' => [['renew'], false, -40.0, '2026-12-31 12:00:00'],
     // Renewed on the first day, to 3 April: 31 days at 25 and 31 at 45 = 70, less 5 x 62/31.
     'renewed early in the first period' => [['activate', 'renew'], false, -60.0, '2027-01-31 12:00:00', '2027-04-03 12:00:00'],
-    // Renewed from the payment day (to 28 February): the renewal paid the 28 days left in full, 45 less 5, x 28/31 (-18.06 with the discount).
-    'renewed from the payment day' => [['activate', 'renew'], false, -36.13, '2027-01-31 12:00:00', '2027-02-28 13:00:00'],
+    // Renewed to 28 February: the period from 31 January (31 January + 1 month with the day kept, 28 days, measured so
+    // under either rule) is paid in full for its 28 days left: 45 less 5.
+    'renewed to 28 February' => [['activate', 'renew'], false, -40.0, '2027-01-31 12:00:00', '2027-02-28 13:00:00'],
     // A plan change in the first period was charged at the new plan's full price.
     'plan changed in the first period' => [['activate'], true, -40.0],
+    // Day kept: the first period ended 28 February, renewed to 31 March; 20 off x 28/59 days, so 35.51 a period of 31 days
+    // for the 59 left: 67.58, less 5 x 59/31 for Starter.
+    'renewed early, day kept' => [['activate', 'renew'], false, -58.06, '2027-01-31 12:00:00', '2027-03-31 12:00:00', 'keep'],
 ]);
 
 test('a plan change of a service refunded or repriced after its last payment goes to staff', function (array $invoice, float $price, bool $changeSince, bool $blocked, bool $inclusive = false, ?float $changedTo = null, ?string $changeInvoice = null, ?float $optionsFrom = null): void {

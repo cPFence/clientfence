@@ -255,8 +255,27 @@
                 </table>
               </div>
                 <div class="card-footer d-flex align-items-center justify-content-between gap-3 flex-wrap">
-                    <div>
-                        {% include "partial_batch_delete.html.twig" with { 'action': 'invoice/batch_delete' } %}
+                    {# ClientFence core patch: the "With Selected" bar, as WHMCS (Invoice Api batch_mark_paid() and the others, clientfence-admin.js). #}
+                    <div class="bf-bulk" data-bf-bulk
+                        data-bf-none-title="{{ 'No invoices selected'|trans }}"
+                        data-bf-none-text="{{ 'Tick the invoices first.'|trans }}"
+                        data-bf-skipped-title="{{ 'Some invoices were skipped'|trans }}"
+                        data-bf-paid-title="{{ 'Mark invoices paid?'|trans }}"
+                        data-bf-paid-text="{{ 'Invoices %list% will be marked paid in full, each with its own payment method. Their services are renewed or set up as for a payment.'|trans }}"
+                        data-bf-paid-confirm="{{ 'Mark Paid'|trans }}"
+                        data-bf-cancel-title="{{ 'Cancel invoices?'|trans }}"
+                        data-bf-cancel-text="{{ 'Unpaid invoices %list% will be cancelled. Credit applied to them goes back to the client.'|trans }}"
+                        data-bf-cancel-confirm="{{ 'Cancel Invoices'|trans }}"
+                        data-bf-delete-title="{{ 'Delete invoices?'|trans }}"
+                        data-bf-delete-text="{{ 'Invoices %list% will be deleted. This cannot be undone.'|trans }}"
+                        data-bf-delete-confirm="{{ 'Delete'|trans }}"
+                        data-bf-cancel="{{ 'Close'|trans }}">
+                        <span class="bf-bulk-label">{{ 'With Selected:'|trans }}</span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="paid" data-bf-bulk-call="invoice/batch_mark_paid" data-bf-bulk-ask="Paid">{{ 'Mark Paid'|trans }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="unpaid" data-bf-bulk-call="invoice/batch_mark_unpaid">{{ 'Mark Unpaid'|trans }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="cancel" data-bf-bulk-call="invoice/batch_cancel" data-bf-bulk-ask="Cancel">{{ 'Mark Cancelled'|trans }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="remind" data-bf-bulk-call="invoice/batch_send_reminder">{{ 'Send Reminder'|trans }}</button>
+                        <button type="button" class="btn btn-sm btn-danger" data-bf-bulk-action="delete" data-bf-bulk-call="invoice/batch_delete" data-bf-bulk-ask="Delete">{{ 'Delete'|trans }}</button>
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-wrap">
                         {% include "partial_pagination.html.twig" with { 'list': invoices, 'url': 'invoice' } %}

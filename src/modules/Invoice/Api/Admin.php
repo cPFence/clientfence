@@ -89,15 +89,18 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('invoice', 'manage_invoices');
 
-        $invoice = $this->_getInvoice($data);
+        return $this->markPaid($this->_getInvoice($data), $data, true);
+    }
 
+    private function markPaid(\Model_Invoice $invoice, array $data, bool $needsReference): bool
+    {
         // Marking a deposit invoice as paid credits the client balance, so it
         // requires the same permission as crediting the balance directly.
         if ($this->getService()->isInvoiceTypeDeposit($invoice)) {
             $this->checkPermissions('client', 'manage_balance');
         }
 
-        return $this->getService()->markAsPaidByAdmin($invoice, $data);
+        return $this->getService()->markAsPaidByAdmin($invoice, $data, $needsReference);
     }
 
     /**
@@ -1149,6 +1152,66 @@ class Admin extends \ClientFence\Api\AbstractApi
         }
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch: the invoice list's "With Selected" bar, as WHMCS. Each invoice goes through the single action (its own
+     * checks and locks); one that cannot is skipped with the reason.
+     *
+     * @return array{done: int[], skipped: array<int, string>}
+     */
+    #[RequiredParams(['ids' => 'IDs were not passed'])]
+    public function batch_mark_paid($data): array
+    {
+        // As WHMCS's mass Mark Paid: a bank transfer (Custom) is recorded without a transaction ID.
+        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => $this->markPaid($invoice, [], false));
+    }
+
+    /** Unpaid invoices become cancelled (see batch_mark_paid()). */
+    #[RequiredParams(['ids' => 'IDs were not passed'])]
+    public function batch_cancel($data): array
+    {
+        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => $invoice->status === \Model_Invoice::STATUS_UNPAID
+            ? $this->update(['id' => $invoice->id, 'status' => \Model_Invoice::STATUS_CANCELED])
+            : throw new \ClientFence\InformationException('Only unpaid invoices can be cancelled.'));
+    }
+
+    /** Cancelled invoices become unpaid again (see batch_mark_paid()). */
+    #[RequiredParams(['ids' => 'IDs were not passed'])]
+    public function batch_mark_unpaid($data): array
+    {
+        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => $invoice->status === \Model_Invoice::STATUS_CANCELED
+            ? $this->update(['id' => $invoice->id, 'status' => \Model_Invoice::STATUS_UNPAID])
+            : throw new \ClientFence\InformationException('Only cancelled invoices can be marked unpaid.'));
+    }
+
+    /** The payment reminder of each unpaid issued invoice (see batch_mark_paid()). */
+    #[RequiredParams(['ids' => 'IDs were not passed'])]
+    public function batch_send_reminder($data): array
+    {
+        return $this->batchEach($data['ids'], function (\Model_Invoice $invoice): bool {
+            if ($invoice->status !== \Model_Invoice::STATUS_UNPAID || !$invoice->approved) {
+                throw new \ClientFence\InformationException('Only unpaid issued invoices get a reminder.');
+            }
+
+            return $this->send_reminder(['id' => $invoice->id]);
+        });
+    }
+
+    private function batchEach(mixed $ids, callable $action): array
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+        $done = $skipped = [];
+        foreach (array_unique(array_map(intval(...), (array) $ids)) as $id) {
+            try {
+                $action($this->_getInvoice(['id' => $id]));
+                $done[] = $id;
+            } catch (\ClientFence\Exception $e) {
+                $skipped[$id] = $e->getMessage();
+            }
+        }
+
+        return ['done' => $done, 'skipped' => $skipped];
     }
 
     /**

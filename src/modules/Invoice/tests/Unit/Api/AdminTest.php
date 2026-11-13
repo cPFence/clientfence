@@ -1448,6 +1448,42 @@ test('deletes invoices in batch', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('the With Selected actions run each invoice through its single action and list the ones they skip', function (): void {
+    $invoices = [];
+    foreach ([1 => ['unpaid', 1], 2 => ['paid', 1], 3 => ['canceled', 1], 4 => ['unpaid', 0]] as $id => [$status, $approved]) {
+        $invoices[$id] = new Model_Invoice();
+        $invoices[$id]->loadBean(new Tests\Helpers\DummyBean());
+        $invoices[$id]->id = $id;
+        $invoices[$id]->status = $status;
+        $invoices[$id]->approved = $approved;
+    }
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('getExistingModelById')->andReturnUsing(fn ($type, $id) => $invoices[(int) $id] ?? throw new ClientFence\Exception('Invoice was not found'));
+    $api = Mockery::mock(Admin::class)->makePartial();
+    $api->setDi(container());
+    $api->getDi()['db'] = $db;
+    $api->setIdentity(new Model_Admin());
+    $updates = [];
+    $api->shouldReceive('update')->andReturnUsing(function (array $data) use (&$updates): bool {
+        $updates[] = $data;
+
+        return true;
+    });
+    // Bulk Mark Paid needs no transaction ID (as WHMCS), the single one does.
+    $service = Mockery::mock(Service::class);
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
+    $service->shouldReceive('markAsPaidByAdmin')->with(Mockery::type(Model_Invoice::class), [], false)
+        ->andReturnUsing(fn (Model_Invoice $invoice): bool => $invoice->id === 2 ? throw new ClientFence\InformationException('Payment gateway not found') : true);
+    $api->setService($service);
+    $api->shouldReceive('send_reminder')->once()->with(['id' => 1])->andReturnTrue();
+
+    expect($api->batch_mark_paid(['ids' => ['1', 2, 9, 1]]))->toBe(['done' => [1], 'skipped' => [2 => 'Payment gateway not found', 9 => 'Invoice was not found']])
+        ->and($api->batch_cancel(['ids' => [1, 2, 3]]))->toBe(['done' => [1], 'skipped' => [2 => 'Only unpaid invoices can be cancelled.', 3 => 'Only unpaid invoices can be cancelled.']])
+        ->and($api->batch_mark_unpaid(['ids' => [1, 3]]))->toBe(['done' => [3], 'skipped' => [1 => 'Only cancelled invoices can be marked unpaid.']])
+        ->and($api->batch_send_reminder(['ids' => [1, 2, 4]]))->toBe(['done' => [1], 'skipped' => [2 => 'Only unpaid issued invoices get a reminder.', 4 => 'Only unpaid issued invoices get a reminder.']])
+        ->and($updates)->toBe([['id' => 1, 'status' => 'canceled'], ['id' => 3, 'status' => 'unpaid']]);
+});
+
 test('deletes subscriptions in batch', function (): void {
     $api = apiEndpoint(new Admin());
     $activityMock = Mockery::mock(Admin::class)->makePartial();

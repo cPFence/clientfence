@@ -1838,6 +1838,10 @@ msgstr ""
 msgid "Add at least one proxy address."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Add calendar months, as WHMCS does (31 January + 1 month = 3 March, then the 3rd)"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
 msgid "Add contact"
 msgstr ""
@@ -4254,6 +4258,10 @@ msgstr ""
 msgid "Cancel After Unsuccessful Tries"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel Invoices"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Cancel Order"
 msgstr ""
@@ -4272,6 +4280,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Cancel immediately"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel invoices?"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -7556,6 +7568,10 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Delete field?"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Delete invoices?"
 msgstr ""
 
 #: src/modules/Massmailer/Service.php
@@ -11290,6 +11306,10 @@ msgstr ""
 msgid "How invoices and notices go out"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "How monthly and yearly services ordered on the 29th, 30th or 31st renew. Dates already set are not changed."
+msgstr ""
+
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "How much?"
 msgstr ""
@@ -12366,6 +12386,14 @@ msgstr ""
 msgid "Invoices"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be deleted. This cannot be undone."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be marked paid in full, each with its own payment method. Their services are renewed or set up as for a payment."
+msgstr ""
+
 #: src/themes/palisade/html/partials/auth_shell.html.twig
 msgid "Invoices and payments"
 msgstr ""
@@ -12564,6 +12592,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Keep the current setting"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Keep the day the service started, on the last day of shorter months (31 January, 28 February, 31 March)"
 msgstr ""
 
 #: src/modules/Custompages/Service.php
@@ -14098,6 +14130,18 @@ msgstr ""
 msgid "Manual rates are preserved when scheduled or on-demand rate synchronization runs."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Cancelled"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Paid"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Unpaid"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/layout_default.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Mark all read"
 msgstr ""
@@ -14108,6 +14152,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/layout_default.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Mark as read"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark invoices paid?"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -15466,6 +15514,10 @@ msgstr ""
 msgid "No invoice is made. The service keeps its billing cycle and expiry date."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "No invoices selected"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "No invoices yet."
 msgstr ""
@@ -16358,6 +16410,10 @@ msgstr ""
 msgid "Only canceled orders can be uncanceled"
 msgstr ""
 
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only cancelled invoices can be marked unpaid."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Only clients and their authorized users can open tickets by email; anyone else is told so by email. Off: others get a guest ticket (while guest tickets are on in Support settings)."
 msgstr ""
@@ -16440,6 +16496,14 @@ msgstr ""
 
 #: src/modules/Support/TicketMerge.php
 msgid "Only tickets of the same client, or guest tickets from the same email address, can be merged."
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid invoices can be cancelled."
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid issued invoices get a reminder."
 msgstr ""
 
 #: src/themes/palisade/config/settings.html.twig
@@ -20039,6 +20103,10 @@ msgid "Renewal Date"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Renewal Day"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Renewal Logic"
 msgstr ""
 
@@ -21414,7 +21482,7 @@ msgstr ""
 msgid "Send Feedback"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Send Reminder"
 msgstr ""
 
@@ -22404,6 +22472,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_tickets.html.twig
 msgid "Solved"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Some invoices were skipped"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
@@ -25851,6 +25923,10 @@ msgstr ""
 msgid "Tick at least one TLD."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Tick the invoices first."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Tick the services first."
 msgstr ""
@@ -27017,6 +27093,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Run.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig …
 msgid "Unpaid invoices"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Unpaid invoices %list% will be cancelled. Credit applied to them goes back to the client."
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -28567,7 +28647,7 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
 msgid "With Selected:"
 msgstr ""
 

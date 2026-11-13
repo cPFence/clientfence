@@ -2735,7 +2735,7 @@ test('renewFromOrder extends expiration', function (): void {
     $periodMock = Mockery::mock(\ClientFence\Period::class);
     $periodMock->shouldReceive('getExpirationTime')
         ->atLeast()->once()
-        ->with(strtotime('2026-01-01 00:00:00'))
+        ->with(strtotime('2026-01-01 00:00:00'), 1, 1)
         ->andReturn($expectedExpiration);
 
     $serviceMock->shouldReceive('saveStatusChange')
@@ -2763,7 +2763,7 @@ test('renewFromOrder treats a missing Doctrine expiration as now', function (): 
     $periodMock = Mockery::mock(\ClientFence\Period::class);
     $periodMock->shouldReceive('getExpirationTime')
         ->once()
-        ->with(Mockery::on(static fn (int $from): bool => abs(time() - $from) <= 1))
+        ->with(Mockery::on(static fn (int $from): bool => abs(time() - $from) <= 1), Mockery::type('int'), 1)
         ->andReturn(strtotime('2027-01-01 00:00:00'));
 
     $di = container();
@@ -2776,6 +2776,27 @@ test('renewFromOrder treats a missing Doctrine expiration as now', function (): 
     expect($order->getExpiresAt())->toEqual(new DateTime('2027-01-01 00:00:00'))
         ->and($order->getStatus())->toBe(Order::STATUS_ACTIVE);
 });
+
+test('periodEnd keeps the day the service started through short months, or adds calendar months when set', function (string $mode, string $from, ?string $activated, int $count, string $expected, string $logic = ''): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (): array => ($mode === '' ? [] : ['renewal_day' => $mode]) + ['order_renewal_logic' => $logic]);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(date('Y-m-d', $service->periodEnd('1M', (int) strtotime($from), $activated, $count)))->toBe($expected);
+})->with([
+    'default keeps the day: 31 Jan' => ['', '2027-01-31 09:00:00', null, 1, '2027-02-28'],
+    'back to the 31st after February' => ['keep', '2027-02-28 09:00:00', '2027-01-31 08:00:00', 1, '2027-03-31'],
+    'started on the 30th' => ['keep', '2027-02-28 09:00:00', '2026-11-30 08:00:00', 1, '2027-03-30'],
+    'a day before the month end is kept' => ['keep', '2027-04-29 09:00:00', '2027-01-31 08:00:00', 1, '2027-05-29'],
+    'one period back (chargeback)' => ['keep', '2027-02-28 09:00:00', '2027-01-31 08:00:00', -1, '2027-01-31'],
+    'calendar months' => ['calendar', '2027-01-31 09:00:00', '2027-01-31 08:00:00', 1, '2027-03-03'],
+    // Renewals counted from the payment day can start a cycle on its own day: the due date's day stays.
+    'from the payment day' => ['keep', '2027-06-30 09:00:00', '2027-03-31 08:00:00', 1, '2027-07-30', 'from_today'],
+    'from the later date' => ['keep', '2027-06-30 09:00:00', '2027-03-31 08:00:00', 1, '2027-07-30', 'from_greater'],
+    'chargeback, from the later date' => ['keep', '2027-06-30 09:00:00', '2027-03-31 08:00:00', -1, '2027-05-30', 'from_greater'],
+    'from the due date' => ['keep', '2027-06-30 09:00:00', '2027-03-31 08:00:00', 1, '2027-07-31', 'from_expiration_date'],
+]);
 
 test('renewFromOrder extends free first term on first paid renewal', function (): void {
     $clientOrderModel = createEntity(Order::class);
@@ -2794,7 +2815,7 @@ test('renewFromOrder extends free first term on first paid renewal', function ()
     $periodMock = Mockery::mock(\ClientFence\Period::class);
     $periodMock->shouldReceive('getExpirationTime')
         ->once()
-        ->with(strtotime('2026-01-01 00:00:00'))
+        ->with(strtotime('2026-01-01 00:00:00'), 1, 1)
         ->andReturn($expectedExpiration);
 
     $serviceMock->shouldReceive('saveStatusChange')

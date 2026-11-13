@@ -27003,3 +27003,84 @@ msgstr "A :program nem tud fiókjóváírást könyvelni más tételeket is tart
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Sends approved invoices with their clients, payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
 msgstr "A jóváhagyott számlákat az ügyfeleikkel, befizetéseikkel és visszatérítéseikkel együtt egy irányban küldi a könyvelőprogramnak: semmi sem jön vissza. A Cron néhány percenként elküldi a változásokat."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Add calendar months, as WHMCS does (31 January + 1 month = 3 March, then the 3rd)"
+msgstr "Naptári hónapok hozzáadása, ahogy a WHMCS teszi (január 31. + 1 hónap = március 3., utána 3-a)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel Invoices"
+msgstr "Számlák lemondása"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel invoices?"
+msgstr "Számlák lemondása?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Delete invoices?"
+msgstr "Számlák törlése?"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "How monthly and yearly services ordered on the 29th, 30th or 31st renew. Dates already set are not changed."
+msgstr "Hogyan újulnak meg a hó 29., 30. vagy 31. napján megrendelt havi és éves szolgáltatások. A már beállított dátumok nem változnak."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be deleted. This cannot be undone."
+msgstr "A(z) %list% számlák törlődnek. Ez nem vonható vissza."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be marked paid in full, each with its own payment method. Their services are renewed or set up as for a payment."
+msgstr "A(z) %list% számlák teljesen kifizetettnek lesznek jelölve, mindegyik a saját fizetési módjával. Szolgáltatásaik megújulnak vagy beállításra kerülnek, mintha fizetés történt volna."
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Keep the day the service started, on the last day of shorter months (31 January, 28 February, 31 March)"
+msgstr "A szolgáltatás kezdőnapjának megtartása, a rövidebb hónapokban az utolsó nappal (január 31., február 28., március 31.)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Cancelled"
+msgstr "Megjelölés lemondottként"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Paid"
+msgstr "Megjelölés fizetettként"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Unpaid"
+msgstr "Megjelölés fizetetlenként"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark invoices paid?"
+msgstr "Számlák megjelölése fizetettként?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "No invoices selected"
+msgstr "Nincs számla kijelölve"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only cancelled invoices can be marked unpaid."
+msgstr "Csak a lemondott számlák jelölhetők meg fizetetlenként."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid invoices can be cancelled."
+msgstr "Csak a fizetetlen számlák mondhatók le."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid issued invoices get a reminder."
+msgstr "Csak a fizetetlen, kiállított számlák kapnak emlékeztetőt."
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Renewal Day"
+msgstr "Megújítási nap"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Some invoices were skipped"
+msgstr "Néhány számla kimaradt"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Tick the invoices first."
+msgstr "Előbb jelölje ki a számlákat."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Unpaid invoices %list% will be cancelled. Credit applied to them goes back to the client."
+msgstr "A(z) %list% fizetetlen számlák le lesznek mondva. A rájuk felhasznált jóváírás visszakerül az ügyfélhez."

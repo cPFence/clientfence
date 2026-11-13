@@ -52,6 +52,21 @@
                     </div>
                 </div>
             </div>
+            {# ClientFence core patch: Renewal Day, the day of month renewals keep (Order Service periodEnd()). #}
+            <div class="card-body border-top">
+                <h4 class="card-title mb-2">{{ 'Renewal Day'|trans }}</h4>
+                <p class="text-secondary mb-3">{{ 'How monthly and yearly services ordered on the 29th, 30th or 31st renew. Dates already set are not changed.'|trans }}</p>
+                <div class="d-flex flex-column gap-2">
+                    <div class="form-check">
+                        <input class="form-check-input" id="radioRenewalDayKeep" type="radio" name="renewal_day" value="keep" {% if params.renewal_day|default('keep') != 'calendar' %}checked{% endif %}>
+                        <label class="form-check-label" for="radioRenewalDayKeep">{{ 'Keep the day the service started, on the last day of shorter months (31 January, 28 February, 31 March)'|trans }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" id="radioRenewalDayCalendar" type="radio" name="renewal_day" value="calendar" {% if params.renewal_day|default('keep') == 'calendar' %}checked{% endif %}>
+                        <label class="form-check-label" for="radioRenewalDayCalendar">{{ 'Add calendar months, as WHMCS does (31 January + 1 month = 3 March, then the 3rd)'|trans }}</label>
+                    </div>
+                </div>
+            </div>
             <div class="card-body border-top">
                 <h4 class="card-title mb-2">{{ 'Order Visibility'|trans }}</h4>
                 <p class="text-secondary mb-3">{{ 'Control whether addon orders are shown directly in the main orders list.'|trans }}</p>

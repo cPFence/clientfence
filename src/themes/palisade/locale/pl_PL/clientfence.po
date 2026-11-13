@@ -27177,3 +27177,84 @@ msgstr ":program nie może zaksięgować środków na koncie na fakturze z innym
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Sends approved invoices with their clients, payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
 msgstr "Wysyła zatwierdzone faktury wraz z ich klientami, płatnościami i zwrotami do programu księgowego w jedną stronę: nic z niego nie wraca. Cron wysyła zmiany co kilka minut."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Add calendar months, as WHMCS does (31 January + 1 month = 3 March, then the 3rd)"
+msgstr "Dodawaj miesiące kalendarzowe, tak jak WHMCS (31 stycznia + 1 miesiąc = 3 marca, potem 3. dnia)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel Invoices"
+msgstr "Anuluj faktury"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel invoices?"
+msgstr "Anulować faktury?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Delete invoices?"
+msgstr "Usunąć faktury?"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "How monthly and yearly services ordered on the 29th, 30th or 31st renew. Dates already set are not changed."
+msgstr "Jak odnawiają się usługi miesięczne i roczne zamówione 29., 30. lub 31. dnia miesiąca. Już ustawione daty nie zmieniają się."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be deleted. This cannot be undone."
+msgstr "Faktury %list% zostaną usunięte. Tej operacji nie można cofnąć."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be marked paid in full, each with its own payment method. Their services are renewed or set up as for a payment."
+msgstr "Faktury %list% zostaną oznaczone jako w pełni zapłacone, każda własną metodą płatności. Ich usługi zostaną odnowione lub uruchomione tak jak przy płatności."
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Keep the day the service started, on the last day of shorter months (31 January, 28 February, 31 March)"
+msgstr "Zachowaj dzień rozpoczęcia usługi, w krótszych miesiącach ostatni dzień (31 stycznia, 28 lutego, 31 marca)"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Cancelled"
+msgstr "Oznacz jako anulowane"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Paid"
+msgstr "Oznacz jako zapłacone"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Unpaid"
+msgstr "Oznacz jako niezapłacone"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark invoices paid?"
+msgstr "Oznaczyć faktury jako zapłacone?"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "No invoices selected"
+msgstr "Nie wybrano faktur"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only cancelled invoices can be marked unpaid."
+msgstr "Tylko anulowane faktury można oznaczyć jako niezapłacone."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid invoices can be cancelled."
+msgstr "Tylko niezapłacone faktury można anulować."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid issued invoices get a reminder."
+msgstr "Przypomnienie dostają tylko niezapłacone wystawione faktury."
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Renewal Day"
+msgstr "Dzień odnowienia"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Some invoices were skipped"
+msgstr "Niektóre faktury pominięto"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Tick the invoices first."
+msgstr "Najpierw zaznacz faktury."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Unpaid invoices %list% will be cancelled. Credit applied to them goes back to the client."
+msgstr "Niezapłacone faktury %list% zostaną anulowane. Zastosowane do nich środki wrócą do klienta."

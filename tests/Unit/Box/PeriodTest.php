@@ -45,6 +45,21 @@ test('has expiration time in the future', function (): void {
     expect($expiration)->toBeLessThan($now + 35 * 24 * 60 * 60); // Should be less than 35 days
 });
 
+test('keeps the anchor day through short months, or adds calendar months without one', function (string $code, string $from, ?int $anchor, int $count, string $expected): void {
+    expect(date('Y-m-d H:i', (int) (new \ClientFence\Period($code))->getExpirationTime((int) strtotime($from), $anchor, $count)))->toBe($expected);
+})->with([
+    'Jan 31 + 1M keeps the day' => ['1M', '2026-01-31 10:15', 31, 1, '2026-02-28 10:15'],
+    'Feb 28 + 1M back to the 31st' => ['1M', '2026-02-28 10:15', 31, 1, '2026-03-31 10:15'],
+    'Mar 31 + 1M to Apr 30' => ['1M', '2026-03-31 00:00', 31, 1, '2026-04-30 00:00'],
+    'Nov 30 + 3M over the year' => ['3M', '2026-11-30 00:00', 30, 1, '2027-02-28 00:00'],
+    'leap day + 1Y' => ['1Y', '2028-02-29 00:00', 29, 1, '2029-02-28 00:00'],
+    'Mar 31 - 1M to Feb 28' => ['1M', '2026-03-31 00:00', 31, -1, '2026-02-28 00:00'],
+    'Feb 28 - 1M back to Jan 31' => ['1M', '2026-02-28 00:00', 31, -1, '2026-01-31 00:00'],
+    'days ignore the anchor' => ['7D', '2026-01-31 00:00', 31, 1, '2026-02-07 00:00'],
+    'calendar months' => ['1M', '2026-01-31 00:00', null, 1, '2026-03-03 00:00'],
+    'calendar months back' => ['1M', '2026-03-31 00:00', null, -1, '2026-03-03 00:00'],
+]);
+
 test('throws exception for invalid period code length', function (): void {
     expect(fn (): \ClientFence\Period => new \ClientFence\Period('1'))->toThrow(ClientFence\Exception::class, 'Invalid period code. Period definition must be 2 chars length');
 });

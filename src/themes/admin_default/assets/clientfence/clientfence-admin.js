@@ -997,7 +997,19 @@ if (document.querySelector('[data-bf-bulk]')) {
       bulkNotice(bar, bar.dataset.bfNoneText || '');
       return;
     }
-    const post = (call) => window.ClientFence.api.admin.post(call, { ids }, () => window.location.reload());
+    // A call that skips some (the invoice list's) lists them, then reloads.
+    const post = (call) => window.ClientFence.api.admin.post(call, { ids }, (result) => {
+      const skipped = Object.entries(result?.skipped || {});
+      if (!skipped.length) {
+        window.location.reload();
+        return;
+      }
+      const list = document.createElement('ul');
+      skipped.forEach(([id, why]) => { list.appendChild(document.createElement('li')).textContent = `#${id}: ${why}`; });
+      const title = document.createElement('span');
+      title.textContent = bar.dataset.bfSkippedTitle || '';
+      window.Modals.create({ type: 'small', title: title.innerHTML, content: list.outerHTML, closeCallback: () => window.location.reload() });
+    });
     // Other lists name their call (and the confirm texts' kind) on the button.
     if (button.dataset.bfBulkCall) {
       if (button.dataset.bfBulkAsk) bulkAsk(bar, button.dataset.bfBulkAsk, ids, () => post(button.dataset.bfBulkCall));

@@ -159,9 +159,24 @@ class Period
         };
     }
 
-    public function getExpirationTime(?int $now = null): int|false
+    /**
+     * ClientFence: with $anchorDay, months and years keep that day, on a shorter month's last day (31 January + 1 month =
+     * 28 February, + 2 months = 31 March); without it they add calendar months (31 January + 1 month = 3 March).
+     * $count -1 goes one period back.
+     */
+    public function getExpirationTime(?int $now = null, ?int $anchorDay = null, int $count = 1): int|false
     {
         $now ??= time();
+        $qty = $this->qty * $count;
+
+        if ($anchorDay !== null && ($this->unit === self::UNIT_MONTH || $this->unit === self::UNIT_YEAR)) {
+            $total = (int) date('Y', $now) * 12 + (int) date('n', $now) - 1 + $qty * ($this->unit === self::UNIT_YEAR ? 12 : 1);
+            $year = intdiv($total, 12);
+            $month = $total % 12 + 1;
+            $day = min($anchorDay, (int) date('t', mktime(0, 0, 0, $month, 1, $year)));
+
+            return mktime((int) date('G', $now), (int) date('i', $now), (int) date('s', $now), $month, $day, $year);
+        }
 
         $shift = match ($this->unit) {
             self::UNIT_DAY => 'days',
@@ -171,6 +186,6 @@ class Period
             default => throw new \ClientFence\Exception('Unit not defined'),
         };
 
-        return strtotime("+$this->qty $shift", $now);
+        return strtotime(sprintf('%+d %s', $qty, $shift), $now);
     }
 }

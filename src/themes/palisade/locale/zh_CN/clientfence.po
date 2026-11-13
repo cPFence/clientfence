@@ -26502,3 +26502,84 @@ msgstr ":program 无法在含有其他行的发票上记入账户余额::number�
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Sends approved invoices with their clients, payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
 msgstr "将已批准的发票连同其客户、付款和退款单向发送到你的会计程序:不会有任何内容回传。Cron 每隔几分钟发送一次更改。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Add calendar months, as WHMCS does (31 January + 1 month = 3 March, then the 3rd)"
+msgstr "按日历月相加，与 WHMCS 相同（1 月 31 日 + 1 个月 = 3 月 3 日，之后为每月 3 日）"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel Invoices"
+msgstr "取消发票"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Cancel invoices?"
+msgstr "取消发票？"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Delete invoices?"
+msgstr "删除发票？"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "How monthly and yearly services ordered on the 29th, 30th or 31st renew. Dates already set are not changed."
+msgstr "在 29、30 或 31 日订购的月付和年付服务如何续费。已设置的日期不会更改。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be deleted. This cannot be undone."
+msgstr "发票 %list% 将被删除。此操作无法撤销。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Invoices %list% will be marked paid in full, each with its own payment method. Their services are renewed or set up as for a payment."
+msgstr "发票 %list% 将被标记为全额已付款，每张使用各自的付款方式。其服务将像付款时一样续费或开通。"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Keep the day the service started, on the last day of shorter months (31 January, 28 February, 31 March)"
+msgstr "保留服务开始的日期，较短的月份使用最后一天（1 月 31 日、2 月 28 日、3 月 31 日）"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Cancelled"
+msgstr "标记为已取消"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Paid"
+msgstr "标记为已付款"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark Unpaid"
+msgstr "标记为未付款"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Mark invoices paid?"
+msgstr "将发票标记为已付款？"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "No invoices selected"
+msgstr "未选择发票"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only cancelled invoices can be marked unpaid."
+msgstr "只有已取消的发票可以标记为未付款。"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid invoices can be cancelled."
+msgstr "只有未付款的发票可以取消。"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Only unpaid issued invoices get a reminder."
+msgstr "只有未付款的已开具发票才会收到提醒。"
+
+#: src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Renewal Day"
+msgstr "续费日"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Some invoices were skipped"
+msgstr "部分发票已跳过"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Tick the invoices first."
+msgstr "请先勾选发票。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Unpaid invoices %list% will be cancelled. Credit applied to them goes back to the client."
+msgstr "未付款发票 %list% 将被取消。已用于这些发票的余额将退还给客户。"

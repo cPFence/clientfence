@@ -886,7 +886,8 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public function markAsPaidByAdmin(\Model_Invoice $invoice, array $data = []): bool
+    /** ClientFence core patch: $needsReference false (bulk Mark Paid, as WHMCS) records a Custom payment without a transaction ID. */
+    public function markAsPaidByAdmin(\Model_Invoice $invoice, array $data = [], bool $needsReference = true): bool
     {
         if ($invoice->status === \Model_Invoice::STATUS_PAID) {
             return true;
@@ -895,7 +896,7 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: under the client's credit lock, and the status is read again there: two
         // clicks, or a click during a credit payment, paid the invoice and credited an Add funds twice; a
         // refunded invoice was paid (and credited) again.
-        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $data): bool {
+        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $data, $needsReference): bool {
             $status = $this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]);
             if ($status === \Model_Invoice::STATUS_PAID) {
                 return true;
@@ -904,13 +905,13 @@ class Service implements InjectionAwareInterface
                 throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
             }
 
-            return $this->markAsPaidByAdminLocked($invoice, $data);
+            return $this->markAsPaidByAdminLocked($invoice, $data, $needsReference);
         });
     }
 
-    private function markAsPaidByAdminLocked(\Model_Invoice $invoice, array $data): bool
+    private function markAsPaidByAdminLocked(\Model_Invoice $invoice, array $data, bool $needsReference): bool
     {
-        $payGateway = $this->validateAdminMarkAsPaidRequest($data, $invoice);
+        $payGateway = $this->validateAdminMarkAsPaidRequest($data, $invoice, $needsReference);
         $transactionId = isset($data['transactionId']) ? trim((string) $data['transactionId']) : null;
         $invoiceTotal = $this->getTotalWithTax($invoice);
         $isDeposit = $this->isInvoiceTypeDeposit($invoice);
@@ -1061,7 +1062,7 @@ class Service implements InjectionAwareInterface
         ]);
     }
 
-    public function validateAdminMarkAsPaidRequest(array $data, ?\Model_Invoice $invoice = null): \Model_PayGateway
+    public function validateAdminMarkAsPaidRequest(array $data, ?\Model_Invoice $invoice = null, bool $needsReference = true): \Model_PayGateway
     {
         $gatewayId = isset($data['gateway_id']) && !empty($data['gateway_id']) ? (int) $data['gateway_id'] : (int) ($invoice->gateway_id ?? 0);
         if ($gatewayId <= 0) {
@@ -1074,7 +1075,7 @@ class Service implements InjectionAwareInterface
         }
         // ClientFence core patch: CustomEgp extends Custom, so its payments need the receipt reference too.
         $gatewayCode = (string) ($payGateway->gateway ?? '');
-        if ($gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class))) {
+        if ($needsReference && ($gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class)))) {
             $transactionId = trim((string) ($data['transactionId'] ?? ''));
             if ($transactionId === '') {
                 throw new InformationException('Transaction ID is required when using the Custom payment gateway.');
@@ -2375,16 +2376,12 @@ class Service implements InjectionAwareInterface
         // A part taken back leaves the rest paying for the period: staff settle the service by hand.
         $items = $full ? $db->fetchAllAssociative("SELECT rel_id, period FROM invoice_item WHERE invoice_id = ? AND type = 'order' AND task = ? AND status = 'executed'", [(int) $invoice->id, \Model_InvoiceItem::TASK_RENEW]) : [];
         foreach ($items as $item) {
-            $order = $db->fetchAssociative('SELECT id, expires_at, period FROM client_order WHERE id = ?', [(int) $item['rel_id']]);
+            $order = $db->fetchAssociative('SELECT id, expires_at, period, activated_at FROM client_order WHERE id = ?', [(int) $item['rel_id']]);
             $code = (string) ($item['period'] ?: ($order['period'] ?? ''));
             if ($order === false || empty($order['expires_at']) || $code === '') {
                 continue;
             }
-            $period = new \ClientFence\Period($code);
-            $unit = match ($period->getUnit()) {
-                \ClientFence\Period::UNIT_DAY => 'days', \ClientFence\Period::UNIT_WEEK => 'weeks', \ClientFence\Period::UNIT_YEAR => 'years', default => 'months',
-            };
-            $expires = date('Y-m-d H:i:s', strtotime('-' . $period->getQty() . ' ' . $unit, strtotime((string) $order['expires_at'])));
+            $expires = date('Y-m-d H:i:s', $this->di['mod_service']('order')->periodEnd($code, (int) strtotime((string) $order['expires_at']), $order['activated_at'], -1));
             $db->update('client_order', ['expires_at' => $expires, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $order['id']]);
             $moved[] = sprintf('order #%d due %s', $order['id'], substr($expires, 0, 10));
         }

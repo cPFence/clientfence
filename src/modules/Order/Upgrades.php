@@ -183,7 +183,7 @@ final class Upgrades
         $paid = self::recurringTotal($di, $order, $now);
         $productRule = self::rule($di, self::SCOPE_PRODUCT, (int) $order->product_id);
         $orderRule = self::rule($di, self::SCOPE_ORDER, (int) $order->id);
-        $anchor = self::periodAnchor($db, $order);
+        $anchor = self::anchorFor($di, $order);
         $quantity = max(1, (int) ($order->quantity ?? 1));
 
         $options = [];
@@ -220,7 +220,7 @@ final class Upgrades
                 }
                 $newTotal = round(($price + $target['price']) * $rate * $quantity, 2);
                 $sameCycle = isset($from['prices'][$period]) && $here !== null ? round(($from['prices'][$period] + $here['price']) * $rate * $quantity, 2) : null;
-                $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, $newTotal, $period, $now, $sameCycle, $anchor);
+                $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, $newTotal, $period, $now, $sameCycle, $anchor, Service::keepsRenewalDay($di));
                 if (!self::allowedBy($settings, $productRule, $orderRule, $quote['kind'])) {
                     continue;
                 }
@@ -940,7 +940,7 @@ final class Upgrades
         if ($newTotal < 0 || round($paid + $delta, 2) < 0) {
             throw new InformationException('The price of this service is lower than its options, so it is changed by our staff. Please contact us.');
         }
-        $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, round($paid + $delta, 2), (string) $order->period, $now, $paid, self::periodAnchor(self::db($di), $order));
+        $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, round($paid + $delta, 2), (string) $order->period, $now, $paid, self::anchorFor($di, $order), Service::keepsRenewalDay($di));
         if (!self::allowedBy($settings, self::rule($di, self::SCOPE_PRODUCT, (int) $order->product_id), self::rule($di, self::SCOPE_ORDER, (int) $order->id), $quote['kind'])) {
             throw new InformationException('This change is not available for this service.');
         }
@@ -1215,6 +1215,23 @@ final class Upgrades
      * of cycle applied (that period ends on the change's expiry), the change's expiry (renewals go on from it), or else
      * its activation.
      */
+    /**
+     * The period anchor for Proration. With the day kept (Renewal Day), a renewal counted from the payment day (Renewal Logic)
+     * can start a new cycle on its own day, so then only the first period is walked from it; later ones are the month before
+     * the expiry.
+     */
+    private static function anchorFor(\Pimple\Container $di, \Model_ClientOrder $order): ?string
+    {
+        $anchor = self::periodAnchor(self::db($di), $order);
+        $logic = $di['mod_config']('order')['order_renewal_logic'] ?? '';
+        if ($anchor === null || ($logic !== 'from_today' && $logic !== 'from_greater') || !Service::keepsRenewalDay($di)) {
+            return $anchor;
+        }
+        $firstEnd = $di['mod_service']('order')->periodEnd((string) $order->period, (int) strtotime($anchor));
+
+        return date('Y-m-d', $firstEnd) === substr((string) $order->expires_at, 0, 10) ? $anchor : null;
+    }
+
     private static function periodAnchor(Connection $db, \Model_ClientOrder $order): ?string
     {
         $change = $db->fetchAssociative('SELECT applied_at, to_expires_at FROM ' . self::TABLE . " WHERE order_id = ? AND status = ? AND to_period <> from_period AND applied_at IS NOT NULL AND applied_at <> '' ORDER BY applied_at DESC, id DESC LIMIT 1", [(int) $order->id, self::STATUS_APPLIED]);
@@ -1532,7 +1549,7 @@ final class Upgrades
                 $left = Proration::daysLeft((string) $order->expires_at, $now);
                 // The first period ended where activation put the first expiry, or earlier where the paid period began (renewals
                 // counted from the payment day).
-                $firstEnd = (string) $order->activated_at !== '' ? (new \ClientFence\Period((string) $order->period))->getExpirationTime((int) strtotime((string) $order->activated_at)) : false;
+                $firstEnd = (string) $order->activated_at !== '' ? $di['mod_service']('order')->periodEnd((string) $order->period, (int) strtotime((string) $order->activated_at)) : false;
                 [$qty, $unit] = Proration::parsePeriod((string) $order->period);
                 $firstEnd = $firstEnd === false ? false : min($firstEnd, Proration::shift(new \DateTimeImmutable((string) $order->expires_at), $qty, $unit, -1)->getTimestamp());
                 $firstDiscount = $left > 0 && $firstEnd !== false ? $firstDiscount * min($left, Proration::daysLeft(date('Y-m-d H:i:s', $firstEnd), $now)) / $left : 0.0;

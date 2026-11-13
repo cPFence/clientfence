@@ -38,7 +38,7 @@ final class Proration
     /**
      * @return array{kind: string, same_cycle: bool, days_total: int, days_left: int, credit: float, charge: float, amount: float, period_start: string, expires_at: string, new_expires_at: string}
      */
-    public static function quote(float $oldPrice, string $oldPeriod, string $expiresAt, float $newPrice, string $newPeriod, string $now, ?float $currentProductNewCyclePrice = null, ?string $anchor = null): array
+    public static function quote(float $oldPrice, string $oldPeriod, string $expiresAt, float $newPrice, string $newPeriod, string $now, ?float $currentProductNewCyclePrice = null, ?string $anchor = null, bool $keepDay = false): array
     {
         if ($oldPrice < 0 || $newPrice < 0 || !is_finite($oldPrice) || !is_finite($newPrice) || ($currentProductNewCyclePrice !== null && ($currentProductNewCyclePrice < 0 || !is_finite($currentProductNewCyclePrice)))) {
             throw new InformationException('Prices cannot be negative.');
@@ -48,7 +48,7 @@ final class Proration
         $expiry = self::day($expiresAt, 'expiry date');
         $today = self::day($now, 'current date');
 
-        $start = self::start($expiry, $oldQty, $oldUnit, $anchor);
+        $start = self::start($expiry, $oldQty, $oldUnit, $anchor, $keepDay);
         $daysTotal = max(1, self::daysBetween($start, $expiry));
         // Not capped: an order paid more than one period ahead is credited for every day left.
         $daysLeft = max(0, self::daysBetween($today, $expiry));
@@ -136,23 +136,23 @@ final class Proration
     }
 
     /** The days of the period that ends on the expiry date, as quote() counts them. */
-    public static function daysTotal(string $period, string $expiresAt, ?string $anchor = null): int
+    public static function daysTotal(string $period, string $expiresAt, ?string $anchor = null, bool $keepDay = false): int
     {
         [$qty, $unit] = self::parsePeriod($period);
         $expiry = self::day($expiresAt, 'expiry date');
 
-        return max(1, self::daysBetween(self::start($expiry, $qty, $unit, $anchor), $expiry));
+        return max(1, self::daysBetween(self::start($expiry, $qty, $unit, $anchor, $keepDay), $expiry));
     }
 
     /**
      * The first day of the period ending on the expiry date. QA r10 D-01: renewals add months as strtotime() does
-     * (Period::getExpirationTime(): 31 January + 1 month = 3 March, a period of 31 days that a clamped month reads as
-     * 28), and days alone cannot tell where such a period began (31 August and 1 September + 1 month are both
+     * (Period::getExpirationTime() with calendar months: 31 January + 1 month = 3 March, a period of 31 days that a clamped
+     * month reads as 28), and days alone cannot tell where such a period began (31 August and 1 September + 1 month are both
      * 1 October). So the periods are walked forward from the anchor, a day a period of the service began (its
      * activation, or its last change of cycle); the clamped month is used when the walk does not reach the expiry
      * (an expiry staff moved, or set by another system).
      */
-    private static function start(\DateTimeImmutable $expiry, int $qty, string $unit, ?string $anchor): \DateTimeImmutable
+    private static function start(\DateTimeImmutable $expiry, int $qty, string $unit, ?string $anchor, bool $keepDay): \DateTimeImmutable
     {
         $start = self::shift($expiry, $qty, $unit, -1);
         if ($anchor === null || ($unit !== 'M' && $unit !== 'Y')) {
@@ -163,16 +163,31 @@ final class Proration
         } catch (InformationException) {
             return $start;
         }
-        $step = '+' . $qty . ($unit === 'M' ? ' months' : ' years');
-        for ($i = 0; $i < 1200 && $from < $expiry; ++$i) {
-            $next = $from->modify($step);
-            if ($next == $expiry) {
-                return $from;
+        // Order settings "Renewal Day": the walk of the current rule first (keep the anchor's day: 31 January, 28 February,
+        // 31 March), then the other, as dates made before a change of rule stay.
+        $kept = static function () use ($from, $expiry, $qty, $unit): ?\DateTimeImmutable {
+            for ($i = 1; $i <= 1200 && ($next = self::shift($from, $qty * $i, $unit, 1)) <= $expiry; ++$i) {
+                if ($next == $expiry) {
+                    return self::shift($from, $qty * ($i - 1), $unit, 1);
+                }
             }
-            $from = $next;
-        }
 
-        return $start;
+            return null;
+        };
+        $added = static function () use ($from, $expiry, $qty, $unit): ?\DateTimeImmutable {
+            $step = '+' . $qty . ($unit === 'M' ? ' months' : ' years');
+            for ($i = 0, $at = $from; $i < 1200 && $at < $expiry; ++$i) {
+                $next = $at->modify($step);
+                if ($next == $expiry) {
+                    return $at;
+                }
+                $at = $next;
+            }
+
+            return null;
+        };
+
+        return ($keepDay ? $kept() ?? $added() : $added() ?? $kept()) ?? $start;
     }
 
     private static function daysBetween(\DateTimeImmutable $from, \DateTimeImmutable $to): int
