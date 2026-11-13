@@ -30,6 +30,7 @@ $paths = [
     'library/Registrar/Adapter/Connectreseller.php',
     'library/Registrar/Adapter/Centralnicreseller.php',
     'library/Registrar/Adapter/Ovh.php',
+    'library/Registrar/Adapter/Nominet.php',
     'library/Registrar/TldPrices.php',
     'library/Registrar/TransferStatus.php',
     'modules/Servicedomain/PriceSync.php',
