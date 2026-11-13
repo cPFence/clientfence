@@ -26,6 +26,7 @@ $paths = [
     'library/Registrar/Adapter/Openprovider.php',
     'library/Registrar/Adapter/Synergywholesale.php',
     'library/Registrar/Adapter/Opensrs.php',
+    'library/Registrar/Adapter/Realtimeregister.php',
     'library/Registrar/TldPrices.php',
     'library/Registrar/TransferStatus.php',
     'modules/Servicedomain/PriceSync.php',
