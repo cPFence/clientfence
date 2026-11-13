@@ -602,3 +602,18 @@ test('updateParams rejects invalid invoice counters before writing any settings'
     'maximum' => [(string) PHP_INT_MAX],
     'overflow' => [PHP_INT_MAX . '0'],
 ]);
+
+test('updateParams refuses the accounting sync settings to staff without the invoice settings permission', function (bool $allowed): void {
+    $di = container();
+    $staff = Mockery::mock();
+    $staff->allows('hasPermission')->with(null, 'invoice', 'manage_settings')->andReturn($allowed);
+    $di['mod_service'] = $di->protect(fn (): object => $staff);
+    $di['events_manager'] = Mockery::mock();
+    $di['events_manager']->allows('fire');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $allowed ? $service->expects('setParamValue')->with('accounting_program', '', true) : $service->shouldNotReceive('setParamValue');
+    $service->setDi($di);
+
+    $allowed ? expect($service->updateParams(['accounting_program' => '']))->toBeTrue()
+        : expect(fn () => $service->updateParams(['accounting_program' => '']))->toThrow(ClientFence\InformationException::class, 'You do not have permission');
+})->with(['allowed' => [true], 'refused' => [false]]);

@@ -159,6 +159,7 @@ $paths = [
     'modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig',
     'modules/Order/templates/admin/mod_order_ip_seats.html.twig',
     'modules/Invoice/EuVat.php',
+    'modules/Invoice/Accounting',
     'modules/Invoice/PendingPayments.php',
     'modules/Invoice/templates/email/mod_invoice_refunded.html.twig',
     'modules/Order/CancelRequests.php',

@@ -276,6 +276,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'service_license_log', 'service_license_ban',
         // ClientFence core patch: registrar costs for the TLD price import (Servicedomain/PriceSync.php).
         'tld_registrar_cost',
+        // ClientFence core patch: the accounting sync state (Invoice/Accounting/Sync.php).
+        'invoice_accounting_sync',
     ];
 
     /**

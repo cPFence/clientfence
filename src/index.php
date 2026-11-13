@@ -27,6 +27,11 @@ $paymentReturn = PaymentReturn::createResponse($request, $di['url']);
 if ($paymentReturn !== null) {
     emitResponse($paymentReturn);
 }
+// ClientFence core patch: the accounting program's return reaches the Strict staff session the same way.
+$accountingReturn = \ClientFence\Mod\Invoice\Accounting\Sync::returnHop($request, $di['url']);
+if ($accountingReturn !== null) {
+    emitResponse($accountingReturn);
+}
 
 if ((bool) ($config['debug_and_monitoring']['debug'] ?? false)) {
     // Setting up the debug bar

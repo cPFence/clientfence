@@ -130,6 +130,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/invoice/pdf/:hash', 'get_pdf', ['hash' => '[a-z0-9]+'], static::class);
         // ClientFence: a payment receipt for staff with support permission (Receipts.php).
         $app->get('/invoice/receipt/:id', 'get_receipt', ['id' => '[a-f0-9]{32}'], static::class);
+        // ClientFence core patch: the accounting program sends staff back here after they connect it (Accounting/Sync.php).
+        $app->get('/invoice/accounting/callback', 'get_accounting_callback', [], static::class);
     }
 
     public function get_taxes(\ClientFence\App $app): string
@@ -336,6 +338,26 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $this->di['is_admin_logged'];
 
         return $this->di['api_admin']->invoice_statement_pdf($this->reportParams());
+    }
+
+    /**
+     * ClientFence: the accounting program's return, after Sync::returnHop() moved it on (`moved`) so the request is
+     * same-site and carries the staff session. The code becomes the stored tokens and the settings page shows the outcome.
+     */
+    public function get_accounting_callback(\ClientFence\App $app): Response
+    {
+        $query = $this->di['request']->query->all();
+        $this->di['is_admin_logged'];
+        $this->di['mod_service']('extension')->hasManagePermission('mod_invoice');
+        $sync = new \ClientFence\Mod\Invoice\Accounting\Sync($this->di);
+        try {
+            $sync->finishConnect($query);
+            $sync->notice(__trans('Connected.'));
+        } catch (\ClientFence\InformationException $e) {
+            $sync->notice($e->getMessage());
+        }
+
+        return $app->redirect(\ClientFence\Mod\Invoice\Accounting\Sync::SETTINGS_URL);
     }
 
     /** The report filters in the query string (text values only). */

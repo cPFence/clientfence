@@ -5474,5 +5474,45 @@
     {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: a renewal invoice shared with other services (one invoice per due date) loses this order's lines instead, as in WHMCS."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the books go to the connected accounting program (Invoice/Accounting/Sync.php)."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: the accounting sync settings, connection, log and runs (Invoice/Accounting/Sync.php)."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence core patch: the accounting program sends staff back here after they connect it (Accounting/Sync.php)."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: the accounting sync state (Invoice/Accounting/Sync.php)."
+    },
+    {
+        "file": "modules/Clientfence/Service.php",
+        "done": "ClientFence core patch: the accounting sync state (Invoice/Accounting/Sync.php)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_settings.html.twig",
+        "done": "{{ include('mod_invoice_settings_accounting.html.twig') }}"
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch: the accounting sync settings belong to the invoice settings permission."
+    },
+    {
+        "file": "index.php",
+        "done": "ClientFence core patch: the accounting program's return reaches the Strict staff session the same way."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the invoice changed, so the accounting sync sends it again (Invoice/Accounting/Sync.php)."
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: the invoice changed, so the accounting sync sends it again (Invoice/Accounting/Sync.php)."
     }
 ]

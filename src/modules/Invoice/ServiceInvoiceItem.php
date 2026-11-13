@@ -273,6 +273,8 @@ class ServiceInvoiceItem implements InjectionAwareInterface
     public function remove(\Model_InvoiceItem $model): bool
     {
         $id = $model->id;
+        // ClientFence core patch: the invoice changed, so the accounting sync sends it again (Invoice/Accounting/Sync.php).
+        $this->di['dbal']->executeStatement('UPDATE invoice SET updated_at = ? WHERE id = ?', [date('Y-m-d H:i:s'), (int) $model->invoice_id]);
         $this->di['db']->trash($model);
         $this->di['logger']->info('Removed invoice item "%s"', $id);
 

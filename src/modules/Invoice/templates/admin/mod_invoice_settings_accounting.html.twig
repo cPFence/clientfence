@@ -1,0 +1,243 @@
+{# ClientFence: the accounting sync, on the Invoices settings page (Invoice/Accounting/Sync.php). Kept in mod_invoice;
+   saved with invoice/accounting_save. #}
+{% set acct = admin.invoice_accounting_get %}
+{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
+{% set program_name = acct.programs[acct.program ~ '']|default('') %}
+{% set statuses = { queued: 'Waiting'|trans, sent: 'Sent'|trans, failed: 'Failed, will try again'|trans, stopped: 'Stopped'|trans, voided: 'Voided'|trans } %}
+{% set entities = { client: 'Client'|trans, invoice: 'Invoice'|trans, payment: 'Payment'|trans, credit: 'Credit note'|trans, surplus: 'Account credit'|trans } %}
+<div class="card mt-3 clientfence-settings" id="accounting" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<div class="clientfence-settings-intro">
+		<h3>{{ 'Accounting'|trans }}</h3>
+		<p>{{ 'Sends clients, approved invoices, their payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes.'|trans }}</p>
+	</div>
+	{% if acct.notice %}
+		<div class="alert alert-info mx-3" role="status">{{ acct.notice }}</div>
+	{% endif %}
+	{% if acct.paused %}
+		<div class="alert alert-warning mx-3" role="status">{{ acct.paused }}</div>
+	{% endif %}
+	<form method="post" action="{{ 'invoice/accounting_save'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="accounting_program">{{ 'Accounting program'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'Choosing another program, or another app, ends the current connection.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<select class="form-select" id="accounting_program" name="program">
+					<option value="">{{ 'Off'|trans }}</option>
+					{% for code, label in acct.programs %}
+						<option value="{{ code }}"{% if acct.program == code %} selected{% endif %}>{{ label }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label">{{ 'Redirect URL'|trans }}</span>
+				<div class="clientfence-setting-hint">{{ 'Add this address to the app you create in the program\'s developer portal.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="text" readonly value="{{ acct.redirect_uri }}" aria-label="{{ 'Redirect URL'|trans }}" dir="ltr">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="accounting_client_id">{{ 'Client ID'|trans }}</label>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="text" id="accounting_client_id" name="client_id" value="{{ acct.client_id }}" autocomplete="off" dir="ltr">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="accounting_client_secret">{{ 'Client secret'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ acct.has_secret ? 'Saved. Leave empty to keep it.'|trans : 'Stored encrypted.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="password" id="accounting_client_secret" name="client_secret" value="" autocomplete="new-password" dir="ltr">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="accounting_start_date">{{ 'Send invoices issued from'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'Older invoices stay out unless you send them below.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input class="form-control" type="date" id="accounting_start_date" name="start_date" value="{{ acct.start_date }}">
+			</div>
+		</div>
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<label class="form-label" for="accounting_paid_only">{{ 'Paid invoices only'|trans }}</label>
+				<div class="clientfence-setting-hint">{{ 'Off: each invoice is sent when it is approved and its payment later, so the books show what clients owe. On: an invoice is sent once it is paid, with its payment.'|trans }}</div>
+			</div>
+			<div class="clientfence-setting-control">
+				<input type="hidden" name="paid_only" value="0">
+				<label class="form-check form-switch">
+					<input class="form-check-input" type="checkbox" id="accounting_paid_only" name="paid_only" value="1"{% if acct.paid_only %} checked{% endif %}>
+				</label>
+			</div>
+		</div>
+		{% if acct.connected %}
+			{% if acct.lists.error %}
+				<div class="alert alert-warning mx-3" role="alert">{{ 'The accounts could not be read from :program: :error'|trans({ ':program': program_name, ':error': acct.lists.error }) }}</div>
+			{% else %}
+				{% set sales = acct.lists.accounts|filter(a => a.kind == 'sales') %}
+				{% set banks = acct.lists.accounts|filter(a => a.payments) %}
+				<div class="clientfence-setting clientfence-setting-row">
+					<div class="clientfence-setting-label">
+						<label class="form-label" for="accounting_sales_account">{{ 'Sales account'|trans }}</label>
+						<div class="clientfence-setting-hint">{{ 'Every invoice line is booked here.'|trans }}</div>
+					</div>
+					<div class="clientfence-setting-control">
+						<select class="form-select" id="accounting_sales_account" name="sales_account">
+							<option value="">{{ 'Choose'|trans }}</option>
+							{% for a in sales %}
+								<option value="{{ a.id }}"{% if acct.sales_account == a.id %} selected{% endif %}>{{ a.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				{% for gateway in [{ id: 'credit', name: 'Account credit'|trans }]|merge(acct.gateways) %}
+					{% set key = gateway.id ~ '' %}
+					{% set label = gateway.name %}
+					<div class="clientfence-setting clientfence-setting-row">
+						<div class="clientfence-setting-label">
+							<label class="form-label" for="accounting_bank_{{ key }}">{{ key == 'credit' ? label : 'Payments by :gateway'|trans({ ':gateway': label }) }}</label>
+							{% if key == 'credit' %}
+								<div class="clientfence-setting-hint">{{ 'Invoices paid from client credit, and added funds. The account must accept payments.'|trans }}</div>
+							{% endif %}
+						</div>
+						<div class="clientfence-setting-control">
+							<select class="form-select" id="accounting_bank_{{ key }}" name="bank_accounts[{{ key }}]">
+								<option value="">{{ 'Choose'|trans }}</option>
+								{% for a in banks %}
+									<option value="{{ a.id }}"{% if acct.bank_accounts[key ~ '']|default('') == a.id %} selected{% endif %}>{{ a.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				{% endfor %}
+				{% for key, label in acct.taxes %}
+					<div class="clientfence-setting clientfence-setting-row">
+						<div class="clientfence-setting-label">
+							<label class="form-label" for="accounting_tax_{{ loop.index }}">{{ 'Tax: :tax'|trans({ ':tax': label }) }}</label>
+						</div>
+						<div class="clientfence-setting-control">
+							<select class="form-select" id="accounting_tax_{{ loop.index }}" name="tax_map[{{ key }}]">
+								<option value="">{{ 'Choose'|trans }}</option>
+								{% for t in acct.lists.tax_rates %}
+									<option value="{{ t.id }}"{% if acct.tax_map[key ~ '']|default('') == t.id %} selected{% endif %}>{{ t.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				{% endfor %}
+			{% endif %}
+		{% endif %}
+		<div class="clientfence-settings-actions">
+			<button type="submit" class="btn btn-primary">{{ 'Save accounting settings'|trans }}</button>
+		</div>
+	</form>
+	{% if acct.program %}
+		<div class="clientfence-setting clientfence-setting-row">
+			<div class="clientfence-setting-label">
+				<span class="form-label">{{ 'Connection'|trans }}</span>
+				<div class="clientfence-setting-hint">
+					{% if acct.connected %}
+						{{ acct.organisation ? 'Connected to :program (:organisation).'|trans({ ':program': program_name, ':organisation': acct.organisation }) : 'Connected to :program.'|trans({ ':program': program_name }) }}
+					{% else %}
+						{{ 'Not connected. Save the client ID and secret, then connect and approve the access in :program.'|trans({ ':program': program_name }) }}
+					{% endif %}
+				</div>
+			</div>
+			<div class="clientfence-setting-control d-flex gap-2 flex-wrap">
+				<button type="button" class="btn btn-outline-primary" data-cf-accounting-connect>{{ acct.connected ? 'Connect again'|trans : 'Connect'|trans }}</button>
+				{% if acct.connected %}
+					<form method="post" action="{{ 'invoice/accounting_disconnect'|api_url }}" {{ fb_api_form({ message: 'Disconnected.'|trans, reload: true }) }}>
+						<button type="submit" class="btn btn-outline-danger">{{ 'Disconnect'|trans }}</button>
+					</form>
+					<form method="post" action="{{ 'invoice/accounting_run'|api_url }}" {{ fb_api_form({ message: 'Sent.'|trans, reload: true }) }}>
+						<button type="submit" class="btn btn-outline-primary">{{ 'Send now'|trans }}</button>
+					</form>
+				{% endif %}
+			</div>
+		</div>
+		{% if acct.connected %}
+			<form method="post" action="{{ 'invoice/accounting_backfill'|api_url }}" {{ fb_api_form({ message: 'Older invoices will be sent.'|trans, reload: true }) }}>
+				<div class="clientfence-setting clientfence-setting-row">
+					<div class="clientfence-setting-label">
+						<label class="form-label" for="accounting_backfill">{{ 'Send older invoices'|trans }}</label>
+						<div class="clientfence-setting-hint">{{ acct.backfill_from ? 'Invoices from :date are being sent too.'|trans({ ':date': acct.backfill_from }) : 'Also sends invoices issued from this date, before the start date.'|trans }}</div>
+					</div>
+					<div class="clientfence-setting-control d-flex gap-2">
+						<input class="form-control" type="date" id="accounting_backfill" name="from" required>
+						<button type="submit" class="btn btn-outline-primary">{{ 'Send'|trans }}</button>
+					</div>
+				</div>
+			</form>
+		{% endif %}
+		<div class="clientfence-setting">
+			<div class="clientfence-setting-label">
+				<span class="form-label">{{ 'Sync log'|trans }}</span>
+				<div class="clientfence-setting-hint">
+					{% for status, count in acct.counts %}{{ statuses[status ~ '']|default(status) }}: {{ count }}{% if not loop.last %} · {% endif %}{% else %}{{ 'Nothing sent yet.'|trans }}{% endfor %}
+				</div>
+				{% if acct.counts.stopped|default(0) + acct.counts.failed|default(0) > 0 %}
+					<form class="mt-2" method="post" action="{{ 'invoice/accounting_resend_all'|api_url }}" {{ fb_api_form({ message: 'It will be sent on the next run.'|trans, reload: true }) }}>
+						<button type="submit" class="btn btn-sm btn-outline-primary">{{ 'Send all again'|trans }}</button>
+					</form>
+				{% endif %}
+			</div>
+			{% if acct.rows %}
+				<div class="table-responsive">
+					<table class="table card-table table-vcenter">
+						<thead>
+							<tr>
+								<th>{{ 'Record'|trans }}</th>
+								<th>{{ 'Status'|trans }}</th>
+								<th>{{ 'Tries'|trans }}</th>
+								<th>{{ 'Last change'|trans }}</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for row in acct.rows %}
+								<tr>
+									<td>{{ entities[row.entity ~ '']|default(row.entity) }} {{ row.number|default('#' ~ row.local_id) }}</td>
+									<td>
+										{{ statuses[row.status ~ '']|default(row.status) }}
+										{% if row.last_error %}<div class="text-secondary small">{{ row.last_error }}</div>{% endif %}
+									</td>
+									<td>{{ row.attempts }}</td>
+									<td>{{ row.updated_at|format_datetime }}</td>
+									<td class="text-end">
+										{% if row.status in ['failed', 'stopped'] %}
+											<form method="post" action="{{ 'invoice/accounting_resend'|api_url }}" {{ fb_api_form({ message: 'It will be sent on the next run.'|trans, reload: true }) }}>
+												<input type="hidden" name="id" value="{{ row.id }}">
+												<button type="submit" class="btn btn-sm btn-outline-primary">{{ 'Send again'|trans }}</button>
+											</form>
+										{% endif %}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			{% endif %}
+		</div>
+	{% endif %}
+</div>
+<script nonce="{{ csp_nonce }}">
+	// ClientFence: asks for the program's sign-in address and goes there; the program sends staff back to the callback.
+	document.querySelector('[data-cf-accounting-connect]')?.addEventListener('click', async (event) => {
+		const button = event.currentTarget;
+		button.disabled = true;
+		try {
+			location.href = await new Promise((resolve, reject) => ClientFence.api.admin.post('invoice/accounting_connect', {}, resolve, reject));
+		} catch (error) {
+			ClientFence.message(error?.message || String(error), 'error');
+			button.disabled = false;
+		}
+	});
+</script>

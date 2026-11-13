@@ -2237,7 +2237,8 @@ class Service implements InjectionAwareInterface
             'status' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT,
         ];
         // ClientFence core patch: the tax-inclusive cents were for all the invoice's lines (Invoice\Service::applyInclusiveTax()).
-        $this->di['dbal']->executeStatement('UPDATE invoice SET tax_adjust = 0 WHERE id IN (SELECT invoice_id FROM invoice_item WHERE rel_id = :rel_id AND status = :status)', $params);
+        // ClientFence core patch: the invoice changed, so the accounting sync sends it again (Invoice/Accounting/Sync.php).
+        $this->di['dbal']->executeStatement('UPDATE invoice SET tax_adjust = 0, updated_at = :now WHERE id IN (SELECT invoice_id FROM invoice_item WHERE rel_id = :rel_id AND status = :status)', $params + ['now' => date('Y-m-d H:i:s')]);
         $this->di['dbal']->executeStatement('DELETE FROM invoice_item WHERE rel_id = :rel_id AND status = :status', $params);
     }
 

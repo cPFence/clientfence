@@ -215,6 +215,9 @@ final class Notifications
             // ClientFence: the daily domain sync and tracked transfers (Servicedomain/DomainSync.php).
             'domain_expires_early' => __trans('Domain :domain expires at the registrar on :date, before its next due date :due', $v),
             'transfer_completed' => __trans('Domain transfer completed: :domain', $v),
+            // ClientFence: the accounting sync (Invoice/Accounting/Sync.php).
+            'accounting_stopped' => __trans(':program: :number could not be sent after 10 tries; see the accounting log', $v),
+            'accounting_paused' => __trans(':program cannot be reached or refused the connection; the accounting sync waits and tries again', $v),
             // Clients.
             'invoice_new' => __trans('New invoice :number: :amount', $v),
             'invoice_due' => __trans('Invoice :number is due on :date', $v),

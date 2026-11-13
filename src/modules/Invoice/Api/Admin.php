@@ -1446,4 +1446,78 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         return true;
     }
+
+    // ClientFence core patch: the accounting sync settings, connection, log and runs (Invoice/Accounting/Sync.php).
+
+    /** ClientFence: the accounting sync settings (no secrets), connection, redirect URL, mapping lists, last 50 rows and counts. */
+    public function accounting_get($data): array
+    {
+        return $this->accounting()->get();
+    }
+
+    /** ClientFence: saves the accounting sync settings; `client_secret` only when one is typed. */
+    public function accounting_save($data): bool
+    {
+        $this->accounting()->save(is_array($data) ? $data : []);
+
+        return true;
+    }
+
+    /** ClientFence: the program's sign-in address to send the staff member to. */
+    public function accounting_connect($data): string
+    {
+        return $this->accounting()->connectUrl();
+    }
+
+    /** ClientFence: forgets the program's tokens; the sync rows stay. */
+    public function accounting_disconnect($data): bool
+    {
+        $this->accounting()->disconnect();
+
+        return true;
+    }
+
+    /** ClientFence: the program's accounts and tax rates, for the mapping lists. */
+    public function accounting_lists($data): array
+    {
+        return $this->accounting()->lists();
+    }
+
+    /** ClientFence: "Send now": one run, {sent, failed, waiting}. */
+    public function accounting_run($data): array
+    {
+        return $this->accounting()->run();
+    }
+
+    /** ClientFence: "Send again" for one sync row (`id`). */
+    #[RequiredParams(['id' => 'Sync record ID was not passed'])]
+    public function accounting_resend($data): bool
+    {
+        $this->accounting()->resend((int) $data['id']);
+
+        return true;
+    }
+
+    /** ClientFence: "Send all again": every failed or stopped sync row starts over; returns how many. */
+    public function accounting_resend_all($data): int
+    {
+        return $this->accounting()->resendAll();
+    }
+
+    /** ClientFence: "Send older invoices": also invoices issued from `from` (YYYY-MM-DD, before the start date). */
+    #[RequiredParams(['from' => 'Date was not passed'])]
+    public function accounting_backfill($data): bool
+    {
+        $this->accounting()->backfill((string) $data['from']);
+
+        return true;
+    }
+
+    private function accounting(): \ClientFence\Mod\Invoice\Accounting\Sync
+    {
+        $di = $this->getDi();
+        $di['mod_service']('extension')->hasManagePermission('mod_invoice');
+
+        return new \ClientFence\Mod\Invoice\Accounting\Sync($di);
+    }
 }

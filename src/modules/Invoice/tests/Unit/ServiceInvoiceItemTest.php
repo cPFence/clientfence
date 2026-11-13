@@ -433,13 +433,18 @@ test('removes an item', function (): void {
     $service = new ServiceInvoiceItem();
     $invoiceItemModel = new Model_InvoiceItem();
     $invoiceItemModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceItemModel->invoice_id = 5;
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('trash')
         ->atLeast()->once();
+    // The invoice changed, so the accounting sync sends it again.
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->expects('executeStatement')->with('UPDATE invoice SET updated_at = ? WHERE id = ?', Mockery::on(fn (array $p): bool => $p[1] === 5));
 
     $di = container();
     $di['db'] = $dbMock;
+    $di['dbal'] = $dbal;
     $di['logger'] = new Tests\Helpers\TestLogger();
     $service->setDi($di);
 

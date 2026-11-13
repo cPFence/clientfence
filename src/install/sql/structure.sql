@@ -1897,6 +1897,9 @@ CREATE TABLE `support_ticket_secret_event` (`id` bigint(20) NOT NULL AUTO_INCREM
 CREATE TABLE `client_support_pin` (`client_id` bigint(20) NOT NULL, `pin` char(8) NOT NULL, PRIMARY KEY (`client_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE `tld_registrar_cost` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `tld_registrar_id` bigint(20) NOT NULL, `tld` varchar(64) NOT NULL, `currency` char(3) NOT NULL, `cost_register` decimal(18,4) DEFAULT NULL, `cost_renew` decimal(18,4) DEFAULT NULL, `cost_transfer` decimal(18,4) DEFAULT NULL, `applied_register` decimal(18,4) DEFAULT NULL, `applied_renew` decimal(18,4) DEFAULT NULL, `applied_transfer` decimal(18,4) DEFAULT NULL, `applied_rate` decimal(18,8) DEFAULT NULL, `fetched_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `tld_registrar_cost_tld` (`tld_registrar_id`, `tld`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ClientFence core patch: the accounting sync state (Invoice/Accounting/Sync.php).
+CREATE TABLE `invoice_accounting_sync` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `program` varchar(20) NOT NULL, `entity` varchar(10) NOT NULL, `local_id` bigint(20) NOT NULL, `remote_id` text, `status` varchar(10) NOT NULL, `attempts` int(11) NOT NULL DEFAULT '0', `revision` int(11) NOT NULL DEFAULT '0', `last_error` text, `fingerprint` char(40) DEFAULT NULL, `synced_at` datetime DEFAULT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `invoice_accounting_sync_local` (`program`, `entity`, `local_id`), KEY `invoice_accounting_sync_status` (`program`, `status`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

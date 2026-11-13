@@ -31,6 +31,7 @@ final class Migrations
         5 => 'm5TicketSecrets',
         6 => 'm6SupportPin',
         7 => 'm7TldSync',
+        8 => 'm8AccountingSync',
     ];
 
     public static function latest(): int
@@ -159,5 +160,11 @@ final class Migrations
         if (!in_array('sync_error', $columns('service_domain'), true)) {
             $db->executeStatement('ALTER TABLE `service_domain` ADD COLUMN `sync_error` text, ADD COLUMN `transfer_since` datetime DEFAULT NULL');
         }
+    }
+
+    /** 8: invoice_accounting_sync (Invoice/Accounting/Sync.php). */
+    private static function m8AccountingSync(\Pimple\Container $di): void
+    {
+        Service::ensureTables($di, true);
     }
 }

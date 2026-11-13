@@ -886,6 +886,11 @@ class Service
             return false;
         }
 
+        // ClientFence core patch: the accounting sync settings belong to the invoice settings permission.
+        if (str_starts_with($param, 'accounting_') && !$staff_service->hasPermission(null, 'invoice', 'manage_settings')) {
+            return false;
+        }
+
         return true;
     }
 }

@@ -684,6 +684,12 @@ class Service implements InjectionAwareInterface
         } catch (\Throwable $e) {
             $di['logger']->error('Invoice: checking EU VAT numbers again failed: %s', $e->getMessage());
         }
+        // ClientFence core patch: the books go to the connected accounting program (Invoice/Accounting/Sync.php).
+        try {
+            Accounting\Sync::cron($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('Invoice: the accounting sync failed: %s', $e->getMessage());
+        }
     }
 
     public static function onEventAfterInvoiceIsDue(\ClientFence\Event $event): void

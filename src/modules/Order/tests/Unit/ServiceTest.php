@@ -4495,7 +4495,7 @@ test('form answer updates retain service config and clear omitted choices', func
 
 test('deleting an order drops its pending invoice lines and the tax-inclusive cents of that invoice', function (): void {
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, tax_adjust REAL DEFAULT 0)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, tax_adjust REAL DEFAULT 0, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, rel_id TEXT, status TEXT)');
     $db->insert('invoice', ['id' => 1, 'tax_adjust' => 0.01]);
     $db->insert('invoice', ['id' => 2, 'tax_adjust' => -0.01]);
@@ -4513,5 +4513,7 @@ test('deleting an order drops its pending invoice lines and the tax-inclusive ce
     $service->rmInvoiceItemByOrder($order);
 
     expect($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 1'))->toBe(['8'])
-        ->and(array_map('floatval', $db->fetchFirstColumn('SELECT tax_adjust FROM invoice ORDER BY id')))->toBe([0.0, -0.01]);
+        ->and(array_map('floatval', $db->fetchFirstColumn('SELECT tax_adjust FROM invoice ORDER BY id')))->toBe([0.0, -0.01])
+        // The changed invoice goes to the accounting program again.
+        ->and($db->fetchFirstColumn('SELECT updated_at IS NOT NULL FROM invoice ORDER BY id'))->toBe([1, 0]);
 });
