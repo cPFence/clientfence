@@ -234,6 +234,10 @@ msgstr ""
 msgid "-- Use system default --"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ".uk domains have no transfer code: to move :domain, give us the IPS tag of the new registrar."
+msgstr ""
+
 #: src/themes/palisade/html/partials/store_macros.html.twig
 msgid "/ 2 years"
 msgstr ""
@@ -562,8 +566,16 @@ msgstr ""
 msgid ":days days, :hours hours, :minutes minutes"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":domain can only be renewed one year at a time."
+msgstr ""
+
 #: src/modules/Servicedomain/Service.php
 msgid ":domain cannot be transferred!"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":domain has a transfer lock: unlock it at the current registrar first."
 msgstr ""
 
 #: src/modules/Cart/Service.php
@@ -574,7 +586,7 @@ msgstr ""
 msgid ":domain is already registered!"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namesilo.php
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Ovh.php
 msgid ":domain is in its restore period: restore it at the registrar if it should be kept."
 msgstr ""
 
@@ -584,6 +596,14 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid ":domain is registered with us."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":domain was not found in the ConnectReseller account."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the OVHcloud account."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Openprovider.php
@@ -698,7 +718,11 @@ msgstr ""
 msgid ":reason"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar does not support this action."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":registrar has no test system: turn test mode off for this registrar."
 msgstr ""
 
@@ -706,7 +730,7 @@ msgstr ""
 msgid ":registrar needs the PHP soap extension."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid ":registrar refused the request: :error"
 msgstr ""
 
@@ -780,6 +804,14 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":tld domains have no registrar lock."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid ":tld domains need registry details ClientFence does not ask for: register them at :registrar directly."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":tld registrations are checked by hand at Nominet: register them in Nominet Online Services."
 msgstr ""
 
 #: src/library/ClientFence/Api/Dispatcher.php
@@ -1230,7 +1262,11 @@ msgstr ""
 msgid "API call is missing arguments"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Synergywholesale.php …
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "API endpoint"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Namesilo.php …
 msgid "API key"
 msgstr ""
 
@@ -1272,6 +1308,14 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_iplookup.html.twig
 msgid "ASN stands for autonomous system number. IP address information may not always be accurate."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Aboriginal people indigenous to Canada"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "Aboriginal peoples indigenous to Canada"
 msgstr ""
 
 #: src/modules/Page/templates/client/mod_page_about-us.html.twig src/modules/Support/templates/admin/mod_support_network_issue.html.twig src/modules/Support/templates/admin/mod_support_ratings.html.twig …
@@ -1492,6 +1536,22 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_page_login.html.twig src/themes/palisade/html/mod_page_signup.html.twig
 msgid "Accounts are created by our team. Need help? Email"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Accreditation body"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Accreditation country"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Accreditation state or province"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Accreditation year"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
@@ -3118,6 +3178,14 @@ msgstr ""
 msgid "Applicable Products (Select None to Apply to All)"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "Application key"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "Application secret"
+msgstr ""
+
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
 msgid "Applied"
 msgstr ""
@@ -3318,6 +3386,10 @@ msgstr ""
 msgid "Assigned To"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Association"
+msgstr ""
+
 #: src/modules/Servicehosting/Api/Client.php src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "At least 10 characters, with lowercase and uppercase letters, numbers and special characters."
 msgstr ""
@@ -3330,7 +3402,7 @@ msgstr ""
 msgid "At least one of the required fields are empty."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
 msgid "At least two name servers are required."
 msgstr ""
 
@@ -4082,6 +4154,42 @@ msgstr ""
 msgid "Can't modify client"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian citizen"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian educational institution"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian hospital"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian library, archive or museum"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian political party"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "Canadian presence of the registrant (CIRA legal type)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian presence requirement"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian trade union"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Canadian unincorporated association"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Cancel"
 msgstr ""
@@ -4406,6 +4514,22 @@ msgstr ""
 msgid "Category title not passed"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "CentralNic Reseller does not offer a :years-year transfer for :tld."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "CentralNic Reseller has emailed the transfer code to the domain's registrant."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "CentralNic Reseller returned an unreadable response for :command"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "CentralNic Reseller returned no paid-until date for :domain."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig …
 msgid "Change"
 msgstr ""
@@ -4476,6 +4600,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Change plan or billing cycle"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the OpenSRS control panel."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php
@@ -5686,6 +5814,10 @@ msgstr ""
 msgid "Code required"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Codice Fiscale, VAT number or ID document number"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/partial_clientfence_sidebar.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Collapse menu"
 msgstr ""
@@ -5726,7 +5858,7 @@ msgstr ""
 msgid "Committed Applications"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Synergywholesale.php src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig …
+#: src/library/Registrar/Adapter/Realtimeregister.php src/library/Registrar/Adapter/Synergywholesale.php src/modules/Client/templates/admin/mod_client_contact_fields.html.twig …
 msgid "Company"
 msgstr ""
 
@@ -5784,6 +5916,18 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Company and Contact Details"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Company outside the UK"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Company registration number"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Company, charity or school number (UK companies, charities and schools)"
 msgstr ""
 
 #: src/themes/admin_default/html/macro_functions.html.twig
@@ -5922,6 +6066,22 @@ msgstr ""
 msgid "Confirm your email address to use your whole account. We sent you a link."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid "ConnectReseller did not return a contact ID."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid "ConnectReseller did not return a customer ID."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid "ConnectReseller did not return the transfer code of :domain."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid "ConnectReseller returned an unreadable response for :command"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Connected to Blesta."
 msgstr ""
@@ -5944,6 +6104,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Connection Settings"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "Consumer key"
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
@@ -6214,8 +6378,20 @@ msgstr ""
 msgid "Core patches"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Corporation (Canada or a Canadian province or territory)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "Corporation registered in Canada"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "Correct the linked invoice and stored payment amount for this transaction."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Cost price (GBP)"
 msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
@@ -6282,7 +6458,7 @@ msgstr ""
 msgid "Could not make the folder :dir."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid "Could not reach :registrar: :error"
 msgstr ""
 
@@ -6868,6 +7044,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Custom_"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Customer handle"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
@@ -7978,12 +8158,20 @@ msgstr ""
 msgid "EPP / auth code"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "EPP password"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "EU VAT"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php
+#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Realtimeregister.php
 msgid "EU country of citizenship of the registrant"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "EU country of citizenship of the registrant (only for EU citizens living outside the EU)"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -8860,6 +9048,10 @@ msgstr ""
 
 #: src/modules/Client/Contacts.php
 msgid "Enter the contact's first name."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Enter the cost price in the Nominet registrar settings: Nominet has no price list to import."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/Reports.php src/modules/Invoice/Statement.php
@@ -9826,6 +10018,10 @@ msgstr ""
 msgid "Force the deletion of the item"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Foreign organisation (EU, not Italy)"
+msgstr ""
+
 #: src/library/Registrar/AdapterAbstract.php
 msgid "Foreign organisation that regularly does business in the US"
 msgstr ""
@@ -10016,6 +10212,14 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Namesilo.php
 msgid "From NameSilo: Account > API Manager."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid "From the ConnectReseller reseller panel: Tools > Profile Settings > API."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "From the OpenSRS Reseller Control Panel: Account Settings > API settings."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -10366,6 +10570,10 @@ msgstr ""
 msgid "Government"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Government or government entity in Canada"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Government school"
 msgstr ""
@@ -10678,6 +10886,10 @@ msgstr ""
 msgid "Higher education institution"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "His Majesty the King"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "History"
 msgstr ""
@@ -10970,6 +11182,10 @@ msgstr ""
 msgid "I would like to upgrade"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "ICM membership ID (Sponsored Community members)"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig src/modules/Invoice/Reports.php …
 msgid "ID"
 msgstr ""
@@ -11100,6 +11316,10 @@ msgstr ""
 
 #: src/library/Payment/AdapterAbstract.php
 msgid "IPN redirect URL for the payment gateway was not set"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "IPS tag"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig src/modules/Product/templates/admin/mod_product_addons.html.twig src/modules/Product/templates/admin/mod_product_category.html.twig
@@ -11406,8 +11626,16 @@ msgstr ""
 msgid "IndexNow answered :code."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Indian band recognised by the Indian Act of Canada"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Individual"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Individual outside the UK"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -12058,6 +12286,22 @@ msgstr ""
 msgid "It will be cancelled shortly, and any unpaid invoice for it will be cancelled."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Italian company or one-person company"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Italian freelancer or professional"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Italian non-profit organisation"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Italian public organisation"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "Its MX records point to another mail service, so the mailboxes here do not receive its mail."
 msgstr ""
@@ -12430,6 +12674,10 @@ msgstr ""
 msgid "Latest release"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Lawyer accreditation ID"
+msgstr ""
+
 #: src/modules/Page/templates/client/mod_page_privacy-policy.html.twig
 msgid "Learn how %company% collects, uses, and protects personal information."
 msgstr ""
@@ -12528,6 +12776,14 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
 msgid "Leaves services with a special price alone."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Legal representative of a Canadian citizen or permanent resident"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Legal status (organisations only)"
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -13546,6 +13802,10 @@ msgstr ""
 msgid "Management"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in have no transfer code: the current registrar moves the domain to your tag."
+msgstr ""
+
 #: src/modules/Theme/manifest.json
 msgid "Manages active admin and client themes, theme presets, and appearance-related configuration."
 msgstr ""
@@ -13556,6 +13816,14 @@ msgstr ""
 
 #: src/modules/Currency/manifest.json
 msgid "Manages currencies, exchange rates, formatting, and default billing currency settings."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "Manages domains on CentralNic Reseller (RRPproxy, and the former HEXONET accounts) through its API. If your account limits API access by IP address, allow this server's IP address, and keep enough account funds for registrations and renewals. New registrations are set to expire unless renewed (renewal mode AUTOEXPIRE): ClientFence renews a domain when its renewal invoice is paid. Set your account's default renewal mode to AUTOEXPIRE as well, for transferred domains. With test mode on, ClientFence uses the OT&E test system: enter your OT&E password."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid "Manages domains on ConnectReseller through its API. Find the API key in the ConnectReseller reseller panel (Tools > Profile Settings > API) and keep enough account funds for registrations and renewals. Each client gets a ConnectReseller customer account under their email address. ConnectReseller has no test system: keep test mode off."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php
@@ -13586,8 +13854,20 @@ msgstr ""
 msgid "Manages domains on NetEarthOne via API. NetEarthOne requires your server IP in order to work. Login to the NetEarthOne control panel (the url will be in the email you received when you signed up with them) and then go to Settings > API and enter the IP address of the server where ClientFence is installed to authorize it for API access."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "Manages domains on OVHcloud through its API. Create an application and a consumer key (rights on /domain, /order, /me and /service) at the API endpoint of your OVHcloud account, and keep enough funds in your OVHcloud prepaid account: orders and renewals are paid from it. Set the renewal mode of your OVHcloud account to manual: ClientFence turns OVHcloud auto-renewal off for each domain once it exists and renews a domain when its renewal invoice is paid. OVHcloud has no test system: keep test mode off."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Manages domains on OpenSRS (Tucows) through its API. Copy the API key from the OpenSRS Reseller Control Panel (Account Settings > API settings), add this server's IP address under IP Access Rules there, and keep enough account funds for registrations and renewals. OpenSRS auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and API key of your OpenSRS test account."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Openprovider.php
 msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Manages domains on Realtime Register through its API. Create the API key in the Realtime Register portal (your profile page, or Account details > Users) and keep enough account credit for registrations and renewals. Realtime Register auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the customer handle and API key of your OT&E account."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Resellbiz.php
@@ -14160,6 +14440,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transactions.html.twig
 msgid "N/A"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "NIF, NIE or organisation number"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
@@ -15210,6 +15494,10 @@ msgstr ""
 msgid "No tickets selected"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "No transfer code is assigned to :domain: contact CentralNic Reseller support."
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "No transfers"
 msgstr ""
@@ -15244,6 +15532,22 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Nobody can order yet. You can still create orders in the admin area."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Nominet has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Nominet returned an unreadable response for :command"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Non-UK corporation"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Non-UK individual"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig src/themes/palisade/html/mod_client_profile.html.twig …
@@ -15522,6 +15826,30 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "OVHcloud Canada"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "OVHcloud Europe"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "OVHcloud cannot order :domain: :error"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "OVHcloud did not return a contact ID."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "OVHcloud order :order is :status: check it in your OVHcloud account."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "OVHcloud returned an unreadable response for :command"
+msgstr ""
+
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php …
 msgid "Off"
 msgstr ""
@@ -15564,6 +15892,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Offer subscriptions for renewing services"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Official mark registered in Canada"
 msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php …
@@ -16022,6 +16354,14 @@ msgstr ""
 msgid "Open your authenticator app and add an account."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "OpenSRS has emailed the transfer code to the domain's administrative contact."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "OpenSRS returned an unreadable response for :command"
+msgstr ""
+
 #: src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "Opened"
 msgstr ""
@@ -16402,11 +16742,15 @@ msgstr ""
 msgid "Orders that failed to renew"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Organisation"
+msgstr ""
+
 #: src/library/Server/Manager/Enhance.php
 msgid "Organization ID"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Synergywholesale.php src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Page/templates/client/mod_page_signup.html.twig …
+#: src/library/Registrar/Adapter/Realtimeregister.php src/library/Registrar/Adapter/Synergywholesale.php src/modules/Client/templates/client/mod_client_google_profile.html.twig …
 msgid "Other"
 msgstr ""
 
@@ -16418,8 +16762,28 @@ msgstr ""
 msgid "Other Actions"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Other Italian organisation"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Other UK organisation"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Other UK organisation (such as a club or association)"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Other non-UK organisation"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Other organisation outside the UK"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
@@ -16536,6 +16900,14 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Own domain"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "Owner of a trademark registered in Canada"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "Owner of an official mark registered in Canada"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
@@ -16774,11 +17146,15 @@ msgstr ""
 msgid "Partnership"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Partnership registered in Canada"
+msgstr ""
+
 #: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig
 msgid "Passed"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Openprovider.php src/modules/Client/templates/admin/mod_client_manage.html.twig …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Openprovider.php …
 msgid "Password"
 msgstr ""
 
@@ -17514,6 +17890,10 @@ msgstr ""
 msgid "Permanent"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Permanent resident of Canada"
+msgstr ""
+
 #: src/library/Registrar/AdapterAbstract.php
 msgid "Permanent resident of the US"
 msgstr ""
@@ -17524,6 +17904,14 @@ msgstr ""
 
 #: src/modules/Client/Users.php
 msgid "Permissions must be a list."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Person (Italian or foreign)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Personal or organisation number"
 msgstr ""
 
 #: src/library/Registrar/AdapterAbstract.php
@@ -17814,6 +18202,10 @@ msgstr ""
 msgid "Port"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Portuguese tax number (NIF)"
+msgstr ""
+
 #: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "Position"
 msgstr ""
@@ -17878,11 +18270,11 @@ msgstr ""
 msgid "Prefix for created users (especially for database)"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
 msgid "Premium domains cannot be registered."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid "Premium domains cannot be transferred."
 msgstr ""
 
@@ -18786,6 +19178,10 @@ msgstr ""
 msgid "Reading the global webmail domain from Enhance…"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Realtime Register returned an unreadable response for :command"
+msgstr ""
+
 #: src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig …
 msgid "Reason"
 msgstr ""
@@ -19124,6 +19520,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Registrant name (business or person)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Registrant type"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig …
@@ -19662,6 +20062,10 @@ msgstr ""
 msgid "Reseller control panel"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Reseller username"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Resellerclub.php
 msgid "ResellerClub API Key"
 msgstr ""
@@ -20084,6 +20488,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "SFTP/FTP backups are off."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "SIREN or SIRET number (organisations in France)"
 msgstr ""
 
 #: src/modules/Servicedomain/Api/Guest.php
@@ -22890,7 +23298,7 @@ msgstr ""
 msgid "Thank you. Sign in with your email and password to continue. If this email already had an account, use that account’s password, or reset it."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Email.php src/library/Registrar/Adapter/Enom.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
 msgid "The \":domain_registrar\" domain registrar is not fully configured. Please configure the :missing"
 msgstr ""
 
@@ -23042,6 +23450,10 @@ msgstr ""
 msgid "The Dynadot API did not answer."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The EPP password of the tag, from Nominet Online Services."
+msgstr ""
+
 #: src/library/Server/Manager/Enhance.php
 msgid "The Enhance (ClientFence) organization ID must be the organization's UUID, not the API token."
 msgstr ""
@@ -23072,6 +23484,10 @@ msgstr ""
 
 #: src/library/Server/Manager/Enhance.php
 msgid "The IP address of an Enhance website is set on the panel."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid "The OVHcloud region of your account."
 msgstr ""
 
 #: src/library/ClientFence/Crypt.php
@@ -24091,7 +24507,7 @@ msgstr ""
 msgid "The registrant contact is missing the :field field"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Enom.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Namesilo.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid "The registrant contact is missing."
 msgstr ""
 
@@ -24233,6 +24649,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Enom.php
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The transfer code of :domain is not valid."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/email/mod_servicedomain_transfer_completed.html.twig
@@ -25583,8 +26003,24 @@ msgstr ""
 msgid "Trademark"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Trademark number"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Trademark owner"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Trademark registered in Canada (non-Canadian owner)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Trading name (organisations)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Trading name, if different from the registrant name"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
@@ -25771,6 +26207,10 @@ msgstr ""
 msgid "Trigger hooks"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Trust established in Canada"
+msgstr ""
+
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "Trust these proxies"
 msgstr ""
@@ -25885,6 +26325,62 @@ msgstr ""
 
 #: src/modules/Product/Api/Admin.php
 msgid "Type was not passed"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "UK corporation by Royal Charter"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK corporation by royal charter"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK government body"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK individual"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK industrial or provident registered company"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "UK industrial/provident registered company"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK limited company"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK limited liability partnership"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK partnership"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK public limited company"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK registered charity"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK school"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK sole trader"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
+msgid "UK statutory body"
 msgstr ""
 
 #: src/library/Registrar/AdapterAbstract.php
@@ -26859,7 +27355,7 @@ msgstr ""
 msgid "User not found."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Openprovider.php src/library/Server/Manager/Directadmin.php …
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Openprovider.php …
 msgid "Username"
 msgstr ""
 
@@ -26905,6 +27401,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
 msgid "VAT number"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "VAT number (organisations)"
 msgstr ""
 
 #: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
@@ -27569,6 +28069,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "What Nominet charges you for one year of a domain. Nominet has no price list to import, so the price import uses this for every extension and action."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -28351,6 +28855,10 @@ msgstr ""
 msgid "Your API key is ready"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "Your CentralNic Reseller login."
+msgstr ""
+
 #: src/modules/System/Service.php
 msgid "Your ClientFence database is behind on database patches. Apply the pending patches to avoid issues."
 msgstr ""
@@ -28383,12 +28891,24 @@ msgstr ""
 msgid "Your IP address is blacklisted in the Stop Forum Spam database"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Your Nominet registrar tag, also the EPP login name."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Your OpenSRS reseller username."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Openprovider.php
 msgid "Your Openprovider API username."
 msgstr ""
 
 #: src/modules/Invoice/Controller/Client.php
 msgid "Your PayPal account was not saved. Please try again."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Realtimeregister.php
+msgid "Your Realtime Register customer handle."
 msgstr ""
 
 #: src/themes/palisade/html/partials/guest_dashboard.html.twig

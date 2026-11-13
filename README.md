@@ -33,8 +33,9 @@ payments, orders, domains, hosting accounts and support tickets in one client ar
   invoices on the due date.
 - **Hosting and domains:** an Enhance server manager with client pages for each hosting
   account (including Enhance backups) and a daily status check; server managers for cPanel/WHM,
-  Plesk, DirectAdmin, CWP and HestiaCP; Change Product; 12 domain registrars with TLD price
-  sync.
+  Plesk, DirectAdmin, CWP and HestiaCP; Change Product; 18 domain registrars (including Enom,
+  NameSilo, Namecheap, OpenSRS, CentralNic Reseller, OVHcloud, Openprovider and Nominet) with TLD
+  price sync.
 - **Software licences:** licence keys with client IP limits, per-unit billing and checks
   compatible with the WHMCS Licensing Addon.
 - **Support:** tickets with file attachments, email-to-ticket, ticket merge, a network status
