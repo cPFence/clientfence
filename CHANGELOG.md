@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.49 (2026-11-13)
+
+### Added
+
+- Accounting sync to Xero, FreeAgent and QuickBooks Online: approved invoices with their clients, payments and refunds go to your books on their own, one way. You choose the bank account for each payment method and the matching tax rates, and a sync log shows what was sent. FreeAgent and QuickBooks can connect to their test company first.
+- Six new domain registrars: OpenSRS, Realtime Register, ConnectReseller, CentralNic Reseller, OVHcloud and Nominet (.uk), each with a TLD price import (not yet tested with live registrar accounts).
+
 ## 1.0.48 (2026-11-12)
 
 ### Added
