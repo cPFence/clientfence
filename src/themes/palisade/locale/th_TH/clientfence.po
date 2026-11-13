@@ -24789,3 +24789,37 @@ msgstr "ติดต่อ :program ไม่ได้หรือถูกป�
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "ส่งทั้งหมดอีกครั้ง"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program อนุญาตเลขที่เอกสารไม่เกิน :max ตัวอักษร: :number ยาวกว่านั้น"
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program รับอัตราภาษีขายได้หนึ่งอัตราต่อใบแจ้งหนี้: ใบนี้มีรายการที่มีอัตราต่างกัน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "เชื่อมต่อกับบริษัททดสอบของโปรแกรมแทนบัญชีจริงของคุณ การเปลี่ยนจะสิ้นสุดการเชื่อมต่อปัจจุบัน"
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "สร้างสินค้าหรือบริการใน :program ที่มีบัญชีรายได้เป็นบัญชีเครดิตในบัญชี: เงินที่เติมและเครดิตในบัญชีจะถูกบันทึกด้วยรายการนี้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "สภาพแวดล้อมทดสอบ (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "บัญชีธนาคาร :program เป็นสกุล :bank_currency และการชำระเงินเป็นสกุล :currency: เลือกบัญชีสกุล :currency สำหรับรายการนี้"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "ยอดรวมของ :number ใน :program คือ :total แทนที่จะเป็น :expected: ตรวจสอบอัตราภาษีในการตั้งค่าบัญชี"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program บันทึกเครดิตในบัญชีในใบแจ้งหนี้ที่มีรายการอื่นไม่ได้: :number"

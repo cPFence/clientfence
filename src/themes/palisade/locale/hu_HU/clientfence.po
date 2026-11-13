@@ -26964,3 +26964,37 @@ msgstr "A :program nem érhető el, vagy elutasította a kapcsolatot; a könyvel
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Összes küldése újra"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr "A :program legfeljebb :max karakter hosszú bizonylatszámot enged: a(z) :number hosszabb."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr "A :program számlánként egy értékesítési adókulcsot fogad el: ennek a számlának eltérő kulcsú sorai vannak."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "A program teszt cégéhez csatlakozik a saját könyvei helyett. A módosítás megszünteti a jelenlegi kapcsolatot."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Hozzon létre a :program programban egy terméket vagy szolgáltatást, amelynek bevételi fiókja a fiókjóváírás fiókja: a feltöltött összegek és a fiókjóváírás ezzel kerülnek könyvelésre."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Tesztkörnyezet (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "A :program bankszámla pénzneme :bank_currency, a fizetésé :currency: válasszon hozzá :currency pénznemű számlát."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "A(z) :number számla :program szerinti végösszege :total a várt :expected helyett: ellenőrizze az adókulcsokat a könyvelési beállításokban."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr "A :program nem tud fiókjóváírást könyvelni más tételeket is tartalmazó számlán: :number."

@@ -26466,3 +26466,37 @@ msgstr ":program is onbereikbaar of weigerde de verbinding; de boekhoudsynchroni
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Alles opnieuw verzenden"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program staat documentnummers toe van maximaal :max tekens: :number is langer."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program accepteert één btw-tarief per factuur: deze heeft regels met verschillende tarieven."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Maakt verbinding met het testbedrijf van het programma in plaats van uw boeken. Wijzigen beëindigt de huidige verbinding."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Maak in :program een product of dienst waarvan de omzetrekening de rekening voor accounttegoed is: toegevoegd saldo en accounttegoed worden ermee geboekt."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Testomgeving (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "De :program-bankrekening staat in :bank_currency en de betaling in :currency: kies hiervoor een rekening in :currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Het :program-totaal van :number is :total in plaats van :expected: controleer de btw-tarieven in de boekhoudinstellingen."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program kan accounttegoed niet boeken op een factuur met andere regels: :number."

@@ -27009,3 +27009,37 @@ msgstr ":program недоступний або відхилив підключе
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Надіслати все знову"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program допускає номери документів довжиною до :max символів: :number довший."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program приймає одну ставку податку з продажів на рахунок: у цьому рахунку рядки з різними ставками."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Підключається до тестової компанії програми замість ваших книг. Зміна перериває поточне підключення."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Створіть у :program товар або послугу, рахунок доходів якої — рахунок кредиту на рахунку: додані кошти та кредит на рахунку проводяться через нього."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Тестове середовище (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "Банківський рахунок у :program у валюті :bank_currency, а платіж у :currency: виберіть для нього рахунок у :currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Підсумок у :program для :number дорівнює :total замість :expected: перевірте податкові ставки в налаштуваннях бухгалтерії."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program не може провести кредит на рахунку за рахунком з іншими рядками: :number."

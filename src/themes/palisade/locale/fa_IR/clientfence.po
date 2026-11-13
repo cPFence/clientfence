@@ -26481,3 +26481,37 @@ msgstr "دسترسی به :program ممکن نیست یا اتصال را رد �
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "ارسال دوباره همه"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program شماره سند را تا :max نویسه مجاز می‌داند: :number طولانی‌تر است."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program برای هر فاکتور یک نرخ مالیات فروش می‌پذیرد: این فاکتور ردیف‌هایی با نرخ‌های متفاوت دارد."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "به جای دفاتر شما، به شرکت آزمایشی برنامه متصل می‌شود. تغییر آن اتصال فعلی را پایان می‌دهد."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "در :program یک محصول یا خدمت بسازید که حساب درآمد آن حساب اعتبار حساب باشد: وجوه افزوده‌شده و اعتبار حساب با آن ثبت می‌شوند."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "محیط آزمایشی (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "حساب بانکی :program به :bank_currency است و پرداخت به :currency: برای آن حسابی به :currency انتخاب کنید."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "مجموع :program برای :number برابر :total است به جای :expected: نرخ‌های مالیات را در تنظیمات حسابداری بررسی کنید."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program نمی‌تواند اعتبار حساب را در فاکتوری با ردیف‌های دیگر ثبت کند: :number."

@@ -26761,3 +26761,37 @@ msgstr ":program není dostupný nebo odmítl připojení; účetní synchroniza
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Odeslat vše znovu"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program povoluje čísla dokladů nejvýše :max znaků: :number je delší."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program přijímá jednu sazbu daně z prodeje na fakturu: tato má řádky s různými sazbami."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Připojí se k testovací firmě programu místo vašich knih. Změna ukončí stávající připojení."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Vytvořte v :program produkt nebo službu, jejíž účet výnosů je účet kreditu na účtu: přidané prostředky a kredit na účtu se s ním zaúčtují."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Testovací prostředí (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "Bankovní účet v :program je v :bank_currency a platba v :currency: vyberte pro ni účet v :currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Celkem :program u :number je :total místo :expected: zkontrolujte sazby daně v nastavení účetnictví."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program nemůže zaúčtovat kredit na účtu na faktuře s dalšími řádky: :number."

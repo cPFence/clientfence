@@ -20,11 +20,17 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface Program
 {
-    /** $tokens as connect() returned them (empty before connecting); $saveTokens receives each refreshed set. */
-    public function __construct(HttpClientInterface $http, string $clientId, string $clientSecret, array $tokens, \Closure $saveTokens);
+    /**
+     * $tokens as connect() returned them (empty before connecting); $saveTokens receives each refreshed set; $sandbox
+     * uses the program's test environment (hasSandbox()).
+     */
+    public function __construct(HttpClientInterface $http, string $clientId, string $clientSecret, array $tokens, \Closure $saveTokens, bool $sandbox = false);
 
     /** The program's name, as staff read it. */
     public static function label(): string;
+
+    /** Whether the program has a separate test environment (a sandbox company) to connect to. */
+    public static function hasSandbox(): bool;
 
     /** The address staff are sent to, to let ClientFence in (OAuth2 authorization code). */
     public function authorizeUrl(string $state, string $redirect): string;
@@ -43,7 +49,7 @@ interface Program
 
     /**
      * {id, remote_id, name, first_name, last_name, company, email, vat, phone, phone_cc, address_1, address_2, city,
-     * state, zip, country}.
+     * state, zip, country, taken}. taken(string $remoteId): bool says another client's record is that contact.
      */
     public function contact(array $client): string;
 
@@ -53,12 +59,15 @@ interface Program
      */
     public function invoice(array $doc): string;
 
-    /** One payment of an invoice: {invoice (remote id), currency, account, amount, date, reference}. */
+    /**
+     * One payment of an invoice: {invoice (remote id), currency, account, amount, date, reference, rate}.
+     * rate(string $to): ?float gives units of $to for one of the payment's currency at ClientFence's rates (null: unknown).
+     */
     public function payment(array $payment): string;
 
     /**
      * A credit note, with the invoice's fields (amounts positive) and how the money went back, `refunds`: [{account,
-     * amount, date, reference}] (to the bank account of the payment method, or the account credit one).
+     * amount, date, reference}] (to the bank account of the payment method, or the account credit one), and `rate` as for payment().
      */
     public function creditNote(array $credit): string;
 

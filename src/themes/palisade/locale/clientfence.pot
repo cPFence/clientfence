@@ -714,20 +714,32 @@ msgstr ""
 msgid ":product setup"
 msgstr ""
 
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid ":program cannot be reached or refused the connection; the accounting sync waits and tries again"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
 msgstr ""
 
 #: src/modules/Invoice/Accounting/Sync.php
 msgid ":program did not connect: :error"
 msgstr ""
 
-#: src/modules/Invoice/Accounting/Xero.php
+#: src/modules/Invoice/Accounting/FreeAgent.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Xero.php
 msgid ":program refused the request: :error"
 msgstr ""
 
-#: src/modules/Invoice/Accounting/Xero.php
+#: src/modules/Invoice/Accounting/FreeAgent.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Xero.php
 msgid ":program sent an answer ClientFence cannot read."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -6146,7 +6158,7 @@ msgstr ""
 msgid "Connect"
 msgstr ""
 
-#: src/modules/Invoice/Accounting/Xero.php
+#: src/modules/Invoice/Accounting/FreeAgent.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Xero.php
 msgid "Connect ClientFence to :program first."
 msgstr ""
 
@@ -6208,6 +6220,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Connection Settings"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Ovh.php
@@ -6562,7 +6578,7 @@ msgstr ""
 msgid "Could not make the folder :dir."
 msgstr ""
 
-#: src/modules/Invoice/Accounting/Xero.php
+#: src/modules/Invoice/Accounting/FreeAgent.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Xero.php
 msgid "Could not reach :program: :error"
 msgstr ""
 
@@ -6708,6 +6724,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Create Quote"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
@@ -23442,6 +23462,10 @@ msgstr ""
 msgid "Test emails go to this client, and the preview shows the message as this client sees it."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Test mode"
 msgstr ""
@@ -23654,6 +23678,14 @@ msgstr ""
 msgid "The :panel: server sent an answer that could not be read."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr ""
+
 #: src/modules/Invoice/Quotes.php
 msgid "The :what can be at most :max characters."
 msgstr ""
@@ -23794,7 +23826,7 @@ msgstr ""
 msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
 msgstr ""
 
-#: src/modules/Invoice/Accounting/Sync.php
+#: src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Sync.php
 msgid "The account and tax choices could not be read. Reload the page and try again."
 msgstr ""
 
@@ -24022,7 +24054,7 @@ msgstr ""
 msgid "The code is not correct. Check the time on your phone and try the newest code."
 msgstr ""
 
-#: src/modules/Invoice/Accounting/Xero.php
+#: src/modules/Invoice/Accounting/FreeAgent.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Xero.php
 msgid "The connection to :program has ended (:error): connect again."
 msgstr ""
 
@@ -25255,7 +25287,7 @@ msgstr ""
 msgid "This code cannot be used for this order."
 msgstr ""
 
-#: src/modules/Invoice/Accounting/Sync.php
+#: src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Sync.php
 msgid "This connection request has expired or was not started here. Click Connect again."
 msgstr ""
 

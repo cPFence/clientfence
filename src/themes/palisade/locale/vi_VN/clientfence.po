@@ -26973,3 +26973,37 @@ msgstr "Không thể truy cập :program hoặc kết nối bị từ chối; đ
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Gửi lại tất cả"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program cho phép số chứng từ tối đa :max ký tự: :number dài hơn."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program chỉ nhận một mức thuế bán hàng cho mỗi hóa đơn: hóa đơn này có các dòng với mức thuế khác nhau."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Kết nối với công ty thử nghiệm của phần mềm thay vì sổ sách của bạn. Thay đổi sẽ kết thúc kết nối hiện tại."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Tạo trong :program một sản phẩm hoặc dịch vụ có tài khoản doanh thu là tài khoản tín dụng tài khoản: tiền nạp thêm và tín dụng tài khoản được ghi sổ bằng nó."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Môi trường thử nghiệm (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "Tài khoản ngân hàng :program dùng :bank_currency còn khoản thanh toán dùng :currency: hãy chọn cho nó một tài khoản bằng :currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Tổng :program của :number là :total thay vì :expected: hãy kiểm tra các mức thuế trong cài đặt kế toán."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program không thể ghi sổ tín dụng tài khoản trên hóa đơn có các dòng khác: :number."

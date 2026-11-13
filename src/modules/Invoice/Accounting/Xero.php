@@ -34,13 +34,19 @@ final class Xero implements Program
     private const CONNECTIONS = 'https://api.xero.com/connections';
     private const API = 'https://api.xero.com/api.xro/2.0/';
 
-    public function __construct(private readonly HttpClientInterface $http, private readonly string $clientId, private readonly string $clientSecret, private array $tokens, private readonly \Closure $saveTokens)
+    // Xero's test organisation (the Demo Company) is connected like any other: no separate environment.
+    public function __construct(private readonly HttpClientInterface $http, private readonly string $clientId, private readonly string $clientSecret, private array $tokens, private readonly \Closure $saveTokens, bool $sandbox = false)
     {
     }
 
     public static function label(): string
     {
         return 'Xero';
+    }
+
+    public static function hasSandbox(): bool
+    {
+        return false;
     }
 
     public function authorizeUrl(string $state, string $redirect): string

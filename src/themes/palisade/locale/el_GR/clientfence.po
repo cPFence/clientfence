@@ -27063,3 +27063,37 @@ msgstr "Το :program δεν είναι προσβάσιμο ή απέρριψε
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Αποστολή όλων ξανά"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr "Το :program επιτρέπει αριθμούς παραστατικών έως :max χαρακτήρες: το :number είναι μεγαλύτερο."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr "Το :program δέχεται έναν φορολογικό συντελεστή πωλήσεων ανά παραστατικό: αυτό έχει γραμμές με διαφορετικούς συντελεστές."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Συνδέεται με τη δοκιμαστική εταιρεία του προγράμματος αντί για τα βιβλία σας. Η αλλαγή τερματίζει την τρέχουσα σύνδεση."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Δημιουργήστε στο :program ένα προϊόν ή υπηρεσία με λογαριασμό εσόδων τον λογαριασμό πίστωσης λογαριασμού: τα προστιθέμενα κεφάλαια και η πίστωση λογαριασμού καταχωρούνται με αυτό."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Δοκιμαστικό περιβάλλον (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "Ο τραπεζικός λογαριασμός στο :program είναι σε :bank_currency και η πληρωμή σε :currency: επιλέξτε γι' αυτόν λογαριασμό σε :currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Το σύνολο του :program για το :number είναι :total αντί για :expected: ελέγξτε τους φορολογικούς συντελεστές στις ρυθμίσεις λογιστικής."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr "Το :program δεν μπορεί να καταχωρίσει πίστωση λογαριασμού σε παραστατικό με άλλες γραμμές: :number."

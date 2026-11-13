@@ -24729,3 +24729,37 @@ msgstr ":program erişilemiyor veya bağlantıyı reddetti; muhasebe eşitlemesi
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Tümünü yeniden gönder"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program en fazla :max karakterlik belge numaralarına izin verir: :number daha uzun."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program fatura başına tek bir satış vergisi oranı kabul eder: bu faturada farklı oranlı satırlar var."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Defterleriniz yerine programın test şirketine bağlanır. Değiştirmek mevcut bağlantıyı sonlandırır."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr ":program içinde gelir hesabı hesap kredisi hesabı olan bir ürün veya hizmet oluşturun: eklenen bakiyeler ve hesap kredisi bununla kaydedilir."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Test ortamı (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr ":program banka hesabı :bank_currency, ödeme ise :currency cinsinden: bunun için :currency cinsinden bir hesap seçin."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr ":number için :program toplamı :expected yerine :total: muhasebe ayarlarındaki vergi oranlarını kontrol edin."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program, başka satırları olan bir faturaya hesap kredisi kaydedemez: :number."

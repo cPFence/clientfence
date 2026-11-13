@@ -26463,3 +26463,37 @@ msgstr "无法连接 :program 或其拒绝了连接;会计同步将等待并重�
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "全部再次发送"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program 允许最长 :max 个字符的单据编号::number 更长。"
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program 每张发票只接受一个销售税率:这张发票的各行税率不同。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "连接到该程序的测试公司,而不是你的账簿。更改它会结束当前连接。"
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "请在 :program 中创建一个产品或服务,其收入账户为账户余额账户:充值款项和账户余额都用它记账。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "测试环境(沙盒)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr ":program 银行账户的币种为 :bank_currency,而付款币种为 :currency:请为其选择币种为 :currency 的账户。"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr ":program 中 :number 的总额为 :total,而不是 :expected:请检查会计设置中的税率。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program 无法在含有其他行的发票上记入账户余额::number。"

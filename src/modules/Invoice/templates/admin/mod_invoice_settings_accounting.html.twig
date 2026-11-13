@@ -31,6 +31,20 @@
 				</select>
 			</div>
 		</div>
+		{% if acct.has_sandbox %}
+			<div class="clientfence-setting clientfence-setting-row">
+				<div class="clientfence-setting-label">
+					<label class="form-label" for="accounting_sandbox">{{ 'Test environment (sandbox)'|trans }}</label>
+					<div class="clientfence-setting-hint">{{ 'Connects to the program\'s test company instead of your books. Changing it ends the current connection.'|trans }}</div>
+				</div>
+				<div class="clientfence-setting-control">
+					<input type="hidden" name="sandbox" value="0">
+					<label class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" id="accounting_sandbox" name="sandbox" value="1"{% if acct.sandbox %} checked{% endif %}>
+					</label>
+				</div>
+			</div>
+		{% endif %}
 		<div class="clientfence-setting clientfence-setting-row">
 			<div class="clientfence-setting-label">
 				<span class="form-label">{{ 'Redirect URL'|trans }}</span>

@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class Sync
 {
     public const TABLE = 'invoice_accounting_sync';
-    public const PROGRAMS = ['xero' => Xero::class];
+    public const PROGRAMS = ['xero' => Xero::class, 'freeagent' => FreeAgent::class, 'quickbooks' => QuickBooks::class];
     // Records per run: Xero allows 60 calls a minute and an invoice with its client and payment takes up to six.
     public const BATCH = 10;
     public const MAX_ATTEMPTS = 10;
@@ -135,6 +135,8 @@ final class Sync
             'start_date' => (string) $this->param('start_date'),
             'backfill_from' => (string) $this->param('backfill_from'),
             'paid_only' => (bool) $this->param('paid_only'),
+            'has_sandbox' => isset(self::PROGRAMS[$program]) && self::PROGRAMS[$program]::hasSandbox(),
+            'sandbox' => $this->param('sandbox') === '1',
             'paused' => (int) $this->param('wait_until', 0) > time() ? (string) $this->param('wait_reason') : '',
             'sales_account' => (string) $this->param('sales_account'),
             'bank_accounts' => $this->json('bank_accounts'),
@@ -166,9 +168,15 @@ final class Sync
         if (mb_strlen($clientId) > 255) {
             throw new InformationException('The client ID is too long.');
         }
-        if ($program !== $this->param('program') || $clientId !== $this->param('client_id')) {
+        $sandbox = array_key_exists('sandbox', $data) ? (empty($data['sandbox']) ? '0' : '1') : (string) $this->param('sandbox', '0');
+        // Tokens belong to one program, app and environment; the account and tax choices to one program and environment.
+        if ($program !== $this->param('program') || $clientId !== $this->param('client_id') || $sandbox !== (string) $this->param('sandbox', '0')) {
             $this->setParam('tokens', '');
         }
+        if ($program !== $this->param('program') || $sandbox !== (string) $this->param('sandbox', '0')) {
+            $this->clearChoices();
+        }
+        $this->setParam('sandbox', $sandbox);
         $this->setParam('program', $program);
         $this->setParam('client_id', $clientId);
         $this->setParam('start_date', $start);
@@ -201,6 +209,13 @@ final class Sync
         $this->di['logger']->info('Invoice: accounting sync settings saved (%s).', $program === '' ? 'off' : $program);
     }
 
+    private function clearChoices(): void
+    {
+        foreach (['sales_account', 'bank_accounts', 'tax_map'] as $name) {
+            $this->setParam($name, '');
+        }
+    }
+
     /** The program's sign-in address; the state waits in the staff session, once, for STATE_SECONDS. */
     public function connectUrl(): string
     {
@@ -229,10 +244,12 @@ final class Sync
             throw new InformationException('This connection request has expired or was not started here. Click Connect again.');
         }
         $tokens = $program->connect($code, $this->redirectUri(), $query);
-        // Another organisation has none of the records sent so far: they all go again, to it.
+        // Another organisation has none of the records sent so far: they all go again, to it, once staff choose its
+        // accounts and tax rates (ids of another company could name other accounts there).
         $name = (string) $this->param('program');
         if ((string) $this->param('tenant_' . $name) !== (string) ($tokens['tenant_id'] ?? '')) {
             $this->di['dbal']->delete(self::TABLE, ['program' => $name]);
+            $this->clearChoices();
             $this->setParam('tenant_' . $name, (string) ($tokens['tenant_id'] ?? ''));
         }
         $this->saveTokens($tokens);
@@ -436,7 +453,10 @@ final class Sync
                 'zip' => (string) $c['postcode'],
                 'country' => (string) $c['country'],
             ];
-        }, fn (array $data, ?string $remote): string => $this->program()->contact($data + ['remote_id' => $remote]));
+        }, fn (array $data, ?string $remote): string => $this->program()->contact($data + ['remote_id' => $remote, 'taken' => fn (string $contact): bool => $this->di['dbal']->fetchOne(
+            'SELECT 1 FROM ' . self::TABLE . " WHERE program = ? AND entity = 'client' AND remote_id = ? AND local_id <> ?",
+            [(string) $this->param('program'), $contact, $clientId],
+        ) !== false]));
     }
 
     private function invoice(int $id): void
@@ -470,7 +490,7 @@ final class Sync
         $this->ensure('payment', $id, fn (): array => $this->payments($invoice), function (array $parts) use ($remote, $invoice): string {
             $ids = [];
             foreach ($parts as $part) {
-                $ids[] = $this->program()->payment($part + ['invoice' => $remote, 'currency' => (string) $invoice['currency']]);
+                $ids[] = $this->program()->payment($part + ['invoice' => $remote, 'currency' => (string) $invoice['currency'], 'rate' => $this->rates((string) $invoice['currency'])]);
             }
 
             return implode(' ', $ids);
@@ -525,7 +545,7 @@ final class Sync
             }
 
             return $doc + ['refunds' => $refunds, 'reference' => $source === false ? '' : self::format($source, $this->padding())];
-        }, fn (array $doc, ?string $remote): string => $this->program()->creditNote($doc + ['remote_id' => $remote]), true);
+        }, fn (array $doc, ?string $remote): string => $this->program()->creditNote($doc + ['remote_id' => $remote, 'rate' => $this->rates($doc['currency'])]), true);
     }
 
     private function void(int $id): void
@@ -607,7 +627,7 @@ final class Sync
             ];
         }, function (array $data, ?string $remote): string {
             $remote = $this->program()->invoice($data['invoice'] + ['remote_id' => $remote]);
-            $this->program()->payment($data['payment'] + ['invoice' => $remote, 'currency' => $data['invoice']['currency']]);
+            $this->program()->payment($data['payment'] + ['invoice' => $remote, 'currency' => $data['invoice']['currency'], 'rate' => $this->rates($data['invoice']['currency'])]);
 
             return $remote;
         }, true);
@@ -803,6 +823,16 @@ final class Sync
         ]);
     }
 
+    /** rate(string $to): ?float, units of $to for one of $from at ClientFence's currency rates (null: not set up). */
+    private function rates(string $from): \Closure
+    {
+        return function (string $to) use ($from): ?float {
+            $rates = $this->di['dbal']->fetchAllKeyValue('SELECT code, conversion_rate FROM currency WHERE code IN (?, ?)', [$from, $to]);
+
+            return (float) ($rates[$from] ?? 0) > 0 && (float) ($rates[$to] ?? 0) > 0 ? (float) $rates[$to] / (float) $rates[$from] : null;
+        };
+    }
+
     private function creditAccount(): string
     {
         return (string) ($this->json('bank_accounts')['credit'] ?? '') ?: throw new InformationException('Choose the :program account for account credit in the accounting settings.', [':program' => $this->program()::label()]);
@@ -822,7 +852,7 @@ final class Sync
 
         return $this->program = new $class($this->di['http_client'], (string) $this->param('client_id'), $secret, $this->tokens(), function (array $tokens): void {
             $this->saveTokens($tokens);
-        });
+        }, $class::hasSandbox() && $this->param('sandbox') === '1');
     }
 
     private function tokens(): array

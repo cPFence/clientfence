@@ -26959,3 +26959,37 @@ msgstr ":program nije dostupan ili je odbio vezu; računovodstvena sinhronizacij
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Pošalji sve ponovo"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program dozvoljava brojeve dokumenata do :max karaktera: :number je duži."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program prihvata jednu poresku stopu na promet po fakturi: ova ima stavke sa različitim stopama."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Povezuje se sa probnom kompanijom programa umesto sa vašim knjigama. Promena prekida trenutnu vezu."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Napravite u programu :program proizvod ili uslugu čiji je račun prihoda račun za kredit na nalogu: dodata sredstva i kredit na nalogu knjiže se preko njega."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Testno okruženje (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "Bankovni račun u programu :program je u :bank_currency, a uplata u :currency: izaberite za njega račun u :currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Ukupan iznos u programu :program za :number je :total umesto :expected: proverite poreske stope u računovodstvenim podešavanjima."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program ne može da knjiži kredit na nalogu na fakturi sa drugim stavkama: :number."

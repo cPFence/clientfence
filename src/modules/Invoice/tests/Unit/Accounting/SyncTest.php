@@ -30,6 +30,7 @@ function acctSyncWorld(array $params = []): object
         'CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL)',
         'CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE tax (id INTEGER PRIMARY KEY, name TEXT, taxrate TEXT)',
+        'CREATE TABLE currency (id INTEGER PRIMARY KEY, code TEXT, conversion_rate REAL)',
         'CREATE TABLE invoice_accounting_sync (id INTEGER PRIMARY KEY AUTOINCREMENT, program TEXT, entity TEXT, local_id INTEGER, remote_id TEXT, status TEXT, attempts INTEGER DEFAULT 0, revision INTEGER DEFAULT 0,
             last_error TEXT, fingerprint TEXT, synced_at TEXT, created_at TEXT, updated_at TEXT, UNIQUE (program, entity, local_id))',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, status TEXT, system_name TEXT)',
@@ -111,13 +112,18 @@ function acctSyncProgram(): Program
         public array $fail = [];
         public string $tenant = 't';
 
-        public function __construct(HttpClientInterface $http, string $clientId, string $clientSecret, array $tokens, Closure $saveTokens)
+        public function __construct(HttpClientInterface $http, string $clientId, string $clientSecret, array $tokens, Closure $saveTokens, bool $sandbox = false)
         {
         }
 
         public static function label(): string
         {
             return 'Xero';
+        }
+
+        public static function hasSandbox(): bool
+        {
+            return false;
         }
 
         public function authorizeUrl(string $state, string $redirect): string
@@ -418,7 +424,7 @@ test('the connection state is single use and the tokens are stored encrypted', f
         ->and(json_decode(substr($world->system->params['accounting_tokens'], 4), true))->toMatchArray(['refresh_token' => 'r', 'tenant_id' => 't']);
 });
 
-test('connecting another organisation sends everything again, reconnecting the same one keeps the records', function (): void {
+test('connecting another organisation clears the choices and sends everything again; reconnecting the same one keeps them', function (): void {
     $world = acctSyncWorld(['tenant_xero' => 't']);
     $world->di['session'] = new class {
         public array $values = [];
@@ -452,13 +458,17 @@ test('connecting another organisation sends everything again, reconnecting the s
     $world->sync->run();
     expect(acctSyncRow($world, 'invoice', 1))->toMatchArray(['status' => 'sent']);
 
+    $choices = array_intersect_key($world->system->params, array_flip(['accounting_sales_account', 'accounting_bank_accounts', 'accounting_tax_map']));
     $connect();
-    expect(acctSyncRow($world, 'invoice', 1))->toMatchArray(['status' => 'sent']);
+    expect(acctSyncRow($world, 'invoice', 1))->toMatchArray(['status' => 'sent'])
+        ->and(array_intersect_key($world->system->params, $choices))->toBe($choices);
 
     $world->program->tenant = 'other-org';
     $connect();
     expect(acctSyncRow($world, 'invoice', 1))->toBeFalse()
-        ->and($world->system->params['accounting_tenant_xero'])->toBe('other-org');
+        ->and($world->system->params['accounting_tenant_xero'])->toBe('other-org')
+        ->and(array_values(array_intersect_key($world->system->params, $choices)))->toBe(['', '', '']);
+    $world->system->params = $choices + $world->system->params;
     $world->sync->run();
     expect(acctSyncRow($world, 'invoice', 1))->toMatchArray(['status' => 'sent'])
         ->and(count(array_filter($world->program->calls, static fn (array $c): bool => $c[0] === 'invoice')))->toBe(2);
@@ -534,7 +544,14 @@ test('a gateway payment whose transaction is not processed yet waits, then goes 
 
     $world->db->update('`transaction`', ['status' => 'processed'], ['id' => 40]);
     $world->sync->run();
-    expect($world->program->calls[2])->toMatchArray([0 => 'payment', 1 => ['invoice' => 'inv-INV00005', 'account' => '090', 'amount' => 10.0, 'date' => substr(date('Y-m-d'), 0, 10), 'reference' => 'Transaction 40', 'currency' => 'GBP']]);
+    expect($world->program->calls[2][0])->toBe('payment')
+        ->and($world->program->calls[2][1])->toMatchArray(['invoice' => 'inv-INV00005', 'account' => '090', 'amount' => 10.0, 'date' => substr(date('Y-m-d'), 0, 10), 'reference' => 'Transaction 40', 'currency' => 'GBP']);
+
+    // Its rate to another currency is ClientFence's, from the default one's; null for one not set up.
+    $world->db->insert('currency', ['code' => 'USD', 'conversion_rate' => 1.25]);
+    $world->db->insert('currency', ['code' => 'GBP', 'conversion_rate' => 1.0]);
+    expect($world->program->calls[2][1]['rate']('USD'))->toBe(1.25)
+        ->and($world->program->calls[2][1]['rate']('EUR'))->toBeNull();
 });
 
 test('an unpaid invoice left without lines is voided there', function (): void {
@@ -648,4 +665,30 @@ test('money beyond an invoice and a payment without one go into the account cred
     $world->sync->run();
     expect(array_column($world->program->calls, 0))->toBe(['invoice', 'payment'])
         ->and($world->program->calls[0][1])->toMatchArray(['number' => 'CREDIT-43', 'total' => 2.0]);
+});
+
+test('switching the test environment on or off ends the connection and clears the choices; the same choice keeps them', function (): void {
+    $world = acctSyncWorld(['sandbox' => '0']);
+
+    $world->sync->save(['sandbox' => '0']);
+    expect($world->system->params['accounting_tokens'])->not->toBe('')
+        ->and($world->system->params['accounting_sales_account'])->not->toBe('');
+
+    $world->sync->save(['sandbox' => '1']);
+    expect($world->system->params['accounting_tokens'])->toBe('')
+        ->and($world->system->params['accounting_sandbox'])->toBe('1')
+        ->and([$world->system->params['accounting_sales_account'], $world->system->params['accounting_bank_accounts'], $world->system->params['accounting_tax_map']])->toBe(['', '', '']);
+});
+
+test('the program learns which contacts other clients already have, so one is never shared', function (): void {
+    $world = acctSyncWorld();
+    $world->db->insert('invoice_accounting_sync', ['program' => 'xero', 'entity' => 'client', 'local_id' => 8, 'remote_id' => 'contact-of-8', 'status' => 'sent', 'attempts' => 0, 'created_at' => '2026-11-05 10:00:00', 'updated_at' => '2026-11-05 10:00:00']);
+    acctSyncInvoice($world, 1, []);
+    $world->sync->run();
+    $taken = $world->program->calls[0][1]['taken'];
+
+    expect($world->program->calls[0][0])->toBe('contact')
+        ->and($taken('contact-of-8'))->toBeTrue()
+        ->and($taken('contact-7'))->toBeFalse()
+        ->and($taken('elsewhere'))->toBeFalse();
 });

@@ -30635,3 +30635,37 @@ msgstr "לא ניתן להגיע אל :program או שהוא דחה את החי�
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "שליחה מחדש של הכול"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program מאפשר מספרי מסמכים של עד :max תווים: :number ארוך יותר."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program מקבל שיעור מס מכירות אחד לכל חשבונית: בחשבונית זו יש שורות עם שיעורים שונים."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "מתחבר לחברת הבדיקה של התוכנה במקום לספרים שלכם. שינוי מסיים את החיבור הנוכחי."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "צרו ב-:program מוצר או שירות שחשבון ההכנסות שלו הוא חשבון הזיכוי בחשבון: כספים שנוספו וזיכוי בחשבון נרשמים באמצעותו."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "סביבת בדיקות (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "חשבון הבנק ב-:program הוא ב-:bank_currency והתשלום ב-:currency: בחרו עבורו חשבון ב-:currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "הסכום הכולל ב-:program של :number הוא :total במקום :expected: בדקו את שיעורי המס בהגדרות הנהלת החשבונות."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program לא יכול לרשום זיכוי בחשבון בחשבונית עם שורות אחרות: :number."

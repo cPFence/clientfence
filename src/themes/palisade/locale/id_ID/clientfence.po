@@ -27123,3 +27123,37 @@ msgstr ":program tidak dapat dijangkau atau menolak koneksi; sinkronisasi akunta
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Kirim semua lagi"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program mengizinkan nomor dokumen hingga :max karakter: :number lebih panjang."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program hanya menerima satu tarif pajak penjualan per faktur: faktur ini memiliki baris dengan tarif berbeda."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Terhubung ke perusahaan uji program, bukan pembukuan Anda. Mengubahnya mengakhiri koneksi saat ini."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Buat produk atau layanan di :program yang akun pendapatannya adalah akun kredit akun: dana yang ditambahkan dan kredit akun dibukukan dengannya."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Lingkungan uji (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "Rekening bank :program dalam :bank_currency dan pembayaran dalam :currency: pilih akun dalam :currency untuknya."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Total :program untuk :number adalah :total, bukan :expected: periksa tarif pajak di pengaturan akuntansi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program tidak dapat membukukan kredit akun pada faktur dengan baris lain: :number."

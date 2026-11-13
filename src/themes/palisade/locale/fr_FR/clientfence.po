@@ -26411,3 +26411,37 @@ msgstr ":program est injoignable ou a refusé la connexion ; la synchronisation 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Tout renvoyer"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program accepte des numéros de document de :max caractères au plus : :number est plus long."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program accepte un seul taux de taxe de vente par facture : celle-ci a des lignes avec des taux différents."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Se connecte à la société de test du logiciel au lieu de vos livres. Le modifier met fin à la connexion actuelle."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr "Créez dans :program un produit ou service dont le compte de produits est le compte de crédit de compte : les fonds ajoutés et le crédit de compte sont comptabilisés avec lui."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Environnement de test (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr "Le compte bancaire :program est en :bank_currency et le paiement en :currency : choisissez-y un compte en :currency."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr "Le total :program de :number est de :total au lieu de :expected : vérifiez les taux de taxe dans les paramètres de comptabilité."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program ne peut pas comptabiliser de crédit de compte sur une facture comportant d'autres lignes : :number."

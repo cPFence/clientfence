@@ -25061,3 +25061,37 @@ msgstr ":program bilan bog'lanib bo'lmadi yoki u ulanishni rad etdi; buxgalteriy
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send all again"
 msgstr "Barchasini qayta yuborish"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program allows document numbers of up to :max characters: :number is longer."
+msgstr ":program :max tagacha belgili hujjat raqamlariga ruxsat beradi: :number uzunroq."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid ":program takes one sales tax rate per invoice: this one has lines with different rates."
+msgstr ":program har bir hisob-fakturaga bitta savdo soligi stavkasini qabul qiladi: bunda turli stavkali qatorlar bor."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connects to the program's test company instead of your books. Changing it ends the current connection."
+msgstr "Sizning kitoblaringiz o'rniga dasturning sinov kompaniyasiga ulanadi. O'zgartirish joriy ulanishni tugatadi."
+
+#: src/modules/Invoice/Accounting/QuickBooks.php
+msgid "Create a :program product or service whose income account is the account credit account: added funds and account credit are booked with it."
+msgstr ":program da daromad hisobi hisob krediti hisobi bo'lgan mahsulot yoki xizmat yarating: qo'shilgan mablag'lar va hisob krediti u orqali yoziladi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Test environment (sandbox)"
+msgstr "Sinov muhiti (sandbox)"
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program bank account is in :bank_currency and the payment in :currency: choose an account in :currency for it."
+msgstr ":program bank hisobi :bank_currency da, to'lov esa :currency da: u uchun :currency dagi hisobni tanlang."
+
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
+msgstr ":number bo'yicha :program jami :expected o'rniga :total: buxgalteriya sozlamalarida soliq stavkalarini tekshiring."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/FreeAgent.php
+msgid ":program cannot book account credit on an invoice with other lines: :number."
+msgstr ":program boshqa qatorlari bor hisob-fakturaga hisob kreditini yoza olmaydi: :number."
