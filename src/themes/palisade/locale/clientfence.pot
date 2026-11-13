@@ -714,6 +714,22 @@ msgstr ""
 msgid ":product setup"
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid ":program did not connect: :error"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid ":program refused the request: :error"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid ":program sent an answer ClientFence cannot read."
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid ":program: :number could not be sent after 10 tries; see the accounting log"
+msgstr ""
+
 #: src/modules/Servicehosting/Panel/Enhance/Api.php
 msgid ":reason"
 msgstr ""
@@ -1474,6 +1490,10 @@ msgstr ""
 msgid "Account balance"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Account credit"
+msgstr ""
+
 #: src/modules/Invoice/Statement.php
 msgid "Account credit added"
 msgstr ""
@@ -1532,6 +1552,14 @@ msgstr ""
 
 #: src/themes/palisade/html/layout_default.html.twig
 msgid "Account: :name"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Accounting"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Accounting program"
 msgstr ""
 
 #: src/themes/palisade/html/mod_page_login.html.twig src/themes/palisade/html/mod_page_signup.html.twig
@@ -1880,6 +1908,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Add the transaction ID of the payment to mark the invoice as paid."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Add this address to the app you create in the program's developer portal."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -2904,6 +2936,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
 msgid "Also restore the email"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Also sends invoices issued from this date, before the start date."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig …
@@ -4794,7 +4830,7 @@ msgstr ""
 msgid "Child care centre"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_steps.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_steps.html.twig
 msgid "Choose"
 msgstr ""
 
@@ -4840,6 +4876,10 @@ msgstr ""
 
 #: src/modules/Invoice/Quotes.php
 msgid "Choose a country from the list."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose a date before the start date."
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
@@ -4928,6 +4968,14 @@ msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "Choose allow, block or default."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose an accounting program first."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose an accounting program from the list."
 msgstr ""
 
 #: src/modules/Support/TicketAssign.php src/modules/Support/TicketEscalation.php
@@ -5024,6 +5072,22 @@ msgstr ""
 
 #: src/modules/Notification/templates/admin/mod_notification_index.html.twig
 msgid "Choose staff members"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program account for account credit in the accounting settings."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program account for payments by :gateway in the accounting settings."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program sales account in the accounting settings."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program tax rate for \":tax\" in the accounting settings."
 msgstr ""
 
 #: src/modules/Theme/templates/admin/mod_theme_settings.html.twig
@@ -5198,6 +5262,10 @@ msgstr ""
 msgid "Choose your main currency."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Choosing another program, or another app, ends the current connection."
+msgstr ""
+
 #: src/modules/Notification/templates/admin/mod_notification_index.html.twig
 msgid "Chosen staff members"
 msgstr ""
@@ -5232,6 +5300,10 @@ msgstr ""
 
 #: src/modules/Invoice/Quotes.php
 msgid "Client #:id has this email: choose that client instead."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Client #:id no longer exists."
 msgstr ""
 
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig
@@ -5434,7 +5506,7 @@ msgstr ""
 msgid "Client replied to ticket #:id: :subject"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
+#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Client secret"
 msgstr ""
 
@@ -6066,6 +6138,18 @@ msgstr ""
 msgid "Confirm your email address to use your whole account. We sent you a link."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connect"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Connect ClientFence to :program first."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connect again"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Connectreseller.php
 msgid "ConnectReseller did not return a contact ID."
 msgstr ""
@@ -6082,6 +6166,14 @@ msgstr ""
 msgid "ConnectReseller returned an unreadable response for :command"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connected to :program (:organisation)."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connected to :program."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Connected to Blesta."
 msgstr ""
@@ -6096,6 +6188,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Connected to WHMCS."
+msgstr ""
+
+#: src/modules/Invoice/Controller/Admin.php
+msgid "Connected."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connection"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
@@ -6166,7 +6266,7 @@ msgstr ""
 msgid "Content was not passed"
 msgstr ""
 
-#: src/modules/Client/Controller/Client.php src/modules/Invoice/Controller/Client.php src/modules/System/templates/admin/mod_system_update.html.twig …
+#: src/modules/Client/Controller/Client.php src/modules/Invoice/Controller/Admin.php src/modules/Invoice/Controller/Client.php …
 msgid "Continue"
 msgstr ""
 
@@ -6458,6 +6558,10 @@ msgstr ""
 msgid "Could not make the folder :dir."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Could not reach :program: :error"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid "Could not reach :registrar: :error"
 msgstr ""
@@ -6712,6 +6816,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Credit log"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Credit note"
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -7190,6 +7298,10 @@ msgstr ""
 msgid "Date paid"
 msgstr ""
 
+#: src/modules/Invoice/Api/Admin.php
+msgid "Date was not passed"
+msgstr ""
+
 #: src/themes/admin_default/html/mod_index_dashboard.html.twig
 msgid "Date/Time"
 msgstr ""
@@ -7482,6 +7594,10 @@ msgstr ""
 msgid "Deleted client"
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Deleted or cancelled here, but kept at :program because it has a payment there."
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_login_history.html.twig
 msgid "Deleted staff member"
 msgstr ""
@@ -7572,6 +7688,14 @@ msgstr ""
 
 #: src/modules/Massmailer/Service.php
 msgid "Disabled for security reasons (Demo mode enabled)"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Disconnect"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Disconnected."
 msgstr ""
 
 #: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/QuotePdf.php src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig …
@@ -8172,6 +8296,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php
 msgid "EU country of citizenship of the registrant (only for EU citizens living outside the EU)"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "EU reverse charge"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -9042,6 +9170,10 @@ msgstr ""
 msgid "Enter the captcha site key and secret key."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Enter the client ID and client secret of your :program app first."
+msgstr ""
+
 #: src/modules/Client/Contacts.php
 msgid "Enter the contact's email."
 msgstr ""
@@ -9052,6 +9184,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Nominet.php
 msgid "Enter the cost price in the Nominet registrar settings: Nominet has no price list to import."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Enter the date as YYYY-MM-DD."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/Reports.php src/modules/Invoice/Statement.php
@@ -9336,6 +9472,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Every email read from the help desk mailboxes and what became of it. An email that was not imported keeps a copy until the log is cleaned, so you can import it anyway. Mailboxes are set on each help desk; the rules are in Support settings."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Every invoice line is booked here."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
@@ -9660,6 +9800,10 @@ msgstr ""
 
 #: src/library/ClientFence/Mail.php
 msgid "Failed to send email via :transport with the exception :e"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Failed, will try again"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -12022,6 +12166,10 @@ msgstr ""
 msgid "Invoice :number for :amount is waiting for payment. Your service renews when it is paid."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Invoice :number has no payment method, so its :program bank account is not known."
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "Invoice :number is due on :date"
 msgstr ""
@@ -12202,6 +12350,14 @@ msgstr ""
 msgid "Invoices are not generated for negative amount orders."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Invoices from :date are being sent too."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Invoices paid from client credit, and added funds. The account must accept payments."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Invoices with a zero total (Upmind makes one for each service it imported) and credit top-ups: the client's credit balance carries them."
 msgstr ""
@@ -12284,6 +12440,10 @@ msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_cancel_request.html.twig
 msgid "It will be cancelled shortly, and any unpaid invoice for it will be cancelled."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "It will be sent on the next run."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
@@ -12580,6 +12740,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
 msgid "Last backup"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Last change"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
@@ -15486,6 +15650,10 @@ msgstr ""
 msgid "No stored filename available for order file update"
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "No tax"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig
 msgid "No tickets are waiting for a reply."
 msgstr ""
@@ -15614,6 +15782,10 @@ msgstr ""
 msgid "Not connected to the mail server."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Not connected. Save the client ID and secret, then connect and approve the access in :program."
+msgstr ""
+
 #: src/modules/Invoice/Reports.php
 msgid "Not due yet"
 msgstr ""
@@ -15720,6 +15892,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Nothing selected"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Nothing sent yet."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -15866,6 +16042,10 @@ msgstr ""
 msgid "Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often \"Opcode caching\" in the hosting panel) in the PHP settings of this site."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Off: each invoice is sent when it is approved and its payment later, so the books show what clients owe. On: an invoice is sent once it is paid, with its payment."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_network.html.twig
 msgid "Off: only signed-in clients see it, as in WHMCS."
 msgstr ""
@@ -15896,6 +16076,14 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Official mark registered in Canada"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Older invoices stay out unless you send them below."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Older invoices will be sent."
 msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php …
@@ -17078,6 +17266,10 @@ msgstr ""
 msgid "Paid invoices"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Paid invoices only"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "Panel plan"
 msgstr ""
@@ -17566,7 +17758,7 @@ msgstr ""
 msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
 msgstr ""
 
-#: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
 msgid "Payment"
 msgstr ""
 
@@ -17788,6 +17980,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Payments & currency"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Payments by :gateway"
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -19298,6 +19494,10 @@ msgstr ""
 msgid "Recommended: keep enabled unless your server uses a self-signed or otherwise invalid certificate."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Record"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Record a manual balance credit on this client account."
 msgstr ""
@@ -19340,6 +19540,10 @@ msgstr ""
 
 #: src/modules/Redirect/Api/Admin.php
 msgid "Redirect ID was not passed"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Redirect URL"
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -20574,6 +20778,10 @@ msgstr ""
 msgid "Sales Tax Liability"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sales account"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Same"
 msgstr ""
@@ -20644,6 +20852,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Save access"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Save accounting settings"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -20828,6 +21040,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig …
 msgid "Saved."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Saved. Leave empty to keep it."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -21158,7 +21374,7 @@ msgstr ""
 msgid "Sell API keys: each order gets a key that your application can check, with allowed IPs and usage."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig src/modules/Support/templates/client/mod_support_contact_us.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig …
 msgid "Send"
 msgstr ""
 
@@ -21198,7 +21414,7 @@ msgstr ""
 msgid "Send a support request or question to our team using the contact form."
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send again"
 msgstr ""
 
@@ -21234,6 +21450,10 @@ msgstr ""
 msgid "Send invoice email"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Send invoices issued from"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Send it back through :gateway"
 msgstr ""
@@ -21254,8 +21474,12 @@ msgstr ""
 msgid "Send me the link"
 msgstr ""
 
-#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Send now"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Send older invoices"
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
@@ -21338,11 +21562,15 @@ msgstr ""
 msgid "Sending…"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sends clients, approved invoices, their payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
+msgstr ""
+
 #: src/modules/Redirect/manifest.json
 msgid "Sends visitors from old client-area paths to new pages or other sites, with a permanent (301) or temporary (302) redirect."
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_details.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig …
+#: src/modules/Email/templates/admin/mod_email_details.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig …
 msgid "Sent"
 msgstr ""
 
@@ -21368,6 +21596,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Sent to your staff email address."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sent."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Dynadot.php
@@ -22458,6 +22690,10 @@ msgstr ""
 msgid "Stop the cancellation request?"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Stopped"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/palisade/html/layout_default.html.twig …
 msgid "Store"
 msgstr ""
@@ -22484,6 +22720,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "Store title and subtitle"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Stored encrypted."
 msgstr ""
 
 #: src/modules/Servicedownloadable/Service.php
@@ -22822,6 +23062,18 @@ msgstr ""
 msgid "Sync expiry dates every day"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sync log"
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Sync record ID was not passed"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Sync record not found."
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Sync with registrars"
 msgstr ""
@@ -23056,6 +23308,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Tax the fee"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Tax: :tax"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
@@ -23530,8 +23786,16 @@ msgstr ""
 msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The account and tax choices could not be read. Reload the page and try again."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "The account is removed with its mailbox and every message in it. This cannot be undone."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "The accounts could not be read from :program: :error"
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
@@ -23674,6 +23938,10 @@ msgstr ""
 msgid "The client ID is a Google OAuth client ID (it ends in .apps.googleusercontent.com)."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The client ID is too long."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig
 msgid "The client asked to cancel this service"
 msgstr ""
@@ -23744,6 +24012,10 @@ msgstr ""
 
 #: src/modules/Client/TwoFactor.php
 msgid "The code is not correct. Check the time on your phone and try the newest code."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "The connection to :program has ended (:error): connect again."
 msgstr ""
 
 #: src/modules/Support/Mail/ImapClient.php
@@ -24975,6 +25247,10 @@ msgstr ""
 msgid "This code cannot be used for this order."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "This connection request has expired or was not started here. Click Connect again."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Import.php
 msgid "This database has no Blesta tables. Check the database name."
 msgstr ""
@@ -26199,7 +26475,7 @@ msgstr ""
 msgid "Transport and Logging"
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Tries"
 msgstr ""
 
@@ -27779,6 +28055,10 @@ msgstr ""
 msgid "Visitors, requests and traffic cover the last 30 days."
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Voided"
+msgstr ""
+
 #: src/library/Server/Manager/Whm.php
 msgid "WHM (cPanel)"
 msgstr ""
@@ -27801,6 +28081,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig src/themes/palisade/html/partials/ticket_upload.html.twig
 msgid "Wait until the files are uploaded."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Waiting"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/themes/admin_default/html/mod_index_dashboard.html.twig
@@ -28301,6 +28585,10 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)"
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Xero connected no organisation: choose one when you connect."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig

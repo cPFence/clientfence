@@ -27179,3 +27179,292 @@ msgstr "您的 OpenSRS 經銷商使用者名稱。"
 #: src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Your Realtime Register customer handle."
 msgstr "您的 Realtime Register customer handle。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/Sync.php
+msgid ":program did not connect: :error"
+msgstr ":program 未能連線::error"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid ":program refused the request: :error"
+msgstr ":program 拒絕了請求::error"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid ":program sent an answer ClientFence cannot read."
+msgstr ":program 傳回了 ClientFence 無法讀取的回應。"
+
+#: src/modules/Clientfence/Notifications.php
+msgid ":program: :number could not be sent after 10 tries; see the accounting log"
+msgstr ":program::number 嘗試 10 次後仍無法傳送;請查看會計日誌"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Account credit"
+msgstr "帳戶餘額"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Accounting"
+msgstr "會計"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Accounting program"
+msgstr "會計程式"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Add this address to the app you create in the program's developer portal."
+msgstr "請將此位址新增至你在該程式開發者入口網站中建立的應用程式。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Also sends invoices issued from this date, before the start date."
+msgstr "同時傳送自此日期起、早於開始日期開立的發票。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose a date before the start date."
+msgstr "請選擇早於開始日期的日期。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose an accounting program first."
+msgstr "請先選擇會計程式。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose an accounting program from the list."
+msgstr "請從清單中選擇會計程式。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program account for account credit in the accounting settings."
+msgstr "請在會計設定中選擇用於帳戶餘額的 :program 帳戶。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program account for payments by :gateway in the accounting settings."
+msgstr "請在會計設定中選擇用於 :gateway 付款的 :program 帳戶。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program sales account in the accounting settings."
+msgstr "請在會計設定中選擇 :program 銷售帳戶。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program tax rate for \":tax\" in the accounting settings."
+msgstr "請在會計設定中為「:tax」選擇 :program 稅率。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Choosing another program, or another app, ends the current connection."
+msgstr "選擇其他程式或其他應用程式會結束目前的連線。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Client #:id no longer exists."
+msgstr "客戶 #:id 已不存在。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connect"
+msgstr "連線"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Connect ClientFence to :program first."
+msgstr "請先將 ClientFence 連線到 :program。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connect again"
+msgstr "重新連線"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connected to :program (:organisation)."
+msgstr "已連線到 :program(:organisation)。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connected to :program."
+msgstr "已連線到 :program。"
+
+#: src/modules/Invoice/Controller/Admin.php
+msgid "Connected."
+msgstr "已連線。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connection"
+msgstr "連線"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Could not reach :program: :error"
+msgstr "無法連線到 :program::error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Credit note"
+msgstr "貸項通知單"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Date was not passed"
+msgstr "未傳入日期"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Deleted or cancelled here, but kept at :program because it has a payment there."
+msgstr "已在此處刪除或取消,但因 :program 中有付款而保留在那裡。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Disconnect"
+msgstr "中斷連線"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Disconnected."
+msgstr "已中斷連線。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "EU reverse charge"
+msgstr "歐盟反向課稅"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Enter the client ID and client secret of your :program app first."
+msgstr "請先輸入 :program 應用程式的用戶端 ID 和用戶端密鑰。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Enter the date as YYYY-MM-DD."
+msgstr "請以 YYYY-MM-DD 格式輸入日期。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Every invoice line is booked here."
+msgstr "每個發票行都在此記帳。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Failed, will try again"
+msgstr "失敗,將重試"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Invoice :number has no payment method, so its :program bank account is not known."
+msgstr "發票 :number 沒有付款方式,因此不知道其 :program 銀行帳戶。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Invoices from :date are being sent too."
+msgstr "自 :date 起的發票也會一併傳送。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Invoices paid from client credit, and added funds. The account must accept payments."
+msgstr "以客戶餘額支付的發票,以及儲值款項。該帳戶必須能接收付款。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "It will be sent on the next run."
+msgstr "將在下次執行時傳送。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Last change"
+msgstr "最後變更"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "No tax"
+msgstr "無稅"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Not connected. Save the client ID and secret, then connect and approve the access in :program."
+msgstr "未連線。請儲存用戶端 ID 和密鑰,然後連線並在 :program 中核准存取。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Nothing sent yet."
+msgstr "尚未傳送任何內容。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Off: each invoice is sent when it is approved and its payment later, so the books show what clients owe. On: an invoice is sent once it is paid, with its payment."
+msgstr "關閉:每張發票在核准時傳送,其付款稍後傳送,使帳簿反映客戶欠款。開啟:發票在付清後連同付款一起傳送。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Older invoices stay out unless you send them below."
+msgstr "較早的發票不會傳送,除非你在下方傳送。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Older invoices will be sent."
+msgstr "將傳送較早的發票。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Paid invoices only"
+msgstr "僅已付發票"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Payments by :gateway"
+msgstr "透過 :gateway 付款"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Record"
+msgstr "記錄"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Redirect URL"
+msgstr "重新導向 URL"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sales account"
+msgstr "銷售帳戶"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Save accounting settings"
+msgstr "儲存會計設定"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Saved. Leave empty to keep it."
+msgstr "已儲存。留空則保持不變。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Send invoices issued from"
+msgstr "傳送自以下日期起開立的發票"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Send older invoices"
+msgstr "傳送較早的發票"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sends clients, approved invoices, their payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
+msgstr "將客戶、已核准的發票及其付款和退款單向傳送到你的會計程式:不會有任何內容回傳。Cron 每隔幾分鐘傳送一次變更。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sent."
+msgstr "已傳送。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Stopped"
+msgstr "已停止"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Stored encrypted."
+msgstr "已加密儲存。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sync log"
+msgstr "同步日誌"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Sync record ID was not passed"
+msgstr "未傳入同步記錄 ID"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Sync record not found."
+msgstr "找不到同步記錄。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Tax: :tax"
+msgstr "稅金::tax"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The account and tax choices could not be read. Reload the page and try again."
+msgstr "無法讀取帳戶和稅率選擇。請重新整理頁面後再試。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "The accounts could not be read from :program: :error"
+msgstr "無法從 :program 讀取帳戶::error"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The client ID is too long."
+msgstr "用戶端 ID 過長。"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "The connection to :program has ended (:error): connect again."
+msgstr "與 :program 的連線已結束(:error):請重新連線。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "This connection request has expired or was not started here. Click Connect again."
+msgstr "此連線請求已過期,或不是在此處發起的。請再次點擊「連線」。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Voided"
+msgstr "已作廢"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Waiting"
+msgstr "等待中"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Xero connected no organisation: choose one when you connect."
+msgstr "Xero 未連接任何組織:連線時請選擇一個。"

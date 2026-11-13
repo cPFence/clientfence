@@ -27101,3 +27101,292 @@ msgstr "OpenSRS-jälleenmyyjän käyttäjänimesi."
 #: src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Your Realtime Register customer handle."
 msgstr "Realtime Register -customer handlesi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Accounting/Sync.php
+msgid ":program did not connect: :error"
+msgstr ":program ei yhdistänyt: :error"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid ":program refused the request: :error"
+msgstr ":program hylkäsi pyynnön: :error"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid ":program sent an answer ClientFence cannot read."
+msgstr ":program lähetti vastauksen, jota ClientFence ei voi lukea."
+
+#: src/modules/Clientfence/Notifications.php
+msgid ":program: :number could not be sent after 10 tries; see the accounting log"
+msgstr ":program: :number ei voitu lähettää 10 yrityksen jälkeen; katso kirjanpidon loki"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Account credit"
+msgstr "Tilin hyvitys"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Accounting"
+msgstr "Kirjanpito"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Accounting program"
+msgstr "Kirjanpito-ohjelma"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Add this address to the app you create in the program's developer portal."
+msgstr "Lisää tämä osoite sovellukseen, jonka luot ohjelman kehittäjäportaalissa."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Also sends invoices issued from this date, before the start date."
+msgstr "Lähettää myös tästä päivästä alkaen annetut laskut, ennen aloituspäivää."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose a date before the start date."
+msgstr "Valitse päivä ennen aloituspäivää."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose an accounting program first."
+msgstr "Valitse ensin kirjanpito-ohjelma."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose an accounting program from the list."
+msgstr "Valitse kirjanpito-ohjelma luettelosta."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program account for account credit in the accounting settings."
+msgstr "Valitse :program-tili tilin hyvitykselle kirjanpidon asetuksissa."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program account for payments by :gateway in the accounting settings."
+msgstr "Valitse :program-tili maksuille tavalla :gateway kirjanpidon asetuksissa."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program sales account in the accounting settings."
+msgstr "Valitse :program-myyntitili kirjanpidon asetuksissa."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Choose the :program tax rate for \":tax\" in the accounting settings."
+msgstr "Valitse :program-verokanta verolle \":tax\" kirjanpidon asetuksissa."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Choosing another program, or another app, ends the current connection."
+msgstr "Toisen ohjelman tai toisen sovelluksen valinta katkaisee nykyisen yhteyden."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Client #:id no longer exists."
+msgstr "Asiakasta nro :id ei enää ole."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connect"
+msgstr "Yhdistä"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Connect ClientFence to :program first."
+msgstr "Yhdistä ClientFence ensin ohjelmaan :program."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connect again"
+msgstr "Yhdistä uudelleen"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connected to :program (:organisation)."
+msgstr "Yhdistetty ohjelmaan :program (:organisation)."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connected to :program."
+msgstr "Yhdistetty ohjelmaan :program."
+
+#: src/modules/Invoice/Controller/Admin.php
+msgid "Connected."
+msgstr "Yhdistetty."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connection"
+msgstr "Yhteys"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Could not reach :program: :error"
+msgstr "Ohjelmaan :program ei saatu yhteyttä: :error"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Credit note"
+msgstr "Hyvityslasku"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Date was not passed"
+msgstr "Päivämäärää ei annettu"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Deleted or cancelled here, but kept at :program because it has a payment there."
+msgstr "Poistettu tai peruutettu täällä, mutta säilytetty ohjelmassa :program, koska siellä on maksu."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Disconnect"
+msgstr "Katkaise yhteys"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Disconnected."
+msgstr "Yhteys katkaistu."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "EU reverse charge"
+msgstr "Käänteinen verovelvollisuus (EU)"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Enter the client ID and client secret of your :program app first."
+msgstr "Anna ensin :program-sovelluksesi asiakastunnus ja asiakkaan salaisuus."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Enter the date as YYYY-MM-DD."
+msgstr "Anna päivämäärä muodossa VVVV-KK-PP."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Every invoice line is booked here."
+msgstr "Jokainen laskurivi kirjataan tänne."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Failed, will try again"
+msgstr "Epäonnistui, yritetään uudelleen"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Invoice :number has no payment method, so its :program bank account is not known."
+msgstr "Laskulla :number ei ole maksutapaa, joten sen :program-pankkitiliä ei tiedetä."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Invoices from :date are being sent too."
+msgstr "Myös päivästä :date alkaen annetut laskut lähetetään."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Invoices paid from client credit, and added funds. The account must accept payments."
+msgstr "Asiakkaan hyvityksellä maksetut laskut ja lisätyt varat. Tilin on hyväksyttävä maksuja."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "It will be sent on the next run."
+msgstr "Se lähetetään seuraavalla ajolla."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Last change"
+msgstr "Viimeisin muutos"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "No tax"
+msgstr "Ei veroa"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Not connected. Save the client ID and secret, then connect and approve the access in :program."
+msgstr "Ei yhdistetty. Tallenna asiakastunnus ja salaisuus, yhdistä sitten ja hyväksy pääsy ohjelmassa :program."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Nothing sent yet."
+msgstr "Mitään ei ole vielä lähetetty."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Off: each invoice is sent when it is approved and its payment later, so the books show what clients owe. On: an invoice is sent once it is paid, with its payment."
+msgstr "Pois: jokainen lasku lähetetään hyväksyttäessä ja sen maksu myöhemmin, jotta kirjat näyttävät, mitä asiakkaat ovat velkaa. Päällä: lasku lähetetään maksun jälkeen maksun kanssa."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Older invoices stay out unless you send them below."
+msgstr "Vanhemmat laskut jäävät pois, ellet lähetä niitä alla."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Older invoices will be sent."
+msgstr "Vanhemmat laskut lähetetään."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Paid invoices only"
+msgstr "Vain maksetut laskut"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Payments by :gateway"
+msgstr "Maksut tavalla :gateway"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Record"
+msgstr "Tietue"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Redirect URL"
+msgstr "Uudelleenohjauksen URL"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sales account"
+msgstr "Myyntitili"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Save accounting settings"
+msgstr "Tallenna kirjanpidon asetukset"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Saved. Leave empty to keep it."
+msgstr "Tallennettu. Jätä tyhjäksi säilyttääksesi sen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Send invoices issued from"
+msgstr "Lähetä laskut, jotka on annettu alkaen"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Send older invoices"
+msgstr "Lähetä vanhemmat laskut"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sends clients, approved invoices, their payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
+msgstr "Lähettää asiakkaat, hyväksytyt laskut, niiden maksut ja palautukset kirjanpito-ohjelmaasi yhteen suuntaan: mitään ei tule takaisin. Cron lähettää muutokset muutaman minuutin välein."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sent."
+msgstr "Lähetetty."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Stopped"
+msgstr "Pysäytetty"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Stored encrypted."
+msgstr "Tallennettu salattuna."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Sync log"
+msgstr "Synkronointiloki"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Sync record ID was not passed"
+msgstr "Synkronointitietueen tunnusta ei annettu"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "Sync record not found."
+msgstr "Synkronointitietuetta ei löytynyt."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Tax: :tax"
+msgstr "Vero: :tax"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The account and tax choices could not be read. Reload the page and try again."
+msgstr "Tili- ja verovalintoja ei voitu lukea. Lataa sivu uudelleen ja yritä uudelleen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "The accounts could not be read from :program: :error"
+msgstr "Tilejä ei voitu lukea ohjelmasta :program: :error"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The client ID is too long."
+msgstr "Asiakastunnus on liian pitkä."
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "The connection to :program has ended (:error): connect again."
+msgstr "Yhteys ohjelmaan :program on päättynyt (:error): yhdistä uudelleen."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "This connection request has expired or was not started here. Click Connect again."
+msgstr "Tämä yhteyspyyntö on vanhentunut tai sitä ei aloitettu täällä. Napsauta Yhdistä uudelleen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Voided"
+msgstr "Mitätöity"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Waiting"
+msgstr "Odottaa"
+
+#: src/modules/Invoice/Accounting/Xero.php
+msgid "Xero connected no organisation: choose one when you connect."
+msgstr "Xero ei yhdistänyt yhtään organisaatiota: valitse yksi yhdistäessäsi."
