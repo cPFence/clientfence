@@ -240,10 +240,10 @@ final class Xero implements Program
         return preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $value) === 1;
     }
 
-    /** A value in a Xero where filter. */
+    /** A value in a Xero where filter: a double quote is doubled (Xero answers "Syntax error" to \"; a backslash is plain). */
     private static function quote(string $value): string
     {
-        return '"' . addcslashes($value, '"\\') . '"';
+        return '"' . str_replace('"', '""', $value) . '"';
     }
 
     private static function id(array $reply, string $collection, string $field): string

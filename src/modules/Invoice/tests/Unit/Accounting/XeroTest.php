@@ -263,3 +263,13 @@ test('voiding a credit note deletes its refund payments first', function (): voi
         ->and($world->calls[1]['json'])->toBe(['Status' => 'DELETED'])
         ->and($world->calls[2]['json'])->toBe(['CreditNotes' => [['CreditNoteID' => 'cn-1', 'Status' => 'VOIDED']]]);
 });
+
+test('a double quote in a where value is doubled, as Xero reads it (a backslash escape is a syntax error there)', function (): void {
+    $client = ['id' => 9, 'remote_id' => null, 'name' => 'QA "Quoted" \\ Ltd', 'first_name' => 'Ann', 'last_name' => 'Lee', 'company' => '', 'email' => 'ann@example.com', 'vat' => '',
+        'phone' => '', 'phone_cc' => '', 'address_1' => '', 'address_2' => '', 'city' => '', 'state' => '', 'zip' => '', 'country' => 'GB'];
+    $world = acctXero(['GET Contacts' => ['Contacts' => []], 'POST Contacts' => ['Contacts' => [['ContactID' => 'contact-9']]]]);
+
+    $world->xero->contact($client);
+
+    expect($world->calls[1]['query']['where'])->toBe('Name=="QA ""Quoted"" \\ Ltd"');
+});
