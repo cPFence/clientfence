@@ -345,7 +345,7 @@ class Payment_Adapter_GoCardless implements ClientFence\InjectionAwareInterface
         if (($payment['id'] ?? '') !== $paymentId && isset($reply['http']) && ($reply['http'] === 0 || $reply['http'] === 429 || $reply['http'] >= 500)) {
             // GoCardless did not answer: the payment waits as pending (no second payment starts) until its webhook settles it.
             // Only a row still waiting: a paid or failed one keeps its result, so a later webhook cannot act on it twice.
-            $this->di['dbal']->executeStatement("UPDATE `transaction` SET txn_id = ?, type = 'gocardless', txn_status = 'processing', status = ?, error = ?, updated_at = ? WHERE id = ? AND status = ?", [$paymentId, Model_Transaction::STATUS_RECEIVED, 'GoCardless did not answer when payment ' . $paymentId . ' was read back: its webhook settles it.', date('Y-m-d H:i:s'), $id, Model_Transaction::STATUS_RECEIVED]);
+            ClientFence\Tools::withLock($this->di, 'cf:gocardless-payment:' . $paymentId, fn () => $this->di['dbal']->executeStatement("UPDATE `transaction` SET txn_id = ?, type = 'gocardless', txn_status = 'processing', status = ?, error = ?, updated_at = ? WHERE id = ? AND status = ?", [$paymentId, Model_Transaction::STATUS_RECEIVED, 'GoCardless did not answer when payment ' . $paymentId . ' was read back: its webhook settles it.', date('Y-m-d H:i:s'), $id, Model_Transaction::STATUS_RECEIVED]));
 
             return;
         }
@@ -364,15 +364,19 @@ class Payment_Adapter_GoCardless implements ClientFence\InjectionAwareInterface
         $row = ['invoice_id' => $invoice->id, 'txn_id' => $paymentId, 'type' => 'gocardless', 'amount' => $amount, 'currency' => $currency, 'updated_at' => date('Y-m-d H:i:s')];
         if (in_array($status, self::PENDING, true)) {
             // As WHMCS's "Payment Pending": no other charge or reminder until GoCardless collects it (its webhook).
-            // Only a row still waiting: a stale answer never turns a recorded payment back into a pending one.
-            $db->update('`transaction`', $row + ['txn_status' => 'processing', 'status' => Model_Transaction::STATUS_RECEIVED, 'error' => 'GoCardless is collecting the payment: ' . $status], ['id' => $id, 'status' => Model_Transaction::STATUS_RECEIVED]);
+            // Under the payment's lock and only on a row still waiting: a stale answer never turns a payment being recorded back into a pending one.
+            ClientFence\Tools::withLock($this->di, 'cf:gocardless-payment:' . $paymentId, fn () => $db->update('`transaction`', $row + ['txn_status' => 'processing', 'status' => Model_Transaction::STATUS_RECEIVED, 'error' => 'GoCardless is collecting the payment: ' . $status], ['id' => $id, 'status' => Model_Transaction::STATUS_RECEIVED]));
 
             return;
         }
         if (!in_array($status, self::PAID, true)) {
-            $waited = $db->fetchOne("SELECT 1 FROM `transaction` WHERE id = ? AND status = ? AND txn_status = 'processing'", [$id, Model_Transaction::STATUS_RECEIVED]) !== false;
             $reason = 'GoCardless payment ' . $status . ': ' . ($payment['description'] ?? '');
-            $db->update('`transaction`', $row + ['txn_status' => $status, 'status' => Model_Transaction::STATUS_ERROR, 'error' => $reason], ['id' => $id, 'status' => Model_Transaction::STATUS_RECEIVED]);
+            $waited = ClientFence\Tools::withLock($this->di, 'cf:gocardless-payment:' . $paymentId, static function () use ($db, $id, $row, $status, $reason): bool {
+                $waited = $db->fetchOne("SELECT 1 FROM `transaction` WHERE id = ? AND status = ? AND txn_status = 'processing'", [$id, Model_Transaction::STATUS_RECEIVED]) !== false;
+                $db->update('`transaction`', $row + ['txn_status' => $status, 'status' => Model_Transaction::STATUS_ERROR, 'error' => $reason], ['id' => $id, 'status' => Model_Transaction::STATUS_RECEIVED]);
+
+                return $waited;
+            });
             // A collection that failed counts as one failed try: retried as set, and the client can pay again.
             if ($waited) {
                 ClientFence\Mod\Invoice\SavedCards::debitFailedTry($this->di, $invoice, (string) ($this->savedCard((int) $invoice->client_id)['card'] ?? ''), 'GoCardless payment ' . $status . '.', $match[2]);
