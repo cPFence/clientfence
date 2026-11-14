@@ -5826,5 +5826,29 @@
     {
         "file": "console.php",
         "done": "ClientFence core patch: system:update refuses root before loading"
+    },
+    {
+        "file": "themes/admin_default/html/macro_functions.html.twig",
+        "done": "ClientFence core patch: an optional id, for a form shown on pages that have a field of the same name (the \"New\" menu's popups)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_new_form.html.twig",
+        "done": "ClientFence core patch: the top-bar \"New\" menu opens this form on every admin page (layout_default.html.twig), so its ids are its own."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_index.html.twig",
+        "done": "ClientFence core patch: the New Client popup comes from the admin layout (the top-bar \"New\" menu opens it on every page)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the top-bar \"New\" menu picks this client (New Order, New Invoice, New Client Ticket)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_index.html.twig",
+        "done": "ClientFence core patch: the New Invoice popup comes from the admin layout (mod_invoice_new_form.html.twig); ?client_id= picks that client."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: the New Client Ticket popup comes from the admin layout (mod_support_new_ticket_form.html.twig); ?client_id= picks that client."
     }
 ]

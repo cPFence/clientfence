@@ -1,0 +1,57 @@
+{% import 'macro_functions.html.twig' as mf %}
+{# ClientFence: the New Client Ticket popup, on every admin page through the top-bar "New" menu (layout_default.html.twig).
+   The message editor starts when the popup first opens (clientfence-admin.js), so it never takes over a page's own
+   editor. bf_new_client: the client of the page, picked and fixed. #}
+<div class="modal modal-blur fade" id="newClientTicketModal" tabindex="-1" aria-labelledby="newClientTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down modal-lg">
+        <form class="modal-content fb-modal-form" method="post" action="{{ 'support/ticket_create'|api_url }}" {{ fb_api_form({ redirect: 'support'|url }) }}>
+            <div class="modal-header">
+                <h3 class="modal-title" id="newClientTicketModalLabel">{{ 'Open Ticket for Existing Client'|trans }}</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+            </div>
+            <div class="modal-body">
+                <section class="fb-modal-section">
+                    <div class="fb-modal-section-header">
+                        <div class="fb-modal-section-heading-row">
+                            <h4 class="fb-modal-section-title">{{ 'Ticket Details'|trans }}</h4>
+                        </div>
+                        <p class="fb-modal-section-description">{{ 'Choose the client and helpdesk, then draft the opening message.'|trans }}</p>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="new-client-ticket-client">{{ 'Client'|trans }}</label>
+                            {% if not bf_new_client|default(null) %}
+                                <select class="form-control autocomplete-selector"
+                                        placeholder="{{ 'Start Typing the Client Name or ID'|trans }}"
+                                        id="new-client-ticket-client"
+                                        name="client_id"
+                                        data-resturl="/api/admin/client/get_pairs">
+                                </select>
+                            {% else %}
+                                <input type="text" id="new-client-ticket-client" class="form-control" disabled value="{{ bf_new_client.first_name }} {{ bf_new_client.last_name }}" />
+                                <input type="hidden" name="client_id" value="{{ bf_new_client.id }}" />
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="new-client-ticket-helpdesk">{{ 'Helpdesk'|trans }}</label>
+                            {{ mf.selectbox('support_helpdesk_id', admin.support_helpdesk_get_pairs, '', 1, null, 'new-client-ticket-helpdesk') }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="new-client-ticket-subject">{{ 'Subject'|trans }}</label>
+                            <input class="form-control" type="text" id="new-client-ticket-subject" name="subject" value="{{ request.subject|default('') }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="new-client-ticket-message">{{ 'Message'|trans }}</label>
+                            <textarea class="form-control" name="content" rows="10" required id="new-client-ticket-message"
+                                      data-bf-editor="{{ {js: 'editor/ckeditor.js'|public_asset_url, css: 'editor/ckeditor.css'|public_asset_url, v: include('partial_clientfence_asset_version.html.twig')|trim}|json_encode }}">{{ profile.signature }}</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                <button type="submit" class="btn btn-primary">{{ 'Create'|trans }}</button>
+            </div>
+        </form>
+    </div>
+</div>

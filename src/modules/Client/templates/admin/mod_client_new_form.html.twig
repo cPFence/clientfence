@@ -1,4 +1,5 @@
 {% import 'macro_functions.html.twig' as mf %}
+{# ClientFence core patch: the top-bar "New" menu opens this form on every admin page (layout_default.html.twig), so its ids are its own. #}
 <div class="modal modal-blur fade" id="newClientModal" tabindex="-1" aria-labelledby="newClientModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down new-client-modal-dialog">
         <form class="modal-content h-100 fb-modal-form" method="post" action="{{ 'client/create'|api_url }}" {{ fb_api_form({ redirect: 'client'|url}) }}>
@@ -77,8 +78,8 @@
                             <input id="new-client-postcode" type="text" name="postcode" class="form-control">
                         </div>
                         <div class="col-sm-6">
-                            <label class="form-label" for="country">{{ 'Country'|trans }}</label>
-                            {{ mf.selectbox('country', country_names(), guest.system_default_country, 0, 'Select Country'|trans) }}
+                            <label class="form-label" for="new-client-country">{{ 'Country'|trans }}</label>
+                            {{ mf.selectbox('country', country_names(), guest.system_default_country, 0, 'Select Country'|trans, 'new-client-country') }}
                         </div>
                         <div class="col-12">
                             <label class="form-label" for="new-client-phone">{{ 'Phone Number'|trans }}</label>
@@ -143,12 +144,12 @@
                             </select>
                         </div>
                         <div class="col-sm-6">
-                            <label class="form-label" for="group_id">{{ 'Group'|trans }}</label>
-                            {{ mf.selectbox('group_id', admin.client_group_get_pairs, request.group_id, 0, 'Select Group'|trans) }}
+                            <label class="form-label" for="new-client-group">{{ 'Group'|trans }}</label>
+                            {{ mf.selectbox('group_id', admin.client_group_get_pairs, request.group_id, 0, 'Select Group'|trans, 'new-client-group') }}
                         </div>
                         <div class="col-sm-6">
-                            <label class="form-label" for="currency">{{ 'Currency'|trans }}</label>
-                            {{ mf.selectbox('currency', guest.currency_get_pairs, request.currency, 0, 'Select Currency'|trans) }}
+                            <label class="form-label" for="new-client-currency">{{ 'Currency'|trans }}</label>
+                            {{ mf.selectbox('currency', guest.currency_get_pairs, request.currency, 0, 'Select Currency'|trans, 'new-client-currency') }}
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label" for="new-client-language">{{ 'Language'|trans }}</label>

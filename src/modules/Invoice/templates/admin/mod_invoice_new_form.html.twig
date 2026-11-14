@@ -1,0 +1,42 @@
+{# ClientFence: the New Invoice popup, on every admin page through the top-bar "New" menu (layout_default.html.twig);
+   clientfence-admin.js adds the picked products. bf_new_client: the client of the page, picked and fixed. #}
+<div class="modal modal-blur fade" id="newInvoiceModal" tabindex="-1" aria-labelledby="newInvoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form class="modal-content" method="post" action="{{ 'invoice/prepare'|api_url }}" {{ fb_api_form({callback: 'onAfterInvoicePrepared'}) }}
+              data-bf-new-invoice="{{ {manage: 'invoice/manage'|url, added: 'This product has already been added'|trans, heading: 'Selected products to be added as invoice items'|trans, quantity: 'Quantity'|trans, price: 'Price'|trans, remove: 'Delete'|trans}|json_encode }}">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newInvoiceModalLabel">{{ 'Create New Invoice'|trans }}</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label" for="new-invoice-client">{{ 'Client'|trans }}</label>
+                    {% if not bf_new_client|default(null) %}
+                        <select class="form-control autocomplete-selector"
+                                placeholder="{{ 'Start typing the client name or ID'|trans }}"
+                                id="new-invoice-client"
+                                name="client_id"
+                                data-resturl="/api/admin/client/get_pairs">
+                        </select>
+                    {% else %}
+                        <input type="text" id="new-invoice-client" class="form-control" disabled value="{{ bf_new_client.first_name }} {{ bf_new_client.last_name }}" />
+                        <input type="hidden" name="client_id" value="{{ bf_new_client.id }}" />
+                    {% endif %}
+                </div>
+                <div class="mb-0">
+                    <label class="form-label" for="new-invoice-product">{{ 'Product'|trans }}</label>
+                    <select class="form-control autocomplete-selector"
+                            placeholder="{{ 'Start typing to select product (optional)'|trans }}"
+                            id="new-invoice-product"
+                            name="product_id"
+                            data-resturl="/api/admin/product/get_pairs">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                <button type="submit" class="btn btn-primary">{{ 'Prepare'|trans }}</button>
+            </div>
+        </form>
+    </div>
+</div>

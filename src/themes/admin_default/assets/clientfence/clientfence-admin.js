@@ -1,7 +1,6 @@
 // ClientFence admin frame (themes/admin_default/assets/clientfence/clientfence-admin.js, a module after
 // FOSSBilling's own admin script): the Ctrl+K search, the menu drawer and its collapsed mode, the
-// "New ..." links (#bf-new=<modal id> opens that page's create
-// form), the bell, the dashboard income chart and the dashboard card order. Text from the server goes in
+// "New ..." menu (its popups open on every page; #bf-new=<modal id> opens one), the bell, the dashboard income chart and the dashboard card order. Text from the server goes in
 // with textContent only.
 
 const root = document.documentElement;
@@ -122,7 +121,7 @@ document.querySelectorAll('[data-bf-group] > summary').forEach((summary) => {
   });
 });
 
-// ---- "New ..." links: #bf-new=newClientModal opens the create form of the list page
+// ---- "New ..." menu: its popups (layout_default.html.twig) open on this page; #bf-new=newClientModal opens one
 function openNewForm() {
   const match = /^#bf-new=([A-Za-z][\w-]*)$/.exec(window.location.hash);
   if (!match) return;
@@ -133,6 +132,107 @@ function openNewForm() {
 window.addEventListener('hashchange', openNewForm);
 if (document.readyState === 'complete') openNewForm();
 else window.addEventListener('load', openNewForm);
+
+// The menu is closed when its popup closes, so Bootstrap cannot give focus back to the item: the "New" button gets it.
+document.querySelectorAll('[data-bf-new-item]').forEach((item) => item.addEventListener('click', () => {
+  document.querySelector(item.dataset.bsTarget)?.addEventListener('hidden.bs.modal', () => {
+    document.querySelector('.bf-new')?.focus();
+  }, { once: true });
+}));
+
+// New Invoice: each picked product becomes a line (title, quantity, price) sent as items[] on Prepare.
+const invoiceForm = document.querySelector('[data-bf-new-invoice]');
+if (invoiceForm) {
+  const conf = readJson(invoiceForm, 'bfNewInvoice', {});
+  window.onAfterInvoicePrepared = (id) => { window.location = `${conf.manage}/${id}`; };
+  const productSelect = invoiceForm.querySelector('[name="product_id"]');
+  const input = (attrs) => Object.assign(document.createElement('input'), { className: 'form-control', ...attrs });
+  const column = (className, child) => {
+    const col = document.createElement('div');
+    col.className = className;
+    col.append(child);
+    return col;
+  };
+  productSelect?.addEventListener('change', async () => {
+    const option = productSelect.options[productSelect.selectedIndex];
+    if (!option?.value) return;
+    const productId = option.value;
+    if (invoiceForm.querySelector(`[data-product-id="${CSS.escape(productId)}"]`)) {
+      window.ClientFence?.message?.(conf.added, 'warning');
+      productSelect.tomselect?.clear();
+      return;
+    }
+    let list = invoiceForm.querySelector('[data-bf-invoice-products]');
+    if (!list) {
+      const box = document.createElement('div');
+      box.className = 'border-top mt-4 pt-4';
+      const heading = document.createElement('h6');
+      heading.className = 'mb-3';
+      heading.textContent = conf.heading || '';
+      list = document.createElement('div');
+      list.dataset.bfInvoiceProducts = '';
+      box.append(heading, list);
+      invoiceForm.querySelector('.modal-body').append(box);
+    }
+    const row = document.createElement('div');
+    row.className = 'mb-3 row align-items-center';
+    row.dataset.productId = productId;
+    const title = input({ type: 'text', value: option.text, readOnly: true });
+    title.setAttribute('aria-label', option.text);
+    const quantity = input({ type: 'number', value: '1', min: '1', placeholder: conf.quantity || '' });
+    quantity.setAttribute('aria-label', conf.quantity || '');
+    const price = input({ type: 'number', step: '0.01', placeholder: conf.price || '' });
+    price.setAttribute('aria-label', conf.price || '');
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'btn btn-icon btn-danger';
+    remove.setAttribute('aria-label', conf.remove || '');
+    remove.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#trash" /></svg>';
+    remove.addEventListener('click', () => row.remove());
+    row.append(column('col', title), column('col-3', quantity), column('col-3', price), column('col-1', remove));
+    list.append(row);
+    productSelect.tomselect?.clear();
+    // The product's price: its one-time price, or its first billing period's.
+    const product = await apiPost('product/get', { id: productId });
+    const pricing = product?.pricing;
+    const first = pricing?.type === 'once' ? pricing.once : pricing?.type === 'recurrent' ? Object.values(pricing.recurrent || {})[0] : null;
+    if (first?.price !== undefined && price.value === '') price.value = first.price;
+  });
+  // Bound before FOSSBilling's form handler (it binds on DOMContentLoaded), so the lines go with the request.
+  invoiceForm.addEventListener('submit', () => {
+    invoiceForm.querySelectorAll('input[data-generated-item]').forEach((el) => el.remove());
+    let index = 0;
+    invoiceForm.querySelectorAll('[data-product-id]').forEach((row) => {
+      const [title, quantity, price] = row.querySelectorAll('input');
+      if (!(quantity.value > 0 && price.value > 0)) return;
+      const item = { title: title.value, price: price.value, quantity: parseInt(quantity.value, 10), taxed: 0 };
+      Object.entries(item).forEach(([key, value]) => {
+        const hidden = Object.assign(document.createElement('input'), { type: 'hidden', name: `items[${index}][${key}]`, value });
+        hidden.dataset.generatedItem = 'true';
+        invoiceForm.append(hidden);
+      });
+      index += 1;
+    });
+  });
+}
+
+// New Client Ticket: the message editor loads when the popup first opens (a page's own editors keep theirs).
+const ticketEditor = document.querySelector('[data-bf-editor]');
+ticketEditor?.closest('.modal')?.addEventListener('show.bs.modal', () => {
+  if (ticketEditor.dataset.editor || ticketEditor.dataset.bfEditorLoading) return;
+  ticketEditor.dataset.bfEditorLoading = 'true';
+  const conf = readJson(ticketEditor, 'bfEditor', {});
+  const start = () => window.ClientFence.editor.create(ticketEditor).then(() => {
+    if (root.getAttribute('data-bs-theme') === 'dark') {
+      ticketEditor.parentElement.querySelectorAll('.ck-editor__main').forEach((el) => { el.style.color = '#1d273b'; });
+    }
+  }).catch((error) => console.error('Editor initialization error:', error));
+  if (document.querySelector(`script[src^="${conf.js}"]`)) { start(); return; }
+  const css = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: `${conf.css}?v=${conf.v}` });
+  const script = Object.assign(document.createElement('script'), { src: `${conf.js}?v=${conf.v}` });
+  script.addEventListener('load', start);
+  document.head.append(css, script);
+});
 
 // ---- Ctrl+K search
 // A setting picked in the search: its page opens on its tab, then the label is looked up, scrolled

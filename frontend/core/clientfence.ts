@@ -244,7 +244,8 @@ import { formatCurrencyAmount } from './currency-format.mts';
       editor.onChange(() => syncElementData(element, editor));
 
       editorsByElement.set(element, editor);
-      if (editor.name) {
+      // ClientFence: the first editor keeps its name (a page's reply editor, not the New Client Ticket popup's).
+      if (editor.name && !editorsByName.has(editor.name)) {
         editorsByName.set(editor.name, editor);
       }
 

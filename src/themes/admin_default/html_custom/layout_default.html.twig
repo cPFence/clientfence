@@ -86,12 +86,15 @@
                     <kbd class="bf-kbd" dir="ltr">Ctrl K</kbd>
                 </button>
                 <div class="bf-header-gap"></div>
+                {# The popups open on this page (their forms read lists that need the module's "view" permission). #}
                 {% set can_new = {
-                    'client': has_permission('client', 'create'),
+                    'client': has_permission('client', 'create') and has_permission('client', 'view'),
                     'order': has_permission('order', 'manage'),
                     'invoice': has_permission('invoice', 'manage_invoices'),
-                    'support': has_permission('support', 'manage_tickets') and guest.support_tickets_enabled
+                    'support': has_permission('support', 'manage_tickets') and has_permission('support', 'view') and guest.support_tickets_enabled
                 } %}
+                {# A client's page (bf_new_client, set by the page) picks that client in New Order, New Invoice and New Client Ticket. #}
+                {% set bf_new_client = bf_new_client|default(null) %}
                 {% if can_new.client or can_new.order or can_new.invoice or can_new.support %}
                 <div class="dropdown">
                     <button type="button" class="btn btn-primary bf-new" data-bs-toggle="dropdown" aria-expanded="false">
@@ -99,10 +102,10 @@
                         <span>{{ 'New'|trans }}</span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
-                        {% if can_new.client %}<a class="dropdown-item" href="{{ 'client'|url }}#bf-new=newClientModal">{{ 'New Client'|trans }}</a>{% endif %}
-                        {% if can_new.order %}<a class="dropdown-item" href="{{ 'order'|url }}#bf-new=newOrderModal">{{ 'New Order'|trans }}</a>{% endif %}
-                        {% if can_new.invoice %}<a class="dropdown-item" href="{{ 'invoice'|url }}#bf-new=newInvoiceModal">{{ 'New Invoice'|trans }}</a>{% endif %}
-                        {% if can_new.support %}<a class="dropdown-item" href="{{ 'support'|url }}#bf-new=newClientTicketModal">{{ 'New Client Ticket'|trans }}</a>{% endif %}
+                        {% if can_new.client %}<button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#newClientModal" aria-haspopup="dialog" data-bf-new-item>{{ 'New Client'|trans }}</button>{% endif %}
+                        {% if can_new.order %}<a class="dropdown-item" href="{{ bf_new_client ? 'order/new'|url(query: { 'client_id': bf_new_client.id }) : 'order/new'|url }}">{{ 'New Order'|trans }}</a>{% endif %}
+                        {% if can_new.invoice %}<button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#newInvoiceModal" aria-haspopup="dialog" data-bf-new-item>{{ 'New Invoice'|trans }}</button>{% endif %}
+                        {% if can_new.support %}<button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#newClientTicketModal" aria-haspopup="dialog" data-bf-new-item>{{ 'New Client Ticket'|trans }}</button>{% endif %}
                     </div>
                 </div>
                 {% endif %}
@@ -189,6 +192,10 @@
         </div>
     </div>
     {{ include('partial_clientfence_palette.html.twig') }}
+    {# The "New" menu's popups, on every page (their list pages open the same ones). #}
+    {% if can_new.client|default(false) %}{{ include('mod_client_new_form.html.twig') }}{% endif %}
+    {% if can_new.invoice|default(false) %}{{ include('mod_invoice_new_form.html.twig') }}{% endif %}
+    {% if can_new.support|default(false) %}{{ include('mod_support_new_ticket_form.html.twig') }}{% endif %}
     {% endif %}
 
     <div class="loading dim"></div>

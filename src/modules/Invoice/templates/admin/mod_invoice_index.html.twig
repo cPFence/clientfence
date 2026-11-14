@@ -9,6 +9,9 @@
 {% set filter_panel_id = 'page-search-filters' %}
 {# ClientFence core patch: a status filter alone keeps the counter cards (the ClientFence admin frame filters the list in place). #}
 {% set filter_panel_open = request_has_filters and request_query|filter((v, k) => k not in ['status', 'page', 'per_page', 'search'])|length > 0 %}
+{# ClientFence core patch: the New Invoice popup comes from the admin layout (mod_invoice_new_form.html.twig); ?client_id= picks that client. #}
+{% set bf_new_client = request.client_id ? admin.client_get({ 'id': request.client_id }) : null %}
+{% if has_permission('invoice', 'manage_invoices') %}
 {% set new_invoice_action %}
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newInvoiceModal">
         <svg class="icon">
@@ -17,6 +20,7 @@
         {{ 'New Invoice'|trans }}
     </button>
 {% endset %}
+{% endif %}
 
 {% block top_content %}
 {% if not filter_panel_open %}
@@ -94,7 +98,7 @@
             <div class="card border-0 shadow-none rounded-0">
                 {{ include('partial_search.html.twig', {
                     search_body_class: filter_panel_open ? 'pb-2 border-bottom-0' : '',
-                    search_toolbar_actions: new_invoice_action
+                    search_toolbar_actions: new_invoice_action|default('')
                 }) }}
                 <section id="{{ filter_panel_id }}" class="card-body pt-0 px-3 pb-3 border-bottom collapse{% if filter_panel_open %} show{% endif %}">
                     <form method="get" class="border border-top-0 rounded-top-0 rounded-bottom-3 bg-body-tertiary p-3">
@@ -292,61 +296,14 @@
                     </div>
                 </div>
 
-            <div class="modal modal-blur fade" id="newInvoiceModal" tabindex="-1" aria-labelledby="newInvoiceModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <form class="modal-content" method="post" action="{{ 'invoice/prepare'|api_url }}" {{ fb_api_form({callback: 'onAfterInvoicePrepared'}) }}>
-                        <div class="modal-header">
-                            <h3 class="modal-title" id="newInvoiceModalLabel">{{ 'Create New Invoice'|trans }}</h3>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label" for="client_id">{{ 'Client'|trans }}</label>
-                                {% if not request.client_id %}
-                                    <select class="form-control autocomplete-selector"
-                                            placeholder="{{ 'Start typing the client name or ID'|trans }}"
-                                            id="client_id"
-                                            name="client_id"
-                                            data-resturl="/api/admin/client/get_pairs">
-                                    </select>
-                                {% else %}
-                                    {% set client = admin.client_get({ 'id': request.client_id }) %}
-                                    <input type="text" id="client_id" class="form-control" disabled value="{{ client.first_name }} {{ client.last_name }}" />
-                                    <input type="hidden" name="client_id" value="{{ request.client_id }}" />
-                                {% endif %}
-                            </div>
-                            <div class="mb-0">
-                                <label class="form-label" for="product_id">{{ 'Product'|trans }}</label>
-                                <select class="form-control autocomplete-selector"
-                                        placeholder="{{ 'Start typing to select product (optional)'|trans }}"
-                                        id="product_id"
-                                        name="product_id"
-                                        data-resturl="/api/admin/product/get_pairs">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
-                            <button type="submit" class="btn btn-primary">{{ 'Prepare'|trans }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block js %}
 <script nonce="{{ csp_nonce }}">
-    function onAfterInvoicePrepared(id) {
-        window.location = "{{ 'invoice/manage/'|url }}/" + id;
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         const modalElement = document.getElementById('newInvoiceModal');
-        const invoiceForm = modalElement?.querySelector('form');
-        const productSelect = document.getElementById('product_id');
-        let tomSelectInstance = null;
         const modal = modalElement ? bootstrap.Modal.getOrCreateInstance(modalElement) : null;
 
         if (window.location.hash === '#tab-new' && modal) {
@@ -362,163 +319,6 @@
             url.hash = '';
             window.history.replaceState({}, '', url);
         });
-
-        if (productSelect && productSelect.tomselect) {
-            tomSelectInstance = productSelect.tomselect;
-        }
-
-        if (productSelect) {
-            productSelect.addEventListener('change', function() {
-                const selectedOption = this.options[this.selectedIndex];
-                if (!selectedOption.value) {
-                    return;
-                }
-
-                const productId = selectedOption.value;
-                const productTitle = selectedOption.text;
-
-                const productsList = document.getElementById('products-list');
-                if (productsList) {
-                    const existingProduct = productsList.querySelector(`[data-product-id="${productId}"]`);
-                    if (existingProduct) {
-                        ClientFence.message("{{ 'This product has already been added'|trans }}", 'warning');
-                        if (tomSelectInstance) {
-                            tomSelectInstance.clear();
-                        }
-                        return;
-                    }
-                }
-
-                let itemsContainer = document.getElementById('selected-product-items');
-                if (!itemsContainer) {
-                    itemsContainer = document.createElement('div');
-                    itemsContainer.id = 'selected-product-items';
-                    itemsContainer.className = 'border-top mt-4 pt-4';
-                    itemsContainer.innerHTML = '<h6 class="mb-3">{{ 'Selected products to be added as invoice items'|trans }}</h6><div id="products-list"></div>';
-                    invoiceForm.querySelector('.modal-body').appendChild(itemsContainer);
-                }
-
-                const productDiv = document.createElement('div');
-                productDiv.className = 'mb-3 row align-items-center';
-                productDiv.dataset.productId = productId;
-
-                const titleCol = document.createElement('div');
-                titleCol.className = 'col';
-                const titleInput = document.createElement('input');
-                titleInput.type = 'text';
-                titleInput.name = `products[${productId}][title]`;
-                titleInput.value = productTitle;
-                titleInput.className = 'form-control';
-                titleInput.readOnly = true;
-                titleCol.appendChild(titleInput);
-
-                const qtyCol = document.createElement('div');
-                qtyCol.className = 'col-3';
-                const qtyInput = document.createElement('input');
-                qtyInput.type = 'number';
-                qtyInput.name = `products[${productId}][quantity]`;
-                qtyInput.value = '1';
-                qtyInput.min = '1';
-                qtyInput.className = 'form-control';
-                qtyInput.placeholder = "{{ 'Quantity'|trans }}";
-                qtyCol.appendChild(qtyInput);
-
-                const priceCol = document.createElement('div');
-                priceCol.className = 'col-3';
-                const priceInput = document.createElement('input');
-                priceInput.type = 'number';
-                priceInput.name = `products[${productId}][price]`;
-                priceInput.step = '0.01';
-                priceInput.className = 'form-control';
-                priceInput.placeholder = "{{ 'Price'|trans }}";
-                priceCol.appendChild(priceInput);
-
-                const deleteCol = document.createElement('div');
-                deleteCol.className = 'col-1';
-                const deleteBtn = document.createElement('button');
-                deleteBtn.type = 'button';
-                deleteBtn.className = 'btn btn-icon btn-danger';
-                deleteBtn.innerHTML = '<svg class="icon"><use href="#trash" /></svg>';
-                deleteBtn.addEventListener('click', function() {
-                    productDiv.remove();
-                });
-                deleteCol.appendChild(deleteBtn);
-
-                productDiv.appendChild(titleCol);
-                productDiv.appendChild(qtyCol);
-                productDiv.appendChild(priceCol);
-                productDiv.appendChild(deleteCol);
-
-                document.getElementById('products-list').appendChild(productDiv);
-
-                fetch(`{{ 'product/get'|api_url }}?id=${productId}`, {
-                    headers: {
-                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result && data.result.pricing) {
-                        const pricing = data.result.pricing;
-                        if (pricing.type === 'once' && pricing.once && pricing.once.price !== undefined) {
-                            priceInput.value = pricing.once.price;
-                        } else if (pricing.type === 'recurrent' && pricing.recurrent) {
-                            const periods = Object.keys(pricing.recurrent);
-                            if (periods.length > 0) {
-                                const firstPeriod = periods[0];
-                                if (pricing.recurrent[firstPeriod] && pricing.recurrent[firstPeriod].price !== undefined) {
-                                    priceInput.value = pricing.recurrent[firstPeriod].price;
-                                }
-                            }
-                        }
-                    }
-                })
-                .catch(() => {});
-
-                if (tomSelectInstance) {
-                    tomSelectInstance.clear();
-                }
-            });
-        }
-
-        if (invoiceForm) {
-            invoiceForm.addEventListener('submit', function() {
-                const productItems = document.querySelectorAll('#selected-product-items .row[data-product-id]');
-                if (productItems.length === 0) {
-                    return;
-                }
-
-                const items = [];
-                productItems.forEach(itemDiv => {
-                    const productId = itemDiv.dataset.productId;
-                    const titleInput = itemDiv.querySelector(`input[name="products[${productId}][title]"]`);
-                    const quantityInput = itemDiv.querySelector(`input[name="products[${productId}][quantity]"]`);
-                    const priceInput = itemDiv.querySelector(`input[name="products[${productId}][price]"]`);
-
-                    if (titleInput && quantityInput && priceInput && quantityInput.value > 0 && priceInput.value > 0) {
-                        items.push({
-                            'title': titleInput.value,
-                            'price': priceInput.value,
-                            'quantity': parseInt(quantityInput.value),
-                            'taxed': 0
-                        });
-                    }
-                });
-
-                invoiceForm.querySelectorAll('input[data-generated-item="true"]').forEach(input => input.remove());
-
-                items.forEach((item, index) => {
-                    Object.entries(item).forEach(([key, value]) => {
-                        const itemInput = document.createElement('input');
-                        itemInput.type = 'hidden';
-                        itemInput.name = `items[${index}][${key}]`;
-                        itemInput.value = value;
-                        itemInput.dataset.generatedItem = 'true';
-                        invoiceForm.appendChild(itemInput);
-                    });
-                });
-            });
-        }
     });
 </script>
 {% endblock %}

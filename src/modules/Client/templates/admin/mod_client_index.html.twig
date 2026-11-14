@@ -320,9 +320,7 @@
                 </div>
             </div>
 
-            {% if can_create_client %}
-                {{ include('mod_client_new_form.html.twig') }}
-            {% endif %}
+            {# ClientFence core patch: the New Client popup comes from the admin layout (the top-bar "New" menu opens it on every page). #}
 
             {% if can_manage_groups %}
             <div class="tab-pane fade" id="tab-groups" role="tabpanel">

@@ -25,6 +25,9 @@
 {% set filter_panel_id = 'page-search-filters' %}
 {# ClientFence core patch: a status filter alone keeps the counter cards (the ClientFence admin frame filters the list in place). #}
 {% set filter_panel_open = request_has_filters and request_query|filter((v, k) => k not in ['status', 'page', 'per_page', 'search'])|length > 0 %}
+{# ClientFence core patch: the New Client Ticket popup comes from the admin layout (mod_support_new_ticket_form.html.twig); ?client_id= picks that client. #}
+{% set bf_new_client = request.client_id ? admin.client_get({ 'id': request.client_id }) : null %}
+{% if has_permission('support', 'manage_tickets') and guest.support_tickets_enabled %}
 {% set support_toolbar_actions %}
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newClientTicketModal">
         <svg class="icon">
@@ -33,6 +36,7 @@
         {{ 'New Client Ticket'|trans }}
     </button>
 {% endset %}
+{% endif %}
 
 {% block top_content %}
 {% if not filter_panel_open %}
@@ -109,7 +113,7 @@
         <div class="card-body p-0">
             {{ include('partial_search.html.twig', {
                 search_body_class: filter_panel_open ? 'pb-2 border-bottom-0' : '',
-                search_toolbar_actions: support_toolbar_actions
+                search_toolbar_actions: support_toolbar_actions|default('')
             }) }}
             <section id="{{ filter_panel_id }}" class="card-body pt-0 px-3 pb-3 border-bottom collapse{% if filter_panel_open %} show{% endif %}">
                 <form method="get" class="border border-top-0 rounded-top-0 rounded-bottom-3 bg-body-tertiary p-3">
@@ -352,60 +356,6 @@
             </div>
         </div>
 
-        <div class="modal modal-blur fade" id="newClientTicketModal" tabindex="-1" aria-labelledby="newClientTicketModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down modal-lg">
-                <form class="modal-content fb-modal-form" method="post" action="{{ 'support/ticket_create'|api_url }}" {{ fb_api_form({ redirect: 'support'|url }) }}>
-                    <div class="modal-header">
-                        <h3 class="modal-title" id="newClientTicketModalLabel">{{ 'Open Ticket for Existing Client'|trans }}</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
-                    </div>
-                    <div class="modal-body">
-                        <section class="fb-modal-section">
-                            <div class="fb-modal-section-header">
-                                <div class="fb-modal-section-heading-row">
-                                    <h4 class="fb-modal-section-title">{{ 'Ticket Details'|trans }}</h4>
-                                </div>
-                                <p class="fb-modal-section-description">{{ 'Choose the client and helpdesk, then draft the opening message.'|trans }}</p>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="form-label" for="client_id">{{ 'Client'|trans }}</label>
-                                    {% if not request.client_id %}
-                                        <select class="form-control autocomplete-selector"
-                                                placeholder="{{ 'Start Typing the Client Name or ID'|trans }}"
-                                                id="client_id"
-                                                name="client_id"
-                                                data-resturl="/api/admin/client/get_pairs">
-                                        </select>
-                                    {% else %}
-                                        {% set client = admin.client_get({ 'id': request.client_id }) %}
-                                        <input type="text" id="client_id" class="form-control" disabled value="{{ client.first_name }} {{ client.last_name }}" />
-                                        <input type="hidden" name="client_id" value="{{ request.client_id }}" />
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">{{ 'Helpdesk'|trans }}</label>
-                                    {{ mf.selectbox('support_helpdesk_id', admin.support_helpdesk_get_pairs, '', 1) }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label" for="new-client-ticket-subject">{{ 'Subject'|trans }}</label>
-                                    <input class="form-control" type="text" id="new-client-ticket-subject" name="subject" value="{{ request.subject|default('') }}" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label" for="new-client-ticket-message">{{ 'Message'|trans }}</label>
-                                    <textarea class="form-control editor-textarea" name="content" rows="10" required id="new-client-ticket-message">{{ profile.signature }}</textarea>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
-                        <button type="submit" class="btn btn-primary">{{ 'Create'|trans }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
     </div>
 {% endblock %}
 
@@ -466,4 +416,3 @@
 </script>
 {% endblock %}
 
-{% block head %}{{ wysiwyg('.editor-textarea') }}{% endblock %}

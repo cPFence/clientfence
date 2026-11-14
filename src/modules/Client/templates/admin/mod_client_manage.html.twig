@@ -3,6 +3,8 @@
 {% import 'macro_functions.html.twig' as mf %}
 
 {% set active_menu = 'client' %}
+{# ClientFence core patch: the top-bar "New" menu picks this client (New Order, New Invoice, New Client Ticket). #}
+{% set bf_new_client = client %}
 {% set can_impersonate_client = has_permission('client', 'impersonate_login') %}
 {% set can_delete_client = has_permission('client', 'delete') %}
 {% set can_edit_profile = has_permission('client', 'edit_profile') %}

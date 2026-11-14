@@ -154,8 +154,9 @@
     {% endif %}
 {% endmacro q %}
 
-{% macro selectbox(name, options, selected, required, nullOption) %}
-    <select class="form-select" name="{{ name }}" id="{{ name }}"{% if required %}required{% endif%}>
+{# ClientFence core patch: an optional id, for a form shown on pages that have a field of the same name (the "New" menu's popups). #}
+{% macro selectbox(name, options, selected, required, nullOption, id) %}
+    <select class="form-select" name="{{ name }}" id="{{ id|default(name) }}"{% if required %}required{% endif%}>
         {% if nullOption %}<option value="">{{ nullOption }}</option>{% endif %}
         {% for val, label in options %}
             <option value="{{ val }}" label="{{ label|e }}" {% if selected == val %}selected="selected"{% endif %}>{{ label|e }}</option>
