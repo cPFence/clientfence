@@ -54,6 +54,8 @@ function upgradesDb(): Connection
             . ' to_expires_at TEXT NOT NULL, days_left INTEGER NOT NULL, days_total INTEGER NOT NULL, credit REAL NOT NULL, charge REAL NOT NULL, amount REAL NOT NULL, currency TEXT NOT NULL DEFAULT \'\','
             . ' invoice_id INTEGER, status TEXT NOT NULL DEFAULT \'pending\', error TEXT, created_at TEXT NOT NULL, claimed_at TEXT, applied_at TEXT)',
         'CREATE TABLE ' . Upgrades::RULES . ' (scope TEXT NOT NULL, ref_id INTEGER NOT NULL, upgrade INTEGER, downgrade INTEGER, updated_at TEXT NOT NULL, PRIMARY KEY (scope, ref_id))',
+        'CREATE TABLE client_affiliate (id INTEGER PRIMARY KEY, client_id INTEGER)',
+        'CREATE TABLE client_affiliate_entry (id INTEGER PRIMARY KEY AUTOINCREMENT, affiliate_id INTEGER, type TEXT, status TEXT, amount REAL, source_amount REAL, currency TEXT, client_id INTEGER, client_order_id INTEGER, invoice_id INTEGER, reverses_id INTEGER UNIQUE, created_at TEXT, updated_at TEXT)',
     ] as $sql) {
         $db->executeStatement($sql);
     }
@@ -182,6 +184,7 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getConnection')->andReturn($db);
     $di['em'] = $em;
+    $di['dbal'] = $db;
     $facade = new UpgradesTestDb($db);
     $di['db'] = $facade;
     // The fixtures' dates add calendar months (31 January + 1 month = 3 March) unless a test keeps the day.
@@ -806,6 +809,57 @@ test('yearly to monthly downgrade: applied at once, the difference goes to the a
         ->and($db->fetchAssociative('SELECT client_id, amount, type, rel_id FROM client_balance'))->toBe(['client_id' => 5, 'amount' => 218.56, 'type' => 'credit', 'rel_id' => '2'])
         // No invoice to pay; the credit note from the invoice that paid the year.
         ->and($db->fetchFirstColumn('SELECT nr FROM invoice WHERE id < 9000'))->toBe(['from 9002']);
+});
+
+test('a downgrade credit takes back the same share of the current period\'s affiliate commission; a refund later takes the rest', function (string $status): void {
+    // The credit came back while the commission stayed, so the same money earned again on each re-order.
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $db->insert('client_affiliate', ['id' => 1, 'client_id' => 9]);
+    // Order 2's year was paid by invoice 9002 (600.00, a 60.00 commission); 8002 paid an older year; 9003 is another service.
+    $db->insert('invoice', ['id' => 8002, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0]);
+    $db->insert('invoice_item', ['invoice_id' => 8002, 'type' => 'order', 'rel_id' => '2', 'title' => 'Paid', 'price' => 600, 'quantity' => 1, 'taxed' => 0]);
+    foreach ([[2, 8002, 'cleared'], [2, 9002, $status], [3, 9003, 'pending']] as [$order, $invoice, $state]) {
+        $db->insert('client_affiliate_entry', ['affiliate_id' => 1, 'type' => 'commission', 'status' => $state, 'amount' => 60, 'source_amount' => 600, 'currency' => 'USD', 'client_id' => 5, 'client_order_id' => $order, 'invoice_id' => $invoice]);
+    }
+
+    expect(Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW))->toMatchArray(['status' => 'applied', 'amount' => -218.56]);
+    // 218.56 of 600.00 came back: 21.86 of the 60.00 commission.
+    $status === 'cleared'
+        ? expect($db->fetchAllAssociative("SELECT reverses_id, amount FROM client_affiliate_entry WHERE type = 'reversal'"))->toBe([['reverses_id' => 2, 'amount' => -21.86]])
+        : expect($db->fetchAssociative('SELECT status, amount, source_amount FROM client_affiliate_entry WHERE id = 2'))->toBe(['status' => 'pending', 'amount' => 38.14, 'source_amount' => 381.44]);
+    expect($db->fetchAllKeyValue('SELECT id, status FROM client_affiliate_entry WHERE id IN (1, 3)'))->toBe([1 => 'cleared', 3 => 'pending'])
+        ->and($db->fetchOne('SELECT COUNT(*) FROM client_affiliate_entry WHERE reverses_id IN (1, 3)'))->toBe(0);
+
+    // A full refund of 9002 afterwards takes back the whole commission, not the share again.
+    ClientFence\Mod\Client\Affiliates\Commissions::reverse($di, 9002);
+    $status === 'cleared'
+        ? expect($db->fetchAllAssociative("SELECT reverses_id, amount FROM client_affiliate_entry WHERE type = 'reversal'"))->toBe([['reverses_id' => 2, 'amount' => -60.0]])
+        : expect($db->fetchOne('SELECT status FROM client_affiliate_entry WHERE id = 2'))->toBe('cancelled');
+})->with(['cleared' => ['cleared'], 'pending' => ['pending']]);
+
+test('an imported commission (no stored base) gives back the share of its invoice\'s lines', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $db->insert('client_affiliate', ['id' => 1, 'client_id' => 9]);
+    $db->insert('client_affiliate_entry', ['affiliate_id' => 1, 'type' => 'commission', 'status' => 'cleared', 'amount' => 60, 'currency' => 'USD', 'client_id' => 5, 'client_order_id' => 2, 'invoice_id' => 9002]);
+
+    Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW);
+
+    expect($db->fetchOne("SELECT amount FROM client_affiliate_entry WHERE type = 'reversal'"))->toBe(-21.86);
+});
+
+test('a downgrade does not touch a commission of an earlier period (one-time commissions)', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $db->insert('client_affiliate', ['id' => 1, 'client_id' => 9]);
+    $db->insert('invoice', ['id' => 8002, 'client_id' => 5, 'status' => 'paid', 'taxrate' => 0]);
+    $db->insert('invoice_item', ['invoice_id' => 8002, 'type' => 'order', 'rel_id' => '2', 'title' => 'Paid', 'price' => 600, 'quantity' => 1, 'taxed' => 0]);
+    $db->insert('client_affiliate_entry', ['affiliate_id' => 1, 'type' => 'commission', 'status' => 'cleared', 'amount' => 60, 'source_amount' => 600, 'currency' => 'USD', 'client_id' => 5, 'client_order_id' => 2, 'invoice_id' => 8002]);
+
+    Upgrades::request($di, upgradesOrder($di, 2), 1, '1M', UPGRADES_NOW);
+
+    expect($db->fetchOne("SELECT COUNT(*) FROM client_affiliate_entry WHERE type = 'reversal'"))->toBe(0);
 });
 
 test('an imported invoice paid from WHMCS credit is worth what was paid, not less', function (string $title, ?string $unit): void {
@@ -1725,6 +1779,8 @@ test('a change takes the client money lock that refunds take (D-09)', function (
     $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
     $dbal->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(?, 10)', ['fb:credit_payment:client:5'])->andReturn($got);
     $dbal->shouldReceive('fetchOne')->times($got)->with('SELECT RELEASE_LOCK(?)', ['fb:credit_payment:client:5']);
+    // The applied credit looks for the paid invoice whose commission it takes back (none here).
+    $dbal->shouldReceive('fetchOne')->times($got)->with(Mockery::pattern('/FROM invoice_item ii/'), ['3'])->andReturn(null);
     $di['dbal'] = $dbal;
 
     expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', UPGRADES_NOW)['status'])->toBe($status)

@@ -610,6 +610,8 @@ final class Upgrades
                     $net = abs((float) $up['amount']);
                     $description = sprintf('Credit for the unused time of order #%d (%s)', $orderId, $up['kind']);
                     $di['mod_service']('client')->addFunds($client, self::creditWithTax($net, $rate), $description, ['type' => 'credit', 'rel_id' => $orderId]);
+                    // ClientFence core patch: the money given back takes its affiliate commission with it, or the same payment earns again.
+                    \ClientFence\Mod\Client\Affiliates\Commissions::credited($di, $orderId, $net);
                     // A credit note from the invoice whose rate was used, so the sales tax report shows the tax given back.
                     // Named after the service: the first refund of any of its invoices takes the credit back.
                     if ($source !== null) {

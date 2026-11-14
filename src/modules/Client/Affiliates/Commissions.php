@@ -90,11 +90,14 @@ final class Commissions
                     $now = date('Y-m-d H:i:s');
                     if ($row['status'] === 'pending') {
                         $db->update('client_affiliate_entry', ['status' => 'cancelled', 'updated_at' => $now], ['id' => $row['id'], 'status' => 'pending']);
-                    } elseif ($db->fetchOne('SELECT 1 FROM client_affiliate_entry WHERE reverses_id = ?', [$row['id']]) === false) {
+                    } elseif (($done = $db->fetchAssociative('SELECT id, amount FROM client_affiliate_entry WHERE reverses_id = ?', [$row['id']])) === false) {
                         $db->insert('client_affiliate_entry', [
                             'affiliate_id' => $affiliateId, 'type' => 'reversal', 'status' => 'cleared', 'amount' => -(float) $row['amount'], 'currency' => $row['currency'],
                             'client_id' => $row['client_id'], 'client_order_id' => $row['client_order_id'], 'reverses_id' => $row['id'], 'created_at' => $now, 'updated_at' => $now,
                         ]);
+                    } elseif (round((float) $done['amount'] + (float) $row['amount'], 2) > 0) {
+                        // A downgrade credit took back a share (credited()): the refund takes the rest.
+                        $db->update('client_affiliate_entry', ['amount' => -(float) $row['amount'], 'updated_at' => $now], ['id' => $done['id']]);
                     } else {
                         continue;
                     }
@@ -102,6 +105,55 @@ final class Commissions
                 }
             });
         }
+    }
+
+    /**
+     * A downgrade gave $credit of the service's unused time back as account credit (Order/Upgrades.php): the commission of
+     * the invoice that paid the current period gives back the same share, so money returned never earns twice.
+     */
+    public static function credited(\Pimple\Container $di, int $orderId, float $credit): void
+    {
+        $db = $di['dbal'];
+        $invoiceId = $db->fetchOne(
+            "SELECT MAX(ii.invoice_id) FROM invoice_item ii JOIN invoice i ON i.id = ii.invoice_id WHERE ii.type = 'order' AND ii.rel_id = ? AND i.status = 'paid'",
+            [(string) $orderId],
+        );
+        $affiliateId = $invoiceId ? $db->fetchOne("SELECT affiliate_id FROM client_affiliate_entry WHERE invoice_id = ? AND client_order_id = ? AND type = 'commission' AND status <> 'cancelled'", [$invoiceId, $orderId]) : false;
+        if ($affiliateId === false || $credit <= 0) {
+            return;
+        }
+        Tools::withLock($di, 'fb:affiliate:' . $affiliateId, static function () use ($di, $db, $invoiceId, $orderId, $credit): void {
+            $row = $db->fetchAssociative(
+                "SELECT e.*, a.client_id AS affiliate_client_id FROM client_affiliate_entry e JOIN client_affiliate a ON a.id = e.affiliate_id
+                 WHERE e.invoice_id = ? AND e.client_order_id = ? AND e.type = 'commission' AND e.status <> 'cancelled'",
+                [$invoiceId, $orderId],
+            );
+            if ($row === false) {
+                return;
+            }
+            $amount = (float) $row['amount'];
+            // Imported commissions have no stored base: the invoice's lines for the service, as earn() counts it.
+            $base = (float) ($row['source_amount'] ?? $db->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND type IN ('order', 'custom')", [$invoiceId, (string) $orderId]));
+            $done = $row['status'] === 'cleared' ? $db->fetchAssociative('SELECT id, amount FROM client_affiliate_entry WHERE reverses_id = ?', [$row['id']]) : false;
+            // The commission per unit of the base it was earned on; a pending row's base shrinks with it, so later credits stay in proportion.
+            $take = min(round($amount + ($done === false ? 0.0 : (float) $done['amount']), 2), $base > 0 ? round($amount * $credit / $base, 2) : $amount);
+            if ($take <= 0) {
+                return;
+            }
+            $now = date('Y-m-d H:i:s');
+            if ($row['status'] === 'pending') {
+                $left = round($amount - $take, 2);
+                $db->update('client_affiliate_entry', ['amount' => $left, 'source_amount' => max(0.0, round($base - $credit, 2)), 'updated_at' => $now] + ($left <= 0 ? ['status' => 'cancelled'] : []), ['id' => $row['id'], 'status' => 'pending']);
+            } elseif ($done === false) {
+                $db->insert('client_affiliate_entry', [
+                    'affiliate_id' => $row['affiliate_id'], 'type' => 'reversal', 'status' => 'cleared', 'amount' => -$take, 'currency' => $row['currency'],
+                    'client_id' => $row['client_id'], 'client_order_id' => $orderId, 'reverses_id' => $row['id'], 'created_at' => $now, 'updated_at' => $now,
+                ]);
+            } else {
+                $db->update('client_affiliate_entry', ['amount' => round((float) $done['amount'] - $take, 2), 'updated_at' => $now], ['id' => $done['id']]);
+            }
+            Affiliates::log($di, (int) $row['affiliate_client_id'], sprintf('Affiliate commission #%d reduced by %s: order #%d was downgraded with credit back', $row['id'], number_format($take, 2), $orderId));
+        });
     }
 
     /** Clientfence\Service::onAfterAdminCronRun(), once a day: missing commissions, then clearing. */
