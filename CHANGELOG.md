@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.0.52 (2026-11-14)
+
+### Added
+
+- Start date on staff Add New Order: a service can start on a past day and its first period counts from it, while the invoice is dated today. "Already set up" now works for every product type, a domain can be added as an existing domain with no registrar action, and the activation date can be edited on the order page. ([#19](https://github.com/cPFence/clientfence/issues/19))
+- Support PIN lookup: an 8-digit Support PIN typed into the admin client search finds that client, and each match is logged. ([#20](https://github.com/cPFence/clientfence/issues/20))
+- Upgrades to every product in a category, including products added to it later. ([#24](https://github.com/cPFence/clientfence/issues/24))
+- Receipt upload can be turned on or off for each offline payment method. ([#26](https://github.com/cPFence/clientfence/issues/26))
+- Update from the server: `php console.php system:update` runs the same checks, backup and rollback as System > Update; `--check` only shows the versions.
+
+### Changed
+
+- The New menu opens New Client, New Invoice and New Client Ticket as popups on the page you are on, New Order opens Add New Order, and on a client's page they fill in that client. ([#21](https://github.com/cPFence/clientfence/issues/21))
+- The logo, dark logo and icon on Settings > System are upload boxes, as in the setup wizard. ([#23](https://github.com/cPFence/clientfence/issues/23))
+- The Email registrar opens one support ticket per domain for its requests and changes the domain only when staff mark them done. It no longer emails staff and shows the change as made. With support tickets off, orders and renewals go through with a warning in the activity log, and clients are asked to contact you for other domain changes. ([#25](https://github.com/cPFence/clientfence/issues/25))
+- Support PINs are unique, and the client dashboard shows the PIN only after a click.
+
+### Fixed
+
+- A staff email entered in the client area's password reset form is now named as such in the security log, which points to the reset on the admin sign-in page.
+- A product added in the New Invoice form gets its first available price instead of 0.
+
 ## 1.0.51 (2026-11-14)
 
 ### Added
