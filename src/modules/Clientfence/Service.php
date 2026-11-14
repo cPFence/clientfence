@@ -879,7 +879,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         $subject = count($due) === 1
             ? 'Domain renewal: ' . $due[0]['sld'] . $due[0]['tld']
             : 'Domain renewals: ' . count($due) . ' domains';
-        $content = '<p>These domains need attention:</p><ul>' . $items . '</ul><p>Sent by the ClientFence module of the billing portal.</p>';
+        $content = '<p>These domains need attention:</p><ul>' . $items . '</ul><p>Sent by ClientFence.</p>';
 
         $company = (string) ($di['mod_service']('system')->getCompany()['name'] ?? '') ?: 'ClientFence';
         $di['mod_service']('email')->sendMail($to, $to, $subject, $content, $company, $company);
