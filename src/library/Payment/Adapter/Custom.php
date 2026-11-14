@@ -45,6 +45,14 @@ class Payment_Adapter_Custom
                         'label' => __trans('Enter Your Text for Subscription Information'),
                     ],
                 ],
+                // ClientFence core patch: the receipt upload on the invoice page per method (Invoice/Receipts.php receiptUpload()).
+                'receipt_upload' => [
+                    'radio', [
+                        'label' => __trans('Clients can upload a receipt:'),
+                        'description' => __trans('On the invoice page, clients can upload their transfer receipt, which opens a support ticket. Off: the page shows only the payment instructions.'),
+                        'multiOptions' => ['1' => __trans('On'), '0' => __trans('Off')],
+                    ],
+                ],
             ],
         ];
     }

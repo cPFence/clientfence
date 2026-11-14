@@ -127,8 +127,9 @@
                                     <li>{{ 'Send exactly :amount'|trans({ ':amount': '<strong>' ~ (amount_text|e) ~ '</strong>' })|raw }}{% if m.quote %} ({{ 'that is :amount at today’s rate, rounded up'|trans({ ':amount': sm.money(m.total ?? due, currency) }) }}){% endif %}.</li>
                                     <li>{{ 'Use the details below and write :ref as the reference.'|trans({ ':ref': '<strong class="bf-mono" dir="ltr">' ~ (nr|e) ~ '</strong>' })|raw }}</li>
                                     {# ClientFence core patch: the receipt upload opens a ticket, so while tickets are off (Support settings) the outside help desk link instead, if any. #}
-                                    {% set receipt_upload = guest.support_tickets_enabled %}
-                                    <li>{{ receipt_upload ? 'Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid.'|trans : 'Send the receipt to our support. We confirm the payment and mark the invoice paid.'|trans }}</li>
+                                    {# ClientFence core patch: a method whose "Clients can upload a receipt" setting is off shows no upload (Receipts.php receiptUpload()). #}
+                                    {% set receipt_upload = guest.support_tickets_enabled and m.receipt %}
+                                    <li>{{ receipt_upload ? 'Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid.'|trans : (guest.support_tickets_enabled ? 'We confirm the payment when it arrives and mark the invoice paid.'|trans : 'Send the receipt to our support. We confirm the payment and mark the invoice paid.'|trans) }}</li>
                                 </ol>
                                 {# ClientFence: plain-text instructions keep their line breaks (bank name, IBAN, reference). #}
                                 {% set details = client.invoice_payment_details({ hash: invoice.hash, gateway_id: m.id }) %}

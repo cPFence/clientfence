@@ -47,6 +47,44 @@ test('authorized users with invoices may see payment instructions and send recei
         ->and(Users::CALLS['client'])->not->toHaveKey('receipt_send');
 });
 
+test('a manual method takes receipts unless its setting is off', function (?string $config, bool $takes): void {
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $gateway->config = $config;
+
+    expect(Receipts::receiptUpload($gateway))->toBe($takes);
+})->with([
+    'saved before the setting (no config)' => [null, true],
+    'saved before the setting (other values)' => ['{"single":"Pay to IBAN ..."}', true],
+    'on' => ['{"receipt_upload":"1"}', true],
+    'off' => ['{"receipt_upload":"0"}', false],
+]);
+
+test('a receipt for a method that takes none is refused before anything is stored', function (): void {
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 7;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 30;
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $gateway->id = 4;
+    $gateway->config = '{"receipt_upload":"0"}';
+    $png = sys_get_temp_dir() . '/cf-receipt-' . bin2hex(random_bytes(4)) . '.png';
+    file_put_contents($png, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='));
+    // No database, ticket or file service: the refusal comes first.
+    $di = container();
+
+    try {
+        expect(fn () => Receipts::send($di, $client, $invoice, $gateway, new Symfony\Component\HttpFoundation\File\UploadedFile($png, 'receipt.png', 'image/png', null, true)))
+            ->toThrow(ClientFence\InformationException::class, 'This payment method does not take receipt uploads.')
+            ->and(is_file($png))->toBeTrue();
+    } finally {
+        @unlink($png);
+    }
+});
+
 test('a sent receipt sets the invoice to the transfer method, so the saved-card cron skips it', function (): void {
     $dir = sys_get_temp_dir() . '/cf-receipts-' . bin2hex(random_bytes(4));
     putenv('CLIENTFENCE_RECEIPT_DIR=' . $dir);

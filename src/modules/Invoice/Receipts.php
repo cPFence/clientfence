@@ -49,7 +49,8 @@ class Receipts
      * added. Each has a two-letter mark and a colour (tone 0-4) for its card, and manual methods
      * that show the amount in another currency (CustomEgp) carry that quote and its rate.
      * single and recurrent: whether the method takes a one-time payment and, for a subscribable
-     * invoice, a subscription (the theme's "one-time or subscription" choice). fee: the method's gateway fee
+     * invoice, a subscription (the theme's "one-time or subscription" choice). receipt: whether a manual method
+     * takes receipt uploads (receiptUpload()). fee: the method's gateway fee
      * (GatewayFees.php), and total what the client pays with it: for $invoice, its balance without its fee line plus
      * this method's fee and its tax.
      */
@@ -89,6 +90,7 @@ class Receipts
                 'code' => (string) $gateway->gateway,
                 'title' => (string) $gateway->name,
                 'manual' => $manual,
+                'receipt' => $manual && self::receiptUpload($gateway),
                 'converts' => $manual && method_exists($class, 'egpAmount'),
                 'quote' => $quote,
                 'mark' => self::paymentMark((string) $gateway->name),
@@ -162,6 +164,15 @@ class Receipts
     }
 
     /**
+     * Whether clients can upload a receipt for this manual method (its "Clients can upload a
+     * receipt" setting); a method saved before the setting existed has no value and takes them.
+     */
+    public static function receiptUpload(\Model_PayGateway $gateway): bool
+    {
+        return (string) ((json_decode((string) $gateway->config, true) ?: [])['receipt_upload'] ?? '1') !== '0';
+    }
+
+    /**
      * The help desk payment receipts open a ticket in (receipt_helpdesk; '' for the first one),
      * checked for the Invoices settings page.
      */
@@ -183,6 +194,9 @@ class Receipts
      */
     public static function send(\Pimple\Container $di, \Model_Client $client, \Model_Invoice $invoice, \Model_PayGateway $gateway, ?UploadedFile $file): int
     {
+        if (!self::receiptUpload($gateway)) {
+            throw new InformationException('This payment method does not take receipt uploads.');
+        }
         if (!$file instanceof UploadedFile || !$file->isValid()) {
             throw new InformationException('Choose the receipt file (an image or a PDF).');
         }
