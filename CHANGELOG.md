@@ -21,6 +21,7 @@
 
 - A staff email entered in the client area's password reset form is now named as such in the security log, which points to the reset on the admin sign-in page.
 - A product added in the New Invoice form gets its first available price instead of 0.
+- The Openprovider registrar in test mode reaches the Openprovider sandbox again; every test-mode call timed out before. ([#27](https://github.com/cPFence/clientfence/issues/27))
 
 ## 1.0.51 (2026-11-14)
 
