@@ -329,6 +329,7 @@ function domainSyncActivation(bool $track, ?string $action = 'transfer', bool $c
     $model->action = $action;
     $orders = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orders->shouldReceive('getOrderService')->andReturn($model);
+    $orders->shouldReceive('getConfig')->andReturn([]);
     $system = Mockery::mock();
     $system->shouldReceive('getParamValue')->andReturn($track ? '1' : '0');
     $adapter = $canTell ? Mockery::mock('Registrar_Adapter_Custom, Registrar_TransferStatus') : Mockery::mock(Registrar_Adapter_Custom::class);

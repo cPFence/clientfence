@@ -180,6 +180,14 @@ class Service implements InjectionAwareInterface
         return (int) $this->di['period']($period)->getExpirationTime($from, $anchor, $count);
     }
 
+    /** ClientFence: when a new service starts: now, or a staff order's past start date (Add New Order) at this time of day. */
+    public function startTime(Order|\Model_ClientOrder $order): int
+    {
+        $date = (string) ($this->getConfig($order)['_start_date'] ?? '');
+
+        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) === 1 && $date < date('Y-m-d') ? (int) strtotime($date . date(' H:i:s')) : time();
+    }
+
     public static function keepsRenewalDay(\Pimple\Container $di): bool
     {
         return ($di['mod_config']('order')['renewal_day'] ?? 'keep') !== 'calendar';
@@ -1488,17 +1496,26 @@ class Service implements InjectionAwareInterface
         // _callOnService() again against a service that already exists on
         // the remote server.
         try {
-            $result = $this->_callOnService($order, Order::ACTION_ACTIVATE);
+            // ClientFence core patch: "Already set up" (staff Add New Order, WHMCS without Run Module Create) records the service
+            // without running its module; hosting (an imported account) and domains (an existing domain) handle it themselves.
+            $setUp = !empty($this->getConfig($order)['import']) && !in_array($serviceType, ['hosting', 'domain'], true);
+            $result = $setUp ? null : $this->_callOnService($order, Order::ACTION_ACTIVATE);
 
             $period = $this->orderPeriod($order);
             $expiresAt = $order instanceof Order ? $order->getExpiresAt() : $order->expires_at;
+            // ClientFence core patch: a first activation starts on the staff order's start date (startTime()); a cancelled one
+            // activated again (no expiry, but activated before) starts today.
+            $activatedBefore = $order instanceof Order ? $order->getActivatedAt() !== null : !empty($order->activated_at);
+            $start = $expiresAt === null && !$activatedBefore ? $this->startTime($order) : time();
             if (!empty($period)) {
-                $from_time = ($expiresAt === null) ? time() : ($order instanceof Order ? ($expiresAt->getTimestamp() ?? time()) : strtotime((string) $expiresAt));
+                $from_time = ($expiresAt === null) ? $start : ($order instanceof Order ? ($expiresAt->getTimestamp() ?? time()) : strtotime((string) $expiresAt));
 
                 // ClientFence core patch: an add-on ordered for a service was charged to the service's due date then
                 // (Order/AddonOrders.php): it first runs to that date, then renews with the service.
                 $addonDue = $expiresAt === null ? (string) ($this->getConfig($order)['addon_due'] ?? '') : '';
-                $newExpires = $addonDue !== '' ? $addonDue : date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order)));
+                // ClientFence core patch: an existing domain runs to its expiry at the registrar (Servicedomain action_activate()).
+                $domainDue = $expiresAt === null && $result instanceof \Model_ServiceDomain && !empty($this->getConfig($order)['import']) ? (string) $result->expires_at : '';
+                $newExpires = $addonDue !== '' ? $addonDue : ($domainDue !== '' ? $domainDue : date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order))));
                 if ($order instanceof Order) {
                     $order->setExpiresAt(new \DateTime($newExpires));
                 } else {
@@ -1508,13 +1525,13 @@ class Service implements InjectionAwareInterface
 
             if ($order instanceof Order) {
                 $order->setStatus(Order::STATUS_ACTIVE);
-                $order->setActivatedAt(new \DateTime());
+                $order->setActivatedAt(new \DateTime(date('Y-m-d H:i:s', $start)));
                 $order->setSuspendedAt(null);
                 $order->setCanceledAt(null);
                 $order->setUpdatedAt(new \DateTime());
             } else {
                 $order->status = Order::STATUS_ACTIVE;
-                $order->activated_at = date('Y-m-d H:i:s');
+                $order->activated_at = date('Y-m-d H:i:s', $start);
                 $order->suspended_at = null;
                 $order->canceled_at = null;
                 $order->updated_at = date('Y-m-d H:i:s');
@@ -1710,7 +1727,9 @@ class Service implements InjectionAwareInterface
         }
 
         $activated_at = $data['activated_at'] ?? null;
-        if (!empty($activated_at)) {
+        // ClientFence core patch: the order page sends the activation day only: the same day keeps the stored time.
+        $activatedDay = $order instanceof Order ? $order->getActivatedAt()?->format('Y-m-d') : substr((string) $order->activated_at, 0, 10);
+        if (!empty($activated_at) && date('Y-m-d', (int) strtotime((string) $activated_at)) !== $activatedDay) {
             $activatedAtDate = date('Y-m-d H:i:s', strtotime((string) $activated_at));
             if ($order instanceof Order) {
                 $order->setActivatedAt(new \DateTime($activatedAtDate));

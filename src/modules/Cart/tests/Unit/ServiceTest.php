@@ -2393,3 +2393,75 @@ test('a client cannot order a domain again while their earlier order for it wait
         ->toThrow(ClientFence\InformationException::class, 'example.com is already in your orders');
 });
 
+
+test('a staff order line keeps a past start date, drops today and refuses a future or invalid one', function (string $date, ?string $kept, ?string $error): void {
+    $run = fn (): array => Service::staffStartDate(['period' => '1M', '_start_date' => $date]);
+    if ($error !== null) {
+        expect($run)->toThrow(ClientFence\InformationException::class, $error);
+
+        return;
+    }
+    expect($run())->toBe($kept === null ? ['period' => '1M'] : ['period' => '1M', '_start_date' => $kept]);
+})->with([
+    'past day' => ['2025-03-10', '2025-03-10', null],
+    'today' => [date('Y-m-d'), null, null],
+    'none' => ['', null, null],
+    'future day' => [date('Y-m-d', strtotime('+1 day')), null, 'The start date cannot be in the future.'],
+    'not a day' => ['2025-02-30', null, 'is not a valid date'],
+]);
+
+test('createFromCart dates a backdated staff order\'s invoice today, as WHMCS does (accounting sync sends it)', function (): void {
+    $cart = createEntity(Cart::class, ['id' => 3, 'currency_id' => 2]);
+    $client = createEntity(Client::class, ['id' => 9, 'currency' => 'USD']);
+    $currency = createEntity(Currency::class, ['code' => 'USD', 'conversion_rate' => 1.0]);
+    $currencyRepository = Mockery::mock(CurrencyRepository::class);
+    $currencyRepository->shouldReceive('find')->once()->with(2)->andReturn($currency);
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->once()->andReturn($currencyRepository);
+    $clientService = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientService->shouldReceive('isClientTaxable')->once()->with($client)->andReturn(false);
+    $product = createEntity(Product::class, ['id' => 5, 'status' => 'enabled', 'type' => 'service', 'setup' => 'manual']);
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->twice()->with(5)->andReturn($product);
+    $cartProduct = createEntity(CartProduct::class, ['id' => 13]);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 456;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->shouldReceive('saveStatusChange')->once();
+    $orderService->shouldReceive('toApiArray')->once()->andReturn(['product_id' => 5, 'total' => 10, 'discount' => 0]);
+    $orderService->shouldReceive('approveStaffInvoice')->once()
+        ->with(Mockery::on(fn (Model_Invoice $i): bool => $i === $invoice && !str_starts_with((string) $i->created_at, '2025-03-10')), Mockery::any());
+    $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
+    $invoiceService->shouldReceive('prepareInvoice')->once()->andReturn($invoice);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('wrapInTransaction')->once()->andReturnUsing(fn (Closure $work) => $work());
+    $em->shouldReceive('persist')->with(Mockery::type(Order::class))->andReturnUsing(function (Order $order): void {
+        (new ReflectionProperty($order, 'id'))->setValue($order, 99);
+    });
+    $em->shouldReceive('flush');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('toApiArray')->once()->with($cart)->andReturn(['items' => [['id' => 13]], 'total' => 10]);
+    $service->shouldReceive('getCartProducts')->once()->with($cart)->andReturn([$cartProduct]);
+    $service->shouldReceive('cartProductToApiArray')->once()->andReturn([
+        'product_id' => 5, 'form_id' => null, 'title' => 'Example product', 'type' => 'service',
+        'unit' => 'service', 'period' => '1M', 'quantity' => 1, 'price' => 10,
+        'discount_price' => 0, 'setup_price' => 0, 'discount_setup' => 0, 'notes' => null, '_start_date' => '2025-03-10',
+    ]);
+    $service->shouldReceive('isStockAvailable')->once()->with($product, 1)->andReturn(true);
+    $di = container();
+    $di['db']->shouldReceive('getExistingModelById')->andReturn(cartServiceCreateLegacyClient());
+    $di['dbal']->shouldNotReceive('update');
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => match ($name) {
+        'currency' => $currencyService,
+        'client' => $clientService,
+        'Product' => $productService,
+        'order', 'Order' => $orderService,
+        'Invoice' => $invoiceService,
+    });
+    $service->setDi($di);
+
+    expect($service->createFromCart($client, null, $cart, ['invoice' => true])[1])->toBe($invoice);
+});

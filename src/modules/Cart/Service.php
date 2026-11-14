@@ -1291,6 +1291,11 @@ class Service implements InjectionAwareInterface
                     : $this->getProductService()->findProductById((int) $item['product_id']);
                 $before = array_map($this->cartProductId(...), $this->findCartProducts($cart));
                 $config = is_array($item['config'] ?? null) ? $item['config'] : [];
+                // ClientFence core patch: a backdated staff order (Add New Order "Start date"), the item's and the domain it orders.
+                $config = self::staffStartDate($config);
+                if (is_array($config['domain'] ?? null)) {
+                    $config['domain'] = self::staffStartDate($config['domain']);
+                }
                 // ClientFence core patch: Add Add-on on a service (Order/AddonOrders.php): only one of this client's services.
                 $addonFor = empty($item['addon_for']) ? null : $this->di['db']->getExistingModelById('ClientOrder', (int) $item['addon_for'], 'Order not found');
                 if ($addonFor !== null && (int) $addonFor->client_id !== (int) $client->id) {
@@ -1366,6 +1371,30 @@ class Service implements InjectionAwareInterface
             $this->staffPrices = [];
             $this->staffOrder = false;
         }
+    }
+
+    /**
+     * ClientFence core patch: an order line's start date (staff Add New Order, WHMCS Registration Date): a past day is kept
+     * (Order\Service::startTime()); today, or none, is the normal order.
+     *
+     * @throws \ClientFence\InformationException a date that is not a day or is in the future
+     */
+    public static function staffStartDate(array $config): array
+    {
+        $date = trim((string) ($config['_start_date'] ?? ''));
+        unset($config['_start_date']);
+        if ($date === '') {
+            return $config;
+        }
+        $day = \DateTime::createFromFormat('!Y-m-d', $date);
+        if (!$day instanceof \DateTime || $day->format('Y-m-d') !== $date) {
+            throw new \ClientFence\InformationException('The start date :date is not a valid date.', [':date' => $date]);
+        }
+        if ($date > date('Y-m-d')) {
+            throw new \ClientFence\InformationException('The start date cannot be in the future.');
+        }
+
+        return $date < date('Y-m-d') ? $config + ['_start_date' => $date] : $config;
     }
 
     public function usePromo(Promo $promo): void

@@ -2667,6 +2667,23 @@ test('prepareCartProductConfig does not filter when service has no clientSettabl
     expect($result)->toHaveKey('period', '1M');
 });
 
+test('prepareCartProductConfig keeps "Already set up" and "Start date" for staff only, also without clientSettableConfigKeys', function (bool $staff): void {
+    $service = new Service();
+    $product = productTestCreateProductEntity(1)->setType('custom')->setConfig('{}');
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $serviceName): object => match ($serviceName) {
+        'servicecustom' => new stdClass(),
+        default => throw new RuntimeException('Unexpected service request ' . $serviceName),
+    });
+    $service->setDi($di);
+
+    $result = $service->prepareCartProductConfig($product, ['period' => '1M', 'import' => 1, '_start_date' => '2025-03-10'], $staff);
+
+    expect(isset($result['import']))->toBe($staff)
+        ->and(isset($result['_start_date']))->toBe($staff)
+        ->and($result['period'])->toBe('1M');
+})->with(['staff order' => [true], 'client cart' => [false]]);
+
 test('enrich promo redemption builds invoice serie_nr from serie and nr', function (): void {
     $service = new Service();
 

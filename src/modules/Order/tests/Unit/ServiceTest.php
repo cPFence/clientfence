@@ -4606,3 +4606,109 @@ test('staff deleting a pending order cancel its own unpaid first invoice and tak
         ->and($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 40'))->toBe(['7'])
         ->and($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 41'))->toBe(['2']);
 });
+
+test('createFromOrder starts a backdated staff order on its start date', function (): void {
+    // Staff Add New Order "Start date": activated that day, the first period counts from it.
+    $order = createEntity(Order::class, ['id' => 1, 'productId' => 7, 'quantity' => 1, 'period' => '1Y', 'serviceType' => 'custom', 'config' => json_encode(['_start_date' => '2025-03-10'])]);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderService')->andReturn(new stdClass());
+    $serviceMock->shouldReceive('_callOnService')->once()->with($order, Order::ACTION_ACTIVATE)->andReturn(true);
+    $serviceMock->shouldReceive('saveStatusChange')->once();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => Mockery::mock()->shouldIgnoreMissing());
+    $serviceMock->setDi($di);
+
+    $serviceMock->createFromOrder($order);
+
+    expect($order->getActivatedAt()->format('Y-m-d'))->toBe('2025-03-10')
+        ->and($order->getExpiresAt()->format('Y-m-d'))->toBe('2026-03-10')
+        ->and($order->getStatus())->toBe(Order::STATUS_ACTIVE);
+});
+
+test('a cancelled backdated order activated again starts today, not on its start date', function (): void {
+    $order = createEntity(Order::class, ['id' => 1, 'productId' => 7, 'quantity' => 1, 'period' => '1M', 'serviceType' => 'custom', 'config' => json_encode(['_start_date' => '2025-03-10']),
+        'activatedAt' => new DateTime('2025-03-10 10:00:00')]);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderService')->andReturn(new stdClass());
+    $serviceMock->shouldReceive('_callOnService')->once()->with($order, Order::ACTION_ACTIVATE)->andReturn(true);
+    $serviceMock->shouldReceive('saveStatusChange')->once();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => Mockery::mock()->shouldIgnoreMissing());
+    $serviceMock->setDi($di);
+
+    $serviceMock->createFromOrder($order);
+
+    expect($order->getActivatedAt()->format('Y-m-d'))->toBe(date('Y-m-d'))
+        ->and($order->getExpiresAt() > new DateTime('+27 days'))->toBeTrue();
+});
+
+test('a start date that is not a past day starts the service now', function (string $date): void {
+    $order = createEntity(Order::class, ['config' => json_encode(['_start_date' => $date])]);
+    $service = new Service();
+
+    expect(abs($service->startTime($order) - time()))->toBeLessThan(5);
+})->with(['today' => [date('Y-m-d')], 'future' => [date('Y-m-d', strtotime('+3 days'))], 'not a day' => ['10/03/2025']]);
+
+test('createFromOrder records an already set up service without running its module', function (): void {
+    $order = createEntity(Order::class, ['id' => 1, 'productId' => 7, 'quantity' => 1, 'period' => '1M', 'serviceType' => 'custom', 'config' => json_encode(['import' => 1])]);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderService')->andReturn(new stdClass());
+    $serviceMock->shouldNotReceive('_callOnService');
+    $serviceMock->shouldReceive('saveStatusChange')->once();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => Mockery::mock()->shouldIgnoreMissing());
+    $serviceMock->setDi($di);
+
+    $serviceMock->createFromOrder($order);
+
+    expect($order->getStatus())->toBe(Order::STATUS_ACTIVE)
+        ->and($order->getExpiresAt())->not->toBeNull();
+});
+
+test('createFromOrder gives an existing domain the expiry its registrar reported', function (): void {
+    $order = createEntity(Order::class, ['id' => 1, 'productId' => 7, 'quantity' => 1, 'period' => '1Y', 'serviceType' => 'domain', 'config' => json_encode(['import' => 1])]);
+    $domain = new Model_ServiceDomain();
+    $domain->loadBean(new Tests\Helpers\DummyBean());
+    $domain->expires_at = '2027-08-01 10:00:00';
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderService')->andReturn($domain);
+    // The domain module itself skips the registrar (Servicedomain action_activate()).
+    $serviceMock->shouldReceive('_callOnService')->once()->with($order, Order::ACTION_ACTIVATE)->andReturn($domain);
+    $serviceMock->shouldReceive('saveStatusChange')->once();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => Mockery::mock()->shouldIgnoreMissing());
+    $serviceMock->setDi($di);
+
+    $serviceMock->createFromOrder($order);
+
+    expect($order->getExpiresAt()->format('Y-m-d H:i:s'))->toBe('2027-08-01 10:00:00');
+});
+
+test('updateOrder changes the activation day and keeps its time when the day is the same', function (string $day, string $expected): void {
+    $order = createEntity(Order::class, ['activatedAt' => new DateTime('2026-01-05 14:30:00')]);
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY, client_order_id INTEGER, name TEXT, value TEXT, created_at TEXT, updated_at TEXT)');
+    $di = container();
+    $di['em'] = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $di['em']->shouldReceive('getConnection')->andReturn($dbal);
+    $di['logger'] = new \ClientFence\Log();
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('updatePeriod');
+    $serviceMock->shouldReceive('updateOrderMeta');
+    $serviceMock->setDi($di);
+
+    expect($serviceMock->updateOrder($order, ['activated_at' => $day]))->toBeTrue()
+        ->and($order->getActivatedAt()->format('Y-m-d H:i:s'))->toBe($expected);
+})->with([
+    'same day' => ['2026-01-05', '2026-01-05 14:30:00'],
+    'other day' => ['2025-12-01', '2025-12-01 00:00:00'],
+]);

@@ -5874,5 +5874,21 @@
     {
         "file": "modules/Support/Api/Admin.php",
         "done": "ClientFence core patch: a domain request ticket also stores the domain's values (Servicedomain/DomainTickets.php)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a first activation starts on the staff order's start date (startTime()); a cancelled one"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: staff Add New Order keys (\"Already set up\", \"Start date\") never come from a client's cart; no form field name starts with _."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: an existing domain (staff Add New Order \"Already set up\") gets no registrar action. Its expiry"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the activation day is editable as WHMCS Registration Date (order/update activated_at)."
     }
 ]

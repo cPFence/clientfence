@@ -144,7 +144,9 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @param array $data client_id; items: [{product_id (none: a domain), period, quantity, config, price, domain_price}];
      *                    promocode, gateway_id, invoice (issue one), send_email, use_credit, mark_invoice_paid and
-     *                    its payment fields, activate
+     *                    its payment fields, activate. An item's config (and its `domain`) may hold `_start_date`
+     *                    (Y-m-d, today or a past day: the service starts then; the invoice is dated today) and `import`
+     *                    (already set up: no module or registrar action; a registered domain is an existing one)
      *
      * @return array{order_ids: int[], invoice_id: int|null}
      */

@@ -199,7 +199,8 @@ class Service implements \ClientFence\InjectionAwareInterface
             }
 
             $domain = $data['register_sld'] . $tld->tld;
-            if (!$this->isDomainAvailable($tld, $data['register_sld'])) {
+            // ClientFence core patch: an existing domain (staff Add New Order "Already set up") is registered already.
+            if (empty($data['import']) && !$this->isDomainAvailable($tld, $data['register_sld'])) {
                 throw new \ClientFence\InformationException(':domain is already registered!', [':domain' => $domain]);
             }
 
@@ -340,6 +341,21 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         // ClientFence core patch: a tracked transfer is not sent again by a second activation (DomainSync.php).
         if (in_array($model->action, [DomainSync::PENDING, DomainSync::FAILED], true)) {
+            return $model;
+        }
+
+        // ClientFence core patch: an existing domain (staff Add New Order "Already set up") gets no registrar action. Its expiry
+        // is read from the registrar as the daily sync does (DomainSync.php); a registrar that cannot tell leaves start + period.
+        if (!empty($orderService->getConfig($order)['import'])) {
+            $model->action = null;
+            $model->expires_at = date('Y-m-d H:i:s', $orderService->periodEnd($model->period . 'Y', $orderService->startTime($order)));
+            $this->di['db']->store($model);
+            try {
+                $this->syncExpirationDate($model);
+            } catch (\Throwable $e) {
+                $orderService->saveStatusChange($order, 'The registrar did not return the domain expiry date: ' . $e->getMessage());
+            }
+
             return $model;
         }
 

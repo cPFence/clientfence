@@ -573,6 +573,7 @@ test('activates action', function (string $action, string $registerDomainCalled,
     $orderServiceMock->shouldReceive('getOrderService')
         ->atLeast()->once()
         ->andReturn($domainModel);
+    $orderServiceMock->shouldReceive('getConfig')->andReturn([]);
 
     $registrarAdapterMock = Mockery::mock('Registrar_Adapter_Custom');
     $registrarAdapterMock->shouldReceive('registerDomain')
@@ -616,6 +617,7 @@ test('rejected domain activation keeps its registrar action for retry', function
     $domainModel->action = $action;
     $orderService = Mockery::mock(OrderService::class);
     $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($domainModel);
+    $orderService->shouldReceive('getConfig')->andReturn([]);
     $domain = new Registrar_Domain();
     $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
     $adapter->shouldReceive($action . 'Domain')->once()->with($domain)->andReturn(false);
@@ -2922,4 +2924,64 @@ test('staff saving a transferred domain are checked against the transfer fields,
     $model->tld = '.com.au';
 
     expect($service->updateDomain($model, ['period' => 1, 'domain_fields' => ['registrant_name' => '']]))->toBeTrue();
+});
+
+test('an existing domain gets no registrar action and takes its expiry from the registrar', function (bool $registrarTells): void {
+    // Staff Add New Order "Existing domain" (import): recorded active, never registered or transferred.
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $domainModel = new Model_ServiceDomain();
+    $domainModel->loadBean(new Tests\Helpers\DummyBean());
+    $domainModel->action = 'register';
+    $domainModel->period = 2;
+
+    $orderService = Mockery::mock(OrderService::class);
+    $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($domainModel);
+    $orderService->shouldReceive('getConfig')->with($order)->andReturn(['import' => 1, '_start_date' => '2025-03-10']);
+    $orderService->shouldReceive('startTime')->once()->with($order)->andReturn((int) strtotime('2025-03-10 12:00:00'));
+    $orderService->shouldReceive('periodEnd')->once()->with('2Y', (int) strtotime('2025-03-10 12:00:00'))->andReturn((int) strtotime('2027-03-10 12:00:00'));
+    $orderService->shouldReceive('saveStatusChange')->times($registrarTells ? 0 : 1);
+
+    $whois = new Registrar_Domain();
+    $whois->setExpirationTime((int) strtotime('2027-05-20 00:00:00'));
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldNotReceive('registerDomain');
+    $adapter->shouldNotReceive('transferDomain');
+    $registrarTells
+        ? $adapter->shouldReceive('getDomainDetails')->once()->andReturn($whois)
+        : $adapter->shouldReceive('getDomainDetails')->once()->andThrow(new Registrar_Exception('Domain not found in this account'));
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_getD')->once()->with($domainModel)->andReturn([new Registrar_Domain(), $adapter]);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name): OrderService => $orderService);
+    $di['db']->shouldReceive('store')->with($domainModel)->andReturn(1);
+    $service->setDi($di);
+
+    expect($service->action_activate($order))->toBe($domainModel)
+        ->and($domainModel->action)->toBeNull()
+        ->and($domainModel->expires_at)->toBe($registrarTells ? '2027-05-20 00:00:00' : '2027-03-10 12:00:00');
+})->with(['the registrar tells' => [true], 'the registrar cannot tell' => [false]]);
+
+test('an existing domain is not refused as already registered', function (): void {
+    $tld = new Model_Tld();
+    $tld->loadBean(new Tests\Helpers\DummyBean());
+    $tld->tld = '.com';
+    $tld->min_years = 1;
+    $tld->active = true;
+    $validator = Mockery::mock(ClientFence\Validate::class);
+    $validator->shouldReceive('checkRequiredParamsForArray')->zeroOrMoreTimes();
+    $validator->shouldReceive('isSldValid')->andReturn(true);
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('tldFindOneByTld')->andReturn($tld);
+    $service->shouldReceive('checkDomainFields')->andReturn([]);
+    $service->shouldNotReceive('isDomainAvailable');
+    $di = container();
+    $di['validator'] = $validator;
+    $service->setDi($di);
+
+    $data = ['action' => 'register', 'register_sld' => 'example', 'register_tld' => '.com', 'register_years' => 1, 'import' => 1];
+    $service->validateOrderData($data);
+
+    expect($data['period'])->toBe('1Y');
 });

@@ -379,6 +379,11 @@ class Service implements InjectionAwareInterface
     {
         $service = $this->getProductModuleService($product);
 
+        // ClientFence core patch: staff Add New Order keys ("Already set up", "Start date") never come from a client's cart; no form field name starts with _.
+        if (!$staff) {
+            unset($config['import'], $config['_start_date']);
+        }
+
         // Strip client-supplied keys the product-type service hasn't declared
         // as client-settable, preventing mass-assignment of admin-controlled
         // fields (e.g. hosting_plan_id, server_id) via the cart/add_item endpoint.

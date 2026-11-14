@@ -498,6 +498,22 @@
                                     <label class="form-label">{{ 'Period'|trans }}</label>
                                     {{ mf.selectbox('period', guest.system_periods, order.period, 0, 'Not recurrent'|trans) }}
                                 </div>
+                                {# ClientFence core patch: the activation day is editable as WHMCS Registration Date (order/update activated_at). #}
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="activated_at">{{ 'Activation Date'|trans }}</label>
+                                    <div class="input-icon">
+                                        <input class="form-control datepicker"
+                                               id="activated_at"
+                                               value="{% if order.activated_at %}{{ order.activated_at|date('Y-m-d', false) }}{% endif %}"
+                                               name="activated_at"
+                                        >
+                                        <span class="input-icon-addon">
+                                            <svg class="icon">
+                                                <use href="#calendar" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
                                 <div class="col-lg-6">
                                     {# ClientFence core patch (QA r11 R-01): the expiry day uses the server's time zone because saves parse it there. #}
                                     <label class="form-label" for="expires_at">{{ 'Date Expires'|trans }}</label>

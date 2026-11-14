@@ -64,7 +64,7 @@
     @media (max-width: 991.98px) { .cf-order-summary { position: static; } }
 </style>
 
-<form id="cf-new-order" novalidate data-products="{{ products|json_encode|e('html_attr') }}" data-tlds="{{ tlds|json_encode|e('html_attr') }}" data-periods="{{ periods|json_encode|e('html_attr') }}">
+<form id="cf-new-order" novalidate data-products="{{ products|json_encode|e('html_attr') }}" data-tlds="{{ tlds|json_encode|e('html_attr') }}" data-periods="{{ periods|json_encode|e('html_attr') }}" data-today="{{ 'now'|date('Y-m-d', false) }}">
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card mb-4">
@@ -163,6 +163,8 @@
         productLabel: 'Product / service'|trans, period: 'Billing cycle'|trans, quantity: 'Quantity'|trans,
         priceOverride: 'Price override'|trans, username: 'Username'|trans, password: 'Password'|trans,
         generate: 'Leave blank to generate'|trans, import: 'Import an existing account from the server (do not create it)'|trans, priceHint: 'Leave empty for the normal price.'|trans,
+        setUp: 'Already set up (do not run the module)'|trans, start: 'Start date'|trans, startHint: 'The day the service started: its first period counts from it. The invoice is dated today.'|trans,
+        existing: 'Existing domain'|trans, existingHint: 'No registrar action: the expiry date is read from the registrar when it can tell.'|trans,
         ownDomain: 'The client’s own domain, or register or transfer it with this order.'|trans,
         registerToo: 'Register :domain too'|trans, transferToo: 'Transfer :domain too'|trans,
         linked: 'For product :n (:title).'|trans, linkedHere: 'Registered or transferred with this order (see Domains).'|trans,
@@ -176,7 +178,7 @@
     }|json_encode|raw }};
 
     const form = document.getElementById('cf-new-order');
-    const PRODUCTS = JSON.parse(form.dataset.products), TLDS = JSON.parse(form.dataset.tlds), PERIODS = JSON.parse(form.dataset.periods);
+    const PRODUCTS = JSON.parse(form.dataset.products), TLDS = JSON.parse(form.dataset.tlds), PERIODS = JSON.parse(form.dataset.periods), TODAY = form.dataset.today;
     const $ = (id) => document.getElementById(id);
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const fill = (s, map) => Object.entries(map).reduce((out, [k, v]) => out.replace(':' + k, v), s);
@@ -197,13 +199,18 @@
     function addProduct(id) {
         const p = product(id);
         if (!p) return;
-        state.products.push({ key: ++uid, productId: p.id, period: p.periods[0]?.code || '', qty: 1, domain: '', price: '', import: false, username: '', password: '' });
+        state.products.push({ key: ++uid, productId: p.id, period: p.periods[0]?.code || '', qty: 1, domain: '', price: '', import: false, username: '', password: '', start: TODAY });
         render();
     }
     function addDomain(data = {}) {
-        state.domains.push({ key: ++uid, action: data.action || 'register', name: data.name || '', years: '', epp: '', price: '', fields: {}, linkedTo: data.linkedTo ?? null });
+        state.domains.push({ key: ++uid, action: data.action || 'register', name: data.name || '', years: '', epp: '', price: '', fields: {}, linkedTo: data.linkedTo ?? null, start: TODAY });
         render();
     }
+
+    // Start date (WHMCS Registration Date): today or a past day; the server refuses a future one.
+    const startHtml = (it) => `<div class="col-md-6"><label class="form-label" for="s${it.key}">${esc(text.start)}</label>
+        <input class="form-control" type="date" id="s${it.key}" data-f="start" value="${esc(it.start)}" max="${esc(TODAY)}">
+        <small class="form-hint">${esc(text.startHint)}</small></div>`;
 
     function fieldsHtml(d, t) {
         const fields = t ? (d.action === 'transfer' ? t.transfer_fields : t.domain_fields) || {} : {};
@@ -232,9 +239,7 @@
                 <div class="col-md-6"><label class="form-label" for="u${it.key}">${esc(text.username)}</label>
                     <input class="form-control" type="text" id="u${it.key}" data-f="username" value="${esc(it.username)}" placeholder="${esc(text.generate)}" autocomplete="off"></div>
                 <div class="col-md-6"><label class="form-label" for="w${it.key}">${esc(text.password)}</label>
-                    <input class="form-control" type="text" id="w${it.key}" data-f="password" value="${esc(it.password)}" placeholder="${esc(text.generate)}" autocomplete="off"></div>
-                <div class="col-12"><label class="form-check mb-0"><input class="form-check-input" type="checkbox" data-f="import"${it.import ? ' checked' : ''}>
-                    <span class="form-check-label">${esc(text.import)}</span></label></div>` : '';
+                    <input class="form-control" type="text" id="w${it.key}" data-f="password" value="${esc(it.password)}" placeholder="${esc(text.generate)}" autocomplete="off"></div>` : '';
             return `<div class="cf-order-item" data-key="${it.key}">
                 <div class="d-flex align-items-center gap-2 px-3 py-2 border-bottom">
                     <span class="badge bg-blue-lt">${esc(text.product)} ${i + 1}</span><strong class="flex-fill text-truncate">${esc(p.title)}</strong>
@@ -251,6 +256,9 @@
                     <div class="col-md-6"><label class="form-label" for="o${it.key}">${esc(text.priceOverride)}</label>
                         <input class="form-control" type="text" inputmode="decimal" id="o${it.key}" data-f="price" value="${esc(it.price)}">
                         <small class="form-hint">${esc(text.priceHint)}</small></div>
+                    ${startHtml(it)}
+                    <div class="col-12"><label class="form-check mb-0"><input class="form-check-input" type="checkbox" data-f="import"${it.import ? ' checked' : ''}>
+                        <span class="form-check-label">${esc(p.type === 'hosting' ? text.import : text.setUp)}</span></label></div>
                 </div></div>`;
         }).join('') : `<p class="text-secondary text-center mb-0">${esc(text.noProducts)}</p>`;
 
@@ -269,8 +277,10 @@
                         <div class="btn-group" role="group">
                             <button type="button" class="btn${d.action === 'register' ? ' btn-primary' : ''}" data-act="register" aria-pressed="${d.action === 'register'}">${esc(text.register)}</button>
                             <button type="button" class="btn${d.action === 'transfer' ? ' btn-primary' : ''}" data-act="transfer" aria-pressed="${d.action === 'transfer'}">${esc(text.transfer)}</button>
+                            <button type="button" class="btn${d.action === 'existing' ? ' btn-primary' : ''}" data-act="existing" aria-pressed="${d.action === 'existing'}">${esc(text.existing)}</button>
                         </div>
                         ${link >= 0 ? `<small class="text-secondary">${esc(fill(text.linked, { n: link + 1, title: product(state.products[link].productId).title }))}</small>` : ''}
+                        ${d.action === 'existing' ? `<small class="text-secondary">${esc(text.existingHint)}</small>` : ''}
                     </div>
                     <div class="col-md-6"><label class="form-label" for="n${d.key}">${esc(text.domain)}</label>
                         <input class="form-control${d.name.trim() && !s ? ' is-invalid' : ''}" type="text" id="n${d.key}" data-f="name" value="${esc(d.name)}" placeholder="example.com" autocomplete="off"${link >= 0 ? ' readonly' : ''}>
@@ -283,6 +293,7 @@
                     <div class="col-md-6"><label class="form-label" for="v${d.key}">${esc(text.priceOverride)}</label>
                         <input class="form-control" type="text" inputmode="decimal" id="v${d.key}" data-f="price" value="${esc(d.price)}">
                         <small class="form-hint">${esc(text.priceHint)}</small></div>
+                    ${startHtml(d)}
                     ${fieldsHtml(d, t)}
                 </div></div>`;
         }).join('') : `<p class="text-secondary text-center mb-0">${esc(text.noDomains)}</p>`;
@@ -291,22 +302,23 @@
 
     function domainConfig(d) {
         const s = split(d.name) || { sld: d.name.trim(), tld: '' };
+        // An existing domain is ordered as a registration the server records without the registrar (import).
         return d.action === 'transfer'
-            ? { action: 'transfer', transfer_sld: s.sld, transfer_tld: s.tld, transfer_code: d.epp, transfer_fields: d.fields }
-            : { action: 'register', register_sld: s.sld, register_tld: s.tld, register_years: d.years, domain_fields: d.fields };
+            ? { action: 'transfer', transfer_sld: s.sld, transfer_tld: s.tld, transfer_code: d.epp, transfer_fields: d.fields, _start_date: d.start }
+            : { action: 'register', register_sld: s.sld, register_tld: s.tld, register_years: d.years, domain_fields: d.fields, _start_date: d.start, import: d.action === 'existing' ? 1 : 0 };
     }
 
     function payload() {
         const items = state.products.map((it) => {
             const p = product(it.productId);
-            const item = { product_id: p.id, period: it.period || null, quantity: Math.max(1, parseInt(it.qty, 10) || 1), price: it.price.trim(), config: {} };
+            const item = { product_id: p.id, period: it.period || null, quantity: Math.max(1, parseInt(it.qty, 10) || 1), price: it.price.trim(), config: { _start_date: it.start, import: it.import ? 1 : 0 } };
             if (p.type === 'hosting') {
                 const linked = state.domains.find((d) => d.linkedTo === it.key);
                 const name = it.domain.trim(), dot = name.indexOf('.');
                 item.config.domain = linked ? domainConfig(linked)
                     : { action: 'owndomain', owndomain_sld: dot > 0 ? name.slice(0, dot) : name, owndomain_tld: dot > 0 ? name.slice(dot) : '' };
                 if (linked) item.domain_price = linked.price.trim();
-                Object.assign(item.config, { import: it.import ? 1 : 0, username: it.username.trim(), password: it.password });
+                Object.assign(item.config, { username: it.username.trim(), password: it.password });
             }
             return item;
         });
