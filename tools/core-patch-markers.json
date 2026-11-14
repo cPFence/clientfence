@@ -144,6 +144,14 @@
         "done": "ClientFence core patch: signed-in account users need quote access to answer their account's quotes."
     },
     {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: its unpaid first invoice is cancelled, as WHMCS, when no other open order is on it; otherwise only this order's lines go (an empty unpaid invoice was left)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: lines go from unpaid invoices only; a cancelled one keeps its record (deleteFromOrder())."
+    },
+    {
         "file": "modules/Invoice/Api/Admin.php",
         "done": "ClientFence core patch: one invoice that cannot be deleted is skipped with the reason, the rest go on (see batch_mark_paid())."
     },

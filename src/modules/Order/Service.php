@@ -2272,11 +2272,13 @@ class Service implements InjectionAwareInterface
         $params = [
             'rel_id' => (string) $this->orderId($order),
             'status' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT,
+            'unpaid' => \Model_Invoice::STATUS_UNPAID,
         ];
         // ClientFence core patch: the tax-inclusive cents were for all the invoice's lines (Invoice\Service::applyInclusiveTax()).
         // ClientFence core patch: the invoice changed, so the accounting sync sends it again (Invoice/Accounting/Sync.php).
-        $this->di['dbal']->executeStatement('UPDATE invoice SET tax_adjust = 0, updated_at = :now WHERE id IN (SELECT invoice_id FROM invoice_item WHERE rel_id = :rel_id AND status = :status)', $params + ['now' => date('Y-m-d H:i:s')]);
-        $this->di['dbal']->executeStatement('DELETE FROM invoice_item WHERE rel_id = :rel_id AND status = :status', $params);
+        // ClientFence core patch: lines go from unpaid invoices only; a cancelled one keeps its record (deleteFromOrder()).
+        $this->di['dbal']->executeStatement('UPDATE invoice SET tax_adjust = 0, updated_at = :now WHERE status = :unpaid AND id IN (SELECT invoice_id FROM invoice_item WHERE rel_id = :rel_id AND status = :status)', $params + ['now' => date('Y-m-d H:i:s')]);
+        $this->di['dbal']->executeStatement('DELETE FROM invoice_item WHERE rel_id = :rel_id AND status = :status AND invoice_id IN (SELECT id FROM invoice WHERE status = :unpaid)', $params);
     }
 
     public function rmClientOrderStatusByOrder(Order|\Model_ClientOrder $order): void
@@ -2327,6 +2329,8 @@ class Service implements InjectionAwareInterface
 
         $orderStatus = $this->orderStatus($order);
         if ($orderStatus == Order::STATUS_PENDING_SETUP) {
+            // ClientFence core patch: its unpaid first invoice is cancelled, as WHMCS, when no other open order is on it; otherwise only this order's lines go (an empty unpaid invoice was left).
+            $this->cancelOpenInvoices($orderId, 'The order was deleted.', true);
             $this->rmInvoiceItemByOrder($order);
         }
 

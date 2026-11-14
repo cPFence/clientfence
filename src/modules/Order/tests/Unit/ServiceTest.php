@@ -4541,13 +4541,16 @@ test('form answer updates retain service config and clear omitted choices', func
 
 test('deleting an order drops its pending invoice lines and the tax-inclusive cents of that invoice', function (): void {
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
-    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, tax_adjust REAL DEFAULT 0, updated_at TEXT)');
+    $db->executeStatement("CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT DEFAULT 'unpaid', tax_adjust REAL DEFAULT 0, updated_at TEXT)");
     $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, rel_id TEXT, status TEXT)');
     $db->insert('invoice', ['id' => 1, 'tax_adjust' => 0.01]);
     $db->insert('invoice', ['id' => 2, 'tax_adjust' => -0.01]);
+    // A cancelled invoice keeps its lines as a record.
+    $db->insert('invoice', ['id' => 3, 'status' => Model_Invoice::STATUS_CANCELED]);
     $db->insert('invoice_item', ['invoice_id' => 1, 'rel_id' => '7', 'status' => Model_InvoiceItem::STATUS_PENDING_PAYMENT]);
     $db->insert('invoice_item', ['invoice_id' => 1, 'rel_id' => '8', 'status' => Model_InvoiceItem::STATUS_PENDING_PAYMENT]);
     $db->insert('invoice_item', ['invoice_id' => 2, 'rel_id' => '8', 'status' => Model_InvoiceItem::STATUS_PENDING_PAYMENT]);
+    $db->insert('invoice_item', ['invoice_id' => 3, 'rel_id' => '7', 'status' => Model_InvoiceItem::STATUS_PENDING_PAYMENT]);
     $di = container();
     $di['dbal'] = $db;
     $service = new Service();
@@ -4559,7 +4562,47 @@ test('deleting an order drops its pending invoice lines and the tax-inclusive ce
     $service->rmInvoiceItemByOrder($order);
 
     expect($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 1'))->toBe(['8'])
-        ->and(array_map('floatval', $db->fetchFirstColumn('SELECT tax_adjust FROM invoice ORDER BY id')))->toBe([0.0, -0.01])
+        ->and($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 3'))->toBe(['7'])
+        ->and(array_map('floatval', $db->fetchFirstColumn('SELECT tax_adjust FROM invoice ORDER BY id')))->toBe([0.0, -0.01, 0.0])
         // The changed invoice goes to the accounting program again.
-        ->and($db->fetchFirstColumn('SELECT updated_at IS NOT NULL FROM invoice ORDER BY id'))->toBe([1, 0]);
+        ->and($db->fetchFirstColumn('SELECT updated_at IS NOT NULL FROM invoice ORDER BY id'))->toBe([1, 0, 0]);
+});
+
+test('staff deleting a pending order cancel its own unpaid first invoice and take its lines off a shared one', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement("CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT DEFAULT 'unpaid', tax_adjust REAL DEFAULT 0, updated_at TEXT)");
+    $db->executeStatement("CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT DEFAULT 'order', rel_id TEXT, task TEXT DEFAULT 'activate', unit TEXT, title TEXT, status TEXT DEFAULT 'pending_payment')");
+    $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT, unpaid_invoice_id INTEGER)');
+    $db->insert('client_order', ['id' => 2, 'status' => 'pending_setup']);
+    // Invoice 40: order 7 alone. Invoice 41: one checkout of orders 7 and 2.
+    $db->insert('invoice', ['id' => 40]);
+    $db->insert('invoice', ['id' => 41]);
+    $db->insert('invoice_item', ['invoice_id' => 40, 'rel_id' => '7', 'unit' => 'service']);
+    $db->insert('invoice_item', ['invoice_id' => 41, 'rel_id' => '7', 'unit' => 'service']);
+    $db->insert('invoice_item', ['invoice_id' => 41, 'rel_id' => '2', 'unit' => 'service']);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchAllAssociative')->andReturn([]);
+    $dbal->shouldReceive('fetchFirstColumn')->andReturnUsing(fn (string $sql, array $params = [], array $types = []): array => $db->fetchFirstColumn($sql, $params, $types));
+    $dbal->shouldReceive('executeStatement')->andReturnUsing(fn (string $sql, array $params = []): int => $db->executeStatement(str_replace(['UPDATE invoice i SET i.status', 'i.updated_at ='], ['UPDATE invoice AS i SET status', 'updated_at ='], $sql), $params));
+    $subscriptions = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class);
+    $subscriptions->shouldReceive('cancelForOrder')->andReturn(0);
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['db']->shouldReceive('load')->andReturnNull();
+    $di['events_manager'] = Mockery::mock(\ClientFence\EventManager::class)->shouldIgnoreMissing();
+    $di['logger'] = new \ClientFence\Log();
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = '') => $module === 'Invoice' && $sub === 'Subscription'
+        ? $subscriptions
+        : Mockery::mock(ClientFence\Mod\Product\Service::class)->shouldIgnoreMissing());
+    $order = orderServiceCreateLegacyOrderModel(7);
+    $order->status = Order::STATUS_PENDING_SETUP;
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('_callOnService', 'rmClientOrderStatusByOrder', 'rmOrder');
+    $service->setDi($di);
+
+    expect($service->deleteFromOrder($order))->toBeTrue()
+        ->and($db->fetchFirstColumn('SELECT status FROM invoice ORDER BY id'))->toBe([Model_Invoice::STATUS_CANCELED, Model_Invoice::STATUS_UNPAID])
+        ->and($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 40'))->toBe(['7'])
+        ->and($db->fetchFirstColumn('SELECT rel_id FROM invoice_item WHERE invoice_id = 41'))->toBe(['2']);
 });
