@@ -192,10 +192,10 @@ if (invoiceForm) {
     row.append(column('col', title), column('col-3', quantity), column('col-3', price), column('col-1', remove));
     list.append(row);
     productSelect.tomselect?.clear();
-    // The product's price: its one-time price, or its first billing period's.
+    // The product's price: its one-time price, or its first enabled billing period's.
     const product = await apiPost('product/get', { id: productId });
     const pricing = product?.pricing;
-    const first = pricing?.type === 'once' ? pricing.once : pricing?.type === 'recurrent' ? Object.values(pricing.recurrent || {})[0] : null;
+    const first = pricing?.type === 'once' ? pricing.once : pricing?.type === 'recurrent' ? Object.values(pricing.recurrent || {}).find((p) => p.enabled) : null;
     if (first?.price !== undefined && price.value === '') price.value = first.price;
   });
   // Bound before FOSSBilling's form handler (it binds on DOMContentLoaded), so the lines go with the request.

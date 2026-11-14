@@ -62,6 +62,7 @@ function domainTicketsFixture(bool $ticketsOn = true, ?string $supportUrl = null
     $orders = Mockery::mock();
     $orders->shouldReceive('getServiceOrder')->andReturn($order);
     $orders->shouldReceive('getOrderService')->andReturn($model);
+    $orders->shouldReceive('getConfig')->andReturn([]);
 
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('wrapInTransaction')->andReturnUsing(fn (callable $fn) => $fn());
