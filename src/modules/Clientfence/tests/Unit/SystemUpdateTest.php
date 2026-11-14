@@ -158,8 +158,8 @@ test('as root it refuses before anything else, --check too', function (bool $che
 
 test('console.php refuses system:update as root before it loads the site', function (): void {
     $source = (string) file_get_contents(PATH_ROOT . '/console.php');
-    expect(strpos($source, "in_array('system:update', \$argv, true) && function_exists('posix_geteuid') && posix_geteuid() === 0"))
-        ->toBeLessThan(strpos($source, "require_once __DIR__ . DIRECTORY_SEPARATOR . 'load.php';"));
+    expect(strpos($source, "in_array('system:update', \$_SERVER['argv'] ?? [], true) && function_exists('posix_geteuid') && posix_geteuid() === 0"))
+        ->toBeInt()->toBeLessThan(strpos($source, "require_once __DIR__ . DIRECTORY_SEPARATOR . 'load.php';"));
 });
 
 test('--yes shows the release notes and runs the update of System > Update once, then its last step', function (): void {
