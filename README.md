@@ -93,6 +93,13 @@ update needs attention does the admin area ask you to finalize it after signing 
 release cannot be unpacked, the previous files are put back and the site keeps running the version
 it ran before.
 
+From the server, the same update as the site's user (never as root):
+
+```bash
+php console.php system:update --check   # installed and latest version; exit code 1 when an update is available
+php console.php system:update           # shows the release notes and asks first; --yes for scripts, --beta for the beta channel
+```
+
 By hand:
 
 1. Back up the database and the files (`config.php` and the `data` folder above all).

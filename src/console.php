@@ -13,6 +13,12 @@ if (php_sapi_name() !== 'cli') {
     exit('This script can only be run from the command line.');
 }
 
+// ClientFence core patch: system:update refuses root before loading, which already writes root-owned cache files that break later updates.
+if (in_array('system:update', $argv, true) && function_exists('posix_geteuid') && posix_geteuid() === 0) {
+    fwrite(STDERR, "Do not run system:update as root: the files it writes would belong to root, and later updates would fail. Run it as the site's user (for example with sudo -u).\n");
+    exit(1);
+}
+
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'load.php';
 
 use ClientFence\Version;

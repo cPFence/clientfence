@@ -41,6 +41,7 @@ final class Updates
     private const MAX_FEED_BYTES = 1048576;
     // The state row is a TEXT column (64 KB): Arabic notes take two bytes a character.
     private const MAX_NOTES = 20000;
+    private static ?string $channelForRun = null;
 
     public static function feedUrl(): string
     {
@@ -71,8 +72,18 @@ final class Updates
         $di['mod_service']('system')->setParamValue(self::SETTING, $on ? '1' : '0');
     }
 
+    /** A channel for this run only (console.php system:update --beta), without changing the saved setting. */
+    public static function useChannel(?string $channel): void
+    {
+        self::$channelForRun = $channel;
+    }
+
     public static function channel(\Pimple\Container $di): string
     {
+        if (self::$channelForRun !== null) {
+            return self::$channelForRun;
+        }
+
         return (string) $di['mod_service']('system')->getParamValue(self::CHANNEL_SETTING, 'stable') === 'beta' ? 'beta' : 'stable';
     }
 
