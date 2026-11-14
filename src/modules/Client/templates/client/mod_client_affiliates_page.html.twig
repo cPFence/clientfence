@@ -107,7 +107,7 @@
                 <p class="bf-hint mb-0">{{ 'The account owner can ask for a payout.'|trans }}</p>
             {% else %}
                 {% if affiliate.minimum > 0 %}
-                    <p class="bf-hint">{{ 'You can ask for a payout once :amount is available.'|trans({ ':amount': affiliate.minimum|format_currency(currency) }) }}</p>
+                    <p class="bf-hint" id="clientfence-payout-minimum">{{ 'You can ask for a payout once :amount is available.'|trans({ ':amount': affiliate.minimum|format_currency(currency) }) }}</p>
                 {% endif %}
                 <form action="{{ 'client/affiliate_payout_request'|api_url }}" {{ fb_api_form({ redirect: 'affiliates'|url(query: { done: 'requested' }) }) }}>
                     <fieldset{% if not affiliate.can_request %} disabled{% endif %}>
@@ -115,14 +115,14 @@
                             <div class="col-md-4">
                                 <label class="form-label" for="clientfence-payout-amount">{{ 'Amount'|trans }}</label>
                                 <div class="input-group">
-                                    <input class="form-control" type="number" id="clientfence-payout-amount" name="amount" min="{{ max(affiliate.minimum, 0.01) }}" max="{{ max(affiliate.available, 0) }}" step="0.01" value="{{ max(affiliate.available, 0) }}" inputmode="decimal" required>
+                                    <input class="form-control" type="number" id="clientfence-payout-amount" name="amount" min="{{ max(affiliate.minimum, 0.01) }}" max="{{ max(affiliate.available, 0) }}" step="0.01" value="{{ max(affiliate.available, 0) }}" inputmode="decimal" aria-describedby="clientfence-payout-minimum" required>
                                     <span class="input-group-text">{{ currency }}</span>
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <label class="form-label" for="clientfence-payout-details">{{ 'Payout details'|trans }}</label>
-                                <textarea class="form-control" id="clientfence-payout-details" name="details" rows="3" maxlength="2000" required></textarea>
-                                <div class="form-text">{{ 'How should we pay you? For example your PayPal address or bank details, or "account credit".'|trans }}</div>
+                                <textarea class="form-control" id="clientfence-payout-details" name="details" rows="3" maxlength="2000" aria-describedby="clientfence-payout-details-hint" required></textarea>
+                                <div class="form-text" id="clientfence-payout-details-hint">{{ 'How should we pay you? For example your PayPal address or bank details, or "account credit".'|trans }}</div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">{{ 'Ask for a payout'|trans }}</button>

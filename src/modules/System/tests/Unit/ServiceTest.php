@@ -617,3 +617,23 @@ test('updateParams refuses the accounting sync settings to staff without the inv
     $allowed ? expect($service->updateParams(['accounting_program' => '']))->toBeTrue()
         : expect(fn () => $service->updateParams(['accounting_program' => '']))->toThrow(ClientFence\InformationException::class, 'You do not have permission');
 })->with(['allowed' => [true], 'refused' => [false]]);
+
+test('setParamValue moves updated_at only when the value changes', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('setting', ['param' => 'affiliate_enabled', 'value' => '1', 'created_at' => '2026-01-01 00:00:00', 'updated_at' => '2026-01-01 00:00:00']);
+    $staff = Mockery::mock();
+    $staff->allows('hasPermission')->andReturn(true);
+    $di = container();
+    $di['dbal'] = $db;
+    $di['mod_service'] = $di->protect(fn (): object => $staff);
+    $service = new Service();
+    $service->setDi($di);
+
+    $service->setParamValue('affiliate_enabled', '1');
+    expect($db->fetchOne("SELECT updated_at FROM setting WHERE param = 'affiliate_enabled'"))->toBe('2026-01-01 00:00:00');
+
+    $service->setParamValue('affiliate_enabled', '0');
+    expect($db->fetchAssociative("SELECT value, updated_at FROM setting WHERE param = 'affiliate_enabled'"))
+        ->toMatchArray(['value' => '0'])->updated_at->not->toBe('2026-01-01 00:00:00');
+});

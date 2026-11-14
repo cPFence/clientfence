@@ -65,7 +65,10 @@ final class BrowserHtmlSanitizer
             ->allowAttribute('class', '*')
             ->allowAttribute('id', '*')
             ->allowAttribute('title', '*')
-            ->allowAttribute('for', ['label']);
+            ->allowAttribute('for', ['label'])
+            // Field names and hints for screen readers.
+            ->allowAttribute('aria-labelledby', '*')
+            ->allowAttribute('aria-describedby', '*');
     }
 
     private static function createBaseConfig(): HtmlSanitizerConfig

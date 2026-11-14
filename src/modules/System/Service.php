@@ -148,10 +148,13 @@ class Service
             $query = $this->di['dbal']->createQueryBuilder();
             $query
                 ->update('setting')
+                // ClientFence core patch: updated_at marks the last change of the value (Affiliates: when the program was switched on).
+                ->set('updated_at', 'CASE WHEN value = :value THEN updated_at ELSE :updated_at END')
                 ->set('value', ':value')
                 ->where('param = :param')
                 ->setParameter('param', $param)
                 ->setParameter('value', $value)
+                ->setParameter('updated_at', date('Y-m-d H:i:s'))
                 ->executeStatement();
         } elseif ($createIfNotExists) {
             try {

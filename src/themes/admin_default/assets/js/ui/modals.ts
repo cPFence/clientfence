@@ -90,13 +90,14 @@ globalThis.Modals = {
           </div>
         </div>
       </div>`,
+    // ClientFence core patch: the prompt's label names its input for screen readers.
     prompt: `<div class="modal modal-blur fade {{ extraClasses }}" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-body">
               <div class="modal-title">{{ title }}</div>
               <div class="mb-3">
-                <label class="form-label">{{ label }}</label>
+                <label class="form-label" for="prompt-input">{{ label }}</label>
                   <input type="text" class="form-control" id="prompt-input" value="{{ value }}">
                 </div>
             </div>

@@ -22,6 +22,8 @@ final class Emails
         self::send($di, $payoutId, static function (array $payout) use ($di, $payoutId): array {
             return [
                 'to_staff' => true,
+                // Only the staff who can pay it: the email carries the affiliate's payout (bank) details.
+                'to_staff_permission' => ['client', 'manage_affiliates'],
                 'code' => 'mod_staff_affiliate_payout_request',
                 'affiliate' => ['name' => trim($payout['first_name'] . ' ' . $payout['last_name']), 'company' => (string) $payout['company'], 'code' => $payout['code']],
                 'payout' => ['id' => $payoutId, 'amount' => $payout['amount'], 'currency' => $payout['currency'], 'details' => (string) $payout['details']],

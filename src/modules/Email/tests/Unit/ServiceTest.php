@@ -2645,3 +2645,55 @@ test('sendTemplate renders client-bound email in the client language', function 
         expect($locale)->toBe('es_ES');
     }
 });
+
+test('sendTemplate with to_staff_permission sends a staff email only to the staff who have that permission', function (?array $permission, array $expected): void {
+    $service = new ClientFence\Mod\Email\Service();
+    $di = container();
+
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->andReturn(emailTemplate(data: ['enabled' => true]));
+    $templateGroupRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateGroupRepository::class);
+    $templateGroupRepo->shouldReceive('getGroupIdsForTemplate')->andReturn([3]);
+    $groupMemberRepo = Mockery::mock(ClientFence\Mod\Staff\Repository\AdminGroupMemberRepository::class);
+    $groupMemberRepo->shouldReceive('getActiveStaffInGroups')->andReturn([
+        ['id' => 1, 'email' => 'support@example.com', 'name' => 'Support', 'signature' => '', 'timezone' => null],
+        ['id' => 2, 'email' => 'manager@example.com', 'name' => 'Manager', 'signature' => '', 'timezone' => null],
+    ]);
+    $staffService = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffService->shouldReceive('getAdminGroupMemberRepository')->andReturn($groupMemberRepo);
+    $staffService->shouldReceive('hasPermission')->andReturnUsing(fn (Model_Admin $admin, string $module, string $key): bool => $admin->id === 2 && [$module, $key] === ['client', 'manage_affiliates']);
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('load')->with('Admin', Mockery::type('int'))->andReturnUsing(function (string $type, int $id): Model_Admin {
+        $admin = new Model_Admin();
+        $admin->loadBean(new Tests\Helpers\DummyBean());
+        $admin->id = $id;
+
+        return $admin;
+    });
+
+    $recipients = [];
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->andReturn('value');
+    $system->shouldReceive('renderEmailTplString', 'renderEmailSubjectString')->andReturnUsing(function (string $tpl, array $vars) use (&$recipients): string {
+        $recipients[] = $vars['staff']['email'] ?? null;
+
+        return 'value';
+    });
+    $crypt = Mockery::mock('ClientFence\Crypt');
+    $crypt->shouldReceive('encrypt')->andReturn('encrypted');
+    $module = Mockery::mock(ClientFence\Module::class)->makePartial();
+    $module->shouldReceive('getConfig')->andReturn(['from_name' => 'Test', 'from_email' => 'test@test.com']);
+
+    $di['em'] = emailBuildEm(null, $templateRepo, null, true, $templateGroupRepo);
+    $di['db'] = $db;
+    $di['crypt'] = $crypt;
+    $di['mod'] = $di->protect(fn () => $module);
+    $di['mod_service'] = $di->protect(moduleService(['staff' => $staffService, 'system' => $system]));
+    $service->setDi($di);
+
+    expect($service->sendTemplate(['code' => 'mod_email_test', 'to_staff' => true, 'default_subject' => 'S', 'default_template' => 'T', 'default_description' => 'D'] + ($permission === null ? [] : ['to_staff_permission' => $permission])))->toBeTrue()
+        ->and(array_values(array_unique($recipients)))->toBe($expected);
+})->with([
+    'every staff member of the template groups' => [null, ['support@example.com', 'manager@example.com']],
+    'only the staff with the permission' => [['client', 'manage_affiliates'], ['manager@example.com']],
+]);

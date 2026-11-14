@@ -171,7 +171,7 @@ final class Affiliates
             'available' => round($sum("status = 'cleared'") - $held - $requested, 2),
             'held' => $held,
             'requested' => $requested,
-            'paid_out' => -$sum("type = 'payout'"),
+            'paid_out' => 0.0 - $sum("type = 'payout'"), // not -0.0, which shows as "-$0.00"
         ];
     }
 

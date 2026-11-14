@@ -309,7 +309,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         unset($vars['reply_to']);
         // ClientFence core patch: `to_lang`, the language of a plain `to` address, is not a template variable.
         unset($vars['to_lang']);
-        unset($vars['to'], $vars['to_client'], $vars['to_staff'], $vars['to_name'], $vars['from'], $vars['from_name'], $vars['to_admin'], $vars['client_billing_email']);
+        unset($vars['to'], $vars['to_client'], $vars['to_staff'], $vars['to_staff_permission'], $vars['to_name'], $vars['from'], $vars['from_name'], $vars['to_admin'], $vars['client_billing_email']);
         unset($vars['default_description'], $vars['default_subject'], $vars['default_template'], $vars['code'], $vars['send_now'], $vars['throw_exceptions'], $vars['attachment']);
 
         $send_now = $data['send_now'] ?? false;
@@ -325,6 +325,11 @@ class Service implements \ClientFence\InjectionAwareInterface
             $staffService = $this->di['mod_service']('staff');
             $groupIds = $this->templateGroupRepository->getGroupIdsForTemplate((int) $template->getId());
             $staffList = $groupIds === [] ? [] : $staffService->getAdminGroupMemberRepository()->getActiveStaffInGroups($groupIds);
+            // ClientFence core patch: `to_staff_permission` [module, key] keeps a staff email to the staff who may act on it.
+            if (isset($data['to_staff_permission'])) {
+                [$module, $key] = $data['to_staff_permission'];
+                $staffList = array_values(array_filter($staffList, fn (array $member): bool => $staffService->hasPermission($this->di['db']->load('Admin', (int) $member['id']), $module, $key)));
+            }
             $staff = ['list' => $staffList];
             if ($staffList !== []) {
                 $vars['staff'] = $this->safeStaffTemplateVars($staffList[0]);

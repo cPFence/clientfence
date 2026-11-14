@@ -340,6 +340,8 @@ test('a payout request reserves its amount: minimum, one at a time, paid as cred
     $di = affiliateDi($db, ['affiliate_min_payout' => '10']);
     $id = affiliateReferring($di);
     $db->insert('client_affiliate_entry', ['affiliate_id' => $id, 'type' => 'commission', 'status' => 'cleared', 'amount' => 30, 'currency' => 'EUR', 'created_at' => '2026-01-01', 'updated_at' => '2026-01-01']);
+    // Nothing paid out yet reads 0, not -0 ("-$0.00" on the pages).
+    expect((string) Affiliates::balances($db, $id)['paid_out'])->toBe('0');
 
     expect(fn () => Payouts::request($di, 1, 4, 'IBAN X'))->toThrow(InformationException::class, 'The minimum payout is 5.00 EUR.')
         ->and(fn () => Payouts::request($di, 1, 31, 'IBAN X'))->toThrow(InformationException::class, 'You can ask for at most 30.00 EUR.')

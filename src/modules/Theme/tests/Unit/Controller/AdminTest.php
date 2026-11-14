@@ -359,3 +359,10 @@ test('theme save rejects invalid CSRF tokens before any side effects', function 
     'empty session' => ['', ''],
     'missing session' => ['valid-token', null],
 ]);
+
+test('the Custom CSS box of the Palisade settings keeps its name and hint for screen readers (ClientFence)', function (): void {
+    $html = renderPalisadeSettingsHtml([]);
+
+    expect($html)->toMatch('/<textarea[^>]*aria-labelledby="custom_css_title"[^>]*aria-describedby="custom_css_hint"/')
+        ->toContain('id="custom_css_title"')->toContain('id="custom_css_hint"');
+});
