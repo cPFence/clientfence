@@ -12,8 +12,8 @@ use Doctrine\DBAL\Connection;
  * ClientFence: runs the WHMCS import (Import.php) in batches and checks the result.
  *
  * apply() works through the steps (Accounts::STEPS, Catalogue::STEPS, Services::STEPS, Money::STEPS,
- * Support::STEPS, Licensing::STEPS, then the add-on module archive, Archive::STEPS) for as long as
- * it is given: the admin tab calls it again and
+ * Affiliates::STEPS, Support::STEPS, Licensing::STEPS, then the add-on module archive, Archive::STEPS)
+ * for as long as it is given: the admin tab calls it again and
  * again (a few seconds each, showing progress), the console in one go. Each batch is one
  * transaction on this install with its id map rows, its warnings (mod_clientfence_import_warning,
  * one row each) and the run state, so a stop (an error, a closed tab, a timeout) loses nothing: the
@@ -39,6 +39,7 @@ final class Run
         'upgrades' => 'upgrade', 'promotions' => 'promo', 'tlds' => 'tld', 'taxes' => 'tax', 'bundles' => 'bundle',
         'services' => 'service', 'serviceaddons' => 'serviceaddon', 'domains' => 'domain',
         'invoices' => 'invoice', 'transactions' => 'transaction', 'credits' => 'credit', 'balances' => 'balance', 'notes' => 'note', 'agreements' => 'agreement',
+        'affiliates' => 'affiliate',
         'staff' => 'staff', 'departments' => 'helpdesk', 'predefined' => 'predefined', 'tickets' => 'ticket', 'replies' => 'reply',
         'ticketnotes' => 'ticketnote', 'feedback' => 'feedback', 'kbcategories' => 'kbcategory', 'kbarticles' => 'kbarticle',
         'announcements' => 'announcement', 'networkissues' => 'networkissue', 'emails' => 'email',
@@ -55,7 +56,7 @@ final class Run
      */
     public static function steps(): array
     {
-        return Accounts::STEPS + Catalogue::STEPS + Services::STEPS + Money::STEPS + Support::STEPS + Licensing::STEPS + Archive::STEPS;
+        return Accounts::STEPS + Catalogue::STEPS + Services::STEPS + Money::STEPS + Affiliates::STEPS + Support::STEPS + Licensing::STEPS + Archive::STEPS;
     }
 
     /**
@@ -145,6 +146,7 @@ final class Run
                     isset(Money::STEPS[$step]) => new Money($source, $db, $map, $now, $settings['paypal_agreements'] === 1),
                     isset(Support::STEPS[$step]) => new Support($source, $db, $map, $cipher, $encrypt, $config, $attachments, \ClientFence\Mod\Support\TicketFiles::dir(), $keepDays(), $now),
                     isset(Licensing::STEPS[$step]) => new Licensing($source, $db, $map, $now),
+                    isset(Affiliates::STEPS[$step]) => new Affiliates($source, $db, $map, $now),
                     isset(Archive::STEPS[$step]) => new Archive($source, $map, $archive),
                     default => $catalogue,
                 };
@@ -266,7 +268,7 @@ final class Run
                 // Billing agreements count only when the run imported them (an import setting).
                 $step === 'agreements' => (int) ($state['steps']['agreements']['total'] ?? 0),
                 $step === 'feedback' => $source->hasTable('tbltickets') ? $source->count('tblticketfeedback', 'ticketid IN (SELECT id FROM tbltickets)') : 0,
-                isset(Catalogue::STEPS[$step]), isset(Services::STEPS[$step]), isset(Money::STEPS[$step]), isset(Support::STEPS[$step]), isset(Licensing::STEPS[$step]), isset(Archive::STEPS[$step]) => self::stepTotal($source, $step),
+                isset(Catalogue::STEPS[$step]), isset(Services::STEPS[$step]), isset(Money::STEPS[$step]), isset(Support::STEPS[$step]), isset(Licensing::STEPS[$step]), isset(Affiliates::STEPS[$step]), isset(Archive::STEPS[$step]) => self::stepTotal($source, $step),
                 default => $source->count($table),
             };
             // Bulk steps keep no id map rows: the run counted what it wrote.
@@ -297,6 +299,24 @@ final class Run
                 }
             }
             $rows[] = ['step' => 'credit', 'label' => __trans('Clients whose credit matches'), 'whmcs' => count($clientMap), 'imported' => $matching];
+        }
+        // Affiliates, once their step ran: each imported affiliate's available balance against WHMCS's, and the
+        // referred services.
+        if (!empty($state['steps']['affiliates']['finished']) && $source->hasTable('tblaffiliates')) {
+            $affiliateMap = $map->all('affiliate');
+            $matching = 0;
+            foreach ($source->rows('SELECT id, balance FROM tblaffiliates') as $affiliate) {
+                $id = $affiliateMap[(string) $affiliate['id']] ?? null;
+                if ($id !== null && abs(\ClientFence\Mod\Client\Affiliates\Affiliates::balances($db, $id)['available'] - round((float) $affiliate['balance'], 2)) < 0.005) {
+                    ++$matching;
+                }
+            }
+            $rows[] = ['step' => 'affiliatebalances', 'label' => __trans('Affiliates whose available balance matches'), 'whmcs' => count($affiliateMap), 'imported' => $matching];
+            $rows[] = [
+                'step' => 'affiliatereferrals', 'label' => __trans('Affiliate referrals'),
+                'whmcs' => $source->count('tblaffiliatesaccounts'),
+                'imported' => (int) $db->fetchOne("SELECT COUNT(*) FROM client_affiliate_referral WHERE source = 'import'"),
+            ];
         }
         if (!empty($state['steps']['invoices']['finished']) && $source->hasTable('tblinvoices')) {
             $invoiceIds = array_values($map->all('invoice'));
@@ -340,6 +360,7 @@ final class Run
             isset(Money::STEPS[$step]) => (new Money($source, $source->connection(), $map, '', $agreements))->total($step),
             isset(Support::STEPS[$step]) => self::support($source)->total($step),
             isset(Licensing::STEPS[$step]) => (new Licensing($source, $source->connection(), $map, ''))->total($step),
+            isset(Affiliates::STEPS[$step]) => (new Affiliates($source, $source->connection(), $map, ''))->total($step),
             isset(Archive::STEPS[$step]) => (new Archive($source, $map, ''))->total($step),
             default => $catalogue->total($step),
         };

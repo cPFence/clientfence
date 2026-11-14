@@ -324,3 +324,23 @@ CREATE TABLE mod_lcwsoftpaypalbillingagreements (userid int(11) NOT NULL, agreem
 INSERT INTO mod_lcwsoftpaypalbillingagreements VALUES (1, 'B-DEMO000000000001'), (2, 'B-DEMO000000000002');
 CREATE TABLE paymobonline_orders (id int(10) NOT NULL AUTO_INCREMENT, invoice_id int(10) NOT NULL, status varchar(20) NOT NULL, PRIMARY KEY (id));
 INSERT INTO paymobonline_orders VALUES (1, 1001, 'paid');
+-- Affiliates (invented): Chen Wu (client 3) refers services 1 and 3 with a fixed 5.00 override; one cleared and one
+-- pending commission, a withdrawal, visits; the stored balance (12.30) also holds a bonus with no history row.
+-- Bruno Keller (client 2) joined but has no activity.
+ALTER TABLE tblproducts ADD COLUMN affiliatepaytype text NOT NULL DEFAULT '', ADD COLUMN affiliatepayamount decimal(16,2) NOT NULL DEFAULT 0.00, ADD COLUMN affiliateonetime int(1) NOT NULL DEFAULT 0;
+UPDATE tblproducts SET affiliatepaytype = 'percentage', affiliatepayamount = 15.00, affiliateonetime = 1 WHERE id = 1;
+INSERT INTO tblconfiguration VALUES ('AffiliateEnabled', 'on'), ('AffiliateEarningPercent', '10'), ('AffiliateBonusDeposit', '5.00'), ('AffiliatePayout', '20.00'), ('AffiliatesDelayCommission', '30');
+CREATE TABLE tblaffiliates (id int(10) NOT NULL AUTO_INCREMENT, date date DEFAULT NULL, clientid int(10) NOT NULL, visitors int(1) NOT NULL, paytype text NOT NULL, payamount decimal(16,2) NOT NULL, onetime int(1) NOT NULL, balance decimal(16,2) NOT NULL DEFAULT 0.00, withdrawn decimal(16,2) NOT NULL DEFAULT 0.00, created_at timestamp NULL, updated_at timestamp NULL, PRIMARY KEY (id));
+INSERT INTO tblaffiliates (id, date, clientid, visitors, paytype, payamount, onetime, balance, withdrawn) VALUES (7, '2025-05-01', 3, 12, 'fixed', 5.00, 0, 12.30, 10.00), (12, '2026-02-10', 2, 0, '', 0.00, 0, 0.00, 0.00);
+CREATE TABLE tblaffiliatesaccounts (id int(10) NOT NULL AUTO_INCREMENT, affiliateid int(10) NOT NULL, relid int(10) NOT NULL, lastpaid date NOT NULL DEFAULT '2000-01-01', created_at timestamp NULL, updated_at timestamp NULL, PRIMARY KEY (id));
+INSERT INTO tblaffiliatesaccounts (id, affiliateid, relid, lastpaid) VALUES (1, 7, 1, '2026-09-05'), (2, 7, 3, '2026-08-11');
+CREATE TABLE tblaffiliatespending (id int(10) NOT NULL AUTO_INCREMENT, affaccid int(10) NOT NULL DEFAULT 0, invoice_id int(10) unsigned NOT NULL DEFAULT 0, amount decimal(16,2) NOT NULL, clearingdate date NOT NULL, created_at timestamp NULL, updated_at timestamp NULL, PRIMARY KEY (id));
+INSERT INTO tblaffiliatespending (affaccid, invoice_id, amount, clearingdate) VALUES (2, 3, 5.00, '2030-01-10');
+CREATE TABLE tblaffiliateshistory (id int(10) NOT NULL AUTO_INCREMENT, affiliateid int(10) NOT NULL, date date NOT NULL, affaccid int(10) NOT NULL, invoice_id int(10) unsigned NOT NULL DEFAULT 0, description text NOT NULL, amount decimal(16,2) NOT NULL, created_at timestamp NULL, updated_at timestamp NULL, PRIMARY KEY (id));
+INSERT INTO tblaffiliateshistory (affiliateid, date, affaccid, invoice_id, description, amount) VALUES (7, '2026-10-05', 1, 1, '', 5.00), (7, '2026-10-20', 0, 0, 'Goodwill bonus', 12.30);
+CREATE TABLE tblaffiliateswithdrawals (id int(10) NOT NULL AUTO_INCREMENT, affiliateid int(10) NOT NULL, date date NOT NULL, amount decimal(16,2) NOT NULL, created_at timestamp NULL, updated_at timestamp NULL, PRIMARY KEY (id));
+INSERT INTO tblaffiliateswithdrawals (affiliateid, date, amount) VALUES (7, '2026-10-25', 10.00);
+CREATE TABLE tblaffiliates_hits (id int(10) unsigned NOT NULL AUTO_INCREMENT, affiliate_id int(10) unsigned NOT NULL DEFAULT 0, referrer_id int(10) unsigned NOT NULL DEFAULT 0, created_at datetime NOT NULL, PRIMARY KEY (id));
+INSERT INTO tblaffiliates_hits (affiliate_id, referrer_id, created_at) VALUES (7, 1, '2026-09-01 10:00:00'), (7, 1, '2026-09-01 12:00:00'), (7, 0, '2026-09-03 08:00:00');
+CREATE TABLE tblaffiliates_referrers (id int(10) unsigned NOT NULL AUTO_INCREMENT, affiliate_id int(10) unsigned NOT NULL DEFAULT 0, referrer varchar(500) NOT NULL DEFAULT '', created_at datetime NULL, updated_at datetime NULL, PRIMARY KEY (id));
+INSERT INTO tblaffiliates_referrers (id, affiliate_id, referrer) VALUES (1, 7, 'https://blog.demo-client.example/review');

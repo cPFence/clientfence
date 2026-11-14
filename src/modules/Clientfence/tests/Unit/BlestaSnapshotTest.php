@@ -355,3 +355,76 @@ test('names and descriptions in other languages go to the translations; translat
         ])
         ->and(implode("\n", Run::warnings($di['em']->getConnection())))->toContain('1 translated email template in Blesta was not imported; ClientFence sends its own translated templates.');
 });
+
+test('the Order plugin\'s affiliates map to WHMCS\'s affiliate tables: referrals per order service, pending, mature and payouts', function (): void {
+    $referral = ['amount' => 7, 'currency' => 'USD', 'date_updated' => null];
+    $company = ['enabled' => 'true', 'commission_type' => 'percentage', 'commission_amount' => '10', 'order_recurring' => 'false', 'maturity_days' => '30', 'min_withdrawal_amount' => '10', 'withdrawal_currency' => 'USD'];
+    [$di, $source, $settings] = blestaDi([
+        'order_affiliate_company_settings' => array_map(static fn (string $key, string $value): array => ['company_id' => 1, 'key' => $key, 'value' => $value], array_keys($company), $company),
+        'order_affiliates' => [
+            ['id' => 5, 'client_id' => 1, 'code' => 'abc123', 'status' => 'active', 'date_added' => '2025-06-01 10:00:00'],
+            ['id' => 6, 'client_id' => 2, 'code' => 'x9', 'status' => 'inactive', 'date_added' => '2025-07-01 10:00:00'],
+        ],
+        // Affiliate 5 has its own commission; 6 has the program's (Blesta copies it to each affiliate and pays that copy).
+        'order_affiliate_settings' => [
+            ['affiliate_id' => 5, 'key' => 'commission_type', 'value' => 'fixed'], ['affiliate_id' => 5, 'key' => 'commission_amount', 'value' => '4'],
+            ['affiliate_id' => 5, 'key' => 'order_recurring', 'value' => 'true'], ['affiliate_id' => 5, 'key' => 'maturity_days', 'value' => '10'],
+            ['affiliate_id' => 5, 'key' => 'total_available', 'value' => '40.0000'], ['affiliate_id' => 5, 'key' => 'total_withdrawn', 'value' => '15.0000'],
+            ['affiliate_id' => 5, 'key' => 'withdrawal_currency', 'value' => 'USD'],
+            ['affiliate_id' => 6, 'key' => 'commission_type', 'value' => 'percentage'], ['affiliate_id' => 6, 'key' => 'commission_amount', 'value' => '10.0000'],
+            ['affiliate_id' => 6, 'key' => 'order_recurring', 'value' => 'false'], ['affiliate_id' => 6, 'key' => 'total_available', 'value' => '9.0000'],
+            ['affiliate_id' => 6, 'key' => 'withdrawal_currency', 'value' => 'USD'],
+        ],
+        'orders' => [['id' => 1, 'invoice_id' => 1], ['id' => 2, 'invoice_id' => 2], ['id' => 3, 'invoice_id' => 0], ['id' => 4, 'invoice_id' => 0]],
+        // Order 1 holds hosting 1 and domain 2; order 2 hosting 4; order 3 the weekly service 3, which is not imported;
+        // order 4 only domain 2.
+        'order_services' => [['order_id' => 1, 'service_id' => 1], ['order_id' => 1, 'service_id' => 2], ['order_id' => 2, 'service_id' => 4], ['order_id' => 3, 'service_id' => 3], ['order_id' => 4, 'service_id' => 2]],
+        'order_affiliate_referrals' => [
+            ['id' => 1, 'affiliate_id' => 5, 'order_id' => 1, 'status' => 'mature', 'commission' => 4, 'date_added' => '2026-11-01 00:00:00'] + ['date_updated' => '2026-11-12 00:00:00'] + $referral,
+            ['id' => 2, 'affiliate_id' => 5, 'order_id' => 2, 'status' => 'pending', 'commission' => 4, 'date_added' => '2026-11-10 00:00:00'] + $referral,
+            ['id' => 3, 'affiliate_id' => 5, 'order_id' => 3, 'status' => 'pending', 'commission' => 2, 'date_added' => '2026-11-10 00:00:00'] + $referral,
+            ['id' => 4, 'affiliate_id' => 6, 'order_id' => 2, 'status' => 'canceled', 'commission' => 1, 'date_added' => '2026-11-10 00:00:00'] + $referral,
+            // In USD for a client billed in EUR (rate 0.9).
+            ['id' => 5, 'affiliate_id' => 6, 'order_id' => 3, 'status' => 'mature', 'commission' => 9, 'date_added' => '2026-11-02 00:00:00'] + $referral,
+            ['id' => 6, 'affiliate_id' => 5, 'order_id' => 4, 'status' => 'pending', 'commission' => 3, 'date_added' => '2026-11-10 00:00:00'] + $referral,
+        ],
+        'order_affiliate_payouts' => [
+            ['id' => 1, 'affiliate_id' => 5, 'status' => 'approved', 'requested_amount' => 15, 'requested_currency' => 'USD', 'paid_amount' => 15, 'paid_currency' => 'USD', 'date_requested' => '2026-10-01 00:00:00'],
+            ['id' => 2, 'affiliate_id' => 5, 'status' => 'pending', 'requested_amount' => 10, 'requested_currency' => 'USD', 'paid_amount' => null, 'paid_currency' => null, 'date_requested' => '2026-11-11 00:00:00'],
+            ['id' => 3, 'affiliate_id' => 5, 'status' => 'declined', 'requested_amount' => 3, 'requested_currency' => 'USD', 'paid_amount' => null, 'paid_currency' => null, 'date_requested' => '2026-11-11 00:00:00'],
+        ],
+        'order_affiliate_statistics' => [
+            ['id' => 1, 'affiliate_id' => 5, 'visits' => 3, 'sales' => 0, 'date' => '2026-10-01 00:00:00'],
+            ['id' => 2, 'affiliate_id' => 5, 'visits' => 2, 'sales' => 1, 'date' => '2026-10-01 12:00:00'],
+            ['id' => 3, 'affiliate_id' => 5, 'visits' => 4, 'sales' => 0, 'date' => '2026-10-02 00:00:00'],
+        ],
+    ]);
+    Snapshot::fetch($di, $settings, 0.0, false, $source);
+    $db = Snapshot::open();
+    $warnings = implode("\n", Run::warnings($di['em']->getConnection()));
+
+    expect($db->fetchAllAssociative('SELECT id, date, clientid, visitors, paytype, payamount, onetime, balance, withdrawn, code, status FROM tblaffiliates ORDER BY id'))->toBe([
+        ['id' => 5, 'date' => '2025-06-01', 'clientid' => 1, 'visitors' => 9, 'paytype' => 'fixed', 'payamount' => 4.0, 'onetime' => 0, 'balance' => 25.0, 'withdrawn' => 15.0, 'code' => 'abc123', 'status' => 'active'],
+        ['id' => 6, 'date' => '2025-07-01', 'clientid' => 2, 'visitors' => 0, 'paytype' => 'percentage', 'payamount' => 10.0, 'onetime' => 1, 'balance' => 8.1, 'withdrawn' => 0.0, 'code' => 'x9', 'status' => 'inactive'],
+    ])
+        // One referred service per hosting service of the order; domains and services not read are left out.
+        ->and($db->fetchAllAssociative('SELECT id, affiliateid, relid FROM tblaffiliatesaccounts ORDER BY id'))->toBe([['id' => 1, 'affiliateid' => 5, 'relid' => 1], ['id' => 2, 'affiliateid' => 5, 'relid' => 4]])
+        // Pending: clears after the affiliate's maturity days, on the order's invoice.
+        // A domain-only order's commission names the affiliate and the domain instead of a referred service.
+        ->and($db->fetchAllAssociative('SELECT affaccid, affiliateid, domainid, invoice_id, amount, clearingdate FROM tblaffiliatespending ORDER BY id'))->toBe([
+            ['affaccid' => 2, 'affiliateid' => 0, 'domainid' => 0, 'invoice_id' => 2, 'amount' => 4.0, 'clearingdate' => '2026-11-20'],
+            ['affaccid' => 0, 'affiliateid' => 5, 'domainid' => 2, 'invoice_id' => 0, 'amount' => 3.0, 'clearingdate' => '2026-11-20'],
+        ])
+        ->and($db->fetchAllAssociative('SELECT affiliateid, date, affaccid, invoice_id, description, amount FROM tblaffiliateshistory ORDER BY id'))->toBe([
+            ['affiliateid' => 5, 'date' => '2026-11-12 00:00:00', 'affaccid' => 1, 'invoice_id' => 1, 'description' => 'Blesta referral #1', 'amount' => 4.0],
+            ['affiliateid' => 6, 'date' => '2026-11-02 00:00:00', 'affaccid' => 0, 'invoice_id' => 0, 'description' => 'Blesta referral #5', 'amount' => 8.1],
+        ])
+        ->and($db->fetchAllAssociative('SELECT affiliateid, date, amount FROM tblaffiliateswithdrawals'))->toBe([['affiliateid' => 5, 'date' => '2026-10-01 00:00:00', 'amount' => 15.0]])
+        ->and($db->fetchAllKeyValue('SELECT created_at, hits FROM tblaffiliates_hits WHERE affiliate_id = 5 ORDER BY created_at'))->toBe(['2026-10-01 00:00:00' => 5, '2026-10-02 00:00:00' => 4])
+        ->and($db->fetchAllKeyValue("SELECT setting, value FROM tblconfiguration WHERE setting LIKE 'Affiliate%' ORDER BY setting"))->toBe([
+            'AffiliateEarningPercent' => '10', 'AffiliateEnabled' => 'on', 'AffiliatePayout' => '10', 'AffiliatesDelayCommission' => '30',
+        ])
+        ->and($warnings)->toContain('Pending referral #3 of affiliate #5: no service of its order was imported')
+        ->and($warnings)->toContain('Affiliate #5 asked for a payout of 10.00 USD in Blesta that is still waiting')
+        ->and($warnings)->toContain('Blesta pays affiliates on the first invoice of an order only');
+});

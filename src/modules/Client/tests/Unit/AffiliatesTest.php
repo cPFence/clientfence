@@ -414,6 +414,20 @@ test('the cookie refers a client\'s service orders, never the affiliate\'s own a
     'a client sharing a user with the affiliate' => [2, false, []],
 ]);
 
+test('a Blesta affiliate link (/order/forms/a/CODE) sets the cookie and goes to the home page', function (string $code): void {
+    $db = affiliateDb();
+    $di = affiliateDi($db);
+
+    $response = Link::hop(Request::create('/order/forms/a/' . $code), $di);
+
+    expect($response?->getTargetUrl())->toBe('https://billing.example.test/')
+        ->and($response?->headers->getCookies()[0]->getValue())->toBe($code);
+})->with([
+    'a chosen code' => ['abc123'],
+    // Blesta's default code is base64 of the client id.
+    'a default code with padding' => ['MQ=='],
+]);
+
 test('staff cannot assign an affiliate to its own order', function (): void {
     $db = affiliateDb();
     $di = affiliateDi($db);

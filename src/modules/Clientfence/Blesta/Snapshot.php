@@ -40,6 +40,7 @@ final class Snapshot extends Base
         'invoices' => 'Invoices',
         'payments' => 'Payments',
         'tickets' => 'Tickets',
+        'affiliates' => 'Affiliates',
     ];
 
     private const COMPANY = 1;
@@ -99,6 +100,9 @@ final class Snapshot extends Base
     {
         if ($step === 'setup') {
             return [null, $this->setup()];
+        }
+        if ($step === 'affiliates') {
+            return $this->affiliates($offset);
         }
         $sql = [
             'packages' => 'SELECT * FROM packages WHERE company_id = ? AND id > ? ORDER BY id',
@@ -617,6 +621,142 @@ final class Snapshot extends Base
         }
 
         return implode('|', $names);
+    }
+
+    /**
+     * A page of the Order plugin's affiliates (none when the plugin is not installed), as WHMCS's: referrals become
+     * the referred services of each order, pending ones pending commissions (clearing after the maturity days),
+     * mature ones commission history; approved payouts become withdrawals; daily statistics visits. Blesta's code is
+     * kept, so its links keep working. Amounts are converted to the client's currency, as WHMCS keeps them.
+     *
+     * @return array{0: ?int, 1: int}
+     */
+    private function affiliates(int $offset): array
+    {
+        if (!$this->blesta->hasTable('order_affiliates')) {
+            return [null, 0];
+        }
+        $program = $this->blesta->hasTable('order_affiliate_company_settings')
+            ? array_column($this->blesta->rows('SELECT `key`, value FROM order_affiliate_company_settings WHERE company_id = ?', [self::COMPANY]), 'value', 'key')
+            : [];
+        if ($offset === 0 && $program !== []) {
+            $this->program($program);
+        }
+        $rows = $this->blesta->rows('SELECT a.* FROM order_affiliates a JOIN clients c ON c.id = a.client_id JOIN client_groups g ON g.id = c.client_group_id WHERE g.company_id = ? AND a.id > ? ORDER BY a.id LIMIT ' . self::PAGE, [self::COMPANY, $offset]);
+        foreach ($rows as $row) {
+            $this->affiliate($row, $program);
+        }
+
+        return [count($rows) < self::PAGE ? null : (int) end($rows)['id'], count($rows)];
+    }
+
+    /** @param array<string, string> $program the company's affiliate settings */
+    private function program(array $program): void
+    {
+        $settings = [
+            'AffiliateEnabled' => ($program['enabled'] ?? '') === 'true' ? 'on' : '',
+            'AffiliatesDelayCommission' => (string) (int) ($program['maturity_days'] ?? 0),
+            'AffiliatePayout' => (string) $this->convert((float) ($program['min_withdrawal_amount'] ?? 0), (string) ($program['withdrawal_currency'] ?? ''), (string) $this->db->fetchOne('SELECT code FROM tblcurrencies WHERE "default" = 1')),
+        ];
+        if (($program['commission_type'] ?? 'percentage') === 'percentage') {
+            $settings['AffiliateEarningPercent'] = (string) (float) ($program['commission_amount'] ?? 0);
+        } else {
+            $this->warn(sprintf('Blesta\'s default affiliate commission is a fixed %s: set it under System > Settings > Client Settings > Affiliates (imported affiliates keep their own).', (string) ($program['commission_amount'] ?? '0')));
+        }
+        if (($program['order_recurring'] ?? 'false') !== 'true') {
+            $this->warn('Blesta pays affiliates on the first invoice of an order only: switch on "One time" under System > Settings > Client Settings > Affiliates before renewals are paid (imported affiliates keep their own).');
+        }
+        foreach ($settings as $setting => $value) {
+            $this->db->insert('tblconfiguration', ['setting' => $setting, 'value' => $value]);
+        }
+    }
+
+    /**
+     * @param array<string, mixed>  $a       an order_affiliates row
+     * @param array<string, string> $program the company's affiliate settings
+     */
+    private function affiliate(array $a, array $program): void
+    {
+        $id = (int) $a['id'];
+        $client = (int) $a['client_id'];
+        $own = $this->blesta->hasTable('order_affiliate_settings')
+            ? array_column($this->blesta->rows('SELECT `key`, value FROM order_affiliate_settings WHERE affiliate_id = ?', [$id]), 'value', 'key')
+            : [];
+        $setting = static fn (string $key, string $default = ''): string => (string) ($own[$key] ?? $program[$key] ?? $default);
+        $currency = (string) $this->db->fetchOne('SELECT cur.code FROM tblclients c JOIN tblcurrencies cur ON cur.id = c.currency WHERE c.id = ?', [$client]);
+        $money = fn (mixed $amount, mixed $from): float => $this->convert((float) $amount, (string) $from, $currency);
+        $withdrawal = $setting('withdrawal_currency');
+        // Blesta copies the program's commission to each affiliate and pays that copy: it becomes the affiliate's own,
+        // since ClientFence's defaults cannot always hold Blesta's (a fixed amount, one-time).
+        $type = $setting('commission_type', 'percentage');
+        $recurring = $setting('order_recurring', 'false') === 'true';
+        $visits = [];
+        if ($this->blesta->hasTable('order_affiliate_statistics')) {
+            foreach ($this->blesta->rows('SELECT SUBSTR(`date`, 1, 10) AS day, SUM(visits) AS n FROM order_affiliate_statistics WHERE affiliate_id = ? GROUP BY SUBSTR(`date`, 1, 10)', [$id]) as $row) {
+                $visits[(string) $row['day']] = (int) $row['n'];
+            }
+        }
+        $this->db->insert('tblaffiliates', [
+            'id' => $id, 'date' => substr((string) $a['date_added'], 0, 10), 'clientid' => $client, 'visitors' => array_sum($visits),
+            'paytype' => in_array($type, ['percentage', 'fixed'], true) ? $type : '', 'payamount' => (float) $setting('commission_amount', '0'), 'onetime' => $recurring ? 0 : 1,
+            'balance' => $money((string) ((float) $setting('total_available', '0') - (float) $setting('total_withdrawn', '0')), $withdrawal), 'withdrawn' => $money($setting('total_withdrawn', '0'), $withdrawal),
+            'code' => (string) $a['code'], 'status' => (string) $a['status'],
+        ]);
+        foreach ($visits as $day => $hits) {
+            $this->db->insert('tblaffiliates_hits', ['affiliate_id' => $id, 'created_at' => $day . ' 00:00:00', 'hits' => $hits]);
+        }
+        $orders = $this->blesta->hasTable('orders');
+        foreach ($this->blesta->hasTable('order_affiliate_referrals') ? $this->blesta->rows("SELECT * FROM order_affiliate_referrals WHERE affiliate_id = ? AND status <> 'canceled' ORDER BY id", [$id]) : [] as $r) {
+            // Blesta pays once per order: only the order's first service the WHMCS step can refer (not a domain or add-on)
+            // carries the referral, so the order's other services cannot earn it again in ClientFence.
+            $account = 0;
+            $domain = 0;
+            foreach ($this->blesta->hasTable('order_services') ? $this->blesta->rows('SELECT service_id FROM order_services WHERE order_id = ? ORDER BY service_id', [(int) $r['order_id']]) : [] as $service) {
+                if ($this->db->fetchOne('SELECT 1 FROM tblhosting WHERE id = ?', [(int) $service['service_id']]) !== false) {
+                    $this->db->insert('tblaffiliatesaccounts', ['affiliateid' => $id, 'relid' => (int) $service['service_id'], 'created_at' => (string) $r['date_added']]);
+                    $account = (int) $this->db->lastInsertId();
+                    break;
+                }
+                // A domain-only order: its pending commission still clears on the domain (no referral, domains do not earn).
+                $domain = $domain ?: ($this->db->fetchOne('SELECT 1 FROM tbldomains WHERE id = ?', [(int) $service['service_id']]) !== false ? (int) $service['service_id'] : 0);
+            }
+            $invoice = $orders ? (int) $this->blesta->value('SELECT invoice_id FROM orders WHERE id = ?', [(int) $r['order_id']]) : 0;
+            $invoice = $invoice > 0 && $this->db->fetchOne('SELECT 1 FROM tblinvoices WHERE id = ?', [$invoice]) !== false ? $invoice : 0;
+            $commission = $money($r['commission'], $r['currency']);
+            if ($r['status'] === 'mature') {
+                $this->db->insert('tblaffiliateshistory', [
+                    'affiliateid' => $id, 'date' => (string) (($r['date_updated'] ?? null) ?: $r['date_added']), 'affaccid' => $account, 'invoice_id' => $invoice,
+                    'description' => sprintf('Blesta referral #%d', (int) $r['id']), 'amount' => $commission,
+                ]);
+            } elseif ($account === 0 && $domain === 0) {
+                $this->warn(sprintf('Pending referral #%d of affiliate #%d: no service of its order was imported, so its commission (%s %s) was not imported.', (int) $r['id'], $id, number_format($commission, 2), $currency));
+            } else {
+                $this->db->insert('tblaffiliatespending', [
+                    'affaccid' => $account, 'affiliateid' => $account === 0 ? $id : 0, 'domainid' => $account === 0 ? $domain : 0,
+                    'invoice_id' => $invoice, 'amount' => $commission, 'created_at' => (string) $r['date_added'],
+                    'clearingdate' => date('Y-m-d', (int) strtotime((string) $r['date_added'] . ' +' . max(0, (int) $setting('maturity_days', '0')) . ' days')),
+                ]);
+            }
+        }
+        foreach ($this->blesta->hasTable('order_affiliate_payouts') ? $this->blesta->rows("SELECT * FROM order_affiliate_payouts WHERE affiliate_id = ? AND status IN ('approved', 'pending') ORDER BY id", [$id]) : [] as $p) {
+            $amount = $money($p['requested_amount'], $p['requested_currency']);
+            if ($p['status'] === 'approved') {
+                $this->db->insert('tblaffiliateswithdrawals', ['affiliateid' => $id, 'date' => (string) $p['date_requested'], 'amount' => $amount]);
+            } else {
+                $this->warn(sprintf('Affiliate #%d asked for a payout of %s %s in Blesta that is still waiting: it was not imported, so the affiliate asks again in ClientFence.', $id, number_format($amount, 2), $currency));
+            }
+        }
+    }
+
+    /** An amount in another currency, at the rates read in setup (Blesta's exchange rates). */
+    private function convert(float $amount, string $from, string $to): float
+    {
+        if ($from === '' || $to === '' || $from === $to) {
+            return round($amount, 2);
+        }
+        $rates = $this->db->fetchAllKeyValue('SELECT code, rate FROM tblcurrencies WHERE code IN (?, ?)', [$from, $to]);
+
+        return (float) ($rates[$from] ?? 0) > 0 && (float) ($rates[$to] ?? 0) > 0 ? round($amount / (float) $rates[$from] * (float) $rates[$to], 2) : round($amount, 2);
     }
 
     /** After the last step: nothing more to read (credit was added payment by payment). */

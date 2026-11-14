@@ -27,6 +27,10 @@ final class Link
     {
         $code = $request->query->all()['aff'] ?? null;
         $path = RequestFactory::getRoutePath($request);
+        // ClientFence: Blesta's affiliate links (/order/forms/a/CODE) keep working after an import.
+        if ($code === null && preg_match('~^/order/forms/a/([A-Za-z0-9_-]{1,62}={0,2})/?$~D', $path, $blesta) === 1) {
+            [$code, $path] = [$blesta[1], '/aff.php'];
+        }
         if (!is_string($code) || !$request->isMethod('GET') || str_starts_with($path, '/api/') || $path === ADMIN_PREFIX || str_starts_with($path, ADMIN_PREFIX . '/')) {
             return null;
         }
@@ -35,7 +39,7 @@ final class Link
         // Only the page asked for, on the configured address: the link names no other target.
         $response = new RedirectResponse($di['url']->link($path === '/aff.php' ? '/' : $path, $query), 302, ['Cache-Control' => 'no-store']);
         $settings = Affiliates::settings($di);
-        if ($settings['enabled'] && preg_match('/^[A-Za-z0-9_-]{1,64}$/D', $code) === 1) {
+        if ($settings['enabled'] && preg_match('/^[A-Za-z0-9_-]{1,62}={0,2}$/D', $code) === 1) {
             if ($request->cookies->get(self::COOKIE) !== $code) {
                 self::countVisit($di['dbal'], $code);
             }

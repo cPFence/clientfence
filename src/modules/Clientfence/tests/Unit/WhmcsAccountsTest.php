@@ -309,6 +309,7 @@ test('a new run counts what each step reads', function (): void {
         'categories' => 0, 'servers' => 0, 'products' => 0, 'addons' => 0, 'options' => 0, 'upgrades' => 0, 'promotions' => 0, 'tlds' => 0, 'taxes' => 0, 'bundles' => 0,
         'services' => 0, 'serviceaddons' => 0, 'domains' => 0,
         'invoices' => 0, 'transactions' => 0, 'credits' => 0, 'balances' => 4, 'notes' => 0, 'agreements' => 0,
+        'affiliates' => 0,
         'staff' => 0, 'departments' => 0, 'predefined' => 0, 'tickets' => 0, 'replies' => 0, 'ticketnotes' => 0, 'feedback' => 0,
         'kbcategories' => 0, 'kbarticles' => 0, 'announcements' => 0, 'networkissues' => 0, 'emails' => 0,
         'licencebans' => 0, 'licencelog' => 0, 'archive' => 0,

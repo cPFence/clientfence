@@ -255,6 +255,15 @@ final class Catalogue
         $title = self::cut($row['name'] ?? '', 255) ?: 'Product ' . $id;
         $module = strtolower(trim((string) ($row['servertype'] ?? '')));
         [$type, $config] = $this->productKind($row, $title, $module);
+        // The product's affiliate commission (Client/Affiliates/Commissions::rule()); WHMCS's '' is the default.
+        $payout = str_replace('fixedamount', 'fixed', strtolower(trim((string) ($row['affiliatepaytype'] ?? ''))));
+        if (in_array($payout, ['percentage', 'fixed', 'none'], true)) {
+            $config += [
+                'affiliate_payout' => $payout,
+                'affiliate_amount' => number_format(max(0.0, (float) ($row['affiliatepayamount'] ?? 0)), 2, '.', ''),
+                'affiliate_onetime' => in_array(strtolower(trim((string) ($row['affiliateonetime'] ?? ''))), ['on', '1', 'yes'], true) ? '1' : '0',
+            ];
+        }
         $groupHidden = $this->groupHidden((int) ($row['gid'] ?? 0));
         $paymentId = $this->payment('product', $id, (string) ($row['paytype'] ?? 'recurring'), null, $title);
         $productId = $this->insertProduct([

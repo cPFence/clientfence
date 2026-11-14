@@ -51,6 +51,8 @@ final class Inventory
         'credit_log' => ['billing', 'Credit log', 'tblcredit', ''],
         'billing_notes' => ['billing', 'Credit and debit notes', 'tblbillingnotes', ''],
         'quotes' => ['billing', 'Quotes', 'tblquotes', 'stage'],
+        'affiliates' => ['billing', 'Affiliates', 'tblaffiliates', ''],
+        'affiliate_referrals' => ['billing', 'Affiliate referrals', 'tblaffiliatesaccounts', ''],
         'departments' => ['support', 'Support departments', 'tblticketdepartments', ''],
         'tickets' => ['support', 'Tickets', 'tbltickets', 'status'],
         'ticket_replies' => ['support', 'Ticket replies', 'tblticketreplies', ''],
