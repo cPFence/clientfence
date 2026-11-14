@@ -417,7 +417,7 @@ test('gets tax rate for client', function (): void {
     expect($result)->toBe($taxRate);
 });
 
-test('the client menu offers saved cards only with an enabled Stripe, PayPal Email, PayPal Auto-Pay, PayTabs, eWAY or GoCardless gateway', function (): void {
+test('the client menu offers saved cards only with an enabled Stripe, PayPal Email, PayPal Auto-Pay, PayTabs, eWAY, Mollie or GoCardless gateway', function (): void {
     $api = apiEndpoint(new Client());
     $di = container();
     $db = Mockery::mock(ClientFence\Database::class);
@@ -427,6 +427,7 @@ test('the client menu offers saved cards only with an enabled Stripe, PayPal Ema
     $db->shouldReceive('findOne')->with('PayGateway', 'gateway = ? AND enabled = 1', ['PayTabs'])->once()->andReturnNull();
     $db->shouldReceive('findOne')->with('PayGateway', 'gateway = ? AND enabled = 1', ['Eway'])->once()->andReturnNull();
     $db->shouldReceive('findOne')->with('PayGateway', 'gateway = ? AND enabled = 1', ['GoCardless'])->once()->andReturnNull();
+    $db->shouldReceive('findOne')->with('PayGateway', 'gateway = ? AND enabled = 1', ['Mollie'])->once()->andReturnNull();
     $di['db'] = $db;
     $api->setDi($di);
 

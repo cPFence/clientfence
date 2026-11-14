@@ -78,6 +78,11 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/payment-methods/gocardless/saved', 'get_gocardless_saved', [], static::class);
         $app->get('/invoice/gocardless/:hash', 'get_invoice_gocardless', ['hash' => '[a-z0-9]+'], static::class);
         $app->get('/invoice/gocardless-paid', 'get_invoice_gocardless_paid', [], static::class);
+        // ClientFence: Mollie (Payment_Adapter_Mollie), the same ways; Mollie's webhooks go to ipn.php, its return carries our reference.
+        $app->get('/payment-methods/mollie', 'get_mollie_save', [], static::class);
+        $app->get('/payment-methods/mollie/saved', 'get_mollie_saved', [], static::class);
+        $app->get('/invoice/mollie/:hash', 'get_invoice_mollie', ['hash' => '[a-z0-9]+'], static::class);
+        $app->get('/invoice/mollie-paid', 'get_invoice_mollie_paid', [], static::class);
     }
 
     /** ClientFence: sends the account owner to GoCardless to set up a Direct Debit without paying; ?next= is where they go after. */
@@ -135,6 +140,78 @@ class Client implements \ClientFence\InjectionAwareInterface
         }
         // As the client's "Pay now": no automatic try is counted, and a payment already clearing is not doubled.
         $paid = \ClientFence\Mod\Invoice\SavedCards::charge($this->di, $invoice, $adapter, true, true)['paid'];
+
+        return $this->movesOn(($paid ? 'invoice/thank-you/' : 'invoice/') . $invoice->hash);
+    }
+
+    /** ClientFence: sends the account owner to Mollie to save a card or PayPal account without paying; ?next= is where they go after. */
+    public function get_mollie_save(\ClientFence\App $app): Response
+    {
+        $clientId = $this->ownerSignedIn();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::mollie($this->di);
+        if ($adapter === null || !$adapter->option('save_only')) {
+            throw new InformationException('Saving a payment method with Mollie is not available.');
+        }
+        $next = (string) $app->getRequest()->query->get('next', '');
+        $next = preg_match('#^order/service/manage/\d+$#', $next) === 1 ? $next : 'payment-methods';
+
+        return $app->redirectUrl($adapter->cardSetup($clientId, (string) $this->di['url']->link('payment-methods/mollie/saved', ['next' => $next])));
+    }
+
+    /** ClientFence: back from Mollie (without the session cookie): keeps the method for the client its setup names. */
+    public function get_mollie_saved(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::mollie($this->di) ?? throw new InformationException('Your payment method was not saved. Please try again.');
+        $adapter->cardSaved((string) $app->getRequest()->query->get('ref', ''));
+        $next = (string) $app->getRequest()->query->get('next', '');
+
+        return $this->movesOn(preg_match('#^order/service/manage/\d+$#', $next) === 1 ? $next : 'payment-methods');
+    }
+
+    /** ClientFence: pays an unpaid invoice on Mollie's page: saving the method for its signed-in owner, or once (?once=1, always with saved methods off). */
+    public function get_invoice_mollie(\ClientFence\App $app, $hash): Response
+    {
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::mollie($this->di, false) ?? throw new InformationException('Mollie is not available.');
+        $saving = $adapter->option('saved_methods');
+        $once = !$saving || (string) $app->getRequest()->query->get('once', '') === '1';
+        if ($once && $saving && !$adapter->option('pay_once')) {
+            throw new InformationException('Mollie is not available.');
+        }
+        $clientId = $once ? null : $this->ownerSignedIn();
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
+        if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
+            return $app->redirect('invoice');
+        }
+        // A payment still clearing (a SEPA Direct Debit of the saved method): a new payment would pay twice.
+        if (\ClientFence\Mod\Invoice\PendingPayments::forInvoice($this->di, (int) $invoice->id) !== null) {
+            return $app->redirect('invoice/' . $invoice->hash);
+        }
+
+        return $app->redirectUrl($adapter->checkout($invoice, !$once));
+    }
+
+    /** ClientFence: back from Mollie (without the session cookie): records the payment our reference names and shows the invoice of the hash. */
+    public function get_invoice_mollie_paid(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::mollie($this->di, false);
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ?', [(string) $app->getRequest()->query->get('hash', '')]);
+        $paymentId = $adapter?->paymentOf((string) $app->getRequest()->query->get('ref', '')) ?? '';
+        if ($adapter === null || $paymentId === '' || !$invoice instanceof \Model_Invoice) {
+            return $this->movesOn('invoice');
+        }
+        try {
+            $this->di['mod_service']('Invoice', 'Transaction')->createAndProcess([
+                'invoice_id' => (int) $invoice->id,
+                'gateway_id' => $adapter->gatewayId(),
+                'source' => 'mollie_return',
+                'get' => ['mollie_payment' => $paymentId],
+            ]);
+        } catch (\Payment_Exception) {
+            // Not ours or not readable: the error stays on the transaction, the client sees the invoice.
+        }
+        $paid = $this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $invoice->id]) === \Model_Invoice::STATUS_PAID;
 
         return $this->movesOn(($paid ? 'invoice/thank-you/' : 'invoice/') . $invoice->hash);
     }
