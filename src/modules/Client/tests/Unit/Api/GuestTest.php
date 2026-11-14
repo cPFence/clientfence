@@ -478,6 +478,41 @@ test('resetPassword returns true when email not found', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('resetPassword logs a staff email used on the client form', function (): void {
+    $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
+    $data['email'] = 'owner@example.com';
+
+    $eventMock = Mockery::mock('ClientFence\EventManager');
+    $eventMock->shouldReceive('fire')->atLeast()->once();
+
+    $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
+    $clientRepository->shouldReceive('findOneByEmailAndActive')->once()->andReturn(null);
+
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $em->shouldReceive('getRepository')->andReturnUsing(static fn (string $class): object => match ($class) {
+        ClientFence\Mod\Client\Entity\Client::class => $clientRepository,
+        default => Mockery::mock()->shouldIgnoreMissing(),
+    });
+
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('findOne')->with('Admin', 'email = ?', ['owner@example.com'])->once()->andReturn(Mockery::mock(Model_Admin::class));
+
+    $di = container();
+    $di['em'] = $em;
+    $di['db'] = $db;
+    $di['events_manager'] = $eventMock;
+    $di['logger'] = $logger = new Tests\Helpers\TestLogger();
+
+    $toolsMock = Mockery::mock(ClientFence\Tools::class);
+    $toolsMock->shouldReceive('validateAndSanitizeEmail')->atLeast()->once()->andReturn($data['email']);
+    $di['tools'] = $toolsMock;
+
+    $guestClient->setDi($di);
+
+    expect($guestClient->reset_password($data))->toBeTrue()
+        ->and($logger->calls[0]['params'][0])->toStartWith('Client password reset requested for staff email');
+});
+
 test('updatePassword returns true', function (): void {
     $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
     $data = [

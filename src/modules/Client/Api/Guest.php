@@ -361,6 +361,12 @@ class Guest extends \ClientFence\Api\AbstractApi
                 if (\ClientFence\Mod\Client\Users::requestReset($this->getDi(), (string) $data['email'])) {
                     return true;
                 }
+                // ClientFence core patch: a staff email on the client form says so in the log (staff reset from the admin sign-in page).
+                if ($this->getDi()['db']->findOne('Admin', 'email = ?', [$data['email']]) instanceof \Model_Admin) {
+                    $this->getDi()['logger']->setChannel('security')->info('Client password reset requested for staff email %s from IP %s: staff accounts reset their password with Forgot your password? on the admin sign-in page', $data['email'], $this->getIp());
+
+                    return true;
+                }
                 $this->getDi()['logger']->setChannel('security')->info('Client password reset requested for unknown email %s from IP %s', $data['email'], $this->getIp());
 
                 return true;
