@@ -174,6 +174,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         // Not order_upgradables: it only fills the "Request Upgrade" ticket of an existing order.
         'client' => [
             'cart' => ['checkout' => 'closed'],
+            // Add-ons for the client's own service (Order/AddonOrders.php): no offers and no order while the store is closed to them.
+            'order' => ['addon_offers' => 'list', 'addon_order' => 'closed'],
         ],
     ];
 

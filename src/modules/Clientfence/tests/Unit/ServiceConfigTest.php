@@ -76,6 +76,25 @@ test('a closed store answers no store call, configurable options included', func
     'list' => ['get_pairs', ['result' => []]],
 ]);
 
+test('a closed store offers a client no add-ons for their service and refuses the order', function (): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'closed'] : []);
+    $di['session'] = new class {
+        public function get(string $key): mixed
+        {
+            return null;
+        }
+    };
+    $di['request'] = Request::create('/order/service/manage/5');
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 7;
+
+    expect(Service::storeGate($di, 'client', 'order', 'addon_offers', $client, ['id' => 5]))->toBe(['result' => []])
+        ->and(fn () => Service::storeGate($di, 'client', 'order', 'addon_order', $client, ['id' => 5, 'product_id' => 9]))
+        ->toThrow(ClientFence\InformationException::class, 'The store is not available.');
+});
+
 test('a closed store lists its TLDs on admin pages to signed-in staff only', function (string $path, bool $staff, ?array $answer): void {
     $di = container();
     $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'closed'] : []);
