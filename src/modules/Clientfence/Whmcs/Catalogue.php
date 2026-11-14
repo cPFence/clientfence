@@ -1110,8 +1110,9 @@ final class Catalogue
     private function appendList(int $productId, string $column, int $id): void
     {
         $list = json_decode((string) $this->db->fetchOne('SELECT ' . $column . ' FROM product WHERE id = ?', [$productId]), true);
-        $list = is_array($list) ? array_map('intval', $list) : [];
-        if (!in_array($id, $list, true)) {
+        // Entries are kept as saved: upgrades may hold Order\Upgrades::CATEGORY.
+        $list = is_array($list) ? $list : [];
+        if (!in_array($id, array_map('intval', $list), true)) {
             $list[] = $id;
             $this->db->update('product', [$column => json_encode($list)], ['id' => $productId]);
         }

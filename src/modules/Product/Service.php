@@ -259,6 +259,8 @@ class Service implements InjectionAwareInterface
             $result['quantity_in_stock'] = $model->getQuantityInStock();
             $result['stock_control'] = $model->isStockControl();
             $result['upgrades'] = $this->getUpgradablePairs($model);
+            // ClientFence core patch: the Upgrades tab's "every product in this category" switch (CF-107).
+            $result['upgrades_category'] = in_array(\ClientFence\Mod\Order\Upgrades::CATEGORY, (array) json_decode($model->getUpgrades() ?? '', true), true);
             $result['status'] = $model->getStatus();
             $result['hidden'] = $model->isHidden();
             $result['setup'] = $model->getSetup();
@@ -575,13 +577,16 @@ class Service implements InjectionAwareInterface
         $model->setSlug($data['slug'] ?? $model->getSlug());
         $model->setSetup((string) ($data['setup'] ?? $model->getSetup()));
         // remove empty value in data['upgrades];
-        if (is_array($data['upgrades'] ?? null)) {
-            $upgrades = array_values(array_filter($data['upgrades']));
-            if (empty($upgrades)) {
-                $model->setUpgrades(null);
-            } else {
-                $model->setUpgrades(json_encode($upgrades));
+        // ClientFence core patch: upgrades_category keeps the "whole category" entry in the list (CF-107); left out, it stays as saved.
+        if (is_array($data['upgrades'] ?? null) || isset($data['upgrades_category'])) {
+            $saved = json_decode($model->getUpgrades() ?? '', true);
+            $saved = is_array($saved) ? $saved : [];
+            $category = isset($data['upgrades_category']) ? (bool) $data['upgrades_category'] : in_array(\ClientFence\Mod\Order\Upgrades::CATEGORY, $saved, true);
+            $upgrades = array_values(array_filter(is_array($data['upgrades'] ?? null) ? $data['upgrades'] : $saved, static fn ($id): bool => is_numeric($id) && (int) $id > 0));
+            if ($category) {
+                array_unshift($upgrades, \ClientFence\Mod\Order\Upgrades::CATEGORY);
             }
+            $model->setUpgrades($upgrades === [] ? null : json_encode($upgrades));
         }
         if (is_array($data['addons'] ?? null)) {
             $addons = array_values(array_filter($data['addons']));

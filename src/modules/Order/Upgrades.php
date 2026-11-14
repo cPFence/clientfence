@@ -16,9 +16,9 @@ use ClientFence\Mod\Product\Translations;
  * price rules).
  *
  * The client area lists, for an active service, every product its product may move to (the
- * product's "Upgrades" list, plus its own other billing cycles) that is on sale, of the same kind
- * and allowed here, with the prorated price (a cycle priced 0 is left out: FOSSBilling enables
- * every cycle at 0 by default). Choosing one:
+ * product's "Upgrades" list and, when it allows that, its category; plus its own other billing
+ * cycles) that is on sale, of the same kind and allowed here, with the prorated price (a cycle
+ * priced 0 is left out: FOSSBilling enables every cycle at 0 by default). Choosing one:
  * - amount > 0: an invoice with one line (an invoice "hook call", Upgrades::EVENT); when it is
  *   paid, Clientfence\Service::onAfterClientOrderUpgradePaid() applies the change (and the cron
  *   applies any paid one the event missed);
@@ -58,6 +58,8 @@ final class Upgrades
 
     public const SCOPE_PRODUCT = 'product';
     public const SCOPE_ORDER = 'order';
+    /** ClientFence core patch: this entry in a product's upgrades list allows moves to every product of its category (CF-107). */
+    public const CATEGORY = 'category';
 
     /** FOSSBilling's price columns (product_payment) by billing period. */
     public const PERIODS = ['w' => '1W', 'm' => '1M', 'q' => '3M', 'b' => '6M', 'a' => '1Y', 'bia' => '2Y', 'tria' => '3Y'];
@@ -190,7 +192,15 @@ final class Upgrades
         $locale = self::clientLocale($db, (int) $order->client_id);
         $ips = null;
         $tooManyIps = false;
-        foreach (array_unique(array_merge([(int) $order->product_id], $from['upgrades'])) as $productId) {
+        $targets = $from['upgrades'];
+        if ($from['upgrades_category']) {
+            // ClientFence core patch: the category's products of the same type, read now so products added later are offered (CF-107); hidden ones are not.
+            $targets = array_merge($targets, array_map('intval', $db->fetchFirstColumn(
+                'SELECT p.id FROM product p JOIN product c ON c.product_category_id = p.product_category_id WHERE c.id = ? AND p.type = ? AND COALESCE(p.hidden, 0) = 0 ORDER BY p.id',
+                [(int) $order->product_id, $from['type']]
+            )));
+        }
+        foreach (array_unique(array_merge([(int) $order->product_id], $targets)) as $productId) {
             $to = $productId === (int) $order->product_id ? ($from['on_sale'] ? $from : null) : self::catalog($db, $productId, true, (string) $order->currency);
             if ($to === null || !self::compatible($from, $to)) {
                 continue;
@@ -834,7 +844,7 @@ final class Upgrades
      * not on sale). With $currency, its prices are the default-currency equivalents of the fixed
      * prices it has in that currency (Product/CurrencyPrices.php).
      *
-     * @return array{id: int, title: string, type: string, is_addon: bool, on_sale: bool, config: array<string, mixed>, upgrades: list<int>, prices: array<string, float>}|null
+     * @return array{id: int, title: string, type: string, is_addon: bool, on_sale: bool, config: array<string, mixed>, upgrades: list<int>, upgrades_category: bool, prices: array<string, float>}|null
      */
     public static function catalog(Connection $db, int $productId, bool $onSale = true, ?string $currency = null): ?array
     {
@@ -868,6 +878,7 @@ final class Upgrades
             'on_sale' => $row['status'] === 'enabled',
             'config' => is_array($config) ? $config : [],
             'upgrades' => is_array($upgrades) ? array_values(array_filter(array_map('intval', $upgrades), static fn (int $id): bool => $id > 0)) : [],
+            'upgrades_category' => is_array($upgrades) && in_array(self::CATEGORY, $upgrades, true),
             'prices' => $prices,
         ];
     }

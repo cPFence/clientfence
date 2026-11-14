@@ -338,8 +338,17 @@
                     card_class: 'm-3'
                 } %}
                     {% block section_content %}
+                        {# ClientFence core patch: moves to the whole category, and only products of this type to tick (CF-107). #}
+                        <div class="px-3 pt-3">
+                            <input type="hidden" name="upgrades_category" value="0">
+                            <label class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="upgrades_category" value="1"{% if product.upgrades_category|default(false) %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'Allow moves to every product in this category'|trans }}</span>
+                            </label>
+                            <div class="form-text">{{ 'Products added to the category later are included. Hidden and disabled products are not offered. Products ticked below are offered too.'|trans }}</div>
+                        </div>
                         <input type="hidden" name="upgrades[]" value=""/>
-                        {% set products = admin.product_get_pairs %}
+                        {% set products = admin.product_get_pairs({ type: product.type }) %}
                         <div class="list-group list-group-flush">
                             {% for id,ptitle in products %}
                             {% if id != product.id %}

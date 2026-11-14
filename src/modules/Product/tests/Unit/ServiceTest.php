@@ -2787,3 +2787,28 @@ test('partial category updates retain omitted fields and allow explicit clearing
     expect($category->getTitle())->toBe('Saved')->and($category->getIconUrl())->toBe('icon.svg')
         ->and($category->getDescription())->toBe('')->and($category->getUpdatedAt())->not->toBeNull();
 });
+
+test('the upgrades "whole category" switch is saved in the upgrades list and kept when a save leaves it out (CF-107)', function (): void {
+    $service = new Service();
+    $di = container();
+    $di['em'] = productTestCreateEntityManagerWithRepositories();
+    $di['logger'] = new \ClientFence\Log();
+    $service->setDi($di);
+    $product = productTestCreateProductEntity(1);
+    $saved = fn (): ?array => json_decode($product->getUpgrades() ?? 'null', true);
+
+    $service->updateProduct($product, ['upgrades' => ['', '5'], 'upgrades_category' => '1']);
+    expect($saved())->toBe([ClientFence\Mod\Order\Upgrades::CATEGORY, '5']);
+
+    // New ticks without the switch field (API callers, old forms): the switch stays on.
+    $service->updateProduct($product, ['upgrades' => ['', '6']]);
+    expect($saved())->toBe([ClientFence\Mod\Order\Upgrades::CATEGORY, '6']);
+    $service->updateProduct($product, ['title' => 'Renamed']);
+    expect($saved())->toBe([ClientFence\Mod\Order\Upgrades::CATEGORY, '6']);
+
+    // Off keeps the ticks; off with no ticks clears the list.
+    $service->updateProduct($product, ['upgrades_category' => '0']);
+    expect($saved())->toBe(['6']);
+    $service->updateProduct($product, ['upgrades' => [''], 'upgrades_category' => '0']);
+    expect($product->getUpgrades())->toBeNull();
+});

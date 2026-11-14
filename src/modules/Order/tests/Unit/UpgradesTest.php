@@ -35,7 +35,7 @@ function upgradesDb(): Connection
 {
     $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     foreach ([
-        'CREATE TABLE product (id INTEGER PRIMARY KEY, title TEXT, type TEXT, status TEXT, is_addon INTEGER DEFAULT 0, config TEXT, upgrades TEXT, product_payment_id INTEGER)',
+        'CREATE TABLE product (id INTEGER PRIMARY KEY, product_category_id INTEGER, title TEXT, type TEXT, status TEXT, hidden INTEGER DEFAULT 0, is_addon INTEGER DEFAULT 0, config TEXT, upgrades TEXT, product_payment_id INTEGER)',
         'CREATE TABLE product_payment (id INTEGER PRIMARY KEY, type TEXT, w_price REAL DEFAULT 0, m_price REAL DEFAULT 0, q_price REAL DEFAULT 0, b_price REAL DEFAULT 0, a_price REAL DEFAULT 0, bia_price REAL DEFAULT 0, tria_price REAL DEFAULT 0,'
             . ' w_enabled INTEGER DEFAULT 0, m_enabled INTEGER DEFAULT 0, q_enabled INTEGER DEFAULT 0, b_enabled INTEGER DEFAULT 0, a_enabled INTEGER DEFAULT 0, bia_enabled INTEGER DEFAULT 0, tria_enabled INTEGER DEFAULT 0)',
         'CREATE TABLE currency (code TEXT PRIMARY KEY, conversion_rate REAL)',
@@ -554,6 +554,70 @@ test('hosting moves only within its server and reseller kind', function (): void
         ->and(Upgrades::compatible(['type' => 'hosting', 'is_addon' => false, 'config' => ['server_id' => 1]], ['type' => 'hosting', 'is_addon' => false, 'config' => ['server_id' => 1]]))->toBeFalse()
         ->and(Upgrades::compatible(['type' => 'custom', 'is_addon' => true, 'config' => []], ['type' => 'custom', 'is_addon' => false, 'config' => []]))->toBeFalse();
 });
+
+/**
+ * CF-107: Starter (1) allows its whole category 10: Starter, Pro (2), Retired (4, disabled), License (6, another type) and
+ * Starter+ (8, hidden). Business (3) is in category 11.
+ */
+function upgradesCategoryDb(): Connection
+{
+    $db = upgradesDb();
+    $db->executeStatement('UPDATE product SET product_category_id = 10 WHERE id IN (1, 2, 4, 6, 8)');
+    $db->update('product', ['product_category_id' => 11], ['id' => 3]);
+    $db->update('product', ['hidden' => 1], ['id' => 8]);
+    $db->update('product', ['upgrades' => json_encode([Upgrades::CATEGORY])], ['id' => 1]);
+
+    return $db;
+}
+
+/** @return list<int> the products a service is offered, sorted */
+function upgradesOfferedProducts(Pimple\Container $di, int $orderId): array
+{
+    $ids = array_values(array_unique(array_column(Upgrades::options($di, upgradesOrder($di, $orderId), UPGRADES_NOW)['options'], 'product_id')));
+    sort($ids);
+
+    return $ids;
+}
+
+test('a product that allows its whole category offers its on-sale products of the same type, also ones added later', function (): void {
+    $db = upgradesCategoryDb();
+    $di = upgradesContainer($db);
+
+    // Starter's own yearly cycle and Pro; not Business (another category, not ticked), Retired, License or the hidden Starter+.
+    expect(upgradesOfferedProducts($di, 1))->toBe([1, 2]);
+
+    // A product added to the category later is offered without saving Starter again.
+    $db->insert('product_payment', ['id' => 30, 'type' => 'recurrent', 'm_price' => 20, 'm_enabled' => 1]);
+    $db->insert('product', ['id' => 30, 'product_category_id' => 10, 'title' => 'Plus', 'type' => 'custom', 'status' => 'enabled', 'config' => '{}', 'product_payment_id' => 30]);
+    expect(upgradesOfferedProducts($di, 1))->toBe([1, 2, 30]);
+
+    // A ticked product outside the category is offered too.
+    $db->update('product', ['upgrades' => json_encode([Upgrades::CATEGORY, '3'])], ['id' => 1]);
+    expect(upgradesOfferedProducts($di, 1))->toBe([1, 2, 3, 30]);
+
+    // Switch off: only the ticked products.
+    $db->update('product', ['upgrades' => json_encode(['3'])], ['id' => 1]);
+    expect(upgradesOfferedProducts($di, 1))->toBe([1, 3]);
+});
+
+test('a plan change to a product of the allowed category is accepted, and one outside it is refused', function (int $productId, bool $accepted): void {
+    $db = upgradesCategoryDb();
+    $di = upgradesContainer($db);
+
+    if ($accepted) {
+        expect(Upgrades::request($di, upgradesOrder($di, 1), $productId, '1M', UPGRADES_NOW))->toMatchArray(['status' => 'pending'])
+            ->and($db->fetchOne('SELECT to_product_id FROM ' . Upgrades::TABLE))->toBe($productId);
+    } else {
+        expect(fn () => Upgrades::request($di, upgradesOrder($di, 1), $productId, '1M', UPGRADES_NOW))->toThrow(InformationException::class, 'This change is not available')
+            ->and($db->fetchOne('SELECT COUNT(*) FROM ' . Upgrades::TABLE))->toBe(0);
+    }
+})->with([
+    'same category' => [2, true],
+    'another category, not ticked' => [3, false],
+    'disabled' => [4, false],
+    'another type' => [6, false],
+    'hidden' => [8, false],
+]);
 
 // ---------------------------------------------------------------------------------------------
 // Who may
