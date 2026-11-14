@@ -158,7 +158,7 @@ test('test mode uses the sandbox; a cancel sends nothing', function (): void {
     $adapter = openproviderAdapter();
     $adapter->enableTestMode();
     $adapter->enablePrivacyProtection(openproviderDomain());
-    expect($GLOBALS['openprovider_calls'][0][2])->toStartWith('http://api.sandbox.openprovider.nl:8480/v1beta/auth/login')
+    expect($GLOBALS['openprovider_calls'][0][2])->toStartWith('https://api.sandbox.openprovider.nl/v1beta/auth/login')
         ->and(openproviderCall('PUT /domains/42')[1])->toBe(['is_private_whois_enabled' => true]);
 
     $GLOBALS['openprovider_calls'] = [];

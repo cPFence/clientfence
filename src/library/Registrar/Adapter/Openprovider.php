@@ -7,7 +7,7 @@ declare(strict_types=1);
  * Based on the OpenProvider adapter for FOSSBilling by Devife (https://github.com/Devife/fossbilling-registrar-openprovider,
  * Apache-2.0), rewritten for ClientFence. Uses the Openprovider REST API (https://docs.openprovider.com):
  * POST /v1beta/auth/login gives a bearer token for the other calls; the registrar's test mode uses the sandbox
- * (http://api.sandbox.openprovider.nl:8480) with a sandbox account. Each registration, transfer and contact change
+ * (https://api.sandbox.openprovider.nl; the old http port 8480 no longer answers) with a sandbox account. Each registration, transfer and contact change
  * creates an Openprovider customer (contact handle) from the client's details. .us names ask the nexus questions on the
  * order form (getDomainFields()), sent as the customer's extension data.
  */
@@ -16,7 +16,7 @@ use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     private const LIVE_URL = 'https://api.openprovider.eu/v1beta';
-    private const SANDBOX_URL = 'http://api.sandbox.openprovider.nl:8480/v1beta';
+    private const SANDBOX_URL = 'https://api.sandbox.openprovider.nl/v1beta';
 
     public $config = [
         'username' => null,
