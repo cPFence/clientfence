@@ -26,8 +26,10 @@ test('builds a Doctrine client search with the legacy filters', function (): voi
     });
     $queryBuilder->shouldReceive('orderBy')->once()->with('c.createdAt', 'DESC')->andReturn($queryBuilder);
 
-    $repository = Mockery::mock(ClientRepository::class)->makePartial();
+    $repository = Mockery::mock(ClientRepository::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $repository->shouldReceive('createQueryBuilder')->once()->with('c')->andReturn($queryBuilder);
+    // ClientFence: the group filter finds every client in the group (Client/Groups.php).
+    $repository->shouldReceive('getEntityManager->getConnection->fetchFirstColumn')->once()->andReturn([7, 8]);
 
     $result = $repository->getSearchQueryBuilder([
         'id' => '7',
@@ -47,8 +49,10 @@ test('builds a Doctrine client search with the legacy filters', function (): voi
             '(c.id = :id OR c.aid = :id)',
             '(c.firstName LIKE :name OR c.lastName LIKE :name)',
             'c.createdAt >= :created_from AND c.createdAt < :created_to',
+            'c.id IN (:group_members)',
             "(c.company LIKE :search OR c.firstName LIKE :search OR c.lastName LIKE :search OR c.email LIKE :search OR CONCAT(CONCAT(c.firstName, ' '), c.lastName) LIKE :search)",
         )
+        ->and($parameters['group_members'])->toBe([7, 8])
         ->and($parameters['name'])->toBe('%Ada%')
         ->and($parameters['search'])->toBe('%Lovelace%')
         ->and($parameters['created_from'])->toBeInstanceOf(DateTimeImmutable::class);
@@ -109,18 +113,30 @@ test('loads list balances and group titles in one batch', function (): void {
             ['ids' => ArrayParameterType::INTEGER],
         )
         ->andReturn([
-            ['id' => '7', 'balance' => '12.50', 'group_title' => 'VIP'],
-            ['id' => '9', 'balance' => '0.00', 'group_title' => null],
+            ['id' => '7', 'balance' => '12.50'],
+            ['id' => '9', 'balance' => '0.00'],
+        ]);
+    // ClientFence: all the client's groups (Client/Groups.php).
+    $connection->shouldReceive('fetchAllAssociative')
+        ->once()
+        ->with(
+            Mockery::pattern('/FROM client_group_members m/'),
+            ['ids' => [7, 9]],
+            ['ids' => ArrayParameterType::INTEGER],
+        )
+        ->andReturn([
+            ['client_id' => '7', 'title' => 'Charity'],
+            ['client_id' => '7', 'title' => 'VIP'],
         ]);
 
     $entityManager = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
-    $entityManager->shouldReceive('getConnection')->once()->andReturn($connection);
+    $entityManager->shouldReceive('getConnection')->twice()->andReturn($connection);
     $metadata = Mockery::mock(Doctrine\ORM\Mapping\ClassMetadata::class);
     $metadata->name = Client::class;
     $repository = new ClientRepository($entityManager, $metadata);
 
     expect($repository->getListContext([7, 9]))->toBe([
-        7 => ['balance' => 12.5, 'group' => 'VIP'],
+        7 => ['balance' => 12.5, 'group' => 'Charity, VIP'],
         9 => ['balance' => 0.0, 'group' => null],
     ]);
 });

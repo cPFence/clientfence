@@ -40,11 +40,11 @@ test('locking checkout-application check mutexes the client row before reading',
         ->once()
         ->ordered()
         ->with(
-            'SELECT COUNT(pr.id) FROM promo_redemption pr WHERE pr.promo_id = :promo_id AND pr.client_id = :client_id AND pr.phase = :phase AND pr.status IN (:statuses) FOR UPDATE',
+            // ClientFence: any phase, so a once-per-client promotion first given at a renewal is not used again by its code.
+            'SELECT COUNT(pr.id) FROM promo_redemption pr WHERE pr.promo_id = :promo_id AND pr.client_id = :client_id AND pr.status IN (:statuses) FOR UPDATE',
             [
                 'promo_id' => 5,
                 'client_id' => 1,
-                'phase' => PromoRedemption::PHASE_CHECKOUT,
                 'statuses' => [PromoRedemption::STATUS_RESERVED, PromoRedemption::STATUS_COMMITTED],
             ],
             ['statuses' => Doctrine\DBAL\ArrayParameterType::STRING]

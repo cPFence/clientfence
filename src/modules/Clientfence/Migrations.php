@@ -34,6 +34,7 @@ final class Migrations
         8 => 'm8AccountingSync',
         9 => 'm9Affiliates',
         10 => 'm10SupportPinUnique',
+        11 => 'm11GroupsAutoPromos',
     ];
 
     public static function latest(): int
@@ -194,5 +195,25 @@ final class Migrations
             }
         }
         $db->executeStatement('CREATE UNIQUE INDEX `pin` ON `client_support_pin` (`pin`)');
+    }
+
+    /**
+     * 11: ClientFence core patch: clients in several groups (Client/Groups.php): client_group_members, where each client's
+     * group (client.client_group_id, kept as the first one) becomes their group list; promo.auto_apply (promotions
+     * applied without a code).
+     */
+    private static function m11GroupsAutoPromos(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        $schema = $db->createSchemaManager();
+        if (!$schema->tablesExist(['client_group_members'])) {
+            $db->executeStatement(Service::tables()['client_group_members']);
+        }
+        // A group that was deleted is left out.
+        $db->executeStatement('INSERT INTO client_group_members (client_id, client_group_id) SELECT c.id, c.client_group_id FROM client c JOIN client_group g ON g.id = c.client_group_id
+            WHERE NOT EXISTS (SELECT 1 FROM client_group_members m WHERE m.client_id = c.id AND m.client_group_id = c.client_group_id)');
+        if (!in_array('auto_apply', array_map(static fn ($c): string => strtolower($c->getName()), $schema->listTableColumns('promo')), true)) {
+            $db->executeStatement("ALTER TABLE `promo` ADD COLUMN `auto_apply` tinyint(1) NOT NULL DEFAULT '0'");
+        }
     }
 }

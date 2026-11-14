@@ -48,7 +48,7 @@ final class GatewayFees
             return 0.0;
         }
         if ($clientId !== null && $fee['exempt_groups'] !== []
-            && in_array((int) $di['dbal']->fetchOne('SELECT client_group_id FROM client WHERE id = ?', [$clientId]), $fee['exempt_groups'], true)) {
+            && array_intersect(\ClientFence\Mod\Client\Groups::ids($di, $clientId), $fee['exempt_groups']) !== []) {
             return 0.0;
         }
         $fixed = $fee['fixed'] > 0 ? $fee['fixed'] / $di['mod_service']('Currency')->getBaseCurrencyRate($currency) : 0.0;

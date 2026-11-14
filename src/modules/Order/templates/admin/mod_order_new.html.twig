@@ -90,9 +90,9 @@
                             <label class="form-label" for="promocode">{{ 'Promotion code'|trans }}</label>
                             <input class="form-control" type="text" id="promocode" name="promocode" list="cf-promos" autocomplete="off">
                             <datalist id="cf-promos">
-                                {% for promo in promos %}<option value="{{ promo.code }}">{% endfor %}
+                                {% for promo in promos %}<option value="{{ promo.code }}">{{ promo.description }}</option>{% endfor %}
                             </datalist>
-                            <small class="form-hint">{{ 'Leave empty for no promotion.'|trans }}</small>
+                            <small class="form-hint">{{ 'Leave empty for the client\'s automatic promotion, if any.'|trans }}</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="activate">{{ 'Order status'|trans }}</label>

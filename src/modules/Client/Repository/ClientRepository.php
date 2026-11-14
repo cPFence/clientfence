@@ -113,8 +113,10 @@ class ClientRepository extends EntityRepository
         }
 
         if ($groupId) {
-            $qb->andWhere('c.clientGroupId = :group_id')
-                ->setParameter('group_id', $groupId);
+            // ClientFence core patch: every client in the group (Client/Groups.php).
+            $members = $this->getEntityManager()->getConnection()->fetchFirstColumn('SELECT client_id FROM client_group_members WHERE client_group_id = ?', [(int) $groupId]);
+            $qb->andWhere('c.id IN (:group_members)')
+                ->setParameter('group_members', $members ?: [0], ArrayParameterType::INTEGER);
         }
 
         if ($createdAt) {
@@ -165,21 +167,29 @@ class ClientRepository extends EntityRepository
         }
 
         $rows = $this->getEntityManager()->getConnection()->fetchAllAssociative(
-            'SELECT c.id, COALESCE(SUM(cb.amount), 0) AS balance, cg.title AS group_title
+            'SELECT c.id, COALESCE(SUM(cb.amount), 0) AS balance
              FROM client c
              LEFT JOIN client_balance cb ON cb.client_id = c.id
-             LEFT JOIN client_group cg ON cg.id = c.client_group_id
              WHERE c.id IN (:ids)
-             GROUP BY c.id, cg.title',
+             GROUP BY c.id',
             ['ids' => $clientIds],
             ['ids' => ArrayParameterType::INTEGER],
         );
+        // ClientFence core patch: all the client's groups (Client/Groups.php).
+        $titles = [];
+        foreach ($this->getEntityManager()->getConnection()->fetchAllAssociative(
+            'SELECT m.client_id, g.title FROM client_group_members m JOIN client_group g ON g.id = m.client_group_id WHERE m.client_id IN (:ids) ORDER BY g.title',
+            ['ids' => $clientIds],
+            ['ids' => ArrayParameterType::INTEGER],
+        ) as $group) {
+            $titles[(int) $group['client_id']][] = (string) $group['title'];
+        }
 
         $context = [];
         foreach ($rows as $row) {
             $context[(int) $row['id']] = [
                 'balance' => (float) $row['balance'],
-                'group' => $row['group_title'],
+                'group' => isset($titles[(int) $row['id']]) ? implode(', ', $titles[(int) $row['id']]) : null,
             ];
         }
 

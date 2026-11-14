@@ -38,12 +38,11 @@ function ticketLimitTicket(Pimple\Container $di, float $days, int $clientId = 5)
     return $createdAt;
 }
 
-function ticketLimitClient(?int $groupId = null): Model_Client
+function ticketLimitClient(): Model_Client
 {
     $client = new Model_Client();
     $client->loadBean(new Tests\Helpers\DummyBean());
     $client->id = 5;
-    $client->client_group_id = $groupId;
     $client->timezone = 'UTC';
 
     return $client;
@@ -136,14 +135,16 @@ test('staff open tickets for a client who has none left', function (): void {
         ->and($api->ticket_create(['client_id' => 5, 'support_helpdesk_id' => 1, 'subject' => 'Hello', 'content' => 'Hello there']))->toBe(11);
 });
 
-test('a client in an exempt group has no limit', function (): void {
+test('a client in any exempt group has no limit', function (): void {
     $di = ticketLimitContainer(['ticket_limit_max' => '1', 'ticket_limit_days' => '7', 'ticket_limit_exempt_groups' => ['2', '3']]);
     ticketLimitTicket($di, 1);
+    // Client 5's groups in turn (Client/Groups.php): one of several is exempt, none is, no group, one exempt.
+    $di['dbal']->shouldReceive('fetchFirstColumn')->with('SELECT client_group_id FROM client_group_members WHERE client_id = ? ORDER BY client_group_id', [5])->andReturn([3, 4], [4], [], [3]);
 
-    expect(TicketLimit::status($di, ticketLimitClient(3)))->toBeNull()
-        ->and(TicketLimit::status($di, ticketLimitClient(4))['left'])->toBe(0)
+    expect(TicketLimit::status($di, ticketLimitClient()))->toBeNull()
+        ->and(TicketLimit::status($di, ticketLimitClient())['left'])->toBe(0)
         ->and(TicketLimit::status($di, ticketLimitClient())['left'])->toBe(0);
-    TicketLimit::check($di, ticketLimitClient(3));
+    TicketLimit::check($di, ticketLimitClient());
 });
 
 test('a client with no ticket left still replies', function (): void {

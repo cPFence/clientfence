@@ -304,7 +304,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         }
 
         if ($group_id) {
-            $where[] = 'c.client_group_id = :group_id';
+            // ClientFence core patch: every client in the group (Client/Groups.php).
+            $where[] = 'EXISTS (SELECT 1 FROM client_group_members cgm WHERE cgm.client_id = c.id AND cgm.client_group_id = :group_id)';
             $params[':group_id'] = $group_id;
         }
 
@@ -584,6 +585,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                     ];
                 }
             }
+            // ClientFence core patch: all the client's groups (Client/Groups.php); group_id and client_group stay the first one.
+            $details['group_ids'] = Groups::ids($this->di, (int) $client->getId());
 
             if ($includeSensitive) {
                 $details['api_token'] = $client->getApiToken();
@@ -775,8 +778,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
     public function deleteGroup(ClientGroup $model): bool
     {
-        $client = $this->clientRepository->findOneBy(['clientGroupId' => $model->getId()]);
-        if ($client) {
+        // ClientFence core patch: any client in the group (Client/Groups.php).
+        if ($this->di['dbal']->fetchOne('SELECT 1 FROM client_group_members WHERE client_group_id = ?', [$model->getId()])) {
             throw new \ClientFence\Exception('Cannot remove groups with clients');
         }
 
@@ -817,7 +820,6 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
         $client->setAid($data['aid'] ?? null);
         $client->setLastName($data['last_name'] ?? null);
-        $client->setClientGroupId(!empty($data['group_id']) ? (int) $data['group_id'] : null);
         $client->setStatus($data['status'] ?? Client::ACTIVE);
         $client->setGender($data['gender'] ?? null);
         $birthday = $data['birthday'] ?? null;
@@ -884,9 +886,13 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         $eventParams = $data;
         unset($eventParams['password'], $eventParams['password_confirm']);
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminCreateClient', 'params' => $eventParams]);
+        // ClientFence core patch: a client can be in several groups (group_ids, Client/Groups.php); group_id alone is one.
+        $groupIds = Groups::valid($this->di, (array) ($data['group_ids'] ?? [$data['group_id'] ?? null]));
         $client = $this->createClient($data);
+        $client->setClientGroupId($groupIds[0] ?? null);
         $this->di['em']->persist($client);
         $this->di['em']->flush();
+        Groups::set($this->di, (int) $client->getId(), $groupIds);
         if (Tools::normalizeBoolean($data['send_welcome_email'] ?? true, true)) {
             $this->sendAdminCreatedWelcomeEmailForClient($client);
         }
@@ -1121,6 +1127,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             $query->executeStatement();
 
             $connection->delete('client_note', ['client_id' => $clientId]);
+            // ClientFence core patch: the client's group list (Client/Groups.php).
+            $connection->delete('client_group_members', ['client_id' => $clientId]);
             Files::forgetClient($connection, $clientId, $this->di['filesystem']);
             // ClientFence core patch: affiliate records of the client (Client/Affiliates/Affiliates.php).
             Affiliates\Affiliates::clientRemoved($connection, $clientId);

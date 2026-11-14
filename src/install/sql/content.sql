@@ -335,7 +335,8 @@ VALUES
 	-- ClientFence core patch: fresh installs include the Support PIN table migration.
 	-- ClientFence core patch: fresh installs include the affiliate tables migration.
 	-- ClientFence core patch: fresh installs include the unique Support PIN migration.
-	(33,'clientfence_patch','10',0,NULL,NULL,NOW(),NOW()),
+	-- ClientFence core patch: fresh installs include the client groups and automatic promotions migration.
+	(33,'clientfence_patch','11',0,NULL,NULL,NOW(),NOW()),
 	(34,'clientfence_setup','pending',0,NULL,NULL,NOW(),NOW()),
 	(35,'invoice_series_paid','CF',0,NULL,NULL,NOW(),NOW());
 

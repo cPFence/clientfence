@@ -61,6 +61,7 @@
                     <tr>
                         <td>
                             <a href='{{ "product/promo/#{promo.id}"|url }}'>{{ promo.code }}</a>
+                            {% if promo.auto_apply|default(false) %}<span class="badge bg-blue-lt ms-1">{{ 'Automatic'|trans }}</span>{% endif %}
                         </td>
                         <td>{% if promo.type == 'percentage' %}{{ promo.value }}%{% endif %}{% if promo.type == 'absolute' %}{{ promo.value|format_currency(currency.code) }}{% endif %}</td>
                         <td>{% for pid,product in promo.applies_to %}
@@ -276,6 +277,21 @@
                                         </label>
                                         <label class="form-check">
                                             <input class="form-check-input" type="radio" name="include_options" value="0" checked>
+                                            <span class="form-check-label">{{ 'No'|trans }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {# ClientFence core patch: a promotion that applies without a code (Product\Service::findAutoPromo()). #}
+                                <div class="col-md-6">
+                                    <label class="form-label">{{ 'Apply automatically'|trans }}</label>
+                                    <p class="text-secondary small mb-2">{{ 'Without a code, on every order its rules allow. A code the client enters replaces it.'|trans }}</p>
+                                    <div class="d-flex flex-column gap-2">
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="radio" name="auto_apply" value="1">
+                                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
+                                        </label>
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="radio" name="auto_apply" value="0" checked>
                                             <span class="form-check-label">{{ 'No'|trans }}</span>
                                         </label>
                                     </div>

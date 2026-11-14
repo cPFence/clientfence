@@ -5894,5 +5894,169 @@
     {
         "file": "ipn.php",
         "done": "ClientFence core patch: a GoCardless webhook it did not sign gets 498, as GoCardless asks, and is never recorded."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the client groups and automatic promotions migration."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: a promotion can apply automatically, without a code."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: clients in several groups (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Clientfence/schema.json",
+        "done": "ClientFence core patch: clients in several groups."
+    },
+    {
+        "file": "modules/Clientfence/Service.php",
+        "done": "ClientFence core patch: clients in several groups (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Product/Entity/Promo.php",
+        "done": "ClientFence core patch: a promotion can apply automatically, without a code"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the copy keeps \"Apply automatically\" (it starts inactive)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: a client in several groups gets a promotion of any of them (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the automatic promotion for these cart lines"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: \"Apply automatically\" (findAutoPromo())."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_promo.html.twig",
+        "done": "ClientFence core patch: a promotion that applies without a code"
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_promos.html.twig",
+        "done": "ClientFence core patch: a promotion that applies without a code"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the automatic promotion of the cart being priced"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: an automatic promotion for the signed-in client, or the client of a checkout or staff order"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the automatic promotion of a cart without a code"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: without a code, the client's automatic promotion that toApiArray() found is used as a code would be"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: an automatic promotion only on a line it covers"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: a client can be in several groups (group_ids, Client/Groups.php); group_id alone sets one."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: any client in the group, not only those whose first group it is"
+    },
+    {
+        "file": "modules/Client/Repository/ClientRepository.php",
+        "done": "ClientFence core patch: every client in the group (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Client/Repository/ClientRepository.php",
+        "done": "ClientFence core patch: all the client's groups (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: every client in the group (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: all the client's groups (Client/Groups.php); group_id and client_group stay the first one."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: any client in the group (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: a client can be in several groups (group_ids, Client/Groups.php); group_id alone is one."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the client's group list (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: a client can be in several groups (Client/Groups.php); the empty input clears them."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_new_form.html.twig",
+        "done": "ClientFence core patch: a client can be in several groups (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: apply an existing promotion to an order on an unpaid invoice"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: staff apply an existing promotion to an order on the invoice"
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "ClientFence core patch: a client in any of the chosen groups (Client/Groups.php)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: a promotion for this order goes on its unpaid invoice"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the renewal of an order with no recurring promotion gets the client's recurring automatic"
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: else the client's recurring automatic promotion, if any (Product\\Service::getAutoRenewalPromoAdjustment())."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch: set or remove the order's promotion for its next renewals (Invoice/Promotions.php)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: staff set or remove the promotion for the next renewals (Invoice/Promotions.php setOnOrder())."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the promotion for the next renewals (Invoice/Promotions.php setOnOrder())."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: what a promotion takes off an existing order, from the order's own price (admin-edited,"
+    },
+    {
+        "file": "modules/Product/Repository/PromoRedemptionRepository.php",
+        "done": "ClientFence core patch: once per client counts a use in any phase (an automatic promotion first given at a renewal)."
+    },
+    {
+        "file": "modules/Product/Repository/PromoRedemptionRepository.php",
+        "done": "ClientFence core patch: in any phase, as clientHasActiveCheckoutApplication()."
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: the automatic promotion's first use on the order is a checkout one (getAutoRenewalPromoAdjustment())."
     }
 ]

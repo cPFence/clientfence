@@ -33,11 +33,14 @@ function seedReceiverTables(Connection $dbal): void
     $dbal->executeStatement('CREATE TABLE product (id INTEGER PRIMARY KEY)');
     $dbal->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, status TEXT, client_group_id INTEGER, first_name TEXT, last_name TEXT, email TEXT)');
     $dbal->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
 
     $dbal->executeStatement('INSERT INTO client_group (id) VALUES (1), (2)');
     $dbal->executeStatement('INSERT INTO product (id) VALUES (10), (11)');
     $dbal->executeStatement("INSERT INTO client (id, status, client_group_id, first_name, last_name, email) VALUES (1, 'active', 1, 'Ann', 'One', 'ann@example.com'), (2, 'canceled', 1, 'Bob', 'Two', 'bob@example.com'), (3, 'active', 2, 'Cy', 'Three', 'cy@example.com')");
     $dbal->executeStatement("INSERT INTO client_order (id, client_id, product_id, status) VALUES (1, 1, 10, 'active'), (2, 2, 10, 'suspended'), (3, 3, 11, 'active')");
+    // ClientFence: client 3 is in groups 2 and 1 (Client/Groups.php).
+    $dbal->executeStatement('INSERT INTO client_group_members (client_id, client_group_id) VALUES (1, 1), (2, 1), (3, 2), (3, 1)');
 }
 
 test('sendMessage builds the mail payload from the client entity without a fatal error', function (): void {
@@ -125,6 +128,16 @@ test('get message receivers builds parameterized query', function (): void {
     $service->setDi(createMassmailerDi($dbal));
 
     expect($service->getMessageReceivers($model))->toBe([['id' => 1, 'name' => 'Ann One', 'email' => 'ann@example.com', 'opted_out' => false]]);
+});
+
+test('a group filter reaches every client in the group, whichever of their groups it is', function (): void {
+    $dbal = createMassmailerDbal();
+    seedReceiverTables($dbal);
+    $service = new ClientFence\Mod\Massmailer\Service();
+    $service->setDi(createMassmailerDi($dbal));
+
+    expect(array_column($service->getMessageReceivers((new MassmailerMessage())->setFilter('{"client_groups":[1]}')), 'id'))->toBe([3, 2, 1])
+        ->and(array_column($service->getMessageReceivers((new MassmailerMessage())->setFilter('{"client_groups":[2]}')), 'id'))->toBe([3]);
 });
 
 test('get message receivers rejects invalid stored filter', function (): void {

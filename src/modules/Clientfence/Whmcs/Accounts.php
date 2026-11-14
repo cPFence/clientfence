@@ -331,6 +331,10 @@ final class Accounts
             }
             $client['notes'] = self::notes((string) ($row['notes'] ?? ''), $notes[$id] ?? [], $extra);
             $this->db->insert('client', $client);
+            // The client's group list (Client/Groups.php): WHMCS has one group per client.
+            if ($client['client_group_id'] !== null) {
+                $this->db->insert('client_group_members', ['client_id' => $id, 'client_group_id' => $client['client_group_id']]);
+            }
             $this->map->put('client', $id, $id);
             $this->logins[strtolower($email)] = $id;
 

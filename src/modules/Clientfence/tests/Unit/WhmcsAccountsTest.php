@@ -90,6 +90,7 @@ function whmcsAccountsTarget(): Connection
         'CREATE TABLE client_google (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT, subject_id INTEGER, google_sub TEXT UNIQUE, email TEXT, created_at TEXT, last_used_at TEXT)',
         "CREATE TABLE client_contact (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, first_name TEXT, last_name TEXT, company TEXT, email TEXT, phone_cc TEXT, phone TEXT, address_1 TEXT, address_2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, tax_id TEXT, emails TEXT, created_at TEXT, updated_at TEXT)",
         'CREATE TABLE client_marketing_optout (client_id INTEGER PRIMARY KEY, source TEXT, opted_out_at TEXT)',
+        'CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))',
         'CREATE TABLE ' . Map::TABLE . ' (source TEXT, entity TEXT, source_id TEXT, target_id INTEGER, created_at TEXT, PRIMARY KEY (source, entity, source_id))',
     ] as $sql) {
         $db->executeStatement($sql);
@@ -156,6 +157,8 @@ test('clients keep their ids, details, currency, group, notes and custom fields'
         ->and(password_verify('secret', $ann['pass']))->toBeTrue()
         ->and($target->fetchFirstColumn('SELECT status FROM client ORDER BY id'))->toBe(['active', 'active', 'canceled', 'active'])
         ->and($target->fetchFirstColumn('SELECT client_id FROM client_marketing_optout'))->toBe([1])
+        // The group is also the client's group list (Client/Groups.php).
+        ->and($target->fetchAllNumeric('SELECT client_id, client_group_id FROM client_group_members'))->toBe([[1, (int) $vip]])
         ->and($config['mod_client']['custom_fields'])->toBe([
             'custom_1' => ['active' => 0, 'required' => 0, 'title' => 'Passport'],
             'custom_2' => ['active' => 1, 'required' => 1, 'title' => 'Referral'],

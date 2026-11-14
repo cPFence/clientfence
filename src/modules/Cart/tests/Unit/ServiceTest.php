@@ -820,7 +820,7 @@ test('createFromCart uses database transaction', function (): void {
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getSessionCart')->once()->andReturn($cart);
-    $serviceMock->shouldReceive('toApiArray')->once()->with($cart)->andReturn([
+    $serviceMock->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn([
         'items' => [['id' => 1]],
         'total' => 0,
     ]);
@@ -912,7 +912,7 @@ test('createFromCart with promo entity uses product promo service', function (fl
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getSessionCart')->once()->andReturn($cart);
-    $serviceMock->shouldReceive('toApiArray')->once()->with($cart)->andReturn([
+    $serviceMock->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn([
         'items' => [['id' => 1]],
         'total' => 0,
     ]);
@@ -998,7 +998,7 @@ test('createFromCart aborts inside the transaction when the once-per-client guar
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getSessionCart')->once()->andReturn($cart);
-    $serviceMock->shouldReceive('toApiArray')->once()->with($cart)->andReturn([
+    $serviceMock->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn([
         'items' => [['id' => 1]],
         'total' => 0,
     ]);
@@ -1093,7 +1093,7 @@ test('createFromCart normalizes legacy invoice id before setting it on the order
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getSessionCart')->once()->andReturn($cart);
-    $serviceMock->shouldReceive('toApiArray')->once()->with($cart)->andReturn([
+    $serviceMock->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn([
         'items' => [['id' => 1]],
         'total' => 100,
     ]);
@@ -1168,7 +1168,7 @@ test('createFromCart links the setup fee invoice line to its order', function ()
     $em->shouldReceive('flush');
     $service = Mockery::mock(Service::class)->makePartial();
     $service->shouldReceive('getSessionCart')->once()->andReturn($cart);
-    $service->shouldReceive('toApiArray')->once()->with($cart)->andReturn(['items' => [['id' => 13]], 'total' => 10]);
+    $service->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn(['items' => [['id' => 13]], 'total' => 10]);
     $service->shouldReceive('getCartProducts')->once()->with($cart)->andReturn([$cartProduct]);
     $service->shouldReceive('cartProductToApiArray')->once()->andReturn([
         'product_id' => 5, 'form_id' => null, 'title' => 'Example product', 'type' => 'service',
@@ -1256,7 +1256,7 @@ test('createFromCart compensates promo usage on transaction failure', function (
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getSessionCart')->once()->andReturn($cart);
-    $serviceMock->shouldReceive('toApiArray')->once()->with($cart)->andReturn([
+    $serviceMock->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn([
         'items' => [['id' => 1]],
         'total' => 0,
     ]);
@@ -1357,7 +1357,7 @@ test('createFromCart does not roll back order creation when synchronous activati
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getSessionCart')->once()->andReturn($cart);
-    $serviceMock->shouldReceive('toApiArray')->once()->with($cart)->andReturn([
+    $serviceMock->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn([
         'items' => [['id' => 1]],
         'total' => 0,
     ]);
@@ -1946,6 +1946,7 @@ test('toApiArray returns expected structure', function (): void {
 
     $expected = [
         'promocode' => null,
+        'auto_promo' => null,
         'promo_recurring' => false,
         'discount' => 0,
         'total' => 1,
@@ -2442,7 +2443,7 @@ test('createFromCart dates a backdated staff order\'s invoice today, as WHMCS do
     });
     $em->shouldReceive('flush');
     $service = Mockery::mock(Service::class)->makePartial();
-    $service->shouldReceive('toApiArray')->once()->with($cart)->andReturn(['items' => [['id' => 13]], 'total' => 10]);
+    $service->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn(['items' => [['id' => 13]], 'total' => 10]);
     $service->shouldReceive('getCartProducts')->once()->with($cart)->andReturn([$cartProduct]);
     $service->shouldReceive('cartProductToApiArray')->once()->andReturn([
         'product_id' => 5, 'form_id' => null, 'title' => 'Example product', 'type' => 'service',
@@ -2465,3 +2466,51 @@ test('createFromCart dates a backdated staff order\'s invoice today, as WHMCS do
 
     expect($service->createFromCart($client, null, $cart, ['invoice' => true])[1])->toBe($invoice);
 });
+
+// ClientFence: automatic promotions (Promo "Apply automatically") in the cart.
+test('an automatic promotion discounts only a cart line it covers, where it takes off at least the line\'s own discount', function (bool $covers, float $related, array $expected): void {
+    $cartProduct = new CartProduct();
+    (new ReflectionProperty($cartProduct, 'id'))->setValue($cartProduct, 1);
+    $cart = new Cart();
+    (new ReflectionProperty($cart, 'id'))->setValue($cart, 1);
+    $promo = new Promo();
+    $promo->setFreeSetup(true);
+
+    $productService = Mockery::mock(ProductService::class)->shouldIgnoreMissing();
+    $productService->shouldNotReceive('findPromoById');
+    $productService->shouldReceive('isPromoApplicableToProductById')->andReturn($covers);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn () => $productService);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getRelatedItemsDiscount')->andReturn($related);
+    $serviceMock->shouldReceive('getItemPromoDiscount')->andReturn($covers ? 10.0 : 0.0);
+    $serviceMock->setDi($di);
+    (new ReflectionProperty(Service::class, 'autoPromo'))->setValue($serviceMock, $promo);
+
+    expect($serviceMock->getProductDiscount($cartProduct, 5, $cart))->toEqual($expected);
+})->with([
+    'covered: the promotion\'s discount and free setup' => [true, 0.0, [10.0, 5, true]],
+    'not covered: the line keeps its own discount' => [false, 3.0, [3.0, 0, false]],
+    'covered, but the line\'s own discount is bigger' => [true, 15.0, [15.0, 0, false]],
+]);
+
+test('a cart with a code or without a client gets no automatic promotion', function (bool $code, bool $client): void {
+    $cart = new Cart();
+    (new ReflectionProperty($cart, 'id'))->setValue($cart, 1);
+    if ($code) {
+        $cart->setPromoId(3);
+    }
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldNotReceive('findAutoPromo');
+    $di = container();
+    $di['mod_service'] = $di->protect(fn () => $productService);
+    $service = new Service();
+    $service->setDi($di);
+
+    $autoPromo = new ReflectionMethod(Service::class, 'autoPromo');
+    expect($autoPromo->invoke($service, $cart, $client ? createEntity(Client::class, ['id' => 7]) : null))->toBeNull();
+})->with([
+    'a code' => [true, true],
+    'no client' => [false, false],
+]);

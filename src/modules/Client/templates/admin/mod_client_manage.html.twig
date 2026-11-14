@@ -316,8 +316,14 @@
                                     </div>
                                 </div>
                                 <div class="col-xl-6">
-                                    <label class="form-label">{{ 'Group'|trans }}</label>
-                                    {{ mf.selectbox('group_id', admin.client_group_get_pairs, client.group_id, 0, 'Select Group'|trans) }}
+                                    {# ClientFence core patch: a client can be in several groups (Client/Groups.php); the empty input clears them. #}
+                                    <label class="form-label" for="client-groups">{{ 'Groups'|trans }}</label>
+                                    <input type="hidden" name="group_ids[]" value="">
+                                    <select class="form-select js-multi-select" id="client-groups" name="group_ids[]" multiple placeholder="{{ 'Choose groups'|trans }}">
+                                        {% for id, title in admin.client_group_get_pairs %}
+                                            <option value="{{ id }}"{% if id in client.group_ids|default([]) %} selected{% endif %}>{{ title }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                                 <div class="col-xl-6">
                                     <label class="form-label">{{ 'Email'|trans }}</label>

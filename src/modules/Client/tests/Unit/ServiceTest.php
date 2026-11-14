@@ -265,7 +265,7 @@ dataset('searchQueryData', [
     ],
     [
         ['group_id' => '1'],
-        'c.client_group_id = :group_id',
+        'EXISTS (SELECT 1 FROM client_group_members cgm WHERE cgm.client_id = c.id AND cgm.client_group_id = :group_id)',
         [':group_id' => '1'],
     ],
     [
@@ -745,6 +745,7 @@ test('remove wraps client cleanup and flush in one transaction', function (): vo
 
     $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
     $connection->shouldReceive('delete')->once()->with('client_note', ['client_id' => 1])->andReturn(1);
+    $connection->shouldReceive('delete')->once()->with('client_group_members', ['client_id' => 1])->andReturn(1);
     $connection->shouldReceive('delete')->once()->with('client_file', ['client_id' => 1])->andReturn(1);
     $filesystem = Mockery::mock(Symfony\Component\Filesystem\Filesystem::class);
     $filesystem->shouldReceive('remove')->once()->with(ClientFence\Mod\Client\Files::dir() . '/1');
@@ -962,17 +963,10 @@ test('deleteGroup returns true', function (): void {
 
 test('deleteGroup throws exception when group has clients', function (): void {
     $service = new ClientFence\Mod\Client\Service();
-    $clientEntity = new ClientFence\Mod\Client\Entity\Client();
-
-    $clientRepoMock = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
-    $clientRepoMock->shouldReceive('findOneBy')
-        ->with(['clientGroupId' => 1])
-        ->andReturn($clientEntity);
 
     $di = container();
-    $di['em']->shouldReceive('getRepository')
-        ->with(ClientFence\Mod\Client\Entity\Client::class)
-        ->andReturn($clientRepoMock);
+    // ClientFence: a client in the group, whichever of their groups it is (Client/Groups.php).
+    $di['dbal']->shouldReceive('fetchOne')->with('SELECT 1 FROM client_group_members WHERE client_group_id = ?', [1])->andReturn(1);
     $di['logger'] = new Tests\Helpers\TestLogger();
 
     $service->setDi($di);

@@ -455,6 +455,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional int $maxuses - how many times this promo code can be used
      * @optional string $start_at - date (Y-m-d) when will this promo code be active
      * @optional string $end_at - date (Y-m-d) when this promo code expires
+     * @optional bool $auto_apply - apply without a code wherever the promo's rules match (ClientFence)
      *
      * @return int - new promo code id
      *
@@ -584,6 +585,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional string $start_at - date (Y-m-d) when will this promo code be active
      * @optional string $end_at - date (Y-m-d) when this promo code expires
      * @optional int $used - how many times this promo code was already used
+     * @optional bool $auto_apply - apply without a code wherever the promo's rules match (ClientFence)
      *
      * @return bool
      *

@@ -98,7 +98,8 @@ test('migration 10 gives every client but the first a new PIN where PINs are sha
     $di['dbal'] = $db;
     $di['pdo'] = $db->getNativeConnection();
 
-    expect(Migrations::apply($di))->toBe([10]);
+    // Migration 10 alone: the later ones need tables this test does not create.
+    expect(Migrations::run($di['pdo'], [10 => fn () => (new ReflectionMethod(Migrations::class, 'm10SupportPinUnique'))->invoke(null, $di)]))->toBe([10]);
     $pins = $db->fetchAllKeyValue('SELECT client_id, pin FROM client_support_pin ORDER BY client_id');
     expect(array_keys($pins))->toBe([3, 5, 8, 9, 12, 20])
         // The oldest client keeps a shared PIN and a PIN nobody shared is kept.
@@ -110,4 +111,28 @@ test('migration 10 gives every client but the first a new PIN where PINs are sha
     // Run again (an interrupted update repeats it): the unique key is there, nothing changes.
     (new ReflectionMethod(Migrations::class, 'm10SupportPinUnique'))->invoke(null, $di);
     expect($db->fetchAllKeyValue('SELECT client_id, pin FROM client_support_pin ORDER BY client_id'))->toBe($pins);
+});
+
+test('migration 11 makes each client\'s group their group list and adds the automatic promotion switch', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, public INTEGER, category TEXT, hash TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('setting', ['param' => Migrations::SETTING, 'value' => '10', 'public' => 0, 'created_at' => '2026-10-01', 'updated_at' => '2026-10-01']);
+    $db->executeStatement('CREATE TABLE client_group (id INTEGER PRIMARY KEY)');
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, client_group_id INTEGER)');
+    $db->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
+    $db->executeStatement('CREATE TABLE promo (id INTEGER PRIMARY KEY, code TEXT)');
+    $db->executeStatement('INSERT INTO client_group (id) VALUES (1), (2)');
+    // Client 3 has no group, client 4's group was deleted.
+    $db->executeStatement('INSERT INTO client (id, client_group_id) VALUES (1, 1), (2, 2), (3, NULL), (4, 9)');
+    $di = Tests\Helpers\container();
+    $di['dbal'] = $db;
+    $di['pdo'] = $db->getNativeConnection();
+
+    expect(Migrations::apply($di))->toBe([11])
+        ->and($db->fetchAllNumeric('SELECT client_id, client_group_id FROM client_group_members ORDER BY client_id'))->toBe([[1, 1], [2, 2]])
+        ->and(array_map(static fn ($c): string => $c->getName(), $db->createSchemaManager()->listTableColumns('promo')))->toContain('auto_apply');
+
+    // Run again (an interrupted update repeats it): nothing is added twice.
+    (new ReflectionMethod(Migrations::class, 'm11GroupsAutoPromos'))->invoke(null, $di);
+    expect((int) $db->fetchOne('SELECT COUNT(*) FROM client_group_members'))->toBe(2);
 });

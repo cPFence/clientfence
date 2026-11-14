@@ -219,6 +219,11 @@
                         </div>
                         </div>
                         {% endif %}
+                        {# ClientFence core patch: staff apply an existing promotion to an order on the invoice (Invoice/Promotions.php). #}
+                        {% set promo_orders = invoice.lines|filter(l => l.type == 'order') %}
+                        {% if promo_orders|length > 0 %}
+                        {{ include('mod_invoice_promo_modal.html.twig', { promo_invoice_id: invoice.id, promo_orders: promo_orders }) }}
+                        {% endif %}
                         <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <form class="modal-content" method="post" action="{{ 'invoice/mark_as_paid'|api_url(query: { 'id': invoice.id, 'execute': 1 }) }}" name="transactionForm" {{ fb_api_form({action: 'invoice/mark_as_paid'|api_url(query: {id: invoice.id, execute: 1}), reload: true}) }}>

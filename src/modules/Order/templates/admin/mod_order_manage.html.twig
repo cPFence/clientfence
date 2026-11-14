@@ -167,12 +167,20 @@
                                         <td class="text-end">{{ 'Order Group ID'|trans }}</td>
                                         <td>{{ order.group_id|default('-') }}</td>
                                     </tr>
-                                    {% if order.promo_id %}
+                                    {# ClientFence core patch: staff set or remove the promotion for the next renewals (Invoice/Promotions.php setOnOrder()). #}
+                                    {% set promo_staff = has_permission('order', 'manage') and has_permission('product', 'manage_promos') %}
+                                    {% if order.promo_id or promo_staff %}
                                     <tr>
                                         <td class="text-end">{{ 'Order Promo Code'|trans }}</td>
                                         <td>
                                             {# ClientFence core patch: each module's data only for staff with that module (the page crashed for the others). #}
-                                            {{ has_permission('product', 'view') ? admin.product_promo_get({ 'id': order.promo_id }).code : '#' ~ order.promo_id }}
+                                            {% if order.promo_id %}{{ has_permission('product', 'view') ? admin.product_promo_get({ 'id': order.promo_id }).code : '#' ~ order.promo_id }}{% else %}-{% endif %}
+                                            {% if promo_staff %}
+                                                <button type="button" class="btn btn-sm btn-outline-primary ms-1" data-bs-toggle="modal" data-bs-target="#orderPromoModal">{{ 'Change'|trans }}</button>
+                                                {% if order.promo_id and order.promo_recurring %}
+                                                    <a class="btn btn-sm btn-outline-danger ms-1" {{ fb_api_link({ href: 'order/promo_set'|api_url(query: { id: order.id }), modal: { type: 'confirm', title: 'Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change.'|trans }, reload: true }) }}>{{ 'Remove'|trans }}</a>
+                                                {% endif %}
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% endif %}
@@ -304,6 +312,9 @@
                         </svg>
                         <span>{{ 'Issue Invoice'|trans }}</span>
                     </a>
+                    {% else %}
+                    {# ClientFence core patch: a promotion for this order goes on its unpaid invoice (Invoice/Promotions.php). #}
+                    {{ include('mod_invoice_promo_modal.html.twig', { promo_invoice_id: order.unpaid_invoice_id, promo_orders: [{ rel_id: order.id, title: order.title }] }) }}
                     {% endif %}
                 {% endset %}
                         {{ order_actions }}
@@ -365,6 +376,35 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
                                 <button type="submit" class="btn btn-primary">{{ 'Change Product'|trans }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {# ClientFence core patch: the promotion for the next renewals (Invoice/Promotions.php setOnOrder()). #}
+        {% if has_permission('order', 'manage') and has_permission('product', 'manage_promos') %}
+            <div class="modal modal-blur fade" id="orderPromoModal" tabindex="-1" aria-labelledby="orderPromoModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{{ 'order/promo_set'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="orderPromoModalLabel">{{ 'Order Promo Code'|trans }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="id" value="{{ order.id }}">
+                                <label class="form-label" for="orderPromoId">{{ 'Promotion'|trans }}</label>
+                                <select class="form-select" id="orderPromoId" name="promo_id" required>
+                                    {% for promo in admin.product_promo_get_list({ 'per_page': 500, 'status': 'active' }).list|filter(p => p.recurring) %}
+                                    <option value="{{ promo.id }}" {{ promo.id == order.promo_id ? 'selected' }}>{{ promo.code }}{% if promo.description %} - {{ promo.description }}{% endif %}</option>
+                                    {% endfor %}
+                                </select>
+                                <p class="text-muted mt-3 mb-0">{{ 'Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change.'|trans }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
+                                <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
                             </div>
                         </form>
                     </div>

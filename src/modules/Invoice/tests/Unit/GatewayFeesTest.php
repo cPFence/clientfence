@@ -34,10 +34,11 @@ function feeWorld(string $status = 'unpaid', bool $deposit = false): object
     $world->added = 0;
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, gateway_id INTEGER, updated_at TEXT)');
-    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, client_group_id INTEGER)');
+    $db->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
     $db->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, price REAL, quantity INTEGER, taxed INTEGER, task TEXT)');
     $db->insert('invoice', ['id' => 5, 'status' => $status]);
-    $db->insert('client', ['id' => 7, 'client_group_id' => 2]);
+    // Client 7 is in groups 5 and 2 (2 is exempt from the Stripe fee), client 8 in group 5 only (Client/Groups.php).
+    $db->executeStatement('INSERT INTO client_group_members (client_id, client_group_id) VALUES (7, 5), (7, 2), (8, 5)');
     $world->db = $db;
     $gateways = [3 => feeGateway(3, ['percent' => 2.5, 'fixed' => 0.3, 'taxable' => 1]), 4 => feeGateway(4, [], 'Bank transfer'), 6 => feeGateway(6, ['percent' => 1, 'exempt_groups' => ['2']], 'Stripe')];
 
@@ -107,6 +108,7 @@ test('the fee is a share of the amount plus the fixed amount converted, none for
         ->and(GatewayFees::fee($world->di, $world->gateways[4], 100.0, 'AUD', 7))->toBe(0.0)
         ->and(GatewayFees::fee($world->di, $world->gateways[6], 100.0, 'AUD', 7))->toBe(0.0)
         ->and(GatewayFees::fee($world->di, $world->gateways[6], 100.0, 'AUD', null))->toBe(1.0)
+        ->and(GatewayFees::fee($world->di, $world->gateways[6], 100.0, 'AUD', 8))->toBe(1.0)
         ->and(GatewayFees::fee($world->di, $world->gateways[3], 0.0, 'AUD', 7))->toBe(0.0);
 });
 

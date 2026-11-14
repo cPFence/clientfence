@@ -269,6 +269,15 @@
                             <label class="form-check"><input class="form-check-input" type="radio" name="include_options" value="0"{% if not promo.include_options|default(false) %} checked{% endif %}><span class="form-check-label">{{ 'No'|trans }}</span></label>
                         </div>
                     </div>
+                    {# ClientFence core patch: a promotion that applies without a code (Product\Service::findAutoPromo()). #}
+                    <div class="col-lg-6">
+                        <label class="form-label d-block">{{ 'Apply automatically'|trans }}</label>
+                        <div class="d-flex flex-wrap gap-3">
+                            <label class="form-check"><input class="form-check-input" type="radio" name="auto_apply" value="1"{% if promo.auto_apply|default(false) %} checked{% endif %}><span class="form-check-label">{{ 'Yes'|trans }}</span></label>
+                            <label class="form-check"><input class="form-check-input" type="radio" name="auto_apply" value="0"{% if not promo.auto_apply|default(false) %} checked{% endif %}><span class="form-check-label">{{ 'No'|trans }}</span></label>
+                        </div>
+                        <small class="form-hint">{{ 'Without a code, on every order its rules allow. A code the client enters replaces it.'|trans }}</small>
+                    </div>
                 </div>
 
                 <hr class="my-4">

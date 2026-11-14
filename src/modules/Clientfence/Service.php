@@ -282,6 +282,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'invoice_accounting_sync',
         // ClientFence core patch: the affiliate system (Client/Affiliates).
         'client_affiliate', 'client_affiliate_referral', 'client_affiliate_entry', 'client_affiliate_payout', 'client_affiliate_visit',
+        // ClientFence core patch: clients in several groups (Client/Groups.php).
+        'client_group_members',
     ];
 
     /**
@@ -470,10 +472,11 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         $clientId = (int) ($event->getParameters()['id'] ?? 0);
         self::notify($event, static fn () => Notifications::clientSignedUp($di, $clientId));
         $group = (string) self::config($di)['store_testers_group'];
-        if ($clientId <= 0 || !self::previewActive($di) || !ctype_digit($group) || (int) $group <= 0) {
+        if ($clientId <= 0 || !self::previewActive($di) || !ctype_digit($group) || (int) $group <= 0
+            || !$di['dbal']->fetchOne('SELECT 1 FROM client_group WHERE id = ?', [(int) $group])) {
             return;
         }
-        $di['em']->getConnection()->update('client', ['client_group_id' => (int) $group], ['id' => $clientId]);
+        \ClientFence\Mod\Client\Groups::set($di, $clientId, [(int) $group]);
         $di['logger']->info('ClientFence: client #%s signed up in a store preview and joined the clients who can order', $clientId);
     }
 
@@ -539,12 +542,11 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         if (!ctype_digit($group) || (int) $group <= 0) {
             return false;
         }
-        $clientGroup = $di['em']->getConnection()->fetchOne(
-            'SELECT client_group_id FROM client WHERE id = ? AND status = ?',
-            [$clientId, 'active']
+        // A signed-in client in that group, whichever of their groups it is (Client/Groups.php).
+        return (bool) $di['em']->getConnection()->fetchOne(
+            'SELECT 1 FROM client c JOIN client_group_members m ON m.client_id = c.id WHERE c.id = ? AND c.status = ? AND m.client_group_id = ?',
+            [$clientId, 'active', (int) $group]
         );
-
-        return $clientGroup !== false && $clientGroup !== null && (int) $clientGroup === (int) $group;
     }
 
     /**

@@ -432,7 +432,9 @@ class ServiceInvoiceItem implements InjectionAwareInterface
 
         // apply discount for new invoice if promo code is recurrent
         $productService = $this->di['mod_service']('Product');
-        $promoAdjustment = $productService->getRenewalPromoAdjustment($order, (float) $price, (float) $quantity);
+        $promoAdjustment = $productService->getRenewalPromoAdjustment($order, (float) $price, (float) $quantity)
+            // ClientFence core patch: else the client's recurring automatic promotion, if any (Product\Service::getAutoRenewalPromoAdjustment()).
+            ?? ($task === \Model_InvoiceItem::TASK_RENEW ? $productService->getAutoRenewalPromoAdjustment($order, $client, (float) $price, (float) $quantity) : null);
         if ($promoAdjustment !== null) {
             $pd = [
                 'title' => $promoAdjustment['title'],
@@ -449,7 +451,8 @@ class ServiceInvoiceItem implements InjectionAwareInterface
                 $client,
                 $order,
                 $proforma,
-                \ClientFence\Mod\Product\Entity\PromoRedemption::PHASE_RENEWAL,
+                // ClientFence core patch: the automatic promotion's first use on the order is a checkout one (getAutoRenewalPromoAdjustment()).
+                $promoAdjustment['phase'] ?? \ClientFence\Mod\Product\Entity\PromoRedemption::PHASE_RENEWAL,
                 $promoAdjustment['discount_amount'],
                 $promoAdjustment['currency'],
                 $proforma->created_at ?? date('Y-m-d H:i:s'),

@@ -1,0 +1,43 @@
+{# ClientFence core patch: Apply Promotion (Invoice/Promotions.php) on the invoice and order pages. promo_invoice_id: the unpaid invoice; promo_orders: the order lines it can discount ({rel_id, title}). #}
+{% if has_permission('invoice', 'manage_invoices') and has_permission('product', 'manage_promos') %}
+<a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#promoModal">
+    <svg class="icon" width="24" height="24">
+        <use href="#plus" />
+    </svg>
+    <span>{{ 'Apply Promotion'|trans }}</span>
+</a>
+<div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ 'invoice/promo_apply'|api_url }}" {{ fb_api_form({reload: true}) }}>
+    <div class="modal-header">
+        <h5 class="modal-title" id="promoModalLabel">{{ 'Apply Promotion'|trans }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" name="id" value="{{ promo_invoice_id }}">
+        <label class="form-label" for="promo-id">{{ 'Promotion'|trans }}</label>
+        <select class="form-select" name="promo_id" id="promo-id" required>
+            {% for promo in admin.product_promo_get_list({ 'per_page': 500, 'status': 'active' }).list %}
+            <option value="{{ promo.id }}">{{ promo.code }}{% if promo.description %} - {{ promo.description }}{% endif %}</option>
+            {% endfor %}
+        </select>
+        {% if promo_orders|length > 1 %}
+        <label class="form-label mt-3" for="promo-order">{{ 'Order'|trans }}</label>
+        <select class="form-select" name="order_id" id="promo-order" required>
+            {% for line in promo_orders %}
+            <option value="{{ line.rel_id }}">{{ line.title }}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <input type="hidden" name="order_id" value="{{ (promo_orders|first).rel_id }}">
+        {% endif %}
+        <p class="text-secondary mb-0 mt-2">{{ 'It is recorded as this promotion, under its rules. A recurring one also comes off the renewals.'|trans }}</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</a>
+        <input type="submit" class="btn btn-primary" value="{{ 'Apply Promotion'|trans }}">
+    </div>
+    </form>
+</div>
+</div>
+{% endif %}

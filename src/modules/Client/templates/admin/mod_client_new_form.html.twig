@@ -144,8 +144,13 @@
                             </select>
                         </div>
                         <div class="col-sm-6">
-                            <label class="form-label" for="new-client-group">{{ 'Group'|trans }}</label>
-                            {{ mf.selectbox('group_id', admin.client_group_get_pairs, request.group_id, 0, 'Select Group'|trans, 'new-client-group') }}
+                            {# ClientFence core patch: a client can be in several groups (Client/Groups.php). #}
+                            <label class="form-label" for="new-client-group">{{ 'Groups'|trans }}</label>
+                            <select class="form-select js-multi-select" id="new-client-group" name="group_ids[]" multiple placeholder="{{ 'Choose groups'|trans }}">
+                                {% for id, title in admin.client_group_get_pairs %}
+                                    <option value="{{ id }}"{% if id == request.group_id %} selected{% endif %}>{{ title }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label" for="new-client-currency">{{ 'Currency'|trans }}</label>

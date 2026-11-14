@@ -999,6 +999,8 @@ CREATE TABLE `promo` (
   `client_groups` mediumtext,
   `start_at` datetime DEFAULT NULL,
   `end_at` datetime DEFAULT NULL,
+  -- ClientFence core patch: a promotion can apply automatically, without a code.
+  `auto_apply` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1906,6 +1908,9 @@ CREATE TABLE `client_affiliate_referral` (`id` bigint(20) NOT NULL AUTO_INCREMEN
 CREATE TABLE `client_affiliate_entry` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `affiliate_id` bigint(20) NOT NULL, `type` varchar(10) NOT NULL, `status` varchar(10) NOT NULL, `amount` decimal(18,2) NOT NULL, `currency` char(3) NOT NULL, `source_amount` decimal(18,2) DEFAULT NULL, `source_currency` char(3) DEFAULT NULL, `rate` decimal(18,6) DEFAULT NULL, `client_id` bigint(20) DEFAULT NULL, `client_order_id` bigint(20) DEFAULT NULL, `invoice_id` bigint(20) DEFAULT NULL, `reverses_id` bigint(20) DEFAULT NULL, `payout_id` bigint(20) DEFAULT NULL, `admin_id` bigint(20) DEFAULT NULL, `note` varchar(255) DEFAULT NULL, `clears_at` datetime DEFAULT NULL, `hold_until` datetime DEFAULT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `commission` (`invoice_id`, `client_order_id`), UNIQUE KEY `reverses_id` (`reverses_id`), KEY `affiliate` (`affiliate_id`, `status`), KEY `pending` (`status`, `clears_at`), KEY `client_order` (`client_order_id`), KEY `client` (`client_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE `client_affiliate_payout` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `affiliate_id` bigint(20) NOT NULL, `amount` decimal(18,2) NOT NULL, `currency` char(3) NOT NULL, `status` varchar(10) NOT NULL, `method` varchar(10) DEFAULT NULL, `details` text, `admin_id` bigint(20) DEFAULT NULL, `created_at` datetime NOT NULL, `processed_at` datetime DEFAULT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `affiliate` (`affiliate_id`, `status`), KEY `status` (`status`, `created_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE `client_affiliate_visit` (`affiliate_id` bigint(20) NOT NULL, `day` date NOT NULL, `hits` int(11) NOT NULL DEFAULT 0, PRIMARY KEY (`affiliate_id`, `day`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ClientFence core patch: clients in several groups (Client/Groups.php).
+CREATE TABLE `client_group_members` (`client_id` bigint(20) NOT NULL, `client_group_id` bigint(20) NOT NULL, PRIMARY KEY (`client_id`, `client_group_id`), KEY `client_group` (`client_group_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

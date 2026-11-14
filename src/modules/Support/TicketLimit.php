@@ -32,7 +32,8 @@ final class TicketLimit
         $max = (int) ($config['ticket_limit_max'] ?? 0);
         $days = (int) ($config['ticket_limit_days'] ?? 0);
         $exempt = array_map(strval(...), (array) ($config['ticket_limit_exempt_groups'] ?? []));
-        if ($max < 1 || $days < 1 || in_array((string) $client->client_group_id, $exempt, true)) {
+        // A client in any exempt group (Client/Groups.php).
+        if ($max < 1 || $days < 1 || array_intersect(array_map(strval(...), \ClientFence\Mod\Client\Groups::ids($di, (int) $client->id)), $exempt) !== []) {
             return null;
         }
         $times = $di['em']->getConnection()->fetchFirstColumn(

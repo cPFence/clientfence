@@ -1869,20 +1869,199 @@ test('get renewal product discount uses product renewal line config', function (
     expect($serviceMock->getRenewalProductDiscount($product, $promo, ['period' => '1Y']))->toBe(20.0);
 });
 
-test('is promo available for client group', function (Promo $promo, ?Client $client, bool $expectedResult): void {
+// ClientFence: a client in several groups gets a promotion of any of them (Client/Groups.php).
+test('is promo available for client group', function (array $promoGroups, ?array $clientGroups, bool $expectedResult): void {
     $service = new Service();
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
+    foreach ($clientGroups ?? [] as $groupId) {
+        $db->insert('client_group_members', ['client_id' => 7, 'client_group_id' => $groupId]);
+    }
     $di = container();
-    $di['loggedin_client'] = $client;
+    $di['dbal'] = $db;
+    $di['loggedin_client'] = $clientGroups === null ? null : createEntity(Client::class, ['id' => 7]);
     $service->setDi($di);
 
-    expect($service->isPromoAvailableForClientGroup($promo))->toBe($expectedResult);
+    expect($service->isPromoAvailableForClientGroup(productTestCreatePromoEntity(1)->setClientGroups(json_encode($promoGroups))))->toBe($expectedResult);
 })->with([
-    'no restrictions' => [fn (): Promo => productTestCreatePromoEntity(1)->setClientGroups(json_encode([])), fn (): Client => $client = createEntity(Client::class), true],
-    'restricted and no client group' => [fn (): Promo => productTestCreatePromoEntity(2)->setClientGroups(json_encode([1, 2])), fn () => createEntity(Client::class, ['client_group_id' => null]), false],
-    'restricted and wrong client group' => [fn (): Promo => productTestCreatePromoEntity(3)->setClientGroups(json_encode([1, 2])), fn () => createEntity(Client::class, ['client_group_id' => 3]), false],
-    'restricted and matching client group' => [fn (): Promo => productTestCreatePromoEntity(4)->setClientGroups(json_encode([1, 2])), fn () => createEntity(Client::class, ['client_group_id' => 2]), true],
-    'no restrictions and no client' => [fn (): Promo => productTestCreatePromoEntity(5)->setClientGroups(json_encode([])), null, true],
-    'restricted and no client' => [fn (): Promo => productTestCreatePromoEntity(6)->setClientGroups(json_encode([1, 2])), null, false],
+    'no restrictions' => [[], [], true],
+    'restricted and no client group' => [[1, 2], [], false],
+    'restricted and wrong client group' => [[1, 2], [3], false],
+    'restricted and matching client group' => [[1, 2], [2], true],
+    'restricted and one of several client groups matching' => [[1, 2], [3, 2], true],
+    'no restrictions and no client' => [[], null, true],
+    'restricted and no client' => [[1, 2], null, false],
+]);
+
+// ClientFence: automatic promotions (Promo "Apply automatically").
+test('the automatic promotion is the usable one that takes the most off the lines, the oldest on a tie', function (array $usable, array $discounts, ?int $expected): void {
+    $promos = [productTestCreatePromoEntity(1), productTestCreatePromoEntity(2), productTestCreatePromoEntity(3)];
+    $repository = Mockery::mock(PromoRepository::class);
+    $repository->shouldReceive('findBy')->once()->with(['active' => true, 'autoApply' => true], ['id' => 'ASC'])->andReturn($promos);
+    $client = createEntity(Client::class, ['id' => 7]);
+
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getPromoRepository')->andReturn($repository);
+    // Usable: the client's groups match and the promotion can be used (dates, uses, once per client).
+    $service->shouldReceive('isPromoAvailableForClientGroup')->andReturnUsing(fn (Promo $p): bool => in_array($p->getId(), $usable, true));
+    $service->shouldReceive('canClientUsePromo')->andReturnTrue();
+    // Each line's discount: 0 where the promotion does not cover its product or period.
+    $service->shouldReceive('getProductDiscountById')->andReturnUsing(fn (int $productId, Promo $p): float => $discounts[$p->getId()][$productId] ?? 0.0);
+
+    $lines = [['product_id' => 10, 'config' => ['period' => '1M']], ['product_id' => 11, 'config' => []]];
+
+    expect($service->findAutoPromo($client, $lines)?->getId())->toBe($expected);
+})->with([
+    'the biggest discount over all lines' => [[1, 2, 3], [1 => [10 => 5.0], 2 => [10 => 3.0, 11 => 4.0], 3 => [11 => 6.0]], 2],
+    'a promotion the client cannot use is skipped' => [[1, 3], [1 => [10 => 5.0], 2 => [10 => 9.0], 3 => [11 => 6.0]], 3],
+    'a tie keeps the oldest' => [[1, 2, 3], [1 => [10 => 5.0], 2 => [11 => 5.0]], 1],
+    'none discounts the lines' => [[1, 2, 3], [], null],
+]);
+
+test('a once-per-client automatic promotion is skipped once the client used it on any order, at checkout or renewal', function (?string $status, bool $offered): void {
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE promo_redemption (id INTEGER PRIMARY KEY, promo_id INTEGER, client_id INTEGER, phase TEXT, status TEXT)');
+    if ($status !== null) {
+        // A renewal of another order (canClientUsePromo() counts checkout ones only).
+        $db->insert('promo_redemption', ['promo_id' => 1, 'client_id' => 7, 'phase' => PromoRedemption::PHASE_RENEWAL, 'status' => $status]);
+    }
+    $repository = Mockery::mock(PromoRepository::class);
+    $repository->allows('findBy')->andReturn([productTestCreatePromoEntity(1)->setOncePerClient(true)]);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->allows('getPromoRepository')->andReturn($repository);
+    $service->allows(['isPromoAvailableForClientGroup' => true, 'canClientUsePromo' => true, 'getProductDiscountById' => 5.0]);
+    $di = container();
+    $di['dbal'] = $db;
+    $service->setDi($di);
+
+    expect($service->findAutoPromo(createEntity(Client::class, ['id' => 7]), [['product_id' => 10, 'config' => []]]) !== null)->toBe($offered);
+})->with([
+    'never used' => [null, true],
+    'used at a renewal' => [PromoRedemption::STATUS_COMMITTED, false],
+    'reserved on an unpaid renewal' => [PromoRedemption::STATUS_RESERVED, false],
+    'released (cancelled invoice)' => [PromoRedemption::STATUS_RELEASED, true],
+]);
+
+test('an automatic promotion with fewer uses left than the lines it would discount is skipped', function (int $used, bool $offered): void {
+    $repository = Mockery::mock(PromoRepository::class);
+    // 3 uses, 2 discounted lines (the third line is not covered).
+    $repository->allows('findBy')->andReturn([productTestCreatePromoEntity(1)->setMaxUses(3)->setUsed($used)]);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->allows('getPromoRepository')->andReturn($repository);
+    $service->allows(['isPromoAvailableForClientGroup' => true, 'canClientUsePromo' => true]);
+    $service->allows('getProductDiscountById')->andReturnUsing(fn (int $productId): float => $productId === 12 ? 0.0 : 5.0);
+    $service->setDi(container());
+
+    $lines = [['product_id' => 10, 'config' => []], ['product_id' => 11, 'config' => []], ['product_id' => 12, 'config' => []]];
+    expect($service->findAutoPromo(createEntity(Client::class, ['id' => 7]), $lines) !== null)->toBe($offered);
+})->with([
+    'two uses left' => [1, true],
+    'one use left' => [2, false],
+]);
+
+test('competing automatic promotions are ranked by what they take off: a free setup counts at checkout, the order\'s own price at renewal', function (array $line, int $expected): void {
+    // Promotion 1: 5 off the catalog price. Promotion 2: free setup, and 50% of an order's own price.
+    $promos = [productTestCreatePromoEntity(1), productTestCreatePromoEntity(2)->setFreeSetup(true)];
+    $repository = Mockery::mock(PromoRepository::class);
+    $repository->allows('findBy')->andReturn($promos);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->allows('getPromoRepository')->andReturn($repository);
+    $service->allows(['isPromoAvailableForClientGroup' => true, 'canClientUsePromo' => true, 'isPromoApplicableToProductById' => true, 'findProductById' => Mockery::mock(Product::class)]);
+    $service->allows('getProductDiscountById')->andReturnUsing(fn (int $productId, Promo $p): float => $p->getId() === 1 ? 5.0 : 0.0);
+    $service->allows('getOrderPromoDiscount')->andReturnUsing(fn ($product, Promo $p, $config, float $price): float => $p->getId() === 2 ? $price / 2 : 1.0);
+    $service->setDi(container());
+
+    expect($service->findAutoPromo(createEntity(Client::class, ['id' => 7]), [['product_id' => 10, 'config' => []] + $line])?->getId())->toBe($expected);
+})->with([
+    'checkout without a setup fee: the 5 off' => [[], 1],
+    'checkout with a setup fee of 20: the free setup' => [['setup' => 20.0], 2],
+    'renewal of an order priced 10: 5 off its own price beats 1' => [['order' => ['price' => 10.0, 'quantity' => 1.0, 'rate' => 1.0]], 2],
+]);
+
+test('a renewal without a recurring promotion gets the recurring automatic one, then carries it like a code', function (bool $orderRecurring, ?float $expected): void {
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, promo_id INTEGER, promo_recurring INTEGER, promo_used INTEGER, discount REAL, updated_at TEXT)');
+    $db->insert('client_order', ['id' => 9, 'promo_recurring' => (int) $orderRecurring, 'discount' => 0]);
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 9, 'product_id' => 2, 'config' => '{}', 'period' => '1M', 'currency' => 'USD', 'promo_recurring' => (int) $orderRecurring] as $key => $value) {
+        $order->{$key} = $value;
+    }
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 7;
+    // 25% of the order's own 50.00 (not the catalog price).
+    $promo = productTestCreatePromoEntity(4)->setRecurring(true)->setType(Promo::PERCENTAGE)->setValue(25);
+    $product = Mockery::mock(Product::class);
+    $product->allows('getType')->andReturn('custom');
+
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->allows('findProductById')->andReturn($product);
+    // Renewals ask for a recurring one only; the period comes from the order.
+    // Ranked on the order's own price, not the catalog's.
+    $service->shouldReceive('findAutoPromo')->with($client, [['product_id' => 2, 'config' => ['period' => '1M'], 'order' => ['price' => 50.0, 'quantity' => 1.0, 'rate' => 1.0]]], true)->andReturn($promo);
+    $service->allows('isPromoApplicableToProduct')->andReturnTrue();
+    $service->shouldNotReceive('getRenewalProductDiscount');
+    $service->allows('usePromo');
+    $service->allows('getPromoDiscountTitle')->andReturn('AUTO');
+    $rates = Mockery::mock();
+    $rates->allows('getRateByCode')->andReturn(1.0);
+    $currency = Mockery::mock();
+    $currency->allows('getCurrencyRepository')->andReturn($rates);
+    $di = container();
+    $di['dbal'] = $db;
+    $di['mod_service'] = $di->protect(fn (): object => $currency);
+    $service->setDi($di);
+
+    $adjustment = $service->getAutoRenewalPromoAdjustment($order, $client, 50.0, 1.0);
+
+    expect($adjustment['discount_amount'] ?? null)->toBe($expected)
+        // Its first use on the order counted a use: a release gives it back (phase checkout).
+        ->and($adjustment['phase'] ?? null)->toBe($expected === null ? null : PromoRedemption::PHASE_CHECKOUT);
+    // Recorded on the order: the next renewals take it through getRenewalPromoAdjustment(), as with a code.
+    expect($db->fetchAssociative('SELECT promo_id, promo_recurring, discount FROM client_order WHERE id = 9'))
+        ->toEqual($expected === null ? ['promo_id' => null, 'promo_recurring' => 1, 'discount' => 0.0] : ['promo_id' => 4, 'promo_recurring' => 1, 'discount' => 12.5]);
+})->with([
+    'no recurring promotion on the order' => [false, 12.5],
+    'the order carries a recurring promotion: nothing more' => [true, null],
+]);
+
+test('a promotion on an existing order takes its share of the order\'s own price, not the catalog\'s', function (string $type, float $value, float $price, bool $applies, float $expected): void {
+    $promo = productTestCreatePromoEntity(4)->setType($type)->setValue($value);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->allows('isPromoApplicableToProduct')->andReturn($applies);
+    // The catalog price (say 20.00) is never read.
+    $service->shouldNotReceive('getRenewalProductDiscount', 'getProductDiscount');
+
+    // Rate 2: one base-currency unit is 2 in the order's currency.
+    expect($service->getOrderPromoDiscount(Mockery::mock(Product::class), $promo, ['period' => '1M'], $price, 1.0, 2.0))->toBe($expected);
+})->with([
+    '50% of an order priced 10.00 below the catalog' => [Promo::PERCENTAGE, 50, 10.0, true, 5.0],
+    'a fixed 3.00 in the order\'s currency' => [Promo::ABSOLUTE, 3, 10.0, true, 6.0],
+    'a fixed amount stops at the order\'s price' => [Promo::ABSOLUTE, 30, 10.0, true, 10.0],
+    'not for this product or period' => [Promo::PERCENTAGE, 50, 10.0, false, 0.0],
+]);
+
+test('a promotion on an existing order leaves the order\'s options out unless it covers them', function (bool $covers, float $expected): void {
+    // Product 10 + an option of 5 in the default currency (10 at rate 2): the order is 20, quantity 2.
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_option_group_product (group_id INTEGER, product_id INTEGER)');
+    $db->executeStatement('CREATE TABLE promo_option (promo_id INTEGER PRIMARY KEY, include_options INTEGER NOT NULL, updated_at TEXT NOT NULL)');
+    $db->insert('promo_option', ['promo_id' => 4, 'include_options' => (int) $covers, 'updated_at' => '2026-11-14 00:00:00']);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->allows('getConnection')->andReturn($db);
+    $di = container();
+    $di['dbal'] = $db;
+    $di['em'] = $em;
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->allows('isPromoApplicableToProduct')->andReturnTrue();
+    $service->setDi($di);
+    $config = ['period' => '1M', 'option_lines' => [['title' => 'RAM', 'price' => 5.0]]];
+
+    expect($service->getOrderPromoDiscount(Mockery::mock(Product::class), productTestCreatePromoEntity(4)->setType(Promo::PERCENTAGE)->setValue(50), $config, 20.0, 2.0, 2.0))->toBe($expected);
+})->with([
+    '50% of the product part only (2 x 10)' => [false, 10.0],
+    'options included: 50% of the whole 2 x 20' => [true, 20.0],
 ]);
 
 test('release reserved promo redemptions for invoice releases reservations and decrements operational counter', function (): void {

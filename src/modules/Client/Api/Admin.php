@@ -160,6 +160,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional string $last_name - client last name
      * @optional string $aid - Custom client ID. If you import clients from other systems you can use this field to store the existing customer ID.
      * @optional string $group_id - client group id
+     * @optional array $group_ids - client group ids, for a client in several groups (the first one is group_id)
      * @optional string $status - client status: "active, suspended, canceled"
      * @optional string $created_at - ISO 8601 date for client creation date
      * @optional string $gender - Gender - values: male|female|nonbinary|other
@@ -466,20 +467,10 @@ class Admin extends \ClientFence\Api\AbstractApi
         $groupField = array_key_exists('group_id', $data)
             ? 'group_id'
             : (array_key_exists('client_group_id', $data) ? 'client_group_id' : null);
-        if ($groupField !== null) {
-            $groupValue = $data[$groupField];
-            if (empty($groupValue)) {
-                $client->setClientGroupId(null);
-            } else {
-                $groupId = filter_var($groupValue, FILTER_VALIDATE_INT);
-                if ($groupId === false || $groupId <= 0) {
-                    throw new InformationException('Invalid client group ID: :id', [':id' => $groupValue]);
-                }
-
-                $this->getDi()['em']->getRepository(ClientGroup::class)->find($groupId)
-                    ?? throw new InformationException('Client group not found');
-                $client->setClientGroupId($groupId);
-            }
+        // ClientFence core patch: a client can be in several groups (group_ids, Client/Groups.php); group_id alone sets one.
+        $groupIds = array_key_exists('group_ids', $data) ? (array) $data['group_ids'] : ($groupField !== null ? [$data[$groupField]] : null);
+        if ($groupIds !== null) {
+            $client->setClientGroupId(\ClientFence\Mod\Client\Groups::set($this->getDi(), (int) $client->getId(), $groupIds));
         }
 
         if (array_key_exists('email_approved', $data)) {
@@ -862,9 +853,8 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $model = $this->getDi()['em']->getRepository(ClientGroup::class)->find($data['id']) ?? throw new InformationException('Group not found');
 
-        $clients = $this->getDi()['em']->getRepository(Client::class)->findBy(['clientGroupId' => $data['id']]);
-
-        if (Tools::safeCount($clients) > 0) {
+        // ClientFence core patch: any client in the group, not only those whose first group it is (Client/Groups.php).
+        if ($this->getDi()['dbal']->fetchOne('SELECT 1 FROM client_group_members WHERE client_group_id = ?', [$model->getId()])) {
             throw new InformationException('Group has clients assigned. Please reassign them first.');
         }
 

@@ -372,6 +372,24 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: apply an existing promotion to an order on an unpaid invoice, recorded as that promotion
+     * under the rules of a code (Invoice/Promotions.php).
+     *
+     * @optional int $order_id - the order on the invoice; needed when the invoice has several
+     *
+     * @return float - the discount taken off, before tax
+     */
+    #[RequiredParams(['id' => 'Invoice ID is missing', 'promo_id' => 'Choose a promotion.'])]
+    public function promo_apply($data): float
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+        $this->checkPermissions('product', 'manage_promos');
+        $promo = $this->getDi()['mod_service']('Product')->findPromoById((int) $data['promo_id']);
+
+        return \ClientFence\Mod\Invoice\Promotions::apply($this->getDi(), $this->_getInvoice($data), $promo, empty($data['order_id']) ? null : (int) $data['order_id']);
+    }
+
+    /**
      * Take the credit applied to an unpaid invoice back to the client's credit.
      *
      * @return bool

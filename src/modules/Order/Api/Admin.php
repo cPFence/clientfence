@@ -225,6 +225,24 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: set or remove the order's promotion for its next renewals (Invoice/Promotions.php).
+     * Invoices already issued do not change: invoice/promo_apply discounts an unpaid one.
+     *
+     * @optional int $promo_id - a recurring promotion; empty removes it
+     *
+     * @return bool
+     */
+    #[RequiredParams(['id' => 'Order ID was not passed'])]
+    public function promo_set($data): bool
+    {
+        $this->checkPermissions('order', 'manage');
+        $this->checkPermissions('product', 'manage_promos');
+        $promo = empty($data['promo_id']) ? null : $this->getDi()['mod_service']('Product')->findPromoById((int) $data['promo_id']);
+
+        return \ClientFence\Mod\Invoice\Promotions::setOnOrder($this->getDi(), $this->getDi()['db']->getExistingModelById('ClientOrder', (int) $data['id'], 'Order not found'), $promo);
+    }
+
+    /**
      * Activate order depending on current status.
      *
      * @optional bool $force - Skip order status checking. Force activate even active order

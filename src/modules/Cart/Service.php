@@ -51,6 +51,9 @@ class Service implements InjectionAwareInterface
     /** ClientFence: the client's language while staffOrder() runs: its order titles are written in it (Product/Translations.php). */
     private ?string $staffOrderLocale = null;
 
+    /** ClientFence core patch: the automatic promotion of the cart being priced (cart without a code; autoPromo()). */
+    private ?Promo $autoPromo = null;
+
     public function setDi(\Pimple\Container $di): void
     {
         $this->di = $di;
@@ -731,12 +734,17 @@ class Service implements InjectionAwareInterface
         $total = 0;
         $cart_discount = 0;
         $items_discount = 0;
+        // ClientFence core patch: an automatic promotion for the signed-in client, or the client of a checkout or staff order ($identity).
+        $previous = $this->autoPromo;
+        $this->autoPromo = $this->autoPromo($model, $identity instanceof Client || $identity instanceof \Model_Client ? $identity : $this->signedInClient());
+        $autoPromo = $this->autoPromo;
         foreach ($products as $product) {
             $p = $this->cartProductToApiArray($product, $model, $products);
             $total += $p['total'] + $p['setup_price'];
             $items_discount += $p['discount'];
             $items[] = $p;
         }
+        $this->autoPromo = $previous;
 
         $promoId = $this->cartPromoId($model);
         if ($promoId) {
@@ -745,11 +753,12 @@ class Service implements InjectionAwareInterface
             $promoRecurring = $promo->isRecurring();
         } else {
             $promocode = null;
-            $promoRecurring = false;
+            $promoRecurring = $autoPromo?->isRecurring() ?? false;
         }
 
         return [
             'promocode' => $promocode,
+            'auto_promo' => $autoPromo?->getCode(),
             // ClientFence core patch: the checkout shows the renewal after a recurring promo (the orders keep its discount_price).
             'promo_recurring' => $promoRecurring,
             'discount' => $items_discount,
@@ -796,6 +805,30 @@ class Service implements InjectionAwareInterface
         }
 
         return $subscriptionPeriod;
+    }
+
+    /**
+     * ClientFence core patch: the automatic promotion of a cart without a code (Product\Service::findAutoPromo()); none
+     * for a visitor who is not signed in. A code the client enters always replaces it.
+     */
+    private function autoPromo(Cart|\Model_Cart $cart, Client|\Model_Client|null $client): ?Promo
+    {
+        if ($client === null || $this->cartPromoId($cart)) {
+            return null;
+        }
+        // The setup fee counts toward a free-setup promotion's saving (findAutoPromo()).
+        $lines = array_map(fn ($p): array => ['product_id' => (int) $this->cartProductProductId($p), 'config' => $this->getItemConfig($p), 'setup' => (float) ($this->getProductService()->getCartProductViewData($p)['setup_price'])], $this->findCartProducts($cart));
+
+        return $lines === [] ? null : $this->getProductService()->findAutoPromo($client, $lines);
+    }
+
+    private function signedInClient(): ?\Model_Client
+    {
+        try {
+            return $this->di['loggedin_client'];
+        } catch (\Exception) {
+            return null;
+        }
     }
 
     public function isClientAbleToUsePromo(Client|\Model_Client $client, Promo $promo)
@@ -944,7 +977,7 @@ class Service implements InjectionAwareInterface
     public function createFromCart(Client|\Model_Client $client, $gateway_id = null, Cart|\Model_Cart|null $cart = null, ?array $staff = null): array
     {
         $cart ??= $this->getSessionCart();
-        $ca = $this->toApiArray($cart);
+        $ca = $this->toApiArray($cart, false, $client);
         if (\ClientFence\Tools::safeCount($ca['items']) == 0) {
             throw new \ClientFence\InformationException('Cannot checkout an empty cart');
         }
@@ -964,8 +997,10 @@ class Service implements InjectionAwareInterface
         $clientService = $this->di['mod_service']('client');
         $taxed = $clientService->isClientTaxable($client);
         $promoId = $this->cartPromoId($cart);
-        $promoProductService = $promoId ? $this->getProductService() : null;
-        $promo = $promoId ? $promoProductService?->findPromoById($promoId) : null;
+        // ClientFence core patch: without a code, the client's automatic promotion that toApiArray() found is used as a code would be.
+        $promoProductService = $promoId || !empty($ca['auto_promo']) ? $this->getProductService() : null;
+        $promo = $promoId ? $promoProductService?->findPromoById($promoId) : ($promoProductService?->findActivePromoByCode($ca['auto_promo']));
+        $autoPromo = $promoId ? null : $promo;
 
         $reservedOrderIds = [];
         $reservedCount = 0;
@@ -982,6 +1017,9 @@ class Service implements InjectionAwareInterface
             $legacyClient->currency = $currencyCode;
             $this->di['db']->store($legacyClient);
         }
+
+        $previousAutoPromo = $this->autoPromo;
+        $this->autoPromo = $autoPromo;
 
         try {
             return $this->di['em']->wrapInTransaction(function () use ($ca, $cart, $client, $legacyClient, $currency, $currencyCode, $gateway_id, $taxed, $promo, $promoProductService, $promoId, $staff, &$reservedOrderIds, &$reservedCount) {
@@ -1011,8 +1049,8 @@ class Service implements InjectionAwareInterface
                     unset($item[self::CART_FAMILY_KEY]);
                     // ClientFence core patch: an add-on for the client's own service (Order/AddonOrders.php), checked again now.
                     $addonFor = (int) ($item[self::CART_ADDON_FOR_KEY] ?? 0) > 0 ? $this->di['db']->load('ClientOrder', (int) $item[self::CART_ADDON_FOR_KEY]) : null;
-                    [$recurringPrice, $recurringDiscount] = [$item['recurring_price'], $item['recurring_discount']];
-                    unset($item[self::CART_ADDON_FOR_KEY], $item['recurring_price'], $item['recurring_discount']);
+                    [$recurringPrice, $recurringDiscount, $promoLine] = [$item['recurring_price'], $item['recurring_discount'], $item['promo_line'] ?? false];
+                    unset($item[self::CART_ADDON_FOR_KEY], $item['recurring_price'], $item['recurring_discount'], $item['promo_line']);
                     $product = $this->getProductService()->findProductById((int) $item['product_id']);
                     if ($addonFor !== null) {
                         if (!$addonFor instanceof \Model_ClientOrder || (int) $addonFor->client_id !== $this->clientId($client)) {
@@ -1061,7 +1099,7 @@ class Service implements InjectionAwareInterface
 
                     $order = new Order();
                     $order->setClientId($this->clientId($client));
-                    $order->setPromoId($promoId);
+                    $order->setPromoId($promoId ?? ($promoLine ? $promo?->getId() : null));
                     $order->setProductId($item['product_id']);
                     $order->setFormId($item['form_id']);
 
@@ -1096,7 +1134,7 @@ class Service implements InjectionAwareInterface
                     // Reserve promo capacity at order creation time.
                     // ClientFence core patch: only for a line the promo discounts (every line of the cart used one: a
                     // product with its add-on took two uses, and a code with uses left was refused for a larger cart).
-                    if ($promo instanceof Promo && $promoProductService !== null && abs((float) ($item['discount'] ?? 0)) > 0) {
+                    if ($promo instanceof Promo && $promoProductService !== null && ($promoId || $promoLine) && abs((float) ($item['discount'] ?? 0)) > 0) {
                         $promoProductService->reservePromoForOrder($promo, $order);
                         $reservedOrderIds[] = $order->getId();
                         ++$reservedCount;
@@ -1257,6 +1295,8 @@ class Service implements InjectionAwareInterface
             }
 
             throw $e;
+        } finally {
+            $this->autoPromo = $previousAutoPromo;
         }
     }
 
@@ -1318,7 +1358,7 @@ class Service implements InjectionAwareInterface
                 }
                 $this->applyPromo($cart, $promo);
             }
-            $quote = $this->toApiArray($cart);
+            $quote = $this->toApiArray($cart, false, $client);
             [, $invoice, $ids] = $this->createFromCart($client, $gatewayId, $cart, $staff ?? ['invoice' => true, 'quote' => true]);
             if ($staff !== null) {
                 $this->rm($cart);
@@ -1351,7 +1391,7 @@ class Service implements InjectionAwareInterface
                         'title' => $i['title'], 'quantity' => $i['quantity'], 'period' => $i['period'] ?? null,
                         'price' => $i['price'] * $rate, 'total' => $i['total'] * $rate, 'setup_price' => $i['setup_price'] * $rate, 'discount' => $i['discount'] * $rate,
                     ], $cart['items']),
-                    'promocode' => $cart['promocode'],
+                    'promocode' => $cart['promocode'] ?? $cart['auto_promo'],
                     'subtotal' => $cart['subtotal'] * $rate,
                     'discount' => $cart['discount'] * $rate,
                     'tax' => $invoice instanceof \Model_Invoice ? $invoiceService->getTax($invoice) : 0.0,
@@ -1511,7 +1551,7 @@ class Service implements InjectionAwareInterface
         $price = $productView['price'];
         $qty = $productView['quantity'];
 
-        [$discount_price, $discount_setup] = $this->getProductDiscount($model, $setup, $cart, $cartProducts, $productView['options_setup_price']);
+        [$discount_price, $discount_setup, $promoLine] = $this->getProductDiscount($model, $setup, $cart, $cartProducts, $productView['options_setup_price']);
         // ClientFence core patch: an add-on for the client's service (Order/AddonOrders.php) first runs to the service's due
         // date: the price and its discount are for those days; the order keeps the full price for its renewals.
         $recurringPrice = $price;
@@ -1555,6 +1595,7 @@ class Service implements InjectionAwareInterface
             'total' => $subtotal,
             'recurring_price' => $recurringPrice,
             'recurring_discount' => $recurringDiscount,
+            'promo_line' => $promoLine,
             'addon_due' => $addonFor !== null && !empty($config['period']) ? (string) $addonFor->expires_at : null,
         ]);
     }
@@ -1594,18 +1635,23 @@ class Service implements InjectionAwareInterface
         }
         $discount_price = $this->getRelatedItemsDiscount($cart, $cartProduct, $cartProducts);
         $discount_setup = 0;
-        if ($this->cartPromoId($cart)) {
-            $promo = $this->getProductService()->findPromoById((int) $this->cartPromoId($cart));
-            // Promo discount should override related item discount
-            $discount_price = $this->getItemPromoDiscount($cartProduct, $promo);
-
+        $promo = $this->cartPromoId($cart) ? $this->getProductService()->findPromoById((int) $this->cartPromoId($cart)) : $this->autoPromo;
+        $promoLine = false;
+        if ($promo instanceof Promo) {
+            $promoDiscount = $this->getItemPromoDiscount($cartProduct, $promo);
             $promoApplies = $this->getProductService()->isPromoApplicableToProductById(
                 (int) $this->cartProductProductId($cartProduct),
                 $promo,
                 $this->getItemConfig($cartProduct),
             );
+            // Promo discount should override related item discount
+            // ClientFence core patch: an automatic promotion only on a line it covers, and only where it takes off at least the line's own discount.
+            $promoLine = $this->cartPromoId($cart) || ($promoApplies && $promoDiscount >= $discount_price);
+            if ($promoLine) {
+                $discount_price = $promoDiscount;
+            }
 
-            if ($promo->isFreeSetup() && $promoApplies) {
+            if ($promoLine && $promo->isFreeSetup() && $promoApplies) {
                 $discount_setup = $setup;
                 // ClientFence core patch: configurable options (Product/Options.php). A free setup
                 // waives the options' setup fees only when the promotion also covers the options.
@@ -1615,6 +1661,7 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        return [$discount_price, $discount_setup];
+        // The third value: whether the line's discount is the promotion's (the order reserves and records it).
+        return [$discount_price, $discount_setup, $promoLine];
     }
 }

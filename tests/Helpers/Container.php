@@ -107,6 +107,7 @@ function container(): Container
         $dbal->shouldReceive('fetchAssociative')->byDefault()->andReturn([]);
         $dbal->shouldReceive('fetchAllAssociative')->byDefault()->andReturn([]);
         $dbal->shouldReceive('fetchOne')->byDefault()->andReturn(null);
+        $dbal->shouldReceive('fetchFirstColumn')->byDefault()->andReturn([]);
         $dbal->shouldReceive('executeQuery')->byDefault()->andReturn($result);
         $dbal->shouldReceive('executeStatement')->byDefault()->andReturn(1);
         $dbal->shouldReceive('insert')->byDefault()->andReturn(1);

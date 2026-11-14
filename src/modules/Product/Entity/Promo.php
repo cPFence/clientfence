@@ -83,6 +83,10 @@ class Promo implements ApiArrayInterface, TimestampInterface
     #[ORM\Column(name: 'end_at', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $endAt = null;
 
+    // ClientFence core patch: a promotion can apply automatically, without a code (Cart\Service, Product\Service::findAutoPromo()).
+    #[ORM\Column(name: 'auto_apply', type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => false])]
+    private bool $autoApply = false;
+
     public function toApiArray(): array
     {
         return [
@@ -102,6 +106,7 @@ class Promo implements ApiArrayInterface, TimestampInterface
             'client_groups' => $this->clientGroups,
             'start_at' => $this->startAt?->format('Y-m-d H:i:s'),
             'end_at' => $this->endAt?->format('Y-m-d H:i:s'),
+            'auto_apply' => $this->autoApply,
             'created_at' => $this->getCreatedAt()?->format('Y-m-d H:i:s'),
             'updated_at' => $this->getUpdatedAt()?->format('Y-m-d H:i:s'),
         ];
@@ -288,6 +293,18 @@ class Promo implements ApiArrayInterface, TimestampInterface
     public function setEndAt(?\DateTime $endAt): self
     {
         $this->endAt = $endAt;
+
+        return $this;
+    }
+
+    public function isAutoApply(): bool
+    {
+        return $this->autoApply;
+    }
+
+    public function setAutoApply(bool $autoApply): self
+    {
+        $this->autoApply = $autoApply;
 
         return $this;
     }

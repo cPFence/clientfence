@@ -313,7 +313,6 @@ test('update returns true', function (): void {
         'tax_exempt' => 'N/A',
         'created_at' => '2012-05-10',
         'email' => 'test@example.com',
-        'group_id' => 1,
         'status' => 'test status',
         'company_number' => '1234',
         'type' => '',
@@ -352,20 +351,32 @@ test('update returns true', function (): void {
     expect($result)->toBeTrue();
 });
 
-test('update validates and assigns client_group_id through the group repository', function (): void {
+/** ClientFence: clients in several groups (Client/Groups.php): client 1 is in group 3; groups 3, 7 and 8 exist. */
+function adminTestGroupsDb(): Doctrine\DBAL\Connection
+{
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_group (id INTEGER PRIMARY KEY)');
+    // email_approved: update() locks the client row by writing it (the address confirmation lock).
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, client_group_id INTEGER, email_approved INTEGER)');
+    $db->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
+    $db->executeStatement('INSERT INTO client_group (id) VALUES (3), (7), (8)');
+    $db->executeStatement('INSERT INTO client (id, client_group_id) VALUES (1, 3)');
+    $db->executeStatement('INSERT INTO client_group_members (client_id, client_group_id) VALUES (1, 3)');
+
+    return $db;
+}
+
+test('update puts a client in several groups, or one through the old group_id, or none', function (array $data, array $groups, ?int $first): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
     $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 1, 'client_group_id' => 3]);
-    $group = createEntity(ClientFence\Mod\Client\Entity\ClientGroup::class, ['id' => 7]);
 
     $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
     $clientRepository->shouldReceive('find')->once()->with(1)->andReturn($client);
-    $groupRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientGroupRepository::class);
-    $groupRepository->shouldReceive('find')->once()->with(7)->andReturn($group);
 
     $di = container();
+    $di['dbal'] = $db = adminTestGroupsDb();
     $em = $di['em'];
     $em->shouldReceive('getRepository')->with(ClientFence\Mod\Client\Entity\Client::class)->andReturn($clientRepository);
-    $em->shouldReceive('getRepository')->with(ClientFence\Mod\Client\Entity\ClientGroup::class)->andReturn($groupRepository);
     $em->shouldReceive('persist')->once()->with($client);
     $em->shouldReceive('flush')->once();
     $di['logger'] = new Tests\Helpers\TestLogger();
@@ -373,8 +384,32 @@ test('update validates and assigns client_group_id through the group repository'
 
     $adminClient->setDi($di);
 
-    expect($adminClient->update(['id' => 1, 'client_group_id' => '7']))->toBeTrue()
-        ->and($client->getClientGroupId())->toBe(7);
+    expect($adminClient->update(['id' => 1] + $data))->toBeTrue()
+        ->and(ClientFence\Mod\Client\Groups::ids($di, 1))->toBe($groups)
+        ->and($client->getClientGroupId())->toBe($first)
+        ->and($db->fetchOne('SELECT client_group_id FROM client WHERE id = 1'))->toBe($first);
+})->with([
+    // The form's empty hidden input comes first; the first chosen group is the client's group_id.
+    'several groups' => [['group_ids' => ['', '8', '7']], [7, 8], 8],
+    'old single group_id' => [['client_group_id' => '7'], [7], 7],
+    'empty clears them' => [['group_ids' => ['']], [], null],
+    'old empty group_id clears them' => [['group_id' => ''], [], null],
+]);
+
+test('update refuses a client group that does not exist', function (): void {
+    $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
+    $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 1]);
+    $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
+    $clientRepository->shouldReceive('find')->once()->with(1)->andReturn($client);
+
+    $di = container();
+    $di['dbal'] = $db = adminTestGroupsDb();
+    $di['em']->shouldReceive('getRepository')->with(ClientFence\Mod\Client\Entity\Client::class)->andReturn($clientRepository);
+    $di['mod_service'] = $di->protect(moduleService(['client' => Mockery::mock(ClientFence\Mod\Client\Service::class)]));
+    $adminClient->setDi($di);
+
+    expect(fn () => $adminClient->update(['id' => 1, 'group_ids' => ['7', '99']]))->toThrow(ClientFence\InformationException::class, 'Client group not found')
+        ->and(ClientFence\Mod\Client\Groups::ids($di, 1))->toBe([3]);
 });
 
 // ClientFence (QA r4 F-03): a new address is unconfirmed even when staff change it and the form posts "confirmed" back.
@@ -404,27 +439,6 @@ test('update unconfirms a changed email, and keeps the confirmation of an unchan
     'changed' => ['new@example.com', false],
     'same, other case' => ['OLD@example.com', true],
 ]);
-
-test('update clears client_group_id when the alias is empty', function (): void {
-    $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
-    $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 1, 'client_group_id' => 3]);
-
-    $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
-    $clientRepository->shouldReceive('find')->once()->with(1)->andReturn($client);
-
-    $di = container();
-    $em = $di['em'];
-    $em->shouldReceive('getRepository')->with(ClientFence\Mod\Client\Entity\Client::class)->andReturn($clientRepository);
-    $em->shouldReceive('persist')->once()->with($client);
-    $em->shouldReceive('flush')->once();
-    $di['logger'] = new Tests\Helpers\TestLogger();
-    $di['mod_service'] = $di->protect(moduleService(['client' => Mockery::mock(ClientFence\Mod\Client\Service::class)]));
-
-    $adminClient->setDi($di);
-
-    expect($adminClient->update(['id' => 1, 'client_group_id' => '']))->toBeTrue()
-        ->and($client->getClientGroupId())->toBeNull();
-});
 
 test('update rejects a non-integer client_group_id alias', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());

@@ -90,17 +90,16 @@ class PromoRedemptionRepository extends EntityRepository
         return $qb;
     }
 
+    // ClientFence core patch: once per client counts a use in any phase (an automatic promotion first given at a renewal).
     public function clientHasActiveCheckoutApplication(int $promoId, int $clientId): bool
     {
         $count = (int) $this->createQueryBuilder('pr')
             ->select('COUNT(pr.id)')
             ->where('pr.promoId = :promoId')
             ->andWhere('pr.clientId = :clientId')
-            ->andWhere('pr.phase = :phase')
             ->andWhere('pr.status IN (:statuses)')
             ->setParameter('promoId', $promoId)
             ->setParameter('clientId', $clientId)
-            ->setParameter('phase', PromoRedemption::PHASE_CHECKOUT)
             ->setParameter('statuses', [PromoRedemption::STATUS_RESERVED, PromoRedemption::STATUS_COMMITTED])
             ->getQuery()
             ->getSingleScalarResult();
@@ -135,11 +134,11 @@ class PromoRedemptionRepository extends EntityRepository
         $count = (int) $connection->fetchOne(
             'SELECT COUNT(pr.id) FROM promo_redemption pr'
             . ' WHERE pr.promo_id = :promo_id AND pr.client_id = :client_id'
-            . ' AND pr.phase = :phase AND pr.status IN (:statuses) FOR UPDATE',
+            // ClientFence core patch: in any phase, as clientHasActiveCheckoutApplication().
+            . ' AND pr.status IN (:statuses) FOR UPDATE',
             [
                 'promo_id' => $promoId,
                 'client_id' => $clientId,
-                'phase' => PromoRedemption::PHASE_CHECKOUT,
                 'statuses' => [PromoRedemption::STATUS_RESERVED, PromoRedemption::STATUS_COMMITTED],
             ],
             ['statuses' => \Doctrine\DBAL\ArrayParameterType::STRING]

@@ -1404,6 +1404,8 @@ class Service implements InjectionAwareInterface
             ->setRecurring($model->isRecurring())
             ->setUsed(0)
             ->setMaxUses($model->getMaxUses())
+            // ClientFence core patch: the copy keeps "Apply automatically" (it starts inactive).
+            ->setAutoApply($model->isAutoApply())
             ->setProducts($model->getProducts())
             ->setPeriods($model->getPeriods())
             ->setClientGroups($model->getClientGroups())
@@ -1480,12 +1482,118 @@ class Service implements InjectionAwareInterface
             return false;
         }
 
-        $clientGroupId = $client instanceof Client ? $client->getClientGroupId() : $client->client_group_id;
-        if (!$clientGroupId) {
-            return false;
+        // ClientFence core patch: a client in several groups gets a promotion of any of them (Client/Groups.php).
+        $clientId = $client instanceof Client ? $client->getId() : $client->id;
+
+        return array_filter(\ClientFence\Mod\Client\Groups::ids($this->di, (int) $clientId), static fn (int $id): bool => in_array($id, $clientGroups)) !== [];
+    }
+
+    /**
+     * ClientFence core patch: the automatic promotion for these cart lines (Promo "Apply automatically"): of the active
+     * ones this client may use (client groups, dates, uses, once per client), the one that takes the most off the lines
+     * it applies to (products, periods); the oldest on a tie. Only one applies: automatic promotions never stack.
+     * Once per client counts its use on any order, at checkout or renewal; one with fewer uses left than the lines it
+     * would discount is skipped, so checkout goes on without it (the client cannot remove it). A cart line is scored on
+     * the catalog price plus a free setup's saving ('setup'); an existing order's line ('order') on its own price.
+     *
+     * @param list<array{product_id: int, config: array, setup?: float, order?: array{price: float, quantity: float, rate: float}}> $lines
+     * @param bool                                                                                                                  $recurringOnly renewals: only a recurring one
+     */
+    public function findAutoPromo(Client|\Model_Client $client, array $lines, bool $recurringOnly = false): ?Promo
+    {
+        $best = null;
+        $bestDiscount = 0.0;
+        foreach ($this->getPromoRepository()->findBy(['active' => true, 'autoApply' => true] + ($recurringOnly ? ['recurring' => true] : []), ['id' => 'ASC']) as $promo) {
+            if (!$this->isPromoAvailableForClientGroup($promo, $client) || !$this->canClientUsePromo($client, $promo)
+                || ($promo->isOncePerClient() && $this->di['dbal']->fetchOne('SELECT 1 FROM promo_redemption WHERE promo_id = ? AND client_id = ? AND status <> ?', [$promo->getId(), $client instanceof Client ? $client->getId() : $client->id, PromoRedemption::STATUS_RELEASED]))) {
+                continue;
+            }
+            $discount = 0.0;
+            $discounted = 0;
+            foreach ($lines as $line) {
+                if (isset($line['order'])) {
+                    $lineDiscount = $this->getOrderPromoDiscount($this->findProductById($line['product_id']), $promo, $line['config'], $line['order']['price'], $line['order']['quantity'], $line['order']['rate']);
+                } else {
+                    $lineDiscount = (float) $this->getProductDiscountById($line['product_id'], $promo, $line['config'])
+                        + ($promo->isFreeSetup() && ($line['setup'] ?? 0) > 0 && $this->isPromoApplicableToProductById($line['product_id'], $promo, $line['config']) ? (float) $line['setup'] : 0.0);
+                }
+                $discount += $lineDiscount;
+                $discounted += (int) ($lineDiscount > 0);
+            }
+            if ($promo->getMaxUses() > 0 && $promo->getMaxUses() - $promo->getUsed() < $discounted) {
+                continue;
+            }
+            if ($discount > $bestDiscount) {
+                [$best, $bestDiscount] = [$promo, $discount];
+            }
         }
 
-        return in_array($clientGroupId, $clientGroups);
+        return $best;
+    }
+
+    /**
+     * ClientFence core patch: the renewal of an order with no recurring promotion gets the client's recurring automatic
+     * promotion, as a WHMCS group discount comes off every invoice. It is then recorded on the order like a code, so the
+     * next renewals carry it (getRenewalPromoAdjustment()). Returns the same shape as getRenewalPromoAdjustment().
+     *
+     * @return array{promo: Promo, discount_amount: float, title: string, currency: string, phase: string}|null
+     */
+    public function getAutoRenewalPromoAdjustment(\Model_ClientOrder $order, \Model_Client $client, float $price, float $quantity): ?array
+    {
+        if ($order->promo_recurring || !$order->product_id) {
+            return null;
+        }
+        $product = $this->findProductById((int) $order->product_id);
+        $config = json_decode((string) $order->config, true) ?: [];
+        if ($product->getType() !== self::DOMAIN && !isset($config['period']) && $order->period) {
+            $config['period'] = $order->period;
+        }
+        $currency = (string) $order->currency;
+        $rate = (float) $this->di['mod_service']('Currency')->getCurrencyRepository()->getRateByCode($currency);
+        $promo = $this->findAutoPromo($client, [['product_id' => (int) $order->product_id, 'config' => $config, 'order' => ['price' => $price, 'quantity' => $quantity, 'rate' => $rate]]], true);
+        if ($promo === null) {
+            return null;
+        }
+        $discount = $this->getOrderPromoDiscount($product, $promo, $config, $price, $quantity, $rate);
+        if ($discount <= 0) { // also when the currency has no rate
+            return null;
+        }
+        try {
+            $this->usePromo($promo);
+        } catch (\ClientFence\InformationException) {
+            return null; // its last use went meanwhile: the renewal is charged in full
+        }
+        $this->di['dbal']->update('client_order', ['promo_id' => $promo->getId(), 'promo_recurring' => 1, 'promo_used' => 1, 'discount' => $discount, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $order->id]);
+        [$order->promo_id, $order->promo_recurring, $order->promo_used, $order->discount] = [$promo->getId(), 1, 1, $discount];
+
+        // Phase checkout: this first use on the order counted a use, which a release gives back (releasePromoRedemptions());
+        // the order's later renewals are ordinary renewal redemptions that never counted one.
+        return ['promo' => $promo, 'discount_amount' => $discount, 'title' => $this->getPromoDiscountTitle($promo, $currency), 'currency' => $currency, 'phase' => PromoRedemption::PHASE_CHECKOUT];
+    }
+
+    /**
+     * ClientFence core patch: what a promotion takes off an existing order, from the order's own price (admin-edited,
+     * grandfathered or imported), as WHMCS does on the recurring amount: value% of $price x $quantity, or the fixed amount
+     * in the order's currency ($rate from the base currency), at most that. Unless the promotion covers the options, the
+     * order's configurable options (`config.option_lines`, default currency) stay out, as at checkout. 0 where it does not
+     * apply to the order's product or period. Checkout keeps getProductDiscount(): there the price is the catalog's.
+     */
+    public function getOrderPromoDiscount(Product $product, Promo $promo, ?array $config, float $price, float $quantity, float $rate): float
+    {
+        $total = round($price * $quantity, 2);
+        if ($total <= 0 || !$this->isPromoApplicableToProduct($promo, $product, $config)) {
+            return 0.0;
+        }
+        $options = array_sum(array_map(static fn ($l): float => is_array($l) ? (float) ($l['price'] ?? 0) : 0.0, is_array($config['option_lines'] ?? null) ? $config['option_lines'] : []));
+        $line = ['price' => $total, 'options_price' => round($options * $rate * $quantity, 2)];
+        $base = $this->getPromoBasePrice($promo, $line);
+        $discount = match ($promo->getType()) {
+            Promo::PERCENTAGE => round($base * (float) $promo->getValue() / 100, 2),
+            Promo::ABSOLUTE => $this->capOptionsDiscount($promo, $line, round((float) $promo->getValue() * $rate, 2), $base),
+            default => 0.0,
+        };
+
+        return min($discount, $total);
     }
 
     public function canClientUsePromo(Client|\Model_Client $client, Promo $promo): bool
@@ -2828,6 +2936,8 @@ class Service implements InjectionAwareInterface
             ->setRecurring((bool) ($data['recurring'] ?? $promo->isRecurring()))
             ->setUsed(isset($data['used']) ? (int) $data['used'] : $promo->getUsed())
             ->setMaxUses(isset($data['maxuses']) ? (int) $data['maxuses'] : $promo->getMaxUses())
+            // ClientFence core patch: "Apply automatically" (findAutoPromo()).
+            ->setAutoApply((bool) ($data['auto_apply'] ?? $promo->isAutoApply()))
             ->setProducts($this->encodePromoSelection($data['products'] ?? $this->decodePromoSelection($promo->getProducts())))
             ->setPeriods($this->encodePromoSelection($data['periods'] ?? $this->decodePromoSelection($promo->getPeriods())))
             ->setClientGroups($this->encodePromoSelection($data['client_groups'] ?? $this->decodePromoSelection($promo->getClientGroups())))

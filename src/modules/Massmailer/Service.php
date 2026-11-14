@@ -148,7 +148,11 @@ class Service implements \ClientFence\InjectionAwareInterface
             ->orderBy('c.id', 'DESC');
 
         $this->appendInCondition($query, 'c.status', 'client_status', $filter[self::FILTER_CLIENT_STATUS] ?? [], ArrayParameterType::STRING);
-        $this->appendInCondition($query, 'c.client_group_id', 'client_groups', $filter[self::FILTER_CLIENT_GROUPS] ?? [], ArrayParameterType::INTEGER);
+        // ClientFence core patch: a client in any of the chosen groups (Client/Groups.php).
+        if (($filter[self::FILTER_CLIENT_GROUPS] ?? []) !== []) {
+            $query->andWhere('EXISTS (SELECT 1 FROM client_group_members cgm WHERE cgm.client_id = c.id AND cgm.client_group_id IN (:client_groups))')
+                ->setParameter('client_groups', $filter[self::FILTER_CLIENT_GROUPS], ArrayParameterType::INTEGER);
+        }
         $this->appendInCondition($query, 'co.product_id', 'has_order', $filter[self::FILTER_HAS_ORDER] ?? [], ArrayParameterType::INTEGER);
         $this->appendInCondition($query, 'co.status', 'has_order_with_status', $filter[self::FILTER_HAS_ORDER_WITH_STATUS] ?? [], ArrayParameterType::STRING);
         // ClientFence core patch (ext massmailer): clients who opted out of marketing email are flagged, skipped and counted in the report (Client/Privacy.php).
