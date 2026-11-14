@@ -50,7 +50,8 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $service = $this->getService();
         $repository = $service->getClientRepository();
-        $queryBuilder = $repository->getSearchQueryBuilder($data);
+        // ClientFence core patch: an 8-digit search also finds the client by Support PIN, logged (SupportPin.php).
+        $queryBuilder = $repository->getSearchQueryBuilder($data, SupportPin::findClient($this->getDi(), (string) ($data['search'] ?? '')));
         $pager = $this->getDi()['pager']->paginateDoctrineQuery(
             $queryBuilder,
             PaginationOptions::fromArray($data),

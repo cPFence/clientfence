@@ -405,6 +405,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Print buttons (the CSP blocks inline handlers).
   document.querySelectorAll('[data-bf-print]').forEach((el) => el.addEventListener('click', () => window.print()));
+  // The dashboard's Support PIN stays hidden until the client asks to see it.
+  document.querySelectorAll('[data-cf-pin-toggle]').forEach((button) => button.addEventListener('click', () => {
+    const shown = button.getAttribute('aria-pressed') !== 'true';
+    button.parentElement.querySelectorAll('[data-cf-pin]').forEach((el) => { el.hidden = !el.hidden; });
+    button.setAttribute('aria-pressed', String(shown));
+    button.textContent = shown ? button.dataset.hide : button.dataset.show;
+  }));
   document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => new Tooltip(el));
 
   // Open the tab named in the URL hash, and keep the hash in sync with the open tab.

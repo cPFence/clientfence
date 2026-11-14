@@ -5802,5 +5802,25 @@
     {
         "file": "modules/Product/templates/admin/mod_product_manage.html.twig",
         "done": "ClientFence core patch: moves to the whole category, and only products of this type to tick (CF-107)."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: an 8-digit search also finds the client by Support PIN, logged (SupportPin.php)."
+    },
+    {
+        "file": "modules/Client/Repository/ClientRepository.php",
+        "done": "ClientFence core patch: $pinClientId is the client a numeric search names by Support PIN (Client/SupportPin.php)."
+    },
+    {
+        "file": "modules/Clientfence/Migrations.php",
+        "done": "ClientFence core patch: one client per Support PIN, so staff can find a client by it."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the unique Support PIN migration."
+    },
+    {
+        "file": "themes/palisade/html/mod_index_dashboard.html.twig",
+        "done": "ClientFence core patch: the PIN stays hidden until the client presses Show (palisade.js)."
     }
 ]

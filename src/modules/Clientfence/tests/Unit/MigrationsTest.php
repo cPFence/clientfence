@@ -83,3 +83,31 @@ test('every ClientFence table is also created by a fresh install', function (): 
 
     expect(array_values($missing))->toBe([]);
 });
+
+test('migration 10 gives every client but the first a new PIN where PINs are shared, then makes PINs unique', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, public INTEGER, category TEXT, hash TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('setting', ['param' => Migrations::SETTING, 'value' => '9', 'public' => 0, 'created_at' => '2026-10-01', 'updated_at' => '2026-10-01']);
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY)');
+    $db->executeStatement('CREATE TABLE client_support_pin (client_id INTEGER PRIMARY KEY, pin TEXT NOT NULL)');
+    foreach ([3 => '11111111', 5 => '22222222', 8 => '11111111', 9 => '11111111', 12 => '22222222', 20 => '33333333'] as $clientId => $pin) {
+        $db->insert('client', ['id' => $clientId]);
+        $db->insert('client_support_pin', ['client_id' => $clientId, 'pin' => $pin]);
+    }
+    $di = Tests\Helpers\container();
+    $di['dbal'] = $db;
+    $di['pdo'] = $db->getNativeConnection();
+
+    expect(Migrations::apply($di))->toBe([10]);
+    $pins = $db->fetchAllKeyValue('SELECT client_id, pin FROM client_support_pin ORDER BY client_id');
+    expect(array_keys($pins))->toBe([3, 5, 8, 9, 12, 20])
+        // The oldest client keeps a shared PIN and a PIN nobody shared is kept.
+        ->and([$pins[3], $pins[5], $pins[20]])->toBe(['11111111', '22222222', '33333333'])
+        ->and(array_unique($pins))->toHaveCount(6)
+        ->and(array_filter($pins, static fn ($pin): bool => preg_match('/^\d{8}$/', (string) $pin) !== 1))->toBe([])
+        ->and(fn () => $db->insert('client_support_pin', ['client_id' => 30, 'pin' => '33333333']))->toThrow(Doctrine\DBAL\Exception\UniqueConstraintViolationException::class);
+
+    // Run again (an interrupted update repeats it): the unique key is there, nothing changes.
+    (new ReflectionMethod(Migrations::class, 'm10SupportPinUnique'))->invoke(null, $di);
+    expect($db->fetchAllKeyValue('SELECT client_id, pin FROM client_support_pin ORDER BY client_id'))->toBe($pins);
+});

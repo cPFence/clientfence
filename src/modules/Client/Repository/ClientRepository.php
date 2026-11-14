@@ -71,7 +71,8 @@ class ClientRepository extends EntityRepository
         return $pairs;
     }
 
-    public function getSearchQueryBuilder(array $data = []): QueryBuilder
+    /** ClientFence core patch: $pinClientId is the client a numeric search names by Support PIN (Client/SupportPin.php). */
+    public function getSearchQueryBuilder(array $data = [], ?int $pinClientId = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('c');
 
@@ -135,7 +136,11 @@ class ClientRepository extends EntityRepository
         }
 
         if ($search) {
-            if (is_numeric($search)) {
+            if (is_numeric($search) && $pinClientId !== null) {
+                $qb->andWhere('(c.id = :search_id OR c.aid = :search_id OR c.id = :pin_client_id)')
+                    ->setParameter('search_id', $search)
+                    ->setParameter('pin_client_id', $pinClientId);
+            } elseif (is_numeric($search)) {
                 $qb->andWhere('(c.id = :search_id OR c.aid = :search_id)')
                     ->setParameter('search_id', $search);
             } else {

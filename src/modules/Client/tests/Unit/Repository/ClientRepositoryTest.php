@@ -66,6 +66,19 @@ test('uses exact id matching for a numeric smart search', function (): void {
     expect($repository->getSearchQueryBuilder(['search' => '42']))->toBe($queryBuilder);
 });
 
+test('a numeric smart search also matches the client found by Support PIN', function (): void {
+    $queryBuilder = Mockery::mock(QueryBuilder::class);
+    $queryBuilder->shouldReceive('andWhere')->once()->with('(c.id = :search_id OR c.aid = :search_id OR c.id = :pin_client_id)')->andReturn($queryBuilder);
+    $queryBuilder->shouldReceive('setParameter')->once()->with('search_id', '12345678')->andReturn($queryBuilder);
+    $queryBuilder->shouldReceive('setParameter')->once()->with('pin_client_id', 7)->andReturn($queryBuilder);
+    $queryBuilder->shouldReceive('orderBy')->once()->andReturn($queryBuilder);
+
+    $repository = Mockery::mock(ClientRepository::class)->makePartial();
+    $repository->shouldReceive('createQueryBuilder')->once()->andReturn($queryBuilder);
+
+    expect($repository->getSearchQueryBuilder(['search' => '12345678'], 7))->toBe($queryBuilder);
+});
+
 test('builds filtered client name pairs from entities', function (): void {
     $query = Mockery::mock(Doctrine\ORM\Query::class);
     $query->shouldReceive('getResult')->once()->andReturn([

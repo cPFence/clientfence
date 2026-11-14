@@ -33,6 +33,7 @@ final class Migrations
         7 => 'm7TldSync',
         8 => 'm8AccountingSync',
         9 => 'm9Affiliates',
+        10 => 'm10SupportPinUnique',
     ];
 
     public static function latest(): int
@@ -173,5 +174,25 @@ final class Migrations
     private static function m9Affiliates(\Pimple\Container $di): void
     {
         Service::ensureTables($di, true);
+    }
+
+    /**
+     * 10: ClientFence core patch: one client per Support PIN, so staff can find a client by it. Every client
+     * but the first that shares a PIN gets a new unused one, then `pin` gets its unique key.
+     */
+    private static function m10SupportPinUnique(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        if (array_key_exists('pin', $db->createSchemaManager()->listTableIndexes('client_support_pin'))) {
+            return;
+        }
+        $shared = $db->fetchFirstColumn('SELECT pin FROM client_support_pin GROUP BY pin HAVING COUNT(*) > 1');
+        foreach ($shared as $pin) {
+            $clients = $db->fetchFirstColumn('SELECT client_id FROM client_support_pin WHERE pin = ? ORDER BY client_id', [$pin]);
+            foreach (array_slice($clients, 1) as $clientId) {
+                \ClientFence\Mod\Client\SupportPin::renew($di, (int) $clientId);
+            }
+        }
+        $db->executeStatement('CREATE UNIQUE INDEX `pin` ON `client_support_pin` (`pin`)');
     }
 }

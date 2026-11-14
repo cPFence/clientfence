@@ -97,7 +97,7 @@ test('getList returns array', function (): void {
     $repository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
     $repository->shouldReceive('getSearchQueryBuilder')
         ->once()
-        ->with([])
+        ->with([], null)
         ->andReturn($queryBuilder);
     $repository->shouldReceive('getListContext')
         ->once()

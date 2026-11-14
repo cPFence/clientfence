@@ -1894,7 +1894,7 @@ CREATE TABLE `support_ticket_secret` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `
 CREATE TABLE `support_ticket_secret_event` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ticket_id` bigint(20) NOT NULL, `secret_label` varchar(100) NOT NULL, `action` varchar(10) NOT NULL, `admin_id` bigint(20) DEFAULT NULL, `client_id` bigint(20) DEFAULT NULL, `created_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `ticket` (`ticket_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ClientFence core patch: the client's Support PIN (Client/SupportPin.php).
-CREATE TABLE `client_support_pin` (`client_id` bigint(20) NOT NULL, `pin` char(8) NOT NULL, PRIMARY KEY (`client_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `client_support_pin` (`client_id` bigint(20) NOT NULL, `pin` char(8) NOT NULL, PRIMARY KEY (`client_id`), UNIQUE KEY `pin` (`pin`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE `tld_registrar_cost` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `tld_registrar_id` bigint(20) NOT NULL, `tld` varchar(64) NOT NULL, `currency` char(3) NOT NULL, `cost_register` decimal(18,4) DEFAULT NULL, `cost_renew` decimal(18,4) DEFAULT NULL, `cost_transfer` decimal(18,4) DEFAULT NULL, `applied_register` decimal(18,4) DEFAULT NULL, `applied_renew` decimal(18,4) DEFAULT NULL, `applied_transfer` decimal(18,4) DEFAULT NULL, `applied_rate` decimal(18,8) DEFAULT NULL, `fetched_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `tld_registrar_cost_tld` (`tld_registrar_id`, `tld`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ClientFence core patch: the accounting sync state (Invoice/Accounting/Sync.php).

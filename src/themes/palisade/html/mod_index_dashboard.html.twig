@@ -40,7 +40,11 @@
         {# ClientFence core patch: the Support PIN staff ask for in chat or on the phone (Client/SupportPin.php). #}
         <div class="text-md-end">
             <div class="small text-muted">{{ 'Support PIN'|trans }}</div>
-            <div class="fs-3 fw-semibold font-monospace">{{ client.client_support_pin }}</div>
+            {# ClientFence core patch: the PIN stays hidden until the client presses Show (palisade.js). #}
+            <div class="fs-3 fw-semibold font-monospace">
+                <span data-cf-pin hidden>{{ client.client_support_pin }}</span><span data-cf-pin aria-hidden="true">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary align-middle ms-1" data-cf-pin-toggle aria-pressed="false" data-show="{{ 'Show'|trans }}" data-hide="{{ 'Hide'|trans }}">{{ 'Show'|trans }}</button>
+            </div>
             <div class="small text-muted">
                 {{ 'Staff may ask for it to confirm who you are.'|trans }}
                 {% if not clientfence_user|default(null) or clientfence_user.owner or 'profile' in clientfence_user.permissions %}
