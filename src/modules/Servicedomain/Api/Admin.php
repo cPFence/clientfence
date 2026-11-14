@@ -174,6 +174,21 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: marks the Email registrar's requests done (Servicedomain/DomainTickets.php): stores their
+     * values and replies on the domain's ticket.
+     *
+     * @optional string $transfer_code - the transfer code (EPP code) for the client
+     * @optional string $expires_at - the domain's expiry date at the registrar
+     */
+    #[RequiredParams(['order_id' => 'Order ID is missing'])]
+    public function requests_done($data): bool
+    {
+        $this->checkPermissions('servicedomain', 'manage_domains');
+
+        return $this->getService()->requestsDone($this->_getService($data), $this->getIdentity(), $data);
+    }
+
+    /**
      * Get paginated top level domains list.
      *
      * @return array

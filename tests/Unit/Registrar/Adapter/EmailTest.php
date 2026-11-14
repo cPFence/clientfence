@@ -89,6 +89,19 @@ test('the Email adapter falls back to allowing a transfer when RDAP cannot deter
 test('the Email adapter configuration form offers an RDAP toggle', function (): void {
     $form = Registrar_Adapter_Email::getConfig();
 
-    expect(array_keys($form['form']))->toBe(['email', 'use_rdap'])
+    expect(array_keys($form['form']))->toBe(['use_rdap'])
         ->and($form['form']['use_rdap'][1]['label'])->toContain('RDAP');
+});
+
+test('the Email adapter sends no mail: a domain action outside the ticket glue fails instead of pretending success', function (string $method): void {
+    $adapter = new Registrar_Adapter_Email([]);
+
+    $adapter->{$method}(createEmailDomain());
+})->throws(Registrar_Exception::class, 'support tickets')->with([
+    'modifyNs', 'transferDomain', 'deleteDomain', 'registerDomain', 'renewDomain', 'modifyContact',
+    'enablePrivacyProtection', 'disablePrivacyProtection', 'getEpp', 'lock', 'unlock',
+]);
+
+test('the Email adapter source has no mail() call', function (): void {
+    expect((string) file_get_contents(dirname(__DIR__, 4) . '/src/library/Registrar/Adapter/Email.php'))->not->toMatch('/\\bmail\\s*\\(/');
 });

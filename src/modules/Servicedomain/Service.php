@@ -345,6 +345,13 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        // ClientFence core patch: the Email registrar asks staff in the domain's ticket (DomainTickets.php).
+        if (in_array($model->action, ['register', 'transfer'], true) && $this->requested($model, $adapter, $model->action, ['period' => $model->period, 'ns1' => $model->ns1, 'ns2' => $model->ns2, 'ns3' => $model->ns3, 'ns4' => $model->ns4])) {
+            $model->action = null;
+            $this->di['db']->store($model);
+
+            return $model;
+        }
         // ClientFence core patch: rejected registrar requests must remain retryable.
         if ($model->action == 'register' && $adapter->registerDomain($domain) === false) {
             throw new \Registrar_Exception('The registrar did not accept the domain request.');
@@ -386,6 +393,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        if ($this->requested($model, $adapter, 'renew', ['period' => $model->period])) {
+            return true;
+        }
         // ClientFence core patch: a lost renewal reply must not renew a domain twice on retry.
         $expiry = null;
         try {
@@ -447,6 +457,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        if ($this->requested($model, $adapter, 'delete')) {
+            return true;
+        }
         $adapter->deleteDomain($domain);
 
         return true;
@@ -581,6 +594,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         $domain->setNs2($ns2);
         $domain->setNs3($ns3);
         $domain->setNs4($ns4);
+        if ($this->requested($model, $adapter, 'nameservers', ['ns1' => $ns1, 'ns2' => $ns2, 'ns3' => $ns3, 'ns4' => $ns4])) {
+            return true;
+        }
         $adapter->modifyNs($domain);
 
         $model->ns1 = $ns1;
@@ -634,6 +650,13 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        $values = [];
+        foreach (['first_name', 'last_name', 'email', 'company', 'address1', 'address2', 'country', 'city', 'state', 'postcode', 'phone_cc', 'phone'] as $field) {
+            $values['contact_' . $field] = $model->{'contact_' . $field};
+        }
+        if ($this->requested($model, $adapter, 'contacts', $values)) {
+            return true;
+        }
         $adapter->modifyContact($domain);
 
         $model->updated_at = date('Y-m-d H:i:s');
@@ -649,6 +672,9 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        if ($this->requested($model, $adapter, 'transfer_code')) {
+            return '';
+        }
 
         return $adapter->getEpp($domain);
     }
@@ -657,6 +683,9 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        if ($this->requested($model, $adapter, 'lock', ['locked' => true])) {
+            return true;
+        }
         $epp = $adapter->lock($domain);
 
         $model->locked = true;
@@ -673,6 +702,9 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        if ($this->requested($model, $adapter, 'lock', ['locked' => false])) {
+            return true;
+        }
         $epp = $adapter->unlock($domain);
 
         $model->locked = false;
@@ -689,6 +721,9 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        if ($this->requested($model, $adapter, 'privacy', ['privacy' => true])) {
+            return true;
+        }
         $adapter->enablePrivacyProtection($domain);
 
         $model->privacy = true;
@@ -705,6 +740,9 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
+        if ($this->requested($model, $adapter, 'privacy', ['privacy' => false])) {
+            return true;
+        }
         $adapter->disablePrivacyProtection($domain);
 
         $model->privacy = false;
@@ -713,6 +751,29 @@ class Service implements \ClientFence\InjectionAwareInterface
         $id = $this->di['db']->store($model);
 
         $this->di['logger']->info('Disabled privacy protection of #%s domain', $id);
+
+        return true;
+    }
+
+    /**
+     * ClientFence core patch: the Email registrar asks staff in the domain's one support ticket instead of
+     * sending mail (DomainTickets.php); true when it did, and the stored values wait until staff mark it done.
+     */
+    private function requested(\Model_ServiceDomain $model, object $adapter, string $action, array $values = []): bool
+    {
+        if (!$adapter instanceof \Registrar_Adapter_Email) {
+            return false;
+        }
+        DomainTickets::request($this->di, $model, $action, $values);
+
+        return true;
+    }
+
+    /** ClientFence core patch: staff mark the Email registrar's requests done from the admin domain page (DomainTickets.php). */
+    public function requestsDone(\Model_ServiceDomain $model, \Model_Admin $admin, array $data): bool
+    {
+        $text = static fn (string $key): ?string => is_string($data[$key] ?? null) ? $data[$key] : null;
+        DomainTickets::done($this->di, $model, $admin, $text('transfer_code'), $text('expires_at'));
 
         return true;
     }
@@ -821,12 +882,19 @@ class Service implements \ClientFence\InjectionAwareInterface
             ],
         ];
 
+        // ClientFence core patch: the Email registrar's requests waiting for staff, and the transfer code staff gave (DomainTickets.php).
+        $tldRegistrar = $this->di['db']->load('TldRegistrar', $model->tld_registrar_id);
+        $data['ticket_mode'] = $tldRegistrar instanceof \Model_TldRegistrar && $tldRegistrar->registrar === 'Email';
+        if ($data['ticket_mode']) {
+            $data['requests'] = DomainTickets::pending($this->di, $model);
+            $data['transfer_code'] = $model->transfer_code;
+        }
+
         if ($identity instanceof \Model_Admin) {
             $data['transfer_code'] = $model->transfer_code;
             // ClientFence core patch: the daily sync's last error for this domain (DomainSync.php).
             $data['sync_error'] = $model->sync_error;
 
-            $tldRegistrar = $this->di['db']->load('TldRegistrar', $model->tld_registrar_id);
             $data['registrar'] = $tldRegistrar instanceof \Model_TldRegistrar ? $tldRegistrar->name : null;
             $data['domain_fields'] = $this->tldDomainFields($model);
             $data['transfer_fields'] = $this->tldDomainFields($model, 'transfer');

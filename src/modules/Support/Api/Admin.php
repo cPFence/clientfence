@@ -772,8 +772,12 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('support', 'manage_tickets');
 
         $model = $this->getService()->getTicketById((int) $data['id']);
+        // ClientFence core patch: a domain request ticket also stores the domain's values (Servicedomain/DomainTickets.php).
+        if ($model->getRelTask() === \ClientFence\Mod\Servicedomain\DomainTickets::TASK) {
+            $this->checkPermissions('servicedomain', 'manage_domains');
+        }
 
-        return $this->getService()->ticketTaskComplete($model);
+        return $this->getService()->ticketTaskComplete($model, $this->getIdentity());
     }
 
     /**

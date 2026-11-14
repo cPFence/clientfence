@@ -14,27 +14,15 @@ class Registrar_Adapter_Email extends Registrar_AdapterAbstract
 
     public function __construct($options)
     {
-        if (isset($options['email']) && !empty($options['email'])) {
-            $this->config['email'] = $options['email'];
-            unset($options['email']);
-        } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Email', ':missing' => 'email'], 3001);
-        }
-
+        // ClientFence core patch: ticket mode needs no email address (an older config keeps its unused one).
         $this->config['use_rdap'] = (bool) ($options['use_rdap'] ?? $options['use_whois'] ?? false);
-        $this->config['from'] = $this->config['email'];
     }
 
     public static function getConfig(): array
     {
         return [
-            'label' => __trans('This registrar type sends notifications to the given email about domain management events. For example, when client registers a new domain an email with domain details will be sent to you. It is then your responsibility to register domain on real registrar.'),
+            'label' => __trans('This registrar opens a support ticket for each domain request (registration, transfer, renewal, nameservers, contacts, lock, privacy, transfer code). You make the change at your real registrar, then mark the request done on the ticket or the domain page: the domain is updated and the client is told.'),
             'form' => [
-                'email' => ['text', [
-                    'label' => __trans('Email Address'),
-                    'description' => __trans('Email to Send Domain Change Notifications'),
-                ],
-                ],
                 'use_rdap' => ['radio', [
                     'multiOptions' => ['1' => __trans('Yes'), '0' => __trans('No')],
                     'default' => '0',
@@ -76,22 +64,16 @@ class Registrar_Adapter_Email extends Registrar_AdapterAbstract
         return true;
     }
 
+    // ClientFence core patch: ticket mode (GitHub #25): Servicedomain\Service opens the domain's support ticket for every
+    // domain action (Servicedomain/DomainTickets.php) and never reaches these: no email is sent and nothing fakes success.
     public function modifyNs(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Modify Name Servers';
-        $params['content'] = 'A request to change domain nameservers has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function transferDomain(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Transfer domain';
-        $params['content'] = 'A request to transfer domain has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function getDomainDetails(Registrar_Domain $domain)
@@ -101,106 +83,51 @@ class Registrar_Adapter_Email extends Registrar_AdapterAbstract
 
     public function deleteDomain(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Delete domain';
-        $params['content'] = 'A request to delete domain has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function registerDomain(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Register domain';
-        $params['content'] = 'A request to register domain has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function renewDomain(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Renew domain';
-        $params['content'] = 'A request to renew domain has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function modifyContact(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Modify Domain Contact';
-        $params['content'] = 'A request to update domain contacts details has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function enablePrivacyProtection(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Turn On Domain privacy protection';
-        $params['content'] = 'A request to change domain privacy protection has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function disablePrivacyProtection(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Turn Off Domain privacy protection';
-        $params['content'] = 'A request to change domain privacy protection has been received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function getEpp(Registrar_Domain $domain): string
     {
-        $params = [];
-        $params['subject'] = 'Request for Epp code was received';
-        $params['content'] = 'A request for Domain Transfer code was received.';
-        $this->sendEmail($domain, $params);
-
-        return '';
+        $this->ticketsOnly();
     }
 
     public function lock(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Request to lock domain received';
-        $params['content'] = 'A request to lock domain was received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
     public function unlock(Registrar_Domain $domain)
     {
-        $params = [];
-        $params['subject'] = 'Request to unlock domain received';
-        $params['content'] = 'A request to unlock domain was received.';
-
-        return $this->sendEmail($domain, $params);
+        $this->ticketsOnly();
     }
 
-    private function sendEmail(Registrar_Domain $domain, array $params): bool
+    private function ticketsOnly(): never
     {
-        $c = $params['content'];
-        $c .= PHP_EOL;
-        $c .= PHP_EOL;
-        $c .= 'Domain should be configured as follows:';
-        $c .= PHP_EOL;
-        $c .= PHP_EOL;
-        $c .= $domain->__toString();
-
-        $log = $this->getLog();
-        if ($this->_testMode) {
-            $log->alert($params['subject'] . PHP_EOL . PHP_EOL . $c);
-
-            return true;
-        }
-
-        mail((string) $this->config['email'], (string) $params['subject'], $c);
-        $log->info('Email sent: ' . $params['subject']);
-
-        return true;
+        throw new Registrar_Exception('The Email registrar takes domain requests in support tickets, opened from the domain pages.');
     }
 }

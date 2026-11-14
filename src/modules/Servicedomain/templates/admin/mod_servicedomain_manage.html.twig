@@ -67,6 +67,16 @@
                             {% endif %}
                         </td>
                     </tr>
+                    {# ClientFence core patch: the Email registrar's requests waiting for staff (Servicedomain/DomainTickets.php). #}
+                    {% if service.requests|default(null) %}
+                    <tr>
+                        <td class="text-end">{{ 'Waiting for Staff'|trans }}:</td>
+                        <td class="text-wrap">
+                            {% for text in service.requests.actions %}<div class="mb-2">{{ text|nl2br }}</div>{% endfor %}
+                            <a href="{{ "support/ticket/#{service.requests.ticket_id}"|url }}">{{ 'Ticket #:id'|trans({':id': service.requests.ticket_id}) }}</a>
+                        </td>
+                    </tr>
+                    {% endif %}
                     {% if service.transfer_status %}
                     <tr>
                         <td class="text-end">{{ 'Transfer'|trans }}:</td>
@@ -128,6 +138,35 @@
             </div>
         </div>
     </div>
+
+{% if service.requests|default(null) %}
+    <form method="post" action="{{ 'servicedomain/requests_done'|api_url }}" {{ fb_api_form({message: 'Requests marked done'|trans, reload: true}) }}>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-column gap-1 mb-4">
+                    <h5 class="card-title mb-0">{{ 'Mark Requests Done'|trans }}</h5>
+                    <p class="text-secondary mb-0">{{ 'Make the changes at the registrar first. Marking them done stores the requested values on this domain and replies to the client on the ticket.'|trans }}</p>
+                </div>
+                <div class="row g-3">
+                    {% if service.requests.actions.transfer_code is defined %}
+                    <div class="col-lg-6">
+                        <label class="form-label" for="requests-transfer-code">{{ 'Transfer Code (EPP)'|trans }}</label>
+                        <input class="form-control" type="text" name="transfer_code" id="requests-transfer-code">
+                    </div>
+                    {% endif %}
+                    <div class="col-lg-6">
+                        <label class="form-label" for="requests-expires-at">{{ 'Expiry date at the registrar (optional)'|trans }}</label>
+                        <input class="form-control" type="date" name="expires_at" id="requests-expires-at">
+                    </div>
+                </div>
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <button class="btn btn-primary" type="submit">{{ 'Mark Done'|trans }}</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
 
 {% if order.status == 'active' %}
     <form method="post" action="{{ 'servicedomain/update_nameservers'|api_url }}" {{ fb_api_form({message: 'Nameservers Updated'|trans}) }}>
@@ -276,59 +315,63 @@
 {% if order.status == 'active' %}
 <script nonce="{{ csp_nonce }}">
     document.addEventListener("DOMContentLoaded", function() {
+        // ClientFence core patch: with the Email registrar the request goes to the domain's ticket (Servicedomain/DomainTickets.php).
+        const requested = {% if service.ticket_mode|default(false) %}{{ 'Request added to the domain ticket.'|trans|json_encode|raw }}{% else %}null{% endif %};
+        const done = (fn) => (result) => requested ? ClientFence.message(requested) : fn(result);
+
         document.getElementById('domain-lock').addEventListener('click', function(event) {
             ClientFence.api.admin.post('servicedomain/lock', { order_id: {{ order.id }} },
-                (result) => {
+                done((result) => {
                     ClientFence.message("{{ 'Domain locked'|trans }}");
 
                     document.getElementById('domain-lock').classList.add('d-none');
                     document.getElementById('domain-unlock').classList.remove('d-none');
 
                     document.getElementById('locked-value').innerHTML = '<span class="badge text-bg-danger">{{ "Yes"|trans }}</span>';
-                });
+                }));
         });
 
         document.getElementById('domain-unlock').addEventListener('click', function(event) {
             ClientFence.api.admin.post('servicedomain/unlock', { order_id: {{ order.id }} },
-                (result) => {
+                done((result) => {
                     ClientFence.message("{{ 'Domain unlocked'|trans }}");
 
                     document.getElementById('domain-lock').classList.remove('d-none');
                     document.getElementById('domain-unlock').classList.add('d-none');
 
                     document.getElementById('locked-value').innerHTML = '<span class="badge text-bg-success">{{ "No"|trans }}</span>';
-                });
+                }));
         });
 
         document.getElementById('domain-enable-pp').addEventListener('click', function(event) {
             ClientFence.api.admin.post('servicedomain/enable_privacy_protection',{ order_id: {{ order.id }} },
-                (result) => {
+                done((result) => {
                     ClientFence.message("{{ 'Privacy protection enabled'|trans }}");
 
                     document.getElementById('domain-enable-pp').classList.add('d-none');
                     document.getElementById('domain-disable-pp').classList.remove('d-none');
 
                     document.getElementById('privacy-value').innerHTML = '<span class="badge text-bg-danger">{{ "Enabled"|trans }}</span>';
-                });
+                }));
         });
 
         document.getElementById('domain-disable-pp').addEventListener('click', function(event) {
             ClientFence.api.admin.post('servicedomain/disable_privacy_protection', { order_id: {{ order.id }} },
-                (result) => {
+                done((result) => {
                     ClientFence.message("{{ 'Privacy protection disabled'|trans }}");
 
                     document.getElementById('domain-disable-pp').classList.add('d-none');
                     document.getElementById('domain-enable-pp').classList.remove('d-none');
 
                     document.getElementById('privacy-value').innerHTML = '<span class="badge text-bg-success">{{ "Disabled"|trans }}</span>';
-                });
+                }));
         });
 
         document.getElementById('get-epp').addEventListener('click', function(event) {
             ClientFence.api.admin.post('servicedomain/get_transfer_code', { order_id: {{ order.id}} },
-                (result) => {
+                done((result) => {
                     ClientFence.message("{{ 'Domain transfer code is: '|trans }}" + result);
-                });
+                }));
         });
 
         document.getElementById('domain-sync').addEventListener('click', function(event) {

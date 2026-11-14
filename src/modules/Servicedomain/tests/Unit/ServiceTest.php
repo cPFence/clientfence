@@ -1652,7 +1652,7 @@ test('converts to api array', function (?Model_Admin $identity, string $dbLoadCa
 
         return $model;
     }, 'atLeast'],
-    [null, 'never'],
+    [null, 'once'],
 ]);
 
 test('handles on before admin cron run event', function (): void {

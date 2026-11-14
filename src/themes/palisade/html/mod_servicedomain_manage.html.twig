@@ -6,6 +6,14 @@
 {% elseif service.transfer_status == 'failed' %}
 <div class="alert alert-warning">{{ 'Transfer not completed: our team is looking into it.'|trans }}</div>
 {% endif %}
+{# The Email registrar's requests waiting for our team (Servicedomain/DomainTickets.php). #}
+{% if service.requests|default(null) %}
+<div class="alert alert-info">
+    <p class="mb-2">{{ 'Waiting for our team: the details below change when your request is done.'|trans }}</p>
+    {% for text in service.requests.actions %}<p class="mb-2">{{ text|nl2br }}</p>{% endfor %}
+    <a href="{{ "support/ticket/#{service.requests.ticket_id}"|url }}">{{ 'View the ticket'|trans }}</a>
+</div>
+{% endif %}
 {% if order.status == 'active' %}
 <div class="card mb-4">
     <ul class="nav bf-card-tabs" role="tablist">
@@ -30,7 +38,7 @@
                     <span class="small text-muted">{{ 'If you would like to host this domain with another company you can update nameservers.'|trans }}</span>
                 </div>
 
-                <form method="post" action="{{ 'servicedomain/update_nameservers'|api_url }}" {{ fb_api_form({message: 'Nameservers Updated'|trans}) }}>
+                <form method="post" action="{{ 'servicedomain/update_nameservers'|api_url }}" {{ fb_api_form(service.ticket_mode|default(false) ? {message: 'Request sent: our team will make the change and reply on your ticket.'|trans, reload: true} : {message: 'Nameservers Updated'|trans}) }}>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-3 row">
@@ -70,7 +78,7 @@
                     <h3 class="h6 mt-1 mb-1">{{ 'Update Domain Contact Details'|trans }}</h3>
                     <span class="small text-secondary">{{ 'Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update Technical, Billing and Admin contacts for this service. You can enable domain privacy protection if you want to hide your public WHOIS information.'|trans }}</span>
                 </div>
-                <form method="post" action="{{ 'servicedomain/update_contacts'|api_url }}" {{ fb_api_form({message: 'Contact Details Updated'|trans}) }}>
+                <form method="post" action="{{ 'servicedomain/update_contacts'|api_url }}" {{ fb_api_form(service.ticket_mode|default(false) ? {message: 'Request sent: our team will make the change and reply on your ticket.'|trans, reload: true} : {message: 'Contact Details Updated'|trans}) }}>
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="whois_first_name" class="form-label">{{ 'First Name'|trans }}</label>
@@ -178,6 +186,9 @@
                     <h3 class="h6 mt-1 mb-1">{{ 'Domain Secret'|trans }}</h3>
                     <span class="small text-secondary">{{ 'Most domain names (except a few top-level domains like .EU and .UK) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar.'|trans }}</span>
                 </div>
+                {% if service.ticket_mode|default(false) and service.transfer_code|default('') %}
+                    <p>{{ 'Transfer code (EPP code): :code'|trans({':code': service.transfer_code}) }}</p>
+                {% endif %}
                 <button class="btn btn-primary" type="button" id="get-epp">{{ 'Get EPP Code'|trans }}</button>
             </div>
     </div>
@@ -185,39 +196,43 @@
 
     <script nonce="{{ csp_nonce }}">
         document.addEventListener("DOMContentLoaded", function() {
+            // With the Email registrar a request goes to the domain's ticket (Servicedomain/DomainTickets.php).
+            const requested = {% if service.ticket_mode|default(false) %}{{ 'Request sent: our team will make the change and reply on your ticket.'|trans|json_encode|raw }}{% else %}null{% endif %};
+            const done = (fn) => (result) => requested ? flashMessage({ message: requested, reload: true }) : fn(result);
+
             document.getElementById('domain-lock').addEventListener('click', function(event) {
                 event.preventDefault();
 
                 ClientFence.api.client.post('servicedomain/lock', { order_id: {{ order.id }} },
-                    () => {
+                    done(() => {
                         ClientFence.message('Domain locked');
 
                         document.getElementById('domain-lock').style.display =
                             document.getElementById('domain-lock').style.display === 'none' ? '' : 'none';
                         document.getElementById('domain-unlock').style.display =
                             document.getElementById('domain-unlock').style.display === 'none' ? '' : 'none';
-                    });
+                    }));
             });
 
             document.getElementById('domain-unlock').addEventListener('click', function(event) {
                 event.preventDefault();
 
                 ClientFence.api.client.post('servicedomain/unlock', { order_id: {{ order.id }} },
-                    () => {
+                    done(() => {
                         ClientFence.message('Domain unlocked');
 
                         document.getElementById('domain-lock').style.display =
                             document.getElementById('domain-lock').style.display === 'none' ? '' : 'none';
                         document.getElementById('domain-unlock').style.display =
                             document.getElementById('domain-unlock').style.display === 'none' ? '' : 'none';
-                    });
+                    }));
             });
 
             document.getElementById('domain-enable-pp').addEventListener('click', function(event) {
                 event.preventDefault();
 
                 ClientFence.api.client.post('servicedomain/enable_privacy_protection', { order_id: {{ order.id }} },
-                    (result) =>{
+                    done((result) =>{
                         ClientFence.message('Privacy Protection enabled');
 
                         const enableBtn = document.getElementById('domain-enable-pp');
@@ -225,14 +240,14 @@
 
                         enableBtn.style.display = enableBtn.style.display === 'none' ? '' : 'none';
                         disableBtn.style.display = disableBtn.style.display === 'none' ? '' : 'none';
-                    });
+                    }));
             });
 
             document.getElementById('domain-disable-pp').addEventListener('click', function(event) {
                 event.preventDefault();
 
                 ClientFence.api.client.post('servicedomain/disable_privacy_protection', { order_id: {{ order.id }} },
-                    (result) => {
+                    done((result) => {
                         ClientFence.message('Privacy Protection disabled');
 
                         const enableBtn = document.getElementById('domain-enable-pp');
@@ -240,7 +255,7 @@
 
                         enableBtn.style.display = enableBtn.style.display === 'none' ? '' : 'none';
                         disableBtn.style.display = disableBtn.style.display === 'none' ? '' : 'none';
-                    }
+                    })
                 );
             });
 
@@ -248,9 +263,9 @@
                 event.preventDefault();
 
                 ClientFence.api.client.post('servicedomain/get_transfer_code', { order_id: {{ order.id }} },
-                    (result) => {
+                    done((result) => {
                         ClientFence.message('Domain transfer code is: ' + result);
-                    });
+                    }));
             });
 
             document.getElementById('domain-sync').addEventListener('click', function(event) {

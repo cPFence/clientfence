@@ -5850,5 +5850,29 @@
     {
         "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
         "done": "ClientFence core patch: the New Client Ticket popup comes from the admin layout (mod_support_new_ticket_form.html.twig); ?client_id= picks that client."
+    },
+    {
+        "file": "library/Registrar/Adapter/Email.php",
+        "done": "ClientFence core patch: ticket mode needs no email address (an older config keeps its unused one)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the Email registrar asks staff in the domain's ticket (DomainTickets.php)."
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "ClientFence core patch: marks the Email registrar's requests done (Servicedomain/DomainTickets.php): stores their"
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
+        "done": "ClientFence core patch: the Email registrar's requests waiting for staff (Servicedomain/DomainTickets.php)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: the Email registrar's domain requests store their values and reply to the client (Servicedomain/DomainTickets.php)."
+    },
+    {
+        "file": "modules/Support/Api/Admin.php",
+        "done": "ClientFence core patch: a domain request ticket also stores the domain's values (Servicedomain/DomainTickets.php)."
     }
 ]

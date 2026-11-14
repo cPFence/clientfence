@@ -1664,8 +1664,14 @@ class Service implements \ClientFence\InjectionAwareInterface
         return $id;
     }
 
-    public function ticketTaskComplete(SupportTicket $model): bool
+    public function ticketTaskComplete(SupportTicket $model, ?\Model_Admin $admin = null): bool
     {
+        // ClientFence core patch: the Email registrar's domain requests store their values and reply to the client (Servicedomain/DomainTickets.php).
+        if ($model->getRelTask() === \ClientFence\Mod\Servicedomain\DomainTickets::TASK && $admin instanceof \Model_Admin) {
+            \ClientFence\Mod\Servicedomain\DomainTickets::doneFromTicket($this->di, $model, $admin);
+
+            return true;
+        }
         $model->markTaskComplete();
         $this->di['em']->flush();
 
