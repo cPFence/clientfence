@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.51 (2026-11-14)
+
+### Added
+
+- Affiliate program: clients share a link and earn a commission on the services their visitors order, as a percentage or a fixed amount, once or on every renewal, set per product and per affiliate. Commissions clear after the clearing days, and refunds, chargebacks and downgrade credit take them back. Affiliates ask for a payout in the client area and get a monthly report email; staff pay it as account credit or outside ClientFence.
+- Custom CSS for the client area: super admins add their own stylesheet in the Palisade theme settings, loaded after the theme on every client page.
+
+### Changed
+
+- The WHMCS and Blesta importers bring affiliates with their referred services, commissions, payouts and balances, and their old affiliate links keep working.
+
 ## 1.0.50 (2026-11-14)
 
 ### Added
