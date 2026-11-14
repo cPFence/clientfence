@@ -12,6 +12,10 @@
 - A service started on the 29th, 30th or 31st now renews on the last day of shorter months and goes back to its own day after them (31 Jan, 28 Feb, 31 Mar). The new Renewal Day setting in Orders settings can add calendar months instead, as WHMCS does.
 - The Blesta and ClientExec importers bring clients' add-ons, linked to their service.
 
+### Fixed
+
+- Deleting an order that is still pending setup now cancels its unpaid invoice instead of leaving it empty. If the invoice also bills another order, only the deleted order's lines are removed.
+
 ## 1.0.49 (2026-11-13)
 
 ### Added
