@@ -67,6 +67,11 @@ if ($isJsonWebhook) {
 }
 
 try {
+    // ClientFence core patch: a GoCardless webhook it did not sign gets 498, as GoCardless asks, and is never recorded.
+    if ($gatewayID !== null && $di['dbal']->fetchOne('SELECT gateway FROM pay_gateway WHERE id = ?', [$gatewayID]) === 'GoCardless'
+        && !$di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($di['db']->getExistingModelById('PayGateway', $gatewayID))->webhookSigned($rawBody, (string) $request->headers->get('Webhook-Signature', ''))) {
+        emitResponse(new JsonResponse(['result' => null, 'error' => ['message' => 'Invalid webhook signature']], 498));
+    }
     $service = $di['mod_service']('invoice', 'transaction');
 
     // JSON webhooks (Stripe, etc.) require fast 2xx acknowledgment.

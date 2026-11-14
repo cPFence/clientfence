@@ -899,9 +899,9 @@ class Service implements InjectionAwareInterface
         }
         // ClientFence core patch: as WHMCS's PayPal billing agreement gateways, a free order that renews sends a client
         // without a saved payment method to PayPal to set up automatic payments (PayPal Auto-Pay "Free orders"), or to
-        // PayTabs or eWAY to save a card (their "Free orders").
+        // PayTabs or eWAY to save a card, or to GoCardless to set up a Direct Debit (their "Free orders").
         $user = \ClientFence\Mod\Client\Users::context($this->di);
-        foreach (['payment-methods/paypal-autopay' => \ClientFence\Mod\Invoice\SavedCards::autopay($this->di), 'payment-methods/paytabs' => \ClientFence\Mod\Invoice\SavedCards::paytabs($this->di), 'payment-methods/eway' => \ClientFence\Mod\Invoice\SavedCards::eway($this->di)] as $path => $adapter) {
+        foreach (['payment-methods/paypal-autopay' => \ClientFence\Mod\Invoice\SavedCards::autopay($this->di), 'payment-methods/paytabs' => \ClientFence\Mod\Invoice\SavedCards::paytabs($this->di), 'payment-methods/eway' => \ClientFence\Mod\Invoice\SavedCards::eway($this->di), 'payment-methods/gocardless' => \ClientFence\Mod\Invoice\SavedCards::gocardless($this->di)] as $path => $adapter) {
             if (!$invoice instanceof \Model_Invoice && $adapter !== null && $adapter->option('free_orders') && $adapter->option('save_only')
                 && ($user === null || $user['owner']) && $order->getPeriod() && \ClientFence\Mod\Invoice\SavedCards::method($this->di, $this->clientId($client)) === null) {
                 $result['redirect'] = $this->di['url']->link($path, ['next' => 'order/service/manage/' . $order->getId()]);

@@ -73,6 +73,70 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/payment-methods/eway/saved', 'get_eway_saved', [], static::class);
         $app->get('/invoice/eway/:hash', 'get_invoice_eway', ['hash' => '[a-z0-9]+'], static::class);
         $app->get('/invoice/eway-paid', 'get_invoice_eway_paid', [], static::class);
+        // ClientFence: GoCardless Direct Debits (Payment_Adapter_GoCardless), the same ways; its webhooks go to ipn.php.
+        $app->get('/payment-methods/gocardless', 'get_gocardless_save', [], static::class);
+        $app->get('/payment-methods/gocardless/saved', 'get_gocardless_saved', [], static::class);
+        $app->get('/invoice/gocardless/:hash', 'get_invoice_gocardless', ['hash' => '[a-z0-9]+'], static::class);
+        $app->get('/invoice/gocardless-paid', 'get_invoice_gocardless_paid', [], static::class);
+    }
+
+    /** ClientFence: sends the account owner to GoCardless to set up a Direct Debit without paying; ?next= is where they go after. */
+    public function get_gocardless_save(\ClientFence\App $app): Response
+    {
+        $clientId = $this->ownerSignedIn();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::gocardless($this->di);
+        if ($adapter === null || !$adapter->option('save_only')) {
+            throw new InformationException('Setting up a Direct Debit with GoCardless is not available.');
+        }
+        $next = (string) $app->getRequest()->query->get('next', '');
+        $next = preg_match('#^order/service/manage/\d+$#', $next) === 1 ? $next : 'payment-methods';
+
+        return $app->redirectUrl($adapter->cardSetup($clientId, (string) $this->di['url']->link('payment-methods/gocardless/saved', ['next' => $next])));
+    }
+
+    /** ClientFence: back from GoCardless (without the session cookie): keeps the Direct Debit for the client its set-up names. */
+    public function get_gocardless_saved(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::gocardless($this->di) ?? throw new InformationException('Your Direct Debit was not set up. Please try again.');
+        $adapter->mandateSaved((string) $app->getRequest()->query->get('br', ''));
+        $next = (string) $app->getRequest()->query->get('next', '');
+
+        return $this->movesOn(preg_match('#^order/service/manage/\d+$#', $next) === 1 ? $next : 'payment-methods');
+    }
+
+    /** ClientFence: sets up a Direct Debit on GoCardless' page for the signed-in owner of an unpaid invoice, which it then pays. */
+    public function get_invoice_gocardless(\ClientFence\App $app, $hash): Response
+    {
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::gocardless($this->di) ?? throw new InformationException('GoCardless is not available.');
+        $clientId = $this->ownerSignedIn();
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $hash, $clientId, \Model_Invoice::STATUS_UNPAID]);
+        if (!$invoice instanceof \Model_Invoice) {
+            return $app->redirect('invoice');
+        }
+        // A payment still clearing: a new one would pay twice.
+        if (\ClientFence\Mod\Invoice\PendingPayments::forInvoice($this->di, (int) $invoice->id) !== null) {
+            return $app->redirect('invoice/' . $invoice->hash);
+        }
+
+        return $app->redirectUrl($adapter->checkout($invoice));
+    }
+
+    /** ClientFence: back from GoCardless (without the session cookie): keeps the Direct Debit and starts collecting the invoice of the hash it set up for. */
+    public function get_invoice_gocardless_paid(\ClientFence\App $app): Response
+    {
+        $this->keepSessionCookie();
+        $adapter = \ClientFence\Mod\Invoice\SavedCards::gocardless($this->di) ?? throw new InformationException('Your Direct Debit was not set up. Please try again.');
+        [, $invoiceId] = $adapter->mandateSaved((string) $app->getRequest()->query->get('br', ''));
+        // The invoice's hash came with the return address: a set-up naming another invoice is never answered with its link.
+        $invoice = $this->di['db']->findOne('Invoice', 'id = ? AND hash = ?', [$invoiceId, (string) $app->getRequest()->query->get('hash', '')]);
+        if (!$invoice instanceof \Model_Invoice) {
+            return $this->movesOn('payment-methods');
+        }
+        // As the client's "Pay now": no automatic try is counted, and a payment already clearing is not doubled.
+        $paid = \ClientFence\Mod\Invoice\SavedCards::charge($this->di, $invoice, $adapter, true, true)['paid'];
+
+        return $this->movesOn(($paid ? 'invoice/thank-you/' : 'invoice/') . $invoice->hash);
     }
 
     /** ClientFence: sends the account owner to eWAY to save a card without paying; ?next= is where they go after. */

@@ -249,9 +249,9 @@ class Client extends \ClientFence\Api\AbstractApi
 
     /**
      * ClientFence: the client's saved methods for the Payment methods page (SavedCards.php): {available, cards: [{id,
-     * card, default}], paypal: {account, default} or null, autopay: {account, default, add} or null, paytabs and eway:
+     * card, default}], paypal: {account, default} or null, autopay: {account, default, add} or null, paytabs, eway and gocardless:
      * {account, default, add} or null}. available is false without an enabled Stripe gateway, paypal null when clients cannot save PayPal
-     * accounts, autopay null without PayPal Auto-Pay (add: the client may set it up here), paytabs null without PayTabs, eway without eWAY (add: the same);
+     * accounts, autopay null without PayPal Auto-Pay (add: the client may set it up here), paytabs null without PayTabs, eway without eWAY, gocardless without GoCardless (add: the same);
      * default marks the method that pays the invoices.
      */
     public function card_list(): array
@@ -272,6 +272,8 @@ class Client extends \ClientFence\Api\AbstractApi
         $paytabsCard = $paytabs?->savedCard($clientId);
         $eway = SavedCards::eway($di);
         $ewayCard = $eway?->savedCard($clientId);
+        $gocardless = SavedCards::gocardless($di);
+        $mandate = $gocardless?->savedCard($clientId);
 
         return [
             'available' => $stripe !== null,
@@ -281,6 +283,7 @@ class Client extends \ClientFence\Api\AbstractApi
             'autopay' => $autopay === null ? null : ['account' => $agreement['card'] ?? null, 'default' => $agreement !== null && $paying instanceof \Payment_Adapter_PayPalAutoPay, 'add' => $autopay->option('save_only')],
             'paytabs' => $paytabs === null ? null : ['account' => $paytabsCard['card'] ?? null, 'default' => $paytabsCard !== null && $paying instanceof \Payment_Adapter_PayTabs, 'add' => $paytabs->option('save_only')],
             'eway' => $eway === null ? null : ['account' => $ewayCard['card'] ?? null, 'default' => $ewayCard !== null && $paying instanceof \Payment_Adapter_Eway, 'add' => $eway->option('save_only')],
+            'gocardless' => $gocardless === null ? null : ['account' => $mandate['card'] ?? null, 'default' => $mandate !== null && $paying instanceof \Payment_Adapter_GoCardless, 'add' => $gocardless->option('save_only')],
         ];
     }
 
@@ -445,6 +448,44 @@ class Client extends \ClientFence\Api\AbstractApi
         return ['paid' => $result['paid'], 'message' => (string) ($result['error'] ?? '')];
     }
 
+    /** ClientFence: makes the Direct Debit set up with GoCardless the method that pays the client's invoices. */
+    public function gocardless_default(): bool
+    {
+        $adapter = $this->gocardlessAdapter();
+        if ($adapter->savedCard((int) $this->getIdentity()->id) === null) {
+            throw new \ClientFence\InformationException('You have no Direct Debit set up with GoCardless.');
+        }
+        SavedCards::choose($this->getDi(), $adapter->gatewayId(), $adapter->testMode(), (int) $this->getIdentity()->id);
+
+        return true;
+    }
+
+    /** ClientFence: removes the Direct Debit set up with GoCardless (the mandate is cancelled at GoCardless). */
+    public function gocardless_remove(): bool
+    {
+        $this->gocardlessAdapter()->cardRemove((int) $this->getIdentity()->id);
+
+        return true;
+    }
+
+    /** ClientFence: starts collecting the client's own unpaid invoice (`hash`) from their GoCardless Direct Debit, as eway_pay. */
+    #[RequiredParams(['hash' => 'Invoice hash was not passed'])]
+    public function gocardless_pay($data): array
+    {
+        $di = $this->getDi();
+        $adapter = $this->gocardlessAdapter();
+        $clientId = (int) $this->getIdentity()->id;
+        $user = \ClientFence\Mod\Client\Users::context($di);
+        if (($user !== null && !$user['owner']) || !$adapter->option('pay_saved') || $adapter->savedCard($clientId) === null) {
+            throw new \ClientFence\InformationException('You cannot pay this invoice by Direct Debit.');
+        }
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+            ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
+        $result = SavedCards::charge($di, $invoice, $adapter, true, true);
+
+        return ['paid' => $result['paid'], 'message' => (string) ($result['error'] ?? '')];
+    }
+
     /** ClientFence: the "Save this card" choice (`save`, and `make_default`: it replaces the automatic card) for the card payment (`intent`) of the client's own unpaid invoice (`hash`) at Stripe gateway `gateway_id`. */
     #[RequiredParams(['hash' => 'Invoice hash was not passed', 'gateway_id' => 'Payment gateway ID was not passed', 'intent' => 'Payment ID was not passed'])]
     public function card_save_choice($data): bool
@@ -518,6 +559,11 @@ class Client extends \ClientFence\Api\AbstractApi
     private function ewayAdapter(): \Payment_Adapter_Eway
     {
         return SavedCards::eway($this->getDi()) ?? throw new \ClientFence\InformationException('eWAY is not available.');
+    }
+
+    private function gocardlessAdapter(): \Payment_Adapter_GoCardless
+    {
+        return SavedCards::gocardless($this->getDi()) ?? throw new \ClientFence\InformationException('GoCardless is not available.');
     }
 
     private function cardAdapter(): \Payment_Adapter_Stripe

@@ -42,7 +42,7 @@ final class PendingPayments
         );
     }
 
-    private static function since(): string
+    public static function since(): string
     {
         return date('Y-m-d H:i:s', strtotime('-' . self::DAYS . ' days'));
     }
