@@ -1436,18 +1436,6 @@ test('gets tax list', function (): void {
     expect($result)->toBeArray();
 });
 
-test('deletes invoices in batch', function (): void {
-    $api = apiEndpoint(new Admin());
-    $activityMock = Mockery::mock(Admin::class)->makePartial();
-    $activityMock->shouldReceive('delete')->atLeast()->once()->andReturn(true);
-
-    $di = container();
-    $activityMock->setDi($di);
-
-    $result = $activityMock->batch_delete(['ids' => [1, 2, 3]]);
-    expect($result)->toBeTrue();
-});
-
 test('the With Selected actions run each invoice through its single action and list the ones they skip', function (): void {
     $invoices = [];
     foreach ([1 => ['unpaid', 1], 2 => ['paid', 1], 3 => ['canceled', 1], 4 => ['unpaid', 0]] as $id => [$status, $approved]) {
@@ -1474,6 +1462,8 @@ test('the With Selected actions run each invoice through its single action and l
     $service->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
     $service->shouldReceive('markAsPaidByAdmin')->with(Mockery::type(Model_Invoice::class), [], false)
         ->andReturnUsing(fn (Model_Invoice $invoice): bool => $invoice->id === 2 ? throw new ClientFence\InformationException('Payment gateway not found') : true);
+    // A paid invoice in the middle of a bulk Delete is skipped; the ones after it are still deleted.
+    $service->shouldReceive('deleteInvoiceByAdmin')->andReturnUsing(fn (Model_Invoice $invoice): bool => $invoice->id === 2 ? throw new ClientFence\InformationException('A paid or refunded invoice cannot be deleted. Refund it instead.') : true);
     $api->setService($service);
     $api->shouldReceive('send_reminder')->once()->with(['id' => 1])->andReturnTrue();
 
@@ -1481,6 +1471,7 @@ test('the With Selected actions run each invoice through its single action and l
         ->and($api->batch_cancel(['ids' => [1, 2, 3]]))->toBe(['done' => [1], 'skipped' => [2 => 'Only unpaid invoices can be cancelled.', 3 => 'Only unpaid invoices can be cancelled.']])
         ->and($api->batch_mark_unpaid(['ids' => [1, 3]]))->toBe(['done' => [3], 'skipped' => [1 => 'Only cancelled invoices can be marked unpaid.']])
         ->and($api->batch_send_reminder(['ids' => [1, 2, 4]]))->toBe(['done' => [1], 'skipped' => [2 => 'Only unpaid issued invoices get a reminder.', 4 => 'Only unpaid issued invoices get a reminder.']])
+        ->and($api->batch_delete(['ids' => [1, 2, 3]]))->toBe(['done' => [1, 3], 'skipped' => [2 => 'A paid or refunded invoice cannot be deleted. Refund it instead.']])
         ->and($updates)->toBe([['id' => 1, 'status' => 'canceled'], ['id' => 3, 'status' => 'unpaid']]);
 });
 

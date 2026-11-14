@@ -1143,15 +1143,10 @@ class Admin extends \ClientFence\Api\AbstractApi
      * Deletes invoices with given IDs.
      */
     #[RequiredParams(['ids' => 'IDs were not passed'])]
-    public function batch_delete($data): bool
+    public function batch_delete($data): array
     {
-        $this->checkPermissions('invoice', 'manage_invoices');
-
-        foreach ($data['ids'] as $id) {
-            $this->delete(['id' => $id]);
-        }
-
-        return true;
+        // ClientFence core patch: one invoice that cannot be deleted is skipped with the reason, the rest go on (see batch_mark_paid()).
+        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => $this->getService()->deleteInvoiceByAdmin($invoice));
     }
 
     /**
