@@ -61,6 +61,10 @@ test('each client email has a kind, and sign-in links, codes and staff mail are 
     ['mod_order_cancel_request', 'product'],
     ['mod_order_ip_request', 'product'],
     ['mod_some_custom_notice', 'general'],
+    // The affiliate emails go to contacts with the WHMCS "affiliate emails" choice; the staff one never.
+    ['mod_client_affiliate_report', 'affiliate'],
+    ['mod_client_affiliate_payout_paid', 'affiliate'],
+    ['mod_staff_affiliate_payout_request', null],
     ['mod_client_password_reset_request', null],
     ['mod_client_signup', null],
     ['mod_client_confirm', null],

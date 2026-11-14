@@ -25251,3 +25251,724 @@ msgstr "Mavzudan keyin mijozlar bo'limining har bir sahifasida yuklanadi. Uni fa
 #: src/themes/palisade/config/settings.html.twig
 msgid "Use custom CSS"
 msgstr "Maxsus CSS dan foydalanish"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "%affiliate% asked for an affiliate payout of %amount%. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "%affiliate% %amount% miqdorida hamkor pulini yechib olishni so‘radi. Siz to‘lamaguningizcha yoki rad etmaguningizcha, summa hamkorning mavjud balansidan ajratib qo‘yiladi."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A new affiliate's starting balance. It can be paid out once a first commission has cleared."
+msgstr "Yangi hamkorning boshlang‘ich balansi. Birinchi komissiya tasdiqlangandan keyin yechib olish mumkin."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "A note is required."
+msgstr "Izoh majburiy."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the affiliate's currency. Used with Percentage or Fixed amount."
+msgstr "Mijoz to‘lagan summaning foizi yoki hamkor valyutasidagi qat’iy summa. Foiz yoki Qat’iy summa bilan ishlatiladi."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the default currency."
+msgstr "Mijoz to‘lagan summaning foizi yoki standart valyutadagi qat’iy summa."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A product can pay another commission or none (product page), and an affiliate can have its own (client page). The affiliate's own wins, then the product's; a product set to No commission never pays."
+msgstr "Mahsulot boshqa komissiya to‘lashi yoki umuman to‘lamasligi mumkin (mahsulot sahifasi), hamkorning o‘ziniki bo‘lishi mumkin (mijoz sahifasi). Avval hamkorniki, keyin mahsulotniki amal qiladi; Komissiyasiz deb belgilangan mahsulot hech qachon to‘lamaydi."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Activate as affiliate"
+msgstr "Hamkor sifatida faollashtirish"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Add :amount to the client's account credit?"
+msgstr ":amount mijozning hisob kreditiga qo‘shilsinmi?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add entry"
+msgstr "Yozuv qo‘shish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add manual entry"
+msgstr "Qo‘lda yozuv qo‘shish"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Add-on and domain orders do not earn affiliate commissions."
+msgstr "Qo‘shimcha xizmat va domen buyurtmalari hamkor komissiyasini keltirmaydi."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Adjustment"
+msgstr "Tuzatish"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
+msgid "Affiliate"
+msgstr "Hamkor"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Affiliate Commission"
+msgstr "Hamkor komissiyasi"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliate Program"
+msgstr "Hamkorlik dasturi"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate account"
+msgstr "Hamkor hisobi"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Affiliate link"
+msgstr "Hamkor havolasi"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Affiliate not found"
+msgstr "Hamkor topilmadi"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request"
+msgstr "Hamkor pulini yechib olish so‘rovi"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request from %name%"
+msgstr "%name% dan hamkor pulini yechib olish so‘rovi"
+
+#: src/modules/Client/Contacts.php
+msgid "Affiliate program"
+msgstr "Hamkorlik dasturi"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate since"
+msgstr "Hamkor bo‘lgan sana"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+msgid "Affiliates"
+msgstr "Hamkorlar"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliates share a link to your site and earn a commission on each paid invoice of the services their visitors order: products, setup fees and options, not domains, add-ons or upgrades. A commission clears after the clearing days if the service is still active, then the affiliate can ask for a payout."
+msgstr "Hamkorlar saytingizga havolani ulashadi va tashrif buyuruvchilari buyurtma bergan xizmatlarning har bir to‘langan hisob-fakturasidan komissiya oladi: mahsulotlar, o‘rnatish to‘lovlari va variantlar, domenlar, qo‘shimcha xizmatlar yoki yangilanishlar bundan mustasno. Xizmat hali faol bo‘lsa, komissiya tasdiqlash kunlaridan keyin tasdiqlanadi, so‘ng hamkor pulni yechib olishni so‘rashi mumkin."
+
+#: src/modules/Client/Service.php
+msgid "Allows the staff member to activate affiliates, change their commissions, add ledger entries, assign orders and pay or decline payout requests."
+msgstr "Xodimga hamkorlarni faollashtirish, komissiyalarini o‘zgartirish, daftar yozuvlarini qo‘shish, buyurtmalarni biriktirish va pul yechib olish so‘rovlarini to‘lash yoki rad etish imkonini beradi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Also reverse the affiliate commission"
+msgstr "Hamkor komissiyasini ham bekor qilish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Amounts are in the affiliate's currency. Pending commissions clear after the clearing days if the service is still active."
+msgstr "Summalar hamkor valyutasida. Kutilayotgan komissiyalar xizmat hali faol bo‘lsa, tasdiqlash kunlaridan keyin tasdiqlanadi."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "An affiliate cannot be referred to its own orders."
+msgstr "Hamkor o‘z buyurtmalariga taklif qiluvchi sifatida ko‘rsatilishi mumkin emas."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "As account credit"
+msgstr "Hisob krediti sifatida"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Ask for a payout"
+msgstr "Pul yechib olishni so‘rash"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign"
+msgstr "Biriktirish"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign an affiliate"
+msgstr "Hamkorni biriktirish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assigned by staff"
+msgstr "Xodim biriktirgan"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Available"
+msgstr "Mavjud"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Balances and Payouts"
+msgstr "Balanslar va pul yechib olish"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Bonus Deposit"
+msgstr "Bonus depoziti"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Bonus deposit"
+msgstr "Bonus depoziti"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Cancel this pending commission? It will not be paid."
+msgstr "Ushbu kutilayotgan komissiya bekor qilinsinmi? U to‘lanmaydi."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Choose how the payout was paid."
+msgstr "Pul yechib olish qanday to‘langanini tanlang."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Cleared"
+msgstr "Tasdiqlangan"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clearing Days"
+msgstr "Tasdiqlash kunlari"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Clears after the waiting period"
+msgstr "Kutish davridan keyin tasdiqlanadi"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Clears on :date"
+msgstr ":date da tasdiqlanadi"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client's Affiliate tab."
+msgstr "Mijozlar dasturni mijoz hududidagi Hamkorlar sahifasida topadi. Xodimlar istalgan mijozni mijozning Hamkor yorlig‘ida hamkorga aylantirishi mumkin."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients may join by themselves"
+msgstr "Mijozlar o‘zlari qo‘shilishi mumkin"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Commission"
+msgstr "Komissiya"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission Type"
+msgstr "Komissiya turi"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission for this affiliate"
+msgstr "Ushbu hamkor uchun komissiya"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Commission history"
+msgstr "Komissiyalar tarixi"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Commission not found"
+msgstr "Komissiya topilmadi"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commissions"
+msgstr "Komissiyalar"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Commissions earned"
+msgstr "Ishlab topilgan komissiyalar"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Conversion rate: :rate"
+msgstr "Konversiya darajasi: :rate"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Cookie Days"
+msgstr "Cookie kunlari"
+
+#: src/modules/Client/Service.php
+msgid "Currency cannot be changed. Client already has affiliate earnings."
+msgstr "Valyutani o‘zgartirib bo‘lmaydi. Mijozda allaqachon hamkorlik daromadi bor."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Currency rate for :code is not configured."
+msgstr ":code uchun valyuta kursi sozlanmagan."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Deactivate this affiliate? Its link stops counting and its orders stop earning until it is active again."
+msgstr "Ushbu hamkor o‘chirib qo‘yilsinmi? Uning havolasi hisoblashdan to‘xtaydi va buyurtmalari qayta faollashtirilgunga qadar daromad keltirmaydi."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline"
+msgstr "Rad etish"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline this payout request?"
+msgstr "Ushbu pul yechib olish so‘rovi rad etilsinmi?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Default (product or settings)"
+msgstr "Standart (mahsulot yoki sozlamalar)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Default Commission"
+msgstr "Standart komissiya"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Earn a commission when people you refer order from us."
+msgstr "Siz taklif qilgan odamlar bizdan buyurtma berganda komissiya oling."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Earned"
+msgstr "Ishlab topilgan"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Enter an amount other than zero."
+msgstr "Noldan farqli summa kiriting."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Enter the amount to pay out."
+msgstr "Yechib olinadigan summani kiriting."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
+msgstr "Har bir komissiya, bekor qilish, bonus, qo‘lda yozuv va pul yechib olish. Balanslar ularning yig‘indisidir."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "For a partial refund. A refund of the whole invoice always reverses it."
+msgstr "Qisman pulni qaytarish uchun. Butun hisob-fakturani qaytarish uni doim bekor qiladi."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Held bonus"
+msgstr "Ushlab turilgan bonus"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Here is how your affiliate link did last month, and your balances today."
+msgstr "Hamkor havolangiz o‘tgan oy qanday natija ko‘rsatgani va bugungi balanslaringiz."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a commission stays pending, so refunds and cancellations can take it back. 0: it clears at once."
+msgstr "Qaytarishlar va bekor qilishlar uni qaytarib olishi uchun komissiya qancha vaqt kutilmoqda holatida turadi. 0: u darhol tasdiqlanadi."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins)."
+msgstr "Hamkor havolasi orqali tashrif qancha vaqt hisoblanadi (clientfence_aff cookie; oxirgi bosilgan havola hisobga olinadi)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "How should we pay you? For example your PayPal address or bank details, or \"account credit\"."
+msgstr "Sizga qanday to‘lashimiz kerak? Masalan, PayPal manzilingiz yoki bank rekvizitlari, yoki “hisob krediti”."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "If you have questions, please reply to this email or contact us."
+msgstr "Savollaringiz bo‘lsa, ushbu xatga javob yozing yoki biz bilan bog‘laning."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join now"
+msgstr "Hozir qo‘shilish"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join the affiliate program"
+msgstr "Hamkorlik dasturiga qo‘shilish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Make this client an affiliate?"
+msgstr "Ushbu mijoz hamkorga aylantirilsinmi?"
+
+#: src/modules/Client/Service.php
+msgid "Manage Affiliates"
+msgstr "Hamkorlarni boshqarish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Manual entry"
+msgstr "Qo‘lda yozuv"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Mark paid"
+msgstr "To‘langan deb belgilash"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Minimum Payout"
+msgstr "Minimal yechib olish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Negative to take an amount off. It counts as available at once."
+msgstr "Summani ayirish uchun manfiy qiymat. U darhol mavjud hisoblanadi."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client's Affiliate tab."
+msgstr "Hozircha hamkorlar yo‘q. Mijozlar mijoz hududidagi Hamkorlar sahifasida qo‘shiladi yoki xodimlar ularni mijozning Hamkor yorlig‘ida faollashtiradi."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "No commission"
+msgstr "Komissiyasiz"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No commissions yet."
+msgstr "Hozircha komissiyalar yo‘q."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "No payout requests."
+msgstr "Pul yechib olish so‘rovlari yo‘q."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No referrals yet."
+msgstr "Hozircha takliflar yo‘q."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "No referred orders yet."
+msgstr "Hozircha taklif orqali buyurtmalar yo‘q."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Note for the affiliate (optional)"
+msgstr "Hamkor uchun izoh (ixtiyoriy)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "One-time commission"
+msgstr "Bir martalik komissiya"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "One-time commission: pay on the first paid invoice of each service only"
+msgstr "Bir martalik komissiya: faqat har bir xizmatning birinchi to‘langan hisob-fakturasi uchun to‘lanadi"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Only a pending commission can be cancelled."
+msgstr "Faqat kutilayotgan komissiyani bekor qilish mumkin."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate's currency."
+msgstr "Hamkorning taklif orqali buyurtmalari, komissiyalari va pul yechib olishlarini ko‘rish uchun uni oching. Summalar har bir hamkorning valyutasida."
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Open the Affiliate tab"
+msgstr "Hamkor yorlig‘ini ochish"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Open your affiliate page"
+msgstr "Hamkor sahifangizni oching"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Our note:"
+msgstr "Bizning izohimiz:"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Overrides the product and default commissions, except on products that pay no commission."
+msgstr "Mahsulot va standart komissiyalarni almashtiradi, komissiya to‘lamaydigan mahsulotlar bundan mustasno."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Paid :amount"
+msgstr ":amount to‘landi"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Paid as"
+msgstr "To‘lov usuli"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Paid out"
+msgstr "Yechib olingan"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Paid out: :amount"
+msgstr "Yechib olingan: :amount"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Paid outside ClientFence"
+msgstr "ClientFence tashqarisida to‘langan"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Pay as credit"
+msgstr "Kredit sifatida to‘lash"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Pay it as account credit, record a payment you made outside ClientFence, or decline it on the client's Affiliate tab."
+msgstr "Uni hisob krediti sifatida to‘lang, ClientFence tashqarisida qilgan to‘lovingizni qayd eting yoki mijozning Hamkor yorlig‘ida rad eting."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Pay on the first paid invoice of each service only. Off: every renewal pays too."
+msgstr "Faqat har bir xizmatning birinchi to‘langan hisob-fakturasi uchun to‘lanadi. O‘chiq: har bir uzaytirish uchun ham to‘lanadi."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Payment to your payout details"
+msgstr "Pul yechib olish rekvizitlaringizga to‘lov"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout"
+msgstr "Pul yechib olish"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout details"
+msgstr "Pul yechib olish rekvizitlari"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Payout details:"
+msgstr "Pul yechib olish rekvizitlari:"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Payout request not found"
+msgstr "Pul yechib olish so‘rovi topilmadi"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requested"
+msgstr "Pul yechib olish so‘ralgan"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Payout requests"
+msgstr "Pul yechib olish so‘rovlari"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requests and how each was handled. Account credit is added to the client's credit balance at once; paid outside only records a payment you made yourself."
+msgstr "Pul yechib olish so‘rovlari va ularning har biri qanday ko‘rib chiqilgani. Hisob krediti darhol mijozning kredit balansiga qo‘shiladi; Tashqarida to‘langan faqat o‘zingiz qilgan to‘lovni qayd etadi."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payouts"
+msgstr "Pul yechib olishlar"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reactivate"
+msgstr "Qayta faollashtirish"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first."
+msgstr ":amount ClientFence tashqarisida to‘langan deb qayd etilsinmi (bank, PayPal)? Avval o‘zingiz to‘lang."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Referrals"
+msgstr "Takliflar"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Referred orders"
+msgstr "Taklif orqali buyurtmalar"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Refund: commission taken back"
+msgstr "Pulni qaytarish: komissiya qaytarib olindi"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove this order from the affiliate? Commissions it already earned stay."
+msgstr "Ushbu buyurtma hamkordan olib tashlansinmi? U allaqachon ishlab topgan komissiyalar saqlanadi."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Requested"
+msgstr "So‘ralgan"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Requests waiting for you. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "Sizni kutayotgan so‘rovlar. Siz to‘lamaguningizcha yoki rad etmaguningizcha, summa hamkorning mavjud balansidan ajratib qo‘yiladi."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reversal"
+msgstr "Bekor qilish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Services ordered through this affiliate's link or assigned to it by staff, and what each earned."
+msgstr "Ushbu hamkorning havolasi orqali buyurtma qilingan yoki xodim unga biriktirgan xizmatlar va har biri qancha ishlab topgani."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Share it anywhere. Orders placed within :days days of a visit through your link count for you."
+msgstr "Uni istalgan joyda ulashing. Havolangiz orqali tashrifdan keyin :days kun ichida berilgan buyurtmalar sizga hisoblanadi."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Shown on the Affiliates page to clients who have not joined yet: how the program works and what it pays."
+msgstr "Hali qo‘shilmagan mijozlarga Hamkorlar sahifasida ko‘rsatiladi: dastur qanday ishlaydi va nima to‘laydi."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Signup Text"
+msgstr "Ro‘yxatdan o‘tish matni"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Signups"
+msgstr "Ro‘yxatdan o‘tishlar"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Source"
+msgstr "Manba"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Start typing the affiliate name or code"
+msgstr "Hamkor nomi yoki kodini yozishni boshlang"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Tell us how to pay you (payout details)."
+msgstr "Sizga qanday to‘lashimizni ayting (pul yechib olish rekvizitlari)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can ask for a payout."
+msgstr "Hisob egasi pul yechib olishni so‘rashi mumkin."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can join the program."
+msgstr "Hisob egasi dasturga qo‘shilishi mumkin."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The affiliate balance no longer covers this payout. Decline it or add a manual entry first."
+msgstr "Hamkor balansi endi bu pul yechib olishni qoplamaydi. Uni rad eting yoki avval qo‘lda yozuv qo‘shing."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The affiliate earns on invoices of this order paid from now on."
+msgstr "Hamkor shu paytdan boshlab to‘lanadigan ushbu buyurtma hisob-fakturalaridan daromad oladi."
+
+#: src/modules/Client/Api/Client.php src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The affiliate program is not available."
+msgstr "Hamkorlik dasturi mavjud emas."
+
+#: src/modules/Client/Api/Client.php
+msgid "The affiliate program is not open for sign-ups."
+msgstr "Hamkorlik dasturi ro‘yxatdan o‘tish uchun ochiq emas."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The affiliate sees this note in its commission history."
+msgstr "Hamkor ushbu izohni komissiyalar tarixida ko‘radi."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "The available balance an affiliate needs before it can ask for a payout."
+msgstr "Hamkor pul yechib olishni so‘rashi uchun kerak bo‘lgan mavjud balans."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The bonus deposit can be paid out once a first commission has cleared."
+msgstr "Bonus depozitini birinchi komissiya tasdiqlangandan keyin yechib olish mumkin."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "The commission amount must be a number of zero or more."
+msgstr "Komissiya summasi nol yoki undan katta son bo‘lishi kerak."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The minimum payout is :amount."
+msgstr "Minimal yechib olish :amount."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The payout details are too long."
+msgstr "Pul yechib olish rekvizitlari juda uzun."
+
+#: src/modules/Client/Privacy.php
+msgid "This client has an affiliate payout request waiting. Pay or decline it first."
+msgstr "Ushbu mijozda kutilayotgan hamkor pulini yechib olish so‘rovi bor. Avval uni to‘lang yoki rad eting."
+
+#: src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php
+msgid "This client is not an affiliate."
+msgstr "Ushbu mijoz hamkor emas."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order."
+msgstr "Ushbu mijoz hamkor emas. Hamkor saytingizga havolani ulashadi va tashrif buyuruvchilari buyurtma bergan xizmatlardan komissiya oladi."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "This order has no affiliate."
+msgstr "Ushbu buyurtmada hamkor yo‘q."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "This payout request was already handled."
+msgstr "Ushbu pul yechib olish so‘rovi allaqachon ko‘rib chiqilgan."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "To become an affiliate, please contact us."
+msgstr "Hamkor bo‘lish uchun biz bilan bog‘laning."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Turn on the affiliate program"
+msgstr "Hamkorlik dasturini yoqish"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Unassign"
+msgstr "Biriktirishni bekor qilish"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown affiliate status."
+msgstr "Noma’lum hamkor holati."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown commission type."
+msgstr "Noma’lum komissiya turi."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Visitors, signups and commissions of your affiliate link last month."
+msgstr "Hamkor havolangizning o‘tgan oydagi tashrif buyuruvchilari, ro‘yxatdan o‘tishlari va komissiyalari."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Waiting for the service until :date"
+msgstr ":date gacha xizmat kutilmoqda"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We added your affiliate payout to your account credit. It pays your next invoices."
+msgstr "Hamkor pulingizni hisob kreditingizga qo‘shdik. U keyingi hisob-fakturalaringizni to‘laydi."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "We declined your affiliate payout request of %amount%. The amount is back in your available balance."
+msgstr "%amount% miqdoridagi hamkor pulini yechib olish so‘rovingizni rad etdik. Summa mavjud balansingizga qaytdi."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We sent your affiliate payout using the payout details you gave us."
+msgstr "Hamkor pulingizni bergan rekvizitlaringiz bo‘yicha yubordik."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Welcome to the affiliate program. Share your link to start earning."
+msgstr "Hamkorlik dasturiga xush kelibsiz. Daromad topishni boshlash uchun havolangizni ulashing."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission."
+msgstr "Hamkorlar ushbu mahsulotdan qancha topadi. Standart hamkor sozlamalaridan foydalanadi; o‘z komissiyasi bor hamkor uni saqlab qoladi, mahsulot komissiya to‘lamaydigan hollar bundan mustasno."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You asked for a payout of :amount on :date. We will let you know by email when it is handled."
+msgstr "Siz :date da :amount yechib olishni so‘radingiz. Ko‘rib chiqilganda elektron pochta orqali xabar beramiz."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You can ask for a payout once :amount is available."
+msgstr ":amount mavjud bo‘lganda pul yechib olishni so‘rashingiz mumkin."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "You can ask for at most :amount."
+msgstr "Eng ko‘pi bilan :amount so‘rashingiz mumkin."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your affiliate account is not active."
+msgstr "Hamkor hisobingiz faol emas."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Your affiliate account is not active. Please contact us."
+msgstr "Hamkor hisobingiz faol emas. Iltimos, biz bilan bog‘laning."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate account is not active. Your link does not count new visits or orders. Please contact us."
+msgstr "Hamkor hisobingiz faol emas. Havolangiz yangi tashrif yoki buyurtmalarni hisoblamaydi. Iltimos, biz bilan bog‘laning."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate link"
+msgstr "Hamkor havolangiz"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate link:"
+msgstr "Hamkor havolangiz:"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid"
+msgstr "%amount% miqdoridagi hamkor pulingiz to‘landi"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid."
+msgstr "%amount% miqdoridagi hamkor pulingiz to‘landi."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request of %amount% was declined."
+msgstr "%amount% miqdoridagi hamkor pulini yechib olish so‘rovingiz rad etildi."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request was declined"
+msgstr "Hamkor pulini yechib olish so‘rovingiz rad etildi"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report"
+msgstr "Hamkor hisobotingiz"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report for %month%"
+msgstr "%month% uchun hamkor hisobotingiz"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your bonus of %amount% is held until your first commission clears."
+msgstr "%amount% miqdoridagi bonusingiz birinchi komissiyangiz tasdiqlanguncha ushlab turiladi."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your bonus of :amount is held until your first commission clears; then you can have it paid out."
+msgstr ":amount miqdoridagi bonusingiz birinchi komissiyangiz tasdiqlanguncha ushlab turiladi; shundan so‘ng uni yechib olishingiz mumkin."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your payout request is already waiting."
+msgstr "Pul yechib olish so‘rovingiz allaqachon kutmoqda."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your payout request was declined"
+msgstr "Pul yechib olish so‘rovingiz rad etildi"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your payout request was sent. We will let you know by email."
+msgstr "Pul yechib olish so‘rovingiz yuborildi. Elektron pochta orqali xabar beramiz."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your payout was paid"
+msgstr "Pul yechib olishingiz to‘landi"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "clears on :date"
+msgstr ":date da tasdiqlanadi"

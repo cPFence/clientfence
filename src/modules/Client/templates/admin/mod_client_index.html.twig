@@ -100,6 +100,9 @@
 {% endblock %}
 
 {% block content %}
+    {# ClientFence core patch: the Affiliates tab (Client/Affiliates), while the program is on or affiliates exist. #}
+    {% set affiliate_list = admin.client_affiliate_get_list({ page: request.aff_page matches '/^[1-9]\\d*$/' ? request.aff_page : 1, per_page: 25 }) %}
+    {% set show_affiliates = admin.client_affiliate_settings.enabled or affiliate_list.total > 0 %}
     <div class="card">
         <div class="card-header">
             <div>
@@ -117,6 +120,11 @@
                         {% if can_manage_groups %}
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" id="client-groups-tab" href="#tab-groups" data-bs-toggle="tab" role="tab" aria-controls="tab-groups" aria-selected="false">{{ 'Groups'|trans }}</a>
+                        </li>
+                        {% endif %}
+                        {% if show_affiliates %}
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="client-affiliates-tab" href="#tab-affiliates" data-bs-toggle="tab" role="tab" aria-controls="tab-affiliates" aria-selected="false">{{ 'Affiliates'|trans }}</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -381,6 +389,10 @@
                     </form>
                 </div>
             </div>
+            {% endif %}
+
+            {% if show_affiliates %}
+                {{ include('mod_client_affiliates_list.html.twig') }}
             {% endif %}
         </div>
             </div>

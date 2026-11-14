@@ -56,6 +56,10 @@
 {% if client and (not clientfence_user|default(null) or clientfence_user.owner or 'contacts' in clientfence_user.permissions) %}
     {% set menu = menu|merge([{ key: 'contacts', url: 'contacts'|url, icon: 'address-book', label: 'Contacts'|trans }]) %}
 {% endif %}
+{# ClientFence core patch: the Affiliates page while the program is on (Client/Affiliates); users need `affiliates`. #}
+{% if client and guest.client_affiliate_on %}
+    {% set menu = menu|merge([{ key: 'affiliates', url: 'affiliates'|url, icon: 'link', label: 'Affiliates'|trans }]) %}
+{% endif %}
 {% if client %}
     {% set menu = menu|merge([{ key: 'profile', url: 'client/profile'|url, icon: 'user-circle', label: 'Profile'|trans }]) %}
 {% endif %}
@@ -66,7 +70,7 @@
 {% elseif clientfence_user|default(null) %}
     {# An authorized user (ClientFence) sees only what the user's permissions open. #}
     {# Profile is the user's own (/profile); the account's details are in the top bar menu. #}
-    {% set needs = { services: 'products', invoices: 'invoices', support: 'tickets', hosting: 'products', order: 'orders', payments: 'invoices', emails: 'emails' } %}
+    {% set needs = { services: 'products', invoices: 'invoices', support: 'tickets', hosting: 'products', order: 'orders', payments: 'invoices', emails: 'emails', affiliates: 'affiliates' } %}
     {% set menu = menu|filter(item => needs[item.key] is not defined or needs[item.key] in clientfence_user.permissions)|map(item => item.key == 'profile' ? item|merge({ url: 'profile'|url, label: 'My profile'|trans }) : item) %}
 {% endif %}
 {% if guest.extension_is_on({ mod: 'custompages' }) %}

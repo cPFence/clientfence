@@ -842,6 +842,12 @@ class Service implements InjectionAwareInterface
         $this->countIncome($invoice);
         $productService = $this->di['mod_service']('Product');
         $productService->commitReservedPromoRedemptionsForInvoice($invoice);
+        // ClientFence core patch: the affiliate commissions of the paid invoice (Client/Affiliates/Commissions.php); never stops the payment.
+        try {
+            \ClientFence\Mod\Client\Affiliates\Commissions::onPaid($this->di, (int) $invoice->id);
+        } catch (\Throwable $e) {
+            $this->di['logger']->error('Invoice #%s: affiliate commissions were not written: %s', $invoice->id, $e->getMessage());
+        }
 
         // Listeners render PDFs and send email, so a caller holding a payment lock defers this
         // until after it has released it, rather than holding it for the duration of an SMTP send.
@@ -1610,14 +1616,14 @@ class Service implements InjectionAwareInterface
      * client's credit or back through the gateway that took the payment (PayPal Email with its REST API keys).
      * A part refund keeps the invoice paid until its refunds reach the total.
      */
-    public function refundInvoice(\Model_Invoice $invoice, $note = null, ?float $amount = null, bool $toCredit = false, bool $throughGateway = false): ?int
+    public function refundInvoice(\Model_Invoice $invoice, $note = null, ?float $amount = null, bool $toCredit = false, bool $throughGateway = false, bool $reverseCommission = false): ?int
     {
         if ($toCredit && $throughGateway) {
             throw new InformationException('A refund to account credit cannot also be sent back through the payment gateway.');
         }
         // ClientFence core patch: under the client's credit lock, and the status is read again there: a
         // refund sent twice made two credit notes and debited a refunded Add funds twice.
-        $record = function () use ($invoice, $note, $amount, $toCredit): ?int {
+        $record = function () use ($invoice, $note, $amount, $toCredit, $reverseCommission): ?int {
             if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === \Model_Invoice::STATUS_REFUNDED) {
                 throw new InformationException('Only a paid invoice can be refunded, and only once.');
             }
@@ -1630,13 +1636,22 @@ class Service implements InjectionAwareInterface
                 if ($toCredit && $result !== null) {
                     $this->refundToCredit($invoice, round($this->getTotalWithTax($invoice), 2), $result);
                 }
+                // ClientFence core patch: a full refund takes back the invoice's affiliate commissions, also under "manual" refunds (Client/Affiliates/Commissions.php).
+                \ClientFence\Mod\Client\Affiliates\Commissions::reverse($this->di, (int) $invoice->id);
 
                 return $result;
             }
 
-            return $this->refundPartLocked($invoice, $amount ?? round($this->getTotalWithTax($invoice) - $refunded, 2), $refunded, (string) $note, $toCredit);
+            $creditNote = $this->refundPartLocked($invoice, $amount ?? round($this->getTotalWithTax($invoice) - $refunded, 2), $refunded, (string) $note, $toCredit);
+            // ClientFence core patch: a partial refund takes them back when staff ask, or when the refunds reach the total.
+            if ($reverseCommission || $invoice->status === \Model_Invoice::STATUS_REFUNDED) {
+                \ClientFence\Mod\Client\Affiliates\Commissions::reverse($this->di, (int) $invoice->id);
+            }
+
+            return $creditNote;
         };
-        $creditNote = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, !$throughGateway ? $record : fn (): ?int => $this->di['dbal']->transactional(function () use ($record, $invoice): int {
+        // ClientFence core patch: the refund and its affiliate reversal are kept together or not at all (Commissions::reverse() can fail on its lock).
+        $creditNote = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, !$throughGateway ? fn (): ?int => $this->di['dbal']->transactional(fn (): ?int => $record()) : fn (): ?int => $this->di['dbal']->transactional(function () use ($record, $invoice): int {
             // Recorded first and kept only when the gateway refunds it: a refused refund leaves no credit note.
             $creditNote = $record() ?? throw new InformationException('Refunds are handled by hand (Invoice settings), so this refund cannot be recorded.');
             $this->refundThroughGateway($invoice, $creditNote);
@@ -2366,8 +2381,11 @@ class Service implements InjectionAwareInterface
         $db = $this->di['dbal'];
         try {
             $full = abs($amount - $this->getTotalWithTax($invoice)) < 0.01;
-            $this->refundInvoice($invoice, $text, $full ? null : $amount);
+            // ClientFence core patch: a chargeback takes back all the invoice's affiliate commissions (Client/Affiliates/Commissions.php).
+            $this->refundInvoice($invoice, $text, $full ? null : $amount, false, false, true);
         } catch (InformationException $e) {
+            // ClientFence core patch: also when the refund itself cannot be recorded here.
+            \ClientFence\Mod\Client\Affiliates\Commissions::reverse($this->di, (int) $invoice->id);
             $this->addNote($invoice, $text . ' ' . $e->getMessage());
 
             return $text . ' Not refunded here: ' . $e->getMessage();

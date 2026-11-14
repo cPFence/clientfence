@@ -37,6 +37,7 @@ final class SettingsIndex
         'cron' => 'scheduled tasks cron job',
         'currency' => 'exchange rate money',
         'client' => 'sign-up signup registration register',
+        'client#tab-affiliates' => 'affiliate affiliates referral referrals commission payout partner',
     ];
 
     /**

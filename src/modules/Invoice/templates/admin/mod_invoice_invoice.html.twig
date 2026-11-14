@@ -283,6 +283,16 @@
                                     <label class="form-label" for="refund-amount">{{ 'Amount'|trans }}</label>
                                     <input class="form-control" type="number" name="amount" id="refund-amount" min="0.01" step="0.01" max="{{ refundable|round(2) }}" placeholder="{{ 'Leave blank for full refund'|trans }}"{% if refund_suggested < refundable %} value="{{ refund_suggested|round(2) }}"{% endif %}>
                                 </div>
+                                {# ClientFence core patch: a partial refund can also take back the affiliate commission (Client/Affiliates/Commissions.php reverse()). #}
+                                {% if has_permission('client', 'view') and admin.client_affiliate_invoice_earned({ id: invoice.id }) %}
+                                <div>
+                                    <label class="form-check mb-0">
+                                        <input class="form-check-input" type="checkbox" name="reverse_commission" value="1">
+                                        <span class="form-check-label">{{ 'Also reverse the affiliate commission'|trans }}</span>
+                                    </label>
+                                    <small class="form-hint">{{ 'For a partial refund. A refund of the whole invoice always reverses it.'|trans }}</small>
+                                </div>
+                                {% endif %}
                                 {% if refund_gateway %}
                                 <div class="text-start">
                                     <label class="form-check">

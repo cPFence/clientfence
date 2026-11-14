@@ -36,6 +36,7 @@ final class Contacts
         'product' => 'Services (including welcome emails with sign-in details)',
         'domain' => 'Domains',
         'support' => 'Support tickets',
+        'affiliate' => 'Affiliate program',
     ];
 
     /**
@@ -45,7 +46,7 @@ final class Contacts
      */
     public const KIND_PERMISSIONS = [
         'general' => 'profile', 'invoice' => 'invoices', 'product' => 'manageproducts',
-        'domain' => 'domains', 'support' => 'tickets',
+        'domain' => 'domains', 'support' => 'tickets', 'affiliate' => 'affiliates',
     ];
 
     /** Contact fields and their longest length. */
@@ -78,6 +79,7 @@ final class Contacts
             str_starts_with($code, 'mod_servicedomain_') => 'domain',
             preg_match('/^mod_service[a-z]+_/', $code) === 1, $code === 'mod_order_cancel_request', $code === 'mod_order_ip_request' => 'product',
             $code === 'mod_support_network_issue' => 'general',
+            str_starts_with($code, 'mod_client_affiliate_') => 'affiliate',
             str_starts_with($code, 'mod_support_') => 'support',
             default => 'general',
         };
@@ -267,6 +269,7 @@ final class Contacts
             __trans('Services (including welcome emails with sign-in details)'),
             __trans('Domains'),
             __trans('Support tickets'),
+            __trans('Affiliate program'),
         ];
     }
 

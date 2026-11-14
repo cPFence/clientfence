@@ -572,4 +572,10 @@ class Guest extends \ClientFence\Api\AbstractApi
     {
         return Google::signinOn($this->getDi());
     }
+
+    /** ClientFence core patch: whether the affiliate program is on (the client area menu; Client/Affiliates). */
+    public function affiliate_on(): bool
+    {
+        return \ClientFence\Mod\Client\Affiliates\Affiliates::settings($this->getDi())['enabled'];
+    }
 }

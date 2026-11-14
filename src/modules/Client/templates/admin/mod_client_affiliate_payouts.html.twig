@@ -1,0 +1,55 @@
+{# ClientFence: a table of affiliate payout requests (Affiliates/Payouts.php), on the client's Affiliate tab and the
+   Clients list's Affiliates tab (show_client). Staff with "Manage Affiliates" pay a waiting request as account credit,
+   record it as paid outside ClientFence, or decline it with an optional note for the affiliate. #}
+{% set can_pay = has_permission('client', 'manage_affiliates') %}
+{% set payout_statuses = { requested: 'Waiting'|trans, paid: 'Paid'|trans, declined: 'Declined'|trans } %}
+<div class="table-responsive">
+    <table class="table card-table table-vcenter">
+        <thead>
+            <tr>
+                <th>{{ 'Date'|trans }}</th>
+                {% if show_client %}<th>{{ 'Affiliate'|trans }}</th>{% endif %}
+                <th>{{ 'Amount'|trans }}</th>
+                <th>{{ 'Payout details'|trans }}</th>
+                <th>{{ 'Status'|trans }}</th>
+                {% if can_pay %}<th class="w-1"></th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for payout in payouts %}
+                <tr>
+                    <td class="text-nowrap">{{ payout.created_at|format_date }}</td>
+                    {% if show_client %}
+                        <td><a href="{{ ('client/manage/' ~ payout.client_id)|url }}#tab-clientfence-affiliate">{{ payout.first_name }} {{ payout.last_name }}</a>{% if payout.company %}<div class="small text-secondary">{{ payout.company }}</div>{% endif %}</td>
+                    {% endif %}
+                    <td class="text-nowrap fw-medium">{{ payout.amount|format_currency(payout.currency) }}</td>
+                    <td class="text-break">{{ payout.details|nl2br }}</td>
+                    <td class="text-nowrap">
+                        {% if payout.status == 'requested' %}
+                            <span class="badge bg-yellow-lt">{{ payout_statuses.requested }}</span>
+                        {% elseif payout.status == 'paid' %}
+                            <span class="badge bg-green-lt">{{ payout_statuses.paid }}</span>
+                            <div class="small text-secondary">{{ payout.method == 'credit' ? 'As account credit'|trans : 'Paid outside ClientFence'|trans }}{% if payout.processed_at %} · {{ payout.processed_at|format_date }}{% endif %}</div>
+                        {% else %}
+                            <span class="badge bg-secondary-lt">{{ payout_statuses[payout.status] ?? payout.status }}</span>
+                            {% if payout.processed_at %}<div class="small text-secondary">{{ payout.processed_at|format_date }}</div>{% endif %}
+                        {% endif %}
+                    </td>
+                    {% if can_pay %}
+                        <td class="text-nowrap">
+                            {% if payout.status == 'requested' %}
+                                <div class="btn-list flex-nowrap">
+                                    <a class="btn btn-sm btn-primary" {{ fb_api_link({ href: 'client/affiliate_payout_pay'|api_url(query: { id: payout.id, method: 'credit' }), modal: { type: 'confirm', title: 'Add :amount to the client\'s account credit?'|trans({ ':amount': payout.amount|format_currency(payout.currency) }) }, reload: true }) }}>{{ 'Pay as credit'|trans }}</a>
+                                    <a class="btn btn-sm btn-outline-primary" {{ fb_api_link({ href: 'client/affiliate_payout_pay'|api_url(query: { id: payout.id, method: 'outside' }), modal: { type: 'confirm', title: 'Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first.'|trans({ ':amount': payout.amount|format_currency(payout.currency) }) }, reload: true }) }}>{{ 'Mark paid'|trans }}</a>
+                                    <a class="btn btn-sm btn-outline-danger" {{ fb_api_link({ href: 'client/affiliate_payout_decline'|api_url(query: { id: payout.id }), modal: { type: 'prompt', title: 'Decline this payout request?'|trans, label: 'Note for the affiliate (optional)'|trans, key: 'note' }, reload: true }) }}>{{ 'Decline'|trans }}</a>
+                                </div>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr><td class="text-secondary" colspan="6">{{ 'No payout requests.'|trans }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

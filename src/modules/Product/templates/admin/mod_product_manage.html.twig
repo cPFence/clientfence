@@ -171,6 +171,34 @@
                                 {{ include('partial_pricing.html.twig', { 'product': product }) }}
                             </div>
 
+                            {# ClientFence core patch: the product's affiliate commission (Client/Affiliates/Commissions.php rule()). #}
+                            <div class="d-flex flex-column gap-1 mt-4 mb-4">
+                                <h6 class="card-title mb-0">{{ 'Affiliate Commission'|trans }}</h6>
+                                <p class="text-secondary mb-0">{{ 'What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission.'|trans }}</p>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="affiliate-payout">{{ 'Affiliate Commission'|trans }}</label>
+                                    <select class="form-select" id="affiliate-payout" name="config[affiliate_payout]">
+                                        {% for value, label in { '': 'Default'|trans, 'percentage': 'Percentage'|trans, 'fixed': 'Fixed amount'|trans, 'none': 'No commission'|trans } %}
+                                        <option value="{{ value }}"{% if product.config.affiliate_payout|default('') == value %} selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="affiliate-amount">{{ 'Commission'|trans }}</label>
+                                    <input class="form-control" type="number" id="affiliate-amount" name="config[affiliate_amount]" min="0" step="0.01" value="{{ product.config.affiliate_amount|default('') }}">
+                                    <div class="form-text">{{ 'A percentage of what the client paid, or a fixed amount in the affiliate\'s currency. Used with Percentage or Fixed amount.'|trans }}</div>
+                                </div>
+                                <div class="col-12">
+                                    <input type="hidden" name="config[affiliate_onetime]" value="0">
+                                    <label class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="config[affiliate_onetime]" value="1"{% if product.config.affiliate_onetime|default(false) %} checked{% endif %}>
+                                        <span class="form-check-label">{{ 'One-time commission: pay on the first paid invoice of each service only'|trans }}</span>
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="mt-4">
                                 <div data-cf-text-pane="">
                                     <label class="form-label">{{ 'Description'|trans }}</label>

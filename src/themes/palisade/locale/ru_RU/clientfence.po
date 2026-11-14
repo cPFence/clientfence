@@ -25119,3 +25119,724 @@ msgstr "Загружается на каждой странице клиентс
 #: src/themes/palisade/config/settings.html.twig
 msgid "Use custom CSS"
 msgstr "Использовать пользовательский CSS"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "%affiliate% asked for an affiliate payout of %amount%. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "%affiliate% запросил партнёрскую выплату на сумму %amount%. Сумма резервируется из доступного баланса партнёра, пока вы не выплатите её или не отклоните запрос."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A new affiliate's starting balance. It can be paid out once a first commission has cleared."
+msgstr "Начальный баланс нового партнёра. Его можно выплатить после подтверждения первой комиссии."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "A note is required."
+msgstr "Требуется примечание."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the affiliate's currency. Used with Percentage or Fixed amount."
+msgstr "Процент от суммы, оплаченной клиентом, или фиксированная сумма в валюте партнёра. Используется с типами Процент или Фиксированная сумма."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the default currency."
+msgstr "Процент от суммы, оплаченной клиентом, или фиксированная сумма в валюте по умолчанию."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A product can pay another commission or none (product page), and an affiliate can have its own (client page). The affiliate's own wins, then the product's; a product set to No commission never pays."
+msgstr "Продукт может выплачивать другую комиссию или не выплачивать её вовсе (страница продукта), а у партнёра может быть своя (страница клиента). Сначала действует комиссия партнёра, затем продукта; продукт с настройкой Без комиссии не выплачивает никогда."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Activate as affiliate"
+msgstr "Активировать как партнёра"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Add :amount to the client's account credit?"
+msgstr "Добавить :amount к кредиту на счёте клиента?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add entry"
+msgstr "Добавить запись"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add manual entry"
+msgstr "Добавить запись вручную"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Add-on and domain orders do not earn affiliate commissions."
+msgstr "Заказы дополнений и доменов не приносят партнёрских комиссий."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Adjustment"
+msgstr "Корректировка"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
+msgid "Affiliate"
+msgstr "Партнёр"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Affiliate Commission"
+msgstr "Партнёрская комиссия"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliate Program"
+msgstr "Партнёрская программа"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate account"
+msgstr "Аккаунт партнёра"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Affiliate link"
+msgstr "Партнёрская ссылка"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Affiliate not found"
+msgstr "Партнёр не найден"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request"
+msgstr "Запрос партнёрской выплаты"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request from %name%"
+msgstr "Запрос партнёрской выплаты от %name%"
+
+#: src/modules/Client/Contacts.php
+msgid "Affiliate program"
+msgstr "Партнёрская программа"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate since"
+msgstr "Партнёр с"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+msgid "Affiliates"
+msgstr "Партнёры"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliates share a link to your site and earn a commission on each paid invoice of the services their visitors order: products, setup fees and options, not domains, add-ons or upgrades. A commission clears after the clearing days if the service is still active, then the affiliate can ask for a payout."
+msgstr "Партнёры делятся ссылкой на ваш сайт и получают комиссию с каждого оплаченного счёта за услуги, которые заказывают их посетители: продукты, платежи за подключение и опции, но не домены, дополнения или обновления. Комиссия подтверждается после дней подтверждения, если услуга всё ещё активна, после чего партнёр может запросить выплату."
+
+#: src/modules/Client/Service.php
+msgid "Allows the staff member to activate affiliates, change their commissions, add ledger entries, assign orders and pay or decline payout requests."
+msgstr "Позволяет сотруднику активировать партнёров, менять их комиссии, добавлять записи в журнал, назначать заказы, а также оплачивать или отклонять запросы на выплату."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Also reverse the affiliate commission"
+msgstr "Также отменить партнёрскую комиссию"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Amounts are in the affiliate's currency. Pending commissions clear after the clearing days if the service is still active."
+msgstr "Суммы указаны в валюте партнёра. Ожидающие комиссии подтверждаются после дней подтверждения, если услуга всё ещё активна."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "An affiliate cannot be referred to its own orders."
+msgstr "Партнёра нельзя указать как привлёкшего его собственные заказы."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "As account credit"
+msgstr "Как кредит на счёте"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Ask for a payout"
+msgstr "Запросить выплату"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign"
+msgstr "Назначить"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign an affiliate"
+msgstr "Назначить партнёра"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assigned by staff"
+msgstr "Назначено сотрудником"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Available"
+msgstr "Доступно"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Balances and Payouts"
+msgstr "Балансы и выплаты"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Bonus Deposit"
+msgstr "Бонусный депозит"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Bonus deposit"
+msgstr "Бонусный депозит"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Cancel this pending commission? It will not be paid."
+msgstr "Отменить эту ожидающую комиссию? Она не будет выплачена."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Choose how the payout was paid."
+msgstr "Выберите, как была оплачена выплата."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Cleared"
+msgstr "Подтверждено"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clearing Days"
+msgstr "Дни подтверждения"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Clears after the waiting period"
+msgstr "Подтверждается после периода ожидания"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Clears on :date"
+msgstr "Подтверждается :date"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client's Affiliate tab."
+msgstr "Клиенты находят программу на странице Партнёры в клиентской зоне. Сотрудники могут сделать партнёром любого клиента на вкладке Партнёр в профиле клиента."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients may join by themselves"
+msgstr "Клиенты могут присоединяться самостоятельно"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Commission"
+msgstr "Комиссия"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission Type"
+msgstr "Тип комиссии"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission for this affiliate"
+msgstr "Комиссия для этого партнёра"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Commission history"
+msgstr "История комиссий"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Commission not found"
+msgstr "Комиссия не найдена"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commissions"
+msgstr "Комиссии"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Commissions earned"
+msgstr "Заработанные комиссии"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Conversion rate: :rate"
+msgstr "Коэффициент конверсии: :rate"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Cookie Days"
+msgstr "Дни cookie"
+
+#: src/modules/Client/Service.php
+msgid "Currency cannot be changed. Client already has affiliate earnings."
+msgstr "Валюту изменить нельзя. У клиента уже есть партнёрский заработок."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Currency rate for :code is not configured."
+msgstr "Курс для :code не настроен."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Deactivate this affiliate? Its link stops counting and its orders stop earning until it is active again."
+msgstr "Деактивировать этого партнёра? Его ссылка перестанет учитываться, а его заказы не будут приносить комиссию, пока он снова не станет активным."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline"
+msgstr "Отклонить"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline this payout request?"
+msgstr "Отклонить этот запрос на выплату?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Default (product or settings)"
+msgstr "По умолчанию (продукт или настройки)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Default Commission"
+msgstr "Комиссия по умолчанию"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Earn a commission when people you refer order from us."
+msgstr "Получайте комиссию, когда приглашённые вами люди делают заказы у нас."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Earned"
+msgstr "Заработано"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Enter an amount other than zero."
+msgstr "Введите сумму, отличную от нуля."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Enter the amount to pay out."
+msgstr "Введите сумму выплаты."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
+msgstr "Каждая комиссия, отмена, бонус, запись вручную и выплата. Балансы — это их суммы."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "For a partial refund. A refund of the whole invoice always reverses it."
+msgstr "Для частичного возврата. Возврат всего счёта всегда отменяет её."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Held bonus"
+msgstr "Удержанный бонус"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Here is how your affiliate link did last month, and your balances today."
+msgstr "Вот как работала ваша партнёрская ссылка в прошлом месяце и каковы ваши балансы сегодня."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a commission stays pending, so refunds and cancellations can take it back. 0: it clears at once."
+msgstr "Как долго комиссия остаётся ожидающей, чтобы возвраты и отмены могли её отменить. 0: она подтверждается сразу."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins)."
+msgstr "Как долго учитывается визит по партнёрской ссылке (cookie clientfence_aff; побеждает последняя нажатая ссылка)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "How should we pay you? For example your PayPal address or bank details, or \"account credit\"."
+msgstr "Как нам вам платить? Например, ваш адрес PayPal или банковские реквизиты, либо «кредит на счёте»."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "If you have questions, please reply to this email or contact us."
+msgstr "Если у вас есть вопросы, ответьте на это письмо или свяжитесь с нами."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join now"
+msgstr "Присоединиться"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join the affiliate program"
+msgstr "Присоединиться к партнёрской программе"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Make this client an affiliate?"
+msgstr "Сделать этого клиента партнёром?"
+
+#: src/modules/Client/Service.php
+msgid "Manage Affiliates"
+msgstr "Управление партнёрами"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Manual entry"
+msgstr "Запись вручную"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Mark paid"
+msgstr "Отметить оплаченной"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Minimum Payout"
+msgstr "Минимальная выплата"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Negative to take an amount off. It counts as available at once."
+msgstr "Отрицательное значение вычитает сумму. Она сразу считается доступной."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client's Affiliate tab."
+msgstr "Партнёров пока нет. Клиенты присоединяются на странице Партнёры в клиентской зоне, или сотрудники активируют их на вкладке Партнёр в профиле клиента."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "No commission"
+msgstr "Без комиссии"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No commissions yet."
+msgstr "Комиссий пока нет."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "No payout requests."
+msgstr "Запросов на выплату нет."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No referrals yet."
+msgstr "Рекомендаций пока нет."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "No referred orders yet."
+msgstr "Заказов по рекомендации пока нет."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Note for the affiliate (optional)"
+msgstr "Примечание для партнёра (необязательно)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "One-time commission"
+msgstr "Разовая комиссия"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "One-time commission: pay on the first paid invoice of each service only"
+msgstr "Разовая комиссия: платить только с первого оплаченного счёта каждой услуги"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Only a pending commission can be cancelled."
+msgstr "Отменить можно только ожидающую комиссию."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate's currency."
+msgstr "Откройте партнёра, чтобы увидеть его заказы по рекомендации, комиссии и выплаты. Суммы указаны в валюте каждого партнёра."
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Open the Affiliate tab"
+msgstr "Открыть вкладку Партнёр"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Open your affiliate page"
+msgstr "Открыть вашу партнёрскую страницу"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Our note:"
+msgstr "Наше примечание:"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Overrides the product and default commissions, except on products that pay no commission."
+msgstr "Заменяет комиссии продукта и комиссию по умолчанию, кроме продуктов, которые не выплачивают комиссию."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Paid :amount"
+msgstr "Выплачено :amount"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Paid as"
+msgstr "Выплачено как"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Paid out"
+msgstr "Выплачено"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Paid out: :amount"
+msgstr "Выплачено: :amount"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Paid outside ClientFence"
+msgstr "Оплачено вне ClientFence"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Pay as credit"
+msgstr "Выплатить как кредит"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Pay it as account credit, record a payment you made outside ClientFence, or decline it on the client's Affiliate tab."
+msgstr "Выплатите её как кредит на счёте, зафиксируйте платёж, сделанный вне ClientFence, или отклоните её на вкладке Партнёр в профиле клиента."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Pay on the first paid invoice of each service only. Off: every renewal pays too."
+msgstr "Платить только с первого оплаченного счёта каждой услуги. Выкл.: каждое продление тоже оплачивается."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Payment to your payout details"
+msgstr "Платёж на ваши реквизиты для выплаты"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout"
+msgstr "Выплата"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout details"
+msgstr "Реквизиты для выплаты"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Payout details:"
+msgstr "Реквизиты для выплаты:"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Payout request not found"
+msgstr "Запрос на выплату не найден"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requested"
+msgstr "Выплата запрошена"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Payout requests"
+msgstr "Запросы на выплату"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requests and how each was handled. Account credit is added to the client's credit balance at once; paid outside only records a payment you made yourself."
+msgstr "Запросы на выплату и то, как был обработан каждый. Кредит на счёте сразу добавляется к кредитному балансу клиента; Оплачено вне только фиксирует платёж, который вы сделали сами."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payouts"
+msgstr "Выплаты"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reactivate"
+msgstr "Активировать снова"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first."
+msgstr "Зафиксировать :amount как оплаченные вне ClientFence (банк, PayPal)? Сначала оплатите сами."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Referrals"
+msgstr "Рекомендации"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Referred orders"
+msgstr "Заказы по рекомендации"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Refund: commission taken back"
+msgstr "Возврат: комиссия отозвана"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove this order from the affiliate? Commissions it already earned stay."
+msgstr "Убрать этот заказ у партнёра? Уже заработанные комиссии останутся."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Requested"
+msgstr "Запрошено"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Requests waiting for you. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "Запросы, ожидающие вас. Сумма резервируется из доступного баланса партнёра, пока вы не выплатите её или не отклоните запрос."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reversal"
+msgstr "Отмена"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Services ordered through this affiliate's link or assigned to it by staff, and what each earned."
+msgstr "Услуги, заказанные по ссылке этого партнёра или назначенные ему сотрудником, и сколько заработала каждая."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Share it anywhere. Orders placed within :days days of a visit through your link count for you."
+msgstr "Делитесь ею где угодно. Заказы, сделанные в течение :days дн. после визита по вашей ссылке, засчитываются вам."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Shown on the Affiliates page to clients who have not joined yet: how the program works and what it pays."
+msgstr "Показывается на странице Партнёры клиентам, которые ещё не присоединились: как работает программа и сколько она выплачивает."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Signup Text"
+msgstr "Текст регистрации"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Signups"
+msgstr "Регистрации"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Source"
+msgstr "Источник"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Start typing the affiliate name or code"
+msgstr "Начните вводить имя или код партнёра"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Tell us how to pay you (payout details)."
+msgstr "Сообщите, как нам вам платить (реквизиты для выплаты)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can ask for a payout."
+msgstr "Владелец аккаунта может запросить выплату."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can join the program."
+msgstr "Владелец аккаунта может присоединиться к программе."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The affiliate balance no longer covers this payout. Decline it or add a manual entry first."
+msgstr "Баланса партнёра больше не хватает на эту выплату. Отклоните её или сначала добавьте запись вручную."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The affiliate earns on invoices of this order paid from now on."
+msgstr "Партнёр зарабатывает на счетах этого заказа, оплаченных с этого момента."
+
+#: src/modules/Client/Api/Client.php src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The affiliate program is not available."
+msgstr "Партнёрская программа недоступна."
+
+#: src/modules/Client/Api/Client.php
+msgid "The affiliate program is not open for sign-ups."
+msgstr "Партнёрская программа закрыта для регистрации."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The affiliate sees this note in its commission history."
+msgstr "Партнёр видит это примечание в своей истории комиссий."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "The available balance an affiliate needs before it can ask for a payout."
+msgstr "Доступный баланс, который нужен партнёру, прежде чем он сможет запросить выплату."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The bonus deposit can be paid out once a first commission has cleared."
+msgstr "Бонусный депозит можно выплатить после подтверждения первой комиссии."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "The commission amount must be a number of zero or more."
+msgstr "Сумма комиссии должна быть числом, не меньшим нуля."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The minimum payout is :amount."
+msgstr "Минимальная выплата: :amount."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The payout details are too long."
+msgstr "Реквизиты для выплаты слишком длинные."
+
+#: src/modules/Client/Privacy.php
+msgid "This client has an affiliate payout request waiting. Pay or decline it first."
+msgstr "У этого клиента есть ожидающий запрос на партнёрскую выплату. Сначала оплатите или отклоните его."
+
+#: src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php
+msgid "This client is not an affiliate."
+msgstr "Этот клиент не является партнёром."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order."
+msgstr "Этот клиент не является партнёром. Партнёр делится ссылкой на ваш сайт и получает комиссию с услуг, которые заказывают его посетители."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "This order has no affiliate."
+msgstr "У этого заказа нет партнёра."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "This payout request was already handled."
+msgstr "Этот запрос на выплату уже обработан."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "To become an affiliate, please contact us."
+msgstr "Чтобы стать партнёром, свяжитесь с нами."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Turn on the affiliate program"
+msgstr "Включить партнёрскую программу"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Unassign"
+msgstr "Снять назначение"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown affiliate status."
+msgstr "Неизвестный статус партнёра."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown commission type."
+msgstr "Неизвестный тип комиссии."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Visitors, signups and commissions of your affiliate link last month."
+msgstr "Посетители, регистрации и комиссии вашей партнёрской ссылки за прошлый месяц."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Waiting for the service until :date"
+msgstr "Ожидание услуги до :date"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We added your affiliate payout to your account credit. It pays your next invoices."
+msgstr "Мы добавили вашу партнёрскую выплату к кредиту на вашем счёте. Он оплатит ваши следующие счета."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "We declined your affiliate payout request of %amount%. The amount is back in your available balance."
+msgstr "Мы отклонили ваш запрос на партнёрскую выплату на сумму %amount%. Сумма вернулась в ваш доступный баланс."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We sent your affiliate payout using the payout details you gave us."
+msgstr "Мы отправили вашу партнёрскую выплату на реквизиты, которые вы нам указали."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Welcome to the affiliate program. Share your link to start earning."
+msgstr "Добро пожаловать в партнёрскую программу. Поделитесь своей ссылкой, чтобы начать зарабатывать."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission."
+msgstr "Сколько партнёры зарабатывают на этом продукте. По умолчанию использует партнёрские настройки; партнёр со своей комиссией сохраняет её, кроме случаев, когда продукт не выплачивает комиссию."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You asked for a payout of :amount on :date. We will let you know by email when it is handled."
+msgstr "Вы запросили выплату :amount :date. Мы сообщим вам по электронной почте, когда запрос будет обработан."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You can ask for a payout once :amount is available."
+msgstr "Вы можете запросить выплату, когда будет доступно :amount."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "You can ask for at most :amount."
+msgstr "Вы можете запросить не более :amount."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your affiliate account is not active."
+msgstr "Ваш аккаунт партнёра неактивен."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Your affiliate account is not active. Please contact us."
+msgstr "Ваш аккаунт партнёра неактивен. Свяжитесь с нами."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate account is not active. Your link does not count new visits or orders. Please contact us."
+msgstr "Ваш аккаунт партнёра неактивен. Ваша ссылка не учитывает новые визиты и заказы. Свяжитесь с нами."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate link"
+msgstr "Ваша партнёрская ссылка"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate link:"
+msgstr "Ваша партнёрская ссылка:"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid"
+msgstr "Ваша партнёрская выплата на сумму %amount% оплачена"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid."
+msgstr "Ваша партнёрская выплата на сумму %amount% оплачена."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request of %amount% was declined."
+msgstr "Ваш запрос на партнёрскую выплату на сумму %amount% отклонён."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request was declined"
+msgstr "Ваш запрос на партнёрскую выплату отклонён"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report"
+msgstr "Ваш партнёрский отчёт"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report for %month%"
+msgstr "Ваш партнёрский отчёт за %month%"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your bonus of %amount% is held until your first commission clears."
+msgstr "Ваш бонус %amount% удерживается, пока не будет подтверждена ваша первая комиссия."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your bonus of :amount is held until your first commission clears; then you can have it paid out."
+msgstr "Ваш бонус :amount удерживается, пока не будет подтверждена ваша первая комиссия; затем вы сможете получить его выплатой."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your payout request is already waiting."
+msgstr "Ваш запрос на выплату уже ожидает."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your payout request was declined"
+msgstr "Ваш запрос на выплату отклонён"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your payout request was sent. We will let you know by email."
+msgstr "Ваш запрос на выплату отправлен. Мы сообщим вам по электронной почте."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your payout was paid"
+msgstr "Ваша выплата оплачена"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "clears on :date"
+msgstr "подтверждается :date"

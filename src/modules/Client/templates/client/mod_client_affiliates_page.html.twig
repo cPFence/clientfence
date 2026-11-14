@@ -1,0 +1,198 @@
+{# ClientFence, Affiliates (/affiliates, Client/Affiliates): the affiliate program. Before joining: the signup text and
+   Join (when clients may join; the account owner and owner links only). An affiliate: its link with Copy, visitors,
+   signups and conversion, the balances (the bonus deposit is held until a first commission clears), its referred
+   orders (product, status and commission; never who ordered), the commission history and the payout request (the
+   account owner only; one at a time, from the minimum). affiliate_page comes from client_affiliate_get. Forms come
+   back with ?done=<what happened>. #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'affiliates' %}
+
+{% block meta_title %}{{ 'Affiliates'|trans }}{% endblock %}
+{% block page_header %}{{ 'Affiliates'|trans }}{% endblock %}
+{% block body_class %}clientfence-affiliates{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Affiliates'|trans }}</li>{% endblock %}
+
+{% block content %}
+{% set affiliate = affiliate_page.affiliate %}
+{% set is_owner = not clientfence_user or clientfence_user.owner %}
+{% set done = { joined: 'Welcome to the affiliate program. Share your link to start earning.'|trans, requested: 'Your payout request was sent. We will let you know by email.'|trans } %}
+
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Affiliates'|trans }}</h1>
+        <p class="bf-hint mb-0">{{ 'Earn a commission when people you refer order from us.'|trans }}</p>
+    </div>
+</div>
+
+{% if done[request.done|default('')] is defined %}
+    <div class="alert alert-success" role="status">{{ done[request.done] }}</div>
+{% endif %}
+
+{% if not affiliate_page.enabled %}
+    <div class="card"><div class="empty-state">{{ 'The affiliate program is not available.'|trans }}</div></div>
+{% elseif not affiliate %}
+    <div class="card">
+        <div class="card-header"><h2>{{ 'Join the affiliate program'|trans }}</h2></div>
+        <div class="card-body">
+            {% if affiliate_page.signup_text %}
+                <p>{{ affiliate_page.signup_text|nl2br }}</p>
+            {% endif %}
+            {% if affiliate_page.join and is_owner %}
+                <form action="{{ 'client/affiliate_join'|api_url }}" {{ fb_api_form({ redirect: 'affiliates'|url(query: { done: 'joined' }) }) }}>
+                    <button type="submit" class="btn btn-primary">{{ 'Join now'|trans }}</button>
+                </form>
+            {% elseif affiliate_page.join %}
+                <p class="bf-hint mb-0">{{ 'The account owner can join the program.'|trans }}</p>
+            {% else %}
+                <p class="bf-hint mb-0">{{ 'To become an affiliate, please contact us.'|trans }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    {% set currency = affiliate.currency %}
+    {% if affiliate.status != 'active' %}
+        <div class="alert alert-warning" role="status">{{ 'Your affiliate account is not active. Your link does not count new visits or orders. Please contact us.'|trans }}</div>
+    {% endif %}
+
+    <div class="card mb-4">
+        <div class="card-header"><h2>{{ 'Your affiliate link'|trans }}</h2></div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" type="text" id="clientfence-affiliate-link" value="{{ affiliate.link }}" dir="ltr" readonly aria-label="{{ 'Your affiliate link'|trans }}">
+                <button class="btn btn-outline-secondary" type="button" data-bf-copy="{{ affiliate.link }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg> {{ 'Copy'|trans }}</button>
+            </div>
+            <p class="bf-hint mt-2 mb-0">{{ 'Share it anywhere. Orders placed within :days days of a visit through your link count for you.'|trans({ ':days': affiliate_page.cookie_days }) }}</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">{{ 'Visitors'|trans }}</div>
+                <div class="stat-value">{{ affiliate.visitors }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">{{ 'Signups'|trans }}</div>
+                <div class="stat-value">{{ affiliate.signups }}</div>
+                <div class="stat-meta">{{ 'Conversion rate: :rate'|trans({ ':rate': (affiliate.visitors > 0 ? (affiliate.signups / affiliate.visitors * 100)|round(1) : 0) ~ '%' }) }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">{{ 'Pending'|trans }}</div>
+                <div class="stat-value">{{ affiliate.pending|format_currency(currency) }}</div>
+                <div class="stat-meta">{{ 'Clears after the waiting period'|trans }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">{{ 'Available'|trans }}</div>
+                <div class="stat-value">{{ affiliate.available|format_currency(currency) }}</div>
+                <div class="stat-meta">{{ 'Paid out: :amount'|trans({ ':amount': affiliate.paid_out|format_currency(currency) }) }}</div>
+            </div>
+        </div>
+    </div>
+    {% if affiliate.held > 0 %}
+        <div class="alert alert-info" role="status">{{ 'Your bonus of :amount is held until your first commission clears; then you can have it paid out.'|trans({ ':amount': affiliate.held|format_currency(currency) }) }}</div>
+    {% endif %}
+
+    <div class="card mb-4">
+        <div class="card-header"><h2>{{ 'Payout'|trans }}</h2></div>
+        <div class="card-body">
+            {% if affiliate.request %}
+                <p class="mb-0">{{ 'You asked for a payout of :amount on :date. We will let you know by email when it is handled.'|trans({ ':amount': affiliate.request.amount|format_currency(affiliate.request.currency), ':date': affiliate.request.created_at|format_date }) }}</p>
+            {% elseif not is_owner %}
+                <p class="bf-hint mb-0">{{ 'The account owner can ask for a payout.'|trans }}</p>
+            {% else %}
+                {% if affiliate.minimum > 0 %}
+                    <p class="bf-hint">{{ 'You can ask for a payout once :amount is available.'|trans({ ':amount': affiliate.minimum|format_currency(currency) }) }}</p>
+                {% endif %}
+                <form action="{{ 'client/affiliate_payout_request'|api_url }}" {{ fb_api_form({ redirect: 'affiliates'|url(query: { done: 'requested' }) }) }}>
+                    <fieldset{% if not affiliate.can_request %} disabled{% endif %}>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label" for="clientfence-payout-amount">{{ 'Amount'|trans }}</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" id="clientfence-payout-amount" name="amount" min="{{ max(affiliate.minimum, 0.01) }}" max="{{ max(affiliate.available, 0) }}" step="0.01" value="{{ max(affiliate.available, 0) }}" inputmode="decimal" required>
+                                    <span class="input-group-text">{{ currency }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label" for="clientfence-payout-details">{{ 'Payout details'|trans }}</label>
+                                <textarea class="form-control" id="clientfence-payout-details" name="details" rows="3" maxlength="2000" required></textarea>
+                                <div class="form-text">{{ 'How should we pay you? For example your PayPal address or bank details, or "account credit".'|trans }}</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">{{ 'Ask for a payout'|trans }}</button>
+                    </fieldset>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% set referrals = client.client_affiliate_referrals({ page: request.referrals_page|default(1), per_page: 10 }) %}
+    <div class="card mb-4" id="referrals">
+        <div class="card-header"><h2>{{ 'Referrals'|trans }}</h2></div>
+        {% if referrals.list is empty %}
+            <div class="empty-state">{{ 'No referrals yet.'|trans }}</div>
+        {% else %}
+            <div class="list-group list-group-flush">
+                {% for referral in referrals.list %}
+                    <div class="list-group-item py-3 d-flex flex-wrap justify-content-between align-items-start gap-2">
+                        <div class="min-w-0">
+                            <div class="fw-semibold">{{ referral.product ?: 'Service'|trans }}</div>
+                            <div class="small text-body-secondary">{{ referral.created_at|format_date }}{% if referral.status %} · {{ referral.status in ['active', 'failed_renew'] ? 'Active'|trans : (referral.status == 'canceled' ? 'Canceled'|trans : (referral.status == 'suspended' ? 'Suspended'|trans : 'Pending'|trans)) }}{% endif %}</div>
+                        </div>
+                        <div class="fw-semibold">{{ referral.earned|format_currency(currency) }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if referrals.pages > 1 %}
+                <div class="card-footer">{{ include('partial_pagination.html.twig', { 'list': referrals, 'url': 'affiliates', 'page_param': 'referrals_page', 'hash': '#referrals' }) }}</div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% set entries = client.client_affiliate_entries({ page: request.history_page|default(1), per_page: 10 }) %}
+    {% set entry_types = { commission: 'Commission'|trans, reversal: 'Refund: commission taken back'|trans, bonus: 'Bonus deposit'|trans, manual: 'Adjustment'|trans, payout: 'Payout'|trans, opening: 'Opening balance'|trans } %}
+    {% set entry_statuses = { pending: 'Pending'|trans, cleared: 'Cleared'|trans, cancelled: 'Cancelled'|trans } %}
+    <div class="card" id="history">
+        <div class="card-header"><h2>{{ 'Commission history'|trans }}</h2></div>
+        {% if entries.list is empty %}
+            <div class="empty-state">{{ 'No commissions yet.'|trans }}</div>
+        {% else %}
+            <div class="list-group list-group-flush">
+                {% for entry in entries.list %}
+                    <div class="list-group-item py-3 d-flex flex-wrap justify-content-between align-items-start gap-2">
+                        <div class="min-w-0">
+                            <div class="fw-semibold">{{ entry_types[entry.type] ?? entry.type }}</div>
+                            <div class="small text-body-secondary">
+                                {{ entry.created_at|format_date }} · {{ entry_statuses[entry.status] ?? entry.status }}{% if entry.status == 'pending' and entry.clears_at %} · {{ 'clears on :date'|trans({ ':date': entry.clears_at|format_date }) }}{% endif %}
+                            </div>
+                            {% if entry.note %}<div class="small text-body-secondary text-break">{{ entry.note }}</div>{% endif %}
+                        </div>
+                        <div class="fw-semibold{% if entry.status == 'cancelled' %} text-decoration-line-through text-body-secondary{% endif %}">{{ entry.amount|format_currency(entry.currency) }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if entries.pages > 1 %}
+                <div class="card-footer">{{ include('partial_pagination.html.twig', { 'list': entries, 'url': 'affiliates', 'page_param': 'history_page', 'hash': '#history' }) }}</div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
+{% block js %}
+{% autoescape "js" %}
+    <script nonce="{{ csp_nonce|raw }}">
+        document.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-bf-copy]');
+            if (button) {
+                navigator.clipboard?.writeText(button.dataset.bfCopy).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'));
+            }
+        });
+    </script>
+{% endautoescape %}
+{% endblock %}

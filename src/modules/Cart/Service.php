@@ -1147,6 +1147,10 @@ class Service implements InjectionAwareInterface
 
                     $master_order ??= $order;
                 }
+                // ClientFence core patch: the affiliate cookie refers a client's own checkout, never a staff order (Client/Affiliates/Link.php).
+                if ($staff === null) {
+                    \ClientFence\Mod\Client\Affiliates\Link::attribute($this->di, $this->clientId($client), array_map(static fn (Order $o): ?int => $o->getId(), $orders));
+                }
 
                 // A quote (staffOrder()) stops before anything is paid, used or activated, a free order too.
                 if (!empty($staff['quote']) && $ca['total'] <= 0) {

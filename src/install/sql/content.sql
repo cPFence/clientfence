@@ -333,7 +333,8 @@ VALUES
 	-- ClientFence core patch: fresh installs include the private client records migration.
 	-- ClientFence core patch: fresh installs include the ticket secret table migration.
 	-- ClientFence core patch: fresh installs include the Support PIN table migration.
-	(33,'clientfence_patch','8',0,NULL,NULL,NOW(),NOW()),
+	-- ClientFence core patch: fresh installs include the affiliate tables migration.
+	(33,'clientfence_patch','9',0,NULL,NULL,NOW(),NOW()),
 	(34,'clientfence_setup','pending',0,NULL,NULL,NOW(),NOW()),
 	(35,'invoice_series_paid','CF',0,NULL,NULL,NOW(),NOW());
 

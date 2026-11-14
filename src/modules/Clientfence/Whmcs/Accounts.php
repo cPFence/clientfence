@@ -64,7 +64,7 @@ final class Accounts
     /** WHMCS contact email flags => contact email kinds (Contacts::KINDS). */
     private const CONTACT_KINDS = [
         'generalemails' => 'general', 'invoiceemails' => 'invoice', 'productemails' => 'product',
-        'domainemails' => 'domain', 'supportemails' => 'support',
+        'domainemails' => 'domain', 'supportemails' => 'support', 'affiliateemails' => 'affiliate',
     ];
 
     private const CUSTOM_SLOTS = 20;

@@ -24919,3 +24919,724 @@ msgstr "Temadan sonra her müşteri alanı sayfasında yüklenir. Yalnızca Süp
 #: src/themes/palisade/config/settings.html.twig
 msgid "Use custom CSS"
 msgstr "Özel CSS kullan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "%affiliate% asked for an affiliate payout of %amount%. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "%affiliate% %amount% tutarında bir ortaklık ödemesi talep etti. Tutar, siz ödeyene veya reddedene kadar ortağın kullanılabilir bakiyesinden ayrılır."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A new affiliate's starting balance. It can be paid out once a first commission has cleared."
+msgstr "Yeni bir ortağın başlangıç bakiyesi. İlk komisyon onaylandıktan sonra ödenebilir."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "A note is required."
+msgstr "Not gereklidir."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the affiliate's currency. Used with Percentage or Fixed amount."
+msgstr "Müşterinin ödediği tutarın yüzdesi veya ortağın para biriminde sabit bir tutar. Yüzde veya Sabit tutar ile kullanılır."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the default currency."
+msgstr "Müşterinin ödediği tutarın yüzdesi veya varsayılan para biriminde sabit bir tutar."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A product can pay another commission or none (product page), and an affiliate can have its own (client page). The affiliate's own wins, then the product's; a product set to No commission never pays."
+msgstr "Bir ürün başka bir komisyon ödeyebilir veya hiç ödemeyebilir (ürün sayfası), bir ortağın da kendi komisyonu olabilir (müşteri sayfası). Önce ortağınki, sonra ürününki geçerlidir; Komisyon yok olarak ayarlı ürün asla ödemez."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Activate as affiliate"
+msgstr "Ortak olarak etkinleştir"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Add :amount to the client's account credit?"
+msgstr ":amount müşterinin hesap kredisine eklensin mi?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add entry"
+msgstr "Kayıt ekle"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add manual entry"
+msgstr "Elle kayıt ekle"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Add-on and domain orders do not earn affiliate commissions."
+msgstr "Eklenti ve alan adı siparişleri ortaklık komisyonu kazandırmaz."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Adjustment"
+msgstr "Düzeltme"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
+msgid "Affiliate"
+msgstr "Ortak"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Affiliate Commission"
+msgstr "Ortaklık Komisyonu"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliate Program"
+msgstr "Ortaklık Programı"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate account"
+msgstr "Ortak hesabı"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Affiliate link"
+msgstr "Ortaklık bağlantısı"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Affiliate not found"
+msgstr "Ortak bulunamadı"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request"
+msgstr "Ortaklık ödeme talebi"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request from %name%"
+msgstr "%name% tarafından ortaklık ödeme talebi"
+
+#: src/modules/Client/Contacts.php
+msgid "Affiliate program"
+msgstr "Ortaklık programı"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate since"
+msgstr "Ortaklık başlangıcı"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+msgid "Affiliates"
+msgstr "Ortaklar"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliates share a link to your site and earn a commission on each paid invoice of the services their visitors order: products, setup fees and options, not domains, add-ons or upgrades. A commission clears after the clearing days if the service is still active, then the affiliate can ask for a payout."
+msgstr "Ortaklar sitenize bir bağlantı paylaşır ve ziyaretçilerinin sipariş ettiği hizmetlerin her ödenmiş faturası için komisyon kazanır: ürünler, kurulum ücretleri ve seçenekler; alan adları, eklentiler veya yükseltmeler hariç. Hizmet hâlâ etkinse bir komisyon onay günlerinden sonra onaylanır, ardından ortak ödeme talep edebilir."
+
+#: src/modules/Client/Service.php
+msgid "Allows the staff member to activate affiliates, change their commissions, add ledger entries, assign orders and pay or decline payout requests."
+msgstr "Personelin ortakları etkinleştirmesine, komisyonlarını değiştirmesine, defter kayıtları eklemesine, siparişleri atamasına ve ödeme taleplerini ödemesine veya reddetmesine izin verir."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Also reverse the affiliate commission"
+msgstr "Ortaklık komisyonunu da geri al"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Amounts are in the affiliate's currency. Pending commissions clear after the clearing days if the service is still active."
+msgstr "Tutarlar ortağın para birimindedir. Bekleyen komisyonlar, hizmet hâlâ etkinse onay günlerinden sonra onaylanır."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "An affiliate cannot be referred to its own orders."
+msgstr "Bir ortak kendi siparişlerine yönlendirici olarak atanamaz."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "As account credit"
+msgstr "Hesap kredisi olarak"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Ask for a payout"
+msgstr "Ödeme talep et"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign"
+msgstr "Ata"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign an affiliate"
+msgstr "Ortak ata"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assigned by staff"
+msgstr "Personel tarafından atandı"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Available"
+msgstr "Kullanılabilir"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Balances and Payouts"
+msgstr "Bakiyeler ve ödemeler"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Bonus Deposit"
+msgstr "Bonus Depozito"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Bonus deposit"
+msgstr "Bonus depozito"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Cancel this pending commission? It will not be paid."
+msgstr "Bu bekleyen komisyon iptal edilsin mi? Ödenmeyecek."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Choose how the payout was paid."
+msgstr "Ödemenin nasıl yapıldığını seçin."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Cleared"
+msgstr "Onaylandı"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clearing Days"
+msgstr "Onay Günleri"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Clears after the waiting period"
+msgstr "Bekleme süresinden sonra onaylanır"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Clears on :date"
+msgstr ":date tarihinde onaylanır"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client's Affiliate tab."
+msgstr "Müşteriler programı müşteri alanındaki Ortaklar sayfasında bulur. Personel, müşterinin Ortak sekmesinden herhangi bir müşteriyi ortak yapabilir."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients may join by themselves"
+msgstr "Müşteriler kendileri katılabilir"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Commission"
+msgstr "Komisyon"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission Type"
+msgstr "Komisyon Türü"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission for this affiliate"
+msgstr "Bu ortak için komisyon"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Commission history"
+msgstr "Komisyon geçmişi"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Commission not found"
+msgstr "Komisyon bulunamadı"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commissions"
+msgstr "Komisyonlar"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Commissions earned"
+msgstr "Kazanılan komisyonlar"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Conversion rate: :rate"
+msgstr "Dönüşüm oranı: :rate"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Cookie Days"
+msgstr "Çerez Günleri"
+
+#: src/modules/Client/Service.php
+msgid "Currency cannot be changed. Client already has affiliate earnings."
+msgstr "Para birimi değiştirilemez. Müşterinin zaten ortaklık kazançları var."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Currency rate for :code is not configured."
+msgstr ":code için kur yapılandırılmadı."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Deactivate this affiliate? Its link stops counting and its orders stop earning until it is active again."
+msgstr "Bu ortak devre dışı bırakılsın mı? Bağlantısı saymayı bırakır ve siparişleri yeniden etkin olana kadar kazanç sağlamaz."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline"
+msgstr "Reddet"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline this payout request?"
+msgstr "Bu ödeme talebi reddedilsin mi?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Default (product or settings)"
+msgstr "Varsayılan (ürün veya ayarlar)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Default Commission"
+msgstr "Varsayılan Komisyon"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Earn a commission when people you refer order from us."
+msgstr "Yönlendirdiğiniz kişiler bizden sipariş verdiğinde komisyon kazanın."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Earned"
+msgstr "Kazanılan"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Enter an amount other than zero."
+msgstr "Sıfırdan farklı bir tutar girin."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Enter the amount to pay out."
+msgstr "Ödenecek tutarı girin."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
+msgstr "Her komisyon, geri alma, bonus, elle kayıt ve ödeme. Bakiyeler bunların toplamıdır."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "For a partial refund. A refund of the whole invoice always reverses it."
+msgstr "Kısmi iade için. Faturanın tamamının iadesi her zaman geri alır."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Held bonus"
+msgstr "Tutulan bonus"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Here is how your affiliate link did last month, and your balances today."
+msgstr "Ortaklık bağlantınızın geçen ay nasıl performans gösterdiği ve bugünkü bakiyeleriniz."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a commission stays pending, so refunds and cancellations can take it back. 0: it clears at once."
+msgstr "Bir komisyonun bekleyen kalma süresi; böylece iadeler ve iptaller onu geri alabilir. 0: hemen onaylanır."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins)."
+msgstr "Ortaklık bağlantısı üzerinden bir ziyaretin ne kadar süre sayıldığı (clientfence_aff çerezi; son tıklanan bağlantı geçerlidir)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "How should we pay you? For example your PayPal address or bank details, or \"account credit\"."
+msgstr "Size nasıl ödeme yapalım? Örneğin PayPal adresiniz veya banka bilgileriniz ya da \"hesap kredisi\"."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "If you have questions, please reply to this email or contact us."
+msgstr "Sorularınız varsa lütfen bu e-postayı yanıtlayın veya bizimle iletişime geçin."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join now"
+msgstr "Şimdi katıl"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join the affiliate program"
+msgstr "Ortaklık programına katıl"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Make this client an affiliate?"
+msgstr "Bu müşteri ortak yapılsın mı?"
+
+#: src/modules/Client/Service.php
+msgid "Manage Affiliates"
+msgstr "Ortakları Yönet"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Manual entry"
+msgstr "Elle kayıt"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Mark paid"
+msgstr "Ödendi olarak işaretle"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Minimum Payout"
+msgstr "Minimum Ödeme"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Negative to take an amount off. It counts as available at once."
+msgstr "Bir tutarı düşmek için negatif girin. Hemen kullanılabilir sayılır."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client's Affiliate tab."
+msgstr "Henüz ortak yok. Müşteriler müşteri alanındaki Ortaklar sayfasında katılır veya personel onları müşterinin Ortak sekmesinden etkinleştirir."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "No commission"
+msgstr "Komisyon yok"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No commissions yet."
+msgstr "Henüz komisyon yok."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "No payout requests."
+msgstr "Ödeme talebi yok."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No referrals yet."
+msgstr "Henüz yönlendirme yok."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "No referred orders yet."
+msgstr "Henüz yönlendirilen sipariş yok."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Note for the affiliate (optional)"
+msgstr "Ortak için not (isteğe bağlı)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "One-time commission"
+msgstr "Tek seferlik komisyon"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "One-time commission: pay on the first paid invoice of each service only"
+msgstr "Tek seferlik komisyon: yalnızca her hizmetin ilk ödenen faturasında öde"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Only a pending commission can be cancelled."
+msgstr "Yalnızca bekleyen bir komisyon iptal edilebilir."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate's currency."
+msgstr "Yönlendirdiği siparişleri, komisyonları ve ödemeleri görmek için bir ortak açın. Tutarlar her ortağın para biriminde."
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Open the Affiliate tab"
+msgstr "Ortak sekmesini aç"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Open your affiliate page"
+msgstr "Ortaklık sayfanızı açın"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Our note:"
+msgstr "Notumuz:"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Overrides the product and default commissions, except on products that pay no commission."
+msgstr "Komisyon ödemeyen ürünler hariç, ürün ve varsayılan komisyonların yerine geçer."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Paid :amount"
+msgstr ":amount ödendi"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Paid as"
+msgstr "Ödeme şekli"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Paid out"
+msgstr "Ödendi"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Paid out: :amount"
+msgstr "Ödenen: :amount"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Paid outside ClientFence"
+msgstr "ClientFence dışında ödendi"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Pay as credit"
+msgstr "Kredi olarak öde"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Pay it as account credit, record a payment you made outside ClientFence, or decline it on the client's Affiliate tab."
+msgstr "Hesap kredisi olarak ödeyin, ClientFence dışında yaptığınız bir ödemeyi kaydedin veya müşterinin Ortak sekmesinde reddedin."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Pay on the first paid invoice of each service only. Off: every renewal pays too."
+msgstr "Yalnızca her hizmetin ilk ödenen faturasında öde. Kapalı: her yenileme de öder."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Payment to your payout details"
+msgstr "Ödeme bilgilerinize ödeme"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout"
+msgstr "Ödeme"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout details"
+msgstr "Ödeme bilgileri"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Payout details:"
+msgstr "Ödeme bilgileri:"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Payout request not found"
+msgstr "Ödeme talebi bulunamadı"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requested"
+msgstr "Ödeme talep edildi"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Payout requests"
+msgstr "Ödeme talepleri"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requests and how each was handled. Account credit is added to the client's credit balance at once; paid outside only records a payment you made yourself."
+msgstr "Ödeme talepleri ve her birinin nasıl ele alındığı. Hesap kredisi hemen müşterinin kredi bakiyesine eklenir; Dışarıda ödendi yalnızca sizin yaptığınız bir ödemeyi kaydeder."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payouts"
+msgstr "Ödemeler"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reactivate"
+msgstr "Yeniden etkinleştir"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first."
+msgstr ":amount ClientFence dışında ödendi olarak kaydedilsin mi (banka, PayPal)? Önce ödemeyi kendiniz yapın."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Referrals"
+msgstr "Yönlendirmeler"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Referred orders"
+msgstr "Yönlendirilen siparişler"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Refund: commission taken back"
+msgstr "İade: komisyon geri alındı"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove this order from the affiliate? Commissions it already earned stay."
+msgstr "Bu sipariş ortaktan kaldırılsın mı? Zaten kazandığı komisyonlar kalır."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Requested"
+msgstr "Talep edildi"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Requests waiting for you. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "Sizi bekleyen talepler. Tutar, siz ödeyene veya reddedene kadar ortağın kullanılabilir bakiyesinden ayrılır."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reversal"
+msgstr "Geri alma"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Services ordered through this affiliate's link or assigned to it by staff, and what each earned."
+msgstr "Bu ortağın bağlantısı üzerinden sipariş edilen veya personel tarafından ona atanan hizmetler ve her birinin kazandırdığı."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Share it anywhere. Orders placed within :days days of a visit through your link count for you."
+msgstr "Her yerde paylaşın. Bağlantınız üzerinden yapılan bir ziyaretten sonraki :days gün içinde verilen siparişler size sayılır."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Shown on the Affiliates page to clients who have not joined yet: how the program works and what it pays."
+msgstr "Henüz katılmamış müşterilere Ortaklar sayfasında gösterilir: programın nasıl çalıştığı ve ne ödediği."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Signup Text"
+msgstr "Kayıt Metni"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Signups"
+msgstr "Kayıtlar"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Source"
+msgstr "Kaynak"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Start typing the affiliate name or code"
+msgstr "Ortağın adını veya kodunu yazmaya başlayın"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Tell us how to pay you (payout details)."
+msgstr "Size nasıl ödeme yapacağımızı söyleyin (ödeme bilgileri)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can ask for a payout."
+msgstr "Hesap sahibi ödeme talep edebilir."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can join the program."
+msgstr "Hesap sahibi programa katılabilir."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The affiliate balance no longer covers this payout. Decline it or add a manual entry first."
+msgstr "Ortak bakiyesi artık bu ödemeyi karşılamıyor. Reddedin veya önce elle kayıt ekleyin."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The affiliate earns on invoices of this order paid from now on."
+msgstr "Ortak, bu siparişin bundan sonra ödenen faturalarından kazanç sağlar."
+
+#: src/modules/Client/Api/Client.php src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The affiliate program is not available."
+msgstr "Ortaklık programı kullanılamıyor."
+
+#: src/modules/Client/Api/Client.php
+msgid "The affiliate program is not open for sign-ups."
+msgstr "Ortaklık programı kayıtlara açık değil."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The affiliate sees this note in its commission history."
+msgstr "Ortak bu notu komisyon geçmişinde görür."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "The available balance an affiliate needs before it can ask for a payout."
+msgstr "Bir ortağın ödeme talep edebilmesi için gereken kullanılabilir bakiye."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The bonus deposit can be paid out once a first commission has cleared."
+msgstr "Bonus depozito, ilk komisyon onaylandıktan sonra ödenebilir."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "The commission amount must be a number of zero or more."
+msgstr "Komisyon tutarı sıfır veya daha büyük bir sayı olmalıdır."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The minimum payout is :amount."
+msgstr "Minimum ödeme :amount."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The payout details are too long."
+msgstr "Ödeme bilgileri çok uzun."
+
+#: src/modules/Client/Privacy.php
+msgid "This client has an affiliate payout request waiting. Pay or decline it first."
+msgstr "Bu müşterinin bekleyen bir ortaklık ödeme talebi var. Önce ödeyin veya reddedin."
+
+#: src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php
+msgid "This client is not an affiliate."
+msgstr "Bu müşteri bir ortak değil."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order."
+msgstr "Bu müşteri bir ortak değil. Ortak, sitenize bir bağlantı paylaşır ve ziyaretçilerinin sipariş ettiği hizmetlerden komisyon kazanır."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "This order has no affiliate."
+msgstr "Bu siparişin ortağı yok."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "This payout request was already handled."
+msgstr "Bu ödeme talebi zaten ele alındı."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "To become an affiliate, please contact us."
+msgstr "Ortak olmak için lütfen bizimle iletişime geçin."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Turn on the affiliate program"
+msgstr "Ortaklık programını aç"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Unassign"
+msgstr "Atamayı kaldır"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown affiliate status."
+msgstr "Bilinmeyen ortak durumu."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown commission type."
+msgstr "Bilinmeyen komisyon türü."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Visitors, signups and commissions of your affiliate link last month."
+msgstr "Ortaklık bağlantınızın geçen aydaki ziyaretçileri, kayıtları ve komisyonları."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Waiting for the service until :date"
+msgstr "Hizmet için :date tarihine kadar bekleniyor"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We added your affiliate payout to your account credit. It pays your next invoices."
+msgstr "Ortaklık ödemenizi hesap kredinize ekledik. Sonraki faturalarınızı öder."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "We declined your affiliate payout request of %amount%. The amount is back in your available balance."
+msgstr "%amount% tutarındaki ortaklık ödeme talebinizi reddettik. Tutar kullanılabilir bakiyenize geri döndü."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We sent your affiliate payout using the payout details you gave us."
+msgstr "Ortaklık ödemenizi bize verdiğiniz ödeme bilgilerini kullanarak gönderdik."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Welcome to the affiliate program. Share your link to start earning."
+msgstr "Ortaklık programına hoş geldiniz. Kazanmaya başlamak için bağlantınızı paylaşın."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission."
+msgstr "Ortakların bu üründen kazandığı. Varsayılan, ortaklık ayarlarını kullanır; kendi komisyonu olan ortak, ürün komisyon ödemiyorsa hariç, onu korur."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You asked for a payout of :amount on :date. We will let you know by email when it is handled."
+msgstr ":date tarihinde :amount tutarında ödeme talep ettiniz. Ele alındığında e-posta ile bildireceğiz."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You can ask for a payout once :amount is available."
+msgstr ":amount kullanılabilir olduğunda ödeme talep edebilirsiniz."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "You can ask for at most :amount."
+msgstr "En fazla :amount talep edebilirsiniz."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your affiliate account is not active."
+msgstr "Ortaklık hesabınız etkin değil."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Your affiliate account is not active. Please contact us."
+msgstr "Ortaklık hesabınız etkin değil. Lütfen bizimle iletişime geçin."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate account is not active. Your link does not count new visits or orders. Please contact us."
+msgstr "Ortaklık hesabınız etkin değil. Bağlantınız yeni ziyaretleri veya siparişleri saymaz. Lütfen bizimle iletişime geçin."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate link"
+msgstr "Ortaklık bağlantınız"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate link:"
+msgstr "Ortaklık bağlantınız:"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid"
+msgstr "%amount% tutarındaki ortaklık ödemeniz yapıldı"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid."
+msgstr "%amount% tutarındaki ortaklık ödemeniz yapıldı."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request of %amount% was declined."
+msgstr "%amount% tutarındaki ortaklık ödeme talebiniz reddedildi."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request was declined"
+msgstr "Ortaklık ödeme talebiniz reddedildi"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report"
+msgstr "Ortaklık raporunuz"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report for %month%"
+msgstr "%month% için ortaklık raporunuz"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your bonus of %amount% is held until your first commission clears."
+msgstr "%amount% tutarındaki bonusunuz, ilk komisyonunuz onaylanana kadar tutulur."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your bonus of :amount is held until your first commission clears; then you can have it paid out."
+msgstr ":amount tutarındaki bonusunuz, ilk komisyonunuz onaylanana kadar tutulur; sonrasında ödenmesini isteyebilirsiniz."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your payout request is already waiting."
+msgstr "Ödeme talebiniz zaten bekliyor."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your payout request was declined"
+msgstr "Ödeme talebiniz reddedildi"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your payout request was sent. We will let you know by email."
+msgstr "Ödeme talebiniz gönderildi. E-posta ile bildireceğiz."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your payout was paid"
+msgstr "Ödemeniz yapıldı"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "clears on :date"
+msgstr ":date tarihinde onaylanır"

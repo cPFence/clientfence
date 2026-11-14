@@ -26,6 +26,9 @@ use ClientFence\Validation\Api\RequiredParams;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Locales;
+use ClientFence\Mod\Client\Affiliates\Affiliates;
+use ClientFence\Mod\Client\Affiliates\Link;
+use ClientFence\Mod\Client\Affiliates\Payouts;
 use ClientFence\Mod\Client\Contacts;
 use ClientFence\Mod\Client\Google;
 use ClientFence\Mod\Client\SupportPin;
@@ -1105,6 +1108,162 @@ class Admin extends \ClientFence\Api\AbstractApi
         Contacts::delete($this->getDi(), (int) ($data['client_id'] ?? 0), (int) ($data['id'] ?? 0), $this->adminId());
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch: the affiliate system (Client/Affiliates). The affiliate account of a client
+     * (`client_id`) with its link, counts and balances, or null.
+     */
+    public function affiliate_get($data): ?array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Affiliates::get($this->getDi(), (int) ($data['client_id'] ?? 0));
+    }
+
+    /** The affiliate program settings (System > Settings > Clients > Affiliates). */
+    public function affiliate_settings(): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Affiliates::settings($this->getDi());
+    }
+
+    /** Active affiliates matching `search` as id => label (`per_page` at most 30), for the order page's Assign. */
+    public function affiliate_get_pairs($data): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Affiliates::pairs($this->getDi()['dbal'], is_array($data) ? $data : []);
+    }
+
+    /** The affiliate that referred an order (`order_id`), or null. */
+    public function affiliate_order($data): ?array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Affiliates::forOrder($this->getDi()['dbal'], (int) ($data['order_id'] ?? 0)) ?: null;
+    }
+
+    /** Whether an invoice (`id`) earned an affiliate commission a refund can take back (the refund dialog). */
+    public function affiliate_invoice_earned($data): bool
+    {
+        $this->checkPermissions('client', 'view');
+
+        return $this->getDi()['dbal']->fetchOne("SELECT 1 FROM client_affiliate_entry WHERE invoice_id = ? AND type = 'commission' AND status <> 'cancelled'", [(int) ($data['id'] ?? 0)]) !== false;
+    }
+
+    /** Affiliates with visitors, signups and balances (`status`: active, inactive), paginated. */
+    public function affiliate_get_list($data): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Affiliates::adminList($this->getDi(), is_array($data) ? $data : []);
+    }
+
+    /** Makes the client (`client_id`) an affiliate, or activates its affiliate account again. */
+    public function affiliate_activate($data): bool
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+        Affiliates::activate($this->getDi(), (int) ($data['client_id'] ?? 0), (int) $this->adminId());
+
+        return true;
+    }
+
+    /**
+     * Changes the client's (`client_id`) affiliate account: `status` (active, inactive) and its own commission
+     * (`commission_type` percentage or fixed, '' for the defaults; `commission_amount`; `onetime`).
+     */
+    public function affiliate_update($data): bool
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+        Affiliates::update($this->getDi(), (int) ($data['client_id'] ?? 0), array_intersect_key(is_array($data) ? $data : [], array_flip(['status', 'commission_type', 'commission_amount', 'onetime'])), (int) $this->adminId());
+
+        return true;
+    }
+
+    /** The orders the client's (`client_id`) affiliate account referred, paginated. */
+    public function affiliate_referrals($data): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Affiliates::referrals($this->getDi(), $this->affiliateId($data), $data, true);
+    }
+
+    /** The ledger of the client's (`client_id`) affiliate account, paginated. */
+    public function affiliate_entries($data): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Affiliates::entries($this->getDi(), $this->affiliateId($data), $data, true);
+    }
+
+    /** Adds a manual ledger row (`amount`, positive or negative, and a `note`) to the client's (`client_id`) affiliate account; returns its id. */
+    public function affiliate_entry_add($data): int
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+
+        return Affiliates::manual($this->getDi(), (int) ($data['client_id'] ?? 0), $data['amount'] ?? null, $data['note'] ?? null, (int) $this->adminId());
+    }
+
+    /** Cancels a commission (`id`) that has not cleared yet. */
+    public function affiliate_commission_cancel($data): bool
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+        Affiliates::cancelPending($this->getDi(), (int) ($data['id'] ?? 0), (int) $this->adminId());
+
+        return true;
+    }
+
+    /** Payout requests (`status`: requested, paid, declined; `client_id`), paginated. */
+    public function affiliate_payout_get_list($data): array
+    {
+        $this->checkPermissions('client', 'view');
+
+        return Payouts::adminList($this->getDi(), is_array($data) ? $data : []);
+    }
+
+    /** Pays a payout request (`id`) as account credit or records it as paid outside (`method`: credit, outside). */
+    public function affiliate_payout_pay($data): bool
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+        Payouts::pay($this->getDi(), (int) ($data['id'] ?? 0), (string) ($data['method'] ?? ''), (int) $this->adminId());
+
+        return true;
+    }
+
+    /** Declines a payout request (`id`): its amount is available again; an optional `note` goes to the affiliate. */
+    public function affiliate_payout_decline($data): bool
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+        Payouts::decline($this->getDi(), (int) ($data['id'] ?? 0), (int) $this->adminId(), is_string($data['note'] ?? null) ? $data['note'] : '');
+
+        return true;
+    }
+
+    /** Refers an order (`order_id`) to an affiliate (`affiliate_id`), as WHMCS "Manual Assign"; its own orders are refused. */
+    public function affiliate_assign($data): bool
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+        Link::assign($this->getDi(), (int) ($data['order_id'] ?? 0), (int) ($data['affiliate_id'] ?? 0), (int) $this->adminId());
+
+        return true;
+    }
+
+    /** Removes the affiliate from an order (`order_id`); commissions it earned stay. */
+    public function affiliate_unassign($data): bool
+    {
+        $this->checkPermissions('client', 'manage_affiliates');
+        Link::unassign($this->getDi(), (int) ($data['order_id'] ?? 0), (int) $this->adminId());
+
+        return true;
+    }
+
+    private function affiliateId(mixed $data): int
+    {
+        $affiliate = Affiliates::forClient($this->getDi()['dbal'], (int) ($data['client_id'] ?? 0));
+
+        return $affiliate !== false ? (int) $affiliate['id'] : throw new InformationException('This client is not an affiliate.');
     }
 
     /**

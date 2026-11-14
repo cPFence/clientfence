@@ -40,12 +40,14 @@ test('authorized users reach their own calls in the client module', function ():
         ->and(Users::CALLS['client'])->not->toHaveKey('users_get_list');
 });
 
-test('the client module shows the staff Users and Contacts tabs and the Google buttons', function (): void {
+test('the client module shows the staff Users, Contacts and Affiliate tabs and the Google buttons', function (): void {
     expect((new Service())->getWidgets())->toBe([
         ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_users_tab'],
         ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_users_pane'],
         ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_contacts_tab'],
         ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_contacts_pane'],
+        ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_affiliate_tab'],
+        ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_affiliate_pane'],
         ['slot' => 'client.page.login.form.after', 'template' => 'mod_client_google_button'],
         ['slot' => 'client.page.signup.form.after', 'template' => 'mod_client_google_signup_button'],
     ]);
@@ -54,7 +56,7 @@ test('the client module shows the staff Users and Contacts tabs and the Google b
 test('the generic /client/<page> route cannot open the moved pages', function (): void {
     // ClientFence\Mod\Client\Controller\Client::get_client_page renders mod_client_<page> for [a-z0-9-]+.
     $dir = dirname(__DIR__, 2) . '/templates/client';
-    foreach (['users', 'contacts', 'twofactor', 'google', 'no-access', 'user-profile'] as $page) {
+    foreach (['users', 'contacts', 'twofactor', 'google', 'no-access', 'user-profile', 'affiliates'] as $page) {
         expect(file_exists("{$dir}/mod_client_{$page}.html.twig"))->toBeFalse();
     }
 });

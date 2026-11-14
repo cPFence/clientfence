@@ -26653,3 +26653,724 @@ msgstr "在主题之后加载到每个客户区页面。只有超级管理员可
 #: src/themes/palisade/config/settings.html.twig
 msgid "Use custom CSS"
 msgstr "使用自定义 CSS"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "%affiliate% asked for an affiliate payout of %amount%. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "%affiliate% 申请了 %amount% 的联盟提现。该金额将从联盟会员的可用余额中预留，直到您支付或拒绝。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A new affiliate's starting balance. It can be paid out once a first commission has cleared."
+msgstr "新联盟会员的初始余额。首笔佣金确认后即可提现。"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "A note is required."
+msgstr "必须填写备注。"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the affiliate's currency. Used with Percentage or Fixed amount."
+msgstr "客户支付金额的百分比，或以联盟会员货币计的固定金额。与“百分比”或“固定金额”一起使用。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the default currency."
+msgstr "客户支付金额的百分比，或以默认货币计的固定金额。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A product can pay another commission or none (product page), and an affiliate can have its own (client page). The affiliate's own wins, then the product's; a product set to No commission never pays."
+msgstr "产品可以支付另一种佣金或不支付（产品页面），联盟会员也可以有自己的佣金（客户页面）。联盟会员自己的优先，其次是产品的；设为“无佣金”的产品永不支付。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Activate as affiliate"
+msgstr "激活为联盟会员"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Add :amount to the client's account credit?"
+msgstr "将 :amount 添加到客户的账户余额吗？"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add entry"
+msgstr "添加条目"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add manual entry"
+msgstr "添加手动条目"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Add-on and domain orders do not earn affiliate commissions."
+msgstr "附加组件和域名订单不产生联盟佣金。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Adjustment"
+msgstr "调整"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
+msgid "Affiliate"
+msgstr "联盟会员"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Affiliate Commission"
+msgstr "联盟佣金"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliate Program"
+msgstr "联盟计划"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate account"
+msgstr "联盟账户"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Affiliate link"
+msgstr "联盟链接"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Affiliate not found"
+msgstr "未找到联盟会员"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request"
+msgstr "联盟提现申请"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request from %name%"
+msgstr "来自 %name% 的联盟提现申请"
+
+#: src/modules/Client/Contacts.php
+msgid "Affiliate program"
+msgstr "联盟计划"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate since"
+msgstr "加入联盟时间"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+msgid "Affiliates"
+msgstr "联盟会员"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliates share a link to your site and earn a commission on each paid invoice of the services their visitors order: products, setup fees and options, not domains, add-ons or upgrades. A commission clears after the clearing days if the service is still active, then the affiliate can ask for a payout."
+msgstr "联盟会员分享指向您网站的链接，并从访客订购服务的每张已付发票中获得佣金：包括产品、设置费和选项，不包括域名、附加组件或升级。如果服务仍然有效，佣金在确认天数后确认，之后联盟会员可以申请提现。"
+
+#: src/modules/Client/Service.php
+msgid "Allows the staff member to activate affiliates, change their commissions, add ledger entries, assign orders and pay or decline payout requests."
+msgstr "允许员工激活联盟会员、更改其佣金、添加账目条目、分配订单，以及支付或拒绝提现申请。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Also reverse the affiliate commission"
+msgstr "同时冲销联盟佣金"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Amounts are in the affiliate's currency. Pending commissions clear after the clearing days if the service is still active."
+msgstr "金额以联盟会员的货币计。如果服务仍然有效，待处理佣金在确认天数后确认。"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "An affiliate cannot be referred to its own orders."
+msgstr "联盟会员不能被推荐到自己的订单。"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "As account credit"
+msgstr "作为账户余额"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Ask for a payout"
+msgstr "申请提现"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign"
+msgstr "分配"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign an affiliate"
+msgstr "分配联盟会员"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assigned by staff"
+msgstr "由员工分配"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Available"
+msgstr "可用"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Balances and Payouts"
+msgstr "余额和提现"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Bonus Deposit"
+msgstr "奖励存款"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Bonus deposit"
+msgstr "奖励存款"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Cancel this pending commission? It will not be paid."
+msgstr "取消此待处理佣金吗？它将不会被支付。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Choose how the payout was paid."
+msgstr "选择提现的支付方式。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Cleared"
+msgstr "已确认"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clearing Days"
+msgstr "确认天数"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Clears after the waiting period"
+msgstr "等待期结束后确认"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Clears on :date"
+msgstr "将于 :date 确认"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client's Affiliate tab."
+msgstr "客户可在客户区的“联盟会员”页面找到该计划。员工可在客户的“联盟会员”选项卡中将任何客户设为联盟会员。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients may join by themselves"
+msgstr "客户可自行加入"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Commission"
+msgstr "佣金"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission Type"
+msgstr "佣金类型"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission for this affiliate"
+msgstr "此联盟会员的佣金"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Commission history"
+msgstr "佣金历史"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Commission not found"
+msgstr "未找到佣金"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commissions"
+msgstr "佣金"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Commissions earned"
+msgstr "已赚取佣金"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Conversion rate: :rate"
+msgstr "转化率：:rate"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Cookie Days"
+msgstr "Cookie 天数"
+
+#: src/modules/Client/Service.php
+msgid "Currency cannot be changed. Client already has affiliate earnings."
+msgstr "无法更改货币。该客户已有联盟收入。"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Currency rate for :code is not configured."
+msgstr "尚未配置 :code 的汇率。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Deactivate this affiliate? Its link stops counting and its orders stop earning until it is active again."
+msgstr "停用此联盟会员吗？其链接将停止计数，其订单在重新激活前不再产生佣金。"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline"
+msgstr "拒绝"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline this payout request?"
+msgstr "拒绝此提现申请吗？"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Default (product or settings)"
+msgstr "默认（产品或设置）"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Default Commission"
+msgstr "默认佣金"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Earn a commission when people you refer order from us."
+msgstr "当您推荐的人在我们这里下单时，赚取佣金。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Earned"
+msgstr "已赚取"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Enter an amount other than zero."
+msgstr "请输入非零金额。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Enter the amount to pay out."
+msgstr "请输入要提现的金额。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
+msgstr "每一笔佣金、冲销、奖励、手动条目和提现。余额是它们的总和。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "For a partial refund. A refund of the whole invoice always reverses it."
+msgstr "用于部分退款。整张发票的退款始终会冲销它。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Held bonus"
+msgstr "冻结的奖励"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Here is how your affiliate link did last month, and your balances today."
+msgstr "这是您的联盟链接上个月的表现以及您今天的余额。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a commission stays pending, so refunds and cancellations can take it back. 0: it clears at once."
+msgstr "佣金保持待处理的时长，以便退款和取消可以将其收回。0：立即确认。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins)."
+msgstr "通过联盟链接的访问计入的时长（clientfence_aff Cookie；以最后点击的链接为准）。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "How should we pay you? For example your PayPal address or bank details, or \"account credit\"."
+msgstr "我们应该如何向您付款？例如您的 PayPal 地址或银行信息，或“账户余额”。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "If you have questions, please reply to this email or contact us."
+msgstr "如有疑问，请回复此邮件或联系我们。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join now"
+msgstr "立即加入"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join the affiliate program"
+msgstr "加入联盟计划"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Make this client an affiliate?"
+msgstr "将此客户设为联盟会员吗？"
+
+#: src/modules/Client/Service.php
+msgid "Manage Affiliates"
+msgstr "管理联盟会员"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Manual entry"
+msgstr "手动条目"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Mark paid"
+msgstr "标记为已支付"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Minimum Payout"
+msgstr "最低提现额"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Negative to take an amount off. It counts as available at once."
+msgstr "填负数可扣除金额。它会立即计为可用。"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client's Affiliate tab."
+msgstr "暂无联盟会员。客户在客户区的“联盟会员”页面加入，或由员工在客户的“联盟会员”选项卡中激活。"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "No commission"
+msgstr "无佣金"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No commissions yet."
+msgstr "暂无佣金。"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "No payout requests."
+msgstr "暂无提现申请。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No referrals yet."
+msgstr "暂无推荐。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "No referred orders yet."
+msgstr "暂无推荐订单。"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Note for the affiliate (optional)"
+msgstr "给联盟会员的备注（可选）"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "One-time commission"
+msgstr "一次性佣金"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "One-time commission: pay on the first paid invoice of each service only"
+msgstr "一次性佣金：仅在每项服务的首张已付发票上支付"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Only a pending commission can be cancelled."
+msgstr "只能取消待处理的佣金。"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate's currency."
+msgstr "打开联盟会员可查看其推荐订单、佣金和提现。金额以各联盟会员的货币计。"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Open the Affiliate tab"
+msgstr "打开“联盟会员”选项卡"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Open your affiliate page"
+msgstr "打开您的联盟页面"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Our note:"
+msgstr "我们的备注："
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Overrides the product and default commissions, except on products that pay no commission."
+msgstr "覆盖产品佣金和默认佣金，不支付佣金的产品除外。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Paid :amount"
+msgstr "已支付 :amount"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Paid as"
+msgstr "支付方式"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Paid out"
+msgstr "已提现"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Paid out: :amount"
+msgstr "已提现：:amount"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Paid outside ClientFence"
+msgstr "在 ClientFence 之外支付"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Pay as credit"
+msgstr "以余额支付"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Pay it as account credit, record a payment you made outside ClientFence, or decline it on the client's Affiliate tab."
+msgstr "将其作为账户余额支付，记录您在 ClientFence 之外所做的付款，或在客户的“联盟会员”选项卡中拒绝它。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Pay on the first paid invoice of each service only. Off: every renewal pays too."
+msgstr "仅在每项服务的首张已付发票上支付。关闭：每次续费也支付。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Payment to your payout details"
+msgstr "付款至您的提现信息"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout"
+msgstr "提现"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout details"
+msgstr "提现信息"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Payout details:"
+msgstr "提现信息："
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Payout request not found"
+msgstr "未找到提现申请"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requested"
+msgstr "已申请提现"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Payout requests"
+msgstr "提现申请"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requests and how each was handled. Account credit is added to the client's credit balance at once; paid outside only records a payment you made yourself."
+msgstr "提现申请及每一项的处理方式。账户余额会立即加到客户的余额中；“在外部支付”仅记录您自己所做的付款。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payouts"
+msgstr "提现"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reactivate"
+msgstr "重新激活"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first."
+msgstr "将 :amount 记录为在 ClientFence 之外支付（银行、PayPal）吗？请先自行付款。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Referrals"
+msgstr "推荐"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Referred orders"
+msgstr "推荐订单"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Refund: commission taken back"
+msgstr "退款：佣金已收回"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove this order from the affiliate? Commissions it already earned stay."
+msgstr "从联盟会员移除此订单吗？已赚取的佣金会保留。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Requested"
+msgstr "已申请"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Requests waiting for you. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "等待您处理的申请。该金额将从联盟会员的可用余额中预留，直到您支付或拒绝。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reversal"
+msgstr "冲销"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Services ordered through this affiliate's link or assigned to it by staff, and what each earned."
+msgstr "通过此联盟会员的链接订购或由员工分配给它的服务，以及每项所赚取的佣金。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Share it anywhere. Orders placed within :days days of a visit through your link count for you."
+msgstr "可随处分享。通过您的链接访问后 :days 天内下的订单会计入您名下。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Shown on the Affiliates page to clients who have not joined yet: how the program works and what it pays."
+msgstr "向尚未加入的客户显示在“联盟会员”页面：计划如何运作以及支付多少。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Signup Text"
+msgstr "注册文案"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Signups"
+msgstr "注册"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Source"
+msgstr "来源"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Start typing the affiliate name or code"
+msgstr "开始输入联盟会员的名称或代码"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Tell us how to pay you (payout details)."
+msgstr "请告诉我们如何向您付款（提现信息）。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can ask for a payout."
+msgstr "账户所有者可以申请提现。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can join the program."
+msgstr "账户所有者可以加入该计划。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The affiliate balance no longer covers this payout. Decline it or add a manual entry first."
+msgstr "联盟会员的余额已不足以支付此提现。请拒绝它，或先添加手动条目。"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The affiliate earns on invoices of this order paid from now on."
+msgstr "联盟会员从此订单今后支付的发票中获得收入。"
+
+#: src/modules/Client/Api/Client.php src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The affiliate program is not available."
+msgstr "联盟计划不可用。"
+
+#: src/modules/Client/Api/Client.php
+msgid "The affiliate program is not open for sign-ups."
+msgstr "联盟计划未开放注册。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The affiliate sees this note in its commission history."
+msgstr "联盟会员会在其佣金历史中看到此备注。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "The available balance an affiliate needs before it can ask for a payout."
+msgstr "联盟会员申请提现前所需的可用余额。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The bonus deposit can be paid out once a first commission has cleared."
+msgstr "首笔佣金确认后，即可提现奖励存款。"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "The commission amount must be a number of zero or more."
+msgstr "佣金金额必须是大于或等于零的数字。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The minimum payout is :amount."
+msgstr "最低提现额为 :amount。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The payout details are too long."
+msgstr "提现信息过长。"
+
+#: src/modules/Client/Privacy.php
+msgid "This client has an affiliate payout request waiting. Pay or decline it first."
+msgstr "该客户有一笔待处理的联盟提现申请。请先支付或拒绝。"
+
+#: src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php
+msgid "This client is not an affiliate."
+msgstr "该客户不是联盟会员。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order."
+msgstr "该客户不是联盟会员。联盟会员分享指向您网站的链接，并从访客订购的服务中获得佣金。"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "This order has no affiliate."
+msgstr "此订单没有联盟会员。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "This payout request was already handled."
+msgstr "此提现申请已处理。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "To become an affiliate, please contact us."
+msgstr "如需成为联盟会员，请联系我们。"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Turn on the affiliate program"
+msgstr "开启联盟计划"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Unassign"
+msgstr "取消分配"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown affiliate status."
+msgstr "未知的联盟会员状态。"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown commission type."
+msgstr "未知的佣金类型。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Visitors, signups and commissions of your affiliate link last month."
+msgstr "您的联盟链接上个月的访客、注册和佣金。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Waiting for the service until :date"
+msgstr "等待服务至 :date"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We added your affiliate payout to your account credit. It pays your next invoices."
+msgstr "我们已将您的联盟提现添加到您的账户余额。它将用于支付您的后续发票。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "We declined your affiliate payout request of %amount%. The amount is back in your available balance."
+msgstr "我们已拒绝您 %amount% 的联盟提现申请。该金额已退回您的可用余额。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We sent your affiliate payout using the payout details you gave us."
+msgstr "我们已按您提供的提现信息发送了您的联盟提现。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Welcome to the affiliate program. Share your link to start earning."
+msgstr "欢迎加入联盟计划。分享您的链接即可开始赚取。"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission."
+msgstr "联盟会员在此产品上赚取的佣金。“默认”使用联盟设置；拥有自己佣金的联盟会员保留其佣金，除非该产品不支付佣金。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You asked for a payout of :amount on :date. We will let you know by email when it is handled."
+msgstr "您已于 :date 申请提现 :amount。处理后我们会通过邮件通知您。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You can ask for a payout once :amount is available."
+msgstr "当 :amount 可用时，您即可申请提现。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "You can ask for at most :amount."
+msgstr "您最多可申请 :amount。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your affiliate account is not active."
+msgstr "您的联盟账户未激活。"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Your affiliate account is not active. Please contact us."
+msgstr "您的联盟账户未激活。请联系我们。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate account is not active. Your link does not count new visits or orders. Please contact us."
+msgstr "您的联盟账户未激活。您的链接不会统计新的访问或订单。请联系我们。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate link"
+msgstr "您的联盟链接"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate link:"
+msgstr "您的联盟链接："
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid"
+msgstr "您 %amount% 的联盟提现已支付"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid."
+msgstr "您 %amount% 的联盟提现已支付。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request of %amount% was declined."
+msgstr "您 %amount% 的联盟提现申请已被拒绝。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request was declined"
+msgstr "您的联盟提现申请已被拒绝"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report"
+msgstr "您的联盟报告"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report for %month%"
+msgstr "您 %month% 的联盟报告"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your bonus of %amount% is held until your first commission clears."
+msgstr "您 %amount% 的奖励将被冻结，直到您的首笔佣金确认。"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your bonus of :amount is held until your first commission clears; then you can have it paid out."
+msgstr "您 :amount 的奖励将被冻结，直到您的首笔佣金确认；之后您即可申请提现。"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your payout request is already waiting."
+msgstr "您的提现申请已在等待处理。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your payout request was declined"
+msgstr "您的提现申请已被拒绝"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your payout request was sent. We will let you know by email."
+msgstr "您的提现申请已发送。我们会通过邮件通知您。"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your payout was paid"
+msgstr "您的提现已支付"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "clears on :date"
+msgstr "将于 :date 确认"

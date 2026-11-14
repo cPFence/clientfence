@@ -5622,5 +5622,129 @@
     {
         "file": "library/ClientFence/AppClient.php",
         "done": "ClientFence core patch: the client theme's custom CSS stylesheet (Clientfence/CustomCss.php)."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: the affiliate system (Client/Affiliates)."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the affiliate tables migration."
+    },
+    {
+        "file": "modules/Clientfence/Service.php",
+        "done": "ClientFence core patch: the affiliate system (Client/Affiliates)."
+    },
+    {
+        "file": "modules/Clientfence/Service.php",
+        "done": "ClientFence core patch: once a day, affiliate commissions clear (Client/Affiliates/Commissions.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the affiliate commissions of the paid invoice (Client/Affiliates/Commissions.php); never stops the payment."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a full refund takes back the invoice's affiliate commissions, also under \"manual\" refunds (Client/Affiliates/Commissions.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a partial refund takes them back when staff ask, or when the refunds reach the total."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a chargeback takes back all the invoice's affiliate commissions (Client/Affiliates/Commissions.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: also when the refund itself cannot be recorded here."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: `reverse_commission` also takes back the affiliate commissions on a partial refund (Client/Affiliates/Commissions.php)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the affiliate cookie refers a client's own checkout, never a staff order (Client/Affiliates/Link.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: affiliate amounts are in the client's currency (Client/Affiliates/Affiliates.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: affiliate records of the client (Client/Affiliates/Affiliates.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: affiliate accounts and their money (Client/Affiliates)."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: the affiliate system (Client/Affiliates). The affiliate account of a client"
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "ClientFence core patch: the Affiliates page (Client/Affiliates): whether the program is on, whether the client may"
+    },
+    {
+        "file": "index.php",
+        "done": "ClientFence core patch: an affiliate link sets its cookie and returns to the page without the code (Client/Affiliates/Link.php)."
+    },
+    {
+        "file": ".htaccess",
+        "done": "ClientFence core patch: WHMCS affiliate links (/aff.php?aff=CODE) keep their code (Client/Affiliates/Link.php)."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: whether the affiliate program is on (the client area menu; Client/Affiliates)."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: the client's Affiliates page (Client/Affiliates)."
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "ClientFence core patch: the Affiliates page (Client/Affiliates)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the client page's Affiliate tab (Affiliates/)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_settings.html.twig",
+        "done": "ClientFence core patch: the affiliate program settings (Client/Affiliates), in their own form below."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_index.html.twig",
+        "done": "ClientFence core patch: the Affiliates tab (Client/Affiliates), while the program is on or affiliates exist."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the affiliate that referred the order, with Assign and Unassign (Client/Affiliates/Link.php)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: a partial refund can also take back the affiliate commission (Client/Affiliates/Commissions.php reverse())."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_manage.html.twig",
+        "done": "ClientFence core patch: the product's affiliate commission (Client/Affiliates/Commissions.php rule())."
+    },
+    {
+        "file": "themes/palisade/html/partial_menu.html.twig",
+        "done": "ClientFence core patch: the Affiliates page while the program is on (Client/Affiliates); users need `affiliates`."
+    },
+    {
+        "file": "modules/Clientfence/Service.php",
+        "done": "ClientFence core patch: once a month, the affiliates' referrals report (Client/Affiliates/Emails.php)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: Assign an affiliate to the order (Client/Affiliates/Link.php assign())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the refund and its affiliate reversal are kept together or not at all"
     }
 ]

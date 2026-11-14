@@ -54,6 +54,10 @@ msgstr ""
 msgid "%active% active, %draft% draft"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "%affiliate% asked for an affiliate payout of %amount%. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr ""
+
 #: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
 msgid "%client% asked to cancel order %order% at the end of its billing period (%date%)."
 msgstr ""
@@ -1094,6 +1098,10 @@ msgstr ""
 msgid "A new PIN is on its way."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A new affiliate's starting balance. It can be paid out once a first commission has cleared."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "A new backup code replaces the old one."
 msgstr ""
@@ -1120,6 +1128,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "A new visitor who continues with Google gets an account at once, with the email Google confirmed. Continuing means they accept the two pages below; we record the date and IP address. If your client settings require more details (phone, address…), they fill them in right after."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "A note is required."
 msgstr ""
 
 #: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig
@@ -1158,12 +1170,24 @@ msgstr ""
 msgid "A payment for this invoice is still clearing."
 msgstr ""
 
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the affiliate's currency. Used with Percentage or Fixed amount."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the default currency."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "A placeholder is filled in for each client. It goes into the subject or the message, wherever you clicked last."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "A private address for this admin area is the first thing bots look for. Bookmark the new one: the old address stops working."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A product can pay another commission or none (product page), and an affiliate can have its own (client page). The affiliate's own wins, then the product's; a product set to No commission never pays."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
@@ -1506,7 +1530,7 @@ msgstr ""
 msgid "Account balance"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Account credit"
 msgstr ""
 
@@ -1618,6 +1642,10 @@ msgstr ""
 msgid "Activate"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Activate as affiliate"
+msgstr ""
+
 #: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig …
 msgid "Activated"
 msgstr ""
@@ -1634,7 +1662,7 @@ msgstr ""
 msgid "Activation Date"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
 msgid "Active"
 msgstr ""
 
@@ -1700,6 +1728,10 @@ msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_ip_request.html.twig
 msgid "Add %ip%"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Add :amount to the client's account credit?"
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
@@ -1858,6 +1890,10 @@ msgstr ""
 msgid "Add custom key/value pairs that your application can request through the ClientFence API, for example to set limits or feature flags for each API key."
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add entry"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_hp.html.twig
 msgid "Add extra provisioning parameters required by the active server manager for this hosting plan."
 msgstr ""
@@ -1884,6 +1920,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Add line"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add manual entry"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option_group.html.twig
@@ -1956,6 +1996,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig
 msgid "Add-on"
+msgstr ""
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Add-on and domain orders do not earn affiliate commissions."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -2106,6 +2150,10 @@ msgstr ""
 msgid "Adjust the tax title, rate, and location targeting for this billing rule."
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Adjustment"
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_login_history.html.twig src/modules/Widgets/templates/admin/mod_widgets_index.html.twig src/themes/admin_default/html_custom/partial_clientfence_sidebar.html.twig
 msgid "Admin"
 msgstr ""
@@ -2126,7 +2174,7 @@ msgstr ""
 msgid "Admin address, captcha, sign-in"
 msgstr ""
 
-#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/modules/Email/templates/email/mod_email_test.html.twig src/modules/Staff/templates/email/mod_staff_client_order.html.twig …
+#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/modules/Email/templates/email/mod_email_test.html.twig src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig …
 msgid "Admin area"
 msgstr ""
 
@@ -2152,6 +2200,54 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig src/modules/Support/templates/admin/mod_support_network_issues.html.twig src/modules/Support/templates/email/mod_support_network_issue.html.twig …
 msgid "Affects"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
+msgid "Affiliate"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Affiliate Commission"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliate Program"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate account"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Affiliate link"
+msgstr ""
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Affiliate not found"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request from %name%"
+msgstr ""
+
+#: src/modules/Client/Contacts.php
+msgid "Affiliate program"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate since"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+msgid "Affiliates"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliates share a link to your site and earn a commission on each paid invoice of the services their visitors order: products, setup fees and options, not domains, add-ons or upgrades. A commission clears after the clearing days if the service is still active, then the affiliate can ask for a payout."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -2516,6 +2612,10 @@ msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
 msgid "Allowed staff can only assign or remove members from groups below them."
+msgstr ""
+
+#: src/modules/Client/Service.php
+msgid "Allows the staff member to activate affiliates, change their commissions, add ledger entries, assign orders and pay or decline payout requests."
 msgstr ""
 
 #: src/modules/Activity/Service.php
@@ -2966,11 +3066,15 @@ msgstr ""
 msgid "Also restore the email"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Also reverse the affiliate commission"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Also sends invoices issued from this date, before the start date."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig …
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Amount"
 msgstr ""
 
@@ -3014,6 +3118,10 @@ msgstr ""
 msgid "Amount paid"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Amounts are in the affiliate's currency. Pending commissions clear after the clearing days if the service is still active."
+msgstr ""
+
 #: src/modules/Invoice/Service.php
 msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
 msgstr ""
@@ -3040,6 +3148,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_notice.html.twig
 msgid "An action on this order failed"
+msgstr ""
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "An affiliate cannot be referred to its own orders."
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
@@ -3414,8 +3526,16 @@ msgstr ""
 msgid "Articles"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "As account credit"
+msgstr ""
+
 #: src/themes/palisade/html/mod_page_password-reset.html.twig
 msgid "Ask for a new link below."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Ask for a payout"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -3434,6 +3554,14 @@ msgstr ""
 msgid "Ask us to delete your account. We erase your personal data and keep only what the law asks us to keep, such as invoices. Services you still have must end first; we will reply in a ticket."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign an affiliate"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Assign to"
 msgstr ""
@@ -3448,6 +3576,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/modules/Support/templates/admin/mod_support_tickets.html.twig
 msgid "Assigned To"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assigned by staff"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Realtimeregister.php
@@ -3666,6 +3798,10 @@ msgstr ""
 msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Available"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "Available Adapters"
 msgstr ""
@@ -3792,6 +3928,10 @@ msgstr ""
 
 #: src/modules/Client/Api/Admin.php
 msgid "Balance line not found"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Balances and Payouts"
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
@@ -4024,6 +4164,14 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Blocked: spam list"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Bonus Deposit"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Bonus deposit"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -4310,6 +4458,10 @@ msgstr ""
 msgid "Cancel this invitation?"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Cancel this pending commission? It will not be paid."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
 msgid "Canceled"
 msgstr ""
@@ -4354,7 +4506,7 @@ msgstr ""
 msgid "Cancellation requests"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
 msgid "Cancelled"
 msgstr ""
 
@@ -5090,6 +5242,10 @@ msgstr ""
 msgid "Choose how the next service expiration date is calculated after a renewal payment is received."
 msgstr ""
 
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Choose how the payout was paid."
+msgstr ""
+
 #: src/modules/Order/BulkPrices.php
 msgid "Choose how to set the new price."
 msgstr ""
@@ -5330,11 +5486,27 @@ msgstr ""
 msgid "Clear the saved password"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Cleared"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clearing Days"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Clears after the waiting period"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Clears on :date"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Click install to make the registrar available when creating or editing TLDs."
 msgstr ""
 
-#: src/modules/Client/manifest.json src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig …
+#: src/modules/Client/manifest.json src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
 msgid "Client"
 msgstr ""
 
@@ -5462,7 +5634,7 @@ msgstr ""
 msgid "Client activity"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig …
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig …
 msgid "Client area"
 msgstr ""
 
@@ -5526,7 +5698,7 @@ msgstr ""
 msgid "Client identity not found"
 msgstr ""
 
-#: src/modules/Activity/Service.php src/modules/Client/Api/Admin.php src/modules/Client/Api/Client.php …
+#: src/modules/Activity/Service.php src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php …
 msgid "Client not found"
 msgstr ""
 
@@ -5774,8 +5946,16 @@ msgstr ""
 msgid "Clients can’t see the store or order. Staff can still create orders for them in the admin area."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client's Affiliate tab."
+msgstr ""
+
 #: src/modules/Invoice/ServicePayGateway.php
 msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients may join by themselves"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
@@ -5906,7 +6086,7 @@ msgstr ""
 msgid "Club"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig src/modules/Client/templates/client/mod_client_twofactor_code.html.twig …
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
 msgid "Code"
 msgstr ""
 
@@ -5960,6 +6140,34 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Commercial statutory body"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Commission"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission Type"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission for this affiliate"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Commission history"
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Commission not found"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commissions"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Commissions earned"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
@@ -6430,6 +6638,10 @@ msgstr ""
 msgid "Conversion Rate"
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Conversion rate: :rate"
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
 msgid "Convert To"
 msgstr ""
@@ -6458,11 +6670,15 @@ msgstr ""
 msgid "Cookie Consent"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Cookie Days"
+msgstr ""
+
 #: src/modules/Cookieconsent/templates/client/mod_cookieconsent_index.html.twig
 msgid "Cookie notice"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig …
 msgid "Copied"
 msgstr ""
 
@@ -6474,7 +6690,7 @@ msgstr ""
 msgid "Copies of emails that were not imported go with their log entry."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Embed/templates/admin/mod_embed_index.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig …
 msgid "Copy"
 msgstr ""
 
@@ -6951,6 +7167,10 @@ msgid "Currency cannot be changed. Client already has account credit."
 msgstr ""
 
 #: src/modules/Client/Service.php
+msgid "Currency cannot be changed. Client already has affiliate earnings."
+msgstr ""
+
+#: src/modules/Client/Service.php
 msgid "Currency cannot be changed. Client already has invoices issued."
 msgstr ""
 
@@ -7032,6 +7252,10 @@ msgstr ""
 
 #: src/modules/Currency/Api/Admin.php src/modules/Currency/Api/Guest.php src/modules/Currency/Service.php
 msgid "Currency not found."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Currency rate for :code is not configured."
 msgstr ""
 
 #: src/modules/Theme/templates/admin/mod_theme_settings.html.twig src/themes/palisade/html/mod_order_manage.html.twig
@@ -7330,7 +7554,7 @@ msgstr ""
 msgid "Database version"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
 msgid "Date"
 msgstr ""
 
@@ -7394,15 +7618,19 @@ msgstr ""
 msgid "Days between retries must be a whole number from 1 to 30."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig
 msgid "Deactivate"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Deactivate this affiliate? Its link stops counting and its orders stop earning until it is active again."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig
 msgid "Dead"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_confirm.html.twig src/modules/Client/templates/email/mod_client_password_reset_information.html.twig src/modules/Client/templates/email/mod_client_password_reset_request.html.twig …
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig …
 msgid "Dear %first_name% %last_name%,"
 msgstr ""
 
@@ -7450,15 +7678,23 @@ msgstr ""
 msgid "Decimal Places"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline"
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_quote.html.twig
 msgid "Decline the quote"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline this payout request?"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_quote.html.twig
 msgid "Decline this quote"
 msgstr ""
 
-#: src/themes/palisade/html/mod_invoice_quote.html.twig src/themes/palisade/html/mod_invoice_quotes.html.twig
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/themes/palisade/html/mod_invoice_quote.html.twig …
 msgid "Declined"
 msgstr ""
 
@@ -7480,6 +7716,14 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "Default (allowed unless off in Settings)"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Default (product or settings)"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Default Commission"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -7706,7 +7950,7 @@ msgstr ""
 msgid "Destination folder"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Client/templates/client/mod_client_user_profile.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Client/templates/client/mod_client_user_profile.html.twig …
 msgid "Details"
 msgstr ""
 
@@ -8396,6 +8640,14 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_reports.html.twig
 msgid "Each report can be filtered, printed and downloaded as a CSV file."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Earn a commission when people you refer order from us."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Earned"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig …
@@ -9158,6 +9410,10 @@ msgstr ""
 msgid "Enter an amount greater than zero."
 msgstr ""
 
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Enter an amount other than zero."
+msgstr ""
+
 #: src/modules/Order/BulkPrices.php
 msgid "Enter an amount to add other than 0 (a negative amount lowers the price)."
 msgstr ""
@@ -9240,6 +9496,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php
 msgid "Enter the address emails are sent from."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Enter the amount to pay out."
 msgstr ""
 
 #: src/modules/Clientfence/Setup.php
@@ -9544,6 +9804,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
 msgid "Every client with an active or suspended service sees it."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
@@ -10126,7 +10390,7 @@ msgstr ""
 msgid "Fixed"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig …
 msgid "Fixed amount"
 msgstr ""
 
@@ -10184,6 +10448,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig src/themes/palisade/html/mod_invoice_quote.html.twig
 msgid "For"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "For a partial refund. A refund of the whole invoice always reverses it."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
@@ -10938,6 +11206,10 @@ msgstr ""
 msgid "Height"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Held bonus"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "Hello"
 msgstr ""
@@ -11028,6 +11300,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Here is an overview of your account."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Here is how your affiliate link did last month, and your balances today."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -11342,12 +11618,24 @@ msgstr ""
 msgid "How invoices and notices go out"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a commission stays pending, so refunds and cancellations can take it back. 0: it clears at once."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins)."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "How monthly and yearly services ordered on the 29th, 30th or 31st renew. Dates already set are not changed."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "How much?"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "How should we pay you? For example your PayPal address or bank details, or \"account credit\"."
 msgstr ""
 
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
@@ -11670,6 +11958,10 @@ msgstr ""
 msgid "If you have any questions, please reply to this email or open a support ticket."
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "If you have questions, please reply to this email or contact us."
+msgstr ""
+
 #: src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_activated.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_activated.html.twig
 msgid "If you need any help getting started, our support team is here for you: just %link%open a support ticket%link_end%."
 msgstr ""
@@ -11758,7 +12050,7 @@ msgstr ""
 msgid "Important:"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Support/templates/admin/mod_support_mail_log.html.twig
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig …
 msgid "Imported"
 msgstr ""
 
@@ -11810,7 +12102,7 @@ msgstr ""
 msgid "In your default currency; other currencies at the exchange rates."
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_settings.html.twig src/themes/admin_default/html/macro_functions.html.twig
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
 msgid "Inactive"
 msgstr ""
 
@@ -12194,7 +12486,7 @@ msgstr ""
 msgid "Invite your team with their own roles."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/modules/Invoice/templates/admin/mod_invoice_failed_items.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php …
 msgid "Invoice"
 msgstr ""
 
@@ -12572,6 +12864,14 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_user_invite.html.twig
 msgid "Join :account"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join now"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join the affiliate program"
 msgstr ""
 
 #: src/modules/Theme/templates/admin/mod_theme_preset.html.twig
@@ -13658,6 +13958,10 @@ msgstr ""
 msgid "Make the plan first."
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Make this client an affiliate?"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Make valid businesses outside my country tax exempt"
 msgstr ""
@@ -13676,6 +13980,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/Service.php
 msgid "Manage API keys"
+msgstr ""
+
+#: src/modules/Client/Service.php
+msgid "Manage Affiliates"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_canned_responses.html.twig src/modules/Support/templates/admin/mod_support_kb_index.html.twig
@@ -14166,6 +14474,10 @@ msgstr ""
 msgid "Manual Activation"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Manual entry"
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
 msgid "Manual rate override"
 msgstr ""
@@ -14200,6 +14512,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
 msgid "Mark invoices paid?"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Mark paid"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -14484,6 +14800,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Minimum Amount for Add Funds Invoice"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Minimum Payout"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig
@@ -14848,6 +15168,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Negative Invoice - Generate refund invoice continuing paid invoices numbering"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Negative to take an amount off. It counts as available at once."
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -15374,6 +15698,10 @@ msgstr ""
 msgid "No add-on modules found."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client's Affiliate tab."
+msgstr ""
+
 #: src/modules/Notification/templates/admin/mod_notification_index.html.twig
 msgid "No announcements yet."
 msgstr ""
@@ -15444,6 +15772,14 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ratings.html.twig
 msgid "No comments in this period."
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "No commission"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No commissions yet."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_index.html.twig
@@ -15650,6 +15986,10 @@ msgstr ""
 msgid "No payment method is available. Please contact support."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "No payout requests."
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "No permissions"
 msgstr ""
@@ -15712,6 +16052,14 @@ msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
 msgid "No redirects match your search."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No referrals yet."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "No referred orders yet."
 msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_article.html.twig
@@ -15954,7 +16302,7 @@ msgstr ""
 msgid "Not verified"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_print.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig …
 msgid "Note"
 msgstr ""
 
@@ -15980,6 +16328,10 @@ msgstr ""
 
 #: src/themes/palisade/html/partials/ticket_secret_fields.html.twig
 msgid "Note for our team (optional)"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Note for the affiliate (optional)"
 msgstr ""
 
 #: src/modules/Support/Api/Admin.php
@@ -16342,6 +16694,14 @@ msgstr ""
 msgid "One version per line"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "One-time commission"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "One-time commission: pay on the first paid invoice of each service only"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_manage.html.twig …
 msgid "One-time payment"
 msgstr ""
@@ -16408,6 +16768,10 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "Only a paid invoice can be refunded, and only once."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Only a pending commission can be cancelled."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php
@@ -16618,6 +16982,10 @@ msgstr ""
 msgid "Open an account to see its usage, read live from the server it runs on."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate's currency."
+msgstr ""
+
 #: src/themes/palisade/config/settings.html.twig
 msgid "Open in a New Tab"
 msgstr ""
@@ -16628,6 +16996,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_index.html.twig
 msgid "Open module-level configuration screens for billing, support, localization, themes, and other system features."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Open the Affiliate tab"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_kb_index.html.twig
@@ -16670,6 +17042,10 @@ msgstr ""
 msgid "Open user menu"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Open your affiliate page"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "Open your authenticator app and add an account."
 msgstr ""
@@ -16702,7 +17078,7 @@ msgstr ""
 msgid "Opened this year"
 msgstr ""
 
-#: src/modules/Invoice/Reports.php src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig src/modules/Invoice/Reports.php …
 msgid "Opening balance"
 msgstr ""
 
@@ -16822,7 +17198,7 @@ msgstr ""
 msgid "Or send it later"
 msgstr ""
 
-#: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig …
 msgid "Order"
 msgstr ""
 
@@ -17014,7 +17390,7 @@ msgstr ""
 msgid "Order new products and services"
 msgstr ""
 
-#: src/modules/Cart/Service.php src/modules/Invoice/Api/Client.php src/modules/Order/Api/Client.php …
+#: src/modules/Cart/Service.php src/modules/Client/Affiliates/Link.php src/modules/Invoice/Api/Client.php …
 msgid "Order not found"
 msgstr ""
 
@@ -17126,6 +17502,10 @@ msgstr ""
 msgid "Other/Unknown"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Our note:"
+msgstr ""
+
 #: src/modules/Invoice/templates/email/mod_invoice_quote.html.twig
 msgid "Our quote for %subject%."
 msgstr ""
@@ -17216,6 +17596,10 @@ msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
 msgid "Overrides only the number of displayed decimal places."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Overrides the product and default commissions, except on products that pay no commission."
 msgstr ""
 
 #: src/modules/Client/Controller/Admin.php src/modules/Extension/Controller/Admin.php src/modules/Invoice/Controller/Admin.php …
@@ -17370,8 +17754,12 @@ msgstr ""
 msgid "Pagination"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/StatementPdf.php …
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
 msgid "Paid"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Paid :amount"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -17394,6 +17782,10 @@ msgstr ""
 msgid "Paid On"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Paid as"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
 msgid "Paid at"
 msgstr ""
@@ -17404,6 +17796,18 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Paid invoices only"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Paid out"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Paid out: :amount"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Paid outside ClientFence"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
@@ -17626,6 +18030,10 @@ msgstr ""
 msgid "Pay and save my PayPal account"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Pay as credit"
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Pay by :method"
 msgstr ""
@@ -17642,6 +18050,10 @@ msgstr ""
 msgid "Pay invoice now"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Pay it as account credit, record a payment you made outside ClientFence, or decline it on the client's Affiliate tab."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Pay now"
 msgstr ""
@@ -17652,6 +18064,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay now with :card"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Pay on the first paid invoice of each service only. Off: every renewal pays too."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
@@ -18098,6 +18514,10 @@ msgstr ""
 msgid "Payment reminder: invoice #%number%"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Payment to your payout details"
+msgstr ""
+
 #: src/library/Payment/Adapter/Stripe.php
 msgid "PaymentIntent currency does not match invoice currency"
 msgstr ""
@@ -18130,11 +18550,43 @@ msgstr ""
 msgid "Payments to your PayPal account."
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout details"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Payout details:"
+msgstr ""
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Payout request not found"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requested"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Payout requests"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requests and how each was handled. Account credit is added to the client's credit balance at once; paid outside only records a payment you made yourself."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payouts"
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Pays invoices automatically"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/System/templates/admin/mod_system_update.html.twig
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
 msgid "Pending"
 msgstr ""
 
@@ -18194,7 +18646,7 @@ msgstr ""
 msgid "Percent"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig …
 msgid "Percentage"
 msgstr ""
 
@@ -19418,6 +19870,10 @@ msgstr ""
 msgid "Re-queued"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reactivate"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Read"
 msgstr ""
@@ -19634,6 +20090,10 @@ msgstr ""
 msgid "Record"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Record a manual balance credit on this client account."
 msgstr ""
@@ -19738,12 +20198,24 @@ msgstr ""
 msgid "Rediscover Widgets"
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Referrals"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Referred orders"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Refund"
 msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
 msgid "Refund of invoice %number%"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Refund: commission taken back"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
@@ -20090,6 +20562,10 @@ msgstr ""
 msgid "Remove this file? It is deleted for good; the message shows that staff removed it."
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove this order from the affiliate? Commissions it already earned stay."
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Remove this payment method?"
 msgstr ""
@@ -20266,6 +20742,10 @@ msgstr ""
 msgid "Request timed out after :seconds seconds"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Requested"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
 msgid "Requests"
 msgstr ""
@@ -20280,6 +20760,10 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Requests waiting for you. The amount is set aside from the affiliate's available balance until you pay or decline it."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -20584,6 +21068,10 @@ msgstr ""
 
 #: src/library/Payment/AdapterAbstract.php
 msgid "Return URL for the payment gateway was not set"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reversal"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -20962,7 +21450,7 @@ msgstr ""
 msgid "Sandbox REST API secret:"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_user_profile.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_user_profile.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig …
 msgid "Save"
 msgstr ""
 
@@ -21178,7 +21666,7 @@ msgstr ""
 msgid "Saved payment methods are not available."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig …
 msgid "Saved."
 msgstr ""
 
@@ -21886,7 +22374,7 @@ msgstr ""
 msgid "Servers:"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig …
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php …
 msgid "Service"
 msgstr ""
 
@@ -21952,6 +22440,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_index.html.twig
 msgid "Services clients asked to cancel. Accept a request to cancel the service now or at the end of its billing period, as the client chose, or stop it."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Services ordered through this affiliate's link or assigned to it by staff, and what each earned."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -22144,6 +22636,10 @@ msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_addons.html.twig
 msgid "Setup:"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Share it anywhere. Orders placed within :days days of a visit through your link count for you."
 msgstr ""
 
 #: src/modules/Cart/manifest.json
@@ -22346,6 +22842,10 @@ msgstr ""
 msgid "Shown on invoices, emails and the client area."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Shown on the Affiliates page to clients who have not joined yet: how the program works and what it pays."
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
 msgid "Shown on the maintenance page under its title. Empty shows the standard text."
 msgstr ""
@@ -22454,6 +22954,14 @@ msgstr ""
 msgid "Signup Page"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Signup Text"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Signups"
+msgstr ""
+
 #: src/themes/palisade/config/settings.html.twig
 msgid "Simple Sidebar Note"
 msgstr ""
@@ -22540,6 +23048,10 @@ msgstr ""
 
 #: src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
 msgid "Sort order"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Source"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig
@@ -22738,6 +23250,10 @@ msgstr ""
 msgid "Start the import"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Start typing the affiliate name or code"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Start typing the client name or ID"
 msgstr ""
@@ -22786,7 +23302,7 @@ msgstr ""
 msgid "Statistics unavailable"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig …
 msgid "Status"
 msgstr ""
 
@@ -23474,6 +23990,10 @@ msgstr ""
 msgid "Team member"
 msgstr ""
 
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Tell us how to pay you (payout details)."
+msgstr ""
+
 #: src/modules/Support/TicketFeedback.php
 msgid "Tell us how we can improve."
 msgstr ""
@@ -23954,6 +24474,14 @@ msgstr ""
 msgid "The account is removed with its mailbox and every message in it. This cannot be undone."
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can ask for a payout."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can join the program."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "The accounts could not be read from :program: :error"
 msgstr ""
@@ -23972,6 +24500,26 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "The admin area is at the default /admin, the first address bots try. Set admin_area_prefix in config.php to an address of your own (for example /team-7k2) and sign in there."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The affiliate balance no longer covers this payout. Decline it or add a manual entry first."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The affiliate earns on invoices of this order paid from now on."
+msgstr ""
+
+#: src/modules/Client/Api/Client.php src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The affiliate program is not available."
+msgstr ""
+
+#: src/modules/Client/Api/Client.php
+msgid "The affiliate program is not open for sign-ups."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The affiliate sees this note in its commission history."
 msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
@@ -23996,6 +24544,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "The automatic reply was removed."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "The available balance an affiliate needs before it can ask for a payout."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
@@ -24032,6 +24584,10 @@ msgstr ""
 
 #: src/modules/Support/MailImport.php
 msgid "The blocked senders list is full (20,000 characters). Remove old entries in the email import settings first."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The bonus deposit can be paid out once a first commission has cleared."
 msgstr ""
 
 #: src/modules/Clientfence/Branding.php
@@ -24172,6 +24728,10 @@ msgstr ""
 
 #: src/modules/Client/TwoFactor.php
 msgid "The code is not correct. Check the time on your phone and try the newest code."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "The commission amount must be a number of zero or more."
 msgstr ""
 
 #: src/modules/Invoice/Accounting/FreeAgent.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Xero.php
@@ -24639,6 +25199,10 @@ msgstr ""
 msgid "The message is too long: it can have at most :max characters."
 msgstr ""
 
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The minimum payout is :amount."
+msgstr ""
+
 #: src/themes/palisade/config/settings.html.twig
 msgid "The mode a visitor sees first. Visitors can still switch with the light/dark button."
 msgstr ""
@@ -24805,6 +25369,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The payout details are too long."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -25408,7 +25976,19 @@ msgid "This client has :count unpaid invoices. Settle or cancel them first."
 msgstr ""
 
 #: src/modules/Client/Privacy.php
+msgid "This client has an affiliate payout request waiting. Pay or decline it first."
+msgstr ""
+
+#: src/modules/Client/Privacy.php
 msgid "This client is anonymized already."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php
+msgid "This client is not an affiliate."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order."
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
@@ -25691,6 +26271,10 @@ msgstr ""
 msgid "This order has no active service to manage."
 msgstr ""
 
+#: src/modules/Client/Affiliates/Link.php
+msgid "This order has no affiliate."
+msgstr ""
+
 #: src/modules/Invoice/Api/Client.php src/modules/Invoice/Service.php
 msgid "This order was renewed a moment ago. Reload the page to see it."
 msgstr ""
@@ -25713,6 +26297,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
 msgid "This payment gateway does not support any of the payment methods available for this invoice. Please choose a different payment gateway."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "This payout request was already handled."
 msgstr ""
 
 #: src/modules/Serviceapikey/Service.php
@@ -26279,6 +26867,10 @@ msgstr ""
 msgid "To accept this quote, open:"
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "To become an affiliate, please contact us."
+msgstr ""
+
 #: src/modules/Serviceapikey/Service.php
 msgid "To change the API key, please use the reset function rather than updating it."
 msgstr ""
@@ -26699,6 +27291,10 @@ msgstr ""
 msgid "Turn on at least one payment method; you can change them later in System → Payment Gateways."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Turn on the affiliate program"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Turn on the marketing email opt-out"
 msgstr ""
@@ -26767,7 +27363,7 @@ msgstr ""
 msgid "Two-factor sign-in, saved cards and other stored payment methods. Stripe cards can be found again with \"Find saved cards in Stripe\"."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Invoice/templates/admin/mod_invoice_failed_items.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig …
 msgid "Type"
 msgstr ""
 
@@ -26927,6 +27523,10 @@ msgstr ""
 msgid "Unable to send email: 'Custom' transport method was selected without a custom DSN"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Unassign"
+msgstr ""
+
 #: src/modules/Api/Controller/Client.php
 msgid "Unauthorized IP"
 msgstr ""
@@ -26999,6 +27599,10 @@ msgstr ""
 msgid "Unknown TLD. Could not determine registration price"
 msgstr ""
 
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown affiliate status."
+msgstr ""
+
 #: src/modules/Support/TicketAssign.php
 msgid "Unknown assignee filter."
 msgstr ""
@@ -27013,6 +27617,10 @@ msgstr ""
 
 #: src/modules/Order/BulkPrices.php
 msgid "Unknown billing period."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown commission type."
 msgstr ""
 
 #: src/modules/Clientfence/SignInSecurity.php
@@ -28219,7 +28827,7 @@ msgstr ""
 msgid "Visitor addresses"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
 msgid "Visitors"
 msgstr ""
 
@@ -28233,6 +28841,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
 msgid "Visitors, requests and traffic cover the last 30 days."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Visitors, signups and commissions of your affiliate link last month."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
@@ -28263,7 +28875,7 @@ msgstr ""
 msgid "Wait until the files are uploaded."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Waiting"
 msgstr ""
 
@@ -28281,6 +28893,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/themes/palisade/html/partials/ip_request.html.twig
 msgid "Waiting for approval: reset the license"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Waiting for the service until :date"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -28343,6 +28959,10 @@ msgstr ""
 msgid "Warnings (:count): what was not imported as it was, and what to do"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We added your affiliate payout to your account credit. It pays your next invoices."
+msgstr ""
+
 #: src/modules/Support/templates/email/mod_support_network_issue.html.twig
 msgid "We apologise for any inconvenience and will keep you updated."
 msgstr ""
@@ -28369,6 +28989,10 @@ msgstr ""
 
 #: src/modules/Support/Service.php
 msgid "We currently aren't accepting support tickets from unregistered users. Please use another contact method."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "We declined your affiliate payout request of %amount%. The amount is back in your available balance."
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
@@ -28445,6 +29069,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
 msgid "We sent a 6-digit sign-in PIN to %email%. It works for %minutes% minutes."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We sent your affiliate payout using the payout details you gave us."
 msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig
@@ -28527,6 +29155,10 @@ msgstr ""
 msgid "Welcome to ClientFence %version%"
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Welcome to the affiliate program. Share your link to start earning."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What"
 msgstr ""
@@ -28541,6 +29173,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What Upmind does not give, so it is not imported"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission."
 msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_index.html.twig
@@ -28863,6 +29499,10 @@ msgstr ""
 msgid "You are updating your system to ClientFence %target_version%. The system needs to run %count% update patches before you can proceed."
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You asked for a payout of :amount on :date. We will let you know by email when it is handled."
+msgstr ""
+
 #: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "You asked on %date% to cancel this service at the end of its billing period. You can withdraw the request until it is processed."
 msgstr ""
@@ -28897,6 +29537,14 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "You can apply at most :amount."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You can ask for a payout once :amount is available."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "You can ask for at most :amount."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -29419,6 +30067,50 @@ msgstr ""
 msgid "Your address now: %ip%. Save refuses a list without it."
 msgstr ""
 
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your affiliate account is not active."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Your affiliate account is not active. Please contact us."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate account is not active. Your link does not count new visits or orders. Please contact us."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate link"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate link:"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request of %amount% was declined."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request was declined"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report for %month%"
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Your answers on the order form."
 msgstr ""
@@ -29441,6 +30133,14 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Your bank payment of :amount from :date is clearing. The invoice is marked paid when it clears, usually within a few business days."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your bonus of %amount% is held until your first commission clears."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your bonus of :amount is held until your first commission clears; then you can have it paid out."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -29617,6 +30317,22 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_thankyou.html.twig
 msgid "Your payment was sent. The invoice is marked paid as soon as the payment is confirmed, which can take a few minutes."
+msgstr ""
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your payout request is already waiting."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your payout request was declined"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your payout request was sent. We will let you know by email."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your payout was paid"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_contacts_page.html.twig
@@ -29823,6 +30539,10 @@ msgstr ""
 msgid "checked hourly by cron"
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "clears on :date"
+msgstr ""
+
 #: src/modules/Email/Api/Admin.php
 msgid "client_billing_email cannot be set via the API"
 msgstr ""
@@ -29867,7 +30587,7 @@ msgstr ""
 msgid "day(s)"
 msgstr ""
 
-#: src/library/ClientFence/Twig/Extension/ClientFenceExtension.php src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig …
+#: src/library/ClientFence/Twig/Extension/ClientFenceExtension.php src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig …
 msgid "days"
 msgstr ""
 

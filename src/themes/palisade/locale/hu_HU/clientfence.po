@@ -27154,3 +27154,724 @@ msgstr "A téma után töltődik be az ügyfélfelület minden oldalán. Csak a 
 #: src/themes/palisade/config/settings.html.twig
 msgid "Use custom CSS"
 msgstr "Egyéni CSS használata"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "%affiliate% asked for an affiliate payout of %amount%. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "%affiliate% affiliate kifizetést kért %amount% összegben. Az összeget a rendszer félreteszi az affiliate elérhető egyenlegéből, amíg ki nem fizeti vagy el nem utasítja."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A new affiliate's starting balance. It can be paid out once a first commission has cleared."
+msgstr "Az új affiliate kezdő egyenlege. Kifizethető, miután az első jutalék jóváhagyásra került."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "A note is required."
+msgstr "Megjegyzés megadása kötelező."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the affiliate's currency. Used with Percentage or Fixed amount."
+msgstr "Az ügyfél által fizetett összeg százaléka, vagy fix összeg az affiliate pénznemében. A Százalék vagy Fix összeg típussal használható."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A percentage of what the client paid, or a fixed amount in the default currency."
+msgstr "Az ügyfél által fizetett összeg százaléka, vagy fix összeg az alapértelmezett pénznemben."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "A product can pay another commission or none (product page), and an affiliate can have its own (client page). The affiliate's own wins, then the product's; a product set to No commission never pays."
+msgstr "Egy termék fizethet más jutalékot vagy semmit (termékoldal), és egy affiliate-nek lehet saját jutaléka (ügyfélnél). Az affiliate sajátja az erősebb, utána a termékéé; a Nincs jutalék beállítású termék soha nem fizet."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Activate as affiliate"
+msgstr "Aktiválás affiliate-ként"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Add :amount to the client's account credit?"
+msgstr "Hozzáad :amount összeget az ügyfél fiókjóváírásához?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add entry"
+msgstr "Tétel hozzáadása"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Add manual entry"
+msgstr "Kézi tétel hozzáadása"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Add-on and domain orders do not earn affiliate commissions."
+msgstr "A kiegészítők és domainek megrendelései nem hoznak affiliate jutalékot."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Adjustment"
+msgstr "Korrekció"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
+msgid "Affiliate"
+msgstr "Affiliate"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Affiliate Commission"
+msgstr "Affiliate jutalék"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliate Program"
+msgstr "Affiliate program"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate account"
+msgstr "Affiliate fiók"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Affiliate link"
+msgstr "Affiliate hivatkozás"
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "Affiliate not found"
+msgstr "Az affiliate nem található"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request"
+msgstr "Affiliate kifizetési kérelem"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Affiliate payout request from %name%"
+msgstr "Affiliate kifizetési kérelem tőle: %name%"
+
+#: src/modules/Client/Contacts.php
+msgid "Affiliate program"
+msgstr "Affiliate program"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Affiliate since"
+msgstr "Affiliate ekkortól"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+msgid "Affiliates"
+msgstr "Affiliate-ek"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Affiliates share a link to your site and earn a commission on each paid invoice of the services their visitors order: products, setup fees and options, not domains, add-ons or upgrades. A commission clears after the clearing days if the service is still active, then the affiliate can ask for a payout."
+msgstr "Az affiliate-ek megosztanak egy hivatkozást az Ön oldalára, és jutalékot kapnak a látogatóik által megrendelt szolgáltatások minden kifizetett számlájából: termékek, beállítási díjak és opciók, de nem domainek, kiegészítők vagy frissítések. A jutalékot a jóváhagyási napok után hagyja jóvá a rendszer, ha a szolgáltatás még aktív, ezután az affiliate kifizetést kérhet."
+
+#: src/modules/Client/Service.php
+msgid "Allows the staff member to activate affiliates, change their commissions, add ledger entries, assign orders and pay or decline payout requests."
+msgstr "Lehetővé teszi a munkatársnak, hogy affiliate-eket aktiváljon, módosítsa a jutalékaikat, főkönyvi tételeket adjon hozzá, megrendeléseket rendeljen hozzájuk, és kifizetési kérelmeket fizessen ki vagy utasítson el."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Also reverse the affiliate commission"
+msgstr "Az affiliate jutalék visszavonása is"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Amounts are in the affiliate's currency. Pending commissions clear after the clearing days if the service is still active."
+msgstr "Az összegek az affiliate pénznemében vannak. A függőben lévő jutalékokat a jóváhagyási napok után hagyja jóvá a rendszer, ha a szolgáltatás még aktív."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "An affiliate cannot be referred to its own orders."
+msgstr "Egy affiliate nem ajánlható a saját megrendeléseire."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "As account credit"
+msgstr "Fiókjóváírásként"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Ask for a payout"
+msgstr "Kifizetés kérése"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign"
+msgstr "Hozzárendelés"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assign an affiliate"
+msgstr "Affiliate hozzárendelése"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Assigned by staff"
+msgstr "Munkatárs rendelte hozzá"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Available"
+msgstr "Elérhető"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Balances and Payouts"
+msgstr "Egyenlegek és kifizetések"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Bonus Deposit"
+msgstr "Bónuszbetét"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Bonus deposit"
+msgstr "Bónuszbetét"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Cancel this pending commission? It will not be paid."
+msgstr "Lemondja ezt a függő jutalékot? Nem lesz kifizetve."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Choose how the payout was paid."
+msgstr "Válassza ki, hogyan lett kifizetve a kifizetés."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Cleared"
+msgstr "Jóváhagyva"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clearing Days"
+msgstr "Jóváhagyási napok"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Clears after the waiting period"
+msgstr "A várakozási idő után hagyják jóvá"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Clears on :date"
+msgstr "Jóváhagyás: :date"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client's Affiliate tab."
+msgstr "Az ügyfelek a program oldalát az ügyfélterület Affiliate-ek oldalán találják. A munkatársak bármely ügyfelet affiliate-té tehetnek az ügyfél Affiliate fülén."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Clients may join by themselves"
+msgstr "Az ügyfelek maguk is csatlakozhatnak"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Commission"
+msgstr "Jutalék"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission Type"
+msgstr "Jutaléktípus"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commission for this affiliate"
+msgstr "Jutalék ennek az affiliate-nek"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Commission history"
+msgstr "Jutalékelőzmények"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Commission not found"
+msgstr "A jutalék nem található"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Commissions"
+msgstr "Jutalékok"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Commissions earned"
+msgstr "Megszerzett jutalékok"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Conversion rate: :rate"
+msgstr "Konverziós arány: :rate"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Cookie Days"
+msgstr "Cookie napok"
+
+#: src/modules/Client/Service.php
+msgid "Currency cannot be changed. Client already has affiliate earnings."
+msgstr "A pénznem nem módosítható. Az ügyfélnek már vannak affiliate bevételei."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Currency rate for :code is not configured."
+msgstr "A(z) :code árfolyama nincs beállítva."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Deactivate this affiliate? Its link stops counting and its orders stop earning until it is active again."
+msgstr "Deaktiválja ezt az affiliate-et? A hivatkozása nem számít tovább, és a megrendelései nem hoznak jutalékot, amíg újra aktív nem lesz."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline"
+msgstr "Elutasítás"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Decline this payout request?"
+msgstr "Elutasítja ezt a kifizetési kérelmet?"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Default (product or settings)"
+msgstr "Alapértelmezett (termék vagy beállítások)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Default Commission"
+msgstr "Alapértelmezett jutalék"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Earn a commission when people you refer order from us."
+msgstr "Szerezzen jutalékot, ha az Ön által ajánlott emberek nálunk rendelnek."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Earned"
+msgstr "Megszerzett"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Enter an amount other than zero."
+msgstr "Nullától eltérő összeget adjon meg."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Enter the amount to pay out."
+msgstr "Adja meg a kifizetendő összeget."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
+msgstr "Minden jutalék, visszavonás, bónusz, kézi tétel és kifizetés. Az egyenlegek ezek összegei."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "For a partial refund. A refund of the whole invoice always reverses it."
+msgstr "Részleges visszatérítéshez. A teljes számla visszatérítése mindig visszavonja."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Held bonus"
+msgstr "Visszatartott bónusz"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Here is how your affiliate link did last month, and your balances today."
+msgstr "Így teljesített az Ön affiliate hivatkozása a múlt hónapban, és ezek a mai egyenlegei."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a commission stays pending, so refunds and cancellations can take it back. 0: it clears at once."
+msgstr "Mennyi ideig marad egy jutalék függőben, hogy a visszatérítések és lemondások visszavonhassák. 0: azonnal jóváhagyásra kerül."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins)."
+msgstr "Meddig számít egy látogatás az affiliate hivatkozáson keresztül (a clientfence_aff cookie; az utoljára kattintott hivatkozás nyer)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "How should we pay you? For example your PayPal address or bank details, or \"account credit\"."
+msgstr "Hogyan fizessünk Önnek? Például a PayPal-címe vagy bankadatai, vagy „fiókjóváírás”."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "If you have questions, please reply to this email or contact us."
+msgstr "Ha kérdése van, válaszoljon erre az e-mailre, vagy lépjen kapcsolatba velünk."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join now"
+msgstr "Csatlakozás most"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Join the affiliate program"
+msgstr "Csatlakozás az affiliate programhoz"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Make this client an affiliate?"
+msgstr "Affiliate-té teszi ezt az ügyfelet?"
+
+#: src/modules/Client/Service.php
+msgid "Manage Affiliates"
+msgstr "Affiliate-ek kezelése"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Manual entry"
+msgstr "Kézi tétel"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Mark paid"
+msgstr "Megjelölés kifizetettként"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Minimum Payout"
+msgstr "Minimális kifizetés"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Negative to take an amount off. It counts as available at once."
+msgstr "Negatív érték levon egy összeget. Azonnal elérhetőnek számít."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client's Affiliate tab."
+msgstr "Még nincsenek affiliate-ek. Az ügyfelek az ügyfélterület Affiliate-ek oldalán csatlakoznak, vagy a munkatársak aktiválják őket az ügyfél Affiliate fülén."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "No commission"
+msgstr "Nincs jutalék"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No commissions yet."
+msgstr "Még nincsenek jutalékok."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "No payout requests."
+msgstr "Nincsenek kifizetési kérelmek."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "No referrals yet."
+msgstr "Még nincsenek ajánlások."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "No referred orders yet."
+msgstr "Még nincsenek ajánlott megrendelések."
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Note for the affiliate (optional)"
+msgstr "Megjegyzés az affiliate-nek (nem kötelező)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "One-time commission"
+msgstr "Egyszeri jutalék"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "One-time commission: pay on the first paid invoice of each service only"
+msgstr "Egyszeri jutalék: csak az egyes szolgáltatások első kifizetett számlája után fizet"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Only a pending commission can be cancelled."
+msgstr "Csak függő jutalék mondható le."
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate's currency."
+msgstr "Nyisson meg egy affiliate-et az ajánlott megrendelések, jutalékok és kifizetések megtekintéséhez. Az összegek az egyes affiliate-ek pénznemében vannak."
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Open the Affiliate tab"
+msgstr "Affiliate fül megnyitása"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Open your affiliate page"
+msgstr "Megnyitás: az Ön affiliate oldala"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Our note:"
+msgstr "Megjegyzésünk:"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Overrides the product and default commissions, except on products that pay no commission."
+msgstr "Felülírja a termék és az alapértelmezett jutalékot, kivéve azokat a termékeket, amelyek nem fizetnek jutalékot."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Paid :amount"
+msgstr "Kifizetve: :amount"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Paid as"
+msgstr "Kifizetés módja"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Paid out"
+msgstr "Kifizetve"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Paid out: :amount"
+msgstr "Kifizetve: :amount"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Paid outside ClientFence"
+msgstr "A ClientFence-en kívül fizetve"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Pay as credit"
+msgstr "Kifizetés jóváírásként"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Pay it as account credit, record a payment you made outside ClientFence, or decline it on the client's Affiliate tab."
+msgstr "Fizesse ki fiókjóváírásként, rögzítsen egy ClientFence-en kívül teljesített kifizetést, vagy utasítsa el az ügyfél Affiliate fülén."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Pay on the first paid invoice of each service only. Off: every renewal pays too."
+msgstr "Csak az egyes szolgáltatások első kifizetett számlája után fizet. Kikapcsolva: minden megújítás után is fizet."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Payment to your payout details"
+msgstr "Kifizetés a megadott kifizetési adataira"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout"
+msgstr "Kifizetés"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Payout details"
+msgstr "Kifizetési adatok"
+
+#: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
+msgid "Payout details:"
+msgstr "Kifizetési adatok:"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Payout request not found"
+msgstr "A kifizetési kérelem nem található"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requested"
+msgstr "Kifizetés kérve"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Payout requests"
+msgstr "Kifizetési kérelmek"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payout requests and how each was handled. Account credit is added to the client's credit balance at once; paid outside only records a payment you made yourself."
+msgstr "A kifizetési kérelmek és az, hogyan kezelték őket. A fiókjóváírás azonnal hozzáadódik az ügyfél jóváírási egyenlegéhez; a Kívül fizetve csak egy Ön által teljesített kifizetést rögzít."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Payouts"
+msgstr "Kifizetések"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reactivate"
+msgstr "Újraaktiválás"
+
+#: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
+msgid "Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first."
+msgstr "Rögzíti :amount összeget a ClientFence-en kívül kifizetettként (bank, PayPal)? Először fizesse ki saját maga."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Referrals"
+msgstr "Ajánlások"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Referred orders"
+msgstr "Ajánlott megrendelések"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Refund: commission taken back"
+msgstr "Visszatérítés: jutalék visszavonva"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove this order from the affiliate? Commissions it already earned stay."
+msgstr "Eltávolítja ezt a megrendelést az affiliate-től? A már megszerzett jutalékok megmaradnak."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Requested"
+msgstr "Kérve"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
+msgid "Requests waiting for you. The amount is set aside from the affiliate's available balance until you pay or decline it."
+msgstr "Önre váró kérelmek. Az összeget a rendszer félreteszi az affiliate elérhető egyenlegéből, amíg ki nem fizeti vagy el nem utasítja."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Reversal"
+msgstr "Visszavonás"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Services ordered through this affiliate's link or assigned to it by staff, and what each earned."
+msgstr "Az affiliate hivatkozásán keresztül megrendelt vagy munkatárs által hozzárendelt szolgáltatások, és hogy melyik mennyit hozott."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Share it anywhere. Orders placed within :days days of a visit through your link count for you."
+msgstr "Bárhol megoszthatja. A hivatkozásán keresztüli látogatástól számított :days napon belüli megrendelések Önnek számítanak."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Shown on the Affiliates page to clients who have not joined yet: how the program works and what it pays."
+msgstr "Az Affiliate-ek oldalon jelenik meg azoknak az ügyfeleknek, akik még nem csatlakoztak: hogyan működik a program, és mit fizet."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Signup Text"
+msgstr "Regisztrációs szöveg"
+
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
+msgid "Signups"
+msgstr "Regisztrációk"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Source"
+msgstr "Forrás"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Start typing the affiliate name or code"
+msgstr "Kezdje el beírni az affiliate nevét vagy kódját"
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Tell us how to pay you (payout details)."
+msgstr "Mondja el, hogyan fizessünk Önnek (kifizetési adatok)."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can ask for a payout."
+msgstr "A fiók tulajdonosa kérhet kifizetést."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The account owner can join the program."
+msgstr "A fiók tulajdonosa csatlakozhat a programhoz."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The affiliate balance no longer covers this payout. Decline it or add a manual entry first."
+msgstr "Az affiliate egyenlege már nem fedezi ezt a kifizetést. Utasítsa el, vagy előbb adjon hozzá kézi tételt."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The affiliate earns on invoices of this order paid from now on."
+msgstr "Az affiliate a megrendelés mostantól kifizetett számláin keres."
+
+#: src/modules/Client/Api/Client.php src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "The affiliate program is not available."
+msgstr "Az affiliate program nem érhető el."
+
+#: src/modules/Client/Api/Client.php
+msgid "The affiliate program is not open for sign-ups."
+msgstr "Az affiliate program nem nyitott a regisztrációra."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The affiliate sees this note in its commission history."
+msgstr "Az affiliate látja ezt a megjegyzést a jutalékelőzményeiben."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "The available balance an affiliate needs before it can ask for a payout."
+msgstr "Az elérhető egyenleg, amely egy affiliate-nek kell ahhoz, hogy kifizetést kérhessen."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "The bonus deposit can be paid out once a first commission has cleared."
+msgstr "A bónuszbetét kifizethető, miután az első jutalék jóváhagyásra került."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "The commission amount must be a number of zero or more."
+msgstr "A jutalék összegének nulla vagy annál nagyobb számnak kell lennie."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The minimum payout is :amount."
+msgstr "A minimális kifizetés :amount."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "The payout details are too long."
+msgstr "A kifizetési adatok túl hosszúak."
+
+#: src/modules/Client/Privacy.php
+msgid "This client has an affiliate payout request waiting. Pay or decline it first."
+msgstr "Ennek az ügyfélnek függő affiliate kifizetési kérelme van. Először fizesse ki vagy utasítsa el."
+
+#: src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php
+msgid "This client is not an affiliate."
+msgstr "Ez az ügyfél nem affiliate."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order."
+msgstr "Ez az ügyfél nem affiliate. Az affiliate megoszt egy hivatkozást az Ön oldalára, és jutalékot kap a látogatói által megrendelt szolgáltatások után."
+
+#: src/modules/Client/Affiliates/Link.php
+msgid "This order has no affiliate."
+msgstr "Ennek a megrendelésnek nincs affiliate-je."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "This payout request was already handled."
+msgstr "Ezt a kifizetési kérelmet már kezelték."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "To become an affiliate, please contact us."
+msgstr "Affiliate-té váláshoz lépjen kapcsolatba velünk."
+
+#: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
+msgid "Turn on the affiliate program"
+msgstr "Affiliate program bekapcsolása"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Unassign"
+msgstr "Hozzárendelés megszüntetése"
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown affiliate status."
+msgstr "Ismeretlen affiliate állapot."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Unknown commission type."
+msgstr "Ismeretlen jutaléktípus."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Visitors, signups and commissions of your affiliate link last month."
+msgstr "Az Ön affiliate hivatkozásának látogatói, regisztrációi és jutalékai a múlt hónapban."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+msgid "Waiting for the service until :date"
+msgstr "Várakozás a szolgáltatásra eddig: :date"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We added your affiliate payout to your account credit. It pays your next invoices."
+msgstr "Hozzáadtuk az Ön affiliate kifizetését a fiókjóváíráshoz. Ez fizeti a következő számláit."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "We declined your affiliate payout request of %amount%. The amount is back in your available balance."
+msgstr "Elutasítottuk az Ön %amount% összegű affiliate kifizetési kérelmét. Az összeg visszakerült az elérhető egyenlegébe."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "We sent your affiliate payout using the payout details you gave us."
+msgstr "Elküldtük az Ön affiliate kifizetését az Ön által megadott kifizetési adatokra."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Welcome to the affiliate program. Share your link to start earning."
+msgstr "Üdvözöljük az affiliate programban. Ossza meg a hivatkozását, hogy elkezdjen keresni."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission."
+msgstr "Mennyit keresnek az affiliate-ek ezen a terméken. Az Alapértelmezett az affiliate beállításokat használja; a saját jutalékkal rendelkező affiliate megtartja azt, kivéve ha a termék nem fizet jutalékot."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You asked for a payout of :amount on :date. We will let you know by email when it is handled."
+msgstr "Ekkor kért kifizetést: :date, összege :amount. E-mailben értesítjük, ha kezeltük."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "You can ask for a payout once :amount is available."
+msgstr "Kifizetést akkor kérhet, ha :amount elérhető."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "You can ask for at most :amount."
+msgstr "Legfeljebb :amount kérhető."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your affiliate account is not active."
+msgstr "Az Ön affiliate fiókja nem aktív."
+
+#: src/modules/Client/Affiliates/Affiliates.php
+msgid "Your affiliate account is not active. Please contact us."
+msgstr "Az Ön affiliate fiókja nem aktív. Kérjük, lépjen kapcsolatba velünk."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate account is not active. Your link does not count new visits or orders. Please contact us."
+msgstr "Az Ön affiliate fiókja nem aktív. A hivatkozása nem számol új látogatásokat vagy megrendeléseket. Kérjük, lépjen kapcsolatba velünk."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your affiliate link"
+msgstr "Az Ön affiliate hivatkozása"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate link:"
+msgstr "Az Ön affiliate hivatkozása:"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid"
+msgstr "Az Ön %amount% összegű affiliate kifizetése ki lett fizetve"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your affiliate payout of %amount% was paid."
+msgstr "Az Ön %amount% összegű affiliate kifizetése ki lett fizetve."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request of %amount% was declined."
+msgstr "Az Ön %amount% összegű affiliate kifizetési kérelmét elutasítottuk."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your affiliate payout request was declined"
+msgstr "Az Ön affiliate kifizetési kérelmét elutasítottuk"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report"
+msgstr "Az Ön affiliate jelentése"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your affiliate report for %month%"
+msgstr "Az Ön affiliate jelentése: %month%"
+
+#: src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
+msgid "Your bonus of %amount% is held until your first commission clears."
+msgstr "Az Ön %amount% összegű bónusza vissza van tartva, amíg az első jutaléka jóváhagyásra nem kerül."
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your bonus of :amount is held until your first commission clears; then you can have it paid out."
+msgstr "Az Ön :amount összegű bónusza vissza van tartva, amíg az első jutaléka jóváhagyásra nem kerül; utána kifizettetheti."
+
+#: src/modules/Client/Affiliates/Payouts.php
+msgid "Your payout request is already waiting."
+msgstr "Az Ön kifizetési kérelme már várakozik."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig
+msgid "Your payout request was declined"
+msgstr "Az Ön kifizetési kérelmét elutasítottuk"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "Your payout request was sent. We will let you know by email."
+msgstr "Az Ön kifizetési kérelme el lett küldve. E-mailben értesítjük."
+
+#: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
+msgid "Your payout was paid"
+msgstr "Az Ön kifizetése ki lett fizetve"
+
+#: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
+msgid "clears on :date"
+msgstr "jóváhagyás: :date"

@@ -1,0 +1,303 @@
+{# The Affiliate tab content of the admin client page (slot admin.client.manage.panes, ClientFence core patch "client
+   page widget slots"; the tab itself is mod_client_affiliate_tab). Staff who can open the client see the affiliate
+   account: link, counts, balances, referred orders, the commission ledger and payouts. Staff with the client "Manage
+   Affiliates" permission activate or deactivate it, change its commission, unassign orders, cancel pending
+   commissions, add manual entries and pay or decline payout requests. Affiliates/. #}
+{% set affiliate = admin.client_affiliate_get({ client_id: client.id }) %}
+{% set can_manage_affiliate = has_permission('client', 'manage_affiliates') %}
+{% set reload = { reload: true } %}
+<div class="tab-pane fade" id="tab-clientfence-affiliate" role="tabpanel">
+{% if not affiliate %}
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Affiliate'|trans,
+        subtitle: 'This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_action %}
+            {% if can_manage_affiliate %}
+                <a class="btn btn-primary" {{ fb_api_link({ href: 'client/affiliate_activate'|api_url(query: { client_id: client.id }), modal: { type: 'confirm', title: 'Make this client an affiliate?'|trans }, reload: true }) }}>
+                    <svg class="icon"><use href="#plus" /></svg>{{ 'Activate as affiliate'|trans }}
+                </a>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+{% else %}
+    {% set currency = affiliate.currency %}
+    {% set entry_types = { commission: 'Commission'|trans, reversal: 'Reversal'|trans, bonus: 'Bonus deposit'|trans, manual: 'Manual entry'|trans, payout: 'Payout'|trans, opening: 'Opening balance'|trans } %}
+    {% set entry_statuses = { pending: 'Pending'|trans, cleared: 'Cleared'|trans, cancelled: 'Cancelled'|trans } %}
+    {% set payout_statuses = { requested: 'Requested'|trans, paid: 'Paid'|trans, declined: 'Declined'|trans } %}
+    {% set sources = { cookie: 'Affiliate link'|trans, staff: 'Assigned by staff'|trans, import: 'Imported'|trans } %}
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Affiliate account'|trans,
+        subtitle: 'Amounts are in the affiliate\'s currency. Pending commissions clear after the clearing days if the service is still active.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_action %}
+            {% if affiliate.status == 'active' %}
+                <span class="badge bg-green-lt">{{ 'Active'|trans }}</span>
+                {% if can_manage_affiliate %}
+                    <a class="btn btn-outline-warning" {{ fb_api_link({ href: 'client/affiliate_update'|api_url(query: { client_id: client.id, status: 'inactive' }), modal: { type: 'confirm', title: 'Deactivate this affiliate? Its link stops counting and its orders stop earning until it is active again.'|trans }, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+                {% endif %}
+            {% else %}
+                <span class="badge bg-secondary-lt">{{ 'Inactive'|trans }}</span>
+                {% if can_manage_affiliate %}
+                    <a class="btn btn-outline-success" {{ fb_api_link({ href: 'client/affiliate_activate'|api_url(query: { client_id: client.id }), reload: true }) }}>{{ 'Reactivate'|trans }}</a>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+        {% block section_content %}
+            <div class="card-body border-top">
+                <label class="form-label" for="clientfence-affiliate-link">{{ 'Affiliate link'|trans }}</label>
+                <div class="input-group mb-3">
+                    <input class="form-control font-monospace" type="text" id="clientfence-affiliate-link" value="{{ affiliate.link }}" dir="ltr" readonly>
+                    <button class="btn clipboard-copy" type="button" data-clipboard-target="#clientfence-affiliate-link" title="{{ 'Copy'|trans }}">
+                        <svg class="icon"><use href="#copy" /></svg>{{ 'Copy'|trans }}
+                    </button>
+                </div>
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Code'|trans }}</div>
+                        <div class="datagrid-content font-monospace" dir="ltr">{{ affiliate.code }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Visitors'|trans }}</div>
+                        <div class="datagrid-content">{{ affiliate.visitors }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Signups'|trans }}</div>
+                        <div class="datagrid-content">{{ affiliate.signups }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Pending'|trans }}</div>
+                        <div class="datagrid-content">{{ affiliate.pending|format_currency(currency) }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Available'|trans }}</div>
+                        <div class="datagrid-content fw-bold">{{ affiliate.available|format_currency(currency) }}</div>
+                    </div>
+                    {% if affiliate.held > 0 %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Held bonus'|trans }}</div>
+                        <div class="datagrid-content" title="{{ 'The bonus deposit can be paid out once a first commission has cleared.'|trans }}">{{ affiliate.held|format_currency(currency) }}</div>
+                    </div>
+                    {% endif %}
+                    {% if affiliate.requested > 0 %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Payout requested'|trans }}</div>
+                        <div class="datagrid-content">{{ affiliate.requested|format_currency(currency) }}</div>
+                    </div>
+                    {% endif %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Paid out'|trans }}</div>
+                        <div class="datagrid-content">{{ affiliate.paid_out|format_currency(currency) }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">{{ 'Affiliate since'|trans }}</div>
+                        <div class="datagrid-content">{{ affiliate.created_at|format_date }}</div>
+                    </div>
+                </div>
+            </div>
+            {% if can_manage_affiliate %}
+                <form class="card-body border-top" method="post" action="{{ 'client/affiliate_update'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, reload: true }) }}>
+                    <input type="hidden" name="client_id" value="{{ client.id }}">
+                    <h4 class="mb-1">{{ 'Commission for this affiliate'|trans }}</h4>
+                    <p class="text-secondary">{{ 'Overrides the product and default commissions, except on products that pay no commission.'|trans }}</p>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label" for="clientfence-affiliate-type">{{ 'Commission Type'|trans }}</label>
+                            <select class="form-select" id="clientfence-affiliate-type" name="commission_type">
+                                {% for value, label in { '': 'Default (product or settings)'|trans, 'percentage': 'Percentage'|trans, 'fixed': 'Fixed amount'|trans } %}
+                                    <option value="{{ value }}"{% if (affiliate.commission_type ?? '') == value %} selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="clientfence-affiliate-amount">{{ 'Commission'|trans }}</label>
+                            <input class="form-control" type="number" id="clientfence-affiliate-amount" name="commission_amount" min="0" step="0.01" value="{{ affiliate.commission_amount ?? 0 }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="onetime" value="0">
+                            <label class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" name="onetime" value="1"{% if affiliate.onetime %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'One-time commission'|trans }}</span>
+                            </label>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100" type="submit">{{ 'Save'|trans }}</button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    {% set referralsPage = request.aff_referrals_page matches '/^[1-9]\\d*$/' ? request.aff_referrals_page : 1 %}
+    {% set referrals = admin.client_affiliate_referrals({ client_id: client.id, page: referralsPage, per_page: 10 }) %}
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Referred orders'|trans,
+        subtitle: 'Services ordered through this affiliate\'s link or assigned to it by staff, and what each earned.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% import 'macro_functions.html.twig' as mf %}
+        {% block section_content %}
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Date'|trans }}</th>
+                            <th>{{ 'Order'|trans }}</th>
+                            <th>{{ 'Client'|trans }}</th>
+                            <th>{{ 'Status'|trans }}</th>
+                            <th>{{ 'Earned'|trans }}</th>
+                            <th>{{ 'Source'|trans }}</th>
+                            {% if can_manage_affiliate %}<th class="w-1"></th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for referral in referrals.list %}
+                            <tr>
+                                <td>{{ referral.created_at|format_date }}</td>
+                                <td><a href="{{ ('order/manage/' ~ referral.client_order_id)|url }}">#{{ referral.client_order_id }} {{ referral.title }}</a></td>
+                                <td>{% if referral.first_name is not null %}<a href="{{ ('client/manage/' ~ referral.client_id)|url }}">{{ referral.first_name }} {{ referral.last_name }}</a>{% else %}#{{ referral.client_id }}{% endif %}</td>
+                                <td>{{ referral.status ? mf.status_badge(referral.status, 'order') : '-' }}</td>
+                                <td>{{ referral.earned|format_currency(currency) }}</td>
+                                <td>{{ sources[referral.source] ?? referral.source }}</td>
+                                {% if can_manage_affiliate %}
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-danger" {{ fb_api_link({ href: 'client/affiliate_unassign'|api_url(query: { order_id: referral.client_order_id }), modal: { type: 'confirm', title: 'Remove this order from the affiliate? Commissions it already earned stay.'|trans }, reload: true }) }}>{{ 'Unassign'|trans }}</a>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% else %}
+                            <tr><td class="text-secondary" colspan="7">{{ 'No referred orders yet.'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+        {% block section_footer %}
+            {% if referrals.pages > 1 %}
+                <div class="d-flex align-items-center">
+                    {{ include('partial_pagination.html.twig', { 'list': referrals, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_referrals_page', 'show_per_page_selector': false }) }}
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    {% set entriesPage = request.aff_entries_page matches '/^[1-9]\\d*$/' ? request.aff_entries_page : 1 %}
+    {% set entries = admin.client_affiliate_entries({ client_id: client.id, page: entriesPage, per_page: 20 }) %}
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Commissions'|trans,
+        subtitle: 'Every commission, reversal, bonus, manual entry and payout. The balances are their sums.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_action %}
+            {% if can_manage_affiliate %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-affiliate-entry" aria-expanded="false" aria-controls="clientfence-affiliate-entry">
+                    <svg class="icon"><use href="#plus" /></svg>{{ 'Add manual entry'|trans }}
+                </button>
+            {% endif %}
+        {% endblock %}
+        {% block section_content %}
+            {% if can_manage_affiliate %}
+                <div class="collapse border-top" id="clientfence-affiliate-entry">
+                    <form class="card-body" method="post" action="{{ 'client/affiliate_entry_add'|api_url }}" {{ fb_api_form(reload) }}>
+                        <input type="hidden" name="client_id" value="{{ client.id }}">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label" for="clientfence-affiliate-entry-amount">{{ 'Amount'|trans }}</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" id="clientfence-affiliate-entry-amount" name="amount" step="0.01" required>
+                                    <span class="input-group-text">{{ currency }}</span>
+                                </div>
+                                <div class="form-hint">{{ 'Negative to take an amount off. It counts as available at once.'|trans }}</div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label" for="clientfence-affiliate-entry-note">{{ 'Note'|trans }}</label>
+                                <input class="form-control" type="text" id="clientfence-affiliate-entry-note" name="note" maxlength="255" required>
+                                <div class="form-hint">{{ 'The affiliate sees this note in its commission history.'|trans }}</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-3" type="submit">{{ 'Add entry'|trans }}</button>
+                    </form>
+                </div>
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Date'|trans }}</th>
+                            <th>{{ 'Type'|trans }}</th>
+                            <th>{{ 'Status'|trans }}</th>
+                            <th>{{ 'Amount'|trans }}</th>
+                            <th>{{ 'Details'|trans }}</th>
+                            {% if can_manage_affiliate %}<th class="w-1"></th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in entries.list %}
+                            <tr>
+                                <td>{{ entry.created_at|format_date }}</td>
+                                <td>{{ entry_types[entry.type] ?? entry.type }}</td>
+                                <td>
+                                    {% if entry.status == 'pending' %}
+                                        <span class="badge bg-yellow-lt">{{ entry_statuses.pending }}</span>
+                                        {% if entry.hold_until %}<div class="small text-secondary">{{ 'Waiting for the service until :date'|trans({ ':date': entry.hold_until|format_date }) }}</div>
+                                        {% elseif entry.clears_at %}<div class="small text-secondary">{{ 'Clears on :date'|trans({ ':date': entry.clears_at|format_date }) }}</div>{% endif %}
+                                    {% elseif entry.status == 'cleared' %}
+                                        <span class="badge bg-green-lt">{{ entry_statuses.cleared }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary-lt">{{ entry_statuses[entry.status] ?? entry.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ entry.amount|format_currency(entry.currency) }}{% if entry.source_currency and entry.source_currency != entry.currency %}<div class="small text-secondary">{{ 'Paid :amount'|trans({ ':amount': entry.source_amount|format_currency(entry.source_currency) }) }}</div>{% endif %}</td>
+                                <td class="text-wrap">
+                                    {% if entry.invoice_id %}<a href="{{ ('invoice/manage/' ~ entry.invoice_id)|url }}">{{ 'Invoice'|trans }} #{{ entry.invoice_id }}</a>{% endif %}
+                                    {% if entry.client_order_id %}<a class="ms-1" href="{{ ('order/manage/' ~ entry.client_order_id)|url }}">{{ 'Order'|trans }} #{{ entry.client_order_id }}</a>{% endif %}
+                                    {% if entry.payout_id %}{{ 'Payout'|trans }} #{{ entry.payout_id }}{% endif %}
+                                    {% if entry.note %}<div class="text-secondary">{{ entry.note }}</div>{% endif %}
+                                </td>
+                                {% if can_manage_affiliate %}
+                                    <td>
+                                        {% if entry.type == 'commission' and entry.status == 'pending' %}
+                                            <a class="btn btn-sm btn-outline-danger" {{ fb_api_link({ href: 'client/affiliate_commission_cancel'|api_url(query: { id: entry.id }), modal: { type: 'confirm', title: 'Cancel this pending commission? It will not be paid.'|trans }, reload: true }) }}>{{ 'Cancel'|trans }}</a>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% else %}
+                            <tr><td class="text-secondary" colspan="6">{{ 'No commissions yet.'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+        {% block section_footer %}
+            {% if entries.pages > 1 %}
+                <div class="d-flex align-items-center">
+                    {{ include('partial_pagination.html.twig', { 'list': entries, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_entries_page', 'show_per_page_selector': false }) }}
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    {% set payoutsPage = request.aff_payouts_page matches '/^[1-9]\\d*$/' ? request.aff_payouts_page : 1 %}
+    {% set payouts = admin.client_affiliate_payout_get_list({ client_id: client.id, page: payoutsPage, per_page: 10 }) %}
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'Payouts'|trans,
+        subtitle: 'Payout requests and how each was handled. Account credit is added to the client\'s credit balance at once; paid outside only records a payment you made yourself.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_content %}
+            {{ include('mod_client_affiliate_payouts.html.twig', { payouts: payouts.list, show_client: false }) }}
+        {% endblock %}
+        {% block section_footer %}
+            {% if payouts.pages > 1 %}
+                <div class="d-flex align-items-center">
+                    {{ include('partial_pagination.html.twig', { 'list': payouts, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_payouts_page', 'show_per_page_selector': false }) }}
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+{% endif %}
+</div>

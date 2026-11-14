@@ -32,6 +32,11 @@ $accountingReturn = \ClientFence\Mod\Invoice\Accounting\Sync::returnHop($request
 if ($accountingReturn !== null) {
     emitResponse($accountingReturn);
 }
+// ClientFence core patch: an affiliate link sets its cookie and returns to the page without the code (Client/Affiliates/Link.php).
+$affiliateHop = \ClientFence\Mod\Client\Affiliates\Link::hop($request, $di);
+if ($affiliateHop !== null) {
+    emitResponse($affiliateHop);
+}
 
 if ((bool) ($config['debug_and_monitoring']['debug'] ?? false)) {
     // Setting up the debug bar

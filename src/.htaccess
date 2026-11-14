@@ -60,6 +60,9 @@ Options -Indexes +SymLinksIfOwnerMatch
     # ClientFence core patch: the WHMCS Licensing Addon check address (Servicelicense/WhmcsCheck.php); old clients send "//".
     RewriteRule ^/*modules/servers/licensing/verify\.php$ index.php?_url=/licence/verify [L]
 
+    # ClientFence core patch: WHMCS affiliate links (/aff.php?aff=CODE) keep their code (Client/Affiliates/Link.php).
+    RewriteRule ^aff\.php$ index.php?_url=/aff.php [QSA,L]
+
     # Allow access to the index.php, ipn.php, /install/index.php, and /install/install.php files.
     RewriteCond %{REQUEST_URI} ^/(index\.php|ipn\.php|install/index\.php|install/install\.php) [NC]
     RewriteRule ^ - [L]

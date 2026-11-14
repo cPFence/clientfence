@@ -176,6 +176,27 @@
                                         </td>
                                     </tr>
                                     {% endif %}
+                                    {# ClientFence core patch: the affiliate that referred the order, with Assign and Unassign (Client/Affiliates/Link.php). #}
+                                    {% set order_affiliate = has_permission('client', 'view') and order.group_master == 1 and order.service_type != 'domain' ? admin.client_affiliate_order({ order_id: order.id }) : null %}
+                                    {% if order_affiliate or (has_permission('client', 'view') and order.group_master == 1 and order.service_type != 'domain' and admin.client_affiliate_settings.enabled) %}
+                                    <tr>
+                                        <td class="text-end">{{ 'Affiliate'|trans }}</td>
+                                        <td>
+                                            {% if order_affiliate %}
+                                                <a href="{{ ('client/manage/' ~ order_affiliate.client_id)|url }}#tab-clientfence-affiliate">{{ order_affiliate.first_name }} {{ order_affiliate.last_name }}</a>
+                                                <span class="text-secondary font-monospace" dir="ltr">{{ order_affiliate.code }}</span>
+                                                <span class="badge bg-secondary-lt">{{ order_affiliate.source == 'staff' ? 'Assigned by staff'|trans : (order_affiliate.source == 'import' ? 'Imported'|trans : 'Affiliate link'|trans) }}</span>
+                                                {% if has_permission('client', 'manage_affiliates') %}
+                                                    <a class="btn btn-sm btn-outline-danger ms-1" {{ fb_api_link({ href: 'client/affiliate_unassign'|api_url(query: { order_id: order.id }), modal: { type: 'confirm', title: 'Remove this order from the affiliate? Commissions it already earned stay.'|trans }, reload: true }) }}>{{ 'Unassign'|trans }}</a>
+                                                {% endif %}
+                                            {% elseif has_permission('client', 'manage_affiliates') %}
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#affiliateAssignModal">{{ 'Assign'|trans }}</button>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
                                     {% if order.active_tickets > 0 %}
                                     <tr>
                                         <td class="text-end">{{ 'Active Support Tickets'|trans }}</td>
@@ -344,6 +365,31 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
                                 <button type="submit" class="btn btn-primary">{{ 'Change Product'|trans }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {# ClientFence core patch: Assign an affiliate to the order (Client/Affiliates/Link.php assign()). #}
+        {% if has_permission('client', 'manage_affiliates') and order.group_master == 1 and order.service_type != 'domain' %}
+            <div class="modal modal-blur fade" id="affiliateAssignModal" tabindex="-1" aria-labelledby="affiliateAssignModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{{ 'client/affiliate_assign'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="affiliateAssignModalLabel">{{ 'Assign an affiliate'|trans }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                <label class="form-label" for="affiliateAssignId">{{ 'Affiliate'|trans }}</label>
+                                <select class="form-control autocomplete-selector" id="affiliateAssignId" name="affiliate_id" placeholder="{{ 'Start typing the affiliate name or code'|trans }}" data-resturl="/api/admin/client/affiliate_get_pairs" required></select>
+                                <p class="text-muted mt-3 mb-0">{{ 'The affiliate earns on invoices of this order paid from now on.'|trans }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
+                                <button type="submit" class="btn btn-primary">{{ 'Assign'|trans }}</button>
                             </div>
                         </form>
                     </div>

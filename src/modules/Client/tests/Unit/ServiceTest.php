@@ -758,6 +758,11 @@ test('remove wraps client cleanup and flush in one transaction', function (): vo
         ->with('DELETE FROM activity_client_history WHERE client_id = :id', ['id' => 1])
         ->andReturn(1);
     $connection->shouldReceive('createQueryBuilder')->once()->andReturn($query);
+    // Affiliates::clientRemoved(): pending commissions of the client are cancelled; it is no affiliate.
+    $connection->shouldReceive('executeStatement')->once()
+        ->with(Mockery::pattern("/^UPDATE client_affiliate_entry SET status = 'cancelled'/"), Mockery::on(fn (array $params): bool => $params[1] === 1))
+        ->andReturn(0);
+    $connection->shouldReceive('fetchOne')->once()->with('SELECT id FROM client_affiliate WHERE client_id = ?', [1])->andReturn(false);
 
     $passwordRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientPasswordResetRepository::class);
     $passwordRepository->shouldReceive('findBy')->once()->with(['clientId' => 1])->andReturn([$reset]);

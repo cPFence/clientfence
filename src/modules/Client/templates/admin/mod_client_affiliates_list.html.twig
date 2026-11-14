@@ -1,0 +1,56 @@
+{# ClientFence: the Affiliates tab of the Clients list (mod_client_index; Client/Affiliates): the payout requests waiting
+   for staff, then every affiliate with its visitors, signups and balances. affiliate_list comes from the page. #}
+{% set waiting = admin.client_affiliate_payout_get_list({ status: 'requested', per_page: 100 }) %}
+<div class="tab-pane fade" id="tab-affiliates" role="tabpanel">
+    <div class="card-body border-bottom py-3">
+        <h4 class="mb-1">{{ 'Payout requests'|trans }}</h4>
+        <p class="text-secondary mb-0">{{ 'Requests waiting for you. The amount is set aside from the affiliate\'s available balance until you pay or decline it.'|trans }}</p>
+    </div>
+    {{ include('mod_client_affiliate_payouts.html.twig', { payouts: waiting.list, show_client: true }) }}
+    <div class="card-body border-top border-bottom py-3">
+        <h4 class="mb-1">{{ 'Affiliates'|trans }}</h4>
+        <p class="text-secondary mb-0">{{ 'Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate\'s currency.'|trans }}</p>
+    </div>
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter table-striped text-nowrap">
+            <thead>
+                <tr>
+                    <th>{{ 'Affiliate'|trans }}</th>
+                    <th>{{ 'Code'|trans }}</th>
+                    <th>{{ 'Status'|trans }}</th>
+                    <th>{{ 'Visitors'|trans }}</th>
+                    <th>{{ 'Signups'|trans }}</th>
+                    <th>{{ 'Pending'|trans }}</th>
+                    <th>{{ 'Available'|trans }}</th>
+                    <th>{{ 'Paid out'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for affiliate in affiliate_list.list %}
+                    {% set currency = affiliate.currency ?? default_currency %}
+                    <tr>
+                        <td>
+                            <a href="{{ ('client/manage/' ~ affiliate.client_id)|url }}#tab-clientfence-affiliate">{{ affiliate.first_name }} {{ affiliate.last_name }}</a>
+                            {% if affiliate.requests > 0 %}<span class="badge bg-yellow-lt ms-1">{{ 'Payout requested'|trans }}</span>{% endif %}
+                            <div class="small text-secondary" dir="ltr">{{ affiliate.email }}</div>
+                        </td>
+                        <td class="font-monospace" dir="ltr">{{ affiliate.code }}</td>
+                        <td>{% if affiliate.status == 'active' %}<span class="badge bg-green-lt">{{ 'Active'|trans }}</span>{% else %}<span class="badge bg-secondary-lt">{{ 'Inactive'|trans }}</span>{% endif %}</td>
+                        <td>{{ affiliate.visitors }}</td>
+                        <td>{{ affiliate.signups }}</td>
+                        <td>{{ affiliate.pending|format_currency(currency) }}</td>
+                        <td class="fw-medium">{{ affiliate.available|format_currency(currency) }}</td>
+                        <td>{{ affiliate.paid_out|format_currency(currency) }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td class="text-secondary" colspan="8">{{ 'No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client\'s Affiliate tab.'|trans }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if affiliate_list.pages > 1 %}
+        <div class="card-footer d-flex align-items-center">
+            {{ include('partial_pagination.html.twig', { 'list': affiliate_list, 'url': 'client', 'hash': '#tab-affiliates', 'page_param': 'aff_page', 'show_per_page_selector': false }) }}
+        </div>
+    {% endif %}
+</div>

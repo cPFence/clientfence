@@ -1,0 +1,112 @@
+{# ClientFence: the Affiliates tab of the Client settings page (Client/Affiliates). Its own form, outside the page's
+   main form (forms cannot nest), saved as the system params affiliate_* (Affiliates::settings()). Amounts are in the
+   default currency; each affiliate's are converted to its currency. #}
+{% set affiliate_settings = admin.client_affiliate_settings %}
+<div class="tab-content">
+    <form class="tab-pane fade" id="tab-affiliates" role="tabpanel" method="post" action="{{ 'system/update_params'|api_url }}" {{ fb_api_form({message: 'Configuration Updated'|trans}) }}>
+        <div class="card-body">
+            <div class="alert alert-info" role="alert">
+                <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'Affiliates share a link to your site and earn a commission on each paid invoice of the services their visitors order: products, setup fees and options, not domains, add-ons or upgrades. A commission clears after the clearing days if the service is still active, then the affiliate can ask for a payout.'|trans }}
+            </div>
+            <div class="row row-cards">
+                <div class="col-12 col-xl-6">
+                    <section class="card card-sm h-100">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">{{ 'Affiliate Program'|trans }}</h4>
+                            <p class="text-secondary mb-3">{{ 'Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client\'s Affiliate tab.'|trans }}</p>
+                            <div class="d-flex flex-column gap-3">
+                                <input type="hidden" name="affiliate_enabled" value="0">
+                                <label class="form-check form-switch form-switch-2">
+                                    <input class="form-check-input" name="affiliate_enabled" value="1" type="checkbox"{% if affiliate_settings.enabled %} checked{% endif %}>
+                                    <span class="form-check-label">{{ 'Turn on the affiliate program'|trans }}</span>
+                                </label>
+                                <input type="hidden" name="affiliate_join" value="0">
+                                <label class="form-check form-switch form-switch-2">
+                                    <input class="form-check-input" name="affiliate_join" value="1" type="checkbox"{% if affiliate_settings.join %} checked{% endif %}>
+                                    <span class="form-check-label">{{ 'Clients may join by themselves'|trans }}</span>
+                                </label>
+                                <div>
+                                    <label class="form-label" for="affiliate_signup_text">{{ 'Signup Text'|trans }}</label>
+                                    <textarea class="form-control" id="affiliate_signup_text" name="affiliate_signup_text" rows="4" maxlength="5000">{{ affiliate_settings.signup_text }}</textarea>
+                                    <small class="form-hint">{{ 'Shown on the Affiliates page to clients who have not joined yet: how the program works and what it pays.'|trans }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-12 col-xl-6">
+                    <section class="card card-sm h-100">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">{{ 'Default Commission'|trans }}</h4>
+                            <p class="text-secondary mb-3">{{ 'A product can pay another commission or none (product page), and an affiliate can have its own (client page). The affiliate\'s own wins, then the product\'s; a product set to No commission never pays.'|trans }}</p>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="affiliate_type">{{ 'Commission Type'|trans }}</label>
+                                    <select class="form-select" id="affiliate_type" name="affiliate_type">
+                                        <option value="percentage"{% if affiliate_settings.type == 'percentage' %} selected{% endif %}>{{ 'Percentage'|trans }}</option>
+                                        <option value="fixed"{% if affiliate_settings.type == 'fixed' %} selected{% endif %}>{{ 'Fixed amount'|trans }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="affiliate_amount">{{ 'Commission'|trans }}</label>
+                                    <input class="form-control" type="number" id="affiliate_amount" name="affiliate_amount" min="0" step="0.01" value="{{ affiliate_settings.amount }}">
+                                    <small class="form-hint">{{ 'A percentage of what the client paid, or a fixed amount in the default currency.'|trans }}</small>
+                                </div>
+                            </div>
+                            <input type="hidden" name="affiliate_onetime" value="0">
+                            <label class="form-check form-switch form-switch-2 mt-3">
+                                <input class="form-check-input" name="affiliate_onetime" value="1" type="checkbox"{% if affiliate_settings.onetime %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'One-time commission'|trans }}</span>
+                            </label>
+                            <small class="form-hint">{{ 'Pay on the first paid invoice of each service only. Off: every renewal pays too.'|trans }}</small>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-12">
+                    <section class="card card-sm">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">{{ 'Balances and Payouts'|trans }}</h4>
+                            <div class="row g-3">
+                                <div class="col-sm-6 col-xl-3">
+                                    <label class="form-label" for="affiliate_bonus">{{ 'Bonus Deposit'|trans }}</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" id="affiliate_bonus" name="affiliate_bonus" min="0" step="0.01" value="{{ affiliate_settings.bonus }}">
+                                        <span class="input-group-text">{{ default_currency }}</span>
+                                    </div>
+                                    <small class="form-hint">{{ 'A new affiliate\'s starting balance. It can be paid out once a first commission has cleared.'|trans }}</small>
+                                </div>
+                                <div class="col-sm-6 col-xl-3">
+                                    <label class="form-label" for="affiliate_min_payout">{{ 'Minimum Payout'|trans }}</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" id="affiliate_min_payout" name="affiliate_min_payout" min="0" step="0.01" value="{{ affiliate_settings.minimum }}">
+                                        <span class="input-group-text">{{ default_currency }}</span>
+                                    </div>
+                                    <small class="form-hint">{{ 'The available balance an affiliate needs before it can ask for a payout.'|trans }}</small>
+                                </div>
+                                <div class="col-sm-6 col-xl-3">
+                                    <label class="form-label" for="affiliate_clearing_days">{{ 'Clearing Days'|trans }}</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" id="affiliate_clearing_days" name="affiliate_clearing_days" min="0" step="1" value="{{ affiliate_settings.clearing_days }}">
+                                        <span class="input-group-text">{{ 'days'|trans }}</span>
+                                    </div>
+                                    <small class="form-hint">{{ 'How long a commission stays pending, so refunds and cancellations can take it back. 0: it clears at once.'|trans }}</small>
+                                </div>
+                                <div class="col-sm-6 col-xl-3">
+                                    <label class="form-label" for="affiliate_cookie_days">{{ 'Cookie Days'|trans }}</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" id="affiliate_cookie_days" name="affiliate_cookie_days" min="1" step="1" value="{{ affiliate_settings.cookie_days }}">
+                                        <span class="input-group-text">{{ 'days'|trans }}</span>
+                                    </div>
+                                    <small class="form-hint">{{ 'How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins).'|trans }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <input type="submit" value="{{ 'Update'|trans }}" class="btn btn-primary">
+        </div>
+    </form>
+</div>

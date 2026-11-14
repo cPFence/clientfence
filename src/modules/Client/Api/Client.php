@@ -19,6 +19,8 @@ use ClientFence\Mod\Client\Entity\Client as ClientEntity;
 use ClientFence\Mod\Client\Entity\ClientBalance;
 use ClientFence\InformationException;
 use ClientFence\PaginationOptions;
+use ClientFence\Mod\Client\Affiliates\Affiliates;
+use ClientFence\Mod\Client\Affiliates\Payouts;
 use ClientFence\Mod\Client\Google;
 use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Client\Contacts;
@@ -362,6 +364,64 @@ class Client extends \ClientFence\Api\AbstractApi
     public function support_pin_new(): string
     {
         return SupportPin::renew($this->getDi(), $this->onClientId());
+    }
+
+    /**
+     * ClientFence core patch: the Affiliates page (Client/Affiliates): whether the program is on, whether the client may
+     * join, the signup text and the client's affiliate account (link, counts, balances), or null before it joins.
+     */
+    public function affiliate_get(): array
+    {
+        $di = $this->getDi();
+        $settings = Affiliates::settings($di);
+
+        return [
+            'enabled' => $settings['enabled'],
+            'join' => $settings['enabled'] && $settings['join'],
+            'signup_text' => $settings['signup_text'],
+            'cookie_days' => $settings['cookie_days'],
+            'affiliate' => $settings['enabled'] ? Affiliates::get($di, $this->onClientId()) : null,
+        ];
+    }
+
+    /** Joins the affiliate program (the account owner and owner links only: not listed in Users::CALLS). */
+    public function affiliate_join(): bool
+    {
+        $settings = Affiliates::settings($this->getDi());
+        if (!$settings['enabled'] || !$settings['join']) {
+            throw new InformationException('The affiliate program is not open for sign-ups.');
+        }
+        Affiliates::activate($this->getDi(), $this->onClientId(), null);
+
+        return true;
+    }
+
+    /** The orders the affiliate referred (product, status and what it earned; never who ordered), paginated. */
+    public function affiliate_referrals($data): array
+    {
+        return Affiliates::referrals($this->getDi(), $this->ownAffiliateId(), is_array($data) ? $data : [], false);
+    }
+
+    /** The affiliate's ledger, paginated. */
+    public function affiliate_entries($data): array
+    {
+        return Affiliates::entries($this->getDi(), $this->ownAffiliateId(), is_array($data) ? $data : [], false);
+    }
+
+    /** Asks for a payout of `amount` with the `details` of how to pay (the account owner and owner links only); returns its id. */
+    public function affiliate_payout_request($data): int
+    {
+        $this->ownAffiliateId();
+
+        return Payouts::request($this->getDi(), $this->onClientId(), $data['amount'] ?? null, $data['details'] ?? null);
+    }
+
+    private function ownAffiliateId(): int
+    {
+        $di = $this->getDi();
+        $affiliate = Affiliates::settings($di)['enabled'] ? Affiliates::forClient($di['dbal'], $this->onClientId()) : false;
+
+        return $affiliate !== false ? (int) $affiliate['id'] : throw new InformationException('The affiliate program is not available.');
     }
 
     /** ClientFence: asks staff to delete the account (a ticket); returns the ticket id. */

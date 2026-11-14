@@ -245,7 +245,7 @@ test('a chargeback refunds the payment on its invoice and moves the renewed serv
     $world->db->insert('invoice_item', ['invoice_id' => 5, 'type' => 'order', 'rel_id' => '11', 'task' => 'renew', 'status' => 'executed', 'period' => '1M']);
     $world->db->insert('client_order', ['id' => 11, 'expires_at' => '2026-02-28 10:00:00', 'period' => '1M', 'activated_at' => '2026-01-01 10:00:00', 'config' => '{"addon_for":12}']);
     $world->db->insert('client_order', ['id' => 12, 'expires_at' => '2026-02-28 10:00:00', 'period' => '1M', 'activated_at' => '2025-12-31 10:00:00']);
-    $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', null);
+    $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', null, false, false, true);
     $world->invoices->shouldReceive('addNote')->once()->with(Mockery::type(Model_Invoice::class), Mockery::on(fn (string $note): bool => str_contains($note, 'order #9 due 2026-11-15')));
 
     $world->adapter->processTransaction(Mockery::mock(), 51, ['post' => ['payment_status' => 'Reversed', 'txn_id' => '7RV', 'parent_txn_id' => '8AB', 'mc_gross' => '-12.50']], 3);
@@ -261,7 +261,7 @@ test('a partial chargeback refunds its part and leaves the due dates for staff',
     $world->db->insert('`transaction`', ['id' => 51, 'gateway_id' => 3, 'status' => 'received']);
     $world->db->insert('invoice_item', ['invoice_id' => 5, 'type' => 'order', 'rel_id' => '9', 'task' => 'renew', 'status' => 'executed', 'period' => '1M']);
     $world->db->insert('client_order', ['id' => 9, 'expires_at' => '2026-12-15 10:00:00', 'period' => '1M']);
-    $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', 6.25);
+    $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', 6.25, false, false, true);
     $world->invoices->shouldReceive('addNote')->once()->with(Mockery::type(Model_Invoice::class), Mockery::on(fn (string $note): bool => str_contains($note, 'due dates not moved')));
 
     $world->adapter->processTransaction(Mockery::mock(), 51, ['post' => ['payment_status' => 'Reversed', 'txn_id' => '7RV', 'parent_txn_id' => '8AB', 'mc_gross' => '-6.25']], 3);
@@ -320,7 +320,7 @@ test('converts invoices to the processing currency as WHMCS: charge, payment, re
 
     // A full USD chargeback is the whole EUR payment.
     $world->db->insert('`transaction`', ['id' => 61, 'gateway_id' => 3, 'status' => 'received']);
-    $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', null);
+    $world->invoices->shouldReceive('refundInvoice')->once()->with(Mockery::type(Model_Invoice::class), 'PayPal chargeback 7RV of payment 8AB.', null, false, false, true);
     $world->invoices->allows('addNote');
     $world->adapter->processTransaction(Mockery::mock(), 61, ['post' => ['payment_status' => 'Reversed', 'txn_id' => '7RV', 'parent_txn_id' => '8AB', 'mc_gross' => '-15.63', 'mc_currency' => 'USD']], 3);
 

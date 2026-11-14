@@ -1,0 +1,7 @@
+{# The Affiliate tab of the admin client page (slot admin.client.manage.tabs, ClientFence core patch "client page
+   widget slots"); its content is mod_client_affiliate_pane. Shown while the program is on, or for an affiliate. #}
+{% if admin.client_affiliate_settings.enabled or admin.client_affiliate_get({ client_id: client.id }) %}
+<li class="nav-item" role="presentation">
+    <a class="nav-link" href="#tab-clientfence-affiliate" data-bs-toggle="tab" role="tab">{{ 'Affiliate'|trans }}</a>
+</li>
+{% endif %}

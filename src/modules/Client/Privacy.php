@@ -20,11 +20,11 @@ use Doctrine\DBAL\Connection;
  *   List-Unsubscribe headers, RFC 8058). Mass Mailer skips clients who opted out. Service email
  *   (invoices, tickets, sign-in) is not marketing and always goes.
  *
- * Anonymizing keeps the money records (orders, invoices, payments, balance, quotes) and erases
+ * Anonymizing keeps the money records (orders, invoices, payments, balance, quotes, affiliate ledger) and erases
  * the person: names, email, address, phone, IP addresses and notes become placeholders or empty,
  * ticket messages, sent emails and sign-in history are removed, sign-in stops. The business
  * identifiers on invoices (company, VAT and company number, country) stay for tax records. It is
- * refused while the client has a live service or an unpaid invoice.
+ * refused while the client has a live service, an unpaid invoice or an affiliate payout request waiting.
  */
 final class Privacy
 {
@@ -91,6 +91,10 @@ final class Privacy
             'tickets' => $tickets,
             'emails_sent' => self::rows($db, 'SELECT sender, recipients, subject, content_text, created_at FROM activity_client_email WHERE client_id = ? ORDER BY id', [$clientId]),
             'sign_ins' => self::rows($db, 'SELECT ip, created_at FROM activity_client_history WHERE client_id = ? ORDER BY id', [$clientId]),
+            // The client's own affiliate account (Affiliates/); referred clients are other people.
+            'affiliate' => self::rows($db, 'SELECT code, status, commission_type, commission_amount, onetime, created_at FROM client_affiliate WHERE client_id = ?', [$clientId]),
+            'affiliate_entries' => self::rows($db, 'SELECT e.type, e.status, e.amount, e.currency, e.note, e.clears_at, e.created_at FROM client_affiliate_entry e JOIN client_affiliate a ON a.id = e.affiliate_id WHERE a.client_id = ? ORDER BY e.id', [$clientId]),
+            'affiliate_payouts' => self::rows($db, 'SELECT p.amount, p.currency, p.status, p.method, p.details, p.created_at, p.processed_at FROM client_affiliate_payout p JOIN client_affiliate a ON a.id = p.affiliate_id WHERE a.client_id = ? ORDER BY p.id', [$clientId]),
         ];
         if ($includeStaffData) {
             $data['notes'] = Notes::getList($di, $clientId);
@@ -121,6 +125,9 @@ final class Privacy
         $unpaid = (int) $db->fetchOne('SELECT COUNT(*) FROM invoice WHERE client_id = ? AND status = ?', [$clientId, 'unpaid']);
         if ($unpaid > 0) {
             throw new InformationException('This client has :count unpaid invoices. Settle or cancel them first.', [':count' => $unpaid]);
+        }
+        if (self::rows($db, "SELECT 1 FROM client_affiliate_payout p JOIN client_affiliate a ON a.id = p.affiliate_id WHERE a.client_id = ? AND p.status = 'requested'", [$clientId]) !== []) {
+            throw new InformationException('This client has an affiliate payout request waiting. Pay or decline it first.');
         }
 
         $oldEmail = strtolower((string) $client['email']);
@@ -171,6 +178,9 @@ final class Privacy
             self::quietly($db, 'DELETE FROM client_google_signup WHERE client_id = ?', [$clientId]);
             self::quietly($db, 'DELETE FROM client_google_password WHERE client_id = ?', [$clientId]);
             self::quietly($db, 'REPLACE INTO ' . self::OPTOUT_TABLE . ' (client_id, source, opted_out_at) VALUES (?, ?, ?)', [$clientId, 'anonymized', $now]);
+            // The affiliate ledger and payouts stay as money records; their visits and payout details go.
+            self::quietly($db, 'DELETE FROM client_affiliate_visit WHERE affiliate_id IN (SELECT id FROM client_affiliate WHERE client_id = ?)', [$clientId]);
+            self::quietly($db, 'UPDATE client_affiliate_payout SET details = NULL WHERE affiliate_id IN (SELECT id FROM client_affiliate WHERE client_id = ?)', [$clientId]);
         });
         // Authorized-user links, two-factor and Google sign-in, ticket files (as a deleted client).
         Users::clientDeleted($di, $clientId);

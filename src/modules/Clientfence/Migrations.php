@@ -32,6 +32,7 @@ final class Migrations
         6 => 'm6SupportPin',
         7 => 'm7TldSync',
         8 => 'm8AccountingSync',
+        9 => 'm9Affiliates',
     ];
 
     public static function latest(): int
@@ -164,6 +165,12 @@ final class Migrations
 
     /** 8: invoice_accounting_sync (Invoice/Accounting/Sync.php). */
     private static function m8AccountingSync(\Pimple\Container $di): void
+    {
+        Service::ensureTables($di, true);
+    }
+
+    /** 9: the client_affiliate* tables (Client/Affiliates). */
+    private static function m9Affiliates(\Pimple\Container $di): void
     {
         Service::ensureTables($di, true);
     }

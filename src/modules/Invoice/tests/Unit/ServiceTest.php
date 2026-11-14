@@ -3134,6 +3134,7 @@ test('refuses a second refund when the database already shows the invoice refund
 
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
     $dbal->shouldReceive('fetchOne')->with('SELECT status FROM invoice WHERE id = ?', [5])->andReturn(Model_Invoice::STATUS_REFUNDED);
+    $dbal->shouldReceive('transactional')->andReturnUsing(fn (callable $work): mixed => $work($dbal));
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldNotReceive('dispense');
 

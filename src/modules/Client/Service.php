@@ -127,6 +127,12 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 'display_name' => __trans('Export Clients'),
                 'description' => __trans('Allows the staff member to export client account data.'),
             ],
+            // ClientFence core patch: affiliate accounts and their money (Client/Affiliates).
+            'manage_affiliates' => [
+                'type' => 'bool',
+                'display_name' => __trans('Manage Affiliates'),
+                'description' => __trans('Allows the staff member to activate affiliates, change their commissions, add ledger entries, assign orders and pay or decline payout requests.'),
+            ],
             'manage_settings' => [
                 'type' => 'bool',
                 'display_name' => __trans('Manage Client Settings'),
@@ -401,6 +407,11 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         // ClientFence core patch: account credit has no currency of its own, so a change would turn EGP 500 into USD 500.
         if ($this->di['dbal']->fetchOne('SELECT 1 FROM client_balance WHERE client_id = :client_id LIMIT 1', ['client_id' => $clientId])) {
             throw new InformationException('Currency cannot be changed. Client already has account credit.');
+        }
+
+        // ClientFence core patch: affiliate amounts are in the client's currency (Client/Affiliates/Affiliates.php).
+        if ($this->di['dbal']->fetchOne('SELECT 1 FROM client_affiliate_entry e JOIN client_affiliate a ON a.id = e.affiliate_id WHERE a.client_id = :client_id LIMIT 1', ['client_id' => $clientId])) {
+            throw new InformationException('Currency cannot be changed. Client already has affiliate earnings.');
         }
 
         return true;
@@ -1111,6 +1122,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
             $connection->delete('client_note', ['client_id' => $clientId]);
             Files::forgetClient($connection, $clientId, $this->di['filesystem']);
+            // ClientFence core patch: affiliate records of the client (Client/Affiliates/Affiliates.php).
+            Affiliates\Affiliates::clientRemoved($connection, $clientId);
 
             $client = $model instanceof Client ? $model : $this->clientRepository->find($clientId);
             if ($client instanceof Client) {
@@ -1310,6 +1323,9 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_users_pane'],
             ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_contacts_tab'],
             ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_contacts_pane'],
+            // ClientFence core patch: the client page's Affiliate tab (Affiliates/).
+            ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_affiliate_tab'],
+            ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_affiliate_pane'],
             ['slot' => 'client.page.login.form.after', 'template' => 'mod_client_google_button'],
             ['slot' => 'client.page.signup.form.after', 'template' => 'mod_client_google_signup_button'],
         ];

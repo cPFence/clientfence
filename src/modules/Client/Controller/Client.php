@@ -43,6 +43,8 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/invite/:token', 'get_invite', ['token' => '[a-f0-9]{64}'], static::class);
         $app->get('/users', 'get_users', [], static::class);
         $app->get('/contacts', 'get_contacts', [], static::class);
+        // ClientFence core patch: the Affiliates page (Client/Affiliates).
+        $app->get('/affiliates', 'get_affiliates', [], static::class);
         $app->get('/profile', 'get_user_profile', [], static::class);
         $app->get('/two-factor', 'get_twofactor', [], static::class);
         $app->get('/two-factor/code', 'get_twofactor_code', [], static::class);
@@ -190,6 +192,16 @@ class Client implements \ClientFence\InjectionAwareInterface
         $this->di['is_client_logged'];
 
         return $app->render('mod_client_contacts_page', ['contacts_page' => $this->di['api_client']->client_contacts_get_list()]);
+    }
+
+    /**
+     * The affiliate program: join, the link, statistics, referrals and payouts (Affiliates/; the page gate needs `affiliates`).
+     */
+    public function get_affiliates(\ClientFence\App $app): string
+    {
+        $this->di['is_client_logged'];
+
+        return $app->render('mod_client_affiliates_page', ['affiliate_page' => $this->di['api_client']->client_affiliate_get()]);
     }
 
     /**

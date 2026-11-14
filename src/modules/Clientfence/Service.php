@@ -280,6 +280,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'tld_registrar_cost',
         // ClientFence core patch: the accounting sync state (Invoice/Accounting/Sync.php).
         'invoice_accounting_sync',
+        // ClientFence core patch: the affiliate system (Client/Affiliates).
+        'client_affiliate', 'client_affiliate_referral', 'client_affiliate_entry', 'client_affiliate_payout', 'client_affiliate_visit',
     ];
 
     /**
@@ -692,6 +694,18 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
             Notifications::daily($di);
         } catch (\Throwable $e) {
             $di['logger']->error('ClientFence: the daily notifications failed: %s', $e->getMessage());
+        }
+        try {
+            // ClientFence core patch: once a day, affiliate commissions clear (Client/Affiliates/Commissions.php).
+            \ClientFence\Mod\Client\Affiliates\Commissions::daily($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('ClientFence: affiliate commissions could not be cleared: %s', $e->getMessage());
+        }
+        try {
+            // ClientFence core patch: once a month, the affiliates' referrals report (Client/Affiliates/Emails.php).
+            \ClientFence\Mod\Client\Affiliates\Emails::monthly($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('ClientFence: the affiliate monthly reports were not sent: %s', $e->getMessage());
         }
     }
 

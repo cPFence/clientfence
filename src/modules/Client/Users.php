@@ -49,7 +49,7 @@ final class Users
     public const INVITE_DAYS = 7;
     public const INVITES_PER_HOUR = 20;
 
-    /** WHMCS permission names, in WHMCS order. quotes and affiliates have no FOSSBilling feature yet. */
+    /** WHMCS permission names, in WHMCS order. */
     public const PERMISSIONS = [
         'profile', 'contacts', 'products', 'manageproducts', 'productsso', 'domains', 'managedomains',
         'invoices', 'quotes', 'tickets', 'affiliates', 'emails', 'orders',
@@ -73,7 +73,7 @@ final class Users
     ];
 
     /** The permissions the Users page offers (the others unlock nothing here yet; an import keeps them). */
-    public const PERMISSIONS_SHOWN = ['profile', 'contacts', 'products', 'manageproducts', 'productsso', 'domains', 'managedomains', 'invoices', 'tickets', 'emails', 'orders'];
+    public const PERMISSIONS_SHOWN = ['profile', 'contacts', 'products', 'manageproducts', 'productsso', 'domains', 'managedomains', 'invoices', 'tickets', 'affiliates', 'emails', 'orders'];
 
     /**
      * Client API calls an authorized user may make: module => method => permission ('*': any user;
@@ -97,6 +97,8 @@ final class Users
             'contacts_get_list' => 'contacts', 'contacts_save' => 'contacts', 'contacts_delete' => 'contacts',
             // ClientFence core patch: the Support PIN shows on the dashboard; a new one changes the account.
             'support_pin' => '*', 'support_pin_new' => 'profile',
+            // The affiliate account (Affiliates/); joining and payout requests are for the owner and owner links only.
+            'affiliate_get' => 'affiliates', 'affiliate_referrals' => 'affiliates', 'affiliate_entries' => 'affiliates',
             // users_* (the Users page) are not listed: the owner and owner links only.
         ],
         'email' => ['get_list' => 'emails', 'get' => 'emails', 'resend' => 'emails', 'delete' => 'emails'],
@@ -185,6 +187,7 @@ final class Users
         'servicedownloadable' => 'products',
         'users' => 'owner',
         'contacts' => 'contacts',
+        'affiliates' => 'affiliates',
     ];
 
     /** Profile fields every user sees (the account's name); the rest needs `profile`, the balance `invoices`. */

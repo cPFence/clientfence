@@ -248,7 +248,7 @@ test('contacts come over with their email kinds; bad and repeated ones are named
     [$accounts] = whmcsImportAll(whmcsAccountsSource(), $target, null);
 
     expect($target->fetchAllAssociative('SELECT client_id, first_name, email, phone_cc, phone, emails FROM client_contact'))->toBe([
-        ['client_id' => 1, 'first_name' => 'Acc', 'email' => 'accounts@acct.test', 'phone_cc' => '44', 'phone' => '1', 'emails' => 'invoice,support'],
+        ['client_id' => 1, 'first_name' => 'Acc', 'email' => 'accounts@acct.test', 'phone_cc' => '44', 'phone' => '1', 'emails' => 'invoice,support,affiliate'],
     ])->and(implode("\n", $accounts->warnings()))
         ->toContain('Contact #2 of client #1 has no valid email')
         ->toContain('Contact #3 of client #1: the account already has a contact with ACCOUNTS@acct.test');

@@ -47,6 +47,8 @@ class AppClient extends \ClientFence\App
             'custom-css' => 'clientfence',
             // ClientFence: WHMCS Licensing Addon checks (Servicelicense/WhmcsCheck.php).
             'licence' => 'servicelicense',
+            // ClientFence core patch: the client's Affiliates page (Client/Affiliates).
+            'affiliates' => 'client',
         ][$this->mod] ?? null;
         if ($pageModule !== null) {
             $this->di['mod']($pageModule)->registerClientRoutes($this);

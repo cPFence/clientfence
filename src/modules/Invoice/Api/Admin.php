@@ -149,6 +149,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional string $note - note for refund
      * @optional string $refund_to - gateway (send it back through the gateway that took the payment), credit (to the
      *                               client's credit) or manual (record it only); to_credit=1 is the same as credit
+     * @optional bool $reverse_commission - a partial refund also takes back the invoice's affiliate commissions
      *
      * @return bool
      */
@@ -162,7 +163,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         $amount = isset($data['amount']) && $data['amount'] !== '' ? (float) $data['amount'] : null;
         $to = (string) ($data['refund_to'] ?? '');
 
-        return $this->getService()->refundInvoice($model, $note, $amount, !empty($data['to_credit']) || $to === 'credit', $to === 'gateway');
+        // ClientFence core patch: `reverse_commission` also takes back the affiliate commissions on a partial refund (Client/Affiliates/Commissions.php).
+        return $this->getService()->refundInvoice($model, $note, $amount, !empty($data['to_credit']) || $to === 'credit', $to === 'gateway', !empty($data['reverse_commission']));
     }
 
     /** ClientFence core patch: the gateway a refund of this invoice can be sent back through (PayPal with its REST API keys) and the most one payment has left to refund: {gateway, left}, or null. */
