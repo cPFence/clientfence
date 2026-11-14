@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.50 (2026-11-14)
+
+### Added
+
+- Add-ons for a service a client already has: the client orders one from the service page through the cart, and staff add one from the order's Addons tab. The first invoice covers the days left to the service's due date, then the add-on renews with the service.
+- Bulk invoice actions on the invoice list: Mark Paid, Mark Unpaid, Mark Cancelled, Send Reminder and Delete for the selected invoices, with a list of the ones skipped and why.
+
+### Changed
+
+- A service started on the 29th, 30th or 31st now renews on the last day of shorter months and goes back to its own day after them (31 Jan, 28 Feb, 31 Mar). The new Renewal Day setting in Orders settings can add calendar months instead, as WHMCS does.
+- The Blesta and ClientExec importers bring clients' add-ons, linked to their service.
+
 ## 1.0.49 (2026-11-13)
 
 ### Added
