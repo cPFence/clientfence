@@ -43,6 +43,8 @@ class AppClient extends \ClientFence\App
             'my-data' => 'client', 'unsubscribe' => 'client',
             // ClientFence: the script policy's violation reports (Clientfence/CspReports.php).
             'csp-report' => 'clientfence',
+            // ClientFence core patch: the client theme's custom CSS stylesheet (Clientfence/CustomCss.php).
+            'custom-css' => 'clientfence',
             // ClientFence: WHMCS Licensing Addon checks (Servicelicense/WhmcsCheck.php).
             'licence' => 'servicelicense',
         ][$this->mod] ?? null;

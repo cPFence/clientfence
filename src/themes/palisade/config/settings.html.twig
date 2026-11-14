@@ -351,6 +351,14 @@
         </div>
     </div>
 
+    {# ClientFence core patch: custom CSS for the client area (Clientfence/CustomCss.php). #}
+    <h5 class="mb-2">{{ 'Custom CSS'|trans }}</h5>
+    <div class="d-flex flex-column gap-2">
+        <label class="form-check mb-0"><input class="form-check-input" type="checkbox" name="custom_css_enabled" value="1"{% if settings.custom_css_enabled|default('0') in ['1', 1, true, 'true', 'on'] %} checked{% endif %}><span class="form-check-label">{{ 'Use custom CSS'|trans }}</span></label>
+        <textarea class="form-control font-monospace" name="custom_css" id="custom_css" rows="10" dir="ltr" spellcheck="false" aria-describedby="custom_css_hint"></textarea>
+        <div class="form-hint" id="custom_css_hint">{{ 'Loaded on every client area page after the theme. Only super administrators can change it. Links can point to this site or be data: URLs.'|trans }}</div>
+    </div>
+
     <h5 class="mb-2">{{ 'JavaScript'|trans }}</h5>
     <div>
         <label class="form-label" for="inject_javascript">{{ 'Add JavaScript to Client Area Footer'|trans }}</label>

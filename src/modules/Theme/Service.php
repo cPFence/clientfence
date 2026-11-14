@@ -204,8 +204,18 @@ class Service implements InjectionAwareInterface
         $this->di['mod_service']('Staff')->checkPermissionsAndThrowException('theme', 'manage_settings');
 
         // ClientFence core patch: theme settings permission must not grant script execution in client sessions.
+        $old = $this->getThemeSettings($theme, $preset);
         if (!$this->di['mod_service']('Staff')->isSuperAdministrator()) {
-            $params['inject_javascript'] = $this->getThemeSettings($theme, $preset)['inject_javascript'] ?? '';
+            $params['inject_javascript'] = $old['inject_javascript'] ?? '';
+            // ClientFence core patch: custom CSS can restyle or hide anything clients see, so super administrators only (Clientfence/CustomCss.php).
+            foreach (\ClientFence\Mod\Clientfence\CustomCss::KEYS as $key) {
+                unset($params[$key]);
+                if (array_key_exists($key, $old)) {
+                    $params[$key] = $old[$key];
+                }
+            }
+        } elseif (array_key_exists('custom_css', $params)) {
+            $params = \ClientFence\Mod\Clientfence\CustomCss::prepare($this->di, $params, $old);
         }
 
         return $this->persistSettings($theme, $preset, $params);

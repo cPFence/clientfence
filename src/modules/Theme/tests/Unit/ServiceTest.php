@@ -346,6 +346,28 @@ test('theme settings saves reserve injected javascript for super administrators'
     'super administrator new preset' => [true, null, 'newScript();', true],
 ]);
 
+test('theme settings saves reserve custom CSS for super administrators', function (): void {
+    $saved = ['custom_css' => 'a{color:red}', 'custom_css_enabled' => '1', 'custom_css_version' => 'abc123abc123'];
+    $meta = (new ExtensionMeta())->setMetaValue(json_encode($saved));
+    $repositoryMock = Mockery::mock(ClientFence\Mod\Extension\Repository\ExtensionMetaRepository::class);
+    $repositoryMock->shouldReceive('findOneByExtensionAndScope')->andReturn($meta);
+    $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $themeMock = Mockery::mock(Model\Theme::class);
+    $themeMock->shouldReceive('getName')->andReturn('palisade');
+    $themeMock->shouldReceive('getPresetFromSettingsDataFile')->andReturn([]);
+    $di = themeContainerWithRepository($repositoryMock, $emMock);
+    $staffService = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffService->shouldReceive('checkPermissionsAndThrowException')->with('theme', 'manage_settings');
+    $staffService->shouldReceive('isSuperAdministrator')->andReturn(false);
+    $di['mod_service'] = $di->protect(fn () => $staffService);
+    $service = new Service();
+    $service->setDi($di);
+
+    $service->updateSettings($themeMock, 'default', ['custom_css' => 'body{display:none}', 'custom_css_enabled' => '0', 'custom_css_version' => 'x']);
+
+    expect(json_decode($meta->getMetaValue(), true))->toEqual(['custom_css' => 'a{color:red}', 'custom_css_enabled' => '1', 'custom_css_version' => 'abc123abc123', 'inject_javascript' => '']);
+});
+
 test('regenerateThemeSettingsDataFile regenerates settings file', function (): void {
     $service = new Service();
     $tmpDir = sys_get_temp_dir() . '/fb_test_' . uniqid();

@@ -5606,5 +5606,21 @@
     {
         "file": "modules/Cart/Service.php",
         "done": "ClientFence core patch: the service an add-on is for is stamped by the server only, never read from nested input."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch: custom CSS can restyle or hide anything clients see, so super administrators only (Clientfence/CustomCss.php)."
+    },
+    {
+        "file": "themes/palisade/config/settings.html.twig",
+        "done": "ClientFence core patch: custom CSS for the client area (Clientfence/CustomCss.php)."
+    },
+    {
+        "file": "themes/palisade/html/partials/head.html.twig",
+        "done": "ClientFence core patch: the custom CSS of the theme settings (Clientfence/CustomCss.php), after every other stylesheet so it overrides them."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: the client theme's custom CSS stylesheet (Clientfence/CustomCss.php)."
     }
 ]

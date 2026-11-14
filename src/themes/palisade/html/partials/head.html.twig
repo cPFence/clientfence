@@ -34,5 +34,8 @@
 {{ include('partials/i18n.html.twig') }}
 {{ 'js/clientfence.js'|public_asset_url|script_tag }}
 {{ 'css/loader.css'|public_asset_url|stylesheet_tag }}
+{# ClientFence core patch: the custom CSS of the theme settings (Clientfence/CustomCss.php), after every other stylesheet so it overrides them. #}
+{% if settings.custom_css_enabled|default('0') in ['1', 1, true, 'true', 'on'] and settings.custom_css_version|default('') %}<link rel="stylesheet" href="{{ 'custom-css'|url }}?v={{ settings.custom_css_version }}">
+{% endif %}
 {{ 'js/api.js'|public_asset_url|script_tag }}
 <script nonce="{{ csp_nonce }}" type="module" src="{{ 'build/js/palisade.js'|asset_url ~ v }}"></script>
