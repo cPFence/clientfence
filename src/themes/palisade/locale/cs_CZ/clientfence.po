@@ -27872,3 +27872,348 @@ msgstr "Hledat klienty, faktury, stránky, kódy PIN podpory…"
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Search clients, invoices, settings, support PINs…"
 msgstr "Hledat klienty, faktury, nastavení, kódy PIN podpory…"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr "Přímé inkaso se ještě provádí. Přímé inkaso můžete odebrat, až bude dokončeno."
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
+msgstr "Slevovou akci lze použít jen na nezaplacenou fakturu."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr "Po bezplatné objednávce, která se prodlužuje (bezplatná zkušební doba), je klient bez uloženého způsobu platby přesměrován do GoCardless, aby nastavil přímé inkaso."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
+msgstr "Po bezplatné objednávce, která se prodlužuje (bezplatná zkušební doba), je klient bez uloženého způsobu platby přesměrován do Mollie, aby jej uložil."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr "Použít slevovou akci"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr "Použít automaticky"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr "Zrušit toto přímé inkaso?"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr "Vyberte slevovou akci."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
+msgstr "Vybrat skupiny"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr "Klienti mohou fakturu také zaplatit bez nastavení automatických plateb."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr "Klienti mohou na své stránce Způsoby platby uložit kartu nebo účet PayPal bez zaplacení faktury (Mollie jej ověří bez stržení platby)."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr "Klienti mohou u Mollie uložit kartu nebo bankovní účet a jejich faktury se z něj pak automaticky strhávají. Vypněte, pokud nejsou pro váš účet Mollie povoleny opakované platby; klienti pak platí každou fakturu na stránce Mollie."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
+msgstr "Klienti mohou na své stránce Způsoby platby nastavit přímé inkaso bez zaplacení faktury."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr "Přímé inkaso"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr "Přímé inkaso přes GoCardless"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
+msgstr "Přímé inkaso přes GoCardless. Klienti nastaví přímé inkaso na stránce GoCardless a jejich faktury se pak automaticky inkasují z jejich bankovního účtu. Platba trvá několik dní: faktura se označí jako zaplacená, když ji GoCardless potvrdí."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr "GoCardless neodpověděl :path: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr "GoCardless neprovedl vrácení platby: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr "GoCardless neprovedl vrácení platby: vrácení plateb je pro váš účet GoCardless vypnuto (požádejte GoCardless o jeho zapnutí). :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr "GoCardless nenastavil přímé inkaso: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr "GoCardless nezahájil nastavení přímého inkasa: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr "GoCardless není dostupný."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr "Platba GoCardless :id je v :currency, faktura v :invoice"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr "Platba GoCardless :id nepatří k faktuře ClientFence"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr "Platba GoCardless :id nebyla nalezena"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr "GoCardless odmítl přístupový token (tokeny pro ostrý provoz a sandbox se liší): :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr "GoCardless odmítl platbu: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr "Podpis webhooku GoCardless nesouhlasí"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr "GoCardless: Developers, Create, Access token (read-write). Testovací režim používá přístupový token vašeho účtu GoCardless sandbox. [Jak nastavit GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr "GoCardless: Developers, Create, Webhook endpoint, s URL zpětného volání IPN této brány. Sandbox má vlastní endpoint a vlastní tajný klíč."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
+msgstr "Zaznamená se jako tato slevová akce podle jejích pravidel. Opakující se akce se odečítá i z prodloužení."
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the client's automatic promotion, if any."
+msgstr "Nechte prázdné pro automatickou slevovou akci klienta, pokud existuje."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
+msgstr "Přístupový token – ostrý provoz (Access token):"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr "Mollie neodpovědělo :path: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr "Mollie neprovedlo vrácení platby: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr "Mollie neuložilo způsob platby: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr "Mollie nezahájilo platbu: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr "Mollie není dostupné."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr "Oznámení Mollie neuvádí žádnou platbu"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr "Platba Mollie :id je v :currency, faktura v :invoice"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr "Platba Mollie :id nepatří k faktuře ClientFence"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr "Platba Mollie :id nebyla nalezena: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr "Mollie odmítlo klíč API: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr "Mollie odmítlo platbu: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+msgstr "Mollie: Developers, API keys. Ostrý klíč začíná live_, testovací klíč test_. [Jak nastavit Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr "Na stránce faktury může klient s přímým inkasem zahájit platbu hned, bez přechodu do GoCardless."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
+msgstr "Na stránce faktury může klient s uloženým způsobem platby zaplatit hned, bez přechodu do Mollie."
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
+msgstr "Z prodloužení se odečítá jen opakující se slevová akce."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr "Zaplatit a nastavit automatické platby"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
+msgstr "Zaplatit přímým inkasem a nastavit automatické platby"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
+msgstr "Zaplatit jednou"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
+msgstr "Zaplatit jednou bez uložení:"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr "Zaplatit uloženým přímým inkasem:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
+msgstr "Zaplatit uloženým způsobem platby:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
+msgstr "Platby na platební stránce Mollie se způsoby platby zapnutými ve vašem dashboardu Mollie. Klienti zde mohou uložit kartu nebo bankovní účet a jejich faktury se z něj pak automaticky strhávají. Metody „zaplať později\" vyžadující ruční zúčtování (například Klarna) nejsou podporovány: nezapínejte je pro tento portál."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr "Slevová akce"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr "Pouze opakující se slevové akce. Odečítá se z příštích prodloužení podle svých pravidel. Již vystavené faktury se nemění."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
+msgstr "Odebrat slevovou akci? Příští prodloužení se budou účtovat v plné výši, pokud se na klienta nevztahuje automatická slevová akce. Již vystavené faktury se nemění."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr "Přístupový token – sandbox (Access token):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr "Uložte si u Mollie kartu nebo účet PayPal a vaše faktury se z něj pak budou automaticky strhávat."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
+msgstr "Uložit způsob platby pro automatické platby"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr "Uložené způsoby platby:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr "Uloženo u Mollie"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
+msgstr "Uložení způsobu platby u Mollie není dostupné."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr "Nastavit přímé inkaso"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr "Nastavte si přímé inkaso přes GoCardless a vaše faktury se pak budou automaticky inkasovat z vašeho bankovního účtu."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
+msgstr "Nastavení přímého inkasa přes GoCardless není dostupné."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr "Pro platbu přímým inkasem se přihlaste jako vlastník účtu."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
+msgstr "Pro platbu se přihlaste jako vlastník účtu."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr "Testovací klíč API (API key):"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
+msgstr "Přímé inkaso strhává v :mandate, faktura je v :invoice: zaplaťte tuto fakturu jinak."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr "Klient nemá nastavené žádné přímé inkaso."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr "Tento klíč API Mollie nezačíná na :prefix (ostré klíče začínají live_, testovací test_)."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr "Tato objednávka už má na této faktuře slevu."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
+msgstr "Tato objednávka není na této faktuře."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
+msgstr "Tato slevová akce se nevztahuje na produkt ani fakturační období této objednávky."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
+msgstr "Tato slevová akce z této objednávky nic neodečte."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr "Tajný klíč webhook endpointu (Webhook endpoint secret):"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr "Bez kódu u každé objednávky, kterou její pravidla povolují. Kód zadaný klientem ji nahradí."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr "Tuto fakturu nelze zaplatit přímým inkasem."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr "Nemáte nastavené žádné přímé inkaso přes GoCardless."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
+msgstr "Nemáte u Mollie uložený žádný způsob platby."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
+msgstr "Vaše přímé inkaso nebylo nastaveno. Zkuste to prosím znovu."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr "Váš způsob platby nebyl uložen. Zkuste to prosím znovu."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr "Vaše faktury za prodloužení se pak budou strhávat z tohoto způsobu platby. Můžete jej odebrat na své stránce Způsoby platby."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
+msgstr "Vaše faktury za prodloužení se pak budou inkasovat tímto přímým inkasem. Můžete jej zrušit na své stránce Způsoby platby."

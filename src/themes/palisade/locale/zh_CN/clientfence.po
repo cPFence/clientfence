@@ -27574,3 +27574,348 @@ msgstr "搜索客户、发票、页面、支持 PIN 码…"
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Search clients, invoices, settings, support PINs…"
 msgstr "搜索客户、发票、设置、支持 PIN 码…"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr "直接借记仍在收款中。收款完成后，您可以删除该直接借记。"
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
+msgstr "促销只能应用于未付款的发票。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr "对于会续费的免费订单（免费试用），没有已保存付款方式的客户将被转到 GoCardless 设置直接借记。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
+msgstr "对于会续费的免费订单（免费试用），没有已保存付款方式的客户将被转到 Mollie 保存一种付款方式。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr "应用促销"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr "自动应用"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr "取消此直接借记？"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr "请选择一个促销。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
+msgstr "选择分组"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr "客户也可以不设置自动付款而直接支付发票。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr "客户可以在其“支付方式”页面保存银行卡或 PayPal 账户，而无需支付发票（Mollie 会验证但不扣款）。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr "客户可以在 Mollie 保存银行卡或银行账户，之后其发票会自动从中扣款。如果您的 Mollie 账户未启用定期付款，请关闭此项；客户将改为在 Mollie 的页面支付每张发票。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
+msgstr "客户可以在其“支付方式”页面设置直接借记，而无需支付发票。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr "直接借记"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr "通过 GoCardless 的直接借记"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
+msgstr "通过 GoCardless 的直接借记。客户在 GoCardless 的页面设置直接借记，之后其发票会自动从其银行账户收取。付款需要几天时间：GoCardless 确认后，发票会被标记为已付款。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr "GoCardless 未响应 :path: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr "GoCardless 未完成退款：:error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr "GoCardless 未完成退款：您的 GoCardless 账户已关闭退款功能（请联系 GoCardless 启用）。:error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr "GoCardless 未设置直接借记：:error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr "GoCardless 未开始直接借记的设置：:error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr "GoCardless 不可用。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr "GoCardless 付款 :id 的币种为 :currency，发票的币种为 :invoice"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr "GoCardless 付款 :id 不属于 ClientFence 发票"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr "未找到 GoCardless 付款 :id"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr "GoCardless 拒绝了访问令牌（正式环境与沙盒的令牌不同）：:error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr "GoCardless 拒绝了该付款：:error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr "GoCardless webhook 签名不匹配"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr "GoCardless：Developers, Create, Access token (read-write)。测试模式使用您的 GoCardless 沙盒账户的访问令牌。[如何设置 GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr "GoCardless：Developers, Create, Webhook endpoint，使用此网关的 IPN 回调 URL。沙盒有自己的 endpoint 和密钥。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
+msgstr "按此促销的规则记录。循环促销也会从续费中扣除。"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the client's automatic promotion, if any."
+msgstr "留空则使用客户的自动促销（如果有）。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
+msgstr "正式环境访问令牌 (Access token)："
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr "Mollie 未响应 :path: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr "Mollie 未完成退款：:error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr "Mollie 未保存付款方式：:error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr "Mollie 未开始付款：:error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr "Mollie 不可用。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr "Mollie 通知未指明任何付款"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr "Mollie 付款 :id 的币种为 :currency，发票的币种为 :invoice"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr "Mollie 付款 :id 不属于 ClientFence 发票"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr "未找到 Mollie 付款 :id：:error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr "Mollie 拒绝了该 API 密钥：:error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr "Mollie 拒绝了该付款：:error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+msgstr "Mollie：Developers, API keys。正式密钥以 live_ 开头，测试密钥以 test_ 开头。[如何设置 Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr "在发票页面，设有直接借记的客户可以立即发起付款，无需前往 GoCardless。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
+msgstr "在发票页面，已保存付款方式的客户可以立即付款，无需前往 Mollie。"
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
+msgstr "只有循环促销会从续费中扣除。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr "付款并设置自动付款"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
+msgstr "通过直接借记付款并设置自动付款"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
+msgstr "一次性付款"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
+msgstr "一次性付款，不保存："
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr "使用已保存的直接借记付款："
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
+msgstr "使用已保存的付款方式付款："
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
+msgstr "在 Mollie 付款页面付款，可用您 Mollie 控制台中已启用的付款方式。客户可以在那里保存银行卡或银行账户，之后其发票会自动从中扣款。不支持需要手动扣款的先买后付方式（如 Klarna）：请勿为此门户启用。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr "促销"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr "仅限循环促销。按其规则从之后的续费中扣除。已开具的发票不会改变。"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
+msgstr "删除该促销？之后的续费将按全价收费，除非客户适用自动促销。已开具的发票不会改变。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr "沙盒访问令牌 (Access token)："
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr "在 Mollie 保存银行卡或 PayPal 账户，之后您的发票会自动从中扣款。"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
+msgstr "保存用于自动付款的付款方式"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr "已保存的付款方式："
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr "已通过 Mollie 保存"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
+msgstr "暂不支持通过 Mollie 保存付款方式。"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr "设置直接借记"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr "通过 GoCardless 设置直接借记，之后您的发票会自动从您的银行账户收取。"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
+msgstr "暂不支持通过 GoCardless 设置直接借记。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr "请以账户所有者身份登录，以使用直接借记付款。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
+msgstr "请以账户所有者身份登录后付款。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr "测试 API 密钥 (API key)："
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
+msgstr "该直接借记以 :mandate 收款，发票的币种为 :invoice：请用其他方式支付此发票。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr "该客户未设置直接借记。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr "此 Mollie API 密钥不是以 :prefix 开头（正式密钥以 live_ 开头，测试密钥以 test_ 开头）。"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr "此订单在这张发票上已有折扣。"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
+msgstr "此订单不在这张发票上。"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
+msgstr "此促销不适用于该订单的产品或计费周期。"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
+msgstr "此促销不会减免该订单的任何金额。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr "Webhook endpoint 密钥 (Webhook endpoint secret)："
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr "无需优惠码，适用于其规则允许的每个订单。客户输入的优惠码会替换它。"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr "您无法使用直接借记支付此发票。"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr "您尚未通过 GoCardless 设置直接借记。"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
+msgstr "您尚未在 Mollie 保存付款方式。"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
+msgstr "您的直接借记未能设置。请重试。"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr "您的付款方式未能保存。请重试。"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr "之后您的续费发票将从此付款方式扣款。您可以在“支付方式”页面删除它。"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
+msgstr "之后您的续费发票将通过此直接借记收取。您可以在“支付方式”页面取消它。"

@@ -27577,3 +27577,348 @@ msgstr "Zoek klanten, facturen, pagina's, supportpincodes…"
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Search clients, invoices, settings, support PINs…"
 msgstr "Zoek klanten, facturen, instellingen, supportpincodes…"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr "Een automatische incasso wordt nog geïnd. U kunt de automatische incasso verwijderen zodra die is afgerond."
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
+msgstr "Een actie kan alleen worden toegepast op een onbetaalde factuur."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr "Na een gratis bestelling die wordt verlengd (een gratis proefperiode) wordt een klant zonder opgeslagen betaalmethode naar GoCardless gestuurd om een automatische incasso in te stellen."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
+msgstr "Na een gratis bestelling die wordt verlengd (een gratis proefperiode) wordt een klant zonder opgeslagen betaalmethode naar Mollie gestuurd om er een op te slaan."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr "Actie toepassen"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr "Automatisch toepassen"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr "Deze automatische incasso annuleren?"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr "Kies een actie."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
+msgstr "Kies groepen"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr "Klanten kunnen een factuur ook betalen zonder automatische betalingen in te stellen."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr "Klanten kunnen op hun pagina Betaalmethodes een kaart of PayPal-account opslaan zonder een factuur te betalen (Mollie controleert het zonder af te schrijven)."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr "Klanten kunnen bij Mollie een kaart of bankrekening opslaan, waarna hun facturen automatisch daarvan worden afgeschreven. Zet dit uit als terugkerende betalingen niet zijn ingeschakeld voor uw Mollie-account; klanten betalen dan elke factuur op de pagina van Mollie."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
+msgstr "Klanten kunnen op hun pagina Betaalmethodes een automatische incasso instellen zonder een factuur te betalen."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr "Automatische incasso"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr "Automatische incasso met GoCardless"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
+msgstr "Automatische incasso met GoCardless. Klanten stellen op de pagina van GoCardless een automatische incasso in, waarna hun facturen automatisch van hun bankrekening worden geïnd. Een betaling duurt een paar dagen: de factuur wordt als betaald gemarkeerd zodra GoCardless dit bevestigt."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr "GoCardless heeft niet geantwoord :path: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr "GoCardless heeft de terugbetaling niet uitgevoerd: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr "GoCardless heeft de terugbetaling niet uitgevoerd: terugbetalingen staan uit voor uw GoCardless-account (vraag GoCardless ze in te schakelen). :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr "GoCardless heeft de automatische incasso niet ingesteld: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr "GoCardless heeft het instellen van de automatische incasso niet gestart: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr "GoCardless is niet beschikbaar."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr "GoCardless-betaling :id staat in :currency, de factuur in :invoice"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr "GoCardless-betaling :id hoort niet bij een ClientFence-factuur"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr "GoCardless-betaling :id is niet gevonden"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr "GoCardless heeft de toegangstoken geweigerd (live- en sandbox-tokens verschillen): :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr "GoCardless heeft de betaling geweigerd: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr "De GoCardless-webhookhandtekening komt niet overeen"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr "GoCardless: Developers, Create, Access token (read-write). De testmodus gebruikt de toegangstoken van uw GoCardless-sandboxaccount. [GoCardless instellen](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr "GoCardless: Developers, Create, Webhook endpoint, met de IPN-callback-URL van deze gateway. De sandbox heeft een eigen endpoint en geheim."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
+msgstr "Het wordt vastgelegd als deze actie, volgens de regels ervan. Een terugkerende actie gaat ook af van de verlengingen."
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the client's automatic promotion, if any."
+msgstr "Laat leeg voor de automatische actie van de klant, indien aanwezig."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
+msgstr "Live toegangstoken (Access token):"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr "Mollie heeft niet geantwoord :path: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr "Mollie heeft de terugbetaling niet uitgevoerd: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr "Mollie heeft de betaalmethode niet opgeslagen: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr "Mollie heeft de betaling niet gestart: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr "Mollie is niet beschikbaar."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr "De melding van Mollie noemt geen betaling"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr "Mollie-betaling :id staat in :currency, de factuur in :invoice"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr "Mollie-betaling :id hoort niet bij een ClientFence-factuur"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr "Mollie-betaling :id is niet gevonden: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr "Mollie heeft de API-sleutel geweigerd: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr "Mollie heeft de betaling geweigerd: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+msgstr "Mollie: Developers, API keys. De live sleutel begint met live_, de testsleutel met test_. [Mollie instellen](https://clientfence.com/docs/clients-and-billing/mollie/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr "Op de factuurpagina kan een klant met een automatische incasso de betaling direct starten zonder naar GoCardless te gaan."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
+msgstr "Op de factuurpagina kan een klant met een opgeslagen betaalmethode direct betalen zonder naar Mollie te gaan."
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
+msgstr "Alleen een terugkerende actie gaat af van verlengingen."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr "Betalen en automatische betalingen instellen"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
+msgstr "Betalen met automatische incasso en automatische betalingen instellen"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
+msgstr "Eenmalig betalen"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
+msgstr "Eenmalig betalen zonder op te slaan:"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr "Betalen met de opgeslagen automatische incasso:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
+msgstr "Betalen met de opgeslagen betaalmethode:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
+msgstr "Betalingen op de betaalpagina van Mollie, met de betaalmethodes die in uw Mollie-dashboard zijn ingeschakeld. Klanten kunnen daar een kaart of bankrekening opslaan, waarna hun facturen automatisch daarvan worden afgeschreven. Achteraf-betalen-methodes die handmatige afboeking vereisen (zoals Klarna) worden niet ondersteund: schakel ze niet in voor dit portaal."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr "Actie"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr "Alleen terugkerende acties. Het gaat af van de volgende verlengingen, volgens de regels ervan. Reeds uitgegeven facturen veranderen niet."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
+msgstr "De actie verwijderen? De volgende verlengingen worden tegen het volledige bedrag in rekening gebracht, tenzij een automatische actie voor de klant geldt. Reeds uitgegeven facturen veranderen niet."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr "Sandbox toegangstoken (Access token):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr "Sla bij Mollie een kaart of PayPal-account op, waarna uw facturen automatisch daarvan worden afgeschreven."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
+msgstr "Een betaalmethode opslaan voor automatische betalingen"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr "Opgeslagen betaalmethodes:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr "Opgeslagen bij Mollie"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
+msgstr "Een betaalmethode opslaan met Mollie is niet beschikbaar."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr "Een automatische incasso instellen"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr "Stel een automatische incasso in met GoCardless, waarna uw facturen automatisch van uw bankrekening worden geïnd."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
+msgstr "Een automatische incasso instellen met GoCardless is niet beschikbaar."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr "Meld u aan als accounteigenaar om met automatische incasso te betalen."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
+msgstr "Meld u aan als accounteigenaar om te betalen."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr "Test API-sleutel (API key):"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
+msgstr "De automatische incasso int in :mandate, de factuur staat in :invoice: betaal deze factuur op een andere manier."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr "De klant heeft geen automatische incasso ingesteld."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr "Deze Mollie API-sleutel begint niet met :prefix (live sleutels beginnen met live_, testsleutels met test_)."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr "Deze bestelling heeft al een korting op deze factuur."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
+msgstr "Deze bestelling staat niet op deze factuur."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
+msgstr "Deze actie geldt niet voor het product of de factureringsperiode van deze bestelling."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
+msgstr "Deze actie levert geen korting op voor deze bestelling."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr "Webhook-endpointgeheim (Webhook endpoint secret):"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr "Zonder code, op elke bestelling die de regels toestaan. Een door de klant ingevoerde code vervangt de actie."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr "U kunt deze factuur niet met automatische incasso betalen."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr "U heeft geen automatische incasso ingesteld bij GoCardless."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
+msgstr "U heeft geen betaalmethode opgeslagen bij Mollie."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
+msgstr "Uw automatische incasso is niet ingesteld. Probeer het opnieuw."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr "Uw betaalmethode is niet opgeslagen. Probeer het opnieuw."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr "Uw verlengingsfacturen worden dan van deze betaalmethode afgeschreven. U kunt deze verwijderen op uw pagina Betaalmethodes."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
+msgstr "Uw verlengingsfacturen worden dan met deze automatische incasso geïnd. U kunt deze annuleren op uw pagina Betaalmethodes."

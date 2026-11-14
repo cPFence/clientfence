@@ -938,6 +938,10 @@ msgstr ""
 msgid ":what must be text."
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr ""
+
 #: src/library/ClientFence/Mail.php
 msgid "A SendGrid API key is required to send emails via SendGrid"
 msgstr ""
@@ -1192,6 +1196,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "A product offers the products listed on its Upgrades tab, and its own other billing cycles."
+msgstr ""
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
@@ -2272,6 +2280,14 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "After a WHMCS import, where these were custom fields of the service."
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
@@ -3418,6 +3434,14 @@ msgstr ""
 msgid "Apply Patches & Update Configuration"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Apply client credit (:amount)"
 msgstr ""
@@ -3738,7 +3762,7 @@ msgstr ""
 msgid "Auto-suspend off"
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
+#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Automatic"
 msgstr ""
 
@@ -3774,7 +3798,7 @@ msgstr ""
 msgid "Automatic payments"
 msgstr ""
 
-#: src/library/Payment/Adapter/PayPalAutoPay.php
+#: src/library/Payment/Adapter/Mollie.php src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Automatic payments to :company"
 msgstr ""
 
@@ -4470,6 +4494,10 @@ msgstr ""
 msgid "Cancel the order, service, and linked subscription now."
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "Cancel this invitation?"
 msgstr ""
@@ -4662,7 +4690,7 @@ msgstr ""
 msgid "Captcha on public forms"
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/Mollie.php
 msgid "Card"
 msgstr ""
 
@@ -4770,7 +4798,7 @@ msgstr ""
 msgid "CentralNic Reseller returned no paid-until date for :domain."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig …
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig …
 msgid "Change"
 msgstr ""
 
@@ -5142,6 +5170,10 @@ msgstr ""
 msgid "Choose a priority: Low, Medium or High."
 msgstr ""
 
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr ""
+
 #: src/modules/Support/Api/Client.php src/modules/Support/Api/Guest.php
 msgid "Choose a rating"
 msgstr ""
@@ -5240,6 +5272,10 @@ msgstr ""
 
 #: src/modules/Support/TicketFeedback.php
 msgid "Choose from 1 to :max stars."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
 msgstr ""
 
 #: src/modules/Client/Google.php
@@ -5698,7 +5734,7 @@ msgstr ""
 msgid "Client for"
 msgstr ""
 
-#: src/modules/Client/Api/Admin.php
+#: src/modules/Client/Groups.php
 msgid "Client group not found"
 msgstr ""
 
@@ -5930,6 +5966,10 @@ msgstr ""
 msgid "Clients can also pay an invoice with a card without setting up automatic payments."
 msgstr ""
 
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Clients can move an active service to another product or billing cycle from its page. The price is prorated: the unused part of the current period is credited, an upgrade is invoiced and applied when paid, and a downgrade credit goes to the client's account balance. Each product, and each service, can also allow or block them."
 msgstr ""
@@ -5946,12 +5986,24 @@ msgstr ""
 msgid "Clients can save a card on their Payment methods page without paying an invoice."
 msgstr ""
 
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
 msgid "Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "Clients can save their PayPal account when they pay or on their Payment methods page, and their invoices are then paid automatically, as with saved cards. Needs the REST API keys and the Vault (\"Save payment methods\") on your PayPal REST app, which PayPal offers in some countries only."
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
@@ -7988,6 +8040,18 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Development/testing only - never enable this in production."
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
 msgstr ""
 
 #: src/library/Server/Manager/Directadmin.php
@@ -10702,7 +10766,7 @@ msgstr ""
 msgid "Free disk space"
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php src/library/Payment/Adapter/Mollie.php …
 msgid "Free orders:"
 msgstr ""
 
@@ -10998,6 +11062,62 @@ msgstr ""
 msgid "Go to your client area"
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Goes to the test client set in the Mass Mail settings:"
 msgstr ""
@@ -11122,7 +11242,7 @@ msgstr ""
 msgid "Gross Revenue"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig
 msgid "Group"
 msgstr ""
 
@@ -11166,7 +11286,7 @@ msgstr ""
 msgid "Group title is missing"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Staff/templates/admin/mod_staff_group.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
 msgid "Groups"
 msgstr ""
 
@@ -12354,7 +12474,7 @@ msgstr ""
 msgid "Invalid client ID"
 msgstr ""
 
-#: src/modules/Client/Api/Admin.php
+#: src/modules/Client/Groups.php
 msgid "Invalid client group ID: :id"
 msgstr ""
 
@@ -12566,7 +12686,7 @@ msgstr ""
 msgid "Invoice #:id not found"
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php …
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php src/library/Payment/Adapter/Mollie.php …
 msgid "Invoice :number"
 msgstr ""
 
@@ -12848,6 +12968,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig src/modules/Order/templates/admin/mod_order_failed_notice.html.twig
 msgid "It is closed without running again; fix the service by hand first if needed."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
 msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
@@ -13339,7 +13463,7 @@ msgid "Leave blank to use the default"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
-msgid "Leave empty for no promotion."
+msgid "Leave empty for the client's automatic promotion, if any."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -13602,7 +13726,7 @@ msgstr ""
 msgid "List the IP Addresses assigned to the server (One per line)"
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/Mollie.php
 msgid "Live API key:"
 msgstr ""
 
@@ -13640,6 +13764,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/Stripe.php
 msgid "Live Webhook signing secret:"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -14976,6 +15104,54 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Modules with a ClientFence counterpart are imported. The rows of every other module are kept in an archive file next to the database backups, so nothing is lost and they can be imported later."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -16558,7 +16734,7 @@ msgstr ""
 msgid "OVHcloud returned an unreadable response for :command"
 msgstr ""
 
-#: src/library/Payment/Adapter/Custom.php src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php …
+#: src/library/Payment/Adapter/Custom.php src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php …
 msgid "Off"
 msgstr ""
 
@@ -16618,7 +16794,7 @@ msgstr ""
 msgid "Older invoices will be sent."
 msgstr ""
 
-#: src/library/Payment/Adapter/Custom.php src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php …
+#: src/library/Payment/Adapter/Custom.php src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php …
 msgid "On"
 msgstr ""
 
@@ -16634,6 +16810,10 @@ msgstr ""
 msgid "On or off"
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "On the invoice page, a client with a billing agreement can pay at once without going to PayPal."
 msgstr ""
@@ -16644,6 +16824,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php
 msgid "On the invoice page, a client with a saved card can pay at once without going to eWAY."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
 msgstr ""
 
 #: src/library/Payment/Adapter/Custom.php
@@ -16840,6 +17024,10 @@ msgstr ""
 
 #: src/modules/Invoice/Quotes.php
 msgid "Only a quote that is not accepted, lost or dead can be sent."
+msgstr ""
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
 msgstr ""
 
 #: src/modules/Order/Service.php
@@ -17262,7 +17450,7 @@ msgstr ""
 msgid "Or send it later"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig …
 msgid "Order"
 msgstr ""
 
@@ -18094,12 +18282,20 @@ msgstr ""
 msgid "Pay and save my PayPal account"
 msgstr ""
 
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
 msgid "Pay as credit"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Pay by :method"
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
 msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig src/themes/palisade/html/mod_order_manage.html.twig
@@ -18118,7 +18314,7 @@ msgstr ""
 msgid "Pay it as account credit, record a payment you made outside ClientFence, or decline it on the client's Affiliate tab."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+#: src/library/Payment/Adapter/Mollie.php src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Pay now"
 msgstr ""
 
@@ -18126,12 +18322,16 @@ msgstr ""
 msgid "Pay now with :account"
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php src/library/Payment/Adapter/Mollie.php …
 msgid "Pay now with :card"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
 msgid "Pay on the first paid invoice of each service only. Off: every renewal pays too."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php
@@ -18148,6 +18348,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay once without saving the card:"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
 msgstr ""
 
 #: src/themes/palisade/html/partials/pay_methods.html.twig
@@ -18178,12 +18382,20 @@ msgstr ""
 msgid "Pay with a card and set up automatic payments"
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Pay with the saved agreement:"
 msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Pay with the saved card:"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -18604,6 +18816,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Payments by :gateway"
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -19634,6 +19850,10 @@ msgstr ""
 msgid "Promo value is missing"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Promotion (:code)"
 msgstr ""
@@ -20198,6 +20418,10 @@ msgstr ""
 msgid "Recurring discount of %amount% still applies"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "Redeemed At"
 msgstr ""
@@ -20620,6 +20844,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Remove the promo code"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
 msgstr ""
 
 #: src/themes/palisade/html/partials/ip_seats.html.twig
@@ -21546,6 +21774,10 @@ msgstr ""
 msgid "Sandbox REST API secret:"
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_user_profile.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig …
 msgid "Save"
 msgstr ""
@@ -21572,6 +21804,14 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Save a card for automatic payments"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
@@ -21762,6 +22002,14 @@ msgstr ""
 msgid "Saved payment methods are not available."
 msgstr ""
 
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig …
 msgid "Saved."
 msgstr ""
@@ -21792,6 +22040,10 @@ msgstr ""
 
 #: src/modules/Invoice/Controller/Client.php
 msgid "Saving a card with eWAY is not available."
+msgstr ""
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
@@ -21984,10 +22236,6 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Select Free TLDs"
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
-msgid "Select Group"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
@@ -22671,10 +22919,18 @@ msgid "Set this price"
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr ""
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Set up automatic payments with PayPal"
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayTabs.php
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php src/library/Payment/Adapter/Mollie.php …
 msgid "Set up on the Payment methods page:"
 msgstr ""
 
@@ -22688,6 +22944,10 @@ msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
 msgid "Set your password"
+msgstr ""
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
@@ -22966,12 +23226,20 @@ msgstr ""
 msgid "Sign in"
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Sign in as the account owner to pay with PayPal."
 msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Sign in as the account owner to pay with a card."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
 msgstr ""
 
 #: src/themes/palisade/html/layout_default.html.twig src/themes/palisade/html/layout_public.html.twig src/themes/palisade/html/partials/guest_gate.html.twig
@@ -24162,6 +24430,10 @@ msgstr ""
 msgid "Terms of Service / Privacy Policy Requirement for the Signup Page"
 msgstr ""
 
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Test Connection"
 msgstr ""
@@ -24338,7 +24610,7 @@ msgstr ""
 msgid "The \":driver\" cache driver requires an installation identifier (\"info.instance_id\" in the configuration file) so that installations sharing the same server don't collide. Reinstall or update ClientFence to have one generated automatically, or set it manually."
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayPalAutoPay.php src/library/Payment/Adapter/PayPalEmail.php …
+#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php src/library/Payment/Adapter/Mollie.php …
 msgid "The \":pay_gateway\" payment gateway is not fully configured. Please configure the :missing"
 msgstr ""
 
@@ -24480,6 +24752,10 @@ msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "The ClientFence release feed provided an invalid SHA-256 digest. Update canceled for security reasons."
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -24798,6 +25074,10 @@ msgstr ""
 msgid "The client has :amount of credit."
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "The client has no PayPal billing agreement."
 msgstr ""
@@ -24810,7 +25090,7 @@ msgstr ""
 msgid "The client has no saved card."
 msgstr ""
 
-#: src/modules/Invoice/Api/Admin.php
+#: src/library/Payment/Adapter/Mollie.php src/modules/Invoice/Api/Admin.php
 msgid "The client has no saved payment method."
 msgstr ""
 
@@ -26019,6 +26299,10 @@ msgstr ""
 msgid "This IP address is not on the list."
 msgstr ""
 
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr ""
+
 #: src/themes/admin_default/html/mod_index_dashboard.html.twig
 msgid "This Month So Far"
 msgstr ""
@@ -26387,6 +26671,10 @@ msgstr ""
 msgid "This option is not available for this product."
 msgstr ""
 
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "This order does not have a provisioned service yet."
 msgstr ""
@@ -26401,6 +26689,10 @@ msgstr ""
 
 #: src/modules/Client/Affiliates/Link.php
 msgid "This order has no affiliate."
+msgstr ""
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
 msgstr ""
 
 #: src/modules/Invoice/Api/Client.php src/modules/Invoice/Service.php
@@ -26479,12 +26771,20 @@ msgstr ""
 msgid "This promotion code already exists."
 msgstr ""
 
-#: src/modules/Cart/Service.php
+#: src/modules/Cart/Service.php src/modules/Invoice/Promotions.php
 msgid "This promotion code cannot be used for this client."
+msgstr ""
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "This promotion has redemption history and can no longer be deleted. Disable it to archive it."
+msgstr ""
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -29263,6 +29563,10 @@ msgstr ""
 msgid "Webhook address"
 msgstr ""
 
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Webhook signing secret"
 msgstr ""
@@ -29555,6 +29859,10 @@ msgstr ""
 msgid "Withdrawn"
 msgstr ""
 
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Write"
 msgstr ""
@@ -29800,6 +30108,10 @@ msgid "You cannot manage your own staff account here"
 msgstr ""
 
 #: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php
 msgid "You cannot pay this invoice with a saved PayPal account."
 msgstr ""
 
@@ -29931,6 +30243,10 @@ msgstr ""
 msgid "You have been invited to use the client area of %account% with your own sign-in."
 msgstr ""
 
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You have no backup code left: make a new one."
 msgstr ""
@@ -29945,6 +30261,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
 msgid "You have no hosting accounts yet."
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
 msgstr ""
 
 #: src/modules/Invoice/Api/Client.php
@@ -30157,6 +30477,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Your Data"
+msgstr ""
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Enom.php
@@ -30491,6 +30815,10 @@ msgstr ""
 msgid "Your payment has been submitted and will be processed shortly. It may take some time for your invoice to be marked as paid."
 msgstr ""
 
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_thankyou.html.twig
 msgid "Your payment was sent. The invoice is marked paid as soon as the payment is confirmed, which can take a few minutes."
 msgstr ""
@@ -30541,6 +30869,14 @@ msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
 msgid "Your renewal invoices are then charged to this card. You can remove it on your Payment methods page."
+msgstr ""
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr ""
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
 msgstr ""
 
 #: src/library/Payment/Adapter/PayPalAutoPay.php

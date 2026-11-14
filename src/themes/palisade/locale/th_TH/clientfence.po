@@ -25900,3 +25900,348 @@ msgstr "ค้นหาลูกค้า ใบแจ้งหนี้ หน�
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Search clients, invoices, settings, support PINs…"
 msgstr "ค้นหาลูกค้า ใบแจ้งหนี้ การตั้งค่า รหัส PIN สำหรับฝ่ายสนับสนุน…"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr "การหักบัญชีอัตโนมัติยังอยู่ระหว่างการเรียกเก็บเงิน คุณสามารถลบการหักบัญชีอัตโนมัติได้เมื่อดำเนินการเสร็จสิ้น"
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
+msgstr "สามารถใช้โปรโมชันได้เฉพาะกับใบแจ้งหนี้ที่ยังไม่ชำระเท่านั้น"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr "หลังคำสั่งซื้อฟรีที่ต่ออายุ (ทดลองใช้ฟรี) ลูกค้าที่ไม่มีวิธีชำระเงินที่บันทึกไว้จะถูกส่งไปที่ GoCardless เพื่อตั้งค่าการหักบัญชีอัตโนมัติ"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
+msgstr "หลังคำสั่งซื้อฟรีที่ต่ออายุ (ทดลองใช้ฟรี) ลูกค้าที่ไม่มีวิธีชำระเงินที่บันทึกไว้จะถูกส่งไปที่ Mollie เพื่อบันทึกวิธีชำระเงิน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr "ใช้โปรโมชัน"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr "ใช้โดยอัตโนมัติ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr "ยกเลิกการหักบัญชีอัตโนมัตินี้หรือไม่?"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr "เลือกโปรโมชัน"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
+msgstr "เลือกกลุ่ม"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr "ลูกค้ายังชำระใบแจ้งหนี้ได้โดยไม่ต้องตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr "ลูกค้าสามารถบันทึกบัตรหรือบัญชี PayPal ในหน้าวิธีการชำระเงินโดยไม่ต้องชำระใบแจ้งหนี้ (Mollie ตรวจสอบโดยไม่เรียกเก็บเงิน)"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr "ลูกค้าสามารถบันทึกบัตรหรือบัญชีธนาคารที่ Mollie แล้วใบแจ้งหนี้จะถูกเรียกเก็บจากบัญชีนั้นโดยอัตโนมัติ ปิดตัวเลือกนี้หากบัญชี Mollie ของคุณไม่ได้เปิดใช้การชำระเงินแบบเกิดซ้ำ ลูกค้าจะชำระแต่ละใบแจ้งหนี้ในหน้าของ Mollie แทน"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
+msgstr "ลูกค้าสามารถตั้งค่าการหักบัญชีอัตโนมัติในหน้าวิธีการชำระเงินโดยไม่ต้องชำระใบแจ้งหนี้"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr "การหักบัญชีอัตโนมัติ (Direct Debit)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr "การหักบัญชีอัตโนมัติ (Direct Debit) ผ่าน GoCardless"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
+msgstr "การหักบัญชีอัตโนมัติ (Direct Debit) ผ่าน GoCardless ลูกค้าตั้งค่าการหักบัญชีอัตโนมัติในหน้าของ GoCardless แล้วใบแจ้งหนี้จะถูกเรียกเก็บจากบัญชีธนาคารโดยอัตโนมัติ การชำระเงินใช้เวลาไม่กี่วัน: ใบแจ้งหนี้จะถูกทำเครื่องหมายว่าชำระแล้วเมื่อ GoCardless ยืนยัน"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr "GoCardless ไม่ตอบกลับ :path: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr "GoCardless ไม่ได้คืนเงิน: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr "GoCardless ไม่ได้คืนเงิน: การคืนเงินถูกปิดสำหรับบัญชี GoCardless ของคุณ (ขอให้ GoCardless เปิดใช้) :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr "GoCardless ไม่ได้ตั้งค่าการหักบัญชีอัตโนมัติ: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr "GoCardless ไม่ได้เริ่มการตั้งค่าการหักบัญชีอัตโนมัติ: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr "GoCardless ไม่พร้อมใช้งาน"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr "การชำระเงิน GoCardless :id เป็นสกุลเงิน :currency ส่วนใบแจ้งหนี้เป็นสกุลเงิน :invoice"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr "การชำระเงิน GoCardless :id ไม่ใช่ของใบแจ้งหนี้ ClientFence"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr "ไม่พบการชำระเงิน GoCardless :id"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr "GoCardless ปฏิเสธโทเค็นการเข้าถึง (โทเค็น live และ sandbox ต่างกัน): :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr "GoCardless ปฏิเสธการชำระเงิน: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr "ลายเซ็น webhook ของ GoCardless ไม่ตรงกัน"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr "GoCardless: Developers, Create, Access token (read-write) โหมดทดสอบใช้โทเค็นการเข้าถึงของบัญชี sandbox GoCardless ของคุณ [วิธีตั้งค่า GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr "GoCardless: Developers, Create, Webhook endpoint โดยใช้ URL การเรียกกลับ IPN ของเกตเวย์นี้ sandbox มี endpoint และรหัสลับของตัวเอง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
+msgstr "บันทึกเป็นโปรโมชันนี้ ตามกฎของโปรโมชัน โปรโมชันแบบเกิดซ้ำจะถูกหักออกจากการต่ออายุด้วย"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the client's automatic promotion, if any."
+msgstr "เว้นว่างไว้เพื่อใช้โปรโมชันอัตโนมัติของลูกค้า (ถ้ามี)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
+msgstr "โทเค็นการเข้าถึงสำหรับใช้งานจริง (Access token):"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr "Mollie ไม่ตอบกลับ :path: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr "Mollie ไม่ได้คืนเงิน: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr "Mollie ไม่ได้บันทึกวิธีชำระเงิน: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr "Mollie ไม่ได้เริ่มการชำระเงิน: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr "Mollie ไม่พร้อมใช้งาน"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr "การแจ้งเตือนจาก Mollie ไม่ระบุการชำระเงิน"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr "การชำระเงิน Mollie :id เป็นสกุลเงิน :currency ส่วนใบแจ้งหนี้เป็นสกุลเงิน :invoice"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr "การชำระเงิน Mollie :id ไม่ใช่ของใบแจ้งหนี้ ClientFence"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr "ไม่พบการชำระเงิน Mollie :id: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr "Mollie ปฏิเสธคีย์ API: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr "Mollie ปฏิเสธการชำระเงิน: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+msgstr "Mollie: Developers, API keys คีย์ live ขึ้นต้นด้วย live_ คีย์ทดสอบขึ้นต้นด้วย test_ [วิธีตั้งค่า Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr "ในหน้าใบแจ้งหนี้ ลูกค้าที่มีการหักบัญชีอัตโนมัติสามารถเริ่มชำระเงินได้ทันทีโดยไม่ต้องไปที่ GoCardless"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
+msgstr "ในหน้าใบแจ้งหนี้ ลูกค้าที่มีวิธีชำระเงินที่บันทึกไว้สามารถชำระเงินได้ทันทีโดยไม่ต้องไปที่ Mollie"
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
+msgstr "เฉพาะโปรโมชันแบบเกิดซ้ำเท่านั้นที่ถูกหักออกจากการต่ออายุ"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr "ชำระเงินและตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
+msgstr "ชำระเงินด้วยการหักบัญชีอัตโนมัติและตั้งค่าการชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
+msgstr "ชำระเงินครั้งเดียว"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
+msgstr "ชำระเงินครั้งเดียวโดยไม่บันทึก:"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr "ชำระเงินด้วยการหักบัญชีอัตโนมัติที่บันทึกไว้:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
+msgstr "ชำระเงินด้วยวิธีชำระเงินที่บันทึกไว้:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
+msgstr "การชำระเงินในหน้าชำระเงินของ Mollie ด้วยวิธีชำระเงินที่เปิดไว้ในแดชบอร์ด Mollie ของคุณ ลูกค้าสามารถบันทึกบัตรหรือบัญชีธนาคารที่นั่น แล้วใบแจ้งหนี้จะถูกเรียกเก็บจากบัญชีนั้นโดยอัตโนมัติ วิธีแบบชำระภายหลังที่ต้องตัดยอดด้วยตนเอง (เช่น Klarna) ไม่รองรับ: อย่าเปิดใช้สำหรับพอร์ทัลนี้"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr "โปรโมชัน"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr "เฉพาะโปรโมชันแบบเกิดซ้ำ จะถูกหักออกจากการต่ออายุครั้งถัดไปตามกฎของโปรโมชัน ใบแจ้งหนี้ที่ออกไปแล้วจะไม่เปลี่ยนแปลง"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
+msgstr "ลบโปรโมชันหรือไม่? การต่ออายุครั้งถัดไปจะเรียกเก็บเต็มจำนวน เว้นแต่ลูกค้ามีโปรโมชันอัตโนมัติ ใบแจ้งหนี้ที่ออกไปแล้วจะไม่เปลี่ยนแปลง"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr "โทเค็นการเข้าถึงสำหรับ sandbox (Access token):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr "บันทึกบัตรหรือบัญชี PayPal ที่ Mollie แล้วใบแจ้งหนี้ของคุณจะถูกเรียกเก็บจากบัญชีนั้นโดยอัตโนมัติ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
+msgstr "บันทึกวิธีชำระเงินสำหรับการชำระเงินอัตโนมัติ"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr "วิธีชำระเงินที่บันทึกไว้:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr "บันทึกไว้กับ Mollie"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
+msgstr "ไม่สามารถบันทึกวิธีชำระเงินกับ Mollie ได้"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr "ตั้งค่าการหักบัญชีอัตโนมัติ"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr "ตั้งค่าการหักบัญชีอัตโนมัติผ่าน GoCardless แล้วใบแจ้งหนี้ของคุณจะถูกเรียกเก็บจากบัญชีธนาคารของคุณโดยอัตโนมัติ"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
+msgstr "ไม่สามารถตั้งค่าการหักบัญชีอัตโนมัติผ่าน GoCardless ได้"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr "เข้าสู่ระบบในฐานะเจ้าของบัญชีเพื่อชำระเงินด้วยการหักบัญชีอัตโนมัติ"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
+msgstr "เข้าสู่ระบบในฐานะเจ้าของบัญชีเพื่อชำระเงิน"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr "คีย์ API ทดสอบ (API key):"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
+msgstr "การหักบัญชีอัตโนมัติเรียกเก็บเป็นสกุลเงิน :mandate ส่วนใบแจ้งหนี้เป็นสกุลเงิน :invoice: โปรดชำระใบแจ้งหนี้นี้ด้วยวิธีอื่น"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr "ลูกค้ายังไม่ได้ตั้งค่าการหักบัญชีอัตโนมัติ"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr "คีย์ API ของ Mollie นี้ไม่ได้ขึ้นต้นด้วย :prefix (คีย์ live ขึ้นต้นด้วย live_ คีย์ทดสอบขึ้นต้นด้วย test_)"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr "คำสั่งซื้อนี้มีส่วนลดในใบแจ้งหนี้นี้อยู่แล้ว"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
+msgstr "คำสั่งซื้อนี้ไม่อยู่ในใบแจ้งหนี้นี้"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
+msgstr "โปรโมชันนี้ไม่ใช้กับผลิตภัณฑ์หรือรอบการเรียกเก็บเงินของคำสั่งซื้อนี้"
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
+msgstr "โปรโมชันนี้ไม่ลดอะไรจากคำสั่งซื้อนี้"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr "รหัสลับของ webhook endpoint (Webhook endpoint secret):"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr "ไม่ต้องใช้โค้ด กับทุกคำสั่งซื้อที่กฎของโปรโมชันอนุญาต โค้ดที่ลูกค้ากรอกจะมาแทนที่"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr "คุณไม่สามารถชำระใบแจ้งหนี้นี้ด้วยการหักบัญชีอัตโนมัติได้"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr "คุณยังไม่ได้ตั้งค่าการหักบัญชีอัตโนมัติกับ GoCardless"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
+msgstr "คุณยังไม่ได้บันทึกวิธีชำระเงินไว้กับ Mollie"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
+msgstr "การหักบัญชีอัตโนมัติของคุณไม่ได้ถูกตั้งค่า โปรดลองอีกครั้ง"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr "วิธีชำระเงินของคุณไม่ได้ถูกบันทึก โปรดลองอีกครั้ง"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr "จากนั้นใบแจ้งหนี้การต่ออายุของคุณจะถูกเรียกเก็บจากวิธีชำระเงินนี้ คุณลบได้ในหน้าวิธีการชำระเงิน"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
+msgstr "จากนั้นใบแจ้งหนี้การต่ออายุของคุณจะถูกเรียกเก็บด้วยการหักบัญชีอัตโนมัตินี้ คุณยกเลิกได้ในหน้าวิธีการชำระเงิน"

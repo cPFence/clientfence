@@ -28075,3 +28075,348 @@ msgstr "Ügyfelek, számlák, oldalak, támogatási PIN-kódok keresése…"
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Search clients, invoices, settings, support PINs…"
 msgstr "Keresés ügyfelek, számlák, beállítások, támogatási PIN-kódok között…"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr "Egy csoportos beszedés még folyamatban van. A csoportos beszedést akkor távolíthatja el, amikor az lezárult."
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
+msgstr "Promóció csak kifizetetlen számlára alkalmazható."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr "Egy megújuló ingyenes rendelés (ingyenes próba) után a mentett fizetési mód nélküli ügyfelet a GoCardlessre irányítjuk, hogy csoportos beszedést állítson be."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
+msgstr "Egy megújuló ingyenes rendelés (ingyenes próba) után a mentett fizetési mód nélküli ügyfelet a Mollie-ra irányítjuk, hogy mentsen egyet."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr "Promóció alkalmazása"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr "Automatikus alkalmazás"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr "Megszakítja ezt a csoportos beszedést?"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr "Válasszon promóciót."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
+msgstr "Csoportok kiválasztása"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr "Az ügyfelek automatikus fizetések beállítása nélkül is kifizethetnek egy számlát."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr "Az ügyfelek a Fizetési módok oldalukon menthetnek kártyát vagy PayPal-fiókot számla kifizetése nélkül (a Mollie terhelés nélkül ellenőrzi)."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr "Az ügyfelek a Mollie-nál menthetnek kártyát vagy bankszámlát, és a számláik ezután automatikusan arra terhelődnek. Kapcsolja ki, ha a Mollie-fiókjában nincs engedélyezve az ismétlődő fizetés; az ügyfelek ekkor minden számlát a Mollie oldalán fizetnek ki."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
+msgstr "Az ügyfelek a Fizetési módok oldalukon állíthatnak be csoportos beszedést számla kifizetése nélkül."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr "Csoportos beszedés"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr "Csoportos beszedés a GoCardless-szel"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
+msgstr "Csoportos beszedés a GoCardless-szel. Az ügyfelek a GoCardless oldalán állítanak be csoportos beszedést, és a számláikat ezután automatikusan beszedik a bankszámlájukról. Egy fizetés pár napig tart: a számla akkor kerül fizetettre, amikor a GoCardless megerősíti."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr "A GoCardless nem válaszolt :path: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr "A GoCardless nem hajtotta végre a visszatérítést: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr "A GoCardless nem hajtotta végre a visszatérítést: a visszatérítések ki vannak kapcsolva a GoCardless-fiókjában (kérje a GoCardlesst az engedélyezésükre). :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr "A GoCardless nem állította be a csoportos beszedést: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr "A GoCardless nem indította el a csoportos beszedés beállítását: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr "A GoCardless nem érhető el."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr "A(z) :id GoCardless-fizetés :currency pénznemben van, a számla :invoice pénznemben"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr "A(z) :id GoCardless-fizetés nem ClientFence-számlához tartozik"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr "A(z) :id GoCardless-fizetés nem található"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr "A GoCardless elutasította a hozzáférési tokent (az éles és a sandbox token eltér): :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr "A GoCardless elutasította a fizetést: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr "A GoCardless webhook aláírása nem egyezik"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr "GoCardless: Developers, Create, Access token (read-write). A tesztmód a GoCardless sandbox-fiókja hozzáférési tokenjét használja. [A GoCardless beállítása](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr "GoCardless: Developers, Create, Webhook endpoint, az átjáró IPN visszahívási URL-jével. A sandboxnak saját endpointja és titka van."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
+msgstr "A rendszer ezt a promóciót rögzíti, a szabályai szerint. Az ismétlődő promóció a megújításokból is levonódik."
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the client's automatic promotion, if any."
+msgstr "Hagyja üresen az ügyfél automatikus promóciójához, ha van."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
+msgstr "Éles hozzáférési token (Access token):"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr "A Mollie nem válaszolt :path: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr "A Mollie nem hajtotta végre a visszatérítést: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr "A Mollie nem mentette el a fizetési módot: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr "A Mollie nem indította el a fizetést: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr "A Mollie nem érhető el."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr "A Mollie értesítése nem nevez meg fizetést"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr "A(z) :id Mollie-fizetés :currency pénznemben van, a számla :invoice pénznemben"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr "A(z) :id Mollie-fizetés nem ClientFence-számlához tartozik"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr "A(z) :id Mollie-fizetés nem található: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr "A Mollie elutasította az API-kulcsot: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr "A Mollie elutasította a fizetést: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+msgstr "Mollie: Developers, API keys. Az éles kulcs live_-vel kezdődik, a teszt test_-tel. [A Mollie beállítása](https://clientfence.com/docs/clients-and-billing/mollie/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr "A számla oldalán a csoportos beszedéssel rendelkező ügyfél azonnal elindíthatja a fizetést a GoCardlessre lépés nélkül."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
+msgstr "A számla oldalán a mentett fizetési móddal rendelkező ügyfél azonnal fizethet a Mollie-ra lépés nélkül."
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
+msgstr "Csak az ismétlődő promóció vonódik le a megújításokból."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr "Fizetés és automatikus fizetések beállítása"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
+msgstr "Fizetés csoportos beszedéssel és automatikus fizetések beállítása"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
+msgstr "Egyszeri fizetés"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
+msgstr "Egyszeri fizetés mentés nélkül:"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr "Fizetés a mentett csoportos beszedéssel:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
+msgstr "Fizetés a mentett fizetési móddal:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
+msgstr "Fizetések a Mollie fizetési oldalán, a Mollie-irányítópultján bekapcsolt fizetési módokkal. Az ügyfelek ott menthetnek kártyát vagy bankszámlát, és a számláik ezután automatikusan arra terhelődnek. A kézi lefoglalást igénylő „fizess később\" módok (például a Klarna) nem támogatottak: ne kapcsolja be őket ehhez a portálhoz."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr "Promóció"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr "Csak ismétlődő promóciók. A következő megújításokból vonódik le, a szabályai szerint. A már kiállított számlák nem változnak."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
+msgstr "Eltávolítja a promóciót? A következő megújítások teljes áron kerülnek számlázásra, kivéve ha az ügyfélre automatikus promóció vonatkozik. A már kiállított számlák nem változnak."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr "Sandbox hozzáférési token (Access token):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr "Mentsen egy kártyát vagy PayPal-fiókot a Mollie-nál, és a számlái ezután automatikusan arra terhelődnek."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
+msgstr "Fizetési mód mentése automatikus fizetésekhez"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr "Mentett fizetési módok:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr "Mentve a Mollie-nál"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
+msgstr "A fizetési mód mentése a Mollie-nál nem érhető el."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr "Csoportos beszedés beállítása"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr "Állítson be csoportos beszedést a GoCardless-szel, és a számláit ezután automatikusan beszedik a bankszámlájáról."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
+msgstr "A csoportos beszedés beállítása a GoCardless-szel nem érhető el."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr "A csoportos beszedéssel való fizetéshez jelentkezzen be fióktulajdonosként."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
+msgstr "A fizetéshez jelentkezzen be fióktulajdonosként."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr "Teszt API-kulcs (API key):"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
+msgstr "A csoportos beszedés :mandate pénznemben szed be, a számla :invoice pénznemben van: ezt a számlát másképp fizesse ki."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr "Az ügyfélnek nincs beállított csoportos beszedése."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr "Ez a Mollie API-kulcs nem :prefix előtaggal kezdődik (az éles kulcsok live_-vel, a tesztkulcsok test_-tel kezdődnek)."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr "Ez a rendelés már kapott kedvezményt ezen a számlán."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
+msgstr "Ez a rendelés nincs ezen a számlán."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
+msgstr "Ez a promóció nem vonatkozik a rendelés termékére vagy számlázási időszakára."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
+msgstr "Ez a promóció nem von le semmit ebből a rendelésből."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr "Webhook endpoint titka (Webhook endpoint secret):"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr "Kód nélkül, minden rendelésnél, amelyet a szabályai megengednek. Az ügyfél által megadott kód lecseréli."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr "Ezt a számlát nem fizetheti csoportos beszedéssel."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr "Nincs beállított csoportos beszedése a GoCardlessnél."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
+msgstr "Nincs mentett fizetési módja a Mollie-nál."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
+msgstr "A csoportos beszedése nem lett beállítva. Kérjük, próbálja újra."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr "A fizetési módja nem lett elmentve. Kérjük, próbálja újra."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr "A megújítási számláit ezután erre a fizetési módra terheljük. Eltávolíthatja a Fizetési módok oldalán."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
+msgstr "A megújítási számláit ezután ez a csoportos beszedés szedi be. Megszakíthatja a Fizetési módok oldalán."

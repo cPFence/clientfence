@@ -25840,3 +25840,348 @@ msgstr "Müşteri, fatura, sayfa, destek PIN'i ara…"
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Search clients, invoices, settings, support PINs…"
 msgstr "Müşteri, fatura, ayar, destek PIN'i ara…"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr "Bir otomatik ödeme talimatı hâlâ tahsil ediliyor. Tahsilat tamamlandığında otomatik ödeme talimatını kaldırabilirsiniz."
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
+msgstr "Bir promosyon yalnızca ödenmemiş bir faturaya uygulanabilir."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr "Yenilenen ücretsiz bir siparişten (ücretsiz deneme) sonra, kayıtlı ödeme yöntemi olmayan bir müşteri, otomatik ödeme talimatı kurmak için GoCardless'e yönlendirilir."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
+msgstr "Yenilenen ücretsiz bir siparişten (ücretsiz deneme) sonra, kayıtlı ödeme yöntemi olmayan bir müşteri, bir ödeme yöntemi kaydetmek için Mollie'ye yönlendirilir."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr "Promosyon Uygula"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr "Otomatik uygula"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr "Bu otomatik ödeme talimatı iptal edilsin mi?"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr "Bir promosyon seçin."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
+msgstr "Grupları seçin"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr "Müşteriler, otomatik ödemeleri kurmadan da bir faturayı ödeyebilir."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr "Müşteriler, fatura ödemeden Ödeme yöntemleri sayfalarında bir kart veya PayPal hesabı kaydedebilir (Mollie bunu ücret almadan doğrular)."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr "Müşteriler Mollie'de bir kart veya banka hesabı kaydedebilir ve faturaları daha sonra otomatik olarak bundan tahsil edilir. Mollie hesabınızda yinelenen ödemeler etkin değilse kapatın; müşteriler bu durumda her faturayı Mollie'nin sayfasında öder."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
+msgstr "Müşteriler, fatura ödemeden Ödeme yöntemleri sayfalarında otomatik ödeme talimatı kurabilir."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr "Otomatik ödeme talimatı"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr "GoCardless ile otomatik ödeme talimatı"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
+msgstr "GoCardless ile otomatik ödeme talimatı. Müşteriler GoCardless'in sayfasında otomatik ödeme talimatı kurar ve faturaları daha sonra banka hesaplarından otomatik olarak tahsil edilir. Bir ödeme birkaç gün sürer: GoCardless onayladığında fatura ödendi olarak işaretlenir."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr "GoCardless yanıt vermedi :path: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr "GoCardless iadeyi yapmadı: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr "GoCardless iadeyi yapmadı: GoCardless hesabınız için iadeler kapalı (GoCardless'ten bunları etkinleştirmesini isteyin). :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr "GoCardless otomatik ödeme talimatını kurmadı: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr "GoCardless otomatik ödeme talimatı kurulumunu başlatmadı: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr "GoCardless kullanılamıyor."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr "GoCardless ödemesi :id :currency cinsinden, fatura :invoice cinsinden"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr "GoCardless ödemesi :id bir ClientFence faturasına ait değil"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr "GoCardless ödemesi :id bulunamadı"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr "GoCardless erişim belirtecini reddetti (canlı ve sandbox belirteçleri farklıdır): :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr "GoCardless ödemeyi reddetti: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr "GoCardless webhook imzası eşleşmiyor"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr "GoCardless: Developers, Create, Access token (read-write). Test modu, GoCardless sandbox hesabınızın erişim belirtecini kullanır. [GoCardless nasıl kurulur](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr "GoCardless: Developers, Create, Webhook endpoint, bu ağ geçidinin IPN Callback Adresi (URL) ile. Sandbox'ın kendi endpoint'i ve sırrı vardır."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
+msgstr "Bu promosyon olarak, kurallarına göre kaydedilir. Yinelenen bir promosyon yenilemelerden de düşülür."
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the client's automatic promotion, if any."
+msgstr "Müşterinin otomatik promosyonu varsa onu kullanmak için boş bırakın."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
+msgstr "Canlı erişim belirteci (Access token):"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr "Mollie yanıt vermedi :path: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr "Mollie iadeyi yapmadı: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr "Mollie ödeme yöntemini kaydetmedi: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr "Mollie ödemeyi başlatmadı: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr "Mollie kullanılamıyor."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr "Mollie bildirimi hiçbir ödemeyi belirtmiyor"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr "Mollie ödemesi :id :currency cinsinden, fatura :invoice cinsinden"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr "Mollie ödemesi :id bir ClientFence faturasına ait değil"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr "Mollie ödemesi :id bulunamadı: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr "Mollie API anahtarını reddetti: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr "Mollie ödemeyi reddetti: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+msgstr "Mollie: Developers, API keys. Canlı anahtar live_ ile, test anahtarı test_ ile başlar. [Mollie nasıl kurulur](https://clientfence.com/docs/clients-and-billing/mollie/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr "Fatura sayfasında, otomatik ödeme talimatı olan bir müşteri GoCardless'e gitmeden ödemeyi hemen başlatabilir."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
+msgstr "Fatura sayfasında, kayıtlı ödeme yöntemi olan bir müşteri Mollie'ye gitmeden hemen ödeyebilir."
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
+msgstr "Yenilemelerden yalnızca yinelenen bir promosyon düşülür."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr "Öde ve otomatik ödemeleri kur"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
+msgstr "Otomatik ödeme talimatıyla öde ve otomatik ödemeleri kur"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
+msgstr "Bir kez öde"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
+msgstr "Kaydetmeden bir kez öde:"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr "Kayıtlı otomatik ödeme talimatıyla öde:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
+msgstr "Kayıtlı ödeme yöntemiyle öde:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
+msgstr "Mollie'nin ödeme sayfasında ödemeler, Mollie panonuzda açık olan ödeme yöntemleriyle yapılır. Müşteriler orada bir kart veya banka hesabı kaydedebilir ve faturaları daha sonra otomatik olarak bundan tahsil edilir. Manuel tahsilat gerektiren sonra öde yöntemleri (Klarna gibi) desteklenmez: bu portal için açmayın."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr "Promosyon"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr "Yalnızca yinelenen promosyonlar. Kurallarına göre sonraki yenilemelerden düşülür. Daha önce düzenlenmiş faturalar değişmez."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
+msgstr "Promosyon kaldırılsın mı? Müşteriye otomatik bir promosyon uygulanmıyorsa sonraki yenilemeler tam tutar üzerinden tahsil edilir. Daha önce düzenlenmiş faturalar değişmez."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr "Sandbox erişim belirteci (Access token):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr "Mollie'de bir kart veya PayPal hesabı kaydedin; faturalarınız daha sonra otomatik olarak bundan tahsil edilir."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
+msgstr "Otomatik ödemeler için bir ödeme yöntemi kaydet"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr "Kayıtlı ödeme yöntemleri:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr "Mollie ile kaydedildi"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
+msgstr "Mollie ile ödeme yöntemi kaydetme kullanılamıyor."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr "Otomatik ödeme talimatı kur"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr "GoCardless ile bir otomatik ödeme talimatı kurun; faturalarınız daha sonra banka hesabınızdan otomatik olarak tahsil edilir."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
+msgstr "GoCardless ile otomatik ödeme talimatı kurma kullanılamıyor."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr "Otomatik ödeme talimatıyla ödemek için hesap sahibi olarak oturum açın."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
+msgstr "Ödemek için hesap sahibi olarak oturum açın."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr "Test API anahtarı (API key):"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
+msgstr "Otomatik ödeme talimatı :mandate cinsinden tahsil ediyor, fatura :invoice cinsinden: bu faturayı başka bir yolla ödeyin."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr "Müşterinin kurulu bir otomatik ödeme talimatı yok."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr "Bu Mollie API anahtarı :prefix ile başlamıyor (canlı anahtarlar live_ ile, test anahtarları test_ ile başlar)."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr "Bu siparişin bu faturada zaten bir indirimi var."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
+msgstr "Bu sipariş bu faturada yok."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
+msgstr "Bu promosyon bu siparişin ürününe veya faturalama dönemine uygulanmaz."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
+msgstr "Bu promosyon bu siparişten hiçbir şey düşmez."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr "Webhook endpoint sırrı (Webhook endpoint secret):"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr "Kod olmadan, kurallarının izin verdiği her siparişte. Müşterinin girdiği bir kod bunun yerine geçer."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr "Bu faturayı otomatik ödeme talimatıyla ödeyemezsiniz."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr "GoCardless ile kurulu bir otomatik ödeme talimatınız yok."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
+msgstr "Mollie'de kayıtlı bir ödeme yönteminiz yok."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
+msgstr "Otomatik ödeme talimatınız kurulamadı. Lütfen tekrar deneyin."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr "Ödeme yönteminiz kaydedilemedi. Lütfen tekrar deneyin."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr "Yenileme faturalarınız daha sonra bu ödeme yönteminden tahsil edilir. Bunu Ödeme yöntemleri sayfanızdan kaldırabilirsiniz."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
+msgstr "Yenileme faturalarınız daha sonra bu otomatik ödeme talimatıyla tahsil edilir. Bunu Ödeme yöntemleri sayfanızdan iptal edebilirsiniz."

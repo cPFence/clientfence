@@ -27592,3 +27592,348 @@ msgstr "جستجوی مشتریان، فاکتورها، صفحات، پین‌�
 #: src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "Search clients, invoices, settings, support PINs…"
 msgstr "جستجوی مشتریان، فاکتورها، تنظیمات، پین‌های پشتیبانی…"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "A Direct Debit payment is still being collected. You can remove the Direct Debit once it has finished."
+msgstr "یک برداشت مستقیم هنوز در حال وصول است. می‌توانید پس از پایان آن، برداشت مستقیم را حذف کنید."
+
+#: src/modules/Invoice/Promotions.php
+msgid "A promotion can only be applied to an unpaid invoice."
+msgstr "تخفیف فقط روی فاکتور پرداخت‌نشده قابل اعمال است."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to GoCardless to set up a Direct Debit."
+msgstr "پس از یک سفارش رایگان که تمدید می‌شود (آزمایش رایگان)، مشتری‌ای که روش پرداخت ذخیره‌شده ندارد برای راه‌اندازی برداشت مستقیم به GoCardless هدایت می‌شود."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "After a free order that renews (a free trial), a client without a saved payment method is sent to Mollie to save one."
+msgstr "پس از یک سفارش رایگان که تمدید می‌شود (آزمایش رایگان)، مشتری‌ای که روش پرداخت ذخیره‌شده ندارد برای ذخیره‌ی یک روش پرداخت به Mollie هدایت می‌شود."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "Apply Promotion"
+msgstr "اعمال تخفیف"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Apply automatically"
+msgstr "اعمال خودکار"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Cancel this Direct Debit?"
+msgstr "این برداشت مستقیم لغو شود؟"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Choose a promotion."
+msgstr "یک تخفیف انتخاب کنید."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+msgid "Choose groups"
+msgstr "انتخاب گروه‌ها"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can also pay an invoice without setting up automatic payments."
+msgstr "مشتریان می‌توانند بدون راه‌اندازی پرداخت خودکار نیز فاکتور را پرداخت کنند."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or PayPal account on their Payment methods page without paying an invoice (Mollie checks it without charging it)."
+msgstr "مشتریان می‌توانند در صفحه‌ی روش پرداخت خود بدون پرداخت فاکتور، کارت یا حساب PayPal ذخیره کنند (Mollie آن را بدون کسر وجه بررسی می‌کند)."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Clients can save a card or bank account at Mollie and their invoices are then charged to it automatically. Turn it off if recurring payments are not enabled for your Mollie account; clients then pay each invoice on Mollie's page."
+msgstr "مشتریان می‌توانند در Mollie کارت یا حساب بانکی ذخیره کنند و فاکتورهایشان پس از آن به‌صورت خودکار از آن کسر می‌شود. اگر پرداخت‌های تکرارشونده برای حساب Mollie شما فعال نیست، آن را خاموش کنید؛ مشتریان در این صورت هر فاکتور را در صفحه‌ی Mollie پرداخت می‌کنند."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Clients can set up a Direct Debit on their Payment methods page without paying an invoice."
+msgstr "مشتریان می‌توانند در صفحه‌ی روش پرداخت خود بدون پرداخت فاکتور، برداشت مستقیم راه‌اندازی کنند."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit"
+msgstr "برداشت مستقیم"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Direct Debit with GoCardless"
+msgstr "برداشت مستقیم با GoCardless"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Direct Debit with GoCardless. Clients set up a Direct Debit on GoCardless' page and their invoices are then collected from their bank account automatically. A payment takes a few days: the invoice is marked paid when GoCardless confirms it."
+msgstr "برداشت مستقیم با GoCardless. مشتریان برداشت مستقیم را در صفحه‌ی GoCardless راه‌اندازی می‌کنند و فاکتورهایشان پس از آن به‌صورت خودکار از حساب بانکی‌شان وصول می‌شود. پرداخت چند روز طول می‌کشد: فاکتور وقتی GoCardless آن را تأیید کند پرداخت‌شده علامت می‌خورد."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not answer :path: :error"
+msgstr "GoCardless پاسخ نداد :path: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: :error"
+msgstr "GoCardless بازپرداخت را انجام نداد: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not make the refund: refunds are off for your GoCardless account (ask GoCardless to enable them). :error"
+msgstr "GoCardless بازپرداخت را انجام نداد: بازپرداخت برای حساب GoCardless شما خاموش است (از GoCardless بخواهید آن را فعال کند). :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not set up the Direct Debit: :error"
+msgstr "GoCardless برداشت مستقیم را راه‌اندازی نکرد: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless did not start the Direct Debit set-up: :error"
+msgstr "GoCardless راه‌اندازی برداشت مستقیم را شروع نکرد: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "GoCardless is not available."
+msgstr "GoCardless در دسترس نیست."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is in :currency, the invoice in :invoice"
+msgstr "پرداخت :id در GoCardless به :currency است و فاکتور به :invoice"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id is not for a ClientFence invoice"
+msgstr "پرداخت :id در GoCardless مربوط به فاکتور ClientFence نیست"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless payment :id was not found"
+msgstr "پرداخت :id در GoCardless پیدا نشد"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the access token (live and sandbox tokens differ): :error"
+msgstr "GoCardless توکن دسترسی را رد کرد (توکن‌های زنده و sandbox متفاوت‌اند): :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless refused the payment: :error"
+msgstr "GoCardless پرداخت را رد کرد: :error"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless webhook signature does not match"
+msgstr "امضای وب‌هوک GoCardless مطابقت ندارد"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Access token (read-write). Test mode uses the access token of your GoCardless sandbox account. [How to set up GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+msgstr "GoCardless: Developers, Create, Access token (read-write). حالت آزمایشی از توکن دسترسی حساب sandbox شما در GoCardless استفاده می‌کند. [نحوه‌ی راه‌اندازی GoCardless](https://clientfence.com/docs/clients-and-billing/gocardless/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "GoCardless: Developers, Create, Webhook endpoint, with this gateway's IPN Callback URL. The sandbox has its own endpoint and secret."
+msgstr "GoCardless: Developers, Create, Webhook endpoint، با آدرس برگشتی IPN این درگاه. sandbox endpoint و رمز خودش را دارد."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+msgid "It is recorded as this promotion, under its rules. A recurring one also comes off the renewals."
+msgstr "بر اساس قوانین این تخفیف ثبت می‌شود. تخفیف تکرارشونده از تمدیدها نیز کسر می‌شود."
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave empty for the client's automatic promotion, if any."
+msgstr "برای استفاده از تخفیف خودکار مشتری، در صورت وجود، خالی بگذارید."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Live access token:"
+msgstr "توکن دسترسی (زنده) (Access token):"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not answer :path: :error"
+msgstr "Mollie پاسخ نداد :path: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not make the refund: :error"
+msgstr "Mollie بازپرداخت را انجام نداد: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not save the payment method: :error"
+msgstr "Mollie روش پرداخت را ذخیره نکرد: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie did not start the payment: :error"
+msgstr "Mollie پرداخت را شروع نکرد: :error"
+
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
+msgid "Mollie is not available."
+msgstr "Mollie در دسترس نیست."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie notice names no payment"
+msgstr "اعلان Mollie هیچ پرداختی را مشخص نمی‌کند"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is in :currency, the invoice in :invoice"
+msgstr "پرداخت :id در Mollie به :currency است و فاکتور به :invoice"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id is not for a ClientFence invoice"
+msgstr "پرداخت :id در Mollie مربوط به فاکتور ClientFence نیست"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie payment :id was not found: :error"
+msgstr "پرداخت :id در Mollie پیدا نشد: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the API key: :error"
+msgstr "Mollie کلید API را رد کرد: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie refused the payment: :error"
+msgstr "Mollie پرداخت را رد کرد: :error"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Mollie: Developers, API keys. The live key starts with live_, the test key with test_. [How to set up Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+msgstr "Mollie: Developers, API keys. کلید زنده با live_ و کلید آزمایشی با test_ شروع می‌شود. [نحوه‌ی راه‌اندازی Mollie](https://clientfence.com/docs/clients-and-billing/mollie/)"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "On the invoice page, a client with a Direct Debit can start the payment at once without going to GoCardless."
+msgstr "در صفحه‌ی فاکتور، مشتری‌ای که برداشت مستقیم دارد می‌تواند بدون رفتن به GoCardless بلافاصله پرداخت را شروع کند."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "On the invoice page, a client with a saved payment method can pay at once without going to Mollie."
+msgstr "در صفحه‌ی فاکتور، مشتری‌ای که روش پرداخت ذخیره‌شده دارد می‌تواند بدون رفتن به Mollie بلافاصله پرداخت کند."
+
+#: src/modules/Invoice/Promotions.php
+msgid "Only a recurring promotion comes off renewals."
+msgstr "فقط تخفیف تکرارشونده از تمدیدها کسر می‌شود."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay and set up automatic payments"
+msgstr "پرداخت و راه‌اندازی پرداخت خودکار"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay by Direct Debit and set up automatic payments"
+msgstr "پرداخت با برداشت مستقیم و راه‌اندازی پرداخت خودکار"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once"
+msgstr "پرداخت یک‌باره"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay once without saving:"
+msgstr "پرداخت یک‌باره بدون ذخیره:"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Pay with the saved Direct Debit:"
+msgstr "پرداخت با برداشت مستقیم ذخیره‌شده:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Pay with the saved payment method:"
+msgstr "پرداخت با روش پرداخت ذخیره‌شده:"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Payments on Mollie's payment page, with the payment methods turned on in your Mollie dashboard. Clients can save a card or bank account there and their invoices are then charged to it automatically. Pay-later methods that need a manual capture (such as Klarna) are not supported: do not turn them on for this portal."
+msgstr "پرداخت‌ها در صفحه‌ی پرداخت Mollie، با روش‌های پرداختی که در داشبورد Mollie شما روشن شده‌اند. مشتریان می‌توانند آنجا کارت یا حساب بانکی ذخیره کنند و فاکتورهایشان پس از آن به‌صورت خودکار از آن کسر می‌شود. روش‌های «بعداً بپرداز» که به برداشت دستی نیاز دارند (مانند Klarna) پشتیبانی نمی‌شوند: آن‌ها را برای این پرتال روشن نکنید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Promotion"
+msgstr "تخفیف"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring promotions only. It comes off the next renewals, under its rules. Invoices already issued do not change."
+msgstr "فقط تخفیف‌های تکرارشونده. بر اساس قوانینش از تمدیدهای بعدی کسر می‌شود. فاکتورهایی که قبلاً صادر شده‌اند تغییر نمی‌کنند."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Remove the promotion? The next renewals are charged in full, unless an automatic promotion applies to the client. Invoices already issued do not change."
+msgstr "تخفیف حذف شود؟ تمدیدهای بعدی با مبلغ کامل محاسبه می‌شوند، مگر اینکه تخفیف خودکار برای مشتری اعمال شود. فاکتورهایی که قبلاً صادر شده‌اند تغییر نمی‌کنند."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sandbox access token:"
+msgstr "توکن دسترسی (sandbox) (Access token):"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a card or PayPal account at Mollie and your invoices are then charged to it automatically."
+msgstr "در Mollie یک کارت یا حساب PayPal ذخیره کنید و فاکتورهای شما پس از آن به‌صورت خودکار از آن کسر می‌شود."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Save a payment method for automatic payments"
+msgstr "ذخیره‌ی روش پرداخت برای پرداخت خودکار"
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Saved payment methods:"
+msgstr "روش‌های پرداخت ذخیره‌شده:"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Saved with Mollie"
+msgstr "ذخیره‌شده با Mollie"
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Saving a payment method with Mollie is not available."
+msgstr "ذخیره‌ی روش پرداخت با Mollie در دسترس نیست."
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit"
+msgstr "راه‌اندازی برداشت مستقیم"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Set up a Direct Debit with GoCardless and your invoices are then collected from your bank account automatically."
+msgstr "با GoCardless برداشت مستقیم راه‌اندازی کنید و فاکتورهای شما پس از آن به‌صورت خودکار از حساب بانکی‌تان وصول می‌شود."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Setting up a Direct Debit with GoCardless is not available."
+msgstr "راه‌اندازی برداشت مستقیم با GoCardless در دسترس نیست."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Sign in as the account owner to pay by Direct Debit."
+msgstr "برای پرداخت با برداشت مستقیم، به‌عنوان مالک حساب وارد شوید."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Sign in as the account owner to pay."
+msgstr "برای پرداخت، به‌عنوان مالک حساب وارد شوید."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Test API key:"
+msgstr "کلید API آزمایشی (API key):"
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The Direct Debit collects :mandate, the invoice is in :invoice: pay this invoice another way."
+msgstr "برداشت مستقیم به :mandate وصول می‌کند و فاکتور به :invoice است: این فاکتور را به روش دیگری پرداخت کنید."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "The client has no Direct Debit set up."
+msgstr "مشتری برداشت مستقیمی راه‌اندازی نکرده است."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "This Mollie API key does not start with :prefix (live keys start with live_, test keys with test_)."
+msgstr "این کلید API در Mollie با :prefix شروع نمی‌شود (کلیدهای زنده با live_ و کلیدهای آزمایشی با test_ شروع می‌شوند)."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order already has a discount on this invoice."
+msgstr "این سفارش از قبل در این فاکتور تخفیف دارد."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This order is not on this invoice."
+msgstr "این سفارش در این فاکتور نیست."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion does not apply to the product or billing period of this order."
+msgstr "این تخفیف برای محصول یا دوره‌ی صورت‌حساب این سفارش اعمال نمی‌شود."
+
+#: src/modules/Invoice/Promotions.php
+msgid "This promotion takes nothing off this order."
+msgstr "این تخفیف چیزی از این سفارش کم نمی‌کند."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Webhook endpoint secret:"
+msgstr "رمز webhook endpoint (Webhook endpoint secret):"
+
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr "بدون کد، برای هر سفارشی که قوانینش اجازه می‌دهد. کدی که مشتری وارد کند جایگزین آن می‌شود."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You cannot pay this invoice by Direct Debit."
+msgstr "نمی‌توانید این فاکتور را با برداشت مستقیم پرداخت کنید."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no Direct Debit set up with GoCardless."
+msgstr "شما با GoCardless برداشت مستقیمی راه‌اندازی نکرده‌اید."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "You have no payment method saved with Mollie."
+msgstr "شما در Mollie روش پرداخت ذخیره‌شده‌ای ندارید."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your Direct Debit was not set up. Please try again."
+msgstr "برداشت مستقیم شما راه‌اندازی نشد. لطفاً دوباره تلاش کنید."
+
+#: src/modules/Invoice/Controller/Client.php
+msgid "Your payment method was not saved. Please try again."
+msgstr "روش پرداخت شما ذخیره نشد. لطفاً دوباره تلاش کنید."
+
+#: src/library/Payment/Adapter/Mollie.php
+msgid "Your renewal invoices are then charged to this payment method. You can remove it on your Payment methods page."
+msgstr "فاکتورهای تمدید شما پس از آن از این روش پرداخت کسر می‌شود. می‌توانید آن را در صفحه‌ی روش پرداخت خود حذف کنید."
+
+#: src/library/Payment/Adapter/GoCardless.php
+msgid "Your renewal invoices are then collected by this Direct Debit. You can cancel it on your Payment methods page."
+msgstr "فاکتورهای تمدید شما پس از آن با این برداشت مستقیم وصول می‌شود. می‌توانید آن را در صفحه‌ی روش پرداخت خود لغو کنید."
