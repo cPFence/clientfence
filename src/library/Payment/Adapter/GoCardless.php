@@ -165,6 +165,8 @@ class Payment_Adapter_GoCardless implements ClientFence\InjectionAwareInterface
         $mandateId = (string) ($request['links']['mandate_request_mandate'] ?? '');
         // A setup counts within an hour of its start: an old return sent again never brings back a Direct Debit the client removed.
         if (($request['status'] ?? '') !== 'fulfilled' || $mandateId === '' || time() - (int) strtotime((string) ($request['created_at'] ?? '')) > 3600
+            // Only a set-up this install started: another portal on the same GoCardless account names its own clients.
+            || ($request['metadata']['site'] ?? '') !== INSTANCE_ID
             || preg_match('/^cf-client-(\d+)(?:-invoice-(\d+))?$/', (string) ($request['metadata']['clientfence'] ?? ''), $match) !== 1) {
             throw new ClientFence\InformationException('GoCardless did not set up the Direct Debit: :error', [':error' => (string) ($request['status'] ?? 'not found')]);
         }
@@ -371,9 +373,9 @@ class Payment_Adapter_GoCardless implements ClientFence\InjectionAwareInterface
             $waited = $db->fetchOne("SELECT 1 FROM `transaction` WHERE id = ? AND status = ? AND txn_status = 'processing'", [$id, Model_Transaction::STATUS_RECEIVED]) !== false;
             $reason = 'GoCardless payment ' . $status . ': ' . ($payment['description'] ?? '');
             $db->update('`transaction`', $row + ['txn_status' => $status, 'status' => Model_Transaction::STATUS_ERROR, 'error' => $reason], ['id' => $id, 'status' => Model_Transaction::STATUS_RECEIVED]);
-            // As a Stripe bank debit that was clearing: an automatic one that failed emails the client.
-            if ($waited && str_starts_with($match[2], 'attempt_')) {
-                ClientFence\Mod\Invoice\SavedCards::emailDebitFailure($this->di, $invoice, (string) ($this->savedCard((int) $invoice->client_id)['card'] ?? ''), 'GoCardless payment ' . $status . '.');
+            // A collection that failed counts as one failed try: retried as set, and the client can pay again.
+            if ($waited) {
+                ClientFence\Mod\Invoice\SavedCards::debitFailedTry($this->di, $invoice, (string) ($this->savedCard((int) $invoice->client_id)['card'] ?? ''), 'GoCardless payment ' . $status . '.', $match[2]);
             }
 
             return;
@@ -423,7 +425,7 @@ class Payment_Adapter_GoCardless implements ClientFence\InjectionAwareInterface
         }
         $request = $this->call('POST', '/billing_requests', ['billing_requests' => [
             'mandate_request' => ['currency' => strtoupper($currency)],
-            'metadata' => ['clientfence' => $reference],
+            'metadata' => ['clientfence' => $reference, 'site' => INSTANCE_ID],
         ]]);
         $requestId = (string) ($request['billing_requests']['id'] ?? '');
         $client = $this->di['db']->getExistingModelById('Client', $clientId, 'Client not found');

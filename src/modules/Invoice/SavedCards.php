@@ -351,6 +351,19 @@ final class SavedCards
         self::emailFailure($di, $invoice, $method, $reason, self::HELD);
     }
 
+    /**
+     * A saved bank debit that was clearing failed (Payment_Adapter_GoCardless): one failed try ($reference attempt_N),
+     * retried as set and emailed as a declined card; a staff one is not retried, and the client can pay again.
+     */
+    public static function debitFailedTry(\Pimple\Container $di, \Model_Invoice $invoice, string $method, string $reason, string $reference): void
+    {
+        $tries = preg_match('/^attempt_(\d+)$/', $reference, $match) === 1 ? (int) $match[1] : 1 + self::settings($di)['retries'];
+        $di['dbal']->update('invoice_card_charge', ['attempts' => $tries, 'last_error' => mb_substr($reason, 0, 255)], ['invoice_id' => (int) $invoice->id]);
+        if ($match !== []) {
+            self::emailFailure($di, $invoice, $method, $reason, $tries);
+        }
+    }
+
     private static function emailFailure(\Pimple\Container $di, \Model_Invoice $invoice, string $card, string $reason, int $tries): void
     {
         $settings = self::settings($di);

@@ -51,6 +51,7 @@ function gcWorld(array $replies): object
     $db->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT, created_at TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, gateway_id INTEGER, txn_id TEXT, txn_status TEXT, amount TEXT, currency TEXT, type TEXT, status TEXT, error TEXT, error_code INTEGER, note TEXT, created_at TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, gateway_id INTEGER)');
+    $db->executeStatement('CREATE TABLE invoice_card_charge (invoice_id INTEGER PRIMARY KEY, attempts INTEGER, last_attempt_at TEXT, last_error TEXT)');
     $db->insert('invoice', ['id' => 5, 'client_id' => 7, 'status' => 'unpaid']);
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 3, 'client_id' => 7, 'test_mode' => 1, 'external_customer_id' => '', 'saved_cards' => 1, 'default_payment_method' => 'MD1 GBP', 'default_card' => 'Bacs Direct Debit ••12', 'auto_pay_at' => '2026-11-01 00:00:00']);
     $world->db = $db;
@@ -137,8 +138,8 @@ test('needs the access token of the current mode and the webhook secret, and che
 });
 
 test('sets up a Direct Debit on GoCardless\' page and keeps its mandate for the client, within the hour', function (): void {
-    $request = fn (string $status, int $age, string $reference = 'cf-client-7'): array => ['billing_requests' => [
-        'id' => 'BRQ1', 'status' => $status, 'created_at' => gmdate('Y-m-d\TH:i:s.000\Z', time() - $age), 'metadata' => ['clientfence' => $reference],
+    $request = fn (string $status, int $age, string $reference = 'cf-client-7', string $site = INSTANCE_ID): array => ['billing_requests' => [
+        'id' => 'BRQ1', 'status' => $status, 'created_at' => gmdate('Y-m-d\TH:i:s.000\Z', time() - $age), 'metadata' => ['clientfence' => $reference, 'site' => $site],
         'mandate_request' => ['currency' => 'EUR'], 'links' => ['mandate_request_mandate' => 'MD2'],
     ]];
     $world = gcWorld([
@@ -150,7 +151,7 @@ test('sets up a Direct Debit on GoCardless\' page and keeps its mandate for the 
         'POST /mandates/MD1/actions/cancel' => ['mandates' => ['id' => 'MD1', 'status' => 'cancelled']],
     ]);
     expect($world->adapter->cardSetup(7, 'https://portal.example/payment-methods/gocardless/saved?next=payment-methods'))->toEndWith('id=BRF1')
-        ->and($world->calls[0][1])->toBe(['billing_requests' => ['mandate_request' => ['currency' => 'EUR'], 'metadata' => ['clientfence' => 'cf-client-7']]])
+        ->and($world->calls[0][1])->toBe(['billing_requests' => ['mandate_request' => ['currency' => 'EUR'], 'metadata' => ['clientfence' => 'cf-client-7', 'site' => INSTANCE_ID]]])
         ->and($world->calls[1][1]['billing_request_flows'])->toMatchArray([
             'redirect_uri' => 'https://portal.example/payment-methods/gocardless/saved?next=payment-methods&br=BRQ1',
             'exit_uri' => 'https://portal.example/payment-methods',
@@ -166,10 +167,10 @@ test('sets up a Direct Debit on GoCardless\' page and keeps its mandate for the 
 
     // Paying an invoice: the set-up names it and comes back to it.
     $world->adapter->checkout(gcInvoice());
-    expect($world->calls[count($world->calls) - 2][1]['billing_requests'])->toBe(['mandate_request' => ['currency' => 'GBP'], 'metadata' => ['clientfence' => 'cf-client-7-invoice-5']])
+    expect($world->calls[count($world->calls) - 2][1]['billing_requests'])->toBe(['mandate_request' => ['currency' => 'GBP'], 'metadata' => ['clientfence' => 'cf-client-7-invoice-5', 'site' => INSTANCE_ID]])
         ->and($world->calls[count($world->calls) - 1][1]['billing_request_flows']['redirect_uri'])->toBe('https://portal.example/invoice/gocardless-paid?hash=abc&br=BRQ1');
 
-    foreach (['an old set-up sent again' => $request('fulfilled', 7200), 'not completed' => $request('pending', 60), 'another shop\'s' => $request('fulfilled', 60, 'shop-7')] as $reply) {
+    foreach (['an old set-up sent again' => $request('fulfilled', 7200), 'not completed' => $request('pending', 60), 'another shop\'s' => $request('fulfilled', 60, 'shop-7'), 'another portal\'s on the same account' => $request('fulfilled', 60, 'cf-client-7', 'other-install')] as $reply) {
         $refused = gcWorld(['GET /billing_requests/BRQ1' => $reply]);
         expect(fn () => $refused->adapter->mandateSaved('BRQ1'))->toThrow(ClientFence\InformationException::class, 'GoCardless did not set up the Direct Debit');
         expect(gcSaved($refused->db))->toBe('MD1 GBP');
@@ -266,6 +267,7 @@ test('a confirmed payment read back from GoCardless pays its invoice once', func
 test('a failed automatic payment ends the wait and emails the client, as a failed try', function (): void {
     $world = gcWorld(['GET /payments/PM123' => gcPayment('failed')]);
     gcPending($world->db);
+    $world->db->insert('invoice_card_charge', ['invoice_id' => 5, 'attempts' => 99]);
     $world->db->insert('`transaction`', ['id' => 41, 'gateway_id' => 3, 'status' => 'received']);
     $world->services->allows('getConfig')->andReturn([]);
     $world->services->allows('withBillingRecipient')->andReturnUsing(fn (array $email): array => $email);
@@ -273,7 +275,9 @@ test('a failed automatic payment ends the wait and emails the client, as a faile
 
     $world->adapter->processTransaction(Mockery::mock(), 41, gcWebhook([['id' => 'EV1', 'resource_type' => 'payments', 'action' => 'failed', 'links' => ['payment' => 'PM123']]]), 3);
     expect($world->db->fetchAssociative('SELECT status, txn_status FROM `transaction` WHERE id = 40'))->toBe(['status' => 'error', 'txn_status' => 'failed'])
-        ->and(PendingPayments::forInvoice($world->di, 5))->toBeNull();
+        ->and(PendingPayments::forInvoice($world->di, 5))->toBeNull()
+        // The hold of the collection becomes its one failed try (attempt_1): retried as set, and the client can pay again.
+        ->and($world->db->fetchOne('SELECT attempts FROM invoice_card_charge WHERE invoice_id = 5'))->toBe(1);
 });
 
 test('a paid payment charged back is taken back as a chargeback, once', function (): void {
