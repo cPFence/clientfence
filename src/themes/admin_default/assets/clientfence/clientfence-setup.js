@@ -3,11 +3,79 @@
 // clientfence/setup_* call, logo uploads by drag and drop, and a live preview of the brand color
 // and sign-in style. Server text goes in with textContent only.
 
+const api = window.ClientFence?.api?.admin;
+const notify = (message, type = 'error') => window.ClientFence?.ui?.notify ? window.ClientFence.ui.notify(message, type) : window.alert(message);
+const post = (endpoint, data) => new Promise((resolve, reject) => {
+  if (!api) { reject(new Error('API not loaded')); return; }
+  api.post(endpoint, data, resolve, reject, false);
+});
+
+// Logo upload zones ([data-cf-drop], mod_clientfence_brand_drops.html.twig) inside `scope`, whose
+// data-text-* hold the messages; each upload saves its setting through clientfence/setup_brand_asset.
+function bindDrops(scope, uploaded = () => {}) {
+  const text = (name) => scope.dataset[name] || '';
+  const allowed = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+  scope.querySelectorAll('[data-cf-drop]').forEach((drop) => {
+    const input = drop.querySelector('input[type="file"]');
+    const img = drop.querySelector('[data-cf-drop-img]');
+    const empty = drop.querySelector('.cf-drop-empty');
+    const kind = drop.dataset.cfDrop;
+
+    async function upload(file) {
+      if (!file) return;
+      if (!allowed.includes(file.type)) { notify(text('textNotImage')); return; }
+      if (file.size > 2 * 1024 * 1024) { notify(text('textTooBig')); return; }
+      const data = new FormData();
+      data.append('kind', kind);
+      data.append('file', file);
+      drop.classList.add('is-busy');
+      drop.setAttribute('aria-busy', 'true');
+      try {
+        const result = await post('clientfence/setup_brand_asset', data);
+        img.src = result.url;
+        img.hidden = false;
+        if (empty) empty.hidden = true;
+        uploaded(kind, result.url);
+        notify(text('textSaved'), 'success');
+      } catch (e) {
+        notify(e.message || String(e));
+      } finally {
+        drop.classList.remove('is-busy');
+        drop.removeAttribute('aria-busy');
+        input.value = '';
+      }
+    }
+
+    drop.addEventListener('click', () => input.click());
+    drop.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input.click(); }
+    });
+    input.addEventListener('click', (event) => event.stopPropagation());
+    input.addEventListener('change', () => upload(input.files[0]));
+    ['dragenter', 'dragover'].forEach((name) => drop.addEventListener(name, (event) => {
+      event.preventDefault();
+      drop.classList.add('is-over');
+    }));
+    ['dragleave', 'dragend'].forEach((name) => drop.addEventListener(name, () => drop.classList.remove('is-over')));
+    drop.addEventListener('drop', (event) => {
+      event.preventDefault();
+      drop.classList.remove('is-over');
+      upload(event.dataTransfer?.files?.[0]);
+    });
+  });
+  // A file dropped beside a drop zone would open in the tab and leave the page (text drags still work).
+  ['dragover', 'drop'].forEach((name) => window.addEventListener(name, (event) => {
+    if (event.dataTransfer?.types?.includes('Files') && !event.target.closest?.('[data-cf-drop]')) event.preventDefault();
+  }));
+}
+
+// System → Settings shows the same upload zones.
+const settingsDrops = document.querySelector('[data-cf-brand-drops]');
+if (settingsDrops) bindDrops(settingsDrops);
+
 const root = document.querySelector('[data-cf-setup]');
 
 if (root) {
-  const api = window.ClientFence?.api?.admin;
-  const notify = (message, type = 'error') => window.ClientFence?.ui?.notify ? window.ClientFence.ui.notify(message, type) : window.alert(message);
   const text = (name) => root.dataset[name] || '';
   const panes = Array.from(root.querySelectorAll('[data-cf-pane]'));
   const order = panes.map((pane) => pane.dataset.cfPane);
@@ -20,11 +88,6 @@ if (root) {
     done.add(id);
     try { sessionStorage.setItem(DONE_KEY, JSON.stringify([...done])); } catch (e) { /* private mode */ }
   };
-
-  const post = (endpoint, data) => new Promise((resolve, reject) => {
-    if (!api) { reject(new Error('API not loaded')); return; }
-    api.post(endpoint, data, resolve, reject, false);
-  });
 
   // ---- steps ----------------------------------------------------------------------------------
   function show(id, focus = true) {
@@ -344,60 +407,10 @@ if (root) {
     img.src = url;
   }
 
-  const allowed = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
-  root.querySelectorAll('[data-cf-drop]').forEach((drop) => {
-    const input = drop.querySelector('input[type="file"]');
-    const img = drop.querySelector('[data-cf-drop-img]');
-    const empty = drop.querySelector('.cf-drop-empty');
-    const kind = drop.dataset.cfDrop;
-
-    async function upload(file) {
-      if (!file) return;
-      if (!allowed.includes(file.type)) { notify(text('textNotImage')); return; }
-      if (file.size > 2 * 1024 * 1024) { notify(text('textTooBig')); return; }
-      const data = new FormData();
-      data.append('kind', kind);
-      data.append('file', file);
-      drop.classList.add('is-busy');
-      drop.setAttribute('aria-busy', 'true');
-      try {
-        const result = await post('clientfence/setup_brand_asset', data);
-        img.src = result.url;
-        img.hidden = false;
-        if (empty) empty.hidden = true;
-        refreshLogos();
-        if (kind === 'logo') logoColor(result.url);
-        notify(text('textSaved'), 'success');
-      } catch (e) {
-        notify(e.message || String(e));
-      } finally {
-        drop.classList.remove('is-busy');
-        drop.removeAttribute('aria-busy');
-        input.value = '';
-      }
-    }
-
-    drop.addEventListener('click', () => input.click());
-    drop.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input.click(); }
-    });
-    input.addEventListener('click', (event) => event.stopPropagation());
-    input.addEventListener('change', () => upload(input.files[0]));
-    ['dragenter', 'dragover'].forEach((name) => drop.addEventListener(name, (event) => {
-      event.preventDefault();
-      drop.classList.add('is-over');
-    }));
-    ['dragleave', 'dragend'].forEach((name) => drop.addEventListener(name, () => drop.classList.remove('is-over')));
-    drop.addEventListener('drop', (event) => {
-      event.preventDefault();
-      drop.classList.remove('is-over');
-      upload(event.dataTransfer?.files?.[0]);
-    });
+  bindDrops(root, (kind, url) => {
+    refreshLogos();
+    if (kind === 'logo') logoColor(url);
   });
-  // A file dropped beside a drop zone would open in the tab and leave the wizard.
-  ['dragover', 'drop'].forEach((name) => window.addEventListener(name, (event) => {
-    if (!event.target.closest?.('[data-cf-drop]')) event.preventDefault();
-  }));
 
   // ---- start ---------------------------------------------------------------------------------------
   applyColor(hexInput?.value || root.dataset.defaultColor);

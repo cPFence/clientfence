@@ -115,28 +115,7 @@
                 <div class="cf-brand-grid">
                     <div class="cf-brand-controls">
                         <h2 class="cf-setup-h2">{{ 'Logos'|trans }}</h2>
-                        <div class="cf-drops">
-                            {% for drop in [
-                                { kind: 'logo', title: 'Logo'|trans, hint: 'For light backgrounds. Wide, up to 1200 × 400.'|trans, url: setup.logo_url, dark: false },
-                                { kind: 'logo_dark', title: 'Logo for dark backgrounds'|trans, hint: 'Light colored. The sign-in page and dark mode use it.'|trans, url: setup.logo_dark_url, dark: true },
-                                { kind: 'icon', title: 'Square icon'|trans, hint: 'Browser tab icon. Square, at least 64 × 64.'|trans, url: setup.icon_url, dark: false },
-                            ] %}
-                                <div class="cf-drop{% if drop.dark %} is-dark{% endif %}{% if drop.kind == 'icon' %} is-icon{% endif %}" data-cf-drop="{{ drop.kind }}" tabindex="0" role="button" aria-label="{{ 'Upload'|trans }}: {{ drop.title }}">
-                                    <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
-                                    <div class="cf-drop-preview">
-                                        <img alt="" data-cf-drop-img{% if drop.url %} src="{{ drop.url }}"{% else %} hidden{% endif %}>
-                                        <svg class="icon cf-drop-empty" aria-hidden="true"{% if drop.url %} hidden{% endif %}><use href="#photo" /></svg>
-                                    </div>
-                                    <div class="cf-drop-text">
-                                        <strong>{{ drop.title }}</strong>
-                                        <span>{{ drop.hint }}</span>
-                                        <span class="cf-drop-cta">{{ 'Drop an image here or click to choose'|trans }}</span>
-                                    </div>
-                                    <div class="cf-drop-bar" aria-hidden="true"><span></span></div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <p class="form-hint mt-2">{{ 'PNG, JPEG, GIF or WebP, up to 2 MB. Images are scaled down and saved as PNG.'|trans }}</p>
+                        {% include 'mod_clientfence_brand_drops.html.twig' with { urls: { logo: setup.logo_url, logo_dark: setup.logo_dark_url, icon: setup.icon_url } } %}
 
                         <h2 class="cf-setup-h2 mt-4">{{ 'Brand color'|trans }}</h2>
                         <div class="cf-swatches" role="radiogroup" aria-label="{{ 'Brand color'|trans }}" data-cf-swatches>

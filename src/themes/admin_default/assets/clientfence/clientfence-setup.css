@@ -204,6 +204,8 @@
 /* ---- branding ---- */
 .cf-brand-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); gap: 2rem; align-items: start; }
 .cf-drops { display: grid; gap: .75rem; }
+/* System → Settings shows the upload zones outside the wizard, with the admin's own accent. */
+.cf-brand-drops { --cf-accent: var(--tblr-primary); --cf-accent-rgb: var(--tblr-primary-rgb); }
 
 .cf-drop {
   position: relative;
