@@ -13,6 +13,7 @@
 ### Fixed
 
 - The admin search box no longer makes pages wider than the screen on phones.
+- The theme icon in the admin header has less space around it, like the icons next to it.
 
 ## 1.0.52 (2026-11-14)
 
