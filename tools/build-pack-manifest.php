@@ -49,6 +49,8 @@ $paths = [
     'modules/Clientfence',
     'modules/Security/templates/admin/mod_security_settings.html.twig',
     'modules/Order/templates/client/mod_order_addons.html.twig',
+    'modules/Activity/ApiLog.php',
+    'modules/Activity/templates/admin/mod_activity_api_log.html.twig',
     // Moved from the ClientFence module into its home module.
     'modules/Invoice/Receipts.php',
     'modules/Invoice/SavedCards.php',

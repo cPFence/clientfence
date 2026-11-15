@@ -243,6 +243,19 @@ test('a webhook GoCardless did not sign records nothing', function (): void {
         ->and($world->db->fetchOne('SELECT status FROM `transaction` WHERE id = 40'))->toBe('received');
 });
 
+test('a webhook stored without the server environment is still signed when processed again', function (): void {
+    $world = gcWorld([]);
+    $world->db->insert('`transaction`', ['id' => 41, 'gateway_id' => 3, 'status' => 'received']);
+    $webhook = gcWebhook([]);
+    // As ServiceTransaction::create() stores it (B11): headers and basic request fields only, as JSON.
+    $webhook['server'] = ClientFence\Mod\Activity\ApiLog::noticeServer($webhook['server'] + ['DB_PASSWORD' => 'x', 'HTTP_COOKIE' => 'y']);
+    $stored = json_decode((string) json_encode($webhook), true);
+
+    $world->adapter->processTransaction(Mockery::mock(), 41, $stored, 3);
+    expect($stored['server'])->toBe(['HTTP_WEBHOOK_SIGNATURE' => hash_hmac('sha256', $webhook['http_raw_post_data'], 'WHSECRET'), 'HTTP_COOKIE' => '********'])
+        ->and($world->db->fetchAssociative('SELECT status, note FROM `transaction` WHERE id = 41'))->toBe(['status' => 'processed', 'note' => 'No action needed.']);
+});
+
 test('a confirmed payment read back from GoCardless pays its invoice once', function (): void {
     $world = gcWorld(['GET /payments/PM123' => gcPayment('confirmed')]);
     gcPending($world->db);

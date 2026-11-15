@@ -49,6 +49,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
     public function register(\ClientFence\App &$app): void
     {
         $app->get('/activity', 'get_index', [], static::class);
+        // ClientFence core patch: the API request log tab (Activity/ApiLog.php).
+        $app->get('/activity/api', 'get_api_log', [], static::class);
     }
 
     public function get_index(\ClientFence\App $app): string
@@ -56,5 +58,12 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $this->di['is_admin_logged'];
 
         return $app->render('mod_activity_index');
+    }
+
+    public function get_api_log(\ClientFence\App $app): string
+    {
+        $this->di['is_admin_logged'];
+
+        return $app->render('mod_activity_api_log');
     }
 }

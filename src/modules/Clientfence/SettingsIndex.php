@@ -24,6 +24,7 @@ final class SettingsIndex
         'security#tab-proxies' => 'Cloudflare proxy reverse proxy load balancer X-Forwarded-For CF-Connecting-IP real IP visitor IP VPN hosting data centre datacenter ASN fraud',
         'security#tab-access' => 'whitelist allow list rate limit API IP restriction',
         'security#tab-sessions' => 'session fingerprint hijacking cookie IP check',
+        'security#tab-apilog' => 'API log request log audit trail webhook IPN callback gateway notice',
         'system#tab-cache' => 'Redis Memcached flush clear',
         'system#tab-backups' => 'backup dump SFTP FTP S3 cloud R2 B2 Wasabi Bunny Google Drive OneDrive',
         'system#tab-health' => 'health status check problems',

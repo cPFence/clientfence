@@ -529,7 +529,7 @@ class Admin extends \ClientFence\Api\AbstractApi
         return SecuritySettings::forPage($this->getDi());
     }
 
-    /** Saves one `section` of Security → Settings: proxies, access, sessions or networks (hosting networks). */
+    /** Saves one `section` of Security → Settings: proxies, access, sessions, networks (hosting networks) or apilog (the API request log). */
     public function security_settings_save($data): bool
     {
         $this->requireSuperAdmin('Only Super Administrators can change security settings.');

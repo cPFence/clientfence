@@ -108,6 +108,8 @@ class Service implements InjectionAwareInterface
     public static function onBeforeAdminCronRun(\ClientFence\Event $event): void
     {
         $di = $event->getDi();
+        // ClientFence core patch: the API request log keeps its own days (Activity/ApiLog.php).
+        ApiLog::prune($di);
         $config = $di['mod_service']('extension')->getConfig('mod_activity');
 
         $retention = intval($config['max_age'] ?? 90);
@@ -258,5 +260,7 @@ class Service implements InjectionAwareInterface
     public function rmByClient(\Model_Client $client): void
     {
         $this->getDbal()->executeStatement('DELETE FROM activity_system WHERE client_id = ?', [$client->id]);
+        // ClientFence core patch: and the client's lines of the API request log (Activity/ApiLog.php).
+        $this->getDbal()->executeStatement('DELETE FROM activity_api WHERE client_id = ?', [$client->id]);
     }
 }

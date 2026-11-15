@@ -39,6 +39,7 @@ final class Migrations
         13 => 'm13OrderHolds',
         14 => 'm14Passkeys',
         15 => 'm15IdDocuments',
+        16 => 'm16ApiLog',
     ];
 
     public static function latest(): int
@@ -266,6 +267,14 @@ final class Migrations
     {
         if (!$di['dbal']->createSchemaManager()->tablesExist(['client_id_document'])) {
             $di['dbal']->executeStatement(Service::tables()['client_id_document']);
+        }
+    }
+
+    /** 16: ClientFence core patch: activity_api, the API request log (Activity/ApiLog.php). */
+    private static function m16ApiLog(\Pimple\Container $di): void
+    {
+        if (!$di['dbal']->createSchemaManager()->tablesExist(['activity_api'])) {
+            $di['dbal']->executeStatement(Service::tables()['activity_api']);
         }
     }
 }

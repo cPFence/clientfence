@@ -51,6 +51,17 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: the API request log (Activity/ApiLog.php), newest first; filters `source`, `admin_id`,
+     * `client_id`, `call` (part of the call or path), `date_from` and `date_to`.
+     */
+    public function api_log_get_list($data): array
+    {
+        $this->checkPermissions('activity', 'view');
+
+        return \ClientFence\Mod\Activity\ApiLog::search($this->getDi(), (array) $data);
+    }
+
+    /**
      * Add a message to the log.
      *
      * @param array $data Message data

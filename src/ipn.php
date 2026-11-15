@@ -21,6 +21,8 @@ global $request;
 $di = include Path::join(PATH_ROOT, 'di.php');
 $di['translate']();
 $apiResponseFactory = new ApiResponseFactory();
+// ClientFence core patch: the API request log keeps each gateway notice when ticked (Activity/ApiLog.php).
+ClientFence\Mod\Activity\ApiLog::webhook($di, $request);
 
 $invoiceID = $request->get('invoice_id');
 if ($invoiceID !== null) {
@@ -93,6 +95,7 @@ try {
     $output = $service->createAndProcess($ipn);
     $response = $apiResponseFactory->create($output);
 } catch (Exception $e) {
+    ClientFence\Mod\Activity\ApiLog::$webhookError = $e->getMessage();
     $response = $apiResponseFactory->create(null, $e);
 }
 

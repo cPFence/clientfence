@@ -1374,6 +1374,10 @@ msgstr ""
 msgid "API addresses and ranges, one per line"
 msgstr ""
 
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "API call"
+msgstr ""
+
 #: src/modules/Servicecustom/Api/Admin.php
 msgid "API call is missing arguments"
 msgstr ""
@@ -1408,6 +1412,22 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "API keys from these addresses only"
+msgstr ""
+
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API log"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API log settings saved."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "API request log"
+msgstr ""
+
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "API requests, newest first, with passwords, keys, tokens and card numbers hidden. Choose what is kept in Security > Settings > API log."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
@@ -2426,7 +2446,7 @@ msgstr ""
 msgid "Alerts"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig …
 msgid "All"
 msgstr ""
 
@@ -3526,7 +3546,7 @@ msgstr ""
 msgid "Apply Credit"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig …
 msgid "Apply Filters"
 msgstr ""
 
@@ -5926,6 +5946,10 @@ msgstr ""
 msgid "Client activity"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Client and guest changes: their API calls that change something, not reads"
+msgstr ""
+
 #: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig …
 msgid "Client area"
 msgstr ""
@@ -6000,6 +6024,10 @@ msgstr ""
 
 #: src/modules/Invoice/QuotePdf.php src/modules/Invoice/StatementPdf.php
 msgid "Client number"
+msgstr ""
+
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "Client or guest"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issues.html.twig
@@ -7926,7 +7954,7 @@ msgstr ""
 msgid "Database version"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig …
 msgid "Date"
 msgstr ""
 
@@ -8342,7 +8370,7 @@ msgstr ""
 msgid "Destination folder"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Client/templates/client/mod_client_user_profile.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig …
 msgid "Details"
 msgstr ""
 
@@ -11242,7 +11270,7 @@ msgstr ""
 msgid "Free subdomain"
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_details.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig src/modules/Email/templates/client/mod_email_email.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Email/templates/admin/mod_email_details.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig …
 msgid "From"
 msgstr ""
 
@@ -11368,6 +11396,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
 msgid "Gateway Updated"
+msgstr ""
+
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "Gateway notice"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -11778,7 +11810,7 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Support/templates/admin/mod_support_ticket.html.twig src/modules/Support/templates/admin/mod_support_tickets.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Support/templates/admin/mod_support_ticket.html.twig …
 msgid "Guest"
 msgstr ""
 
@@ -12430,7 +12462,7 @@ msgstr ""
 msgid "INWX returned an unreadable response for :command"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
 msgid "IP"
 msgstr ""
 
@@ -13618,6 +13650,10 @@ msgstr ""
 msgid "Keep database structure and settings aligned with the installed ClientFence version."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Keep for (days)"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "Keep internal notes about reconciliation, investigation, or gateway behavior."
 msgstr ""
@@ -13640,6 +13676,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
 msgid "Keep my price"
+msgstr ""
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Keep the API log for 1 to :max days."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
@@ -13712,6 +13752,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Keep your personal data up to date."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Keeps a line for each request of the kinds ticked here: when, who, the API call, the address, the result, how long it took and the request details with passwords, keys, tokens and card numbers hidden. The answer is never kept. Staff who may view the activity log find it under Activity > System Activity > API log. Nothing is kept while every kind is off."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -17362,7 +17406,7 @@ msgstr ""
 msgid "Numeric or custom ID"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "OK"
 msgstr ""
 
@@ -19446,6 +19490,10 @@ msgstr ""
 msgid "Payment for invoice received"
 msgstr ""
 
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "Payment gateway"
+msgstr ""
+
 #: src/modules/Invoice/ServicePayGateway.php
 msgid "Payment gateway :adapter was not found"
 msgstr ""
@@ -19488,6 +19536,10 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "Payment gateway not found"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Payment gateway notices (webhooks)"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
@@ -21898,6 +21950,10 @@ msgstr ""
 msgid "Request added to the domain ticket."
 msgstr ""
 
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "Request details (secrets hidden)"
+msgstr ""
+
 #: src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Request sent: our team will make the change and reply on your ticket."
 msgstr ""
@@ -22098,7 +22154,7 @@ msgstr ""
 msgid "Reserved Applications"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig …
 msgid "Reset"
 msgstr ""
 
@@ -22206,7 +22262,7 @@ msgstr ""
 msgid "Restrict use to one redemption per client account."
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig …
 msgid "Result"
 msgstr ""
 
@@ -24366,15 +24422,15 @@ msgstr ""
 msgid "Sort order"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
 msgid "Source"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig
 msgid "Specific Admin"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig
 msgid "Specific Client"
 msgstr ""
 
@@ -24396,6 +24452,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Staff/manifest.json …
 msgid "Staff"
+msgstr ""
+
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "Staff API key"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Staff API keys"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -24510,6 +24574,14 @@ msgstr ""
 msgid "Staff password reset"
 msgstr ""
 
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "Staff session"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Staff sessions: every API call the admin pages make (many lines)"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/admin_default/html_custom/partial_admin_auth_card.html.twig
 msgid "Staff sign-in"
 msgstr ""
@@ -24554,11 +24626,11 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Staff/templates/admin/mod_staff_login_history.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Staff/templates/admin/mod_staff_login_history.html.twig
 msgid "Start Typing the Admin Name or ID"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
 msgid "Start Typing the Client Name or ID"
 msgstr ""
 
@@ -25090,7 +25162,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: src/modules/Activity/Controller/Admin.php src/modules/Activity/templates/admin/mod_activity_index.html.twig
+#: src/modules/Activity/Controller/Admin.php src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig
 msgid "System Activity"
 msgstr ""
 
@@ -26575,7 +26647,7 @@ msgstr ""
 msgid "The link works once and expires in %days% days. If you did not expect this invitation, you can ignore this email."
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig …
 msgid "The list is empty"
 msgstr ""
 
@@ -28419,6 +28491,10 @@ msgstr ""
 msgid "Tickets waiting for a reply"
 msgstr ""
 
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
+msgid "Time (ms)"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/modules/Support/templates/client/mod_support_ticket.html.twig src/themes/palisade/html/mod_support_ticket.html.twig
 msgid "Time Opened"
 msgstr ""
@@ -28451,7 +28527,7 @@ msgstr ""
 msgid "Title was not passed"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_details.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_details.html.twig …
 msgid "To"
 msgstr ""
 
@@ -30055,7 +30131,7 @@ msgstr ""
 msgid "Used with \"Clients in these groups\"."
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
 msgid "User"
 msgstr ""
 

@@ -48,6 +48,8 @@ test('register configures routes', function (): void {
     $expectation = $boxAppMock->shouldReceive('get');
     $expectation->atLeast()->once();
     $expectation->with('/activity', 'get_index', [], ClientFence\Mod\Activity\Controller\Admin::class);
+    // ClientFence: the API request log tab.
+    $boxAppMock->shouldReceive('get')->once()->with('/activity/api', 'get_api_log', [], ClientFence\Mod\Activity\Controller\Admin::class);
 
     /* @var \ClientFence\App $boxAppMock */
     $controller->register($boxAppMock);

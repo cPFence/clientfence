@@ -26,6 +26,8 @@ use Symfony\Component\HttpFoundation\Response;
 class Client implements InjectionAwareInterface
 {
     private ?array $apiConfig = null;
+    // ClientFence core patch: whether this request signed in with a staff API key (Activity/ApiLog.php).
+    private bool $viaKey = false;
     protected ?\Pimple\Container $di = null;
 
     public function setDi(\Pimple\Container $di): void
@@ -83,15 +85,21 @@ class Client implements InjectionAwareInterface
      */
     private function tryCall($role, $class, $call, $p): Response
     {
+        $response = $error = null;
         try {
-            return $this->_apiCall($role, $class, $call, $p);
+            $response = $this->_apiCall($role, $class, $call, $p);
         } catch (AuthenticationRequiredException) {
-            return $this->renderJson(null, new \ClientFence\InformationException('Authentication Failed', null, 201));
+            $error = new \ClientFence\InformationException('Authentication Failed', null, 201);
         } catch (EmailValidationRequiredException $exc) {
-            return $this->renderJson(null, new \ClientFence\InformationException($exc->getMessage(), null, 403));
+            $error = new \ClientFence\InformationException($exc->getMessage(), null, 403);
         } catch (\Exception $exc) {
-            return $this->renderJson(null, $this->sanitizeGuestError($role, $class, $call, $exc));
+            $error = $this->sanitizeGuestError($role, $class, $call, $exc);
         }
+        $response ??= $this->renderJson(null, $error);
+        // ClientFence core patch: the API request log, written after the response is sent (Activity/ApiLog.php).
+        \ClientFence\Mod\Activity\ApiLog::api($this->di, $this->apiConfig['log'] ?? null, (string) $role, (string) $call, (array) $p, $response->getStatusCode(), $error?->getMessage(), $this->viaKey);
+
+        return $response;
     }
 
     /**
@@ -223,6 +231,7 @@ class Client implements InjectionAwareInterface
             if ($this->shouldPreferSessionAuth($method) && $this->hasAuthenticatedSession($role)) {
                 $this->requireSessionAuth($role);
             } elseif ($this->shouldUseTokenLogin($role)) {
+                $this->viaKey = true;
                 $this->_tryTokenLogin($role);
             } else {
                 $this->requireSessionAuth($role);

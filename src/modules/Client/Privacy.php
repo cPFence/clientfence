@@ -179,6 +179,7 @@ final class Privacy
             self::quietly($db, 'DELETE FROM support_mail_import WHERE ticket_id IN (' . $tickets . ') OR LOWER(from_email) = ?', [$oldEmail]);
             self::quietly($db, 'DELETE FROM client_google_signup WHERE client_id = ?', [$clientId]);
             self::quietly($db, 'DELETE FROM client_google_password WHERE client_id = ?', [$clientId]);
+            self::quietly($db, 'DELETE FROM activity_api WHERE client_id = ?', [$clientId]);
             self::quietly($db, 'REPLACE INTO ' . self::OPTOUT_TABLE . ' (client_id, source, opted_out_at) VALUES (?, ?, ?)', [$clientId, 'anonymized', $now]);
             // The affiliate ledger and payouts stay as money records; their visits and payout details go.
             self::quietly($db, 'DELETE FROM client_affiliate_visit WHERE affiliate_id IN (SELECT id FROM client_affiliate WHERE client_id = ?)', [$clientId]);

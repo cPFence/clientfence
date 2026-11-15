@@ -192,6 +192,9 @@ class ServiceTransaction implements InjectionAwareInterface
         }
         $transaction->status = 'received';
         $transaction->ip = $this->di['request']->getClientIp();
+        // ClientFence core patch: a notice keeps its headers and basic request fields, not the server's environment values
+        // (Activity/ApiLog.php); the hash above still covers the whole request, so duplicates are found as before.
+        $ipn['server'] = \ClientFence\Mod\Activity\ApiLog::noticeServer($ipn['server']);
         $transaction->ipn = json_encode($ipn);
         $transaction->note = $data['note'] ?? null;
         // ClientFence core patch: the amount and currency of a staff-created transaction were dropped,

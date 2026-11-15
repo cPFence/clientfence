@@ -6,6 +6,7 @@ namespace ClientFence\Mod\Clientfence;
 
 use ClientFence\Config;
 use ClientFence\InformationException;
+use ClientFence\Mod\Activity\ApiLog;
 use ClientFence\Mod\Antispam\Networks;
 
 /**
@@ -19,6 +20,7 @@ use ClientFence\Mod\Antispam\Networks;
  * - Sessions: the "same browser" check of every signed-in request (security.perform_session_fingerprinting).
  * - Proxies, hosting networks: sign-ups and orders from hosting and VPN networks (security.hosting_networks,
  *   Antispam/Networks.php).
+ * - API log: the sources the API request log keeps and its days (api.log, Activity/ApiLog.php).
  */
 final class SecuritySettings
 {
@@ -52,10 +54,11 @@ final class SecuritySettings
             'api_ips' => self::stored(Config::getProperty('api.allowed_ips', [])),
             'fingerprint' => (bool) Config::getProperty('security.perform_session_fingerprinting', true),
             'networks' => Networks::settings() + ['listed' => count(Networks::bundled())],
+            'api_log' => ApiLog::settings(Config::getProperty('api.log', [])),
         ];
     }
 
-    /** Saves one section (proxies, access, sessions or networks) into config.php. */
+    /** Saves one section (proxies, access, sessions, networks or apilog) into config.php. */
     public static function save(\Pimple\Container $di, array $data, int $adminId): void
     {
         $config = Config::getConfig();
@@ -89,6 +92,14 @@ final class SecuritySettings
                     throw new InformationException('Choose what happens to sign-ups and orders from hosting networks.');
                 }
                 $config['security']['hosting_networks'] = ['mode' => $mode, 'always' => Networks::numbers($data['always'] ?? ''), 'never' => Networks::numbers($data['never'] ?? '')];
+
+                break;
+            case 'apilog':
+                $days = filter_var($data['days'] ?? ApiLog::DAYS, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => ApiLog::MAX_DAYS]]);
+                if ($days === false) {
+                    throw new InformationException('Keep the API log for 1 to :max days.', [':max' => ApiLog::MAX_DAYS]);
+                }
+                $config['api']['log'] = array_combine(ApiLog::SOURCES, array_map(static fn (string $source): bool => !empty($data[$source]), ApiLog::SOURCES)) + ['days' => $days];
 
                 break;
             default:

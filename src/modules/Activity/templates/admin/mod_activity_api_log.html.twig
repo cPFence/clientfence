@@ -1,0 +1,134 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+
+{# ClientFence: Activity > System Activity > API log (CF-123, Activity/ApiLog.php). What is kept is set in
+   Security > Settings > API log. #}
+
+{% import 'macro_functions.html.twig' as mf %}
+
+{% block meta_title %}{{ 'API log'|trans }}{% endblock %}
+
+{% set active_menu = 'activity' %}
+
+{% block content %}
+{% set sources = { 'api_key': 'Staff API key'|trans, 'webhook': 'Gateway notice'|trans, 'staff': 'Staff session'|trans, 'client': 'Client or guest'|trans } %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'API log'|trans }}</h3>
+            <p class="card-subtitle">{{ 'API requests, newest first, with passwords, keys, tokens and card numbers hidden. Choose what is kept in Security > Settings > API log.'|trans }}</p>
+        </div>
+        <div class="card-actions">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link" href="{{ 'activity'|url }}">{{ 'System Activity'|trans }}</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{{ 'activity/api'|url }}" aria-current="page">{{ 'API log'|trans }}</a></li>
+            </ul>
+        </div>
+    </div>
+    <form method="get" class="card-body border-bottom">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-6 col-xl-2">
+                <label class="form-label text-muted small mb-1" for="api-log-source">{{ 'Source'|trans }}</label>
+                <select class="form-select" id="api-log-source" name="source">
+                    <option value="">{{ 'All'|trans }}</option>
+                    {% for source, label in sources %}
+                        <option value="{{ source }}"{% if request.source == source %} selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 col-xl-2">
+                <label class="form-label text-muted small mb-1" for="api-log-admin">{{ 'Specific Admin'|trans }}</label>
+                <select class="form-control autocomplete-selector" placeholder="{{ 'Start Typing the Admin Name or ID'|trans }}" id="api-log-admin" name="admin_id" data-resturl="/api/admin/staff/get_pairs">
+                    {% if request.admin_id %}
+                        {% set selected_admin = admin.staff_get({ 'id': request.admin_id }) %}
+                        <option value="{{ request.admin_id }}" selected>{{ selected_admin.name }} ({{ selected_admin.email }})</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col-md-6 col-xl-2">
+                <label class="form-label text-muted small mb-1" for="api-log-client">{{ 'Specific Client'|trans }}</label>
+                <select class="form-control autocomplete-selector" placeholder="{{ 'Start Typing the Client Name or ID'|trans }}" id="api-log-client" name="client_id" data-resturl="/api/admin/client/get_pairs">
+                    {% if request.client_id %}
+                        {% set selected_client = admin.client_get({ 'id': request.client_id }) %}
+                        <option value="{{ request.client_id }}" selected>{{ selected_client.first_name }} {{ selected_client.last_name }} ({{ selected_client.email }})</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col-md-6 col-xl-2">
+                <label class="form-label text-muted small mb-1" for="api-log-call">{{ 'API call'|trans }}</label>
+                <input class="form-control" type="text" id="api-log-call" name="call" value="{{ request.call }}" placeholder="invoice_get_list" dir="ltr">
+            </div>
+            <div class="col-md-6 col-xl-2">
+                <label class="form-label text-muted small mb-1" for="api-log-from">{{ 'From'|trans }}</label>
+                <input class="form-control" type="date" id="api-log-from" name="date_from" value="{{ request.date_from }}">
+            </div>
+            <div class="col-md-6 col-xl-2">
+                <label class="form-label text-muted small mb-1" for="api-log-to">{{ 'To'|trans }}</label>
+                <input class="form-control" type="date" id="api-log-to" name="date_to" value="{{ request.date_to }}">
+            </div>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <a class="btn btn-outline-secondary" href="{{ 'activity/api'|url }}">{{ 'Reset'|trans }}</a>
+            <button class="btn btn-primary" type="submit">{{ 'Apply Filters'|trans }}</button>
+        </div>
+    </form>
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter">
+            <thead>
+                <tr>
+                    <th>{{ 'Date'|trans }}</th>
+                    <th>{{ 'Source'|trans }}</th>
+                    <th>{{ 'API call'|trans }}</th>
+                    <th>{{ 'User'|trans }}</th>
+                    <th>{{ 'IP'|trans }}</th>
+                    <th>{{ 'Result'|trans }}</th>
+                    <th class="text-end">{{ 'Time (ms)'|trans }}</th>
+                    <th class="w-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% set rows = admin.activity_api_log_get_list({ 'per_page': 25, 'page': request.page }|merge(request)) %}
+            {% for row in rows.list %}
+            <tr>
+                <td class="text-nowrap" title="{{ row.created_at|timeago }}">{{ row.created_at|format_datetime }}</td>
+                <td class="text-nowrap">{{ sources[row.source]|default(row.source) }}</td>
+                <td class="text-break" dir="ltr"><span class="badge bg-secondary-lt me-1">{{ row.method }}</span>{{ row.api_call }}</td>
+                <td>
+                    {% if row.admin_id %}
+                        <a href="{{ ('staff/manage/' ~ row.admin_id)|url }}">{{ row.staff_name|default('#' ~ row.admin_id) }}</a>
+                    {% elseif row.client_id %}
+                        <a href="{{ ('client/manage/' ~ row.client_id)|url }}">{{ (row.client_first_name ~ ' ' ~ row.client_last_name)|trim|default('#' ~ row.client_id) }}</a>
+                    {% elseif row.source == 'webhook' %}
+                        {{ 'Payment gateway'|trans }}
+                    {% else %}
+                        {{ 'Guest'|trans }}
+                    {% endif %}
+                </td>
+                <td class="text-nowrap">{{ mf.ip_lookup_link(row.ip) }}</td>
+                <td>
+                    <span class="badge {{ row.result == 'ok' and row.status < 400 ? 'bg-green-lt' : 'bg-red-lt' }} me-1">{{ row.status }}</span>
+                    {{ row.result == 'ok' ? 'OK'|trans : row.result }}
+                </td>
+                <td class="text-end">{{ row.duration_ms }}</td>
+                <td>
+                    <button class="btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#api-log-{{ row.id }}" aria-expanded="false" aria-controls="api-log-{{ row.id }}">{{ 'Details'|trans }}</button>
+                </td>
+            </tr>
+            <tr class="collapse" id="api-log-{{ row.id }}">
+                <td colspan="8" class="bg-body-tertiary">
+                    <div class="text-muted small mb-1">{{ 'Request details (secrets hidden)'|trans }}</div>
+                    <pre class="mb-0 text-wrap text-break" dir="ltr">{{ row.params }}</pre>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td class="text-muted text-center py-3" colspan="8">{{ 'The list is empty'|trans }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer d-flex align-items-center">
+        {{ include('partial_pagination.html.twig', { 'list': rows, 'url': 'activity/api', 'split_footer_controls': true }) }}
+    </div>
+</div>
+{% endblock %}

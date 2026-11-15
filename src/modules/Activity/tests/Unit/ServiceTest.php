@@ -164,6 +164,10 @@ test('remove by client', function (): void {
         ->once()
         ->with('DELETE FROM activity_system WHERE client_id = ?', [$clientModel->id])
         ->andReturn(1);
+    $dbalMock->shouldReceive('executeStatement')
+        ->once()
+        ->with('DELETE FROM activity_api WHERE client_id = ?', [$clientModel->id])
+        ->andReturn(1);
 
     $di = container();
     $di['dbal'] = $dbalMock;

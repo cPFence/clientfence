@@ -42,6 +42,13 @@
             <h3 class="card-title">{{ 'System Activity'|trans }}</h3>
             <p class="card-subtitle">{{ 'Review staff, client, and guest activity across the platform with detailed filtering.'|trans }}</p>
         </div>
+        {# ClientFence core patch: the API request log is the second tab (Activity/ApiLog.php). #}
+        <div class="card-actions">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link active" href="{{ 'activity'|url }}" aria-current="page">{{ 'System Activity'|trans }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ 'activity/api'|url }}">{{ 'API log'|trans }}</a></li>
+            </ul>
+        </div>
     </div>
     {{ include('partial_search.html.twig', {
         search_body_class: filter_panel_open ? 'pb-2 border-bottom-0' : ''

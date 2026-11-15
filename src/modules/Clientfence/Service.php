@@ -290,6 +290,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'client_passkey',
         // ClientFence core patch: ID documents of clients (Client/IdDocuments.php).
         'client_id_document',
+        // ClientFence core patch: the API request log (Activity/ApiLog.php).
+        'activity_api',
     ];
 
     /**

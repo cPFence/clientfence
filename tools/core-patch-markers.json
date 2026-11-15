@@ -6333,7 +6333,7 @@
     },
     {
         "file": "install/sql/content.sql",
-        "done": "ClientFence core patch: fresh installs include the passkeys and ID documents migrations."
+        "done": "ClientFence core patch: fresh installs include the passkeys, ID documents and API request log migrations."
     },
     {
         "file": "modules/Cart/Service.php",
@@ -6402,5 +6402,41 @@
     {
         "file": "install/sql/structure.sql",
         "done": "ClientFence core patch: ID documents of clients (Client/IdDocuments.php)."
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: the API request log, written after the response is sent (Activity/ApiLog.php)."
+    },
+    {
+        "file": "ipn.php",
+        "done": "ClientFence core patch: the API request log keeps each gateway notice when ticked (Activity/ApiLog.php)."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch: a notice keeps its headers and basic request fields, not the server's environment values"
+    },
+    {
+        "file": "modules/Activity/Service.php",
+        "done": "ClientFence core patch: the API request log keeps its own days (Activity/ApiLog.php)."
+    },
+    {
+        "file": "modules/Activity/Api/Admin.php",
+        "done": "ClientFence core patch: the API request log (Activity/ApiLog.php), newest first; filters `source`, `admin_id`,"
+    },
+    {
+        "file": "modules/Activity/Controller/Admin.php",
+        "done": "ClientFence core patch: the API request log tab (Activity/ApiLog.php)."
+    },
+    {
+        "file": "modules/Activity/templates/admin/mod_activity_index.html.twig",
+        "done": "ClientFence core patch: the API request log is the second tab (Activity/ApiLog.php)."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: the API request log (Activity/ApiLog.php)."
+    },
+    {
+        "file": "modules/Activity/Service.php",
+        "done": "ClientFence core patch: and the client's lines of the API request log (Activity/ApiLog.php)."
     }
 ]
