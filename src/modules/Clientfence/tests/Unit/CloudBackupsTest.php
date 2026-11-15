@@ -137,3 +137,6 @@ test('a transport error keeps only the host of the URL (resumable upload URLs ca
     expect($message)->toContain('up.example.test')->not->toContain('SECRET-TOKEN')->not->toContain('/upload/session');
 });
 
+test('the files copy takes every private upload folder, ID documents included', function (): void {
+    expect(CloudBackups::fileRoots())->toMatchArray(['id-documents' => ClientFence\Mod\Client\IdDocuments::dir(), 'ticket-files' => ClientFence\Mod\Support\TicketFiles::dir()]);
+});

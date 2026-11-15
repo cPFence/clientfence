@@ -394,6 +394,17 @@ final class CloudBackups
     }
 
     /**
+     * The folders of the files copy, by their name in the zip: the web root and every private upload folder outside it.
+     *
+     * @return array<string, string>
+     */
+    public static function fileRoots(): array
+    {
+        return ['site' => PATH_ROOT, 'receipts' => \ClientFence\Mod\Invoice\Receipts::dir(), 'client-files' => \ClientFence\Mod\Client\Files::dir(),
+            'ticket-files' => \ClientFence\Mod\Support\TicketFiles::dir(), 'id-documents' => \ClientFence\Mod\Client\IdDocuments::dir()];
+    }
+
+    /**
      * A zip of the web root and the private upload folders outside it, without the cache, the logs and the backups.
      *
      * @return array{0: string, 1: string} path, name
@@ -403,8 +414,7 @@ final class CloudBackups
         $skip = array_filter(array_map('realpath', [PATH_CACHE, PATH_LOG, Backups::localDir(), sys_get_temp_dir()]));
         $zip = new ZipFile();
         $total = 0;
-        $roots = ['site' => PATH_ROOT, 'receipts' => \ClientFence\Mod\Invoice\Receipts::dir(), 'client-files' => \ClientFence\Mod\Client\Files::dir(), 'ticket-files' => \ClientFence\Mod\Support\TicketFiles::dir()];
-        foreach ($roots as $folder => $root) {
+        foreach (self::fileRoots() as $folder => $root) {
             $root = realpath($root);
             if ($root === false || !is_dir($root)) {
                 continue;
