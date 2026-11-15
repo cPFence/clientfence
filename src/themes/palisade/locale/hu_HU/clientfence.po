@@ -28702,3 +28702,62 @@ msgstr "Utolsó bejelentkezései. Ha valamelyiket nem ismeri fel, jelentkeztesse
 #: src/modules/Client/templates/admin/mod_client_login_history.html.twig
 msgid "authorized user %email%"
 msgstr "jogosult felhasználó: %email%"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "All clients"
+msgstr "Minden ügyfél"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose at least one client group that must use two-factor sign-in."
+msgstr "Válasszon ki legalább egy ügyfélcsoportot, amelynek kétlépcsős bejelentkezést kell használnia."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose which clients must use two-factor sign-in."
+msgstr "Válassza ki, mely ügyfeleknek kell kétlépcsős bejelentkezést használniuk."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Chosen client groups"
+msgstr "Kiválasztott ügyfélcsoportok"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "From %ip%"
+msgstr "Innen: %ip%"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "If this was not you, contact us at once: someone knows your password."
+msgstr "Ha nem Ön volt, azonnal lépjen kapcsolatba velünk: valaki ismeri a jelszavát."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Require two-factor sign-in"
+msgstr "Kétlépcsős bejelentkezés megkövetelése"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Two-factor sign-in for clients"
+msgstr "Kétlépcsős bejelentkezés ügyfeleknek"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in was switched on"
+msgstr "A kétlépcsős bejelentkezés be lett kapcsolva"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in with an authenticator app was switched on for your sign-in to the client area. From now on, signing in also asks for a code from the app."
+msgstr "Az ügyfélterületre való bejelentkezéséhez be lett kapcsolva a kétlépcsős bejelentkezés hitelesítő alkalmazással. Mostantól a bejelentkezéskor az alkalmazás kódját is kérjük."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "With \"Chosen client groups\": a client in any of these groups must use it."
+msgstr "A „Kiválasztott ügyfélcsoportok” esetén: ezen csoportok bármelyikének ügyfele köteles használni."
+
+#: src/modules/Client/Users.php src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "Your provider requires two-factor sign-in. Set it up to go on."
+msgstr "A szolgáltatója kétlépcsős bejelentkezést követel meg. Állítsa be a folytatáshoz."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff \"Login to Client Area\" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in."
+msgstr "Az érintett ügyfeleknek és fiókjaik jogosult felhasználóinak be kell állítaniuk egy hitelesítő alkalmazást: amíg ezt nem teszik meg, a bejelentkezés után minden ügyféloldal a kétlépcsős bejelentkezés beállítására vezet. A „Bejelentkezés az ügyfélfelületre” funkciót használó munkatársakat nem kérdezi. A munkatársak továbbra is kikapcsolhatják az alkalmazást annak az ügyfélnek, aki elvesztette a telefonját: az ügyfél a következő bejelentkezéskor újra beállítja."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
+msgstr "Csak Google-fiókkal jelentkezik be: először válasszon jelszót, majd állítsa be itt a kétlépcsős bejelentkezést."

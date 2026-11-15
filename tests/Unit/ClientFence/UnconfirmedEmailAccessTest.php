@@ -28,7 +28,7 @@ function unconfirmedClientIdentity(string $path): object
 
 test('an unconfirmed client may use the store, the checkout and the invoice payment', function (string $path): void {
     expect(unconfirmedClientIdentity($path))->toBeInstanceOf(ClientFence\Api\Identity::class);
-})->with(['/api/client/cart/checkout', '/api/client/invoice/paypal_pay', '/cart', '/order', '/order/starter-hosting', '/invoice/0a1b2c', '/invoice/banklink/0a1b2c/2', '/invoice/thank-you/0a1b2c']);
+})->with(['/api/client/cart/checkout', '/api/client/invoice/paypal_pay', '/cart', '/order', '/order/starter-hosting', '/invoice/0a1b2c', '/invoice/banklink/0a1b2c/2', '/invoice/thank-you/0a1b2c', '/two-factor', '/api/client/client/twofactor_setup']);
 
 test('an unconfirmed client is still refused the rest of the account', function (string $path): void {
     expect(fn () => unconfirmedClientIdentity($path))->toThrow(EmailValidationRequiredException::class);

@@ -305,6 +305,8 @@ class Guest extends \ClientFence\Api\AbstractApi
             \ClientFence\Mod\Client\Users::startSession($this->getDi(), $clientfenceUser);
             // ClientFence core patch: the sign-in history row names its session (Clientfence/SignInHistory.php).
             \ClientFence\Mod\Clientfence\SignInHistory::started($this->getDi(), $clientfenceUser !== null ? (int) $clientfenceUser['user_id'] : null);
+            // ClientFence core patch: two-factor sign-in required of this account and not set up (TwoFactor::checkRequired()).
+            \ClientFence\Mod\Client\TwoFactor::checkRequired($this->getDi(), (int) $client->getId(), $clientfenceUser);
 
             $this->getDi()['logger']->info('Client #%s logged in', $client->getId());
             $this->getDi()['session']->delete('redirect_uri');
@@ -529,6 +531,7 @@ class Guest extends \ClientFence\Api\AbstractApi
         $di['session']->regenerateId();
         $di['session']->set('client_id', $user['client_id']);
         Users::startSession($di, $user);
+        TwoFactor::checkRequired($di, (int) $user['client_id'], $user);
 
         return true;
     }

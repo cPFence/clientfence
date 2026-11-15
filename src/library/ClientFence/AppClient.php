@@ -87,6 +87,13 @@ class AppClient extends \ClientFence\App
     protected function checkPermission(): ?Response
     {
         if ($this->mod !== 'api') {
+            // ClientFence core patch: two-factor sign-in required and not set up yet (Client/TwoFactor.php REQUIRED): its page and sign-out only.
+            // Only while signed in: a client signed out by its status keeps the key until the next sign-in.
+            if ($this->di['session']->get(\ClientFence\Mod\Client\TwoFactor::REQUIRED) !== null && $this->di['session']->get('client_id') !== null) {
+                $page = strtolower(trim($this->url, '/'));
+
+                return in_array($page, \ClientFence\Mod\Client\TwoFactor::REQUIRED_PAGES, true) || str_starts_with($page, 'client/confirm-email/') ? null : $this->redirect('two-factor');
+            }
             // ClientFence core patch: Google sign-up. An account made by Google sign-up fills the
             // profile fields the portal requires before the client area opens (Google.php).
             $profile = \ClientFence\Mod\Client\Google::profileGate($this->di, $this->url);

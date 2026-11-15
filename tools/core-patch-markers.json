@@ -6154,5 +6154,25 @@
     {
         "file": "library/ClientFence/Session.php",
         "done": "ClientFence core patch: the sign-in history rows of the logins still signed in follow the new session id."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: two-factor sign-in required and not set up yet (Client/TwoFactor.php REQUIRED): its page and sign-out only."
+    },
+    {
+        "file": "library/ClientFence/Session.php",
+        "done": "ClientFence core patch: a signed-out session has no two-factor requirement (Client/TwoFactor.php REQUIRED)."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: two-factor sign-in required of this account and not set up (TwoFactor::checkRequired())."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "TwoFactor::checkRequired($di, (int) $user['client_id'], $user);"
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: the two-factor setup a client may be required to finish first (Client/TwoFactor.php REQUIRED)."
     }
 ]

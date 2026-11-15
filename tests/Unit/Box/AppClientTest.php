@@ -326,3 +326,25 @@ test('top-level client pages are registered by the module that owns them (Client
     'two-factor code' => ['/two-factor/code', 'client'],
     'hosting account' => ['/hosting/12', 'servicehosting'],
 ]);
+
+test('a session that must set up two-factor sign-in opens only its page and sign-out', function (string $url, ?int $clientId, ?string $location): void {
+    $app = appClientWithRender(static fn (): string => '');
+    $session = (fn () => $this->di)->call($app)['session'];
+    $session->shouldReceive('get')->with(ClientFence\Mod\Client\TwoFactor::REQUIRED)->andReturn(true);
+    $session->shouldReceive('get')->with('client_id')->andReturn($clientId);
+    $app->setUrl($url);
+
+    $response = (fn () => $this->checkPermission())->call($app);
+
+    expect($response?->headers->get('Location'))->toBe($location);
+})->with([
+    'the dashboard' => ['/', 7, 'two-factor'],
+    'invoices' => ['/invoice', 7, 'two-factor'],
+    'the two-factor page' => ['/two-factor', 7, null],
+    'the Google sign-in page (first password)' => ['/google-sign-in', 7, null],
+    'sign-out' => ['/client/logout', 7, null],
+    'the email confirmation link' => ['/client/confirm-email/' . str_repeat('a', 32), 7, null],
+    'the custom stylesheet' => ['/custom-css', 7, null],
+    // Signed out by its status (suspended, deleted): the sign-in page, not a loop.
+    'signed out' => ['/login', null, null],
+]);

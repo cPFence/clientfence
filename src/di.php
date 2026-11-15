@@ -505,6 +505,8 @@ $di['api_identity'] = $di->protect(function ($role) use ($di) {
             || in_array($routePath, ['/api/client/cart/checkout', '/api/client/invoice/apply_credit', '/api/client/invoice/receipt_send', '/api/client/invoice/card_save_choice', '/api/client/invoice/paypal_pay', '/api/client/invoice/autopay_pay', '/api/client/invoice/paytabs_pay', '/api/client/invoice/eway_pay', '/api/client/invoice/mollie_pay', '/api/client/invoice/gocardless_pay'], true);
         $isAllowedClientPage = str_starts_with($routePath, '/client/profile')
             || str_starts_with($routePath, '/client/logout')
+            // ClientFence core patch: the two-factor setup a client may be required to finish first (Client/TwoFactor.php REQUIRED).
+            || $routePath === '/two-factor'
             || preg_match('#^/(cart|order(/(?!service$)[a-z0-9-]+)?|invoice/((banklink|thank-you)/)?(?!(statement|quotes)$)[a-z0-9]+(/[0-9]+)?)$#', $routePath) === 1;
 
         if (($isApiRequest && !$isAllowedClientApi) || (!$isApiRequest && !$isAllowedClientPage)) {

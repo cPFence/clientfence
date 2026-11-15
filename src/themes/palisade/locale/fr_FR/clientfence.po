@@ -28149,3 +28149,62 @@ msgstr "Vos dernières connexions. Si vous n'en reconnaissez pas une, déconnect
 #: src/modules/Client/templates/admin/mod_client_login_history.html.twig
 msgid "authorized user %email%"
 msgstr "utilisateur autorisé %email%"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "All clients"
+msgstr "Tous les clients"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose at least one client group that must use two-factor sign-in."
+msgstr "Choisissez au moins un groupe de clients qui doit utiliser la connexion à deux facteurs."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose which clients must use two-factor sign-in."
+msgstr "Choisissez quels clients doivent utiliser la connexion à deux facteurs."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Chosen client groups"
+msgstr "Groupes de clients choisis"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "From %ip%"
+msgstr "Depuis %ip%"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "If this was not you, contact us at once: someone knows your password."
+msgstr "Si ce n'était pas vous, contactez-nous immédiatement : quelqu'un connaît votre mot de passe."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Require two-factor sign-in"
+msgstr "Exiger la connexion à deux facteurs"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Two-factor sign-in for clients"
+msgstr "Connexion à deux facteurs pour les clients"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in was switched on"
+msgstr "La connexion à deux facteurs a été activée"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in with an authenticator app was switched on for your sign-in to the client area. From now on, signing in also asks for a code from the app."
+msgstr "La connexion à deux facteurs avec une application d'authentification a été activée pour votre connexion à l'espace client. Désormais, la connexion demande aussi un code de l'application."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "With \"Chosen client groups\": a client in any of these groups must use it."
+msgstr "Avec « Groupes de clients choisis » : un client de l'un de ces groupes doit l'utiliser."
+
+#: src/modules/Client/Users.php src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "Your provider requires two-factor sign-in. Set it up to go on."
+msgstr "Votre fournisseur exige la connexion à deux facteurs. Configurez-la pour continuer."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff \"Login to Client Area\" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in."
+msgstr "Les clients concernés, et les utilisateurs autorisés de leurs comptes, doivent configurer une application d'authentification : tant qu'ils ne l'ont pas fait, chaque page client après la connexion mène à la configuration de la connexion à deux facteurs. Le personnel qui utilise «Se connecter à l'espace client» n'est pas concerné. Le personnel peut toujours désactiver l'application pour un client qui a perdu son téléphone : le client la configure de nouveau à la prochaine connexion."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
+msgstr "Vous vous connectez uniquement avec Google : choisissez d'abord un mot de passe, puis configurez ici la connexion à deux facteurs."

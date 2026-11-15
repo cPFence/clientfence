@@ -28201,3 +28201,62 @@ msgstr "您最近的登录。如果有您不认识的登录，请将其退出并
 #: src/modules/Client/templates/admin/mod_client_login_history.html.twig
 msgid "authorized user %email%"
 msgstr "授权用户 %email%"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "All clients"
+msgstr "所有客户"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose at least one client group that must use two-factor sign-in."
+msgstr "请至少选择一个必须使用双重验证登录的客户组。"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose which clients must use two-factor sign-in."
+msgstr "请选择哪些客户必须使用双重验证登录。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Chosen client groups"
+msgstr "所选客户组"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "From %ip%"
+msgstr "来自 %ip%"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "If this was not you, contact us at once: someone knows your password."
+msgstr "如果这不是您本人，请立即联系我们：有人知道您的密码。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Require two-factor sign-in"
+msgstr "要求双重验证登录"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Two-factor sign-in for clients"
+msgstr "客户的双重验证登录"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in was switched on"
+msgstr "双重验证登录已开启"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in with an authenticator app was switched on for your sign-in to the client area. From now on, signing in also asks for a code from the app."
+msgstr "您登录客户区时已开启使用验证器应用的双重验证登录。从现在起，登录时还会要求输入应用中的验证码。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "With \"Chosen client groups\": a client in any of these groups must use it."
+msgstr "选择“所选客户组”时：这些组中的任何客户都必须使用。"
+
+#: src/modules/Client/Users.php src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "Your provider requires two-factor sign-in. Set it up to go on."
+msgstr "您的服务商要求使用双重验证登录。请先设置才能继续。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff \"Login to Client Area\" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in."
+msgstr "范围内的客户及其账户的授权用户必须设置验证器应用：在设置完成之前，登录后的每个客户页面都会跳转到双重验证登录的设置页。使用“登录客户区”的员工不会被要求。对于丢失手机的客户，员工仍可关闭该应用：客户会在下次登录时重新设置。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
+msgstr "您仅通过 Google 登录：请先设置密码，然后在此设置双重验证登录。"

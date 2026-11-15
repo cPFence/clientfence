@@ -3,7 +3,7 @@
    with an authenticator app (QR code or the key), confirmed with a code and the password; the
    backup code is shown once. On: a new backup code, or switch off with the password and a code.
    The setup and the backup code run in assets/src/js/twofactor.js. twofactor comes from
-   client_twofactor_status. #}
+   client_twofactor_status (required: the portal requires it and it is not set up yet). #}
 {% extends "layout_default.html.twig" %}
 {% set active_menu = 'twofactor' %}
 
@@ -17,6 +17,14 @@
     <h1>{{ 'Two-factor sign-in'|trans }}</h1>
     <p>{{ 'After your password, sign-in also asks for a code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password and others).'|trans }}</p>
 </div>
+
+{% if twofactor.required %}
+    <div class="alert alert-warning" role="alert">{{ 'Your provider requires two-factor sign-in. Set it up to go on.'|trans }}</div>
+{% endif %}
+{% if twofactor.needs_password and not twofactor.enabled %}
+    <div class="alert alert-info" role="status">{{ 'You sign in with Google only: choose a password first, then set up two-factor sign-in here.'|trans }}
+        <a class="alert-link" href="{{ 'google-sign-in'|url }}">{{ 'Choose a password'|trans }}</a></div>
+{% endif %}
 
 <div data-clientfence-twofactor>
     <div class="card mb-4" data-clientfence-twofactor-backup hidden>

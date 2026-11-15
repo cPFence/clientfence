@@ -197,6 +197,8 @@ test('login returns array', function (): void {
     $sessionMock->shouldReceive('set')->atLeast()->once();
     // ClientFence: staff sign in as the account owner, never as an authorized user.
     $sessionMock->shouldReceive('delete')->with('clientfence_user')->once();
+    // ClientFence: nor with the two-factor requirement of an earlier client sign-in in this browser.
+    $sessionMock->shouldReceive('delete')->with(ClientFence\Mod\Client\TwoFactor::REQUIRED)->once();
 
     $di = container();
     $di['mod_service'] = $di->protect(moduleService(['client' => $serviceMock]));

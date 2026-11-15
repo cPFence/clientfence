@@ -8,10 +8,12 @@ declare(strict_types=1);
  * SQLite database with fake services. APP_ENV is "test", so PINs are rendered but not sent. Also the
  * sign-in history (Mod\Clientfence\SignInHistory) and the PIN only from a new place: the networks come
  * from the bundled GeoIP ASN database (8.8.8.8 and 1.1.1.1, two networks), the countries from the fake.
+ * Also two-factor sign-in required of clients (Mod\Client\TwoFactor::checkRequired()).
  */
 
 use ClientFence\InformationException;
 use ClientFence\Mod\Client\TwoFactor;
+use ClientFence\Mod\Client\Users;
 use ClientFence\Mod\Clientfence\Setup;
 use ClientFence\Mod\Clientfence\SignInHistory;
 use ClientFence\Mod\Clientfence\SignInSecurity;
@@ -23,6 +25,7 @@ final class SignInSecurityTestWorld
     public array $pins = [];
     public array $cookies = [];
     public array $queued = [];
+    public array $sent = [];
     // Documentation addresses stand in for public ones here; 192.168.1.5 is private (the bundled
     // database gives it a country all the same).
     public array $countries = ['198.51.100.1' => 'DE', '203.0.113.9' => 'US', '192.0.2.5' => 'EG', '192.168.1.5' => 'AU', '8.8.8.8' => 'US', '1.1.1.1' => 'US'];
@@ -159,6 +162,13 @@ final class SignInSecurityTestWorld
             {
                 return $lang ?? 'en_US';
             }
+
+            public function sendTemplate(array $data): bool
+            {
+                $this->world->sent[] = $data;
+
+                return true;
+            }
         };
         $system = new class {
             public function getParamValue(string $name, $default = null)
@@ -205,7 +215,7 @@ final class SignInSecurityTestWorld
 test('everything is off by default and nobody is asked for a PIN', function (): void {
     $world = new SignInSecurityTestWorld();
 
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => []])
         ->and(SignInSecurity::pinOn($world->di, 'staff'))->toBeFalse()
         ->and(SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'c@example.test'], [], '192.0.2.5'))->toBeFalse()
         ->and($world->pins)->toBe([]);
@@ -494,11 +504,11 @@ test('the console command turns sign-in security off', function (): void {
     $world = new SignInSecurityTestWorld();
     $world->save(['pin' => 'clients', 'countries_on' => '1', 'countries' => ['DE'], 'ips_on' => 1, 'ips' => ['198.51.100.1']]);
 
-    expect(SignInSecurity::turnOff($world->di, false, false, true))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
+    expect(SignInSecurity::turnOff($world->di, false, false, true, false))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => []])
         ->and($world->staffConfig['check_ip'])->toBe(0)
         ->and($world->staffConfig['allowed_ips'])->toBe('198.51.100.1')
-        ->and(SignInSecurity::turnOff($world->di, false, true, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
-        ->and(SignInSecurity::turnOff($world->di, true, false, false)['pin'])->toBe('off');
+        ->and(SignInSecurity::turnOff($world->di, false, true, false, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => []])
+        ->and(SignInSecurity::turnOff($world->di, true, false, false, false)['pin'])->toBe('off');
 });
 
 test('the setup wizard sets the staff side only and saves nothing until the PIN is confirmed', function (): void {
@@ -508,20 +518,20 @@ test('the setup wizard sets the staff side only and saves nothing until the PIN 
     $wizard = ['captcha_provider' => 'none', 'admin_path' => '', 'staff_pin' => 1, 'countries_on' => 1, 'countries' => ['DE']];
 
     expect(Setup::saveSecurity($world->di, $wizard, $admin, '198.51.100.1'))->toBe(['admin_path' => null, 'confirm' => true, 'email' => 'o••••@example.test'])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false]);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => []]);
 
     expect(Setup::saveSecurity($world->di, $wizard + ['confirm_pin' => $world->lastPin()], $admin, '198.51.100.1'))->toBe(['admin_path' => null])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false]);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => []]);
 
     // No country fields (no GeoIP database): the country rule stays; the client PIN always does.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'staff_pin' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => []])
         ->and(fn () => Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 1, 'countries' => ['US']], $admin, '198.51.100.1'))
         ->toThrow(InformationException::class, 'would lock you out');
 
     // Switched off, the rule keeps its list for next time.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false]);
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => []]);
 });
 
 test('a client\'s PIN email is in the client\'s language, also when resent; the staff PIN in the default', function (): void {
@@ -557,7 +567,7 @@ test('"When to ask" and the sign-in history are saved, checked and kept by saves
         ->and(SignInSecurity::settings($world->di)['history'])->toBeFalse()
         // The console command puts the PIN back to every sign-in and leaves the history alone.
         ->and($world->save(['pin' => 'clients', 'history' => '1']))->toBe(['saved' => true])
-        ->and(SignInSecurity::turnOff($world->di, true, false, false))->toMatchArray(['pin' => 'off', 'pin_when' => 'every', 'history' => true]);
+        ->and(SignInSecurity::turnOff($world->di, true, false, false, false))->toMatchArray(['pin' => 'off', 'pin_when' => 'every', 'history' => true]);
 });
 
 test('the browser label names the browser and the system', function (string $agent, ?string $label): void {
@@ -709,3 +719,108 @@ test('a new session id takes along the sign-in rows of the logins still signed i
     expect($world->db->fetchOne('SELECT session_id FROM activity_client_history WHERE id = 1'))->toBe($on ? 'newer' : 'old')
         ->and((int) $world->db->fetchOne("SELECT COUNT(*) FROM activity_client_history WHERE session_id = 'guest'"))->toBe(0);
 })->with(['on' => [true], 'off' => [false]]);
+
+// ----- two-factor sign-in required of clients -----------------------------------------------------
+
+/** Client 7 is in group 2 of groups 1 and 2; nobody has the authenticator app yet. */
+function twofactorRequiredWorld(): SignInSecurityTestWorld
+{
+    $world = new SignInSecurityTestWorld();
+    $world->di['dbal'] = $world->db;
+    $world->db->executeStatement('CREATE TABLE client_group (id INTEGER PRIMARY KEY)');
+    $world->db->executeStatement('CREATE TABLE client_group_members (client_id INTEGER, client_group_id INTEGER)');
+    $world->db->executeStatement('CREATE TABLE client_twofactor (id INTEGER PRIMARY KEY, kind TEXT, subject_id INTEGER, secret TEXT, backup_hash TEXT, last_step INTEGER, enabled_at TEXT, updated_at TEXT)');
+    $world->db->executeStatement('INSERT INTO client_group (id) VALUES (1), (2)');
+    $world->db->insert('client_group_members', ['client_id' => 7, 'client_group_id' => 2]);
+
+    return $world;
+}
+
+test('two-factor sign-in for clients is off, all clients or chosen groups that exist, and kept by saves without it', function (): void {
+    $world = twofactorRequiredWorld();
+
+    expect(SignInSecurity::settings($world->di))->toMatchArray(['twofactor' => 'off', 'twofactor_groups' => []])
+        ->and(fn () => $world->save(['twofactor' => 'some']))->toThrow(InformationException::class, 'Choose which clients')
+        ->and(fn () => $world->save(['twofactor' => 'groups', 'twofactor_groups' => ['']]))->toThrow(InformationException::class, 'at least one client group')
+        ->and(fn () => $world->save(['twofactor' => 'groups', 'twofactor_groups' => ['', '3']]))->toThrow(InformationException::class, 'Client group not found')
+        ->and($world->save(['twofactor' => 'groups', 'twofactor_groups' => ['', '2', '1']]))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di))->toMatchArray(['twofactor' => 'groups', 'twofactor_groups' => [2, 1]])
+        // Quick setup sends neither.
+        ->and($world->save(['pin' => 'clients']))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di))->toMatchArray(['twofactor' => 'groups', 'twofactor_groups' => [2, 1]]);
+});
+
+test('a sign-in in scope without the app must set it up; with the app, out of scope or off it need not', function (array $saved, ?array $user, ?string $app, bool $required): void {
+    $world = twofactorRequiredWorld();
+    $world->save($saved);
+    if ($app !== null) {
+        [$kind, $id] = explode(':', $app);
+        $world->db->insert('client_twofactor', ['kind' => $kind, 'subject_id' => (int) $id]);
+    }
+
+    TwoFactor::checkRequired($world->di, 7, $user);
+
+    expect(isset($world->session[TwoFactor::REQUIRED]))->toBe($required);
+})->with([
+    'all clients, no app' => [['twofactor' => 'all'], null, null, true],
+    'a chosen group of the client' => [['twofactor' => 'groups', 'twofactor_groups' => ['2']], null, null, true],
+    'an authorized user, only the owner has the app' => [['twofactor' => 'all'], ['user_id' => 8], 'client:7', true],
+    'the app on' => [['twofactor' => 'all'], null, 'client:7', false],
+    'an authorized user with the app' => [['twofactor' => 'all'], ['user_id' => 8], 'user:8', false],
+    'another group' => [['twofactor' => 'groups', 'twofactor_groups' => ['1']], null, null, false],
+    'off' => [[], null, null, false],
+]);
+
+test('while two-factor sign-in must be set up, only the client calls of its page are made', function (): void {
+    $world = twofactorRequiredWorld();
+    $world->session[TwoFactor::REQUIRED] = true;
+    $identity = (object) ['id' => 7];
+
+    expect(fn () => Users::checkCall($world->di, $identity, 'invoice', 'get_list'))->toThrow(InformationException::class, 'requires two-factor sign-in')
+        ->and(fn () => Users::checkCall($world->di, $identity, 'profile', 'update'))->toThrow(InformationException::class, 'requires two-factor sign-in')
+        ->and(Users::checkCall($world->di, $identity, 'client', 'twofactor_setup'))->toBeNull()
+        ->and(Users::checkCall($world->di, $identity, 'client', 'twofactor_enable'))->toBeNull()
+        ->and(Users::checkCall($world->di, $identity, 'profile', 'logout'))->toBeNull()
+        // A Google sign-up chooses its first password, which the setup asks for.
+        ->and(Users::checkCall($world->di, $identity, 'client', 'google_password'))->toBeNull();
+});
+
+test('switching the app on ends the requirement and emails the login once', function (): void {
+    $world = twofactorRequiredWorld();
+    foreach (['email', 'first_name', 'last_name', 'lang'] as $column) {
+        $world->db->executeStatement("ALTER TABLE client ADD COLUMN {$column} TEXT");
+    }
+    $world->db->update('client', ['email' => 'client@example.test', 'first_name' => 'Ada', 'last_name' => 'Lovelace', 'lang' => 'de_DE'], ['id' => 7]);
+    $world->di['password'] = new class {
+        public function verify(string $password, string $hash): bool
+        {
+            return $password === 'right';
+        }
+
+        public function hashIt(string $password): string
+        {
+            return 'hash-' . $password;
+        }
+    };
+    $world->di['crypt'] = new class {
+        public function encrypt(string $value): string
+        {
+            return $value;
+        }
+    };
+    $world->session[TwoFactor::REQUIRED] = true;
+    $secret = str_replace(' ', '', TwoFactor::setup($world->di, 7)['secret']);
+
+    TwoFactor::enable($world->di, 7, ['password' => 'right', 'code' => TwoFactor::code(TwoFactor::base32Decode($secret), intdiv(time(), 30))], '198.51.100.1');
+
+    expect($world->session)->not->toHaveKey(TwoFactor::REQUIRED)
+        ->and($world->sent)->toHaveCount(1)
+        ->and($world->sent[0])->toMatchArray(['code' => 'mod_client_twofactor_switched_on', 'to' => 'client@example.test', 'to_lang' => 'de_DE', 'name' => 'Ada Lovelace', 'ip' => '198.51.100.1', 'country' => 'Germany']);
+});
+
+test('the console command also turns the required two-factor sign-in for clients off', function (): void {
+    $world = twofactorRequiredWorld();
+    $world->save(['pin' => 'clients', 'twofactor' => 'groups', 'twofactor_groups' => ['2']]);
+
+    expect(SignInSecurity::turnOff($world->di, false, false, false, true))->toMatchArray(['pin' => 'clients', 'twofactor' => 'off', 'twofactor_groups' => [2]]);
+});

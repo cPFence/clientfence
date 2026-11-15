@@ -16,6 +16,7 @@ beforeEach(function (): void {
     $this->client->id = 5;
     $this->di['session']->shouldReceive('get')->with(Users::SESSION)->andReturn(['user_id' => 7, 'client_id' => 5, 'version' => 1]);
     $this->di['session']->shouldReceive('get')->with('client_id')->andReturn(5);
+    $this->di['session']->shouldReceive('get')->with(ClientFence\Mod\Client\TwoFactor::REQUIRED)->andReturnNull();
     $this->db = Mockery::mock(Connection::class);
     $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, Model_Client::ACTIVE, 7])->byDefault()->andReturn([
         'email' => 'user@example.com', 'first_name' => 'Test', 'last_name' => 'User',

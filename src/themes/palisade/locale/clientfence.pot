@@ -2486,6 +2486,10 @@ msgstr ""
 msgid "All clear:"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "All clients"
+msgstr ""
+
 #: src/modules/Invoice/StatementPdf.php src/modules/Invoice/templates/admin/mod_invoice_report.html.twig src/modules/Support/templates/admin/mod_support_ratings.html.twig …
 msgid "All dates"
 msgstr ""
@@ -5190,7 +5194,7 @@ msgstr ""
 msgid "Choose a new password for your user."
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_google_link.html.twig src/modules/Client/templates/client/mod_client_google_profile.html.twig
+#: src/modules/Client/templates/client/mod_client_google_link.html.twig src/modules/Client/templates/client/mod_client_google_profile.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "Choose a password"
 msgstr ""
 
@@ -5287,6 +5291,10 @@ msgid "Choose at least one action."
 msgstr ""
 
 #: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose at least one client group that must use two-factor sign-in."
+msgstr ""
+
+#: src/modules/Clientfence/SignInSecurity.php
 msgid "Choose at least one country staff may sign in from."
 msgstr ""
 
@@ -5310,7 +5318,7 @@ msgstr ""
 msgid "Choose from 1 to :max stars."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "Choose groups"
 msgstr ""
 
@@ -5530,6 +5538,10 @@ msgstr ""
 msgid "Choose which addons can be sold alongside this product and jump directly to addon editing when needed."
 msgstr ""
 
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose which clients must use two-factor sign-in."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Choose which environment checks clients must satisfy when validating a license."
 msgstr ""
@@ -5560,6 +5572,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Choosing another program, or another app, ends the current connection."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Chosen client groups"
 msgstr ""
 
 #: src/modules/Notification/templates/admin/mod_notification_index.html.twig
@@ -5782,7 +5798,7 @@ msgstr ""
 msgid "Client group that can order"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Client groups"
 msgstr ""
 
@@ -6080,6 +6096,10 @@ msgstr ""
 
 #: src/modules/Invoice/ServicePayGateway.php
 msgid "Clients have saved payment methods on this gateway. Disable it instead of deleting it."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff \"Login to Client Area\" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
@@ -10890,6 +10910,10 @@ msgstr ""
 msgid "From"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "From %ip%"
+msgstr ""
+
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "From :min to :max per top-up."
 msgstr ""
@@ -11490,7 +11514,7 @@ msgstr ""
 msgid "Hello"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig …
+#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig …
 msgid "Hello %name%,"
 msgstr ""
 
@@ -12180,6 +12204,10 @@ msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_article.html.twig
 msgid "If this article did not answer your question, our support team can help."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "If this was not you, contact us at once: someone knows your password."
 msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
@@ -21282,6 +21310,10 @@ msgstr ""
 msgid "Require transfer code:"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Require two-factor sign-in"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig …
 msgid "Required"
 msgstr ""
@@ -28055,6 +28087,10 @@ msgstr ""
 msgid "Two-factor sign-in carried over"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Two-factor sign-in for clients"
+msgstr ""
+
 #: src/modules/Client/TwoFactor.php
 msgid "Two-factor sign-in is already on."
 msgstr ""
@@ -28073,6 +28109,14 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "Two-factor sign-in is on."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in was switched on"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in with an authenticator app was switched on for your sign-in to the client area. From now on, signing in also asks for a code from the app."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -30095,6 +30139,10 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "With \"Chosen client groups\": a client in any of these groups must use it."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
 msgid "With Selected:"
 msgstr ""
@@ -30675,6 +30723,10 @@ msgstr ""
 msgid "You sign in with Google only. Choose a password so you can also sign in with your email; after that, you can unlink Google if you want."
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
+msgstr ""
+
 #: src/modules/Client/templates/email/mod_client_signup.html.twig
 msgid "You signed up with your Google account, so there is no password to remember: next time, use the Google button on the sign-in page and pick the same Google account. To also sign in with your email, choose a password on the Google sign-in page of your account."
 msgstr ""
@@ -31133,6 +31185,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Your profile currency is defined after your first order. Once your currency is set, all your profile accounting will be managed in that currency and cannot be changed."
+msgstr ""
+
+#: src/modules/Client/Users.php src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "Your provider requires two-factor sign-in. Set it up to go on."
 msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_price_changed.html.twig

@@ -1,5 +1,6 @@
 {# ClientFence: the "Sign-in" tab of Security > Settings (mod_security_settings; SignInSecurity.php): an email
-   PIN at sign-in for staff, clients or both (every sign-in or only from a new place), the sign-in history
+   PIN at sign-in for staff, clients or both (every sign-in or only from a new place), two-factor sign-in required
+   of all clients or chosen client groups (Client/TwoFactor.php checkRequired()), the sign-in history
    (SignInHistory.php), staff sign-in from listed IP addresses only and staff password
    reset (both stored in the Staff settings), and staff sign-in from chosen countries only. Super Administrators only.
    `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
@@ -33,6 +34,32 @@
                 <label class="form-label" for="cf-signin-confirm">{{ 'PIN sent to'|trans }} <span data-cf-signin-email></span></label>
                 <input class="form-control" id="cf-signin-confirm" type="text" name="confirm_pin" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr">
             </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Two-factor sign-in for clients'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff "Login to Client Area" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <label class="form-label" for="cf-signin-twofactor">{{ 'Require two-factor sign-in'|trans }}</label>
+            <select class="form-select" id="cf-signin-twofactor" name="twofactor">
+                {% for mode, label in { 'off': 'Off'|trans, 'all': 'All clients'|trans, 'groups': 'Chosen client groups'|trans } %}
+                    <option value="{{ mode }}"{% if signin.twofactor == mode %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <label class="form-label mt-3" for="cf-signin-twofactor-groups">{{ 'Client groups'|trans }}</label>
+            {# The empty input clears the list (Client/Groups.php valid()). #}
+            <input type="hidden" name="twofactor_groups[]" value="">
+            <select class="form-select js-multi-select" id="cf-signin-twofactor-groups" name="twofactor_groups[]" multiple placeholder="{{ 'Choose groups'|trans }}">
+                {% for id, title in admin.client_group_get_pairs %}
+                    <option value="{{ id }}"{% if id in signin.twofactor_groups %} selected{% endif %}>{{ title }}</option>
+                {% endfor %}
+            </select>
+            <div class="form-hint">{{ 'With "Chosen client groups": a client in any of these groups must use it.'|trans }}</div>
         </div>
     </div>
 

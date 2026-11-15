@@ -329,6 +329,8 @@ final class Users
     public static function startSession(\Pimple\Container $di, ?array $user, string $event = 'signed in'): void
     {
         $session = $di['session'];
+        // A new sign-in (or staff "Login as client") starts without an earlier sign-in's two-factor requirement.
+        $session->delete(TwoFactor::REQUIRED);
         if ($user === null) {
             $session->delete(self::SESSION);
 
@@ -365,7 +367,10 @@ final class Users
         $session = $di['session'];
         $session->regenerateId();
         $session->set('client_id', $clientId);
-        self::startSession($di, ['user_id' => $context['user_id'], 'client_id' => $clientId, 'version' => (int) $version], 'switched to this account');
+        $user = ['user_id' => $context['user_id'], 'client_id' => $clientId, 'version' => (int) $version];
+        self::startSession($di, $user, 'switched to this account');
+        // The other account may require two-factor sign-in (Client settings, Sign-in tab).
+        TwoFactor::checkRequired($di, $clientId, $user);
     }
 
     /**
@@ -412,6 +417,10 @@ final class Users
      */
     public static function checkCall(\Pimple\Container $di, object $identity, string $mod, string $method, array $data = []): void
     {
+        // Two-factor sign-in required and not set up yet: only what its page needs (TwoFactor::REQUIRED).
+        if ($di['session']->get(TwoFactor::REQUIRED) !== null && !in_array(strtolower($mod . '/' . $method), TwoFactor::REQUIRED_CALLS, true)) {
+            throw new InformationException('Your provider requires two-factor sign-in. Set it up to go on.', null, 403);
+        }
         $context = self::context($di);
         if ($context === null || (int) ($identity->id ?? 0) !== $context['client_id']) {
             return;

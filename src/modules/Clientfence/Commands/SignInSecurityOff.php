@@ -13,11 +13,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * For a site whose staff are locked out by sign-in security (SignInSecurity.php): turns the email
- * PIN and the staff country and IP rules off (or only the selected --pin / --countries / --ips).
+ * PIN, the staff country and IP rules and the clients' required two-factor sign-in off (or only the selected
+ * --pin / --countries / --ips / --twofactor): a broken setup page must not lock every client out.
  */
 #[AsCommand(
     name: 'clientfence:signin-security-off',
-    description: 'Turns sign-in security off: the email PIN and the staff country and IP address rules',
+    description: 'Turns sign-in security off: the email PIN, the staff country and IP address rules and the required client two-factor sign-in',
     hidden: false
 )]
 class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareInterface
@@ -39,6 +40,7 @@ class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareIn
         $this->addOption('pin', null, InputOption::VALUE_NONE, 'Only turn the email PIN off');
         $this->addOption('countries', null, InputOption::VALUE_NONE, 'Only turn the staff country rule off');
         $this->addOption('ips', null, InputOption::VALUE_NONE, 'Only turn the staff IP address rule off');
+        $this->addOption('twofactor', null, InputOption::VALUE_NONE, 'Only turn the required two-factor sign-in for clients off');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -46,12 +48,13 @@ class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareIn
         $pin = (bool) $input->getOption('pin');
         $countries = (bool) $input->getOption('countries');
         $ips = (bool) $input->getOption('ips');
-        if (!$pin && !$countries && !$ips) {
-            $pin = $countries = $ips = true;
+        $twofactor = (bool) $input->getOption('twofactor');
+        if (!$pin && !$countries && !$ips && !$twofactor) {
+            $pin = $countries = $ips = $twofactor = true;
         }
-        $settings = SignInSecurity::turnOff($this->di, $pin, $countries, $ips);
-        $this->di['logger']->warning('Sign-in security turned off from the console (email PIN: %s, country rule: %s, IP rule: %s)', $pin ? 'off' : 'kept', $countries ? 'off' : 'kept', $ips ? 'off' : 'kept');
-        $output->writeln(sprintf('Email PIN: %s. Staff countries: %s. Staff IPs: %s.', $settings['pin'], $settings['countries_on'] ? implode(', ', $settings['countries']) : 'off', $settings['ips_on'] ? implode(', ', $settings['ips']) : 'off'));
+        $settings = SignInSecurity::turnOff($this->di, $pin, $countries, $ips, $twofactor);
+        $this->di['logger']->warning('Sign-in security turned off from the console (email PIN: %s, country rule: %s, IP rule: %s, clients two-factor: %s)', $pin ? 'off' : 'kept', $countries ? 'off' : 'kept', $ips ? 'off' : 'kept', $twofactor ? 'off' : 'kept');
+        $output->writeln(sprintf('Email PIN: %s. Staff countries: %s. Staff IPs: %s. Clients two-factor: %s.', $settings['pin'], $settings['countries_on'] ? implode(', ', $settings['countries']) : 'off', $settings['ips_on'] ? implode(', ', $settings['ips']) : 'off', $settings['twofactor']));
 
         return Command::SUCCESS;
     }

@@ -28876,3 +28876,62 @@ msgstr "Twoje ostatnie logowania. Jeśli którego nie znasz, wyloguj je i zmień
 #: src/modules/Client/templates/admin/mod_client_login_history.html.twig
 msgid "authorized user %email%"
 msgstr "upoważniony użytkownik %email%"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "All clients"
+msgstr "Wszyscy klienci"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose at least one client group that must use two-factor sign-in."
+msgstr "Wybierz co najmniej jedną grupę klientów, która musi używać logowania dwuskładnikowego."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose which clients must use two-factor sign-in."
+msgstr "Wybierz, którzy klienci muszą używać logowania dwuskładnikowego."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Chosen client groups"
+msgstr "Wybrane grupy klientów"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "From %ip%"
+msgstr "Z adresu %ip%"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "If this was not you, contact us at once: someone knows your password."
+msgstr "Jeśli to nie Ty, skontaktuj się z nami natychmiast: ktoś zna Twoje hasło."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Require two-factor sign-in"
+msgstr "Wymagaj logowania dwuskładnikowego"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Two-factor sign-in for clients"
+msgstr "Logowanie dwuskładnikowe dla klientów"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in was switched on"
+msgstr "Włączono logowanie dwuskładnikowe"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in with an authenticator app was switched on for your sign-in to the client area. From now on, signing in also asks for a code from the app."
+msgstr "Logowanie dwuskładnikowe z aplikacją uwierzytelniającą zostało włączone dla Twojego logowania do strefy klienta. Od teraz logowanie wymaga także kodu z aplikacji."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "With \"Chosen client groups\": a client in any of these groups must use it."
+msgstr "Z opcją „Wybrane grupy klientów”: klient z dowolnej z tych grup musi z niego korzystać."
+
+#: src/modules/Client/Users.php src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "Your provider requires two-factor sign-in. Set it up to go on."
+msgstr "Twój dostawca wymaga logowania dwuskładnikowego. Skonfiguruj je, aby kontynuować."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff \"Login to Client Area\" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in."
+msgstr "Objęci klienci i upoważnieni użytkownicy ich kont muszą skonfigurować aplikację uwierzytelniającą: dopóki tego nie zrobią, każda strona klienta po zalogowaniu prowadzi do konfiguracji logowania dwuskładnikowego. Pracownicy używający „Zaloguj się do strefy klienta” nie są pytani. Pracownicy nadal mogą wyłączyć aplikację klientowi, który zgubił telefon: klient skonfiguruje ją ponownie przy następnym logowaniu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
+msgstr "Logujesz się tylko przez Google: najpierw wybierz hasło, a potem skonfiguruj tutaj logowanie dwuskładnikowe."

@@ -127,6 +127,8 @@ class Session implements InjectionAwareInterface
                 $this->delete('client_id');
                 // ClientFence core patch: authorized users (modules/Client/Users.php SESSION).
                 $this->delete('clientfence_user');
+                // ClientFence core patch: a signed-out session has no two-factor requirement (Client/TwoFactor.php REQUIRED).
+                $this->delete('clientfence_2fa_required');
                 $this->regenerateId();
 
                 return true;

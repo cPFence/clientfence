@@ -26527,3 +26527,62 @@ msgstr "การเข้าสู่ระบบล่าสุดของค
 #: src/modules/Client/templates/admin/mod_client_login_history.html.twig
 msgid "authorized user %email%"
 msgstr "ผู้ใช้ที่ได้รับอนุญาต %email%"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "All clients"
+msgstr "ลูกค้าทั้งหมด"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose at least one client group that must use two-factor sign-in."
+msgstr "เลือกกลุ่มลูกค้าอย่างน้อยหนึ่งกลุ่มที่ต้องใช้การเข้าสู่ระบบสองปัจจัย"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose which clients must use two-factor sign-in."
+msgstr "เลือกว่าลูกค้ากลุ่มใดต้องใช้การเข้าสู่ระบบสองปัจจัย"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Chosen client groups"
+msgstr "กลุ่มลูกค้าที่เลือก"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "From %ip%"
+msgstr "จาก %ip%"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "If this was not you, contact us at once: someone knows your password."
+msgstr "หากไม่ใช่คุณ โปรดติดต่อเราทันที: มีคนรู้รหัสผ่านของคุณ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Require two-factor sign-in"
+msgstr "บังคับใช้การเข้าสู่ระบบสองปัจจัย"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Two-factor sign-in for clients"
+msgstr "การเข้าสู่ระบบสองปัจจัยสำหรับลูกค้า"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in was switched on"
+msgstr "เปิดการเข้าสู่ระบบสองปัจจัยแล้ว"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in with an authenticator app was switched on for your sign-in to the client area. From now on, signing in also asks for a code from the app."
+msgstr "เปิดการเข้าสู่ระบบสองปัจจัยด้วยแอปยืนยันตัวตนสำหรับการเข้าสู่ระบบพื้นที่ลูกค้าของคุณแล้ว ต่อจากนี้ การเข้าสู่ระบบจะขอรหัสจากแอปด้วย"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "With \"Chosen client groups\": a client in any of these groups must use it."
+msgstr "เมื่อใช้ \"กลุ่มลูกค้าที่เลือก\": ลูกค้าในกลุ่มใดกลุ่มหนึ่งเหล่านี้ต้องใช้"
+
+#: src/modules/Client/Users.php src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "Your provider requires two-factor sign-in. Set it up to go on."
+msgstr "ผู้ให้บริการของคุณกำหนดให้ใช้การเข้าสู่ระบบสองปัจจัย ตั้งค่าเพื่อดำเนินการต่อ"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff \"Login to Client Area\" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in."
+msgstr "ลูกค้าที่อยู่ในขอบเขตและผู้ใช้ที่ได้รับอนุญาตของบัญชีของพวกเขาต้องตั้งค่าแอปยืนยันตัวตน: จนกว่าจะตั้งค่า ทุกหน้าของลูกค้าหลังเข้าสู่ระบบจะพาไปยังการตั้งค่าการเข้าสู่ระบบสองปัจจัย เจ้าหน้าที่ที่ใช้ \"เข้าสู่ระบบพื้นที่ลูกค้า\" จะไม่ถูกถาม เจ้าหน้าที่ยังปิดแอปให้ลูกค้าที่ทำโทรศัพท์หายได้ ลูกค้าจะตั้งค่าใหม่เมื่อเข้าสู่ระบบครั้งถัดไป"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
+msgstr "คุณเข้าสู่ระบบด้วย Google เท่านั้น: ตั้งรหัสผ่านก่อน แล้วจึงตั้งค่าการเข้าสู่ระบบสองปัจจัยที่นี่"

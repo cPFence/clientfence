@@ -29137,3 +29137,62 @@ msgstr "Viimeisimmät kirjautumisesi. Jos et tunnista jotakin, kirjaa se ulos ja
 #: src/modules/Client/templates/admin/mod_client_login_history.html.twig
 msgid "authorized user %email%"
 msgstr "valtuutettu käyttäjä %email%"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "All clients"
+msgstr "Kaikki asiakkaat"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose at least one client group that must use two-factor sign-in."
+msgstr "Valitse vähintään yksi asiakasryhmä, jonka on käytettävä kaksivaiheista kirjautumista."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose which clients must use two-factor sign-in."
+msgstr "Valitse, kenen asiakkaiden on käytettävä kaksivaiheista kirjautumista."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Chosen client groups"
+msgstr "Valitut asiakasryhmät"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "From %ip%"
+msgstr "Osoitteesta %ip%"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "If this was not you, contact us at once: someone knows your password."
+msgstr "Jos se et ollut sinä, ota meihin heti yhteyttä: joku tietää salasanasi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Require two-factor sign-in"
+msgstr "Vaadi kaksivaiheinen kirjautuminen"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Two-factor sign-in for clients"
+msgstr "Kaksivaiheinen kirjautuminen asiakkaille"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in was switched on"
+msgstr "Kaksivaiheinen kirjautuminen otettiin käyttöön"
+
+#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+msgid "Two-factor sign-in with an authenticator app was switched on for your sign-in to the client area. From now on, signing in also asks for a code from the app."
+msgstr "Kaksivaiheinen kirjautuminen todennussovelluksella otettiin käyttöön asiakasalueelle kirjautumisessasi. Jatkossa kirjautuminen kysyy myös sovelluksen koodin."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "With \"Chosen client groups\": a client in any of these groups must use it."
+msgstr "Asetuksella ”Valitut asiakasryhmät”: minkä tahansa näistä ryhmistä asiakkaan on käytettävä sitä."
+
+#: src/modules/Client/Users.php src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "Your provider requires two-factor sign-in. Set it up to go on."
+msgstr "Palveluntarjoajasi vaatii kaksivaiheista kirjautumista. Ota se käyttöön jatkaaksesi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients in scope, and the authorized users of their accounts, must set up an authenticator app: until they do, every client page after sign-in goes to the two-factor setup. Staff \"Login to Client Area\" is not asked. Staff can still switch the app off for a client who lost a phone: the client sets it up again at the next sign-in."
+msgstr "Piiriin kuuluvien asiakkaiden ja heidän tiliensä valtuutettujen käyttäjien on otettava käyttöön todennussovellus: siihen asti jokainen asiakassivu kirjautumisen jälkeen ohjaa kaksivaiheisen kirjautumisen käyttöönottoon. Henkilökuntaa, joka käyttää toimintoa ”Kirjaudu asiakasalueelle”, ei pyydetä. Henkilökunta voi edelleen poistaa sovelluksen käytöstä asiakkaalta, joka hävitti puhelimensa: asiakas ottaa sen uudelleen käyttöön seuraavalla kirjautumisella."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
+msgstr "Kirjaudut vain Googlella: valitse ensin salasana ja ota sitten täällä käyttöön kaksivaiheinen kirjautuminen."

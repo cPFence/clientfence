@@ -38,12 +38,28 @@ use ClientFence\InformationException;
  * (/staff/login/code), and the code page always offers the email PIN instead (SignInSecurity):
  * either one signs in, as Cloudflare's dashboard does. A browser trusted for 30 days skips both.
  * A Super Administrator switches it off for a staff member on the staff page (adminDisable()).
+ *
+ * Required for clients (Sign-in tab: all clients or chosen groups; SignInSecurity): the policy is read only at
+ * sign-in (checkRequired()); a login in scope without a second factor gets REQUIRED in its session, and then
+ * every client page goes to /two-factor (core patch in AppClient) and Users::checkCall() refuses every client
+ * call but REQUIRED_CALLS, until enable() clears it. Switching it off in scope sets it again. Every switch-on
+ * by a client login emails that login (mod_client_twofactor_switched_on). Staff "Login as client" is not asked.
  */
 final class TwoFactor
 {
     public const PENDING = 'clientfence_2fa_pending';
     public const STAFF_PENDING = 'clientfence_2fa_staff_pending';
     public const SETUP = 'clientfence_2fa_setup';
+    public const REQUIRED = 'clientfence_2fa_required';
+    /** Client calls the /two-factor page makes (with its layout) while REQUIRED. */
+    public const REQUIRED_CALLS = [
+        'client/twofactor_status', 'client/twofactor_setup', 'client/twofactor_enable', 'client/twofactor_disable', 'client/twofactor_backup',
+        'client/user_session', 'profile/get', 'profile/logout', 'invoice/card_available',
+        // An account made by Google sign-up chooses its first password: enable() asks for it.
+        'client/google_status', 'client/google_password',
+    ];
+    /** Client pages open while REQUIRED. */
+    public const REQUIRED_PAGES = ['two-factor', 'client/logout', 'custom-css', 'google-sign-in'];
     public const PENDING_SECONDS = 300;
     public const SETUP_SECONDS = 900;
     public const MAX_TRIES = 5;
@@ -153,6 +169,32 @@ final class TwoFactor
     public static function isOn(\Pimple\Container $di, string $kind, int $id): bool
     {
         return self::row($di, $kind, $id) !== null;
+    }
+
+    /**
+     * Whether a login has a second factor that meets "required" (CF-127 adds passkeys here).
+     */
+    public static function hasSecondFactor(\Pimple\Container $di, string $kind, int $id): bool
+    {
+        return self::isOn($di, $kind, $id);
+    }
+
+    /**
+     * After a client sign-in (not staff "Login as client") and after switching the app off: sets REQUIRED when
+     * the portal requires two-factor sign-in of the account and the login has no second factor.
+     */
+    public static function checkRequired(\Pimple\Container $di, int $clientId, ?array $user): void
+    {
+        $settings = \ClientFence\Mod\Clientfence\SignInSecurity::settings($di);
+        $inScope = match ($settings['twofactor']) {
+            'all' => true,
+            'groups' => array_intersect(Groups::ids($di, $clientId), $settings['twofactor_groups']) !== [],
+            default => false,
+        };
+        [$kind, $id] = $user !== null ? ['user', (int) $user['user_id']] : ['client', $clientId];
+        if ($inScope && !self::hasSecondFactor($di, $kind, $id)) {
+            $di['session']->set(self::REQUIRED, true);
+        }
     }
 
     /**
@@ -318,6 +360,7 @@ final class TwoFactor
         $session->set('client_id', $client->getId());
         Users::startSession($di, $user);
         \ClientFence\Mod\Clientfence\SignInHistory::started($di, $user !== null ? (int) $user['user_id'] : null);
+        self::checkRequired($di, (int) $client->getId(), $user);
         $di['logger']->info('Client #%s logged in', $client->getId());
         $session->delete('redirect_uri');
         if (!empty($client->getLang())) {
@@ -343,7 +386,10 @@ final class TwoFactor
      */
     public static function status(\Pimple\Container $di, int $clientId): array
     {
-        return self::statusFor($di, ...self::subject($di, $clientId));
+        [$kind, $id] = self::subject($di, $clientId);
+
+        // needs_password: an account made by Google sign-up has no password of its own yet, and enable() asks for it.
+        return self::statusFor($di, $kind, $id) + ['required' => $di['session']->get(self::REQUIRED) !== null, 'needs_password' => $kind === 'client' && !Google::ownPassword($di, $id)];
     }
 
     public static function statusFor(\Pimple\Container $di, string $kind, int $id): array
@@ -388,7 +434,26 @@ final class TwoFactor
      */
     public static function enable(\Pimple\Container $di, int $clientId, array $data, string $ip): array
     {
-        return self::enableFor($di, ...self::subject($di, $clientId), clientId: $clientId, data: $data, ip: $ip);
+        [$kind, $id] = self::subject($di, $clientId);
+        $result = self::enableFor($di, $kind, $id, $clientId, $data, $ip);
+        $di['session']->delete(self::REQUIRED);
+        // Someone with only the password could switch it on: the login hears of it.
+        $login = $di['em']->getConnection()->fetchAssociative('SELECT email, first_name, last_name, lang FROM ' . ($kind === 'user' ? 'client_user' : 'client') . ' WHERE id = ?', [$id]) ?: [];
+        $country = \ClientFence\Mod\Clientfence\SignInSecurity::countryOf($di, $ip);
+        $name = trim(($login['first_name'] ?? '') . ' ' . ($login['last_name'] ?? ''));
+        $di['mod_service']('email')->sendTemplate([
+            'code' => 'mod_client_twofactor_switched_on',
+            'to' => (string) ($login['email'] ?? ''),
+            'to_name' => $name,
+            'to_lang' => $login['lang'] ?? null,
+            'name' => $name,
+            'switched_at' => date('Y-m-d H:i:s'),
+            'ip' => $ip,
+            'country' => $country !== null ? \Symfony\Component\Intl\Countries::getName($country) : '',
+            'send_now' => true,
+        ]);
+
+        return $result;
     }
 
     public static function enableFor(\Pimple\Container $di, string $kind, int $id, int $clientId, array $data, string $ip): array
@@ -427,6 +492,7 @@ final class TwoFactor
     public static function disable(\Pimple\Container $di, int $clientId, array $data, string $ip): void
     {
         self::disableFor($di, ...self::subject($di, $clientId), clientId: $clientId, data: $data, ip: $ip);
+        self::checkRequired($di, $clientId, Users::context($di));
     }
 
     public static function disableFor(\Pimple\Container $di, string $kind, int $id, int $clientId, array $data, string $ip): void
