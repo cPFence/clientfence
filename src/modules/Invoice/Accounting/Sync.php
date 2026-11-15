@@ -261,14 +261,15 @@ final class Sync
      * The program sends the browser back from another site, so the SameSite=Strict staff cookie is left out; a session
      * started for that request would replace the staff one. index.php answers it before any session with a page that
      * moves on to the same address (`moved`), a same-site request that carries the session (as Http\PaymentReturn).
+     * $route: another admin callback that needs the same hop (the cloud backups' Google and Microsoft sign-in).
      */
-    public static function returnHop(Request $request, \ClientFence\Url $url): ?Response
+    public static function returnHop(Request $request, \ClientFence\Url $url, string $route = 'invoice/accounting/callback'): ?Response
     {
         $query = $request->query->all();
-        if (RequestFactory::getRoutePath($request) !== ADMIN_PREFIX . '/invoice/accounting/callback' || isset($query['moved'])) {
+        if (RequestFactory::getRoutePath($request) !== ADMIN_PREFIX . '/' . $route || isset($query['moved'])) {
             return null;
         }
-        $next = $url->adminLink('invoice/accounting/callback', array_filter(array_intersect_key($query, array_flip(['state', 'code', 'error', 'realmId'])), 'is_string') + ['moved' => 1]);
+        $next = $url->adminLink($route, array_filter(array_intersect_key($query, array_flip(['state', 'code', 'error', 'realmId'])), 'is_string') + ['moved' => 1]);
         $href = htmlspecialchars($next, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $js = json_encode($next, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         $nonce = \ClientFence\Csp::nonce();

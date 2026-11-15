@@ -6,6 +6,7 @@ namespace ClientFence\Mod\Clientfence\Controller;
 
 use ClientFence\Mod\Clientfence\Backups;
 use ClientFence\Mod\Clientfence\Branding;
+use ClientFence\Mod\Clientfence\CloudBackups;
 use ClientFence\Mod\Clientfence\Customized;
 use ClientFence\Mod\Clientfence\Health;
 use ClientFence\Mod\Clientfence\Setup;
@@ -35,6 +36,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/clientfence/health', 'get_health', [], static::class);
         $app->get('/clientfence/backups', 'get_backups', [], static::class);
         $app->get('/clientfence/backups/download', 'get_backup_download', [], static::class);
+        $app->get('/clientfence/backups/cloud-connect', 'get_cloud_connect', [], static::class);
+        $app->get('/' . CloudBackups::CALLBACK, 'get_cloud_callback', [], static::class);
         $app->get('/clientfence/setup', 'get_setup', [], static::class);
         $app->get('/clientfence/update/changed-files', 'get_changed_files', [], static::class);
     }
@@ -152,7 +155,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
     }
 
     /**
-     * Database backups live in the "Database Backups" tab of System > Settings > System; this
+     * Database backups live in the "Backups" tab of System > Settings > System; this
      * address (health check, emails) opens it. Super Administrators only.
      */
     public function get_backups(\ClientFence\App $app): \Symfony\Component\HttpFoundation\Response
@@ -160,6 +163,28 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $this->requireSuperAdmin();
 
         return $app->redirectUrl($this->di['url']->adminLink('extension/settings/system') . '#tab-backups');
+    }
+
+    /** The cloud storage card's Connect link: on to Google's or Microsoft's sign-in (CloudBackups::connectUrl()). */
+    public function get_cloud_connect(\ClientFence\App $app): \Symfony\Component\HttpFoundation\Response
+    {
+        $this->requireSuperAdmin();
+        $token = $this->di['request']->query->get('CSRFToken');
+        $session = $this->di['session']->get('csrf_token');
+        if (!is_string($token) || !is_string($session) || $session === '' || !hash_equals($session, $token)) {
+            throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
+        }
+
+        return $app->redirectUrl(CloudBackups::connectUrl($this->di));
+    }
+
+    /** Google or Microsoft sent staff back here (after the index.php hop that carries the session): tokens saved. */
+    public function get_cloud_callback(\ClientFence\App $app): \Symfony\Component\HttpFoundation\Response
+    {
+        $this->requireSuperAdmin();
+        CloudBackups::finishConnect($this->di, $this->di['request']->query->all());
+
+        return $this->get_backups($app);
     }
 
     /**

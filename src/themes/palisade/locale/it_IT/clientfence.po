@@ -28032,3 +28032,268 @@ msgstr "Il tuo ordine non ha potuto essere accettato"
 #: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
 msgid "Your order is approved"
 msgstr "Il tuo ordine è approvato"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":host refused the request (HTTP :status): :error"
+msgstr ":host ha rifiutato la richiesta (HTTP :status): :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not connect: :error"
+msgstr ":service non si è connesso: :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not start the upload."
+msgstr ":service non ha avviato il caricamento."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service gave no lasting access: remove the app's access in your account and click Connect again."
+msgstr ":service non ha concesso un accesso duraturo: rimuovi l'accesso dell'app nel tuo account e fai di nuovo clic su Connetti."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service sent an answer ClientFence cannot read."
+msgstr ":service ha inviato una risposta che ClientFence non riesce a leggere."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "A lost passphrase makes the copies useless: keep it somewhere safe, off this server. Decrypt a copy with: :command"
+msgstr "Una passphrase persa rende le copie inutilizzabili: conservala in un luogo sicuro, fuori da questo server. Decifra una copia con: :command"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Access key"
+msgstr "Chiave di accesso (Access key)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Backblaze B2: an application key; the master key does not work with S3."
+msgstr "Backblaze B2: una chiave applicazione; la chiave master non funziona con S3."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Bucket"
+msgstr "Bucket"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose Google Drive or OneDrive and save first."
+msgstr "Scegli Google Drive o OneDrive e salva prima."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose a storage service."
+msgstr "Scegli un servizio di archiviazione."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose how often the copies are made."
+msgstr "Scegli ogni quanto fare le copie."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Click Connect to let ClientFence into :service first."
+msgstr "Fai prima clic su Connetti per consentire a ClientFence di accedere a :service."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloud backups"
+msgstr "Backup nel cloud"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud copies are off; the stored ones stay."
+msgstr "Le copie nel cloud sono disattivate; quelle archiviate restano."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud storage"
+msgstr "Archiviazione cloud"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloudflare R2: auto."
+msgstr "Cloudflare R2: auto."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Connected"
+msgstr "Connesso"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Could not reach :host: :error"
+msgstr "Impossibile raggiungere :host: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database"
+msgstr "Database"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database copy"
+msgstr "Copia del database"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Encrypt the copies with a passphrase"
+msgstr "Cifra le copie con una passphrase"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Endpoint"
+msgstr "Endpoint"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the access key."
+msgstr "Inserisci la chiave di accesso."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the bucket name."
+msgstr "Inserisci il nome del bucket."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID and client secret of your app and save first."
+msgstr "Inserisci l'ID client e il segreto client della tua app e salva prima."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID of your app."
+msgstr "Inserisci l'ID client della tua app."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the endpoint as https://host (for example https://s3.eu-central-1.amazonaws.com), without the bucket."
+msgstr "Inserisci l'endpoint come https://host (ad esempio https://s3.eu-central-1.amazonaws.com), senza il bucket."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the passphrase the copies are encrypted with."
+msgstr "Inserisci la passphrase con cui sono cifrate le copie."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage endpoint of the zone's region, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "Inserisci l'endpoint di archiviazione della regione della zona, ad esempio storage.bunnycdn.com o ny.storage.bunnycdn.com."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage zone name."
+msgstr "Inserisci il nome della zona di archiviazione."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every day"
+msgstr "Ogni giorno"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every hour"
+msgstr "Ogni ora"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every week"
+msgstr "Ogni settimana"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Files copy"
+msgstr "Copia dei file"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket."
+msgstr "Ad esempio s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com o ACCOUNT.r2.cloudflarestorage.com, senza il bucket."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Google Drive did not make the backups folder."
+msgstr "Google Drive non ha creato la cartella dei backup."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Keep 1 to 1000 copies."
+msgstr "Conserva da 1 a 1000 copie."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Keep the last"
+msgstr "Conserva le ultime copie"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time."
+msgstr "Conservato cifrato e mai più mostrato. Un segreto client Microsoft scade: creane uno nuovo in tempo."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Backups."
+msgstr "Nessun backup giornaliero del database è attivo: attivane uno in Sistema → Impostazioni → Sistema → Backup."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Not connected"
+msgstr "Non connesso"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Not enough free disk space in :dir for the files copy (:size GB needed)."
+msgstr "Spazio libero su disco insufficiente in :dir per la copia dei file (servono :size GB)."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "On (:service); the first copy is sent after the next cron run."
+msgstr "Attivo (:service); la prima copia viene inviata dopo la prossima esecuzione del cron."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the bucket."
+msgstr "Facoltativo. Vuoto: la radice del bucket."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the zone."
+msgstr "Facoltativo. Vuoto: la radice della zona."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Passphrase"
+msgstr "Passphrase"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Region"
+msgstr "Regione (Region)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Register your own app (Google Cloud Console with the Google Drive API and the drive.file scope, published \"In production\"; or Microsoft Entra app registrations with the delegated permissions Files.ReadWrite.AppFolder and offline_access), add this redirect URL to it, enter its client ID and secret, Save, then Connect. Google Drive gets a \"ClientFence backups\" folder; OneDrive its app folder."
+msgstr "Registra la tua app (Google Cloud Console con la Google Drive API e l'ambito drive.file, pubblicata \"In production\"; oppure Microsoft Entra, registrazioni app, con i permessi delegati Files.ReadWrite.AppFolder e offline_access), aggiungile questo URL di reindirizzamento, inserisci il suo ID client e il segreto, salva, poi fai clic su Connetti. Google Drive riceve una cartella \"ClientFence backups\"; OneDrive la sua cartella app."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+msgstr "Compatibile con S3 (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Send a test file"
+msgstr "Invia un file di prova"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Sends copies of the database, and of the site's files if you choose, to one cloud storage on their own schedule, after the cron run. The last copies you choose stay there; older ones this site made are removed."
+msgstr "Invia copie del database, e dei file del sito se lo scegli, a un archivio cloud con una propria pianificazione, dopo l'esecuzione del cron. Le ultime copie che scegli restano lì; quelle più vecchie create da questo sito vengono rimosse."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Sent to :service :time."
+msgstr "Inviata a :service :time."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage endpoint"
+msgstr "Endpoint di archiviazione (Storage endpoint)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage service"
+msgstr "Servizio di archiviazione"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage zone"
+msgstr "Zona di archiviazione (Storage zone)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy is :size GB, over the 5 GB one upload may hold."
+msgstr "La copia è di :size GB, oltre i 5 GB che un caricamento può contenere."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy to :service of :time failed: :error"
+msgstr "La copia su :service del :time non è riuscita: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups."
+msgstr "La copia dei file è uno zip della radice web (con config.php) e delle cartelle di upload private, senza cache, log e backup."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The hostname on the zone's FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "L'hostname nella pagina FTP & API Access della zona, ad esempio storage.bunnycdn.com o ny.storage.bunnycdn.com."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The newest copy sent to :service is from :time: check that the cron runs."
+msgstr "La copia più recente inviata a :service risale al :time: controlla che il cron venga eseguito."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The passphrase needs at least 8 characters."
+msgstr "La passphrase deve avere almeno 8 caratteri."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The test file was sent and removed: the storage works."
+msgstr "Il file di prova è stato inviato e rimosso: l'archiviazione funziona."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The test file was sent but is not listed: check that the key may list the folder."
+msgstr "Il file di prova è stato inviato ma non compare nell'elenco: controlla che la chiave possa elencare la cartella."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The upload did not finish."
+msgstr "Il caricamento non è terminato."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
+msgstr "La password della zona (non quella di sola lettura). Conservata cifrata e mai più mostrata."

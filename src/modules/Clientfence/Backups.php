@@ -18,8 +18,8 @@ use ClientFence\InformationException;
  * The backup email goes straight through the Email settings' mailer, never through the email
  * queue or the email log, so the database is never stored in itself. Settings and the last run
  * are kept in mod_clientfence_state; the SFTP/FTP password is encrypted and never shown again.
- * Page: System → Settings → System → Database Backups (Controller/Admin.php); Health warns when no method is on,
- * the last run failed or the newest backup is old.
+ * Page: System → Settings → System → Backups (Controller/Admin.php); Health warns when no method is on,
+ * the last run failed or the newest backup is old. Copies to cloud storage on their own schedule: CloudBackups.php.
  */
 final class Backups
 {
@@ -66,6 +66,7 @@ final class Backups
         $settings['max_email_mb'] = self::MAX_EMAIL_MB;
         $settings['local']['dir'] = self::localDir();
         $settings['local']['files'] = self::localFiles();
+        $settings['cloud'] = CloudBackups::forStaff($di);
 
         return $settings;
     }
@@ -302,7 +303,7 @@ final class Backups
         $settings = self::settings($di);
         $on = array_keys(array_filter([Health::msg('SFTP/FTP') => $settings['ftp']['enabled'], Health::msg('email') => $settings['email']['enabled'], Health::msg('this server') => $settings['local']['enabled']]));
         if ($on === []) {
-            return ['warn', Health::msg('No daily database backup is on: turn one on in System → Settings → System → Database Backups.'), []];
+            return ['warn', Health::msg('No daily database backup is on: turn one on in System → Settings → System → Backups.'), []];
         }
         $status = self::state($di, self::STATUS);
         if ($status === null) {
@@ -511,7 +512,7 @@ final class Backups
         $subject = $company . ' database backup ' . date('Y-m-d');
         $body = '<p>The ' . htmlspecialchars($company) . ' billing database backup of ' . date('Y-m-d H:i') . ' is attached ('
             . htmlspecialchars($name) . ', ' . round($bytes / 1048576, 2) . ' MB).</p><p>It holds all client data unencrypted: keep it safe. Restore with:<br><code>gunzip &lt; '
-            . htmlspecialchars($name) . ' | mysql database_name</code></p><p>Sent by ClientFence (System → Settings → System → Database Backups).</p>';
+            . htmlspecialchars($name) . ' | mysql database_name</code></p><p>Sent by ClientFence (System → Settings → System → Backups).</p>';
         $mail = new \ClientFence\Mail(['email' => $from, 'name' => (string) ($settings['from_name'] ?? '') ?: $company], $address, $subject, $body, $settings['mailer'] ?? 'sendmail', $settings['custom_dsn'] ?? null);
         $mail->attach((string) file_get_contents($file), $name, 'application/gzip');
         if (!\ClientFence\Environment::isProduction()) {
@@ -656,7 +657,7 @@ final class Backups
         self::saveState($di, self::SETTINGS, $settings);
     }
 
-    private static function state(\Pimple\Container $di, string $name): ?array
+    public static function state(\Pimple\Container $di, string $name): ?array
     {
         try {
             $row = $di['em']->getConnection()->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', [$name]);
@@ -668,7 +669,7 @@ final class Backups
         return is_array($value) ? $value : null;
     }
 
-    private static function saveState(\Pimple\Container $di, string $name, array $value): void
+    public static function saveState(\Pimple\Container $di, string $name, array $value): void
     {
         Service::ensureTables($di, true);
         $now = date('Y-m-d H:i:s');

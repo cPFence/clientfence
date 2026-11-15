@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Clientfence\Api;
 
 use ClientFence\Mod\Clientfence\Backups;
+use ClientFence\Mod\Clientfence\CloudBackups;
 use ClientFence\Mod\Clientfence\Branding;
 use ClientFence\Mod\Clientfence\ChatAlerts;
 use ClientFence\Mod\Clientfence\CspReports;
@@ -717,11 +718,31 @@ class Admin extends \ClientFence\Api\AbstractApi
         return true;
     }
 
-    /** Turns a backup method off: `method` ftp, email or local (kept files stay). */
+    /**
+     * The cloud storage card (CloudBackups.php): provider (s3, bunny, gdrive, onedrive), endpoint, region, bucket,
+     * key, secret, folder (empty secrets keep the saved ones), the schedules db_every, db_keep, files_every,
+     * files_keep, and encrypt with passphrase. `do`: "test" sends a test file with the typed details (nothing saved),
+     * "save" saves them, "activate" tests, saves and turns the copies on.
+     */
+    public function backup_cloud_save($data): array|bool
+    {
+        $this->requireSuperAdmin();
+        $do = (string) ($data['do'] ?? '');
+        CloudBackups::save($this->getDi(), (array) $data, in_array($do, ['test', 'save'], true) ? $do : 'activate');
+        if ($do === 'test') {
+            return ['tested' => true];
+        }
+        $this->getDi()['logger']->info('ClientFence: cloud backup settings saved');
+
+        return true;
+    }
+
+    /** Turns a backup method off: `method` ftp, email, local or cloud (kept files stay). */
     public function backup_deactivate($data): bool
     {
         $this->requireSuperAdmin();
-        Backups::deactivate($this->getDi(), (string) ($data['method'] ?? ''));
+        $method = (string) ($data['method'] ?? '');
+        $method === 'cloud' ? CloudBackups::deactivate($this->getDi()) : Backups::deactivate($this->getDi(), $method);
 
         return true;
     }

@@ -654,6 +654,10 @@ msgstr ""
 msgid ":gateway fee"
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":host refused the request (HTTP :status): :error"
+msgstr ""
+
 #: src/modules/Servicehosting/Service.php
 msgid ":hosting for :domain"
 msgstr ""
@@ -768,6 +772,22 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid ":registrar refused the request: :error"
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not connect: :error"
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not start the upload."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service gave no lasting access: remove the app's access in your account and click Connect again."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service sent an answer ClientFence cannot read."
 msgstr ""
 
 #: src/modules/Embed/Service.php
@@ -1084,6 +1104,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "A license plugin is a PHP class named"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "A lost passphrase makes the copies useless: keep it somewhere safe, off this server. Decrypt a copy with: :command"
 msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_signup_admin.html.twig
@@ -1464,6 +1488,10 @@ msgstr ""
 
 #: src/library/Server/Manager/Whm.php
 msgid "Access hash or WHM API token to connect to the server"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Access key"
 msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
@@ -3955,6 +3983,10 @@ msgid "Back to the store"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Backblaze B2: an application key; the master key does not work with S3."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Backup"
 msgstr ""
 
@@ -3978,7 +4010,7 @@ msgstr ""
 msgid "Backup restores are not enabled for this product."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Backups"
 msgstr ""
 
@@ -4336,6 +4368,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
 msgid "Browser tab icon. Square, at least 64 × 64."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Bucket"
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -5146,6 +5182,10 @@ msgstr ""
 msgid "Choose"
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose Google Drive or OneDrive and save first."
+msgstr ""
+
 #: src/modules/Clientfence/ChatAlerts.php
 msgid "Choose Slack, Discord or Telegram."
 msgstr ""
@@ -5266,6 +5306,10 @@ msgstr ""
 msgid "Choose a stage: Draft, Delivered, On Hold, Lost or Dead. A quote becomes Accepted when it is accepted."
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose a storage service."
+msgstr ""
+
 #: src/modules/Support/TicketEscalation.php
 msgid "Choose a ticket status."
 msgstr ""
@@ -5368,6 +5412,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php
 msgid "Choose how often the client pays."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose how often the copies are made."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -5658,6 +5706,10 @@ msgstr ""
 msgid "Clears on :date"
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Click Connect to let ClientFence into :service first."
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Click install to make the registrar available when creating or editing TLDs."
 msgstr ""
@@ -5878,7 +5930,7 @@ msgstr ""
 msgid "Client reply on a ticket"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Client secret"
 msgstr ""
 
@@ -6250,6 +6302,22 @@ msgstr ""
 msgid "Closing balance"
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Cloud backups"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud copies are off; the stored ones stay."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud storage"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloudflare R2: auto."
+msgstr ""
+
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Cloudflare Turnstile"
 msgstr ""
@@ -6574,7 +6642,7 @@ msgstr ""
 msgid "Confirm your email address to use your whole account. We sent you a link."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Connect"
 msgstr ""
 
@@ -6600,6 +6668,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Connectreseller.php
 msgid "ConnectReseller returned an unreadable response for :command"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Connected"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
@@ -7004,6 +7076,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Blesta/Snapshot.php src/modules/Clientfence/Whmcs/Snapshot.php
 msgid "Could not make the folder :dir."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Could not reach :host: :error"
 msgstr ""
 
 #: src/modules/Invoice/Accounting/FreeAgent.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Xero.php
@@ -7682,12 +7758,12 @@ msgstr ""
 msgid "Dashes do not count toward the API key length, but generated keys must include them to remain valid."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_update.html.twig
-msgid "Database & Configuration Patches"
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database"
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "Database Backups"
+#: src/modules/System/templates/admin/mod_system_update.html.twig
+msgid "Database & Configuration Patches"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -7728,6 +7804,10 @@ msgstr ""
 
 #: src/library/ClientFence/UpdatePatcher.php
 msgid "Database connection is not available."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database copy"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -9470,6 +9550,10 @@ msgstr ""
 msgid "Enabling this hides some information from the company guest API endpoint, including address, phone number, email, VAT number, and more."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Encrypt the copies with a passphrase"
+msgstr ""
+
 #: src/themes/palisade/html/partials/ticket_secrets.html.twig
 msgid "Encrypted at once, opened only by authorized support staff (each opening is listed here), and deleted when the ticket is closed or after :days days."
 msgstr ""
@@ -9488,6 +9572,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "End of billing period"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Endpoint"
 msgstr ""
 
 #: src/modules/Support/templates/email/mod_support_network_issue.html.twig
@@ -9746,6 +9834,10 @@ msgstr ""
 msgid "Enter the Upmind API token."
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the access key."
+msgstr ""
+
 #: src/modules/Clientfence/Setup.php
 msgid "Enter the address emails are sent from."
 msgstr ""
@@ -9758,12 +9850,24 @@ msgstr ""
 msgid "Enter the bot token BotFather gave you, such as 123456:ABC-DEF."
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the bucket name."
+msgstr ""
+
 #: src/modules/Clientfence/Setup.php
 msgid "Enter the captcha site key and secret key."
 msgstr ""
 
 #: src/modules/Invoice/Accounting/Sync.php
 msgid "Enter the client ID and client secret of your :program app first."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID and client secret of your app and save first."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID of your app."
 msgstr ""
 
 #: src/modules/Client/Contacts.php
@@ -9790,12 +9894,20 @@ msgstr ""
 msgid "Enter the email address the backups go to."
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the endpoint as https://host (for example https://s3.eu-central-1.amazonaws.com), without the bucket."
+msgstr ""
+
 #: src/modules/Support/MailImport.php
 msgid "Enter the host, username and password before turning email import on."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
 msgid "Enter the host, username and password first."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the passphrase the copies are encrypted with."
 msgstr ""
 
 #: src/modules/Support/MailImport.php
@@ -9824,6 +9936,14 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php
 msgid "Enter the signing secret of the Stripe webhook (Developers → Webhooks in your Stripe dashboard)."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage endpoint of the zone's region, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage zone name."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php
@@ -10066,8 +10186,16 @@ msgstr ""
 msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every day"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Every email read from the help desk mailboxes and what became of it. An email that was not imported keeps a copy until the log is cleaned, so you can import it anyway. Mailboxes are set on each help desk; the rules are in Support settings."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every hour"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
@@ -10088,6 +10216,10 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every week"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
@@ -10558,8 +10690,12 @@ msgstr ""
 msgid "Filename is missing in product config"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Files"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Files copy"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -10678,7 +10814,7 @@ msgstr ""
 msgid "Fixed prices can only be set for a currency other than the default one."
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Folder"
 msgstr ""
 
@@ -10728,6 +10864,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "For a partial refund. A refund of the whole invoice always reverses it."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
@@ -11328,6 +11468,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/email/mod_serviceapikey_unsuspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_unsuspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_unsuspended.html.twig
 msgid "Good news: your service %title% has been reactivated and is available again."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Google Drive did not make the backups folder."
 msgstr ""
 
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
@@ -13266,6 +13410,10 @@ msgstr ""
 msgid "Jump to control panel"
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Keep 1 to 1000 copies."
+msgstr ""
+
 #: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_config.html.twig
 msgid "Keep Orders Updated"
 msgstr ""
@@ -13330,6 +13478,10 @@ msgstr ""
 msgid "Keep the email import log for"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Keep the last"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "Keep the licence check log for"
 msgstr ""
@@ -13384,6 +13536,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Kept encrypted and never shown again."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Seo/templates/admin/mod_seo_settings.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig …
@@ -13886,7 +14042,7 @@ msgstr ""
 msgid "Line breaks are not allowed in mail server settings."
 msgstr ""
 
-#: src/modules/Clientfence/Backups.php
+#: src/modules/Clientfence/Backups.php src/modules/Clientfence/CloudBackups.php
 msgid "Line breaks are not allowed in the backup settings."
 msgstr ""
 
@@ -15710,7 +15866,7 @@ msgstr ""
 msgid "Network status is not available."
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig …
 msgid "Never"
 msgstr ""
 
@@ -16307,7 +16463,7 @@ msgid "No custom parameters have been defined yet."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
-msgid "No daily database backup is on: turn one on in System → Settings → System → Database Backups."
+msgid "No daily database backup is on: turn one on in System → Settings → System → Backups."
 msgstr ""
 
 #: src/modules/Security/Checks/generalCheck.php
@@ -16762,6 +16918,10 @@ msgstr ""
 msgid "Not checked yet"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Not connected"
+msgstr ""
+
 #: src/modules/Support/Mail/ImapClient.php
 msgid "Not connected to the mail server."
 msgstr ""
@@ -16772,6 +16932,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Not due yet"
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Not enough free disk space in :dir for the files copy (:size GB needed)."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
@@ -17080,6 +17244,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Backups.php
 msgid "On (:methods); the first backup is made at the next cron run."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "On (:service); the first copy is sent after the next cron run."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/Quotes.php …
@@ -17712,6 +17880,14 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Optional, for WHMCS checks: sent in customfields as \"name=on\" while per-unit billing is on."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the bucket."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the zone."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
@@ -18452,6 +18628,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig
 msgid "Passed"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Passphrase"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Openprovider.php …
@@ -20762,7 +20942,7 @@ msgstr ""
 msgid "Redirect ID was not passed"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Redirect URL"
 msgstr ""
 
@@ -20922,6 +21102,10 @@ msgstr ""
 msgid "Regenerate built-in templates?"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Region"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayTabs.php
 msgid "Region:"
 msgstr ""
@@ -20944,6 +21128,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Register a new domain"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Register your own app (Google Cloud Console with the Google Drive API and the drive.file scope, published \"In production\"; or Microsoft Entra app registrations with the delegated permissions Files.ReadWrite.AppFolder and offline_access), add this redirect URL to it, enter its client ID and secret, Save, then Connect. Google Drive gets a \"ClientFence backups\" folder; OneDrive its app folder."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -21966,6 +22154,10 @@ msgstr ""
 msgid "Run security checks"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+msgstr ""
+
 #: src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
 msgid "SEO Metadata"
 msgstr ""
@@ -22502,7 +22694,7 @@ msgstr ""
 msgid "Secret Key"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Secret key"
 msgstr ""
 
@@ -22734,6 +22926,10 @@ msgstr ""
 msgid "Send a support request or question to our team using the contact form."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Send a test file"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Send again"
 msgstr ""
@@ -22894,6 +23090,10 @@ msgstr ""
 msgid "Sends approved invoices with their clients, payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Sends copies of the database, and of the site's files if you choose, to one cloud storage on their own schedule, after the cron run. The last copies you choose stay there; older ones this site made are removed."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Sends the alerts of the staff bell to Slack, Discord or Telegram: the alert and a link to its page, right after it happens. Each destination gets the alerts ticked for it."
 msgstr ""
@@ -22924,6 +23124,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Sent in:"
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Sent to :service :time."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -24136,6 +24340,18 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Stopped"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage endpoint"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage service"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage zone"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/palisade/html/layout_default.html.twig …
@@ -25582,8 +25798,16 @@ msgstr ""
 msgid "The control panels your hosting servers run. A panel that is on gives its servers the ClientFence server manager and the Hosting accounts pages of the client area; switched off, its servers refuse every action."
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy is :size GB, over the 5 GB one upload may hold."
+msgstr ""
+
 #: src/modules/Support/MailImport.php
 msgid "The copy of this email could not be read."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy to :service of :time failed: :error"
 msgstr ""
 
 #: src/modules/Servicelicense/Units.php
@@ -25738,6 +25962,10 @@ msgstr ""
 msgid "The file could not be stored."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "The first :shown are shown; the console lists them all: php console.php clientfence:whmcs-import apply"
 msgstr ""
@@ -25770,7 +25998,7 @@ msgstr ""
 msgid "The folder is inside the web root."
 msgstr ""
 
-#: src/modules/Clientfence/Backups.php
+#: src/modules/Clientfence/Backups.php src/modules/Clientfence/CloudBackups.php
 msgid "The folder may not contain \"..\"."
 msgstr ""
 
@@ -25821,6 +26049,10 @@ msgstr ""
 
 #: src/modules/Order/ActionFailures.php
 msgid "The hosting status still differs from the panel."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The hostname on the zone's FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
 msgstr ""
 
 #: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
@@ -26071,6 +26303,10 @@ msgstr ""
 msgid "The newest backup sent is :days days old: check that the cron runs."
 msgstr ""
 
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The newest copy sent to :service is from :time: check that the cron runs."
+msgstr ""
+
 #: src/themes/palisade/html/mod_serviceapikey_head.html.twig
 msgid "The old key stops working at once."
 msgstr ""
@@ -26165,6 +26401,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The panel subscription :id: of :domain: was not found."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The passphrase needs at least 8 characters."
 msgstr ""
 
 #: src/modules/Client/TwoFactor.php
@@ -26487,6 +26727,14 @@ msgstr ""
 msgid "The test client opted out of marketing email."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The test file was sent and removed: the storage works."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The test file was sent but is not listed: check that the key may list the folder."
+msgstr ""
+
 #: src/modules/Clientfence/ChatAlerts.php
 msgid "The test message was not sent: :error"
 msgstr ""
@@ -26537,6 +26785,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "The update signed you out. Continue to sign in again."
+msgstr ""
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The upload did not finish."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_users_page.html.twig
@@ -26597,6 +26849,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "The wording of the emails clients get."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr ""
 
 #: src/modules/Embed/templates/admin/mod_embed_index.html.twig src/modules/Theme/manifest.json
@@ -26859,7 +27115,7 @@ msgstr ""
 msgid "This code cannot be used for this order."
 msgstr ""
 
-#: src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Sync.php
+#: src/modules/Clientfence/CloudBackups.php src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Sync.php
 msgid "This connection request has expired or was not started here. Click Connect again."
 msgstr ""
 

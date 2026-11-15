@@ -28962,3 +28962,268 @@ msgstr "A megrendelését nem tudtuk elfogadni"
 #: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
 msgid "Your order is approved"
 msgstr "A megrendelése jóváhagyva"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":host refused the request (HTTP :status): :error"
+msgstr ":host elutasította a kérést (HTTP :status): :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not connect: :error"
+msgstr ":service nem csatlakozott: :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not start the upload."
+msgstr ":service nem indította el a feltöltést."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service gave no lasting access: remove the app's access in your account and click Connect again."
+msgstr ":service nem adott tartós hozzáférést: távolítsa el az alkalmazás hozzáférését a fiókjában, és kattintson újra a Csatlakozás gombra."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service sent an answer ClientFence cannot read."
+msgstr ":service olyan választ küldött, amelyet a ClientFence nem tud elolvasni."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "A lost passphrase makes the copies useless: keep it somewhere safe, off this server. Decrypt a copy with: :command"
+msgstr "Az elveszett jelmondat használhatatlanná teszi a másolatokat: tárolja biztos helyen, ezen a kiszolgálón kívül. Másolat visszafejtése: :command"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Access key"
+msgstr "Hozzáférési kulcs (Access key)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Backblaze B2: an application key; the master key does not work with S3."
+msgstr "Backblaze B2: alkalmazáskulcs; a mesterkulcs nem működik az S3-mal."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Bucket"
+msgstr "Bucket"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose Google Drive or OneDrive and save first."
+msgstr "Először válassza a Google Drive-ot vagy a OneDrive-ot, és mentse."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose a storage service."
+msgstr "Válasszon tárolási szolgáltatást."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose how often the copies are made."
+msgstr "Válassza ki, milyen gyakran készüljenek a másolatok."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Click Connect to let ClientFence into :service first."
+msgstr "Először kattintson a Csatlakozás gombra, hogy a ClientFence hozzáférjen a következőhöz: :service."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloud backups"
+msgstr "Felhőmentések"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud copies are off; the stored ones stay."
+msgstr "A felhős másolatok ki vannak kapcsolva; a tároltak megmaradnak."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud storage"
+msgstr "Felhőtár"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloudflare R2: auto."
+msgstr "Cloudflare R2: auto."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Connected"
+msgstr "Csatlakoztatva"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Could not reach :host: :error"
+msgstr ":host nem érhető el: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database"
+msgstr "Adatbázis"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database copy"
+msgstr "Adatbázis-másolat"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Encrypt the copies with a passphrase"
+msgstr "A másolatok titkosítása jelmondattal"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Endpoint"
+msgstr "Végpont (Endpoint)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the access key."
+msgstr "Adja meg a hozzáférési kulcsot."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the bucket name."
+msgstr "Adja meg a bucket nevét."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID and client secret of your app and save first."
+msgstr "Adja meg az alkalmazás ügyfélazonosítóját és ügyfélkulcsát, és előbb mentse."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID of your app."
+msgstr "Adja meg az alkalmazás ügyfélazonosítóját."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the endpoint as https://host (for example https://s3.eu-central-1.amazonaws.com), without the bucket."
+msgstr "Adja meg a végpontot https://host alakban (például https://s3.eu-central-1.amazonaws.com), a bucket nélkül."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the passphrase the copies are encrypted with."
+msgstr "Adja meg a jelmondatot, amellyel a másolatok titkosítva vannak."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage endpoint of the zone's region, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "Adja meg a zóna régiójának tárolási végpontját, például storage.bunnycdn.com vagy ny.storage.bunnycdn.com."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage zone name."
+msgstr "Adja meg a tárolási zóna nevét."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every day"
+msgstr "Minden nap"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every hour"
+msgstr "Minden órában"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every week"
+msgstr "Minden héten"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Files copy"
+msgstr "Fájlmásolat"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket."
+msgstr "Például s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com vagy ACCOUNT.r2.cloudflarestorage.com, a bucket nélkül."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Google Drive did not make the backups folder."
+msgstr "A Google Drive nem hozta létre a mentések mappáját."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Keep 1 to 1000 copies."
+msgstr "Tartson meg 1–1000 másolatot."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Keep the last"
+msgstr "Az utolsó másolatok megtartása"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time."
+msgstr "Titkosítva tároljuk, és többé nem jelenítjük meg. A Microsoft-ügyfélkulcs lejár: időben hozzon létre újat."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Backups."
+msgstr "Nincs bekapcsolva napi adatbázis-mentés: kapcsoljon be egyet itt: Rendszer → Beállítások → Rendszer → Biztonsági mentések."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Not connected"
+msgstr "Nincs csatlakoztatva"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Not enough free disk space in :dir for the files copy (:size GB needed)."
+msgstr "Nincs elég szabad lemezterület itt: :dir a fájlmásolathoz (:size GB szükséges)."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "On (:service); the first copy is sent after the next cron run."
+msgstr "Be (:service); az első másolat a következő cron-futás után megy el."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the bucket."
+msgstr "Nem kötelező. Üres: a bucket teteje."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the zone."
+msgstr "Nem kötelező. Üres: a zóna teteje."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Passphrase"
+msgstr "Jelmondat"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Region"
+msgstr "Régió (Region)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Register your own app (Google Cloud Console with the Google Drive API and the drive.file scope, published \"In production\"; or Microsoft Entra app registrations with the delegated permissions Files.ReadWrite.AppFolder and offline_access), add this redirect URL to it, enter its client ID and secret, Save, then Connect. Google Drive gets a \"ClientFence backups\" folder; OneDrive its app folder."
+msgstr "Regisztrálja saját alkalmazását (Google Cloud Console a Google Drive API-val és a drive.file hatókörrel, „In production” közzétéve; vagy Microsoft Entra alkalmazásregisztrációk a delegált Files.ReadWrite.AppFolder és offline_access jogosultságokkal), adja hozzá ezt az átirányítási URL-t, adja meg az ügyfélazonosítóját és kulcsát, mentse, majd kattintson a Csatlakozás gombra. A Google Drive egy „ClientFence backups” mappát kap; a OneDrive az alkalmazás mappáját."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+msgstr "S3-kompatibilis (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Send a test file"
+msgstr "Tesztfájl küldése"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Sends copies of the database, and of the site's files if you choose, to one cloud storage on their own schedule, after the cron run. The last copies you choose stay there; older ones this site made are removed."
+msgstr "Az adatbázis másolatait, és ha úgy dönt, a webhely fájljait is, egy felhőtárba küldi saját ütemezéssel, a cron-futás után. Az Ön által választott utolsó másolatok ott maradnak; a webhely által készített régebbiek törlődnek."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Sent to :service :time."
+msgstr "Elküldve ide: :service :time."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage endpoint"
+msgstr "Tárolási végpont (Storage endpoint)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage service"
+msgstr "Tárolási szolgáltatás"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage zone"
+msgstr "Tárolási zóna (Storage zone)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy is :size GB, over the 5 GB one upload may hold."
+msgstr "A másolat :size GB, ami meghaladja az egy feltöltésbe férő 5 GB-ot."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy to :service of :time failed: :error"
+msgstr "A(z) :time másolat küldése ide: :service sikertelen: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups."
+msgstr "A fájlmásolat a webgyökér (a config.php-vel) és a privát feltöltési mappák zip-je, a gyorsítótár, a naplók és a mentések nélkül."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The hostname on the zone's FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "A zóna FTP & API Access oldalán látható állomásnév, például storage.bunnycdn.com vagy ny.storage.bunnycdn.com."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The newest copy sent to :service is from :time: check that the cron runs."
+msgstr "A legújabb ide küldött másolat: :service, ideje: :time: ellenőrizze, hogy fut-e a cron."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The passphrase needs at least 8 characters."
+msgstr "A jelmondatnak legalább 8 karakter hosszúnak kell lennie."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The test file was sent and removed: the storage works."
+msgstr "A tesztfájlt elküldtük és eltávolítottuk: a tároló működik."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The test file was sent but is not listed: check that the key may list the folder."
+msgstr "A tesztfájlt elküldtük, de nincs a listában: ellenőrizze, hogy a kulcs listázhatja-e a mappát."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The upload did not finish."
+msgstr "A feltöltés nem fejeződött be."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
+msgstr "A zóna jelszava (nem a csak olvasható). Titkosítva tároljuk, és többé nem jelenítjük meg."

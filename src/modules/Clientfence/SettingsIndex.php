@@ -25,7 +25,7 @@ final class SettingsIndex
         'security#tab-access' => 'whitelist allow list rate limit API IP restriction',
         'security#tab-sessions' => 'session fingerprint hijacking cookie IP check',
         'system#tab-cache' => 'Redis Memcached flush clear',
-        'system#tab-backups' => 'backup dump SFTP FTP',
+        'system#tab-backups' => 'backup dump SFTP FTP S3 cloud R2 B2 Wasabi Bunny Google Drive OneDrive',
         'system#tab-health' => 'health status check problems',
         'system#tab-licences' => 'license licence ban',
         'system#tab-whmcs' => 'import migrate migration Upmind Blesta ClientExec',

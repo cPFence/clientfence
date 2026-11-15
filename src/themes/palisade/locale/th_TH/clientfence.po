@@ -26787,3 +26787,268 @@ msgstr "ไม่สามารถรับคำสั่งซื้อขอ
 #: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
 msgid "Your order is approved"
 msgstr "คำสั่งซื้อของคุณได้รับอนุมัติแล้ว"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":host refused the request (HTTP :status): :error"
+msgstr ":host ปฏิเสธคำขอ (HTTP :status): :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not connect: :error"
+msgstr ":service ไม่เชื่อมต่อ: :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not start the upload."
+msgstr ":service ไม่ได้เริ่มการอัปโหลด"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service gave no lasting access: remove the app's access in your account and click Connect again."
+msgstr ":service ไม่ได้ให้สิทธิ์เข้าถึงถาวร: ลบสิทธิ์เข้าถึงของแอปในบัญชีของคุณ แล้วคลิกเชื่อมต่ออีกครั้ง"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service sent an answer ClientFence cannot read."
+msgstr ":service ส่งคำตอบที่ ClientFence อ่านไม่ได้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "A lost passphrase makes the copies useless: keep it somewhere safe, off this server. Decrypt a copy with: :command"
+msgstr "หากรหัสผ่านวลีหาย สำเนาจะใช้ไม่ได้: เก็บไว้ในที่ปลอดภัย นอกเซิร์ฟเวอร์นี้ ถอดรหัสสำเนาด้วย: :command"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Access key"
+msgstr "คีย์เข้าถึง (Access key)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Backblaze B2: an application key; the master key does not work with S3."
+msgstr "Backblaze B2: คีย์แอปพลิเคชัน คีย์หลักใช้กับ S3 ไม่ได้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Bucket"
+msgstr "Bucket"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose Google Drive or OneDrive and save first."
+msgstr "เลือก Google Drive หรือ OneDrive และบันทึกก่อน"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose a storage service."
+msgstr "เลือกบริการจัดเก็บข้อมูล"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose how often the copies are made."
+msgstr "เลือกว่าจะทำสำเนาบ่อยแค่ไหน"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Click Connect to let ClientFence into :service first."
+msgstr "คลิกเชื่อมต่อก่อน เพื่อให้ ClientFence เข้าถึง :service ได้"
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloud backups"
+msgstr "การสำรองข้อมูลบนคลาวด์"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud copies are off; the stored ones stay."
+msgstr "สำเนาบนคลาวด์ปิดอยู่ สำเนาที่เก็บไว้ยังคงอยู่"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud storage"
+msgstr "ที่เก็บข้อมูลบนคลาวด์"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloudflare R2: auto."
+msgstr "Cloudflare R2: auto."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Connected"
+msgstr "เชื่อมต่อแล้ว"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Could not reach :host: :error"
+msgstr "ติดต่อ :host ไม่ได้: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database"
+msgstr "ฐานข้อมูล"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database copy"
+msgstr "สำเนาฐานข้อมูล"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Encrypt the copies with a passphrase"
+msgstr "เข้ารหัสสำเนาด้วยวลีรหัสผ่าน"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Endpoint"
+msgstr "เอนด์พอยต์ (Endpoint)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the access key."
+msgstr "ป้อนคีย์เข้าถึง"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the bucket name."
+msgstr "ป้อนชื่อ bucket"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID and client secret of your app and save first."
+msgstr "ป้อนไคลเอนต์ ID และไคลเอนต์ซีเคร็ตของแอปของคุณ และบันทึกก่อน"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID of your app."
+msgstr "ป้อนไคลเอนต์ ID ของแอปของคุณ"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the endpoint as https://host (for example https://s3.eu-central-1.amazonaws.com), without the bucket."
+msgstr "ป้อนเอนด์พอยต์ในรูปแบบ https://host (เช่น https://s3.eu-central-1.amazonaws.com) โดยไม่มี bucket"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the passphrase the copies are encrypted with."
+msgstr "ป้อนวลีรหัสผ่านที่ใช้เข้ารหัสสำเนา"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage endpoint of the zone's region, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "ป้อนเอนด์พอยต์จัดเก็บของภูมิภาคของโซน เช่น storage.bunnycdn.com หรือ ny.storage.bunnycdn.com"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage zone name."
+msgstr "ป้อนชื่อโซนจัดเก็บ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every day"
+msgstr "ทุกวัน"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every hour"
+msgstr "ทุกชั่วโมง"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every week"
+msgstr "ทุกสัปดาห์"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Files copy"
+msgstr "สำเนาไฟล์"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket."
+msgstr "เช่น s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com หรือ ACCOUNT.r2.cloudflarestorage.com โดยไม่มี bucket"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Google Drive did not make the backups folder."
+msgstr "Google Drive ไม่ได้สร้างโฟลเดอร์สำรองข้อมูล"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Keep 1 to 1000 copies."
+msgstr "เก็บสำเนา 1 ถึง 1000 ชุด"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Keep the last"
+msgstr "เก็บสำเนาล่าสุด"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time."
+msgstr "เก็บแบบเข้ารหัสและไม่แสดงอีก ไคลเอนต์ซีเคร็ตของ Microsoft จะหมดอายุ: สร้างอันใหม่ให้ทันเวลา"
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Backups."
+msgstr "ยังไม่ได้เปิดการสำรองฐานข้อมูลรายวัน: เปิดได้ที่ ระบบ → การตั้งค่า → ระบบ → ข้อมูลสำรอง"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Not connected"
+msgstr "ยังไม่ได้เชื่อมต่อ"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Not enough free disk space in :dir for the files copy (:size GB needed)."
+msgstr "พื้นที่ว่างบนดิสก์ใน :dir ไม่พอสำหรับสำเนาไฟล์ (ต้องการ :size GB)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "On (:service); the first copy is sent after the next cron run."
+msgstr "เปิด (:service); สำเนาแรกจะถูกส่งหลัง cron รันครั้งถัดไป"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the bucket."
+msgstr "ไม่บังคับ ว่าง: ระดับบนสุดของ bucket"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the zone."
+msgstr "ไม่บังคับ ว่าง: ระดับบนสุดของโซน"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Passphrase"
+msgstr "วลีรหัสผ่าน"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Region"
+msgstr "ภูมิภาค (Region)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Register your own app (Google Cloud Console with the Google Drive API and the drive.file scope, published \"In production\"; or Microsoft Entra app registrations with the delegated permissions Files.ReadWrite.AppFolder and offline_access), add this redirect URL to it, enter its client ID and secret, Save, then Connect. Google Drive gets a \"ClientFence backups\" folder; OneDrive its app folder."
+msgstr "ลงทะเบียนแอปของคุณเอง (Google Cloud Console พร้อม Google Drive API และขอบเขต drive.file เผยแพร่เป็น \"In production\"; หรือ Microsoft Entra การลงทะเบียนแอป พร้อมสิทธิ์ที่มอบหมาย Files.ReadWrite.AppFolder และ offline_access) เพิ่ม URL เปลี่ยนเส้นทางนี้ ป้อนไคลเอนต์ ID และซีเคร็ต บันทึก แล้วคลิกเชื่อมต่อ Google Drive จะได้โฟลเดอร์ \"ClientFence backups\"; OneDrive ได้โฟลเดอร์แอปของตน"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+msgstr "เข้ากันได้กับ S3 (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Send a test file"
+msgstr "ส่งไฟล์ทดสอบ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Sends copies of the database, and of the site's files if you choose, to one cloud storage on their own schedule, after the cron run. The last copies you choose stay there; older ones this site made are removed."
+msgstr "ส่งสำเนาของฐานข้อมูล และของไฟล์เว็บไซต์หากคุณเลือก ไปยังที่เก็บข้อมูลบนคลาวด์หนึ่งแห่งตามกำหนดเวลาของตนเอง หลัง cron รัน สำเนาล่าสุดที่คุณเลือกจะอยู่ที่นั่น ส่วนสำเนาเก่ากว่าที่ไซต์นี้สร้างจะถูกลบ"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Sent to :service :time."
+msgstr "ส่งไปยัง :service เมื่อ :time"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage endpoint"
+msgstr "เอนด์พอยต์จัดเก็บ (Storage endpoint)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage service"
+msgstr "บริการจัดเก็บข้อมูล"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage zone"
+msgstr "โซนจัดเก็บ (Storage zone)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy is :size GB, over the 5 GB one upload may hold."
+msgstr "สำเนามีขนาด :size GB เกิน 5 GB ที่การอัปโหลดหนึ่งครั้งรองรับได้"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy to :service of :time failed: :error"
+msgstr "สำเนาไปยัง :service เมื่อ :time ล้มเหลว: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups."
+msgstr "สำเนาไฟล์คือไฟล์ zip ของรูทเว็บ (พร้อม config.php) และโฟลเดอร์อัปโหลดส่วนตัว โดยไม่รวมแคช บันทึก และข้อมูลสำรอง"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The hostname on the zone's FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "ชื่อโฮสต์ในหน้า FTP & API Access ของโซน เช่น storage.bunnycdn.com หรือ ny.storage.bunnycdn.com"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The newest copy sent to :service is from :time: check that the cron runs."
+msgstr "สำเนาล่าสุดที่ส่งไปยัง :service คือเมื่อ :time: ตรวจสอบว่า cron ทำงานอยู่"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The passphrase needs at least 8 characters."
+msgstr "วลีรหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The test file was sent and removed: the storage works."
+msgstr "ส่งไฟล์ทดสอบและลบแล้ว: ที่เก็บข้อมูลใช้งานได้"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The test file was sent but is not listed: check that the key may list the folder."
+msgstr "ส่งไฟล์ทดสอบแล้วแต่ไม่อยู่ในรายการ: ตรวจสอบว่าคีย์มีสิทธิ์แสดงรายการโฟลเดอร์"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The upload did not finish."
+msgstr "การอัปโหลดไม่เสร็จสมบูรณ์"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
+msgstr "รหัสผ่านของโซน (ไม่ใช่อันที่อ่านได้อย่างเดียว) เก็บแบบเข้ารหัสและไม่แสดงอีก"

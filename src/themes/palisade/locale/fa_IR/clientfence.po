@@ -28479,3 +28479,268 @@ msgstr "سفارش شما پذیرفته نشد"
 #: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
 msgid "Your order is approved"
 msgstr "سفارش شما تأیید شد"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":host refused the request (HTTP :status): :error"
+msgstr ":host درخواست را رد کرد (HTTP :status): :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not connect: :error"
+msgstr ":service متصل نشد: :error"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service did not start the upload."
+msgstr ":service بارگذاری را شروع نکرد."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service gave no lasting access: remove the app's access in your account and click Connect again."
+msgstr ":service دسترسی پایدار نداد: دسترسی برنامه را در حساب خود حذف کنید و دوباره روی اتصال کلیک کنید."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid ":service sent an answer ClientFence cannot read."
+msgstr ":service پاسخی فرستاد که ClientFence نمی‌تواند بخواند."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "A lost passphrase makes the copies useless: keep it somewhere safe, off this server. Decrypt a copy with: :command"
+msgstr "گم شدن عبارت عبور نسخه‌ها را بی‌فایده می‌کند: آن را در جای امنی و خارج از این سرور نگه دارید. نسخه را با این دستور رمزگشایی کنید: :command"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Access key"
+msgstr "کلید دسترسی (Access key)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Backblaze B2: an application key; the master key does not work with S3."
+msgstr "Backblaze B2: یک کلید برنامه؛ کلید اصلی با S3 کار نمی‌کند."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Bucket"
+msgstr "باکت (Bucket)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose Google Drive or OneDrive and save first."
+msgstr "ابتدا Google Drive یا OneDrive را انتخاب و ذخیره کنید."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose a storage service."
+msgstr "یک سرویس ذخیره‌سازی انتخاب کنید."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Choose how often the copies are made."
+msgstr "انتخاب کنید نسخه‌ها هر چند وقت ساخته شوند."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Click Connect to let ClientFence into :service first."
+msgstr "ابتدا روی اتصال کلیک کنید تا ClientFence وارد :service شود."
+
+#: src/modules/Clientfence/Health.php
+msgid "Cloud backups"
+msgstr "پشتیبان‌های ابری"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud copies are off; the stored ones stay."
+msgstr "نسخه‌های ابری خاموش است؛ نسخه‌های ذخیره‌شده می‌مانند."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloud storage"
+msgstr "ذخیره‌سازی ابری"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Cloudflare R2: auto."
+msgstr "Cloudflare R2: auto."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Connected"
+msgstr "متصل"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Could not reach :host: :error"
+msgstr "دسترسی به :host ممکن نشد: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database"
+msgstr "پایگاه داده"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Database copy"
+msgstr "نسخه پایگاه داده"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Encrypt the copies with a passphrase"
+msgstr "رمزگذاری نسخه‌ها با عبارت عبور"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Endpoint"
+msgstr "نقطه پایانی (Endpoint)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the access key."
+msgstr "کلید دسترسی را وارد کنید."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the bucket name."
+msgstr "نام باکت را وارد کنید."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID and client secret of your app and save first."
+msgstr "شناسه مشتری و رمز مشتری برنامه خود را وارد کنید و ابتدا ذخیره کنید."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the client ID of your app."
+msgstr "شناسه مشتری برنامه خود را وارد کنید."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the endpoint as https://host (for example https://s3.eu-central-1.amazonaws.com), without the bucket."
+msgstr "نقطه پایانی را به شکل https://host وارد کنید (برای نمونه https://s3.eu-central-1.amazonaws.com)، بدون باکت."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the passphrase the copies are encrypted with."
+msgstr "عبارت عبوری را وارد کنید که نسخه‌ها با آن رمزگذاری شده‌اند."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage endpoint of the zone's region, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "نقطه پایانی ذخیره‌سازی منطقه ناحیه را وارد کنید، برای نمونه storage.bunnycdn.com یا ny.storage.bunnycdn.com."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Enter the storage zone name."
+msgstr "نام ناحیه ذخیره‌سازی را وارد کنید."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every day"
+msgstr "هر روز"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every hour"
+msgstr "هر ساعت"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Every week"
+msgstr "هر هفته"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Files copy"
+msgstr "نسخه فایل‌ها"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket."
+msgstr "برای نمونه s3.REGION.amazonaws.com، s3.REGION.backblazeb2.com، s3.REGION.wasabisys.com یا ACCOUNT.r2.cloudflarestorage.com، بدون باکت."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Google Drive did not make the backups folder."
+msgstr "Google Drive پوشه پشتیبان‌ها را نساخت."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Keep 1 to 1000 copies."
+msgstr "بین ۱ تا ۱۰۰۰ نسخه نگه دارید."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Keep the last"
+msgstr "نگه‌داشتن آخرین نسخه‌ها"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time."
+msgstr "رمزگذاری‌شده نگهداری می‌شود و دیگر نمایش داده نمی‌شود. رمز مشتری Microsoft منقضی می‌شود: به‌موقع رمز تازه بسازید."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No daily database backup is on: turn one on in System → Settings → System → Backups."
+msgstr "هیچ پشتیبان روزانه پایگاه داده روشن نیست: یکی را در سیستم ‌← تنظیمات ‌← سیستم ‌← پشتیبان‌ها روشن کنید."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Not connected"
+msgstr "متصل نیست"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Not enough free disk space in :dir for the files copy (:size GB needed)."
+msgstr "فضای خالی دیسک در :dir برای نسخه فایل‌ها کافی نیست (:size GB لازم است)."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "On (:service); the first copy is sent after the next cron run."
+msgstr "روشن (:service)؛ نخستین نسخه پس از اجرای بعدی cron فرستاده می‌شود."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the bucket."
+msgstr "اختیاری. خالی: ریشه باکت."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Optional. Empty: the top of the zone."
+msgstr "اختیاری. خالی: ریشه ناحیه."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Passphrase"
+msgstr "عبارت عبور"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Region"
+msgstr "منطقه (Region)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Register your own app (Google Cloud Console with the Google Drive API and the drive.file scope, published \"In production\"; or Microsoft Entra app registrations with the delegated permissions Files.ReadWrite.AppFolder and offline_access), add this redirect URL to it, enter its client ID and secret, Save, then Connect. Google Drive gets a \"ClientFence backups\" folder; OneDrive its app folder."
+msgstr "برنامه خودتان را ثبت کنید (Google Cloud Console با Google Drive API و دامنه drive.file، منتشرشده به‌صورت \"In production\"؛ یا Microsoft Entra، ثبت برنامه‌ها، با مجوزهای تفویضی Files.ReadWrite.AppFolder و offline_access)، این نشانی تغییر مسیر را به آن اضافه کنید، شناسه و رمز مشتری آن را وارد کنید، ذخیره کنید و سپس روی اتصال کلیک کنید. Google Drive پوشه \"ClientFence backups\" را می‌گیرد؛ OneDrive پوشه برنامه خود را."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)"
+msgstr "سازگار با S3 (AWS S3، Backblaze B2، Wasabi، Cloudflare R2، MinIO...)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Send a test file"
+msgstr "ارسال فایل آزمایشی"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Sends copies of the database, and of the site's files if you choose, to one cloud storage on their own schedule, after the cron run. The last copies you choose stay there; older ones this site made are removed."
+msgstr "نسخه‌های پایگاه داده، و در صورت انتخاب شما فایل‌های سایت، را طبق زمان‌بندی خودشان پس از اجرای cron به یک ذخیره‌ساز ابری می‌فرستد. آخرین نسخه‌هایی که انتخاب می‌کنید آنجا می‌مانند؛ قدیمی‌تر‌هایی که این سایت ساخته حذف می‌شوند."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "Sent to :service :time."
+msgstr "در :time به :service فرستاده شد."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage endpoint"
+msgstr "نقطه پایانی ذخیره‌سازی (Storage endpoint)"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage service"
+msgstr "سرویس ذخیره‌سازی"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "Storage zone"
+msgstr "ناحیه ذخیره‌سازی (Storage zone)"
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy is :size GB, over the 5 GB one upload may hold."
+msgstr "نسخه :size GB است، بیش از ۵ GB که یک بارگذاری جا می‌دهد."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The copy to :service of :time failed: :error"
+msgstr "نسخه به :service در :time ناموفق بود: :error"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups."
+msgstr "نسخه فایل‌ها یک zip از ریشه وب (با config.php) و پوشه‌های بارگذاری خصوصی است، بدون حافظه نهان، گزارش‌ها و پشتیبان‌ها."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The hostname on the zone's FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com."
+msgstr "نام میزبان در صفحه FTP & API Access ناحیه، برای نمونه storage.bunnycdn.com یا ny.storage.bunnycdn.com."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The newest copy sent to :service is from :time: check that the cron runs."
+msgstr "تازه‌ترین نسخه فرستاده‌شده به :service مربوط به :time است: بررسی کنید cron اجرا می‌شود."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The passphrase needs at least 8 characters."
+msgstr "عبارت عبور دست‌کم ۸ نویسه لازم دارد."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The test file was sent and removed: the storage works."
+msgstr "فایل آزمایشی فرستاده و حذف شد: ذخیره‌ساز کار می‌کند."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The test file was sent but is not listed: check that the key may list the folder."
+msgstr "فایل آزمایشی فرستاده شد اما در فهرست نیست: بررسی کنید کلید اجازه فهرست‌کردن پوشه را دارد."
+
+#: src/modules/Clientfence/CloudBackups.php
+msgid "The upload did not finish."
+msgstr "بارگذاری کامل نشد."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
+msgstr "گذرواژه ناحیه (نه آن که فقط خواندنی است). رمزگذاری‌شده نگهداری می‌شود و دیگر نمایش داده نمی‌شود."

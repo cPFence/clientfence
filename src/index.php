@@ -28,7 +28,9 @@ if ($paymentReturn !== null) {
     emitResponse($paymentReturn);
 }
 // ClientFence core patch: the accounting program's return reaches the Strict staff session the same way.
-$accountingReturn = \ClientFence\Mod\Invoice\Accounting\Sync::returnHop($request, $di['url']);
+$accountingReturn = \ClientFence\Mod\Invoice\Accounting\Sync::returnHop($request, $di['url'])
+    // ClientFence core patch: and the Google Drive or OneDrive sign-in of the cloud backups (Clientfence/CloudBackups.php).
+    ?? \ClientFence\Mod\Invoice\Accounting\Sync::returnHop($request, $di['url'], \ClientFence\Mod\Clientfence\CloudBackups::CALLBACK);
 if ($accountingReturn !== null) {
     emitResponse($accountingReturn);
 }

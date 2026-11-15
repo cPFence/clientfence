@@ -1,11 +1,13 @@
-{# ClientFence: the "Database Backups" tab of System > Settings > System (core patch in
+{# ClientFence: the "Backups" tab of System > Settings > System (core patch in
    mod_system_settings; Controller/Admin.php, Backups.php), as WHMCS's System Settings > Database
    Backups: a daily dump kept on this server and/or sent by SFTP/FTP and email, each turned on with
-   "Save & Activate" after its test. Super Administrators only; `backups` is clientfence/backup_get. #}
+   "Save & Activate" after its test, plus copies to one cloud storage (CloudBackups.php). Super
+   Administrators only; `backups` is clientfence/backup_get. #}
 {% set ftp = backups.ftp %}
 {% set email = backups.email %}
 {% set local = backups.local %}
 {% set status = backups.status %}
+{% set cloud = backups.cloud %}
 <div class="card">
     <div class="card-header">
         <div>
@@ -145,6 +147,168 @@
                    {{ fb_api_link({ message: 'SFTP/FTP backups are off.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
             {% endif %}
             <button class="btn btn-outline-secondary" type="submit" name="do" value="test">{{ 'Test connection'|trans }}</button>
+            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+        </div>
+    </form>
+</div>
+
+{# Cloud storage (CloudBackups.php): one service, own schedules, the last N copies kept there. The service's fields
+   show by the chosen one (the data-cf-chat-* show/hide of clientfence-admin.js); hidden fields are not sent. #}
+<div class="card mt-3">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Cloud storage'|trans }}
+                <span class="badge {{ cloud.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ cloud.enabled ? 'Active'|trans : 'Off'|trans }}</span>
+            </h3>
+            <p class="card-subtitle">{{ 'Sends copies of the database, and of the site\'s files if you choose, to one cloud storage on their own schedule, after the cron run. The last copies you choose stay there; older ones this site made are removed.'|trans }}</p>
+        </div>
+    </div>
+    <form method="post" action="{{ 'clientfence/backup_cloud_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceBackupCloudSaved' }) }}
+          data-cf-backup-cloud data-tested-text="{{ 'The test file was sent and removed: the storage works.'|trans }}" data-saved-text="{{ 'Saved.'|trans }}">
+        <div class="card-body">
+            {% for kind, label in { 'db': 'Database'|trans, 'files': 'Files'|trans } %}
+                {% set run = cloud.status[kind] ?? null %}
+                {% if run %}
+                    <div class="alert {{ run.ok ? 'alert-success' : (run.running ? 'alert-info' : 'alert-danger') }}">
+                        <strong>{{ label }}:</strong> {{ run.ran_at|format_datetime }},
+                        {% if run.ok %}{{ run.file }} ({{ (run.bytes / 1048576)|number_format(2) }} MB){% else %}{{ run.error }}{% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="row g-3">
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-cloud-provider">{{ 'Storage service'|trans }}</label>
+                    <select class="form-select" id="bk-cloud-provider" name="provider" data-cf-chat-type>
+                        <option value="s3"{% if cloud.provider == 's3' %} selected{% endif %}>{{ 'S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)'|trans }}</option>
+                        <option value="bunny"{% if cloud.provider == 'bunny' %} selected{% endif %}>Bunny Storage</option>
+                        <option value="gdrive"{% if cloud.provider == 'gdrive' %} selected{% endif %}>Google Drive</option>
+                        <option value="onedrive"{% if cloud.provider == 'onedrive' %} selected{% endif %}>OneDrive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 mt-0" data-cf-chat-for="s3">
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-s3-endpoint">{{ 'Endpoint'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-s3-endpoint" name="endpoint" value="{{ cloud.provider == 's3' ? cloud.endpoint }}" placeholder="https://s3.eu-central-1.amazonaws.com" autocomplete="off" dir="ltr">
+                    <div class="form-text">{{ 'For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket.'|trans }}</div>
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label" for="bk-s3-region">{{ 'Region'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-s3-region" name="region" value="{{ cloud.provider == 's3' ? cloud.region }}" placeholder="us-east-1" autocomplete="off" dir="ltr">
+                    <div class="form-text">{{ 'Cloudflare R2: auto.'|trans }}</div>
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label" for="bk-s3-bucket">{{ 'Bucket'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-s3-bucket" name="bucket" value="{{ cloud.provider == 's3' ? cloud.bucket }}" autocomplete="off" dir="ltr">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-s3-key">{{ 'Access key'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-s3-key" name="key" value="{{ cloud.provider == 's3' ? cloud.key }}" autocomplete="off" dir="ltr">
+                    <div class="form-text">{{ 'Backblaze B2: an application key; the master key does not work with S3.'|trans }}</div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-s3-secret">{{ 'Secret key'|trans }}</label>
+                    <input class="form-control" type="password" id="bk-s3-secret" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider == 's3' and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
+                    <div class="form-text">{{ 'Kept encrypted and never shown again.'|trans }}</div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-s3-folder">{{ 'Folder'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-s3-folder" name="folder" value="{{ cloud.provider == 's3' ? cloud.folder }}" placeholder="clientfence" autocomplete="off" dir="ltr">
+                    <div class="form-text">{{ 'Optional. Empty: the top of the bucket.'|trans }}</div>
+                </div>
+            </div>
+            <div class="row g-3 mt-0" data-cf-chat-for="bunny">
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-bunny-endpoint">{{ 'Storage endpoint'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-bunny-endpoint" name="endpoint" value="{{ cloud.provider == 'bunny' ? cloud.endpoint : 'storage.bunnycdn.com' }}" autocomplete="off" dir="ltr">
+                    <div class="form-text">{{ 'The hostname on the zone\'s FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com.'|trans }}</div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-bunny-zone">{{ 'Storage zone'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-bunny-zone" name="bucket" value="{{ cloud.provider == 'bunny' ? cloud.bucket }}" autocomplete="off" dir="ltr">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-bunny-password">{{ 'Password'|trans }}</label>
+                    <input class="form-control" type="password" id="bk-bunny-password" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider == 'bunny' and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
+                    <div class="form-text">{{ 'The zone\'s password (not the read-only one). Kept encrypted and never shown again.'|trans }}</div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-bunny-folder">{{ 'Folder'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-bunny-folder" name="folder" value="{{ cloud.provider == 'bunny' ? cloud.folder }}" placeholder="clientfence" autocomplete="off" dir="ltr">
+                    <div class="form-text">{{ 'Optional. Empty: the top of the zone.'|trans }}</div>
+                </div>
+            </div>
+            <div class="row g-3 mt-0" data-cf-chat-for="gdrive onedrive">
+                <div class="col-12">
+                    <div class="form-text">{{ 'Register your own app (Google Cloud Console with the Google Drive API and the drive.file scope, published "In production"; or Microsoft Entra app registrations with the delegated permissions Files.ReadWrite.AppFolder and offline_access), add this redirect URL to it, enter its client ID and secret, Save, then Connect. Google Drive gets a "ClientFence backups" folder; OneDrive its app folder.'|trans }}</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="bk-oauth-redirect">{{ 'Redirect URL'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-oauth-redirect" readonly value="{{ 'clientfence/backups/cloud-callback'|url }}" dir="ltr">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-oauth-key">{{ 'Client ID'|trans }}</label>
+                    <input class="form-control" type="text" id="bk-oauth-key" name="key" value="{{ cloud.provider in ['gdrive', 'onedrive'] ? cloud.key }}" autocomplete="off" dir="ltr">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-oauth-secret">{{ 'Client secret'|trans }}</label>
+                    <input class="form-control" type="password" id="bk-oauth-secret" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider in ['gdrive', 'onedrive'] and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
+                    <div class="form-text">{{ 'Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time.'|trans }}</div>
+                </div>
+                {% if cloud.provider in ['gdrive', 'onedrive'] and cloud.key and cloud.has_secret %}
+                    <div class="col-12">
+                        <span class="badge {{ cloud.connected ? 'bg-success-lt' : 'bg-secondary-lt' }} me-2">{{ cloud.connected ? 'Connected'|trans : 'Not connected'|trans }}</span>
+                        <a class="btn btn-sm btn-outline-primary" href="{{ 'clientfence/backups/cloud-connect'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Connect'|trans }}</a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row g-3 mt-0">
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="bk-db-every">{{ 'Database copy'|trans }}</label>
+                    <select class="form-select" id="bk-db-every" name="db_every">
+                        {% for value, label in { 'hourly': 'Every hour'|trans, 'daily': 'Every day'|trans, 'weekly': 'Every week'|trans } %}
+                            <option value="{{ value }}"{% if cloud.db_every == value %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="bk-db-keep">{{ 'Keep the last'|trans }}</label>
+                    <input class="form-control" type="number" min="1" max="1000" id="bk-db-keep" name="db_keep" value="{{ cloud.db_keep }}" required>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="bk-files-every">{{ 'Files copy'|trans }}</label>
+                    <select class="form-select" id="bk-files-every" name="files_every">
+                        {% for value, label in { 'daily': 'Every day'|trans, 'weekly': 'Every week'|trans, 'never': 'Never'|trans } %}
+                            <option value="{{ value }}"{% if cloud.files_every == value %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label class="form-label" for="bk-files-keep">{{ 'Keep the last'|trans }}</label>
+                    <input class="form-control" type="number" min="1" max="1000" id="bk-files-keep" name="files_keep" value="{{ cloud.files_keep }}" required>
+                </div>
+                <div class="col-12 form-text mt-1">{{ 'The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups.'|trans }}</div>
+                <div class="col-12">
+                    <input type="hidden" name="encrypt" value="0">
+                    <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="encrypt" value="1"{% if cloud.encrypted %} checked{% endif %}>
+                        <span class="form-check-label">{{ 'Encrypt the copies with a passphrase'|trans }}</span>
+                        <span class="form-text d-block">{{ 'A lost passphrase makes the copies useless: keep it somewhere safe, off this server. Decrypt a copy with: :command'|trans({ ':command': 'openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -md sha256 -in NAME.enc -out NAME' }) }}</span>
+                    </label>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="bk-cloud-passphrase">{{ 'Passphrase'|trans }}</label>
+                    <input class="form-control" type="password" id="bk-cloud-passphrase" name="passphrase" value="" autocomplete="new-password" placeholder="{{ cloud.encrypted ? 'Saved; leave empty to keep it'|trans : '' }}">
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            {% if cloud.enabled %}
+                <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'cloud' }) }}"
+                   {{ fb_api_link({ message: 'Cloud copies are off; the stored ones stay.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+            {% endif %}
+            <button class="btn btn-outline-secondary" type="submit" name="do" value="save">{{ 'Save'|trans }}</button>
+            <button class="btn btn-outline-secondary" type="submit" name="do" value="test">{{ 'Send a test file'|trans }}</button>
             <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
         </div>
     </form>

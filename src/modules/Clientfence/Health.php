@@ -575,6 +575,9 @@ final class Health
 
         [$state, $detail, $params] = Backups::health($di);
         yield self::check('server', 'srv_db_backup', self::msg('Daily database backup'), $state, $detail, 'clientfence/backups', $params);
+        if (($cloud = CloudBackups::health($di)) !== null) {
+            yield self::check('server', 'srv_cloud_backup', self::msg('Cloud backups'), $cloud[0], $cloud[1], 'clientfence/backups', $cloud[2]);
+        }
 
         $speed = self::webSpeed($di);
         yield self::check('server', 'srv_opcache', self::msg('PHP OPcache'), $speed['opcache'] ? 'ok' : 'warn', $speed['opcache'] ? self::msg('On: PHP keeps the compiled code in memory.') : self::msg('Off: PHP compiles the code again on every request, so pages take about 4 times longer. Turn on OPcache (opcache.enable = 1, often "Opcode caching" in the hosting panel) in the PHP settings of this site.'));

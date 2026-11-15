@@ -1365,7 +1365,16 @@ window.clientfenceBackupFtpSaved = (result) => {
   window.setTimeout(() => window.location.reload(), 900);
 };
 
-// Chat alerts form (mod_clientfence_chat_alerts_panel): only the fields of the chosen service show and are sent.
+// Cloud storage card (mod_clientfence_backups_panel): a test file keeps the typed details; a save reloads.
+window.clientfenceBackupCloudSaved = (result) => {
+  const form = document.querySelector('[data-cf-backup-cloud]');
+  if (!form) return;
+  window.ClientFence?.message?.(result && result.tested ? form.dataset.testedText : form.dataset.savedText, 'success');
+  if (!(result && result.tested)) window.setTimeout(() => window.location.reload(), 900);
+};
+
+// Chat alerts form (mod_clientfence_chat_alerts_panel) and the cloud storage card of the Backups tab: only the
+// fields of the chosen service show and are sent.
 document.querySelectorAll('[data-cf-chat-type]').forEach((type) => {
   const form = type.closest('form');
   const show = () => form.querySelectorAll('[data-cf-chat-for]').forEach((part) => {

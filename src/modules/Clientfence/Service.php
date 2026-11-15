@@ -674,6 +674,12 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
             $di['logger']->error('ClientFence: the database backup failed: %s', $e->getMessage());
         }
         try {
+            // Only decides; the copies are made once the cron run has ended (B7).
+            CloudBackups::runIfDue($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('ClientFence: the cloud backup failed: %s', $e->getMessage());
+        }
+        try {
             \ClientFence\Mod\Servicehosting\Panel\StatusCheck::runIfDue($di);
         } catch (\Throwable $e) {
             $di['logger']->error('ClientFence: hosting status checks failed: %s', $e->getMessage());
