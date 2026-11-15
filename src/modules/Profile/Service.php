@@ -367,6 +367,23 @@ class Service implements InjectionAwareInterface
     // the serialized string, and usable without an active session (unlike
     // session_decode), so this also works from CLI/cron. Null means malformed:
     // callers treat that as "no match" and leave the row alone.
+    /**
+     * ClientFence core patch: who a stored session (its base64 `content`) is signed in as, for the sign-in history's
+     * "Active" mark (Clientfence/SignInHistory.php).
+     *
+     * @return array{admin_id: ?int, client_id: ?int, user_id: ?int}
+     */
+    public function sessionLogin(string $content): array
+    {
+        $data = base64_decode($content, true);
+        $values = $data === false ? null : $this->decodeSessionData($data);
+        $admin = $values['admin'] ?? null;
+
+        $user = $values['clientfence_user'] ?? null;
+
+        return ['admin_id' => is_array($admin) && isset($admin['id']) ? (int) $admin['id'] : null, 'client_id' => is_int($values['client_id'] ?? null) ? $values['client_id'] : null, 'user_id' => is_array($user) && isset($user['user_id']) ? (int) $user['user_id'] : null];
+    }
+
     private function decodeSessionData(string $data): ?array
     {
         $result = [];

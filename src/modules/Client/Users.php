@@ -112,7 +112,7 @@ final class Users
         'order' => ['get_list' => 'products', 'get' => 'products', 'addons' => 'products', 'service' => 'products', 'upgradables' => 'products', 'upgrade_options' => 'products', 'upgrade_options_quote' => 'products', 'upgrade' => 'orders', 'addon_offers' => 'products', 'addon_order' => 'orders', 'delete' => 'orders',
             // Cancellation requests (Order/CancelRequests.php).
             'cancel_request' => 'orders', 'cancel_request_get' => 'products', 'cancel_request_withdraw' => 'orders'],
-        'profile' => ['get' => '*', 'logout' => '*', 'update' => 'profile'],
+        'profile' => ['get' => '*', 'logout' => '*', 'update' => 'profile', 'signins' => '*', 'signin_end' => '*'],
         'serviceapikey' => ['reset' => 'manageproducts', 'update_ips' => 'manageproducts', 'ip_add' => 'manageproducts', 'ip_remove' => 'manageproducts', 'ip_request_withdraw' => 'manageproducts'],
         'servicecustom' => ['call' => 'manageproducts'],
         'servicedomain' => [

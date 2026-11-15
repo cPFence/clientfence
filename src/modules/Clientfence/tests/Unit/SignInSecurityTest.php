@@ -5,12 +5,15 @@ declare(strict_types=1);
 /**
  * ClientFence: sign-in security (Mod\Clientfence\SignInSecurity): the settings and their lockout
  * checks, staff sign-in from chosen countries, the email PIN and trusted browsers, on an in-memory
- * SQLite database with fake services. APP_ENV is "test", so PINs are rendered but not sent.
+ * SQLite database with fake services. APP_ENV is "test", so PINs are rendered but not sent. Also the
+ * sign-in history (Mod\Clientfence\SignInHistory) and the PIN only from a new place: the networks come
+ * from the bundled GeoIP ASN database (8.8.8.8 and 1.1.1.1, two networks), the countries from the fake.
  */
 
 use ClientFence\InformationException;
 use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Clientfence\Setup;
+use ClientFence\Mod\Clientfence\SignInHistory;
 use ClientFence\Mod\Clientfence\SignInSecurity;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,7 +25,9 @@ final class SignInSecurityTestWorld
     public array $queued = [];
     // Documentation addresses stand in for public ones here; 192.168.1.5 is private (the bundled
     // database gives it a country all the same).
-    public array $countries = ['198.51.100.1' => 'DE', '203.0.113.9' => 'US', '192.0.2.5' => 'EG', '192.168.1.5' => 'AU'];
+    public array $countries = ['198.51.100.1' => 'DE', '203.0.113.9' => 'US', '192.0.2.5' => 'EG', '192.168.1.5' => 'AU', '8.8.8.8' => 'US', '1.1.1.1' => 'US'];
+    public string $sessionId = 'session-now';
+    public string $agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
     public array $staffConfig = [];
     public bool $limited = false;
     public Pimple\Container $di;
@@ -36,6 +41,9 @@ final class SignInSecurityTestWorld
         $db->executeStatement('CREATE TABLE admin (id INTEGER PRIMARY KEY, pass TEXT)');
         $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, pass TEXT)');
         $db->executeStatement('CREATE TABLE client_user (id INTEGER PRIMARY KEY, pass TEXT, email TEXT, first_name TEXT, last_name TEXT)');
+        $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT, user_id INTEGER, country TEXT, asn INTEGER, network TEXT, browser TEXT, session_id TEXT)');
+        $db->executeStatement('CREATE TABLE activity_admin_history (id INTEGER PRIMARY KEY, admin_id INTEGER, ip TEXT, created_at TEXT, country TEXT, asn INTEGER, network TEXT, browser TEXT, session_id TEXT)');
+        $db->executeStatement('CREATE TABLE session (id TEXT PRIMARY KEY, modified_at INTEGER, created_at INTEGER, content TEXT, fingerprint TEXT)');
         $db->executeStatement("INSERT INTO admin VALUES (1, 'hash-admin')");
         $db->executeStatement("INSERT INTO client VALUES (7, 'hash-client')");
         $this->db = $db;
@@ -62,6 +70,11 @@ final class SignInSecurityTestWorld
             public function delete(string $key): void
             {
                 unset($this->world->session[$key]);
+            }
+
+            public function getId(): string
+            {
+                return $this->world->sessionId;
             }
         };
         $di['rate_limiter'] = new class($world) {
@@ -156,9 +169,10 @@ final class SignInSecurityTestWorld
         $di['mod_service'] = $di->protect(fn (string $name) => match ($name) {
             'email' => $email,
             'extension' => $extension,
+            'profile' => new ClientFence\Mod\Profile\Service(),
             default => $system,
         });
-        $di['request'] = $di->factory(fn () => new Request([], [], [], $world->cookies));
+        $di['request'] = $di->factory(fn () => new Request([], [], [], $world->cookies, [], ['HTTP_USER_AGENT' => $world->agent]));
         $di['cookie_queue'] = new class($world) {
             public function __construct(private readonly SignInSecurityTestWorld $world)
             {
@@ -191,7 +205,7 @@ final class SignInSecurityTestWorld
 test('everything is off by default and nobody is asked for a PIN', function (): void {
     $world = new SignInSecurityTestWorld();
 
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
         ->and(SignInSecurity::pinOn($world->di, 'staff'))->toBeFalse()
         ->and(SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'c@example.test'], [], '192.0.2.5'))->toBeFalse()
         ->and($world->pins)->toBe([]);
@@ -480,10 +494,10 @@ test('the console command turns sign-in security off', function (): void {
     $world = new SignInSecurityTestWorld();
     $world->save(['pin' => 'clients', 'countries_on' => '1', 'countries' => ['DE'], 'ips_on' => 1, 'ips' => ['198.51.100.1']]);
 
-    expect(SignInSecurity::turnOff($world->di, false, false, true))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true])
+    expect(SignInSecurity::turnOff($world->di, false, false, true))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
         ->and($world->staffConfig['check_ip'])->toBe(0)
         ->and($world->staffConfig['allowed_ips'])->toBe('198.51.100.1')
-        ->and(SignInSecurity::turnOff($world->di, false, true, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true])
+        ->and(SignInSecurity::turnOff($world->di, false, true, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
         ->and(SignInSecurity::turnOff($world->di, true, false, false)['pin'])->toBe('off');
 });
 
@@ -494,20 +508,20 @@ test('the setup wizard sets the staff side only and saves nothing until the PIN 
     $wizard = ['captcha_provider' => 'none', 'admin_path' => '', 'staff_pin' => 1, 'countries_on' => 1, 'countries' => ['DE']];
 
     expect(Setup::saveSecurity($world->di, $wizard, $admin, '198.51.100.1'))->toBe(['admin_path' => null, 'confirm' => true, 'email' => 'o••••@example.test'])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true]);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false]);
 
     expect(Setup::saveSecurity($world->di, $wizard + ['confirm_pin' => $world->lastPin()], $admin, '198.51.100.1'))->toBe(['admin_path' => null])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true]);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false]);
 
     // No country fields (no GeoIP database): the country rule stays; the client PIN always does.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'staff_pin' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false])
         ->and(fn () => Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 1, 'countries' => ['US']], $admin, '198.51.100.1'))
         ->toThrow(InformationException::class, 'would lock you out');
 
     // Switched off, the rule keeps its list for next time.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true]);
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false]);
 });
 
 test('a client\'s PIN email is in the client\'s language, also when resent; the staff PIN in the default', function (): void {
@@ -522,3 +536,176 @@ test('a client\'s PIN email is in the client\'s language, also when resent; the 
     expect(array_column($world->pins, 'locale'))->toBe(['de_DE', 'de_DE'])
         ->and($staff->pins[0])->toMatchArray(['code' => 'mod_staff_clientfence_signin_pin', 'locale' => 'en_US']);
 });
+
+// ----- sign-in history and the PIN only from a new place -----------------------------------------
+
+afterEach(function (): void {
+    // A test that stops between record() and started() must not hand its row to the next one.
+    (new ReflectionProperty(SignInHistory::class, 'row'))->setValue(null, null);
+});
+
+test('"When to ask" and the sign-in history are saved, checked and kept by saves that leave them out', function (): void {
+    $world = new SignInSecurityTestWorld();
+
+    expect(fn () => $world->save(['pin' => 'clients', 'pin_when' => 'sometimes']))->toThrow(InformationException::class, 'Choose when to ask')
+        ->and($world->save(['pin' => 'clients', 'pin_when' => 'new', 'history' => '1']))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di))->toMatchArray(['pin' => 'clients', 'pin_when' => 'new', 'history' => true])
+        // Quick setup and older forms send neither.
+        ->and($world->save(['pin' => 'clients']))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di))->toMatchArray(['pin_when' => 'new', 'history' => true])
+        ->and($world->save(['pin' => 'clients', 'history' => '0']))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di)['history'])->toBeFalse()
+        // The console command puts the PIN back to every sign-in and leaves the history alone.
+        ->and($world->save(['pin' => 'clients', 'history' => '1']))->toBe(['saved' => true])
+        ->and(SignInSecurity::turnOff($world->di, true, false, false))->toMatchArray(['pin' => 'off', 'pin_when' => 'every', 'history' => true]);
+});
+
+test('the browser label names the browser and the system', function (string $agent, ?string $label): void {
+    expect(SignInHistory::browser($agent))->toBe($label);
+})->with([
+    'Chrome on Windows' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'Chrome on Windows'],
+    'Edge' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 'Edge on Windows'],
+    'Opera' => ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 OPR/115.0.0.0', 'Opera on macOS'],
+    'Samsung Internet' => ['Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/26.0 Chrome/122.0.0.0 Mobile Safari/537.36', 'Samsung Internet on Android'],
+    'Firefox on Linux' => ['Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0', 'Firefox on Linux'],
+    'Firefox on Android' => ['Mozilla/5.0 (Android 14; Mobile; rv:133.0) Gecko/133.0 Firefox/133.0', 'Firefox on Android'],
+    'Safari on iOS' => ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1', 'Safari on iOS'],
+    'Chrome on iOS' => ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/131.0.6778.73 Mobile/15E148 Safari/604.1', 'Chrome on iOS'],
+    'Safari on macOS' => ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Safari/605.1.15', 'Safari on macOS'],
+    'ChromeOS' => ['Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'Chrome on ChromeOS'],
+    'an unknown browser' => ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) SomeApp/1.0', 'Windows'],
+    'neither' => ['curl/8.5.0', null],
+    'no agent' => ['', null],
+]);
+
+test('the history row is FOSSBilling\'s own while both are off, and has the details and session while one is on', function (array $saved, bool $details): void {
+    $world = new SignInSecurityTestWorld();
+    $world->save(['pin' => 'off'] + $saved);
+    $world->db->insert('client_user', ['id' => 8, 'pass' => 'hash-user', 'email' => 'user@example.test']);
+
+    SignInHistory::record($world->di, 'activity_client_history', ['client_id' => 7, 'ip' => '8.8.8.8', 'created_at' => date('Y-m-d H:i:s')]);
+    SignInHistory::started($world->di, 8);
+    SignInHistory::record($world->di, 'activity_admin_history', ['admin_id' => 1, 'ip' => '192.168.1.5', 'created_at' => date('Y-m-d H:i:s')]);
+    SignInHistory::started($world->di, null);
+    $client = $world->db->fetchAssociative('SELECT user_id, country, asn, network, browser, session_id FROM activity_client_history');
+    $staff = $world->db->fetchAssociative('SELECT country, asn, network, browser, session_id FROM activity_admin_history');
+
+    if (!$details) {
+        // Off: only the authorized user (its sign-ins must never count as the owner's places for the PIN).
+        expect($client)->toBe(['user_id' => 8, 'country' => null, 'asn' => null, 'network' => null, 'browser' => null, 'session_id' => null])
+            ->and($staff)->toBe(['country' => null, 'asn' => null, 'network' => null, 'browser' => null, 'session_id' => null]);
+
+        return;
+    }
+    expect($client)->toMatchArray(['user_id' => 8, 'country' => 'US', 'browser' => 'Chrome on Windows', 'session_id' => 'session-now'])
+        ->and($client['asn'])->toBeInt()
+        ->and($client['network'])->not->toBeEmpty()
+        // A private address: looked up (country ''), no network.
+        ->and($staff)->toBe(['country' => '', 'asn' => null, 'network' => null, 'browser' => 'Chrome on Windows', 'session_id' => 'session-now']);
+})->with([
+    'both off' => [[], false],
+    'sign-in history on' => [['history' => '1'], true],
+    'PIN only from a new place' => [['pin_when' => 'new'], true],
+]);
+
+test('with the PIN only from a new place, a known country and network signs in without one', function (string $when, string $ip, bool $asked): void {
+    $world = new SignInSecurityTestWorld();
+    $google = SignInHistory::locate($world->di, '8.8.8.8');
+    expect($google['asn'])->toBeInt()->not->toBe(SignInHistory::locate($world->di, '1.1.1.1')['asn']);
+    $world->save(['pin' => 'clients', 'pin_when' => $when]);
+    $world->db->insert('activity_client_history', ['client_id' => 7, 'ip' => '8.8.4.4', 'created_at' => date('Y-m-d H:i:s', time() - 86400)] + $google);
+    // The same place long ago, or for another login, does not count.
+    $world->db->insert('activity_client_history', ['client_id' => 7, 'ip' => '1.1.1.1', 'created_at' => date('Y-m-d H:i:s', time() - 100 * 86400), 'country' => 'US', 'asn' => SignInHistory::locate($world->di, '1.1.1.1')['asn']]);
+    $world->db->insert('activity_client_history', ['client_id' => 9, 'ip' => '1.1.1.1', 'created_at' => date('Y-m-d H:i:s'), 'country' => 'US', 'asn' => SignInHistory::locate($world->di, '1.1.1.1')['asn']]);
+
+    expect(SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'client@example.test'], [], $ip))->toBe($asked)
+        ->and($world->pins)->toHaveCount($asked ? 1 : 0);
+})->with([
+    'known place' => ['new', '8.8.8.8', false],
+    'same country, new network' => ['new', '1.1.1.1', true],
+    'unknown country' => ['new', '9.9.9.9', true],
+    'private address' => ['new', '192.168.1.5', true],
+    'every sign-in' => ['every', '8.8.8.8', true],
+]);
+
+test('sign-ins logged before details were kept are learned at the next sign-in', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->save(['pin' => 'clients', 'pin_when' => 'new']);
+    $world->db->insert('activity_client_history', ['id' => 1, 'client_id' => 7, 'ip' => '8.8.8.8', 'created_at' => date('Y-m-d H:i:s', time() - 86400)]);
+    $world->db->insert('activity_client_history', ['id' => 2, 'client_id' => 7, 'ip' => '10.0.0.8', 'created_at' => date('Y-m-d H:i:s', time() - 86400)]);
+    $login = ['kind' => 'client', 'id' => 7, 'email' => 'client@example.test'];
+
+    expect(SignInSecurity::challenge($world->di, 'client', $login, [], '8.8.8.8'))->toBeFalse()
+        ->and($world->db->fetchAllKeyValue('SELECT id, country FROM activity_client_history ORDER BY id'))->toBe([1 => 'US', 2 => ''])
+        ->and((int) $world->db->fetchOne('SELECT asn FROM activity_client_history WHERE id = 1'))->toBe(SignInHistory::locate($world->di, '8.8.8.8')['asn'])
+        // An authorized user does not sign in from the owner's places.
+        ->and(SignInSecurity::challenge($world->di, 'client', ['kind' => 'user', 'id' => 8, 'email' => 'user@example.test'], [], '8.8.8.8'))->toBeTrue();
+});
+
+test('the Sign-ins tab lists the login\'s own sign-ins, and Sign out ends only one of them that is not this one', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $now = date('Y-m-d H:i:s');
+    foreach ([
+        1 => ['client_id' => 7, 'session_id' => 'session-old'],
+        2 => ['client_id' => 7, 'session_id' => 'session-phone', 'browser' => 'Safari on iOS', 'country' => 'DE'],
+        3 => ['client_id' => 7, 'session_id' => 'session-now', 'browser' => 'Chrome on Windows', 'country' => ''],
+        4 => ['client_id' => 7, 'user_id' => 8, 'session_id' => 'session-user'],
+        5 => ['client_id' => 7],
+        // Signed out: the browser kept its session id as a guest.
+        9 => ['client_id' => 7, 'session_id' => 'session-guest'],
+    ] as $id => $row) {
+        $world->db->insert('activity_client_history', ['id' => $id, 'ip' => '198.51.100.1', 'created_at' => $now] + $row);
+    }
+    $world->db->insert('activity_admin_history', ['id' => 6, 'admin_id' => 1, 'ip' => '198.51.100.1', 'created_at' => $now, 'session_id' => 'session-staff']);
+    $client = base64_encode('client_id|i:7;');
+    foreach (['session-phone' => $client, 'session-now' => $client, 'session-user' => base64_encode('client_id|i:9;clientfence_user|a:1:{s:7:"user_id";i:8;}'), 'session-staff' => base64_encode('admin|a:1:{s:2:"id";i:1;}'), 'session-guest' => base64_encode('cart|i:0;')] as $session => $content) {
+        $world->db->insert('session', ['id' => $session, 'created_at' => time() - 60, 'content' => $content]);
+    }
+
+    expect(SignInHistory::recent($world->di, 'client', 7))->toBeNull();
+    $world->save(['history' => '1']);
+    $list = SignInHistory::recent($world->di, 'client', 7);
+    expect(array_map(static fn (array $row): array => [$row['id'], $row['current'], $row['active']], $list))->toBe([[9, false, false], [3, true, true], [2, false, true], [1, false, false]])
+        ->and($list[2])->toMatchArray(['country' => 'Germany', 'browser' => 'Safari on iOS'])
+        ->and($list[1]['country'])->toBeNull()
+        ->and((string) json_encode($list))->not->toContain('session-')
+        // Still active after switching to another of its accounts.
+        ->and(array_map(static fn (array $row): array => [$row['id'], $row['active']], SignInHistory::recent($world->di, 'user', 8)))->toBe([[4, true]])
+        ->and(array_column(SignInHistory::recent($world->di, 'staff', 1), 'id'))->toBe([6])
+        ->and(SignInHistory::recent($world->di, 'staff', 1)[0]['active'])->toBeTrue();
+
+    // Another login's row, by id, is not found, whoever asks; this session is not ended here.
+    foreach ([['client', 7, 4], ['user', 8, 2], ['client', 7, 6], ['staff', 1, 2], ['client', 7, 3]] as [$kind, $id, $row]) {
+        expect(fn () => SignInHistory::end($world->di, $kind, $id, $row))->toThrow(InformationException::class);
+    }
+    expect($world->db->fetchFirstColumn('SELECT id FROM session ORDER BY id'))->toBe(['session-guest', 'session-now', 'session-phone', 'session-staff', 'session-user']);
+
+    SignInHistory::end($world->di, 'client', 7, 2);
+    expect($world->db->fetchFirstColumn('SELECT id FROM session ORDER BY id'))->toBe(['session-guest', 'session-now', 'session-staff', 'session-user']);
+});
+
+test('a new session id takes along the sign-in rows of the logins still signed in, not those signed out', function (bool $on): void {
+    $world = new SignInSecurityTestWorld();
+    $world->save($on ? ['history' => '1'] : []);
+    $now = date('Y-m-d H:i:s');
+    foreach ([1 => ['client_id' => 7], 2 => ['client_id' => 7, 'user_id' => 8], 3 => ['client_id' => 5]] as $id => $row) {
+        $world->db->insert('activity_client_history', ['id' => $id, 'created_at' => $now, 'session_id' => 'old'] + $row);
+    }
+    $world->db->insert('activity_admin_history', ['id' => 1, 'admin_id' => 1, 'created_at' => $now, 'session_id' => 'old']);
+
+    // Staff and authorized user 8 of client 7 still signed in (a Google sign-in, a switch of account).
+    SignInHistory::moved($world->di, 'old', 'new', ['admin' => ['id' => 1], 'client_id' => 7, 'clientfence_user' => ['user_id' => 8]]);
+
+    expect($world->db->fetchAllKeyValue('SELECT id, session_id FROM activity_client_history ORDER BY id'))->toBe($on ? [1 => 'old', 2 => 'new', 3 => 'old'] : [1 => 'old', 2 => 'old', 3 => 'old'])
+        ->and($world->db->fetchOne('SELECT session_id FROM activity_admin_history'))->toBe($on ? 'new' : 'old');
+
+    // The user switched again, to account 9: its row (account 7) still follows.
+    SignInHistory::moved($world->di, 'new', 'third', ['client_id' => 9, 'clientfence_user' => ['user_id' => 8]]);
+    expect($world->db->fetchOne('SELECT session_id FROM activity_client_history WHERE id = 2'))->toBe($on ? 'third' : 'old');
+
+    // The account owner signed in (no authorized user); a signed-out browser moves nothing.
+    SignInHistory::moved($world->di, 'old', 'newer', ['client_id' => 7]);
+    SignInHistory::moved($world->di, 'old', 'guest', ['cart' => 0]);
+    expect($world->db->fetchOne('SELECT session_id FROM activity_client_history WHERE id = 1'))->toBe($on ? 'newer' : 'old')
+        ->and((int) $world->db->fetchOne("SELECT COUNT(*) FROM activity_client_history WHERE session_id = 'guest'"))->toBe(0);
+})->with(['on' => [true], 'off' => [false]]);

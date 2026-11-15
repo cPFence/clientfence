@@ -12,6 +12,8 @@
     {# ClientFence core patch: the Privacy tab (Client/Privacy.php), for the account owner while a privacy switch is on. #}
     {% set privacy = client.client_user_session ? null : client.client_privacy_status %}
     {% set privacy_tab = privacy and (privacy.tools or privacy.optout) %}
+    {# ClientFence core patch: the Sign-ins tab (Clientfence/SignInHistory.php), while the sign-in history is on. #}
+    {% set signins = client.profile_signins %}
     <div class="bf-page-head mb-4">
         <h1 class="bf-page-title">{{ 'Profile'|trans }}</h1>
     </div>
@@ -26,6 +28,10 @@
                            href="#pass-tab-pane">{{ 'Change Password'|trans }}</a>
                         <a class="nav-link" id="currency-tab" data-bs-toggle="tab"
                            data-bs-target="#currency-tab-pane" href="#currency-tab-pane">{{ 'Currency'|trans }}</a>
+                        {% if signins is not null %}
+                        <a class="nav-link" id="signins-tab" data-bs-toggle="tab"
+                           data-bs-target="#signins-tab-pane" href="#signins-tab-pane">{{ 'Sign-ins'|trans }}</a>
+                        {% endif %}
                         {% if privacy_tab %}
                         <a class="nav-link" id="privacy-tab" data-bs-toggle="tab"
                            data-bs-target="#privacy-tab-pane" href="#privacy-tab-pane">{{ 'Privacy'|trans }}</a>
@@ -218,6 +224,18 @@
                             </div>
                         {% endif %}
                     </div>
+                    {% if signins is not null %}
+                    <div class="card-body tab-pane" id="signins-tab-pane" role="tabpanel" tabindex="0">
+                        <h5 class="card-title mb-1">{{ 'Sign-ins'|trans }}</h5>
+                        <p class="card-text fs-7 text-muted">{{ 'Your last sign-ins. If you do not know one, sign it out and change your password.'|trans }}</p>
+                        {% include 'partial_signins.html.twig' %}
+                        {# The account owner's only: it ends every other session of the account. #}
+                        {% if not client.client_user_session %}
+                        <a class="btn btn-outline-danger" href="{{ 'profile/destroy_sessions'|api_url }}"
+                           {{ fb_api_link({modal: {type: 'confirm', title: 'Sign out all other sessions?'|trans, content: 'Every other browser signed in to this account is signed out, also those of your authorized users.'|trans}, reload: true}) }}>{{ 'Sign out all other sessions'|trans }}</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                     {% if privacy_tab %}
                     <div class="card-body tab-pane" id="privacy-tab-pane" role="tabpanel" tabindex="0">
                         {% if privacy.optout %}

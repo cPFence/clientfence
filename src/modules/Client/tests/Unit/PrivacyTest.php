@@ -34,7 +34,7 @@ function privacyDb(): Connection
         'CREATE TABLE support_ticket_secret (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, kind TEXT NOT NULL, label TEXT NOT NULL, data TEXT NOT NULL, added_by_client_id INTEGER, created_at TEXT NOT NULL)',
         'CREATE TABLE support_ticket_secret_event (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, secret_label TEXT NOT NULL, action TEXT NOT NULL, admin_id INTEGER, client_id INTEGER, created_at TEXT NOT NULL)',
         'CREATE TABLE activity_system (id INTEGER PRIMARY KEY, client_id INTEGER, message TEXT, ip TEXT)',
-        'CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)',
+        'CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT, user_id INTEGER, country TEXT, asn INTEGER, network TEXT, browser TEXT, session_id TEXT)',
         'CREATE TABLE activity_client_email (id INTEGER PRIMARY KEY, client_id INTEGER, sender TEXT, recipients TEXT, subject TEXT, content_text TEXT, created_at TEXT)',
         'CREATE TABLE client_password_reset (id INTEGER PRIMARY KEY, client_id INTEGER)',
         'CREATE TABLE email_queue (id INTEGER PRIMARY KEY, client_id INTEGER)',
@@ -123,6 +123,17 @@ test('the export holds the client\'s data and no secrets or staff notes', functi
         ->and($json)->not->toContain('staff only')
         ->and($json)->not->toContain('Alice is nice')
         ->and($json)->not->toContain('bob@client.test');
+});
+
+test('the export has the sign-in details and the authorized user, not the session id', function (): void {
+    $db = privacyDb();
+    $db->insert('client_user', ['id' => 3, 'email' => 'helper@client.test']);
+    $db->insert('activity_client_history', ['client_id' => 7, 'ip' => '203.0.113.8', 'created_at' => '2026-11-15 10:00:00', 'user_id' => 3, 'country' => 'US', 'asn' => 64500, 'network' => 'Example Net', 'browser' => 'Firefox on Linux', 'session_id' => 'live-session-id']);
+
+    $data = Privacy::export(privacyDi($db), 7);
+
+    expect($data['sign_ins'][1])->toMatchArray(['ip' => '203.0.113.8', 'authorized_user' => 'helper@client.test', 'country' => 'US', 'asn' => 64500, 'network' => 'Example Net', 'browser' => 'Firefox on Linux'])
+        ->and((string) json_encode($data))->not->toContain('live-session-id');
 });
 
 test('anonymizing erases the person and keeps the money records', function (): void {

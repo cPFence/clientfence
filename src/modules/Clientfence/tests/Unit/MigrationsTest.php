@@ -128,11 +128,37 @@ test('migration 11 makes each client\'s group their group list and adds the auto
     $di['dbal'] = $db;
     $di['pdo'] = $db->getNativeConnection();
 
-    expect(Migrations::apply($di))->toBe([11])
+    // Migration 11 alone: the later ones need tables this test does not create.
+    expect(Migrations::run($di['pdo'], [11 => fn () => (new ReflectionMethod(Migrations::class, 'm11GroupsAutoPromos'))->invoke(null, $di)]))->toBe([11])
         ->and($db->fetchAllNumeric('SELECT client_id, client_group_id FROM client_group_members ORDER BY client_id'))->toBe([[1, 1], [2, 2]])
         ->and(array_map(static fn ($c): string => $c->getName(), $db->createSchemaManager()->listTableColumns('promo')))->toContain('auto_apply');
 
     // Run again (an interrupted update repeats it): nothing is added twice.
     (new ReflectionMethod(Migrations::class, 'm11GroupsAutoPromos'))->invoke(null, $di);
     expect((int) $db->fetchOne('SELECT COUNT(*) FROM client_group_members'))->toBe(2);
+});
+
+test('migration 12 adds the sign-in details to both login histories, once', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, public INTEGER, category TEXT, hash TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('setting', ['param' => Migrations::SETTING, 'value' => '11', 'public' => 0, 'created_at' => '2026-10-01', 'updated_at' => '2026-10-01']);
+    $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)');
+    $db->executeStatement('CREATE TABLE activity_admin_history (id INTEGER PRIMARY KEY, admin_id INTEGER, ip TEXT, created_at TEXT)');
+    $db->insert('activity_client_history', ['client_id' => 7, 'ip' => '203.0.113.7', 'created_at' => '2026-11-01 10:00:00']);
+    $di = Tests\Helpers\container();
+    $di['dbal'] = $db;
+    $di['pdo'] = $db->getNativeConnection();
+    $columns = static fn (string $table): array => array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns($table)));
+    $details = ['country', 'asn', 'network', 'browser', 'session_id'];
+
+    expect(Migrations::apply($di))->toBe([12])
+        ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
+        ->and($columns('activity_admin_history'))->toBe(['id', 'admin_id', 'ip', 'created_at', ...$details])
+        ->and($db->createSchemaManager()->listTableIndexes('activity_client_history'))->toHaveKey('user_id_idx')
+        // Rows already there get no details.
+        ->and($db->fetchAssociative('SELECT client_id, user_id, country, session_id FROM activity_client_history'))->toBe(['client_id' => 7, 'user_id' => null, 'country' => null, 'session_id' => null]);
+
+    // Run again (an interrupted update repeats it): nothing is added twice.
+    (new ReflectionMethod(Migrations::class, 'm12SignInHistory'))->invoke(null, $di);
+    expect($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details]);
 });

@@ -90,7 +90,8 @@ final class Privacy
             'quotes' => self::rows($db, 'SELECT id, first_name, last_name, company, email, country, currency, subject, stage, valid_until, customer_notes, sent_at, accepted_at, declined_at, created_at FROM invoice_quote WHERE client_id = ? ORDER BY id', [$clientId]),
             'tickets' => $tickets,
             'emails_sent' => self::rows($db, 'SELECT sender, recipients, subject, content_text, created_at FROM activity_client_email WHERE client_id = ? ORDER BY id', [$clientId]),
-            'sign_ins' => self::rows($db, 'SELECT ip, created_at FROM activity_client_history WHERE client_id = ? ORDER BY id', [$clientId]),
+            // The sign-in details too (Clientfence/SignInHistory.php), not the session id: it would sign in as that session.
+            'sign_ins' => self::rows($db, 'SELECT h.ip, h.created_at, u.email AS authorized_user, h.country, h.asn, h.network, h.browser FROM activity_client_history h LEFT JOIN client_user u ON u.id = h.user_id WHERE h.client_id = ? ORDER BY h.id', [$clientId]),
             // The client's own affiliate account (Affiliates/); referred clients are other people.
             'affiliate' => self::rows($db, 'SELECT code, status, commission_type, commission_amount, onetime, created_at FROM client_affiliate WHERE client_id = ?', [$clientId]),
             'affiliate_entries' => self::rows($db, 'SELECT e.type, e.status, e.amount, e.currency, e.note, e.clears_at, e.created_at FROM client_affiliate_entry e JOIN client_affiliate a ON a.id = e.affiliate_id WHERE a.client_id = ? ORDER BY e.id', [$clientId]),

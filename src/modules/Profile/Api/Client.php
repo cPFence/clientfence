@@ -184,6 +184,27 @@ class Client extends \ClientFence\Api\AbstractApi
         return $this->getService()->invalidateSessions('client', $client->getId());
     }
 
+    /**
+     * ClientFence core patch: the Sign-ins tab (Clientfence/SignInHistory.php): this login's last sign-ins, or null
+     * while the sign-in history is off.
+     */
+    public function signins(): ?array
+    {
+        [$kind, $id] = \ClientFence\Mod\Client\TwoFactor::subject($this->getDi(), (int) $this->getClientEntity()->getId());
+
+        return \ClientFence\Mod\Clientfence\SignInHistory::recent($this->getDi(), $kind, $id);
+    }
+
+    /** ClientFence: signs out the session of one of this login's own sign-ins (`id`, a Sign-ins row). */
+    #[RequiredParams(['id' => 'Sign-in ID was not passed'])]
+    public function signin_end($data): bool
+    {
+        [$kind, $id] = \ClientFence\Mod\Client\TwoFactor::subject($this->getDi(), (int) $this->getClientEntity()->getId());
+        \ClientFence\Mod\Clientfence\SignInHistory::end($this->getDi(), $kind, $id, (int) $data['id']);
+
+        return true;
+    }
+
     private function getClientEntity(): ClientEntity
     {
         return $this->resolveClientEntity($this->getIdentity());

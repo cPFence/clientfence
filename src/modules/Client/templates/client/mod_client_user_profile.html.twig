@@ -61,5 +61,18 @@
             </div>
         </div>
     </div>
+    {# The Sign-ins of this user (Clientfence/SignInHistory.php), while the sign-in history is on. #}
+    {% set signins = client.profile_signins %}
+    {% if signins is not null %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header"><h2>{{ 'Sign-ins'|trans }}</h2></div>
+            <div class="card-body">
+                <p class="text-muted">{{ 'Your last sign-ins. If you do not know one, sign it out and change your password.'|trans }}</p>
+                {% include 'partial_signins.html.twig' %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

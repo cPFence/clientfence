@@ -769,6 +769,10 @@ class Admin extends \ClientFence\Api\AbstractApi
                 'id' => $item['id'],
                 'ip' => $item['ip'],
                 'created_at' => $item['created_at'],
+                // ClientFence core patch: sign-in details while they are kept (Clientfence/SignInHistory.php).
+                'network' => $item['network'] ?? null,
+                'browser' => $item['browser'] ?? null,
+                'user_email' => $item['user_email'] ?? null,
                 'client' => [
                     'id' => $item['client_id'],
                     'first_name' => $item['first_name'],

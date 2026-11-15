@@ -317,6 +317,7 @@ final class TwoFactor
         $session->regenerateId();
         $session->set('client_id', $client->getId());
         Users::startSession($di, $user);
+        \ClientFence\Mod\Clientfence\SignInHistory::started($di, $user !== null ? (int) $user['user_id'] : null);
         $di['logger']->info('Client #%s logged in', $client->getId());
         $session->delete('redirect_uri');
         if (!empty($client->getLang())) {

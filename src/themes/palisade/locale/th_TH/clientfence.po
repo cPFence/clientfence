@@ -26434,3 +26434,96 @@ msgstr "ปลายทางแชทนี้ไม่มีอยู่แล
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Webhook URL"
 msgstr "URL ของเว็บฮุก (Webhook URL)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A new country or network is one the login has not signed in from (with the PIN, the app or a trusted browser) in the last 90 days. A sign-in whose country or network is not known is always asked."
+msgstr "ประเทศหรือเครือข่ายใหม่ คือที่ที่บัญชียังไม่เคยเข้าสู่ระบบ (ด้วย PIN แอป หรือเบราว์เซอร์ที่เชื่อถือ) ใน 90 วันที่ผ่านมา การเข้าสู่ระบบที่ไม่ทราบประเทศหรือเครือข่ายจะถูกถามเสมอ"
+
+#: src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig …
+msgid "Browser"
+msgstr "เบราว์เซอร์"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose when to ask for the email PIN."
+msgstr "เลือกว่าจะขอ PIN ทางอีเมลเมื่อใด"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients and staff see their own last sign-ins on their profile (date, country, network, browser and IP address) and can sign out their other sessions. The login history pages show the same details. They are kept as long as the rest of the activity log."
+msgstr "ลูกค้าและเจ้าหน้าที่จะเห็นการเข้าสู่ระบบล่าสุดของตนในโปรไฟล์ (วันที่ ประเทศ เครือข่าย เบราว์เซอร์ และที่อยู่ IP) และสามารถออกจากระบบเซสชันอื่นได้ หน้าประวัติการเข้าสู่ระบบแสดงรายละเอียดเดียวกัน ข้อมูลเหล่านี้เก็บไว้นานเท่ากับบันทึกกิจกรรมส่วนที่เหลือ"
+
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Every other browser signed in to this account is signed out, also those of your authorized users."
+msgstr "เบราว์เซอร์อื่นทั้งหมดที่เข้าสู่ระบบบัญชีนี้จะถูกออกจากระบบ รวมถึงของผู้ใช้ที่ได้รับอนุญาตของคุณด้วย"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Every sign-in"
+msgstr "ทุกครั้งที่เข้าสู่ระบบ"
+
+#: src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig …
+msgid "Network"
+msgstr "เครือข่าย"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "No sign-ins yet."
+msgstr "ยังไม่มีการเข้าสู่ระบบ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Only from a new country or network"
+msgstr "เฉพาะจากประเทศหรือเครือข่ายใหม่"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Show the sign-in history on the profile pages"
+msgstr "แสดงประวัติการเข้าสู่ระบบในหน้าโปรไฟล์"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign out"
+msgstr "ออกจากระบบ"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign out all other sessions"
+msgstr "ออกจากระบบเซสชันอื่นทั้งหมด"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign out all other sessions?"
+msgstr "ออกจากระบบเซสชันอื่นทั้งหมดหรือไม่?"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign out this session?"
+msgstr "ออกจากระบบเซสชันนี้หรือไม่?"
+
+#: src/modules/Profile/Api/Admin.php src/modules/Profile/Api/Client.php
+msgid "Sign-in ID was not passed"
+msgstr "ไม่ได้ส่ง ID การเข้าสู่ระบบ"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Sign-in history"
+msgstr "ประวัติการเข้าสู่ระบบ"
+
+#: src/modules/Clientfence/SignInHistory.php
+msgid "Sign-in not found."
+msgstr "ไม่พบการเข้าสู่ระบบ"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign-ins"
+msgstr "การเข้าสู่ระบบ"
+
+#: src/modules/Clientfence/SignInHistory.php
+msgid "This is the session you are using."
+msgstr "นี่คือเซสชันที่คุณกำลังใช้อยู่"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "This session"
+msgstr "เซสชันนี้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "When to ask"
+msgstr "เมื่อใดที่จะถาม"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Your last sign-ins. If you do not know one, sign it out and change your password."
+msgstr "การเข้าสู่ระบบล่าสุดของคุณ หากคุณไม่รู้จักรายการใด ให้ออกจากระบบรายการนั้นและเปลี่ยนรหัสผ่าน"
+
+#: src/modules/Client/templates/admin/mod_client_login_history.html.twig
+msgid "authorized user %email%"
+msgstr "ผู้ใช้ที่ได้รับอนุญาต %email%"

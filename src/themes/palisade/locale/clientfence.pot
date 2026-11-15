@@ -1114,6 +1114,10 @@ msgstr ""
 msgid "A new client has just created an account with %company%."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A new country or network is one the login has not signed in from (with the PIN, the app or a trusted browser) in the last 90 days. A sign-in whose country or network is not known is always asked."
+msgstr ""
+
 #: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
 msgid "A new order has been placed on %created_at%."
 msgstr ""
@@ -4286,6 +4290,10 @@ msgstr ""
 msgid "Browse the store"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig …
+msgid "Browser"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
 msgid "Browser tab icon. Square, at least 64 × 64."
 msgstr ""
@@ -5486,6 +5494,10 @@ msgstr ""
 msgid "Choose when the service ends"
 msgstr ""
 
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose when to ask for the email PIN."
+msgstr ""
+
 #: src/modules/Cookieconsent/Service.php
 msgid "Choose where the banner shows."
 msgstr ""
@@ -5976,6 +5988,10 @@ msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig
 msgid "Clients Only"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Clients and staff see their own last sign-ins on their profile (date, country, network, browser and IP address) and can sign out their other sessions. The login history pages show the same details. They are kept as long as the rest of the activity log."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
@@ -10000,6 +10016,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "Every open preview ends at once."
+msgstr ""
+
+#: src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Every other browser signed in to this account is signed out, also those of your authorized users."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Every sign-in"
 msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
@@ -15534,6 +15558,10 @@ msgstr ""
 msgid "NetEarthOne Reseller ID"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig …
+msgid "Network"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Network Interface"
 msgstr ""
@@ -16474,6 +16502,10 @@ msgstr ""
 msgid "No settings available"
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/partial_signins.html.twig
+msgid "No sign-ins yet."
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "No staff groups are assigned. This notification will not be sent to any staff member until at least one group is added."
 msgstr ""
@@ -17220,6 +17252,10 @@ msgstr ""
 
 #: src/modules/Email/Api/Admin.php
 msgid "Only custom email templates can be deleted"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Only from a new country or network"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -23326,6 +23362,10 @@ msgstr ""
 msgid "Show the changed files"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Show the sign-in history on the profile pages"
+msgstr ""
+
 #: src/themes/palisade/config/settings.html.twig
 msgid "Showcase"
 msgstr ""
@@ -23426,6 +23466,22 @@ msgstr ""
 msgid "Sign in with Google"
 msgstr ""
 
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/partial_signins.html.twig
+msgid "Sign out"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign out all other sessions"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign out all other sessions?"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/partial_signins.html.twig
+msgid "Sign out this session?"
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Sign up"
 msgstr ""
@@ -23434,12 +23490,24 @@ msgstr ""
 msgid "Sign-in"
 msgstr ""
 
+#: src/modules/Profile/Api/Admin.php src/modules/Profile/Api/Client.php
+msgid "Sign-in ID was not passed"
+msgstr ""
+
 #: src/modules/Client/templates/email/mod_client_signup.html.twig src/modules/Client/templates/email/mod_client_signup_admin.html.twig
 msgid "Sign-in email"
 msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
 msgid "Sign-in from %ip%"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Sign-in history"
+msgstr ""
+
+#: src/modules/Clientfence/SignInHistory.php
+msgid "Sign-in not found."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -23452,6 +23520,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "Sign-in security saved."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_user_profile.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Sign-ins"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/modules/Staff/templates/admin/mod_staff_settings.html.twig …
@@ -26795,6 +26867,10 @@ msgstr ""
 msgid "This is the account's own email."
 msgstr ""
 
+#: src/modules/Clientfence/SignInHistory.php
+msgid "This is the session you are using."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "This is the usual address: choose your own."
 msgstr ""
@@ -27081,6 +27157,10 @@ msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "This service was refunded or its price changed after its last payment, so our staff change it. Please contact us."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/partial_signins.html.twig
+msgid "This session"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
@@ -29911,6 +29991,10 @@ msgstr ""
 msgid "When the prospect accepts, a client account is made with these details and the client gets an email to set a password."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "When to ask"
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
 msgid "When using ExchangeRate-API, their API informs ClientFence when the next update will occur, which makes automated syncing more efficient."
 msgstr ""
@@ -30967,6 +31051,10 @@ msgstr ""
 msgid "Your invoices, payments and account credit with the running balance."
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_user_profile.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
+msgid "Your last sign-ins. If you do not know one, sign it out and change your password."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig
 msgid "Your licence is billed by the units your software reports. Please make sure your software can send its report, or contact us."
 msgstr ""
@@ -31205,6 +31293,10 @@ msgstr ""
 
 #: src/modules/Client/Users.php
 msgid "authorized user"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_login_history.html.twig
+msgid "authorized user %email%"
 msgstr ""
 
 #: src/themes/palisade/html/layout_default.html.twig src/themes/palisade/html/mod_order_product.html.twig

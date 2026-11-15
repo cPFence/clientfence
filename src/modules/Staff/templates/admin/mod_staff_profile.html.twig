@@ -3,6 +3,8 @@
 {% block meta_title %}{{ 'Profile'|trans }}{% endblock %}
 
 {% block content %}
+{# ClientFence core patch: the staff member's own Sign-ins tab (Clientfence/SignInHistory.php), while the sign-in history is on. #}
+{% set signins = admin.profile_signins %}
 {% embed 'partial_admin_detail_tabs.html.twig' with {
     title: profile.name,
     subtitle: 'Manage your staff profile details, update your password, and rotate your API key.'|trans
@@ -18,6 +20,11 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-twofactor" data-bs-toggle="tab" role="tab">{{ 'Two-factor sign-in'|trans }}</a>
                     </li>
+                    {% if signins is not null %}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="#tab-signins" data-bs-toggle="tab" role="tab">{{ 'Sign-ins'|trans }}</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-api" data-bs-toggle="tab" role="tab">API</a>
                     </li>
@@ -160,6 +167,63 @@
                 </div>
             </div>
         </div>
+
+        {% if signins is not null %}
+        <div class="tab-pane fade" id="tab-signins" role="tabpanel">
+            <div class="p-3">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">{{ 'Sign-ins'|trans }}</h3>
+                            <p class="card-subtitle">{{ 'Your last sign-ins. If you do not know one, sign it out and change your password.'|trans }}</p>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'Date'|trans }}</th>
+                                    <th>{{ 'Country'|trans }}</th>
+                                    <th>{{ 'Network'|trans }}</th>
+                                    <th>{{ 'Browser'|trans }}</th>
+                                    <th>{{ 'IP'|trans }}</th>
+                                    <th class="w-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in signins %}
+                                <tr>
+                                    <td>{{ row.created_at|format_datetime }}</td>
+                                    <td>{{ row.country }}</td>
+                                    <td dir="auto">{{ row.network }}</td>
+                                    <td>{{ row.browser }}</td>
+                                    <td dir="ltr">{{ row.ip }}</td>
+                                    <td class="text-end">
+                                        {% if row.current %}
+                                            <span class="badge bg-success-lt">{{ 'This session'|trans }}</span>
+                                        {% elseif row.active %}
+                                            <span class="badge bg-secondary-lt">{{ 'Active'|trans }}</span>
+                                            <a class="btn btn-sm btn-outline-danger ms-2" href="{{ 'profile/signin_end'|api_url({id: row.id}) }}"
+                                               {{ fb_api_link({modal: {type: 'confirm', title: 'Sign out this session?'|trans}, reload: true}) }}>{{ 'Sign out'|trans }}</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td class="text-muted text-center py-3" colspan="6">{{ 'No sign-ins yet.'|trans }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a class="btn btn-outline-danger" href="{{ 'profile/destroy_sessions'|api_url }}"
+                           {{ fb_api_link({modal: {type: 'confirm', title: 'Sign out all other sessions?'|trans}, reload: true}) }}>{{ 'Sign out all other sessions'|trans }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <div class="tab-pane fade" id="tab-api" role="tabpanel">
             <div class="p-3">

@@ -303,6 +303,8 @@ class Guest extends \ClientFence\Api\AbstractApi
             $this->getDi()['session']->set('client_id', $client->getId());
             // ClientFence core patch: authorized users. The session is the user's, or the owner's.
             \ClientFence\Mod\Client\Users::startSession($this->getDi(), $clientfenceUser);
+            // ClientFence core patch: the sign-in history row names its session (Clientfence/SignInHistory.php).
+            \ClientFence\Mod\Clientfence\SignInHistory::started($this->getDi(), $clientfenceUser !== null ? (int) $clientfenceUser['user_id'] : null);
 
             $this->getDi()['logger']->info('Client #%s logged in', $client->getId());
             $this->getDi()['session']->delete('redirect_uri');

@@ -1,5 +1,6 @@
 {# ClientFence: the "Sign-in" tab of Security > Settings (mod_security_settings; SignInSecurity.php): an email
-   PIN at sign-in for staff, clients or both, staff sign-in from listed IP addresses only and staff password
+   PIN at sign-in for staff, clients or both (every sign-in or only from a new place), the sign-in history
+   (SignInHistory.php), staff sign-in from listed IP addresses only and staff password
    reset (both stored in the Staff settings), and staff sign-in from chosen countries only. Super Administrators only.
    `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
    clientfenceSigninSaved (clientfence-admin.js) shows the PIN field and the form is saved again. #}
@@ -21,10 +22,33 @@
                 {% endfor %}
             </select>
             <div class="form-hint">{{ 'Turning it on for staff first emails you a PIN, to make sure email works before anyone needs it.'|trans }}</div>
+            <label class="form-label mt-3" for="cf-signin-pin-when">{{ 'When to ask'|trans }}</label>
+            <select class="form-select" id="cf-signin-pin-when" name="pin_when">
+                {% for when, label in { 'every': 'Every sign-in'|trans, 'new': 'Only from a new country or network'|trans } %}
+                    <option value="{{ when }}"{% if signin.pin_when == when %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <div class="form-hint">{{ 'A new country or network is one the login has not signed in from (with the PIN, the app or a trusted browser) in the last 90 days. A sign-in whose country or network is not known is always asked.'|trans }}</div>
             <div class="mt-3" data-cf-signin-confirm hidden>
                 <label class="form-label" for="cf-signin-confirm">{{ 'PIN sent to'|trans }} <span data-cf-signin-email></span></label>
                 <input class="form-control" id="cf-signin-confirm" type="text" name="confirm_pin" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr">
             </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Sign-in history'|trans }}</h3>
+                <p class="card-subtitle">{{ 'Clients and staff see their own last sign-ins on their profile (date, country, network, browser and IP address) and can sign out their other sessions. The login history pages show the same details. They are kept as long as the rest of the activity log.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="history" value="0">
+            <label class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" name="history" value="1"{% if signin.history %} checked{% endif %}>
+                <span class="form-check-label">{{ 'Show the sign-in history on the profile pages'|trans }}</span>
+            </label>
         </div>
     </div>
 

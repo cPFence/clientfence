@@ -1,0 +1,39 @@
+{# ClientFence: the Sign-ins table (Clientfence/SignInHistory.php) of the profile pages; `signins` is profile/signins. #}
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>{{ 'Date'|trans }}</th>
+                <th>{{ 'Country'|trans }}</th>
+                <th>{{ 'Network'|trans }}</th>
+                <th>{{ 'Browser'|trans }}</th>
+                <th>{{ 'IP Address'|trans }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in signins %}
+            <tr>
+                <td>{{ row.created_at|format_datetime }}</td>
+                <td>{{ row.country }}</td>
+                <td dir="auto">{{ row.network }}</td>
+                <td>{{ row.browser }}</td>
+                <td dir="ltr">{{ row.ip }}</td>
+                <td class="text-end text-nowrap">
+                    {% if row.current %}
+                    <span class="badge bg-success">{{ 'This session'|trans }}</span>
+                    {% elseif row.active %}
+                    <span class="badge bg-secondary">{{ 'Active'|trans }}</span>
+                    <a class="btn btn-sm btn-outline-danger ms-2" href="{{ 'profile/signin_end'|api_url({id: row.id}) }}"
+                       {{ fb_api_link({modal: {type: 'confirm', title: 'Sign out this session?'|trans}, reload: true}) }}>{{ 'Sign out'|trans }}</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-muted">{{ 'No sign-ins yet.'|trans }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

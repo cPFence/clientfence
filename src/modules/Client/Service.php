@@ -460,9 +460,11 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
     public function getHistorySearchQuery($data): array
     {
-        $q = 'SELECT ach.*, c.first_name, c.last_name, c.email
+        // ClientFence core patch: the authorized user of a sign-in (Clientfence/SignInHistory.php).
+        $q = 'SELECT ach.*, c.first_name, c.last_name, c.email, cu.email AS user_email
               FROM activity_client_history as ach
-                LEFT JOIN client as c on ach.client_id = c.id ';
+                LEFT JOIN client as c on ach.client_id = c.id
+                LEFT JOIN client_user as cu on cu.id = ach.user_id ';
 
         $id = $data['id'] ?? null;
         $search = $data['search'] ?? null;

@@ -169,6 +169,8 @@ class Service implements InjectionAwareInterface
 
         $this->di['session']->regenerateId();
         $this->di['session']->set('admin', $result);
+        // ClientFence core patch: the staff sign-in history row names its session (Clientfence/SignInHistory.php).
+        \ClientFence\Mod\Clientfence\SignInHistory::started($this->di, null);
 
         $this->di['logger']->info(sprintf('Staff member %s logged in', $model->id));
 
@@ -976,6 +978,9 @@ class Service implements InjectionAwareInterface
             'id' => $model->id,
             'ip' => $model->ip,
             'created_at' => $model->created_at,
+            // ClientFence core patch: staff sign-in details while they are kept (Clientfence/SignInHistory.php).
+            'network' => $model->network,
+            'browser' => $model->browser,
         ];
         if ($model->admin_id) {
             $adminModel = $this->di['db']->load('Admin', $model->admin_id);

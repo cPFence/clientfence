@@ -163,6 +163,24 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: the staff Sign-ins tab (Clientfence/SignInHistory.php): this staff member's last
+     * sign-ins, or null while the sign-in history is off.
+     */
+    public function signins(): ?array
+    {
+        return \ClientFence\Mod\Clientfence\SignInHistory::recent($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId());
+    }
+
+    /** ClientFence: signs out the session of one of this staff member's own sign-ins (`id`, a Sign-ins row). */
+    #[RequiredParams(['id' => 'Sign-in ID was not passed'])]
+    public function signin_end($data): bool
+    {
+        \ClientFence\Mod\Clientfence\SignInHistory::end($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), (int) $data['id']);
+
+        return true;
+    }
+
+    /**
      * Destroy / invalidate all existing sessions for the currently logged in user.
      */
     public function destroy_sessions(): bool

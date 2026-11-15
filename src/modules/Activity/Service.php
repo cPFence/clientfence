@@ -81,7 +81,8 @@ class Service implements InjectionAwareInterface
         $extensionService = $di['mod_service']('extension');
         $ip = $extensionService->isExtensionActive('mod', 'demo') ? null : $params['ip'];
 
-        self::getDbalFromDi($di)->insert('activity_client_history', [
+        // ClientFence core patch: sign-in details while the sign-in history or the new-location PIN is on (Clientfence/SignInHistory.php).
+        \ClientFence\Mod\Clientfence\SignInHistory::record($di, 'activity_client_history', [
             'client_id' => $params['id'],
             'ip' => $ip,
             'created_at' => date('Y-m-d H:i:s'),
@@ -96,7 +97,8 @@ class Service implements InjectionAwareInterface
         $extensionService = $di['mod_service']('extension');
         $ip = $extensionService->isExtensionActive('mod', 'demo') ? null : $params['ip'];
 
-        self::getDbalFromDi($di)->insert('activity_admin_history', [
+        // ClientFence core patch: staff sign-in details, as for clients (Clientfence/SignInHistory.php).
+        \ClientFence\Mod\Clientfence\SignInHistory::record($di, 'activity_admin_history', [
             'admin_id' => $params['id'],
             'ip' => $ip,
             'created_at' => date('Y-m-d H:i:s'),

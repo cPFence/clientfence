@@ -35,6 +35,7 @@ final class Migrations
         9 => 'm9Affiliates',
         10 => 'm10SupportPinUnique',
         11 => 'm11GroupsAutoPromos',
+        12 => 'm12SignInHistory',
     ];
 
     public static function latest(): int
@@ -214,6 +215,30 @@ final class Migrations
             WHERE NOT EXISTS (SELECT 1 FROM client_group_members m WHERE m.client_id = c.id AND m.client_group_id = c.client_group_id)');
         if (!in_array('auto_apply', array_map(static fn ($c): string => strtolower($c->getName()), $schema->listTableColumns('promo')), true)) {
             $db->executeStatement("ALTER TABLE `promo` ADD COLUMN `auto_apply` tinyint(1) NOT NULL DEFAULT '0'");
+        }
+    }
+
+    /**
+     * 12: ClientFence core patch: sign-in details on FOSSBilling's login history (Clientfence/SignInHistory.php): country,
+     * asn, network, browser and session_id on both tables, and the authorized user (user_id, with its index) on the
+     * client one. One column at a time, so an interrupted run adds only what is missing.
+     */
+    private static function m12SignInHistory(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        $schema = $db->createSchemaManager();
+        $details = ['country' => 'varchar(2)', 'asn' => 'bigint(20)', 'network' => 'varchar(128)', 'browser' => 'varchar(64)', 'session_id' => 'varchar(32)'];
+        foreach (['activity_client_history' => ['user_id' => 'bigint(20)'] + $details, 'activity_admin_history' => $details] as $table => $columns) {
+            $have = array_map(static fn ($c): string => strtolower($c->getName()), $schema->listTableColumns($table));
+            foreach (array_diff_key($columns, array_flip($have)) as $name => $type) {
+                $db->executeStatement("ALTER TABLE `{$table}` ADD COLUMN `{$name}` {$type} DEFAULT NULL");
+            }
+        }
+        foreach (['activity_client_history' => ['user_id_idx' => 'user_id', 'client_signin_session_idx' => 'session_id'], 'activity_admin_history' => ['admin_signin_session_idx' => 'session_id']] as $table => $indexes) {
+            $have = $schema->listTableIndexes($table);
+            foreach (array_diff_key($indexes, $have) as $index => $column) {
+                $db->executeStatement("CREATE INDEX `{$index}` ON `{$table}` (`{$column}`)");
+            }
         }
     }
 }

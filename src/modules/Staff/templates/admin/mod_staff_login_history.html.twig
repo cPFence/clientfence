@@ -96,6 +96,9 @@
                     <th>{{ 'Admin'|trans }}</th>
                     <th>{{ 'IP'|trans }}</th>
                     <th>{{ 'Country'|trans }}</th>
+                    {# ClientFence core patch: sign-in details while they are kept (Clientfence/SignInHistory.php). #}
+                    <th>{{ 'Network'|trans }}</th>
+                    <th>{{ 'Browser'|trans }}</th>
                     <th>{{ 'Date'|trans }}</th>
                 </tr>
             </thead>
@@ -145,11 +148,13 @@
                     </div>
                 </td>
                 <td>{{ event.ip|ip_country_name|default('Unknown'|trans) }}</td>
+                <td dir="auto">{{ event.network }}</td>
+                <td>{{ event.browser }}</td>
                 <td>{{ event.created_at|format_datetime }}</td>
             </tr>
             {% else %}
             <tr>
-                <td class="text-muted text-center py-3" colspan="6">{{ 'The list is empty'|trans }}</td>
+                <td class="text-muted text-center py-3" colspan="8">{{ 'The list is empty'|trans }}</td>
             </tr>
             {% endfor %}
             </tbody>

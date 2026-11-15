@@ -104,7 +104,12 @@ class Session implements InjectionAwareInterface
         $_SESSION[self::OBSOLETE_FLAG] = true;
         $_SESSION[self::OBSOLETE_EXPIRES_AT] = time() + $gracePeriod;
 
+        $old = session_id();
         $this->rotateSessionId();
+        // ClientFence core patch: the sign-in history rows of the logins still signed in follow the new session id.
+        if ($this->di !== null) {
+            \ClientFence\Mod\Clientfence\SignInHistory::moved($this->di, $old, session_id(), $_SESSION);
+        }
 
         unset($_SESSION[self::OBSOLETE_FLAG], $_SESSION[self::OBSOLETE_EXPIRES_AT]);
     }

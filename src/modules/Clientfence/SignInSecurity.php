@@ -36,6 +36,10 @@ use Symfony\Component\Intl\Countries;
  * - Staff password reset: the "Forgot your password?" link of the staff login (the Staff module's
  *   public.reset_pw, on unless saved off, as in WHMCS).
  *
+ * - "When to ask" (pin_when): every sign-in, or only from a new country or network (SignInHistory::knownPlace()).
+ *
+ * - Sign-in history (history): the Sign-ins tab of the client and staff profiles (SignInHistory.php).
+ *
  * Locked out: `php console.php clientfence:signin-security-off` turns the features off.
  * Settings are kept in mod_clientfence_state (STATE), except the staff IP rule and password reset.
  */
@@ -45,6 +49,7 @@ final class SignInSecurity
     public const PENDING = 'clientfence_pin_pending';
     public const CONFIRM = 'clientfence_pin_confirm';
     public const PIN_MODES = ['off', 'staff', 'clients', 'both'];
+    public const PIN_WHEN = ['every', 'new'];
     public const PIN_SECONDS = 600;
     public const MAX_TRIES = 5;
     public const RESEND_SECONDS = 60;
@@ -60,7 +65,7 @@ final class SignInSecurity
      */
     public static ?int $newClientId = null;
 
-    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>, staff_reset: bool} */
+    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>, staff_reset: bool, pin_when: string, history: bool} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di) ?? [];
@@ -69,13 +74,13 @@ final class SignInSecurity
         $staff = $di['mod']('staff')->getConfig();
         $ips = array_values(array_filter(array_map(trim(...), preg_split('/\R/', (string) ($staff['allowed_ips'] ?? ''))), fn (string $ip): bool => $ip !== ''));
 
-        return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries, 'ips_on' => !empty($staff['check_ip']) && $ips !== [], 'ips' => $ips, 'staff_reset' => (string) ($staff['public']['reset_pw'] ?? '1') !== '0'];
+        return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries, 'ips_on' => !empty($staff['check_ip']) && $ips !== [], 'ips' => $ips, 'staff_reset' => (string) ($staff['public']['reset_pw'] ?? '1') !== '0', 'pin_when' => ($saved['pin_when'] ?? null) === 'new' ? 'new' : 'every', 'history' => !empty($saved['history'])];
     }
 
     /** Whether sign-ins of an area ('staff' or 'client') ask for an email PIN. */
-    public static function pinOn(\Pimple\Container $di, string $area): bool
+    public static function pinOn(\Pimple\Container $di, string $area, ?array $settings = null): bool
     {
-        $mode = self::settings($di)['pin'];
+        $mode = ($settings ?? self::settings($di))['pin'];
 
         return $mode === 'both' || ($area === 'staff' ? $mode === 'staff' : $mode === 'clients');
     }
@@ -106,6 +111,11 @@ final class SignInSecurity
         if (!in_array($pin, self::PIN_MODES, true)) {
             throw new InformationException('Choose who is asked for an email PIN.');
         }
+        $pinWhen = (string) ($data['pin_when'] ?? $old['pin_when']);
+        if (!in_array($pinWhen, self::PIN_WHEN, true)) {
+            throw new InformationException('Choose when to ask for the email PIN.');
+        }
+        $history = array_key_exists('history', $data) ? !empty($data['history']) : $old['history'];
         $countries = $data['countries'] ?? [];
         $countries = is_array($countries) ? $countries : preg_split('/[\s,]+/', (string) $countries);
         $countries = array_values(array_unique(array_filter(array_map(fn ($c): string => strtoupper(trim((string) $c)), $countries), fn (string $c): bool => $c !== '')));
@@ -187,18 +197,19 @@ final class SignInSecurity
             }
             $extension->setConfig(array_merge($staffConfig, $changes));
         }
-        self::saveState($di, ['pin' => $pin, 'countries_on' => $countriesOn, 'countries' => $countries]);
-        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s, staff countries %s, staff IPs %s, staff password reset %s', $admin['id'], $pin, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off', array_key_exists('staff_reset', $data) ? (empty($data['staff_reset']) ? 'off' : 'on') : 'unchanged');
+        self::saveState($di, ['pin' => $pin, 'pin_when' => $pinWhen, 'countries_on' => $countriesOn, 'countries' => $countries, 'history' => $history]);
+        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s (%s), sign-in history %s, staff countries %s, staff IPs %s, staff password reset %s', $admin['id'], $pin, $pinWhen, $history ? 'on' : 'off', $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off', array_key_exists('staff_reset', $data) ? (empty($data['staff_reset']) ? 'off' : 'on') : 'unchanged');
 
         return ['saved' => true];
     }
 
-    /** The console command for a locked-out site: turns the email PIN, country and/or IP rules off. */
+    /** The console command for a locked-out site: turns the email PIN (back to every sign-in), country and/or IP rules off. */
     public static function turnOff(\Pimple\Container $di, bool $pin, bool $countries, bool $ips): array
     {
         $settings = self::settings($di);
         if ($pin) {
             $settings['pin'] = 'off';
+            $settings['pin_when'] = 'every';
         }
         if ($countries) {
             $settings['countries_on'] = false;
@@ -207,7 +218,7 @@ final class SignInSecurity
             $extension = $di['mod_service']('extension');
             $extension->setConfig(array_merge($extension->getConfig('mod_staff'), ['ext' => 'mod_staff', 'check_ip' => 0]));
         }
-        self::saveState($di, ['pin' => $settings['pin'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries']]);
+        self::saveState($di, ['pin' => $settings['pin'], 'pin_when' => $settings['pin_when'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries'], 'history' => $settings['history']]);
 
         return self::settings($di);
     }
@@ -265,13 +276,16 @@ final class SignInSecurity
     /**
      * After the right password: when the area asks for a PIN and this browser is not trusted for
      * the login, keeps the sign-in waiting (PENDING), sends the PIN and returns true; false when
-     * the sign-in may go on. $login: {kind: staff|client|user, id, email, name, timezone};
+     * the sign-in may go on (also from a known place when the PIN asks only from a new one).
+     * $login: {kind: staff|client|user, id, email, name, timezone};
      * $payload: what the finishing step needs (kept in the session). $force: a staff member with the
      * authenticator app chose the email PIN instead (sent whatever the PIN setting).
      */
     public static function challenge(\Pimple\Container $di, string $area, array $login, array $payload, string $ip, bool $force = false): bool
     {
-        if (!$force && (!self::pinOn($di, $area) || self::trusted($di, $area, (string) $login['kind'], (int) $login['id']))) {
+        $settings = self::settings($di);
+        if (!$force && (!self::pinOn($di, $area, $settings) || self::trusted($di, $area, (string) $login['kind'], (int) $login['id'])
+            || ($settings['pin_when'] === 'new' && SignInHistory::knownPlace($di, (string) $login['kind'], (int) $login['id'], $ip)))) {
             return false;
         }
         if ($area === 'client' && $login['kind'] === 'client' && self::$newClientId !== null && self::$newClientId === (int) $login['id']) {
@@ -509,16 +523,20 @@ final class SignInSecurity
         }
     }
 
-    private static function state(\Pimple\Container $di): ?array
+    /** The saved settings as stored (settings() checks them). */
+    public static function state(\Pimple\Container $di): ?array
     {
-        try {
-            $row = $di['em']->getConnection()->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', [self::STATE]);
-        } catch (\Throwable) {
-            return null;
-        }
-        $value = is_string($row) ? json_decode($row, true) : null;
+        // Once per request: the sign-in and its history row both read it.
+        return \ClientFence\RequestCache::remember($di, 'signin.state', static function () use ($di): ?array {
+            try {
+                $row = $di['em']->getConnection()->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', [self::STATE]);
+            } catch (\Throwable) {
+                return null;
+            }
+            $value = is_string($row) ? json_decode($row, true) : null;
 
-        return is_array($value) ? $value : null;
+            return is_array($value) ? $value : null;
+        });
     }
 
     private static function saveState(\Pimple\Container $di, array $value): void
@@ -530,5 +548,6 @@ final class SignInSecurity
             && $db->fetchOne('SELECT 1 FROM mod_clientfence_state WHERE name = ?', [self::STATE]) === false) {
             $db->insert('mod_clientfence_state', ['name' => self::STATE, 'value' => $json, 'updated_at' => $now]);
         }
+        \ClientFence\RequestCache::forget($di, 'signin.state');
     }
 }
