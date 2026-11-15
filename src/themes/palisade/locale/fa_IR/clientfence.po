@@ -28278,3 +28278,204 @@ msgstr "مشتریان مشمول و کاربران مجاز حساب‌هایش
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
 msgstr "شما فقط با گوگل وارد می‌شوید: ابتدا یک گذرواژه انتخاب کنید، سپس ورود دومرحله‌ای را در اینجا راه‌اندازی کنید."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr "مجاز (خاموش)"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
+msgstr "برای این مشتری مجاز"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr "این شبکه‌ها را هم هاستینگ بشمار"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
+msgstr "سفارش تأیید شود؟"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
+msgstr "مانند تنظیمات امنیتی"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr "ایمیل‌ها و دامنه‌های ممنوع"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr "ایمیل‌ها و شماره‌های تلفن ممنوع"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr "شماره‌های تلفن ممنوع"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr "مسدود کردن ثبت‌نام‌ها و سفارش‌ها"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
+msgstr "IPهای مسدودشده نمی‌توانند وارد شوند، ثبت‌نام کنند، سفارش دهند یا تیکت عمومی باز کنند. در هر خط یک نشانی، یک بازه (203.0.113.0/24، 2001:db8::/32) یا یک نویسه جایگزین (203.0.113.*) اضافه کنید."
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
+msgstr "انتخاب کنید با ثبت‌نام‌ها و سفارش‌های شبکه‌های هاستینگ چه شود."
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr "درود :name،"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr "شناسه نگه‌داشت ارسال نشد"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
+msgstr "نگه‌داشتن سفارش‌ها برای بررسی"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr "شبکه‌های هاستینگ و VPN"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
+msgstr "شبکه هاستینگ"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
+msgstr "اگر فاکتوری برای پرداخت وجود داشته باشد، آن را با ایمیل دریافت می‌کنید و در بخش مشتریان می‌یابید. راه‌اندازی طبق معمول آغاز می‌شود."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
+msgstr "فاکتور #:id"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr "سرویس‌های من"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr "تنظیمات شبکه ذخیره شد."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
+msgstr "هرگز این شبکه‌ها را هاستینگ نشمار"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr "هیچ سفارشی منتظر بررسی نیست."
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr "شماره شبکه نیست: :asn. از شماره‌هایی مانند AS24940 استفاده کنید."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr "در هر خط یکی، با کد کشور. فاصله، خط تیره و + اهمیتی ندارند."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
+msgstr "در هر خط یکی: یک نشانی، یک دامنه یا *.دامنه برای زیردامنه‌های آن."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr "سفارش #:id منتظر بررسی است: :title"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr "سفارش #:id: :title"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr "سفارش منتظر بررسی است"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr "سفارش‌های شبکه‌های هاستینگ و VPN"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
+msgstr "سفارش‌هایی که پیش از راه‌اندازی نگه داشته شده‌اند. فاکتور آن‌ها پیش‌نویسی است که مشتری نمی‌تواند ببیند یا بپردازد. تأیید کنید تا فاکتور صادر شود و کار ادامه یابد، یا رد کنید تا سفارش‌ها و فاکتور لغو شوند. سفارش‌های یک پرداخت با هم تصمیم‌گیری می‌شوند و مشتری ایمیل دریافت می‌کند."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr "اگر فکر می‌کنید این اشتباه است، لطفاً با ما تماس بگیرید."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr "رد و مسدود کردن"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr "ایمیل رد و مسدود شود؟"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
+msgstr "سفارش رد شود؟"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr "ثبت‌نام‌ها و سفارش‌های شبکه‌های هاستینگ"
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr "ثبت‌نام‌ها و سفارش‌های شبکه‌های هاستینگ، VPN یا پروکسی پذیرفته نمی‌شوند. لطفاً VPN یا پروکسی خود را خاموش کنید و دوباره تلاش کنید، یا با ما تماس بگیرید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr "ثبت‌نام‌ها و سفارش‌های شبکه‌های هاستینگ، مراکز داده و VPN اغلب تقلب هستند. نگه‌داشتن برای بررسی: سفارش در سفارش ‌> منتظر بررسی می‌ماند و فاکتور آن تا تأیید شما پرداخت نمی‌شود. مسدود کردن: ثبت‌نام یا سفارش رد می‌شود. مشتریان هاستینگ اغلب از یک سرور یا VPN دفتر سفارش می‌دهند، بنابراین «نگه‌داشتن سفارش‌ها برای بررسی» انتخاب ایمن‌تری است. برای عبور دادن یک مشتری، در صفحه مشتری او آن را مجاز کنید."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
+msgstr "با Cloudflare، Akamai و Fastly شروع می‌شود که iCloud Private Relay را عبور می‌دهند."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr "فهرست داخلی :count شبکه دارد (X4BNet lists_vpn، مجوز MIT). شبکه هر بازدیدکننده در پایگاه داده GeoIP همین سرور جست‌وجو می‌شود: چیزی به جایی فرستاده نمی‌شود."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr "فاکتور برای مشتری صادر می‌شود (در صورت کافی بودن، از اعتبار او پرداخت می‌شود) و راه‌اندازی ادامه می‌یابد."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr "سفارش‌ها و فاکتورشان لغو می‌شوند و :email به ایمیل‌های ممنوع افزوده می‌شود."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
+msgstr "سفارش‌ها و فاکتورشان لغو می‌شوند."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr "با این‌ها نمی‌توان ثبت‌نام کرد یا سفارش داد و مشتری هم نمی‌تواند آن‌ها را در نمایه خود تنظیم کند. کارکنان همچنان می‌توانند آن‌ها را برای مشتری به کار ببرند. به مشتری گفته نمی‌شود کدام مورد مطابقت داشت. فهرست‌های خالی چیزی را بررسی نمی‌کنند."
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
+msgstr "این سفارش دیگر منتظر بررسی نیست."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr "منتظر بررسی"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr "سفارش شما را بررسی و تأیید کردیم:"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr "سفارش شما را بررسی کردیم و نتوانستیم آن را بپذیریم. همراه با فاکتورش لغو شد و چیزی کسر نشد:"
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
+msgstr "سفارش شما را پیش از شروع بررسی می‌کنیم و پس از تأیید ایمیل می‌فرستیم. فاکتور، در صورت وجود، سپس می‌آید."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr "سفارش شما پذیرفته نشد"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
+msgstr "سفارش شما تأیید شد"

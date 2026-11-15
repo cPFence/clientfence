@@ -284,6 +284,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'client_affiliate', 'client_affiliate_referral', 'client_affiliate_entry', 'client_affiliate_payout', 'client_affiliate_visit',
         // ClientFence core patch: clients in several groups (Client/Groups.php).
         'client_group_members',
+        // ClientFence core patch: orders held for review (Order/Holds.php).
+        'client_order_hold',
     ];
 
     /**

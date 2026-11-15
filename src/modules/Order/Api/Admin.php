@@ -799,6 +799,39 @@ class Admin extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    /** ClientFence: the orders waiting for review (Order\Holds; Orders > Waiting for review). */
+    public function hold_list($data): array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\Holds::heldList($this->getDi());
+    }
+
+    /** ClientFence: approves a held order and the others of its checkout: the invoice is issued and setup carries on. */
+    #[RequiredParams(['id' => 'Hold ID was not passed'])]
+    public function hold_approve($data): bool
+    {
+        $this->checkPermissions('order', 'manage');
+        \ClientFence\Mod\Order\Holds::approve($this->getDi(), (int) $data['id'], $this->adminId());
+
+        return true;
+    }
+
+    /** ClientFence: refuses a held order and the others of its checkout (cancelled with their invoice); `ban` 1 bans the client's email. */
+    #[RequiredParams(['id' => 'Hold ID was not passed'])]
+    public function hold_refuse($data): bool
+    {
+        $this->checkPermissions('order', 'manage');
+        $ban = !empty($data['ban']);
+        if ($ban) {
+            // The banned list is an Antispam setting: checked here, before the orders are refused.
+            $this->checkPermissions('antispam', 'manage_settings');
+        }
+        \ClientFence\Mod\Order\Holds::refuse($this->getDi(), (int) $data['id'], $this->adminId(), $ban);
+
+        return true;
+    }
+
     /**
      * ClientFence: what Orders > Bulk price update offers (Order\BulkPrices): products, billing
      * periods in use, statuses and currencies.

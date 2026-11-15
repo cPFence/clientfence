@@ -31,11 +31,14 @@ test('each section saves its own config.php keys', function (): void {
         SecuritySettings::save($di, ['section' => 'proxies', 'proxies_on' => '1', 'proxies' => "173.245.48.0/20\n2606:4700::/32", 'headers' => 'aws_elb'], 1);
         SecuritySettings::save($di, ['section' => 'access', 'whitelist' => '198.51.100.7', 'api_ips' => '203.0.113.0/24'], 1);
         SecuritySettings::save($di, ['section' => 'sessions', 'fingerprint' => '0'], 1);
+        SecuritySettings::save($di, ['section' => 'networks', 'mode' => 'hold', 'always' => 'AS24940', 'never' => "13335\nAS54113"], 1);
 
         expect(Config::getProperty('security.trusted_proxies'))->toBe(['enabled' => true, 'proxies' => ['173.245.48.0/20', '2606:4700::/32'], 'headers' => 'aws_elb'])
             ->and(Config::getProperty('rate_limiter.whitelist_ips'))->toBe(['198.51.100.7'])
             ->and(Config::getProperty('api.allowed_ips'))->toBe(['203.0.113.0/24'])
             ->and(Config::getProperty('security.perform_session_fingerprinting'))->toBeFalse()
+            ->and(ClientFence\Mod\Antispam\Networks::settings())->toBe(['mode' => 'hold', 'always' => [24940], 'never' => [13335, 54113]])
+            ->and(fn () => SecuritySettings::save($di, ['section' => 'networks', 'mode' => 'flag'], 1))->toThrow(InformationException::class)
             ->and(fn () => SecuritySettings::save($di, ['section' => 'proxies', 'proxies_on' => '1', 'proxies' => ''], 1))->toThrow(InformationException::class)
             ->and(fn () => SecuritySettings::save($di, ['section' => 'proxies', 'proxies_on' => '1', 'proxies' => '10.0.0.1', 'headers' => 'traefik'], 1))->toThrow(InformationException::class);
     } finally {

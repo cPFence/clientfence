@@ -43,7 +43,9 @@ test('stale unpaid orders are matched by pending-setup status, unpaid invoice ov
                 // judged instead by the order's own age. Checked in a second subquery
                 // against unpaid_invoice_id, distinct from the overdue-invoice one above.
                 && $subqueryCount === 2
-                && str_contains($sql, 'DATEDIFF(NOW(), o.created_at) > :days');
+                && str_contains($sql, 'DATEDIFF(NOW(), o.created_at) > :days')
+                // Orders held for review wait for staff (Order\Holds).
+                && str_contains($sql, "NOT EXISTS (SELECT 1 FROM client_order_hold h WHERE h.client_order_id = o.id AND h.status = 'held')");
         })
         ->andReturn([]);
 

@@ -33,6 +33,8 @@ test('on before client sign up', function (): void {
         ->atLeast()->once();
     $spamCheckerService->shouldReceive('checkHoneypot')
         ->atLeast()->once();
+    $spamCheckerService->shouldReceive('isBanned')->once();
+    $spamCheckerService->shouldReceive('isHostingNetwork')->once();
 
     $di = container();
     $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $spamCheckerService);
@@ -164,3 +166,38 @@ dataset('spam responses', fn (): array => [
         '{"success" : "true", "ip" : {"appears" : "true" }}', 'Your IP address is blacklisted in the Stop Forum Spam database',
     ],
 ]);
+
+test('the blocked IP list takes ranges and wildcards', function (string $ip, bool $blocked): void {
+    $di = container();
+    $di['request'] = Request::create('/', 'GET', [], [], [], ['REMOTE_ADDR' => $ip]);
+    $di['mod_config'] = $di->protect(fn (): array => ['block_ips' => true, 'blocked_ips' => implode(PHP_EOL, ['192.0.2.7', '198.51.100.0/24', '203.0.113.*', '10.*.*.*', '2001:db8::/32'])]);
+    $event = new ClientFence\Event(null, 'onBeforeClientLogin');
+    $event->setDi($di);
+
+    $check = fn () => (new ClientFence\Mod\Antispam\Service())->isBlockedIp($event);
+    $blocked ? expect($check)->toThrow(ClientFence\InformationException::class) : expect($check())->toBeNull();
+})->with([
+    ['192.0.2.7', true],
+    ['192.0.2.8', false],
+    ['198.51.100.200', true],
+    ['203.0.113.9', true],
+    ['203.0.114.9', false],
+    ['10.20.30.40', true],
+    ['2001:db8::1', true],
+    ['2001:db9::1', false],
+]);
+
+test('an unreachable Stop Forum Spam lets the sign-up through', function (): void {
+    $di = container();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['http_client'] = new Symfony\Component\HttpClient\MockHttpClient(function (string $method, string $url, array $options): never {
+        // A short timeout is set, so a hung service fails fast.
+        expect($options['timeout'])->toBeLessThanOrEqual(5.0);
+
+        throw new Symfony\Component\HttpClient\Exception\TransportException('Idle timeout reached');
+    });
+    $service = new ClientFence\Mod\Antispam\Service();
+    $service->setDi($di);
+
+    expect($service->isInStopForumSpamDatabase(['ip' => '192.0.2.1', 'email' => 'a@example.com']))->toBeFalse();
+});

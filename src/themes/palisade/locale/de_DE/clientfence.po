@@ -28245,3 +28245,204 @@ msgstr "Betroffene Kunden und die autorisierten Benutzer ihrer Konten müssen ei
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
 msgstr "Sie melden sich nur mit Google an: Wählen Sie zuerst ein Passwort und richten Sie dann hier die Zwei-Faktor-Anmeldung ein."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr "Erlaubt (aus)"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
+msgstr "Für diesen Kunden erlaubt"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr "Diese Netzwerke zusätzlich als Hosting behandeln"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
+msgstr "Bestellung bestätigen?"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
+msgstr "Wie in den Sicherheitseinstellungen"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr "Gesperrte E-Mail-Adressen und Domains"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr "Gesperrte E-Mail-Adressen und Telefonnummern"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr "Gesperrte Telefonnummern"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr "Registrierungen und Bestellungen blockieren"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
+msgstr "Gesperrte IPs dürfen sich nicht anmelden, registrieren, bestellen oder öffentliche Tickets eröffnen. Eine Adresse pro Zeile, ein Bereich (203.0.113.0/24, 2001:db8::/32) oder ein Platzhalter (203.0.113.*)."
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
+msgstr "Legen Sie fest, was mit Registrierungen und Bestellungen aus Hosting-Netzwerken geschieht."
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr "Hallo :name,"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr "Prüfungs-ID wurde nicht übergeben"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
+msgstr "Bestellungen zur Prüfung zurückhalten"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr "Hosting- und VPN-Netzwerke"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
+msgstr "Hosting-Netzwerk"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
+msgstr "Wenn eine Rechnung zu bezahlen ist, erhalten Sie sie per E-Mail und finden sie in Ihrem Kundenbereich. Die Einrichtung beginnt wie gewohnt."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
+msgstr "Rechnung #:id"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr "Meine Dienste"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr "Netzwerkeinstellungen gespeichert."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
+msgstr "Diese Netzwerke nie als Hosting behandeln"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr "Keine Bestellungen warten auf Prüfung."
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr "Keine Netzwerknummer: :asn. Verwenden Sie Nummern wie AS24940."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr "Eine pro Zeile, mit Ländercode. Leerzeichen, Bindestriche und + spielen keine Rolle."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
+msgstr "Eine pro Zeile: eine Adresse, eine Domain oder *.domain für ihre Subdomains."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr "Bestellung #:id wartet auf Prüfung: :title"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr "Bestellung #:id: :title"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr "Bestellung wartet auf Prüfung"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr "Bestellungen aus Hosting- und VPN-Netzwerken"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
+msgstr "Bestellungen, die vor der Einrichtung zurückgehalten werden. Ihre Rechnung ist ein Entwurf, den der Kunde weder sehen noch bezahlen kann. Bestätigen Sie, um die Rechnung auszustellen und fortzufahren, oder lehnen Sie ab, um die Bestellungen und die Rechnung zu stornieren. Die Bestellungen eines Checkouts werden gemeinsam entschieden, und der Kunde erhält eine E-Mail."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr "Bitte kontaktieren Sie uns, wenn Sie glauben, dass dies ein Fehler ist."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr "Ablehnen und sperren"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr "Ablehnen und die E-Mail-Adresse sperren?"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
+msgstr "Bestellung ablehnen?"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr "Registrierungen und Bestellungen aus Hosting-Netzwerken"
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr "Registrierungen und Bestellungen aus Hosting-, VPN- oder Proxy-Netzwerken werden nicht akzeptiert. Bitte schalten Sie Ihr VPN oder Ihren Proxy aus und versuchen Sie es erneut, oder kontaktieren Sie uns."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr "Registrierungen und Bestellungen aus Hosting-, Rechenzentrums- und VPN-Netzwerken sind oft Betrug. Zur Prüfung zurückhalten: Die Bestellung wartet unter Bestellungen > Wartet auf Prüfung, ihre Rechnung kann erst nach Ihrer Bestätigung bezahlt werden. Blockieren: Die Registrierung oder Bestellung wird abgelehnt. Hosting-Kunden bestellen oft von einem Server oder Büro-VPN, daher ist „Zur Prüfung zurückhalten“ die sicherere Wahl. Um einen Kunden durchzulassen, erlauben Sie es auf seiner Kundenseite."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
+msgstr "Beginnt mit Cloudflare, Akamai und Fastly, die iCloud Private Relay transportieren."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr "Die integrierte Liste enthält :count Netzwerke (X4BNet lists_vpn, MIT-Lizenz). Das Netzwerk jedes Besuchers wird in der GeoIP-Datenbank auf diesem Server nachgeschlagen: Es wird nichts irgendwohin gesendet."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr "Die Rechnung wird dem Kunden ausgestellt (von seinem Guthaben bezahlt, wenn es sie deckt) und die Einrichtung läuft weiter."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr "Die Bestellungen und ihre Rechnung werden storniert, und :email wird zu den gesperrten E-Mail-Adressen hinzugefügt."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
+msgstr "Die Bestellungen und ihre Rechnung werden storniert."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr "Diese können sich nicht registrieren, bestellen oder von einem Kunden in seinem Profil eingetragen werden. Mitarbeiter können sie weiterhin für einen Kunden verwenden. Dem Kunden wird nicht mitgeteilt, welche Angabe übereinstimmte. Leere Listen prüfen nichts."
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
+msgstr "Diese Bestellung wartet nicht mehr auf Prüfung."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr "Wartet auf Prüfung"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr "Wir haben Ihre Bestellung geprüft und bestätigt:"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr "Wir haben Ihre Bestellung geprüft und konnten sie nicht annehmen. Sie wurde samt Rechnung storniert, und es wurde nichts berechnet:"
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
+msgstr "Wir prüfen Ihre Bestellung, bevor sie startet, und senden Ihnen eine E-Mail, wenn sie bestätigt ist. Eine eventuelle Rechnung folgt dann."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr "Ihre Bestellung konnte nicht angenommen werden"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
+msgstr "Ihre Bestellung ist bestätigt"

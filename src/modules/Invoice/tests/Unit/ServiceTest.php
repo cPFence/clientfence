@@ -4704,19 +4704,21 @@ test('gets unpaid invoices late for', function (): void {
     expect($result[0])->toBeInstanceOf(Model_Invoice::class);
 });
 
-test('old unpaid invoice cleanup keeps live renewals and invoices with a bank debit clearing, and returns invoices without a live order', function (string $status): void {
+test('old unpaid invoice cleanup keeps live renewals, invoices with a bank debit clearing and held orders\' drafts, and returns invoices without a live order', function (string $status): void {
     $pdo = new PDO('sqlite::memory:');
     $pdo->sqliteCreateFunction('NOW', fn (): string => '2026-10-31 00:00:00', 0);
     $pdo->sqliteCreateFunction('DATEDIFF', fn (string $later, string $earlier): int => (int) floor((strtotime($later) - strtotime($earlier)) / 86400), 2);
     $pdo->exec('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, due_at TEXT)');
     $pdo->exec('CREATE TABLE client_order (id INTEGER PRIMARY KEY, unpaid_invoice_id INTEGER, status TEXT)');
-    $pdo->exec("INSERT INTO invoice VALUES (1, 'unpaid', '2026-09-01'), (2, 'unpaid', '2026-09-01'), (3, 'unpaid', '2026-09-01'), (4, 'unpaid', '2026-09-01')");
+    $pdo->exec("INSERT INTO invoice VALUES (1, 'unpaid', '2026-09-01'), (2, 'unpaid', '2026-09-01'), (3, 'unpaid', '2026-09-01'), (4, 'unpaid', '2026-09-01'), (5, 'unpaid', '2026-09-01')");
+    $pdo->exec("CREATE TABLE client_order_hold (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT)");
+    $pdo->exec("INSERT INTO client_order_hold VALUES (1, 5, 'held'), (2, 2, 'approved')");
     $pdo->exec('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, created_at TEXT)');
     $pdo->prepare("INSERT INTO `transaction` VALUES (1, 4, 'received', 'processing', ?)")->execute([date('Y-m-d H:i:s')]);
     $pdo->prepare('INSERT INTO client_order VALUES (1, 1, ?), (2, 3, ?)')->execute([$status, Model_ClientOrder::STATUS_CANCELED]);
 
     $models = [];
-    foreach ([1, 2, 3, 4] as $id) {
+    foreach ([1, 2, 3, 4, 5] as $id) {
         $models[$id] = new Model_Invoice();
         $models[$id]->loadBean(new Tests\Helpers\DummyBean());
         $models[$id]->id = $id;

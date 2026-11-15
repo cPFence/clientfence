@@ -29274,3 +29274,204 @@ msgstr "範圍內的客戶及其帳戶的授權使用者必須設定驗證器應
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
 msgstr "您僅透過 Google 登入：請先設定密碼，然後在此設定雙重驗證登入。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr "允許（關）"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
+msgstr "對此客戶允許"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr "同時將這些網路視為主機代管"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
+msgstr "批准此訂單？"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
+msgstr "與安全性設定相同"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr "被禁止的電子郵件和網域"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr "被禁止的電子郵件和電話號碼"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr "被禁止的電話號碼"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr "封鎖註冊和訂單"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
+msgstr "被封鎖的 IP 不能登入、註冊、下單或開啟公開工單。每行新增一個位址、一個範圍（203.0.113.0/24、2001:db8::/32）或萬用字元（203.0.113.*）。"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
+msgstr "選擇來自主機代管網路的註冊和訂單如何處理。"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr "您好 :name，"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr "未傳遞暫扣 ID"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
+msgstr "暫扣訂單等待審核"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr "主機代管和 VPN 網路"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
+msgstr "主機代管網路"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
+msgstr "如果有待付款的帳單，您將透過電子郵件收到，並可在客戶區找到。開通照常開始。"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
+msgstr "帳單 #:id"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr "我的服務"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr "網路設定已儲存。"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
+msgstr "絕不將這些網路視為主機代管"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr "沒有等待審核的訂單。"
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr "不是網路編號：:asn。請使用 AS24940 這樣的編號。"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr "每行一個，附國家代碼。空格、連字號和 + 無關緊要。"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
+msgstr "每行一個：位址、網域，或用 *.網域 表示其子網域。"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr "訂單 #:id 等待審核：:title"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr "訂單 #:id：:title"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr "訂單等待審核"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr "來自主機代管和 VPN 網路的訂單"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
+msgstr "在開通前被暫扣的訂單。其帳單是客戶看不到也無法付款的草稿。批准後將開立帳單並繼續；拒絕則取消訂單和帳單。同一次結帳的訂單會一起處理，客戶會收到電子郵件。"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr "如果您認為這是錯誤，請聯絡我們。"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr "拒絕並封鎖"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr "拒絕並封鎖此電子郵件？"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
+msgstr "拒絕此訂單？"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr "來自主機代管網路的註冊和訂單"
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr "不接受來自主機代管、VPN 或代理網路的註冊和訂單。請關閉 VPN 或代理後重試，或聯絡我們。"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr "來自主機代管、資料中心和 VPN 網路的註冊和訂單往往是詐騙。暫扣訂單等待審核：訂單會在 訂單 > 等待審核 中等待，在您批准前其帳單無法付款。封鎖：註冊或訂單被拒絕。代管客戶常從伺服器或辦公室 VPN 下單，所以「暫扣訂單等待審核」較為穩妥。要放行某個客戶，請在其客戶頁面中允許。"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
+msgstr "從 Cloudflare、Akamai 和 Fastly 開始，它們承載 iCloud Private Relay。"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr "內建清單有 :count 個網路（X4BNet lists_vpn，MIT 授權）。每位訪客的網路都在此伺服器的 GeoIP 資料庫中查詢：不會向任何地方傳送任何內容。"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr "帳單將開立給客戶（若其餘額足夠則從餘額付款），開通繼續。"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr "訂單及其帳單將被取消，:email 將被加入被禁止的電子郵件。"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
+msgstr "訂單及其帳單將被取消。"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr "這些不能用於註冊或下單，客戶也不能在其個人資料中設定。員工仍可為客戶使用。不會告知客戶符合的是哪項資訊。空清單不檢查任何內容。"
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
+msgstr "此訂單不再等待審核。"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr "等待審核"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr "我們已審核並批准了您的訂單："
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr "我們已審核您的訂單，但無法接受。訂單已連同帳單一併取消，未收取任何費用："
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
+msgstr "我們會在訂單開始前審核，並在批准後寄電子郵件給您。如有帳單，隨後會附上。"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr "您的訂單無法被接受"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
+msgstr "您的訂單已獲批准"

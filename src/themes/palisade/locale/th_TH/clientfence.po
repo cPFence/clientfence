@@ -26586,3 +26586,204 @@ msgstr "ลูกค้าที่อยู่ในขอบเขตและ
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
 msgstr "คุณเข้าสู่ระบบด้วย Google เท่านั้น: ตั้งรหัสผ่านก่อน แล้วจึงตั้งค่าการเข้าสู่ระบบสองปัจจัยที่นี่"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr "อนุญาต (ปิด)"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
+msgstr "อนุญาตสำหรับลูกค้ารายนี้"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr "ถือว่าเครือข่ายเหล่านี้เป็นโฮสติ้งด้วย"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
+msgstr "อนุมัติคำสั่งซื้อหรือไม่?"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
+msgstr "เหมือนในการตั้งค่าความปลอดภัย"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr "อีเมลและโดเมนที่ถูกห้าม"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr "อีเมลและหมายเลขโทรศัพท์ที่ถูกห้าม"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr "หมายเลขโทรศัพท์ที่ถูกห้าม"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr "บล็อกการสมัครและคำสั่งซื้อ"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
+msgstr "IP ที่ถูกบล็อกไม่สามารถเข้าสู่ระบบ สมัคร สั่งซื้อ หรือเปิดทิกเก็ตสาธารณะได้ เพิ่มหนึ่งที่อยู่ต่อบรรทัด ช่วง (203.0.113.0/24, 2001:db8::/32) หรือไวลด์การ์ด (203.0.113.*)"
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
+msgstr "เลือกว่าจะเกิดอะไรขึ้นกับการสมัครและคำสั่งซื้อจากเครือข่ายโฮสติ้ง"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr "สวัสดี :name,"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr "ไม่ได้ส่ง ID การพักไว้"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
+msgstr "พักคำสั่งซื้อไว้เพื่อตรวจสอบ"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr "เครือข่ายโฮสติ้งและ VPN"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
+msgstr "เครือข่ายโฮสติ้ง"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
+msgstr "หากมีใบแจ้งหนี้ที่ต้องชำระ คุณจะได้รับทางอีเมลและพบในพื้นที่ลูกค้า การตั้งค่าเริ่มต้นตามปกติ"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
+msgstr "ใบแจ้งหนี้ #:id"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr "บริการของฉัน"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr "บันทึกการตั้งค่าเครือข่ายแล้ว"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
+msgstr "ไม่ถือว่าเครือข่ายเหล่านี้เป็นโฮสติ้งเด็ดขาด"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr "ไม่มีคำสั่งซื้อที่รอการตรวจสอบ"
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr "ไม่ใช่หมายเลขเครือข่าย: :asn ใช้หมายเลขเช่น AS24940"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr "หนึ่งรายการต่อบรรทัด พร้อมรหัสประเทศ ช่องว่าง ขีดกลาง และ + ไม่มีผล"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
+msgstr "หนึ่งรายการต่อบรรทัด: ที่อยู่ โดเมน หรือ *.โดเมน สำหรับโดเมนย่อย"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr "คำสั่งซื้อ #:id รอการตรวจสอบ: :title"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr "คำสั่งซื้อ #:id: :title"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr "คำสั่งซื้อรอการตรวจสอบ"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr "คำสั่งซื้อจากเครือข่ายโฮสติ้งและ VPN"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
+msgstr "คำสั่งซื้อที่ถูกพักไว้ก่อนการตั้งค่า ใบแจ้งหนี้ของคำสั่งซื้อเป็นฉบับร่างที่ลูกค้าไม่เห็นและชำระไม่ได้ อนุมัติเพื่อออกใบแจ้งหนี้และดำเนินการต่อ หรือปฏิเสธเพื่อยกเลิกคำสั่งซื้อและใบแจ้งหนี้ คำสั่งซื้อของการชำระเงินครั้งเดียวกันจะตัดสินพร้อมกัน และลูกค้าจะได้รับอีเมล"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr "โปรดติดต่อเราหากคุณคิดว่าเป็นความผิดพลาด"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr "ปฏิเสธและห้าม"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr "ปฏิเสธและห้ามอีเมลนี้หรือไม่?"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
+msgstr "ปฏิเสธคำสั่งซื้อหรือไม่?"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr "การสมัครและคำสั่งซื้อจากเครือข่ายโฮสติ้ง"
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr "ไม่รับการสมัครและคำสั่งซื้อจากเครือข่ายโฮสติ้ง VPN หรือพร็อกซี โปรดปิด VPN หรือพร็อกซีแล้วลองอีกครั้ง หรือติดต่อเรา"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr "การสมัครและคำสั่งซื้อจากเครือข่ายโฮสติ้ง ศูนย์ข้อมูล และ VPN มักเป็นการฉ้อโกง พักไว้เพื่อตรวจสอบ: คำสั่งซื้อจะรออยู่ใน คำสั่งซื้อ > รอการตรวจสอบ และชำระใบแจ้งหนี้ไม่ได้จนกว่าคุณจะอนุมัติ บล็อก: ปฏิเสธการสมัครหรือคำสั่งซื้อ ลูกค้าโฮสติ้งมักสั่งซื้อจากเซิร์ฟเวอร์หรือ VPN ของสำนักงาน ดังนั้น \"พักคำสั่งซื้อไว้เพื่อตรวจสอบ\" จึงปลอดภัยกว่า หากต้องการให้ลูกค้ารายหนึ่งผ่าน ให้อนุญาตในหน้าลูกค้าของเขา"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
+msgstr "เริ่มด้วย Cloudflare, Akamai และ Fastly ซึ่งให้บริการ iCloud Private Relay"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr "รายการในตัวมี :count เครือข่าย (X4BNet lists_vpn, ใบอนุญาต MIT) เครือข่ายของผู้เข้าชมแต่ละคนจะถูกค้นหาในฐานข้อมูล GeoIP บนเซิร์ฟเวอร์นี้: ไม่มีการส่งข้อมูลไปที่ใด"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr "ใบแจ้งหนี้จะออกให้ลูกค้า (ชำระจากเครดิตของลูกค้าหากเพียงพอ) และการตั้งค่าจะดำเนินต่อ"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr "คำสั่งซื้อและใบแจ้งหนี้จะถูกยกเลิก และ :email จะถูกเพิ่มในอีเมลที่ถูกห้าม"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
+msgstr "คำสั่งซื้อและใบแจ้งหนี้จะถูกยกเลิก"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr "รายการเหล่านี้สมัครหรือสั่งซื้อไม่ได้ และลูกค้าตั้งในโปรไฟล์ไม่ได้ เจ้าหน้าที่ยังใช้กับลูกค้าได้ ลูกค้าจะไม่ถูกบอกว่าข้อมูลใดตรงกัน รายการว่างจะไม่ตรวจสอบอะไร"
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
+msgstr "คำสั่งซื้อนี้ไม่ได้รอการตรวจสอบอีกต่อไป"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr "รอการตรวจสอบ"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr "เราตรวจสอบและอนุมัติคำสั่งซื้อของคุณแล้ว:"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr "เราตรวจสอบคำสั่งซื้อของคุณแล้วแต่ไม่สามารถรับได้ คำสั่งซื้อถูกยกเลิกพร้อมใบแจ้งหนี้ และไม่มีการเรียกเก็บเงิน:"
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
+msgstr "เราตรวจสอบคำสั่งซื้อของคุณก่อนเริ่มและจะส่งอีเมลเมื่อได้รับอนุมัติ ใบแจ้งหนี้ (ถ้ามี) จะตามมา"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr "ไม่สามารถรับคำสั่งซื้อของคุณได้"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
+msgstr "คำสั่งซื้อของคุณได้รับอนุมัติแล้ว"

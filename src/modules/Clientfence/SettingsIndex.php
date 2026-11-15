@@ -21,7 +21,7 @@ final class SettingsIndex
     /** Extra search words, by "module" or "module#tab". English: they are names and acronyms. */
     public const WORDS = [
         'security#tab-signin' => '2FA two-factor MFA OTP PIN login lockout country countries GeoIP IP allowed IPs whitelist forgot password reset',
-        'security#tab-proxies' => 'Cloudflare proxy reverse proxy load balancer X-Forwarded-For CF-Connecting-IP real IP visitor IP',
+        'security#tab-proxies' => 'Cloudflare proxy reverse proxy load balancer X-Forwarded-For CF-Connecting-IP real IP visitor IP VPN hosting data centre datacenter ASN fraud',
         'security#tab-access' => 'whitelist allow list rate limit API IP restriction',
         'security#tab-sessions' => 'session fingerprint hijacking cookie IP check',
         'system#tab-cache' => 'Redis Memcached flush clear',
@@ -30,7 +30,7 @@ final class SettingsIndex
         'system#tab-licences' => 'license licence ban',
         'system#tab-whmcs' => 'import migrate migration Upmind Blesta ClientExec',
         'system#tab-localization' => 'language locale translation',
-        'antispam' => 'captcha reCAPTCHA hCaptcha Turnstile spam bots honeypot block IP',
+        'antispam' => 'captcha reCAPTCHA hCaptcha Turnstile spam bots honeypot block IP ban banned email domain phone blacklist CIDR',
         'email' => 'SMTP mail sendmail mailer sender DKIM',
         'email#tab-chat' => 'Slack Discord Telegram webhook bot chat notifications',
         'invoice' => 'tax VAT invoice number prefix due',

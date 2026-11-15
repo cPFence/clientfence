@@ -1134,6 +1134,111 @@ test('createFromCart normalizes legacy invoice id before setting it on the order
     expect($result[0]->getUnpaidInvoiceId())->toBe(456);
 });
 
+test('createFromCart leaves a held order\'s invoice a draft, sets nothing up and records the hold', function (): void {
+    // ClientFence: Order/Holds.php; the client cannot pay the draft and no credit is taken until staff approve.
+    $cart = createEntity(Cart::class);
+    $cart->id = 3;
+    $cart->currency_id = 2;
+
+    $client = createEntity(Client::class);
+    $client->id = 9;
+    $client->currency = 'USD';
+
+    $currency = Mockery::mock(Currency::class)->makePartial();
+    $currency->shouldReceive('getCode')->once()->andReturn('USD');
+    $currency->shouldReceive('getConversionRate')->atLeast()->once()->andReturn(1.0);
+
+    $currencyRepository = Mockery::mock(CurrencyRepository::class);
+    $currencyRepository->shouldReceive('find')->once()->with(2)->andReturn($currency);
+
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->once()->andReturn($currencyRepository);
+
+    $clientService = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientService->shouldReceive('isClientTaxable')->once()->with($client)->andReturn(false);
+
+    $product = new Product();
+    $productIdReflection = new ReflectionProperty($product, 'id');
+    $productIdReflection->setValue($product, 5);
+    $product->setStatus('enabled');
+    $product->setType('service');
+    $product->setSetup('manual');
+
+    $cartProduct = createEntity(CartProduct::class);
+    $cartProduct->id = 13;
+
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->once()->with(5)->andReturn($product);
+
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class)->makePartial();
+    $orderService->shouldReceive('saveStatusChange')->once()->with(Mockery::type(Order::class), 'Order Created');
+    $orderService->shouldReceive('toApiArray')->never();
+    $orderService->shouldReceive('activateOrder')->never();
+
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->id = '456';
+    $invoiceModel->status = Model_Invoice::STATUS_UNPAID;
+
+    $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
+    $invoiceService->shouldReceive('prepareInvoice')->once()->andReturn($invoiceModel);
+    $invoiceService->shouldReceive('approveInvoice')->never();
+
+
+    $dbMock = Mockery::mock(\ClientFence\Database::class)->shouldIgnoreMissing();
+    $dbMock->shouldReceive('getExistingModelById')->atLeast()->once()->andReturn(cartServiceCreateLegacyClient());
+
+    $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $emMock->shouldReceive('wrapInTransaction')->once()->with(Mockery::type(Closure::class))->andReturnUsing(fn (Closure $callback) => $callback());
+    $emMock->shouldReceive('persist')->atLeast()->once();
+    $emMock->shouldReceive('flush')->atLeast()->once();
+    $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $connection->shouldReceive('insert')->once()->with('client_order_hold', Mockery::on(fn (array $row): bool => $row['client_id'] === 9 && $row['invoice_id'] === 456
+        && $row['reason'] === 'network' && $row['note'] === 'HETZNER-AS (AS24940)' && $row['status'] === 'held'));
+    $emMock->shouldReceive('getConnection')->andReturn($connection);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('getSessionCart')->once()->andReturn($cart);
+    $serviceMock->shouldReceive('toApiArray')->once()->with($cart, false, $client)->andReturn([
+        'items' => [['id' => 1]],
+        'total' => 100,
+    ]);
+    $serviceMock->shouldReceive('getCartProducts')->once()->with($cart)->andReturn([$cartProduct]);
+    $serviceMock->shouldReceive('cartProductToApiArray')->once()->with($cartProduct, Mockery::any(), null, 'USD')->andReturn([
+        'product_id' => 5,
+        'form_id' => null,
+        'title' => 'Example product',
+        'type' => 'service',
+        'unit' => 'service',
+        'period' => '1M',
+        'quantity' => 1,
+        'price' => 100,
+        'discount_price' => 0,
+        'setup_price' => 0,
+        'discount_setup' => 0,
+        'notes' => null,
+    ]);
+    $serviceMock->shouldReceive('isStockAvailable')->once()->with($product, 1)->andReturn(true);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['em'] = $emMock;
+    $di['mod_service'] = $di->protect(fn ($serviceName, $sub = '') => match (true) {
+        $serviceName === 'currency' => $currencyService,
+        $serviceName === 'client' => $clientService,
+        $serviceName === 'Product' => $productService,
+        $serviceName === 'order' || $serviceName === 'Order' => $orderService,
+        $serviceName === 'Invoice' => $invoiceService,
+        default => null,
+    });
+
+    $serviceMock->setDi($di);
+    $result = $serviceMock->createFromCart($client, null, null, null, ['reason' => 'network', 'note' => 'HETZNER-AS (AS24940)']);
+
+    expect($result[1])->toBe($invoiceModel)
+        ->and($result[0]->getUnpaidInvoiceId())->toBeNull();
+});
+
 test('createFromCart links the setup fee invoice line to its order', function (): void {
     $cart = createEntity(Cart::class, ['id' => 3, 'currency_id' => 2]);
     $client = createEntity(Client::class, ['id' => 9, 'currency' => 'USD']);

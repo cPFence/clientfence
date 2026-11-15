@@ -898,10 +898,13 @@ class Service implements InjectionAwareInterface
             ]
         );
 
+        // ClientFence core patch: an order from a hosting network may wait for staff review (Antispam/Networks.php, Order/Holds.php).
+        $hold = \ClientFence\Mod\Antispam\Networks::hold($this->di, (string) $this->di['request']->getClientIp(), $this->clientId($client));
+
         // ClientFence core patch: the client's credit lock is held until the orders are committed and the
         // cart is gone, so a double submit finds an empty cart and two checkouts cannot spend the same credit.
-        [$order, $invoice, $orders] = \ClientFence\Tools::withLock($this->di, 'fb:credit_payment:client:' . $this->clientId($client), function () use ($client, $gateway_id, $cart): array {
-            $result = $this->createFromCart($client, $gateway_id);
+        [$order, $invoice, $orders] = \ClientFence\Tools::withLock($this->di, 'fb:credit_payment:client:' . $this->clientId($client), function () use ($client, $gateway_id, $cart, $hold): array {
+            $result = $this->createFromCart($client, $gateway_id, null, null, $hold);
             $this->rm($cart);
 
             return $result;
@@ -926,6 +929,12 @@ class Service implements InjectionAwareInterface
             'order_id' => $order->getId(),
             'orders' => $orders,
         ];
+        // ClientFence core patch: a held order's invoice stays a draft: nothing to pay or set up until staff approve.
+        if ($hold !== null) {
+            \ClientFence\Mod\Order\Holds::notify($this->di, (int) $order->getId(), (string) $order->getTitle());
+
+            return $result + ['held' => true];
+        }
 
         // invoice may not be created if total is 0
         $isInvoiceUnpaid = $invoice instanceof \Model_Invoice
@@ -978,7 +987,11 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public function createFromCart(Client|\Model_Client $client, $gateway_id = null, Cart|\Model_Cart|null $cart = null, ?array $staff = null): array
+    /**
+     * @param array{reason: string, note: string}|null $hold ClientFence core patch: the orders wait for staff review (Order/Holds.php):
+     *                                                    the invoice stays a draft and nothing is paid or set up
+     */
+    public function createFromCart(Client|\Model_Client $client, $gateway_id = null, Cart|\Model_Cart|null $cart = null, ?array $staff = null, ?array $hold = null): array
     {
         $cart ??= $this->getSessionCart();
         $ca = $this->toApiArray($cart, false, $client);
@@ -1026,7 +1039,7 @@ class Service implements InjectionAwareInterface
         $this->autoPromo = $autoPromo;
 
         try {
-            return $this->di['em']->wrapInTransaction(function () use ($ca, $cart, $client, $legacyClient, $currency, $currencyCode, $gateway_id, $taxed, $promo, $promoProductService, $promoId, $staff, &$reservedOrderIds, &$reservedCount) {
+            return $this->di['em']->wrapInTransaction(function () use ($ca, $cart, $client, $legacyClient, $currency, $currencyCode, $gateway_id, $taxed, $promo, $promoProductService, $promoId, $staff, $hold, &$reservedOrderIds, &$reservedCount) {
                 if ($promo instanceof Promo) {
                     $this->assertClientAbleToUsePromoForUpdate($client, $promo);
                 }
@@ -1210,12 +1223,14 @@ class Service implements InjectionAwareInterface
                     }
 
                     // ClientFence core patch: tryPayWithCredits() compares the balance with the invoice total in the client's currency (the cart total is in the default one).
-                    // A staff order applies the credit, or marks it paid, as staff chose.
-                    $staff === null
-                        ? $invoiceService->approveInvoice($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true])
-                        : $this->di['mod_service']('order')->approveStaffInvoice($invoiceModel, $staff);
+                    // A staff order applies the credit, or marks it paid, as staff chose. A held order's invoice stays a draft (Order/Holds.php).
+                    if ($hold === null) {
+                        $staff === null
+                            ? $invoiceService->approveInvoice($invoiceModel, ['id' => $invoiceModel->id, 'use_credits' => true])
+                            : $this->di['mod_service']('order')->approveStaffInvoice($invoiceModel, $staff);
+                    }
 
-                    $isUnpaid = $invoiceModel instanceof \Model_Invoice
+                    $isUnpaid = $hold === null && $invoiceModel instanceof \Model_Invoice
                         && $invoiceModel->status === \Model_Invoice::STATUS_UNPAID;
 
                     if ($isUnpaid) {
@@ -1231,7 +1246,8 @@ class Service implements InjectionAwareInterface
                 }
 
                 if ($promo instanceof Promo && $promoProductService !== null) {
-                    $redemptionStatus = $invoiceModel instanceof \Model_Invoice
+                    // ClientFence core patch: a held checkout's uses wait for staff, a free one too (Order/Holds.php).
+                    $redemptionStatus = $hold !== null || $invoiceModel instanceof \Model_Invoice
                         && $invoiceModel->status === \Model_Invoice::STATUS_UNPAID
                         ? \ClientFence\Mod\Product\Entity\PromoRedemption::STATUS_RESERVED
                         : \ClientFence\Mod\Product\Entity\PromoRedemption::STATUS_COMMITTED;
@@ -1246,6 +1262,9 @@ class Service implements InjectionAwareInterface
                 $ids = [];
                 foreach ($orders as $order) {
                     $ids[] = $order->getId();
+                    if ($hold !== null) {
+                        continue;
+                    }
                     $oa = $orderService->toApiArray($order, false, $client);
                     $product = $this->getProductService()->findProductById((int) $oa['product_id']);
 
@@ -1281,6 +1300,10 @@ class Service implements InjectionAwareInterface
                         $notes = "Order could not be activated after checkout due to error: {$e->getMessage()}.";
                         $orderService->orderStatusAdd($order, Order::STATUS_FAILED_SETUP, $notes);
                     }
+                }
+
+                if ($hold !== null) {
+                    \ClientFence\Mod\Order\Holds::add($this->di['em']->getConnection(), $ids, $this->clientId($client), isset($invoiceModel) ? (int) $invoiceModel->id : null, $hold['reason'], $hold['note']);
                 }
 
                 return [

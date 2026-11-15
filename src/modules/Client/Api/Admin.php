@@ -86,6 +86,18 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: whether the hosting network check is on, and whether client `id` may order from a
+     * hosting network anyway (CF-119, Antispam/Networks.php). Here, not in Antispam, so client staff without that module see it.
+     */
+    public function hosting_network($data): array
+    {
+        $this->checkPermissions('client', 'view');
+        $on = \ClientFence\Mod\Antispam\Networks::settings()['mode'] !== \ClientFence\Mod\Antispam\Networks::OFF;
+
+        return ['on' => $on, 'allowed' => $on && \ClientFence\Mod\Antispam\Networks::allowed($this->getDi(), (int) ($data['id'] ?? 0))];
+    }
+
+    /**
      * Get client by id or email. Email is also unique in database.
      *
      * @optional string $email - client email
@@ -488,6 +500,10 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         if (array_key_exists('tax_exempt', $data)) {
             $client->setTaxExempt((bool) $data['tax_exempt']);
+        }
+        // ClientFence core patch: staff can let one client order from hosting networks (CF-119, Antispam/Networks.php).
+        if (array_key_exists('hosting_network_allowed', $data)) {
+            \ClientFence\Mod\Antispam\Networks::allow($this->getDi(), (int) $client->getId(), (bool) $data['hosting_network_allowed']);
         }
 
         if (array_key_exists('birthday', $data) && $data['birthday'] !== null && $data['birthday'] !== '') {

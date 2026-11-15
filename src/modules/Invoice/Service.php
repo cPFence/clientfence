@@ -3266,7 +3266,9 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: live renewal invoices must survive overdue cleanup to avoid repeated billing emails.
         $conditions = 'status = ? and due_at is not null and DATEDIFF(NOW(), due_at) > ?
             AND NOT EXISTS (SELECT 1 FROM client_order co WHERE co.unpaid_invoice_id = invoice.id AND co.status IN (?, ?))
-            AND NOT ' . PendingPayments::sql('invoice.id'); // ClientFence core patch: nor an invoice whose bank debit is clearing (Invoice/PendingPayments.php).
+            AND NOT ' . PendingPayments::sql('invoice.id') // ClientFence core patch: nor an invoice whose bank debit is clearing (Invoice/PendingPayments.php).
+            // ClientFence core patch: nor the draft of an order held for review (Order/Holds.php).
+            . " AND NOT EXISTS (SELECT 1 FROM client_order_hold h WHERE h.invoice_id = invoice.id AND h.status = 'held')";
 
         return $this->di['db']->find('Invoice', $conditions, [\Model_Invoice::STATUS_UNPAID, $days, \Model_ClientOrder::STATUS_ACTIVE, \Model_ClientOrder::STATUS_SUSPENDED]);
     }

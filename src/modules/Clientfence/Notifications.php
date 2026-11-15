@@ -210,6 +210,8 @@ final class Notifications
             // Staff: problems.
             'action_failed' => __trans('An action failed on order #:id: :title', $v),
             'cancel_request' => __trans('Cancellation requested for order #:id: :title', $v),
+            // ClientFence: orders held for review (Order/Holds.php).
+            'order_held' => __trans('Order #:id waits for review: :title', $v),
             'ip_request' => __trans('IP address change requested for order #:id: :title', $v),
             // ClientFence: per-unit licences (Servicelicense/Units.php).
             'usage_held' => __trans('A big drop in the reported units of order #:id waits for approval: :title', $v),
@@ -261,6 +263,7 @@ final class Notifications
                 'order_new' => __trans('New order'),
                 'client_signup' => __trans('New client'),
                 'cancel_request' => __trans('Cancellation request'),
+                'order_held' => __trans('Order waits for review'),
                 'ip_request' => __trans('IP address change request'),
                 'action_failed' => __trans('Failed action'),
                 'usage_held' => __trans('Drop in reported units waits for approval'),

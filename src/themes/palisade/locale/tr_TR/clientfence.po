@@ -26526,3 +26526,204 @@ msgstr "Kapsamdaki müşteriler ve hesaplarının yetkili kullanıcıları bir k
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
 msgstr "Yalnızca Google ile giriş yapıyorsunuz: önce bir parola seçin, ardından iki aşamalı girişi burada kurun."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr "İzin verildi (kapalı)"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
+msgstr "Bu müşteri için izin verildi"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr "Bu ağları da hosting olarak değerlendir"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
+msgstr "Sipariş onaylansın mı?"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
+msgstr "Güvenlik ayarlarındaki gibi"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr "Yasaklı e-postalar ve alan adları"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr "Yasaklı e-postalar ve telefon numaraları"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr "Yasaklı telefon numaraları"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr "Kayıtları ve siparişleri engelle"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
+msgstr "Engellenen IP'ler giriş yapamaz, kayıt olamaz, sipariş veremez veya herkese açık destek talebi açamaz. Her satıra bir adres, bir aralık (203.0.113.0/24, 2001:db8::/32) veya joker karakter (203.0.113.*) ekleyin."
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
+msgstr "Hosting ağlarından gelen kayıtlara ve siparişlere ne olacağını seçin."
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr "Merhaba :name,"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr "Bekletme kimliği iletilmedi"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
+msgstr "Siparişleri inceleme için beklet"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr "Hosting ve VPN ağları"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
+msgstr "Hosting ağı"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
+msgstr "Ödenecek bir fatura varsa e-postayla alırsınız ve müşteri alanınızda bulursunuz. Kurulum her zamanki gibi başlar."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
+msgstr "Fatura #:id"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr "Hizmetlerim"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr "Ağ ayarları kaydedildi."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
+msgstr "Bu ağları asla hosting olarak değerlendirme"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr "İnceleme bekleyen sipariş yok."
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr "Ağ numarası değil: :asn. AS24940 gibi numaralar kullanın."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr "Her satıra bir tane, ülke koduyla. Boşluklar, tireler ve + önemli değildir."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
+msgstr "Her satıra bir tane: bir adres, bir alan adı veya alt alan adları için *.alanadı."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr "Sipariş #:id inceleme bekliyor: :title"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr "Sipariş #:id: :title"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr "Sipariş inceleme bekliyor"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr "Hosting ve VPN ağlarından gelen siparişler"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
+msgstr "Kurulumdan önce bekletilen siparişler. Faturaları, müşterinin göremeyeceği veya ödeyemeyeceği bir taslaktır. Faturayı düzenleyip devam etmek için onaylayın, siparişleri ve faturayı iptal etmek için reddedin. Aynı ödemedeki siparişler birlikte karara bağlanır ve müşteri bir e-posta alır."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr "Bunun bir hata olduğunu düşünüyorsanız lütfen bizimle iletişime geçin."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr "Reddet ve yasakla"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr "E-posta reddedilip yasaklansın mı?"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
+msgstr "Sipariş reddedilsin mi?"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr "Hosting ağlarından gelen kayıtlar ve siparişler"
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr "Hosting, VPN veya proxy ağlarından gelen kayıtlar ve siparişler kabul edilmez. Lütfen VPN veya proxy'nizi kapatıp tekrar deneyin ya da bizimle iletişime geçin."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr "Hosting, veri merkezi ve VPN ağlarından gelen kayıtlar ve siparişler çoğu zaman dolandırıcılıktır. İnceleme için beklet: sipariş Siparişler > İnceleme bekliyor altında bekler, faturası siz onaylayana kadar ödenemez. Engelle: kayıt veya sipariş reddedilir. Hosting müşterileri sık sık bir sunucudan veya ofis VPN'inden sipariş verir, bu yüzden \"Siparişleri inceleme için beklet\" daha güvenli seçimdir. Bir müşteriyi geçirmek için müşteri sayfasında buna izin verin."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
+msgstr "Cloudflare, Akamai ve Fastly ile başlar; bunlar iCloud Private Relay'i taşır."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr "Yerleşik listede :count ağ var (X4BNet lists_vpn, MIT lisansı). Her ziyaretçinin ağı bu sunucudaki GeoIP veritabanında aranır: hiçbir yere hiçbir şey gönderilmez."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr "Fatura müşteriye düzenlenir (kredisi yeterliyse ondan ödenir) ve kurulum devam eder."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr "Siparişler ve faturaları iptal edilir ve :email yasaklı e-postalara eklenir."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
+msgstr "Siparişler ve faturaları iptal edilir."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr "Bunlarla kayıt olunamaz, sipariş verilemez ve müşteri bunları profilinde ayarlayamaz. Personel bunları yine de bir müşteri için kullanabilir. Müşteriye hangi bilginin eşleştiği söylenmez. Boş listeler hiçbir şeyi denetlemez."
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
+msgstr "Bu sipariş artık inceleme beklemiyor."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr "İnceleme bekliyor"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr "Siparişinizi inceledik ve onayladık:"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr "Siparişinizi inceledik ve kabul edemedik. Faturasıyla birlikte iptal edildi ve hiçbir ücret alınmadı:"
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
+msgstr "Siparişinizi başlamadan önce inceliyoruz ve onaylandığında size e-posta gönderiyoruz. Varsa fatura o zaman gelir."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr "Siparişiniz kabul edilemedi"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
+msgstr "Siparişiniz onaylandı"

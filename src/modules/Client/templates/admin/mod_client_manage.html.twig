@@ -443,6 +443,23 @@
                                         </label>
                                     </div>
                                 </div>
+                                {# ClientFence core patch: one client may order from hosting networks (CF-119, Antispam/Networks.php). #}
+                                {% set hosting_network = admin.client_hosting_network({ 'id': client.id }) %}
+                                {% if hosting_network.on %}
+                                <div class="col-xl-6">
+                                    <label class="form-label d-block">{{ 'Orders from hosting and VPN networks'|trans }}</label>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="radio" name="hosting_network_allowed" value="1"{% if hosting_network.allowed %} checked{% endif %}>
+                                            <span class="form-check-label">{{ 'Allowed for this client'|trans }}</span>
+                                        </label>
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="radio" name="hosting_network_allowed" value="0"{% if not hosting_network.allowed %} checked{% endif %}>
+                                            <span class="form-check-label">{{ 'As in the security settings'|trans }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endif %}
                                 <div class="col-xl-6">
                                     <label class="form-label" for="created_at">{{ 'Account Created At'|trans }}</label>
                                     <div class="input-group">

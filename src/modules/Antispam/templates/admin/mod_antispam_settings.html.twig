@@ -45,7 +45,8 @@
                                 <div class="d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-3 mb-3">
                                     <div>
                                         <h4 class="card-title mb-2">{{ 'IP Blocking'|trans }}</h4>
-                                        <p class="text-secondary mb-0">{{ 'Blocked IPs are not allowed to log in, register, or open public tickets. Add one IP address per line.'|trans }}</p>
+                                        {# ClientFence core patch: ranges and wildcards (Service::ipRange()), and checkout. #}
+                                        <p class="text-secondary mb-0">{{ 'Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*).'|trans }}</p>
                                     </div>
                                     <label class="form-check form-switch form-switch-2 m-0">
                                         <input id="block_ips_check" class="form-check-input" name="block_ips" type="checkbox" {% if params.block_ips|default(false) %}checked="checked"{% endif %}>
@@ -55,6 +56,28 @@
 
                                 <label class="form-label" for="blocked_ips">{{ 'Blocked IP List'|trans }}</label>
                                 <textarea id="blocked_ips" class="form-control" name="blocked_ips" rows="5" placeholder="127.0.0.1">{{ params.blocked_ips|default('') }}</textarea>
+                            </div>
+                        </section>
+                    </div>
+
+                    {# ClientFence core patch: banned emails and phone numbers (CF-117, Banned.php). #}
+                    <div class="col-12">
+                        <section class="card card-sm">
+                            <div class="card-body">
+                                <h4 class="card-title mb-2">{{ 'Banned Emails and Phone Numbers'|trans }}</h4>
+                                <p class="text-secondary mb-3">{{ 'These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing.'|trans }}</p>
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <label class="form-label" for="banned_emails">{{ 'Banned Emails and Domains'|trans }}</label>
+                                        <textarea id="banned_emails" class="form-control font-monospace" name="banned_emails" rows="5" dir="ltr" placeholder="name@example.com&#10;example.com&#10;*.example.com">{{ params.banned_emails|default('') }}</textarea>
+                                        <small class="form-hint">{{ 'One per line: an address, a domain, or *.domain for its subdomains.'|trans }}</small>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label" for="banned_phones">{{ 'Banned Phone Numbers'|trans }}</label>
+                                        <textarea id="banned_phones" class="form-control font-monospace" name="banned_phones" rows="5" dir="ltr" placeholder="+1 555 0100">{{ params.banned_phones|default('') }}</textarea>
+                                        <small class="form-hint">{{ 'One per line, with the country code. Spaces, dashes and + do not matter.'|trans }}</small>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                     </div>

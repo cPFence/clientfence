@@ -4553,7 +4553,7 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "AND NOT ' . PendingPayments::sql('invoice.id'); // ClientFence core patch: nor an invoice whose bank debit is clearing (Invoice/PendingPayments.php)."
+        "done": "AND NOT ' . PendingPayments::sql('invoice.id') // ClientFence core patch: nor an invoice whose bank debit is clearing (Invoice/PendingPayments.php)."
     },
     {
         "file": "ipn.php",
@@ -6174,5 +6174,89 @@
     {
         "file": "di.php",
         "done": "ClientFence core patch: the two-factor setup a client may be required to finish first (Client/TwoFactor.php REQUIRED)."
+    },
+    {
+        "file": "modules/Antispam/Service.php",
+        "done": "ClientFence core patch: banned emails and phones (CF-117, Banned.php) and hosting networks (CF-119, Networks.php), before the outside check."
+    },
+    {
+        "file": "modules/Antispam/Service.php",
+        "done": "ClientFence core patch: checkout checks the blocked IPs, the client's email and phone (CF-117) and hosting networks (CF-119)."
+    },
+    {
+        "file": "modules/Antispam/Service.php",
+        "done": "ClientFence core patch: a client's new email or phone may not be on the banned lists (CF-117)."
+    },
+    {
+        "file": "modules/Antispam/Service.php",
+        "done": "ClientFence core patch: ranges (203.0.113.0/24, 2001:db8::/32) and wildcards (203.0.113.*), as WHMCS."
+    },
+    {
+        "file": "modules/Antispam/Service.php",
+        "done": "ClientFence core patch: a few seconds at most; a slow or unreachable service lets the sign-up through."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: whether the hosting network check is on, and whether client `id` may order from a"
+    },
+    {
+        "file": "modules/Antispam/templates/admin/mod_antispam_settings.html.twig",
+        "done": "ClientFence core patch: banned emails and phone numbers (CF-117, Banned.php)."
+    },
+    {
+        "file": "modules/Antispam/templates/admin/mod_antispam_settings.html.twig",
+        "done": "ClientFence core patch: ranges and wildcards (Service::ipRange()), and checkout."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: an order from a hosting network may wait for staff review (Antispam/Networks.php, Order/Holds.php)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: a held order's invoice stays a draft: nothing to pay or set up until staff approve."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "A held order's invoice stays a draft (Order/Holds.php)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the orders wait for staff review (Order/Holds.php)"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence: the orders waiting for review (Order\\Holds; Orders > Waiting for review)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_index.html.twig",
+        "done": "ClientFence core patch: orders waiting for review (Order\\Holds), as WHMCS's Fraud orders."
+    },
+    {
+        "file": "modules/Order/Repository/OrderRepository.php",
+        "done": "ClientFence core patch: orders held for review wait for staff (Order/Holds.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: nor the draft of an order held for review (Order/Holds.php)."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: staff can let one client order from hosting networks (CF-119, Antispam/Networks.php)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: a held checkout's uses wait for staff, a free one too (Order/Holds.php)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: one client may order from hosting networks (CF-119, Antispam/Networks.php)."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: orders held for review (Order/Holds.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "doneHeld: 'We review your order before it starts and email you when it is approved. Any invoice follows then.'|trans,"
     }
 ]

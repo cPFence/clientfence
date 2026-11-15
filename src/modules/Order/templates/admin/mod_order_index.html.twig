@@ -85,6 +85,8 @@
 {% block content %}
     {# ClientFence core patch: cancellation requests in their own tab, as WHMCS (Order\CancelRequests). #}
     {% set cancel_requests = admin.order_cancel_request_list %}
+    {# ClientFence core patch: orders waiting for review (Order\Holds), as WHMCS's Fraud orders. #}
+    {% set holds = admin.order_hold_list %}
     <ul class="nav nav-tabs mb-3" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" href="#tab-orders" data-bs-toggle="tab" role="tab">{{ 'Orders'|trans }}</a>
@@ -93,6 +95,12 @@
             <a class="nav-link" href="#tab-cancel-requests" data-bs-toggle="tab" role="tab">
                 {{ 'Cancellation Requests'|trans }}
                 {% if cancel_requests|length > 0 %}<span class="badge bg-red text-white ms-2">{{ cancel_requests|length }}</span>{% endif %}
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#tab-holds" data-bs-toggle="tab" role="tab">
+                {{ 'Waiting for review'|trans }}
+                {% if holds|length > 0 %}<span class="badge bg-red text-white ms-2">{{ holds|length }}</span>{% endif %}
             </a>
         </li>
     </ul>
@@ -322,6 +330,51 @@
                         </tr>
                         {% else %}
                         <tr><td colspan="6" class="text-muted text-center">{{ 'No cancellation requests are waiting.'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab-holds" role="tabpanel">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">{{ 'Waiting for review'|trans }}</h3>
+                    <p class="card-subtitle">{{ 'Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email.'|trans }}</p>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Date'|trans }}</th>
+                            <th>{{ 'Client'|trans }}</th>
+                            <th>{{ 'Order'|trans }}</th>
+                            <th>{{ 'Reason'|trans }}</th>
+                            <th class="w-1"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hold in holds %}
+                        <tr>
+                            <td class="text-nowrap">{{ hold.created_at|format_datetime }}</td>
+                            <td><a href="{{ ('client/manage/' ~ hold.client_id)|url }}">{{ hold.client_first_name }} {{ hold.client_last_name }}</a></td>
+                            <td>
+                                <a href="{{ ('order/manage/' ~ hold.client_order_id)|url }}">#{{ hold.client_order_id }} {{ hold.order_title }}</a>
+                                {% if hold.invoice_id %}<div class="small"><a href="{{ ('invoice/manage/' ~ hold.invoice_id)|url }}">{{ 'Invoice #:id'|trans({ ':id': hold.invoice_id }) }}</a></div>{% endif %}
+                            </td>
+                            <td class="text-wrap">{{ { 'network': 'Hosting network'|trans }[hold.reason]|default(hold.reason) }}{% if hold.note %}: {{ hold.note }}{% endif %}</td>
+                            <td class="text-nowrap">
+                                <a class="btn btn-primary btn-sm" {{ fb_api_link({href: 'order/hold_approve'|api_url(query: {id: hold.id}), modal: {type: 'confirm', title: 'Approve the order?'|trans, content: 'The invoice is issued to the client (paid from their credit when it covers it) and setup carries on.'|trans}, reload: true}) }}>{{ 'Approve'|trans }}</a>
+                                <a class="btn btn-secondary btn-sm" {{ fb_api_link({href: 'order/hold_refuse'|api_url(query: {id: hold.id}), modal: {type: 'confirm', title: 'Refuse the order?'|trans, content: 'The orders and their invoice are cancelled.'|trans}, reload: true}) }}>{{ 'Refuse'|trans }}</a>
+                                {% if has_permission('antispam', 'manage_settings') %}
+                                <a class="btn btn-danger btn-sm" {{ fb_api_link({href: 'order/hold_refuse'|api_url(query: {id: hold.id, ban: 1}), modal: {type: 'confirm', title: 'Refuse and ban the email?'|trans, content: 'The orders and their invoice are cancelled, and :email is added to the banned emails.'|trans({ ':email': hold.client_email }) }, reload: true}) }}>{{ 'Refuse and ban'|trans }}</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="text-muted text-center">{{ 'No orders are waiting for review.'|trans }}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

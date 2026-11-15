@@ -83,6 +83,7 @@ class OrderRepository extends EntityRepository
      * that any paid invoice ever referenced are excluded, since a paid order
      * can legitimately stay pending_setup for a long time awaiting manual
      * setup. Used by the cron cleanup that removes stale, never-paid orders.
+     * ClientFence core patch: orders held for review wait for staff (Order/Holds.php).
      *
      * @return Order[]
      */
@@ -93,6 +94,7 @@ class OrderRepository extends EntityRepository
                 SELECT o.id
                 FROM client_order o
                 WHERE o.status = :status
+                  AND NOT EXISTS (SELECT 1 FROM client_order_hold h WHERE h.client_order_id = o.id AND h.status = 'held')
                   AND NOT EXISTS (
                       SELECT 1
                       FROM invoice_item ii

@@ -2646,6 +2646,10 @@ msgstr ""
 msgid "Allow transfer:"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr ""
+
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig src/themes/palisade/html/mod_serviceapikey_manage.html.twig …
 msgid "Allowed IPs"
 msgstr ""
@@ -2656,6 +2660,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
 msgid "Allowed Registration Periods (years)"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
@@ -3126,6 +3134,10 @@ msgstr ""
 msgid "Also sends invoices issued from this date, before the start date."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Amount"
 msgstr ""
@@ -3502,8 +3514,12 @@ msgstr ""
 msgid "Applying patches..."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig …
 msgid "Approve"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
@@ -3588,6 +3604,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig
 msgid "As account credit"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
 msgstr ""
 
 #: src/themes/palisade/html/mod_page_password-reset.html.twig
@@ -4030,6 +4050,18 @@ msgstr ""
 msgid "Bank transfer or other manual payment"
 msgstr ""
 
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr ""
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr ""
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "Banned domains and IP addresses"
 msgstr ""
@@ -4186,12 +4218,16 @@ msgstr ""
 msgid "Block senders and delete?"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr ""
+
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Blocked IP List"
 msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
-msgid "Blocked IPs are not allowed to log in, register, or open public tickets. Add one IP address per line."
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
@@ -5488,6 +5524,10 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
 msgid "Choose the value shown before the form recipient changes this field."
+msgstr ""
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
 msgstr ""
 
 #: src/modules/Support/NetworkIssues.php
@@ -11522,6 +11562,10 @@ msgstr ""
 msgid "Hello %staff_member_name%,"
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr ""
+
 #: src/modules/Client/templates/email/mod_client_user_invite.html.twig src/modules/Support/templates/email/mod_support_mail_rejected.html.twig src/modules/Support/templates/email/mod_support_ticket_feedback_request.html.twig
 msgid "Hello,"
 msgstr ""
@@ -11690,8 +11734,16 @@ msgstr ""
 msgid "History"
 msgstr ""
 
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Hold big drops"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
 msgstr ""
 
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/themes/palisade/html/layout_default.html.twig
@@ -11792,6 +11844,14 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig src/themes/palisade/html/partial_menu.html.twig
 msgid "Hosting accounts"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
@@ -12168,6 +12228,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings.html.twig
 msgid "If enabled, the selected canned response will be added to the default reply message."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -12828,6 +12892,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_created.html.twig
 msgid "Invoice #%number% is ready"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
 msgstr ""
 
 #: src/modules/Invoice/ServiceTransaction.php
@@ -15438,6 +15506,10 @@ msgstr ""
 msgid "My profile"
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_transactions.html.twig
 msgid "N/A"
 msgstr ""
@@ -15626,6 +15698,10 @@ msgstr ""
 msgid "Network issues"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr ""
+
 #: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Network status"
 msgstr ""
@@ -15652,6 +15728,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_head.html.twig
 msgid "Never synced with registrar"
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig src/modules/System/templates/admin/mod_system_update.html.twig …
@@ -16382,6 +16462,10 @@ msgstr ""
 msgid "No options yet. Add the first one."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr ""
+
 #: src/modules/Order/templates/client/mod_order_list.html.twig
 msgid "No orders yet"
 msgstr ""
@@ -16656,6 +16740,10 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_index.html.twig
 msgid "Not Run"
+msgstr ""
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
 msgstr ""
 
 #: src/modules/Clientfence/SecuritySettings.php
@@ -17122,8 +17210,16 @@ msgstr ""
 msgid "One per line, up to 20, such as https://example.com. Empty: the parts show only on this site."
 msgstr ""
 
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
 msgid "One per line. Text from the first of these on is an earlier, quoted message and is left out (\"On ... wrote:\" lines are always cut). Empty: the standard list."
+msgstr ""
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
 msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_manage.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig
@@ -17658,6 +17754,14 @@ msgstr ""
 msgid "Order #:id"
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr ""
+
 #: src/modules/Servicecustom/Service.php src/modules/Servicedomain/Service.php src/modules/Servicehosting/Service.php
 msgid "Order :id has no active service"
 msgstr ""
@@ -17866,6 +17970,10 @@ msgstr ""
 msgid "Order summary"
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/Notifications.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Orders"
 msgstr ""
@@ -17880,6 +17988,14 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "Orders Using Promo"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -19322,6 +19438,10 @@ msgstr ""
 msgid "Please contact us at :url to make this change to :domain."
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr ""
+
 #: src/modules/Servicedomain/DomainTickets.php
 msgid "Please contact us to make this change to :domain."
 msgstr ""
@@ -20738,8 +20858,20 @@ msgstr ""
 msgid "Refunds are handled by hand (Invoice settings), so this refund cannot be recorded."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "Refuse"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
@@ -23558,6 +23690,18 @@ msgstr ""
 msgid "Sign-ins"
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr ""
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/modules/Staff/templates/admin/mod_staff_settings.html.twig …
 msgid "Signature"
 msgstr ""
@@ -23912,6 +24056,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig
 msgid "Starts every staff reply in this help desk. {name} is the client's first name. Leave empty for no greeting."
+msgstr ""
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
@@ -25250,6 +25398,10 @@ msgstr ""
 msgid "The brand stylesheet could not be written: check that :dir is writable."
 msgstr ""
 
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr ""
+
 #: src/modules/Cookieconsent/Service.php
 msgid "The button text can be up to 40 characters."
 msgstr ""
@@ -25755,6 +25907,10 @@ msgstr ""
 msgid "The invoice is already paid. Enter the amount received to credit it to the client balance."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
 msgid "The invoice you are paying and your chosen payment gateway both support subscription payments. What type of payment would you like to continue with?"
 msgstr ""
@@ -25977,6 +26133,14 @@ msgstr ""
 
 #: src/modules/Order/ActionFailures.php
 msgid "The order of this failed action no longer exists. Dismiss it instead."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -26539,6 +26703,10 @@ msgstr ""
 msgid "There was an error while applying database patches. Please check the error log for information on the error, correct it, and then perform the backup patching method to complete the update."
 msgstr ""
 
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "These settings affect renewal timing, how addon orders appear in lists, and how suspended or unpaid orders are automatically cleaned up."
 msgstr ""
@@ -26981,6 +27149,10 @@ msgstr ""
 
 #: src/modules/Client/Affiliates/Link.php
 msgid "This order has no affiliate."
+msgstr ""
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
 msgstr ""
 
 #: src/modules/Invoice/Promotions.php
@@ -29675,6 +29847,10 @@ msgstr ""
 msgid "Waiting for our team: the details below change when your request is done."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
 msgid "Waiting for the service until :date"
 msgstr ""
@@ -29819,6 +29995,14 @@ msgstr ""
 msgid "We have replied to your ticket"
 msgstr ""
 
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr ""
+
 #: src/themes/palisade/html/mod_client_profile.html.twig
 msgid "We open a ticket with your request and reply there."
 msgstr ""
@@ -29849,6 +30033,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_suspended.html.twig src/modules/Servicelicense/templates/email/mod_servicelicense_suspended.html.twig
 msgid "We regret to inform you that your service %title% has been suspended."
+msgstr ""
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
@@ -31117,6 +31305,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Your logo and color on the client area, the sign-in page, invoices and this admin area."
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr ""
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig

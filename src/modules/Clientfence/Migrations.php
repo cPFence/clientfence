@@ -36,6 +36,7 @@ final class Migrations
         10 => 'm10SupportPinUnique',
         11 => 'm11GroupsAutoPromos',
         12 => 'm12SignInHistory',
+        13 => 'm13OrderHolds',
     ];
 
     public static function latest(): int
@@ -239,6 +240,14 @@ final class Migrations
             foreach (array_diff_key($indexes, $have) as $index => $column) {
                 $db->executeStatement("CREATE INDEX `{$index}` ON `{$table}` (`{$column}`)");
             }
+        }
+    }
+
+    /** 13: ClientFence core patch: client_order_hold, orders held for review (Order/Holds.php). */
+    private static function m13OrderHolds(\Pimple\Container $di): void
+    {
+        if (!$di['dbal']->createSchemaManager()->tablesExist(['client_order_hold'])) {
+            $di['dbal']->executeStatement(Service::tables()['client_order_hold']);
         }
     }
 }

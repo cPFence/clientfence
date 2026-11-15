@@ -28761,3 +28761,204 @@ msgstr "Az érintett ügyfeleknek és fiókjaik jogosult felhasználóinak be ke
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
 msgstr "Csak Google-fiókkal jelentkezik be: először válasszon jelszót, majd állítsa be itt a kétlépcsős bejelentkezést."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr "Engedélyezett (kikapcsolva)"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
+msgstr "Engedélyezett ennek az ügyfélnek"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr "Ezeket a hálózatokat is tekintse tárhelynek"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
+msgstr "Jóváhagyja a megrendelést?"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
+msgstr "Mint a biztonsági beállításokban"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr "Tiltott e-mail-címek és domainek"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr "Tiltott e-mail-címek és telefonszámok"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr "Tiltott telefonszámok"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr "Regisztrációk és megrendelések blokkolása"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
+msgstr "A letiltott IP-címek nem jelentkezhetnek be, nem regisztrálhatnak, nem rendelhetnek és nem nyithatnak nyilvános jegyet. Soronként egy címet adjon meg, egy tartományt (203.0.113.0/24, 2001:db8::/32) vagy helyettesítő karaktert (203.0.113.*)."
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
+msgstr "Válassza ki, mi történjen a tárhelyhálózatokról érkező regisztrációkkal és megrendelésekkel."
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr "Kedves :name!"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr "A visszatartás azonosítója nincs megadva"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
+msgstr "Megrendelések visszatartása ellenőrzésre"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr "Tárhely- és VPN-hálózatok"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
+msgstr "Tárhelyhálózat"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
+msgstr "Ha van kifizetendő számla, e-mailben megkapja, és megtalálja az ügyfélterületen. A beállítás a szokott módon indul."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
+msgstr "Számla #:id"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr "Szolgáltatásaim"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr "A hálózati beállítások mentve."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
+msgstr "Ezeket a hálózatokat soha ne tekintse tárhelynek"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr "Egy megrendelés sem vár ellenőrzésre."
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr "Nem hálózati szám: :asn. Használjon olyan számokat, mint az AS24940."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr "Soronként egy, az országkóddal. A szóközök, kötőjelek és a + nem számítanak."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
+msgstr "Soronként egy: egy cím, egy domain vagy *.domain az aldomainjeihez."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr "A(z) #:id megrendelés ellenőrzésre vár: :title"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr "#:id megrendelés: :title"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr "A megrendelés ellenőrzésre vár"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr "Tárhely- és VPN-hálózatokról érkező megrendelések"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
+msgstr "A beállítás előtt visszatartott megrendelések. A számlájuk piszkozat, amelyet az ügyfél nem láthat és nem fizethet ki. Jóváhagyással kiállítja a számlát és folytatódik a folyamat, elutasítással a megrendelések és a számla törlődik. Egy fizetés megrendeléseiről együtt döntenek, és az ügyfél e-mailt kap."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr "Kérjük, vegye fel velünk a kapcsolatot, ha szerinte ez tévedés."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr "Elutasítás és tiltás"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr "Elutasítja és letiltja az e-mail-címet?"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
+msgstr "Elutasítja a megrendelést?"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr "Regisztrációk és megrendelések tárhelyhálózatokról"
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr "A tárhely-, VPN- vagy proxyhálózatokról érkező regisztrációkat és megrendeléseket nem fogadjuk el. Kapcsolja ki a VPN-t vagy a proxyt, és próbálja újra, vagy lépjen kapcsolatba velünk."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr "A tárhely-, adatközpont- és VPN-hálózatokról érkező regisztrációk és megrendelések gyakran csalások. Visszatartás ellenőrzésre: a megrendelés a Megrendelések > Ellenőrzésre vár alatt vár, a számlája csak a jóváhagyás után fizethető ki. Blokkolás: a regisztráció vagy megrendelés elutasításra kerül. A tárhelyügyfelek gyakran szerverről vagy irodai VPN-ről rendelnek, ezért a „Megrendelések visszatartása ellenőrzésre” a biztonságosabb választás. Egy ügyfél átengedéséhez engedélyezze az ügyfél oldalán."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
+msgstr "A Cloudflare, az Akamai és a Fastly hálózatával kezdődik, amelyek az iCloud Private Relayt szállítják."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr "A beépített lista :count hálózatot tartalmaz (X4BNet lists_vpn, MIT licenc). Minden látogató hálózatát a kiszolgáló GeoIP adatbázisában keresi meg: semmi sem kerül sehová elküldésre."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr "A számla kiállításra kerül az ügyfélnek (a jóváírásából fizetve, ha az fedezi) és a beállítás folytatódik."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr "A megrendelések és a számlájuk törlődnek, az :email pedig bekerül a tiltott e-mail-címek közé."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
+msgstr "A megrendelések és a számlájuk törlődnek."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr "Ezekkel nem lehet regisztrálni, rendelni, és az ügyfél sem adhatja meg őket a profiljában. A munkatársak továbbra is használhatják őket egy ügyfélnél. Az ügyfél nem tudja meg, melyik adat egyezett. Az üres listák semmit sem ellenőriznek."
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
+msgstr "Ez a megrendelés már nem vár ellenőrzésre."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr "Ellenőrzésre vár"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr "Átnéztük és jóváhagytuk a megrendelését:"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr "Átnéztük a megrendelését, és nem tudtuk elfogadni. A számlájával együtt törölve lett, és semmit nem terheltünk meg:"
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
+msgstr "A megrendelését az indulás előtt átnézzük, és e-mailt küldünk, amikor jóváhagyjuk. Az esetleges számla ezután érkezik."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr "A megrendelését nem tudtuk elfogadni"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
+msgstr "A megrendelése jóváhagyva"

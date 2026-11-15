@@ -6,6 +6,7 @@ namespace ClientFence\Mod\Clientfence;
 
 use ClientFence\Config;
 use ClientFence\InformationException;
+use ClientFence\Mod\Antispam\Networks;
 
 /**
  * The config.php parts of Security → Settings (mod_security_settings; Super Administrators only):
@@ -16,6 +17,8 @@ use ClientFence\InformationException;
  * - Access lists: addresses never rate limited (rate_limiter.whitelist_ips) and the addresses API
  *   keys may be used from (api.allowed_ips; the admin and client pages are not affected).
  * - Sessions: the "same browser" check of every signed-in request (security.perform_session_fingerprinting).
+ * - Proxies, hosting networks: sign-ups and orders from hosting and VPN networks (security.hosting_networks,
+ *   Antispam/Networks.php).
  */
 final class SecuritySettings
 {
@@ -48,10 +51,11 @@ final class SecuritySettings
             'whitelist' => self::stored(Config::getProperty('rate_limiter.whitelist_ips', [])),
             'api_ips' => self::stored(Config::getProperty('api.allowed_ips', [])),
             'fingerprint' => (bool) Config::getProperty('security.perform_session_fingerprinting', true),
+            'networks' => Networks::settings() + ['listed' => count(Networks::bundled())],
         ];
     }
 
-    /** Saves one section (proxies, access or sessions) into config.php. */
+    /** Saves one section (proxies, access, sessions or networks) into config.php. */
     public static function save(\Pimple\Container $di, array $data, int $adminId): void
     {
         $config = Config::getConfig();
@@ -77,6 +81,14 @@ final class SecuritySettings
                 break;
             case 'sessions':
                 $config['security']['perform_session_fingerprinting'] = !empty($data['fingerprint']);
+
+                break;
+            case 'networks':
+                $mode = (string) ($data['mode'] ?? Networks::OFF);
+                if (!in_array($mode, [Networks::OFF, Networks::HOLD, Networks::BLOCK], true)) {
+                    throw new InformationException('Choose what happens to sign-ups and orders from hosting networks.');
+                }
+                $config['security']['hosting_networks'] = ['mode' => $mode, 'always' => Networks::numbers($data['always'] ?? ''), 'never' => Networks::numbers($data['never'] ?? '')];
 
                 break;
             default:

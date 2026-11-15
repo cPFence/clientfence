@@ -16,6 +16,8 @@ use EmailChecker\Utilities;
 use ClientFence\InjectionAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\HttpFoundation\IpUtils;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 class Service implements InjectionAwareInterface
@@ -67,6 +69,9 @@ class Service implements InjectionAwareInterface
         $di = $event->getDi();
         $antispamService = $di['mod_service']('Antispam');
         $antispamService->isBlockedIp($event);
+        // ClientFence core patch: banned emails and phones (CF-117, Banned.php) and hosting networks (CF-119, Networks.php), before the outside check.
+        $antispamService->isBanned($event);
+        $antispamService->isHostingNetwork($event);
         $antispamService->isSpam($event);
         $antispamService->isTemp($event);
         $antispamService->checkHoneypot($event);
@@ -94,6 +99,18 @@ class Service implements InjectionAwareInterface
         $di = $event->getDi();
         $antispamService = $di['mod_service']('Antispam');
         $antispamService->isBlockedIp($event);
+        // ClientFence core patch: a client's new email or phone may not be on the banned lists (CF-117).
+        $antispamService->isBanned($event);
+    }
+
+    // ClientFence core patch: checkout checks the blocked IPs, the client's email and phone (CF-117) and hosting networks (CF-119).
+    public static function onBeforeClientCheckout(\ClientFence\Event $event): void
+    {
+        $di = $event->getDi();
+        $antispamService = $di['mod_service']('Antispam');
+        $antispamService->isBlockedIp($event);
+        $antispamService->isBanned($event);
+        $antispamService->isHostingNetwork($event);
     }
 
     public static function onBeforeAdminClientUpdate(\ClientFence\Event $event): void
@@ -130,11 +147,45 @@ class Service implements InjectionAwareInterface
         $config = $di['mod_config']('Antispam');
         if (isset($config['block_ips']) && $config['block_ips'] && isset($config['blocked_ips'])) {
             $blocked_ips = explode(PHP_EOL, $config['blocked_ips']);
-            $blocked_ips = array_map(trim(...), $blocked_ips);
-            if (in_array($di['request']->getClientIp(), $blocked_ips)) {
+            // ClientFence core patch: ranges (203.0.113.0/24, 2001:db8::/32) and wildcards (203.0.113.*), as WHMCS.
+            $blocked_ips = array_map(self::ipRange(...), array_filter(array_map(trim(...), $blocked_ips), static fn (string $ip): bool => $ip !== ''));
+            if (IpUtils::checkIp((string) $di['request']->getClientIp(), $blocked_ips)) {
                 throw new \ClientFence\InformationException('Your IP address (:ip) is blocked. Please contact our support to lift your block.', [':ip' => $di['request']->getClientIp()], 403);
             }
         }
+    }
+
+    /** ClientFence: a wildcard address (203.0.113.*, 198.51.*.*) as its range; anything else as it is. */
+    private static function ipRange(string $entry): string
+    {
+        if (preg_match('/^((?:\d{1,3}\.){1,3})\*(?:\.\*)*$/', $entry, $m) !== 1) {
+            return $entry;
+        }
+        $known = substr_count($m[1], '.');
+
+        return $m[1] . implode('.', array_fill(0, 4 - $known, '0')) . '/' . ($known * 8);
+    }
+
+    /**
+     * ClientFence: CF-117 (Banned.php): a sign-up's own email and phone, a client's changed ones, or at checkout
+     * the account's own. A sign-up's parameters come from the visitor, so only the other two read a client id.
+     */
+    public function isBanned(\ClientFence\Event $event): void
+    {
+        $params = $event->getParameters();
+        if ($event->getName() === 'onBeforeClientCheckout') {
+            Banned::refuse($event->getDi(), null, (int) $params['client_id']);
+        } else {
+            Banned::refuse($event->getDi(), $params, $event->getName() === 'onBeforeClientProfileUpdate' ? (int) $params['id'] : null);
+        }
+    }
+
+    /** ClientFence: CF-119 Block (Networks.php) at sign-up and checkout; a client staff allowed passes at checkout. */
+    public function isHostingNetwork(\ClientFence\Event $event): void
+    {
+        $di = $event->getDi();
+        $clientId = $event->getName() === 'onBeforeClientCheckout' ? (int) $event->getParameters()['client_id'] : null;
+        Networks::refuse($di, (string) $di['request']->getClientIp(), $clientId);
     }
 
     public function isSpam(\ClientFence\Event $event): void
@@ -299,12 +350,19 @@ class Service implements InjectionAwareInterface
         $url = 'https://www.stopforumspam.com/api';
         $httpClient = $this->di['http_client'];
         $queryParams = array_merge($data, ['f' => 'json']);
-        $response = $httpClient->request(
-            'GET',
-            $url,
-            ['query' => $queryParams]
-        );
-        $file_contents = $response->getContent(false);
+        // ClientFence core patch: a few seconds at most; a slow or unreachable service lets the sign-up through.
+        try {
+            $response = $httpClient->request(
+                'GET',
+                $url,
+                ['query' => $queryParams, 'timeout' => 3, 'max_duration' => 5]
+            );
+            $file_contents = $response->getContent(false);
+        } catch (TransportExceptionInterface $e) {
+            $this->di['logger']->warning('Stop Forum Spam could not be reached: %s', $e->getMessage());
+
+            return false;
+        }
 
         $json = json_decode($file_contents);
         if (!is_object($json) || isset($json->success) && !$json->success) {

@@ -1926,6 +1926,9 @@ CREATE TABLE `client_affiliate_visit` (`affiliate_id` bigint(20) NOT NULL, `day`
 -- ClientFence core patch: clients in several groups (Client/Groups.php).
 CREATE TABLE `client_group_members` (`client_id` bigint(20) NOT NULL, `client_group_id` bigint(20) NOT NULL, PRIMARY KEY (`client_id`, `client_group_id`), KEY `client_group` (`client_group_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ClientFence core patch: orders held for review (Order/Holds.php).
+CREATE TABLE `client_order_hold` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_order_id` bigint(20) NOT NULL, `client_id` bigint(20) NOT NULL, `invoice_id` bigint(20) DEFAULT NULL, `reason` varchar(20) NOT NULL, `note` varchar(255) DEFAULT NULL, `status` varchar(20) NOT NULL DEFAULT 'held', `admin_id` bigint(20) DEFAULT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `client_order` (`client_order_id`, `status`), KEY `invoice` (`invoice_id`, `status`), KEY `status` (`status`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

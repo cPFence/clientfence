@@ -32432,3 +32432,204 @@ msgstr "לקוחות בהיקף, והמשתמשים המורשים של החשב
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "You sign in with Google only: choose a password first, then set up two-factor sign-in here."
 msgstr "אתם מתחברים רק עם Google: בחרו תחילה סיסמה, ואז הגדירו כאן אימות דו-שלבי."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Allowed (off)"
+msgstr "מותר (כבוי)"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allowed for this client"
+msgstr "מותר עבור לקוח זה"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Also treat these networks as hosting"
+msgstr "התייחסו גם לרשתות אלה כאל אחסון"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Approve the order?"
+msgstr "לאשר את ההזמנה?"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "As in the security settings"
+msgstr "כמו בהגדרות האבטחה"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Domains"
+msgstr "כתובות דוא\"ל ודומיינים חסומים"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Emails and Phone Numbers"
+msgstr "כתובות דוא\"ל ומספרי טלפון חסומים"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Banned Phone Numbers"
+msgstr "מספרי טלפון חסומים"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Block sign-ups and orders"
+msgstr "חסימת הרשמות והזמנות"
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "Blocked IPs are not allowed to log in, register, order or open public tickets. Add one address per line, a range (203.0.113.0/24, 2001:db8::/32) or a wildcard (203.0.113.*)."
+msgstr "כתובות IP חסומות אינן יכולות להתחבר, להירשם, להזמין או לפתוח פניות ציבוריות. הוסיפו כתובת אחת בכל שורה, טווח (203.0.113.0/24, 2001:db8::/32) או תו כללי (203.0.113.*)."
+
+#: src/modules/Clientfence/SecuritySettings.php
+msgid "Choose what happens to sign-ups and orders from hosting networks."
+msgstr "בחרו מה קורה להרשמות ולהזמנות מרשתות אחסון."
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Hello :name,"
+msgstr "שלום :name,"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Hold ID was not passed"
+msgstr "מזהה ההשהיה לא הועבר"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hold orders for review"
+msgstr "השהיית הזמנות לבדיקה"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Hosting and VPN networks"
+msgstr "רשתות אחסון ו-VPN"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Hosting network"
+msgstr "רשת אחסון"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "If it has an invoice to pay, you will receive it by email and find it in your client area. Setup starts as usual."
+msgstr "אם יש חשבונית לתשלום, תקבלו אותה בדוא\"ל ותמצאו אותה באזור הלקוחות. ההקמה מתחילה כרגיל."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Invoice #:id"
+msgstr "חשבונית #:id"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "My services"
+msgstr "השירותים שלי"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Network settings saved."
+msgstr "הגדרות הרשת נשמרו."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Never treat these networks as hosting"
+msgstr "לעולם אל תתייחסו לרשתות אלה כאל אחסון"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "No orders are waiting for review."
+msgstr "אין הזמנות הממתינות לבדיקה."
+
+#: src/modules/Antispam/Networks.php
+msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr "זה לא מספר רשת: :asn. השתמשו במספרים כמו AS24940."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line, with the country code. Spaces, dashes and + do not matter."
+msgstr "אחד בכל שורה, עם קוד המדינה. רווחים, מקפים ו-+ אינם משנים."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "One per line: an address, a domain, or *.domain for its subdomains."
+msgstr "אחד בכל שורה: כתובת, דומיין או *.דומיין עבור תת-הדומיינים שלו."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order #:id waits for review: :title"
+msgstr "הזמנה #:id ממתינה לבדיקה: :title"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Order #:id: :title"
+msgstr "הזמנה #:id: :title"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Order waits for review"
+msgstr "ההזמנה ממתינה לבדיקה"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Orders from hosting and VPN networks"
+msgstr "הזמנות מרשתות אחסון ו-VPN"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Orders held before setup. Their invoice is a draft the client cannot see or pay. Approve to issue the invoice and carry on, or refuse to cancel the orders and the invoice. The orders of one checkout are decided together, and the client gets an email."
+msgstr "הזמנות שהושהו לפני ההקמה. החשבונית שלהן היא טיוטה שהלקוח לא יכול לראות או לשלם. אשרו כדי להפיק את החשבונית ולהמשיך, או דחו כדי לבטל את ההזמנות והחשבונית. הזמנות של תשלום אחד מוכרעות יחד, והלקוח מקבל דוא\"ל."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Please contact us if you think this is wrong."
+msgstr "אנא פנו אלינו אם אתם סבורים שזו טעות."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban"
+msgstr "דחייה וחסימה"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse and ban the email?"
+msgstr "לדחות ולחסום את כתובת הדוא\"ל?"
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Refuse the order?"
+msgstr "לדחות את ההזמנה?"
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting networks"
+msgstr "הרשמות והזמנות מרשתות אחסון"
+
+#: src/modules/Antispam/Networks.php
+msgid "Sign-ups and orders from hosting, VPN or proxy networks are not accepted. Please turn off your VPN or proxy and try again, or contact us."
+msgstr "הרשמות והזמנות מרשתות אחסון, VPN או פרוקסי אינן מתקבלות. אנא כבו את ה-VPN או הפרוקסי ונסו שוב, או פנו אלינו."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page."
+msgstr "הרשמות והזמנות מרשתות אחסון, מרכזי נתונים ו-VPN הן לעיתים קרובות הונאה. השהיה לבדיקה: ההזמנה ממתינה ב-הזמנות > ממתין לבדיקה, ואת החשבונית שלה אי אפשר לשלם עד שתאשרו. חסימה: ההרשמה או ההזמנה נדחית. לקוחות אחסון מזמינים לעיתים קרובות משרת או מ-VPN משרדי, ולכן \"השהיית הזמנות לבדיקה\" היא הבחירה הבטוחה יותר. כדי להעביר לקוח אחד, אפשרו זאת בעמוד הלקוח שלו."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "Starts with Cloudflare, Akamai and Fastly, which carry iCloud Private Relay."
+msgstr "מתחילה ב-Cloudflare, Akamai ו-Fastly, שנושאות את iCloud Private Relay."
+
+#: src/modules/Security/templates/admin/mod_security_settings.html.twig
+msgid "The built-in list has :count networks (X4BNet lists_vpn, MIT licence). The network of each visitor is looked up in the GeoIP database on this server: nothing is sent anywhere."
+msgstr "הרשימה המובנית כוללת :count רשתות (X4BNet lists_vpn, רישיון MIT). הרשת של כל מבקר נבדקת במסד הנתונים GeoIP בשרת זה: שום דבר לא נשלח לשום מקום."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The invoice is issued to the client (paid from their credit when it covers it) and setup carries on."
+msgstr "החשבונית מופקת ללקוח (משולמת מהקרדיט שלו אם הוא מכסה אותה) וההקמה נמשכת."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled, and :email is added to the banned emails."
+msgstr "ההזמנות והחשבונית שלהן מבוטלות, ו-:email מתווסף לכתובות הדוא\"ל החסומות."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "The orders and their invoice are cancelled."
+msgstr "ההזמנות והחשבונית שלהן מבוטלות."
+
+#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
+msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr "אי אפשר להירשם או להזמין באלה, וגם לקוח לא יכול להגדיר אותם בפרופיל. אנשי צוות עדיין יכולים להשתמש בהם עבור לקוח. הלקוח לא מקבל מידע איזה פרט תאם. רשימות ריקות לא בודקות דבר."
+
+#: src/modules/Order/Holds.php
+msgid "This order is no longer waiting for review."
+msgstr "הזמנה זו כבר אינה ממתינה לבדיקה."
+
+#: src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "Waiting for review"
+msgstr "ממתין לבדיקה"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "We have reviewed and approved your order:"
+msgstr "בדקנו ואישרנו את ההזמנה שלכם:"
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "We have reviewed your order and could not accept it. It has been cancelled, with its invoice, and nothing was charged:"
+msgstr "בדקנו את ההזמנה שלכם ולא יכולנו לקבל אותה. היא בוטלה יחד עם החשבונית ולא חויב דבר:"
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We review your order before it starts and email you when it is approved. Any invoice follows then."
+msgstr "אנו בודקים את ההזמנה שלכם לפני שהיא מתחילה ונשלח לכם דוא\"ל כשתאושר. חשבונית, אם יש, תגיע אז."
+
+#: src/modules/Order/templates/email/mod_order_hold_refused.html.twig
+msgid "Your order could not be accepted"
+msgstr "לא ניתן היה לקבל את ההזמנה שלכם"
+
+#: src/modules/Order/templates/email/mod_order_hold_approved.html.twig
+msgid "Your order is approved"
+msgstr "ההזמנה שלכם אושרה"
