@@ -98,7 +98,8 @@ final class SignInHistory
     /**
      * The new-location PIN: whether the login ($kind client|user|staff, $id) signed in from the country and network
      * of $ip in the last KNOWN_DAYS. An unknown country or network is never known. When not, the login's sign-ins
-     * of that time logged without details (before it was on) get theirs, LEARN_ROWS at a time, and count too.
+     * of that time logged without details (before it was on) get theirs, LEARN_ROWS at a time, and count too (staff
+     * only: older client rows do not say which login signed in).
      */
     public static function knownPlace(\Pimple\Container $di, string $kind, int $id, string $ip): bool
     {
@@ -111,6 +112,11 @@ final class SignInHistory
         $db = $di['em']->getConnection();
         if ($db->fetchOne("SELECT 1 FROM {$table} WHERE {$where} AND country = ? AND asn = ? AND created_at > ? LIMIT 1", [...$params, $place['country'], $place['asn'], $since]) !== false) {
             return true;
+        }
+        // Client rows logged before migration 12 name no authorized user (also of removed ones): an owner cannot tell
+        // its own from theirs, so only staff learn them; a client's place is known after one sign-in with details.
+        if ($kind !== 'staff') {
+            return false;
         }
         $known = false;
         foreach ($db->fetchAllAssociative("SELECT id, ip FROM {$table} WHERE {$where} AND country IS NULL AND ip IS NOT NULL AND created_at > ? LIMIT " . self::LEARN_ROWS, [...$params, $since]) as $old) {

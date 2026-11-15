@@ -638,18 +638,20 @@ test('with the PIN only from a new place, a known country and network signs in w
     'every sign-in' => ['every', '8.8.8.8', true],
 ]);
 
-test('sign-ins logged before details were kept are learned at the next sign-in', function (): void {
+test('staff sign-ins logged before details were kept are learned at the next sign-in; a client\'s are not', function (): void {
     $world = new SignInSecurityTestWorld();
-    $world->save(['pin' => 'clients', 'pin_when' => 'new']);
+    $world->save(['pin' => 'both', 'pin_when' => 'new']);
+    $world->save(['pin' => 'both', 'pin_when' => 'new', 'confirm_pin' => $world->lastPin()]);
+    $world->db->insert('activity_admin_history', ['id' => 1, 'admin_id' => 1, 'ip' => '8.8.8.8', 'created_at' => date('Y-m-d H:i:s', time() - 86400)]);
+    $world->db->insert('activity_admin_history', ['id' => 2, 'admin_id' => 1, 'ip' => '10.0.0.8', 'created_at' => date('Y-m-d H:i:s', time() - 86400)]);
+    // An older client row does not say whether the owner or an authorized user (maybe removed since) signed in.
     $world->db->insert('activity_client_history', ['id' => 1, 'client_id' => 7, 'ip' => '8.8.8.8', 'created_at' => date('Y-m-d H:i:s', time() - 86400)]);
-    $world->db->insert('activity_client_history', ['id' => 2, 'client_id' => 7, 'ip' => '10.0.0.8', 'created_at' => date('Y-m-d H:i:s', time() - 86400)]);
-    $login = ['kind' => 'client', 'id' => 7, 'email' => 'client@example.test'];
 
-    expect(SignInSecurity::challenge($world->di, 'client', $login, [], '8.8.8.8'))->toBeFalse()
-        ->and($world->db->fetchAllKeyValue('SELECT id, country FROM activity_client_history ORDER BY id'))->toBe([1 => 'US', 2 => ''])
-        ->and((int) $world->db->fetchOne('SELECT asn FROM activity_client_history WHERE id = 1'))->toBe(SignInHistory::locate($world->di, '8.8.8.8')['asn'])
-        // An authorized user does not sign in from the owner's places.
-        ->and(SignInSecurity::challenge($world->di, 'client', ['kind' => 'user', 'id' => 8, 'email' => 'user@example.test'], [], '8.8.8.8'))->toBeTrue();
+    expect(SignInSecurity::challenge($world->di, 'staff', ['kind' => 'staff', 'id' => 1, 'email' => 'staff@example.test'], [], '8.8.8.8'))->toBeFalse()
+        ->and($world->db->fetchAllKeyValue('SELECT id, country FROM activity_admin_history ORDER BY id'))->toBe([1 => 'US', 2 => ''])
+        ->and((int) $world->db->fetchOne('SELECT asn FROM activity_admin_history WHERE id = 1'))->toBe(SignInHistory::locate($world->di, '8.8.8.8')['asn'])
+        ->and(SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'client@example.test'], [], '8.8.8.8'))->toBeTrue()
+        ->and($world->db->fetchOne('SELECT country FROM activity_client_history WHERE id = 1'))->toBeNull();
 });
 
 test('the Sign-ins tab lists the login\'s own sign-ins, and Sign out ends only one of them that is not this one', function (): void {
