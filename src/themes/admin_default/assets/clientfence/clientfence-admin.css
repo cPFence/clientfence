@@ -315,8 +315,9 @@ body { font-family: var(--bf-font); }
 .js-theme-toggler .icon { transition: transform .35s ease; }
 .js-theme-toggler:hover .icon { transform: rotate(-20deg) scale(1.08); }
 @media (prefers-reduced-motion: reduce) { .js-theme-toggler .icon { transition: none; } }
+/* min-width 0: a long placeholder ends in "…" instead of widening the header on a phone. */
 .bf-search {
-  flex: 1 1 280px; max-width: 520px; display: flex; align-items: center; gap: 10px;
+  flex: 1 1 280px; min-width: 0; max-width: 520px; display: flex; align-items: center; gap: 10px;
   min-height: 38px; padding: 0 12px; border: 1px solid var(--bf-line); border-radius: 10px;
   background: var(--bf-surface-2); color: var(--bf-muted); font: inherit; font-size: 14px; text-align: start; cursor: pointer;
 }
