@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.53 (2026-11-15)
+
+### Added
+
+- **Mollie payment gateway:** clients pay on Mollie's page (cards, iDEAL, Bancontact, SEPA, PayPal and more) and can save a card or bank account for automatic renewals, which you can turn off. Refunds go back through Mollie, and chargebacks are taken off the invoice. Not tested on real accounts yet.
+- **GoCardless payment gateway:** clients set up a Direct Debit once (Bacs, SEPA, BECS, ACH, PAD and other schemes) and their invoices are collected from their bank account, with failed payments retried, chargebacks and refunds. Not tested on real accounts yet.
+- **Automatic promotions:** a promotion can apply without a code, to every client or only to chosen client groups, at checkout and on renewals, and staff can apply a promotion to an unpaid invoice or set the promotion an order renews with. ([#22](https://github.com/cPFence/clientfence/issues/22))
+- **Several client groups:** a client can belong to more than one client group. ([#22](https://github.com/cPFence/clientfence/issues/22))
+- **Slack, Discord and Telegram notifications:** staff alerts, such as new orders, payments, tickets and failures, can be sent to your Slack, Discord or Telegram channels, each channel with the alerts you choose.
+
 ## 1.0.52 (2026-11-14)
 
 ### Added
