@@ -259,6 +259,9 @@ function findSetting() {
   // On another tab of the page (the index can be wrong about the tab): open that tab first.
   const pane = el.closest('.tab-pane');
   if (pane && !shown(el) && pane.id) document.querySelector(`[data-bs-toggle="tab"][href="#${pane.id}"], [data-bs-toggle="tab"][data-bs-target="#${pane.id}"]`)?.click();
+  // On a hidden pane of a tabbed card (the Backups tab's destinations): open that pane.
+  const bfPane = el.closest('[data-bf-pane][hidden]');
+  if (bfPane) bfPane.closest('[data-bf-tabset]')?.querySelector(`[data-bf-tab="${bfPane.dataset.bfPane}"]`)?.click();
   let box = el.classList.contains('card-title') ? el.closest('.card') || el : el.closest('.form-check, .mb-3, [class*="col-"]') || el.parentElement;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(() => {
@@ -763,7 +766,8 @@ if (income) {
   draw();
 }
 
-// ---- Tabbed dashboard cards (Recent activity): a tab shows its list, and "View all" follows it.
+// ---- Tabbed cards (dashboard Recent activity, the Backups tab's destinations): a tab shows its pane, and
+// "View all" follows it. Unlike Bootstrap's tabs they leave the address alone (`active` styles nav-tabs).
 document.querySelectorAll('[data-bf-tabset]').forEach((set) => {
   const tabs = [...set.querySelectorAll('[data-bf-tab]')];
   const link = set.querySelector('[data-bf-tabset-link]');
@@ -771,6 +775,7 @@ document.querySelectorAll('[data-bf-tabset]').forEach((set) => {
     tabs.forEach((t) => {
       const on = t === tab;
       t.classList.toggle('is-on', on);
+      t.classList.toggle('active', on);
       t.setAttribute('aria-selected', on ? 'true' : 'false');
       t.tabIndex = on ? 0 : -1;
     });
@@ -1352,8 +1357,8 @@ if (movedTabs) {
   if (target) window.location.replace(target);
 }
 
-// SFTP/FTP backups card (mod_clientfence_backups_panel, fb_api_form callback): a test answers
-// {tested} and keeps the typed details; "Save & Activate" reloads to show the saved state.
+// SFTP/FTP backups tab (mod_clientfence_backups_panel, fb_api_form callback): a test answers
+// {tested} and keeps the typed details; "Save & turn on" reloads to show the saved state.
 window.clientfenceBackupFtpSaved = (result) => {
   const form = document.querySelector('[data-cf-backup-ftp]');
   if (!form) return;
@@ -1365,13 +1370,49 @@ window.clientfenceBackupFtpSaved = (result) => {
   window.setTimeout(() => window.location.reload(), 900);
 };
 
-// Cloud storage card (mod_clientfence_backups_panel): a test file keeps the typed details; a save reloads.
+// Cloud storage tab (mod_clientfence_backups_panel): a test file keeps the typed details; a save reloads.
 window.clientfenceBackupCloudSaved = (result) => {
   const form = document.querySelector('[data-cf-backup-cloud]');
   if (!form) return;
   window.ClientFence?.message?.(result && result.tested ? form.dataset.testedText : form.dataset.savedText, 'success');
   if (!(result && result.tested)) window.setTimeout(() => window.location.reload(), 900);
 };
+
+// Back up now (mod_clientfence_backups_panel): the database run has ended when it answers, the cloud copies run
+// after the answer. The page reloads and shows what happened (the kept message above).
+window.clientfenceBackupRunDone = (result) => {
+  const form = document.querySelector('[data-cf-backup-run]');
+  if (!form) return;
+  const cloud = Boolean(result?.cloud?.length);
+  const message = result?.backup ? (cloud ? form.dataset.bothText : form.dataset.doneText) : (cloud ? form.dataset.cloudText : '');
+  try {
+    if (message) sessionStorage.setItem(FLASH_KEY, JSON.stringify({ message, at: Date.now() }));
+  } catch (e) { /* private mode: no message */ }
+  window.location.reload();
+};
+
+// Backups tab: an overview row opens its destination's tab, "Show all" lists every kept backup, and a part shows
+// only while a checkbox of its form is ticked (data-cf-shown-by="encrypt") or not ("!secure").
+document.querySelectorAll('[data-cf-backup-goto]').forEach((row) => row.addEventListener('click', (event) => {
+  const tabs = document.querySelector('[data-cf-backup-tabs]');
+  const tab = tabs?.querySelector(`[data-bf-tab="${row.dataset.cfBackupGoto}"]`);
+  if (!tab) return;
+  event.preventDefault();
+  tab.click();
+  tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}));
+document.querySelectorAll('[data-cf-backup-all]').forEach((button) => button.addEventListener('click', () => {
+  button.closest('form').querySelectorAll('[data-cf-backup-more]').forEach((row) => { row.hidden = false; });
+  button.remove();
+}));
+document.querySelectorAll('[data-cf-shown-by]').forEach((part) => {
+  const off = part.dataset.cfShownBy.startsWith('!');
+  const box = part.closest('form')?.querySelector(`input[type="checkbox"][name="${part.dataset.cfShownBy.replace(/^!/, '')}"]`);
+  if (!box) return;
+  const show = () => { part.hidden = box.checked === off; };
+  box.addEventListener('change', show);
+  show();
+});
 
 // Fraud check tab of the Orders settings (mod_order_settings_fraud_check): a test shows what the service answered
 // and keeps the typed details; a save reloads to show the saved state.
@@ -1382,8 +1423,8 @@ window.clientfenceFraudCheckSaved = (result) => {
   if (!(result && result.tested)) window.setTimeout(() => window.location.reload(), 900);
 };
 
-// Chat alerts form (mod_clientfence_chat_alerts_panel) and the cloud storage card of the Backups tab: only the
-// fields of the chosen service show and are sent.
+// Chat alerts form (mod_clientfence_chat_alerts_panel) and the cloud storage tab of the Backups tab: only the
+// fields (and the guide and buttons) of the chosen service show, and only its fields are sent.
 document.querySelectorAll('[data-cf-chat-type]').forEach((type) => {
   const form = type.closest('form');
   const show = () => form.querySelectorAll('[data-cf-chat-for]').forEach((part) => {

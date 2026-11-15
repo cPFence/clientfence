@@ -180,8 +180,7 @@ final class Backups
 
     public static function runIfDue(\Pimple\Container $di): void
     {
-        $settings = self::settings($di);
-        if (!$settings['ftp']['enabled'] && !$settings['email']['enabled'] && !$settings['local']['enabled']) {
+        if (self::methods(self::settings($di)) === []) {
             return;
         }
         $last = self::state($di, self::STATUS);
@@ -192,23 +191,43 @@ final class Backups
     }
 
     /**
-     * Makes a backup and sends it by every method that is on; returns the run's status (also
-     * saved for the page and Health). Methods that fail are listed with the reason.
+     * The methods a run uses: those that are on, and with $only only those of them it names.
      *
-     * @return array{ran_at: string, ok: bool, file: string, bytes: int, tables: int, results: array<string, string>, last_ok_at: ?string}
+     * @param list<string>|null $only
+     *
+     * @return list<string>
      */
-    public static function run(\Pimple\Container $di): array
+    public static function methods(array $settings, ?array $only = null): array
     {
+        return array_values(array_filter(self::METHODS, static fn (string $method): bool => !empty($settings[$method]['enabled']) && ($only === null || in_array($method, $only, true))));
+    }
+
+    /**
+     * Makes a backup and sends it by every method that is on, or with $only ("Back up now") by
+     * the methods it names that are on; returns the saved status (merged(), for the page and
+     * Health), or null when $only leaves no method (no backup is made). Methods that fail are
+     * listed with the reason.
+     *
+     * @param list<string>|null $only
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function run(\Pimple\Container $di, ?array $only = null): ?array
+    {
+        $settings = self::settings($di);
+        $methods = self::methods($settings, $only);
+        if ($only !== null && $methods === []) {
+            return null;
+        }
         $db = $di['em']->getConnection();
         if ((int) $db->fetchOne('SELECT GET_LOCK(?, 0)', [self::LOCK]) !== 1) {
             throw new InformationException('A backup is being made right now; try again in a minute.');
         }
-        $settings = self::settings($di);
         $previous = self::state($di, self::STATUS);
         $status = ['ran_at' => date('Y-m-d H:i:s'), 'ok' => false, 'file' => '', 'bytes' => 0, 'tables' => 0, 'results' => [], 'last_ok_at' => $previous['last_ok_at'] ?? null];
         // Saved first: a run that dies (memory, a killed process) waits for the next day instead of
         // starting again every cron run, and Health shows it failed.
-        self::saveState($di, self::STATUS, ['running' => true, 'results' => ['dump' => 'Started, but did not finish (the process stopped).']] + $status);
+        self::saveState($di, self::STATUS, self::merged($previous, ['running' => true, 'results' => ['dump' => 'Started, but did not finish (the process stopped).']] + $status, $methods, $only !== null, self::methods($settings)));
         $file = null;
         try {
             @set_time_limit(0);
@@ -220,10 +239,7 @@ final class Backups
                 }
             });
             $status['bytes'] = (int) filesize($file);
-            foreach (self::METHODS as $method) {
-                if (!$settings[$method]['enabled']) {
-                    continue;
-                }
+            foreach ($methods as $method) {
                 try {
                     match ($method) {
                         'ftp' => self::transfer($di, self::pinned($di, $settings['ftp']), $file, $status['file']),
@@ -250,7 +266,8 @@ final class Backups
         if ($status['ok']) {
             $status['last_ok_at'] = $status['ran_at'];
         }
-        self::saveState($di, self::STATUS, $status);
+        $saved = self::merged($previous, $status, $methods, $only !== null, self::methods($settings));
+        self::saveState($di, self::STATUS, $saved);
         $di['logger']->info('ClientFence: database backup %s: %s', $status['ok'] ? 'sent' : 'failed', json_encode($status['results'], JSON_UNESCAPED_SLASHES));
         if (!$status['ok']) {
             // Backups are a Super Administrator setting.
@@ -259,7 +276,34 @@ final class Backups
             Notifications::staff($di, 'backup_failed', [], 'extension/settings/system#tab-backups', 'system', $super, 'backup_failed:' . date('Y-m-d'));
         }
 
-        return $status;
+        return $saved;
+    }
+
+    /**
+     * The status a run saves, with each method's own time in results_at. A full run (the cron)
+     * replaces the last one. A partial run (Back up now) changes only its methods: the others that
+     * are still on keep their last result, and ran_at, the cron's daily timer, stays (empty without
+     * an earlier run, so the daily backup is due at the next cron run); a failed dump is the result
+     * of each of its methods.
+     *
+     * @param list<string> $methods the methods the run uses
+     * @param list<string> $enabled the methods that are on
+     *
+     * @return array<string, mixed>
+     */
+    public static function merged(?array $previous, array $run, array $methods, bool $partial, array $enabled): array
+    {
+        $at = array_fill_keys($methods, $run['ran_at']);
+        if (!$partial) {
+            return ['results_at' => $at] + $run;
+        }
+        // An old failed dump or a method turned off since would keep the status failed.
+        $keep = array_fill_keys($enabled, true);
+        $own = isset($run['results']['dump']) ? array_fill_keys($methods, $run['results']['dump']) : $run['results'];
+        $results = array_merge(array_intersect_key((array) ($previous['results'] ?? []), $keep), $own);
+
+        return ['ran_at' => $previous['ran_at'] ?? '', 'ok' => array_unique(array_values($results)) === ['ok'], 'results' => $results,
+            'results_at' => array_merge(array_intersect_key((array) ($previous['results_at'] ?? []), $keep), $at)] + $run;
     }
 
     /**
@@ -309,8 +353,10 @@ final class Backups
         if ($status === null) {
             return ['ok', Health::msg('On (:methods); the first backup is made at the next cron run.'), [':methods' => $on]];
         }
-        if (!empty($status['running']) && time() - (int) strtotime((string) $status['ran_at']) < 3600) {
-            return ['ok', Health::msg('A backup is being made now (started :time).'), [':time' => $status['ran_at']]];
+        // A partial run (Back up now) keeps ran_at, the cron's timer: its own time is in results_at.
+        $latest = max([(string) $status['ran_at'], ...array_values((array) ($status['results_at'] ?? []))]);
+        if (!empty($status['running']) && time() - (int) strtotime($latest) < 3600) {
+            return ['ok', Health::msg('A backup is being made now (started :time).'), [':time' => $latest]];
         }
         if (empty($status['ok'])) {
             $why = [];
@@ -320,17 +366,17 @@ final class Backups
                 }
             }
 
-            return ['bad', Health::msg('The backup of :time failed (:why).'), [':time' => $status['ran_at'], ':why' => implode('; ', $why)]];
+            return ['bad', Health::msg('The backup of :time failed (:why).'), [':time' => $latest, ':why' => implode('; ', $why)]];
         }
-        $age = time() - (int) strtotime((string) ($status['last_ok_at'] ?? $status['ran_at']));
+        $age = time() - (int) strtotime((string) ($status['last_ok_at'] ?? $latest));
 
         if ($age > 2 * 86400) {
             return ['warn', Health::msg('The newest backup sent is :days days old: check that the cron runs.'), [':days' => (int) floor($age / 86400)]];
         }
 
         return $on === ['this server']
-            ? ['warn', Health::msg('Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it.'), [':time' => $status['ran_at']]]
-            : ['ok', Health::msg('Sent :time by :methods.'), [':time' => $status['ran_at'], ':methods' => $on]];
+            ? ['warn', Health::msg('Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it.'), [':time' => $latest]]
+            : ['ok', Health::msg('Sent :time by :methods.'), [':time' => $latest, ':methods' => $on]];
     }
 
     // ---- Kept on this server.
@@ -472,7 +518,7 @@ final class Backups
             67 => 'Login failed: check the username and password.',
             78, CURLE_FTP_COULDNT_RETR_FILE => 'The folder "' . ($folder === '' ? '(login folder)' : rawurldecode(rtrim($folder, '/'))) . '" was not found; create it first.',
             9, 25 => 'The server refused the file: check that the user may write to the folder.',
-            60 => str_contains($error, 'mismatch md5') ? 'The SFTP server\'s key is not the one trusted when the backups were set up: another server may be answering for ' . $host . '. If the server was moved or reinstalled, use Save & Activate to trust its new key.' : 'SFTP failed: ' . $error,
+            60 => str_contains($error, 'mismatch md5') ? 'The SFTP server\'s key is not the one trusted when the backups were set up: another server may be answering for ' . $host . '. If the server was moved or reinstalled, select Save on the SFTP/FTP tab to trust its new key.' : 'SFTP failed: ' . $error,
             CURLE_SSH => 'SFTP failed: ' . $error,
             default => 'The transfer failed: ' . ($error !== '' ? $error : 'error ' . $errno) . '.',
         };

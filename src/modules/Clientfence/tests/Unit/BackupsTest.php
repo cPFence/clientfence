@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * ClientFence: database backups (Clientfence\Backups, Clientfence\DatabaseDump): value escaping, the
- * checks on the SFTP/FTP and email settings, and the Health states, on an in-memory SQLite copy
+ * checks on the SFTP/FTP and email settings, the methods "Back up now" uses and the Health states, on an in-memory SQLite copy
  * of mod_clientfence_state. The dump itself and the transfers need MariaDB and a server: they are
  * checked on the local test site (dev/README.md).
  */
@@ -81,6 +81,76 @@ test('emailed backups need a valid address', function (): void {
         ->and(fn () => Backups::deactivate($di, 'tape'))->toThrow(InformationException::class, 'Unknown');
 });
 
+test('a run uses the methods that are on, with a choice only the chosen ones, and makes no backup when none is left', function (): void {
+    $settings = ['ftp' => ['enabled' => true], 'email' => ['enabled' => true], 'local' => ['enabled' => false]];
+    expect(Backups::methods($settings))->toBe(['ftp', 'email'])
+        ->and(Backups::methods($settings, ['local', 'email', 'cloud_db']))->toBe(['email'])
+        ->and(Backups::methods($settings, ['local']))->toBe([]);
+
+    // No method left: nothing is locked, dumped or saved (the in-memory database has no GET_LOCK).
+    [$di] = backupsContainer(['backups' => $settings]);
+    expect(Backups::run($di, ['local', 'cloud_files']))->toBeNull()
+        ->and(Backups::state($di, Backups::STATUS))->toBeNull();
+});
+
+test('a Back up now run changes only its methods: ran_at, the cron\'s timer, and the other results stay', function (): void {
+    $cron = ['ran_at' => '2026-11-15 03:00:00', 'ok' => false, 'file' => 'a.sql.gz', 'bytes' => 10, 'tables' => 5, 'results' => ['ftp' => 'ok', 'email' => 'Mail refused'], 'last_ok_at' => '2026-11-14 03:00:00'];
+    $full = Backups::merged(null, $cron, ['ftp', 'email'], false, ['ftp', 'email']);
+    expect($full['results_at'])->toBe(['ftp' => '2026-11-15 03:00:00', 'email' => '2026-11-15 03:00:00']);
+
+    $now = ['ran_at' => '2026-11-15 20:00:00', 'ok' => true, 'file' => 'b.sql.gz', 'bytes' => 20, 'tables' => 5, 'results' => ['email' => 'ok'], 'last_ok_at' => '2026-11-15 20:00:00'];
+    $merged = Backups::merged($full, $now, ['email'], true, ['ftp', 'email']);
+    expect($merged)->toMatchArray(['ran_at' => '2026-11-15 03:00:00', 'ok' => true, 'file' => 'b.sql.gz', 'bytes' => 20, 'last_ok_at' => '2026-11-15 20:00:00'])
+        ->and($merged['results'])->toBe(['ftp' => 'ok', 'email' => 'ok'])
+        ->and($merged['results_at'])->toBe(['ftp' => '2026-11-15 03:00:00', 'email' => '2026-11-15 20:00:00']);
+
+    // A run that dies leaves the other methods' results; a failed dump is the result of the chosen ones.
+    $running = Backups::merged($full, ['running' => true, 'results' => ['dump' => 'Started, but did not finish (the process stopped).']] + $now, ['email'], true, ['ftp', 'email']);
+    expect($running['results'])->toBe(['ftp' => 'ok', 'email' => 'Started, but did not finish (the process stopped).'])
+        ->and($running)->toMatchArray(['running' => true, 'ok' => false, 'ran_at' => '2026-11-15 03:00:00']);
+
+    // A full run replaces everything, as before.
+    expect(Backups::merged($merged, $cron, ['ftp', 'email'], false, ['ftp', 'email'])['results'])->toBe(['ftp' => 'ok', 'email' => 'Mail refused']);
+
+    // An old failed dump and a method turned off since are dropped, so a good run clears the failure.
+    $died = ['ran_at' => '2026-11-15 03:00:00', 'ok' => false, 'running' => true, 'results' => ['dump' => 'Started, but did not finish (the process stopped).', 'ftp' => 'Login failed'], 'results_at' => ['ftp' => '2026-11-15 03:00:00']];
+    $cleared = Backups::merged($died, ['results' => ['email' => 'ok']] + $now, ['email'], true, ['email']);
+    expect($cleared['results'])->toBe(['email' => 'ok'])
+        ->and($cleared['ok'])->toBeTrue()
+        ->and($cleared['results_at'])->toBe(['email' => '2026-11-15 20:00:00']);
+
+    // A first run that is partial leaves the timer unset: the cron makes the daily backup at its next run.
+    expect(Backups::merged(null, $now, ['email'], true, ['ftp', 'email'])['ran_at'])->toBe('');
+});
+
+/** The admin API as staff member $adminId (1 is the only Super Administrator). */
+function backupsAdminApi(Pimple\Container $di, int $adminId): ClientFence\Mod\Clientfence\Api\Admin
+{
+    $di['logger'] = Mockery::mock()->shouldIgnoreMissing();
+    $staff = Mockery::mock();
+    $staff->shouldReceive('isSuperAdministrator')->andReturnUsing(fn (int $id): bool => $id === 1);
+    $di['mod_service'] = $di->protect(fn () => $staff);
+    $admin = new Model_Admin();
+    $admin->loadBean(new Tests\Helpers\DummyBean());
+    $admin->id = $adminId;
+    $api = new ClientFence\Mod\Clientfence\Api\Admin();
+    $api->setDi($di);
+    $api->setIdentity($admin);
+
+    return $api;
+}
+
+test('Back up now checks its choice: nothing ticked, unknown or cloud copies while they are off are refused', function (): void {
+    [$di] = backupsContainer(['backups' => ['email' => ['enabled' => true, 'address' => 'b@example.com']]]);
+    $api = backupsAdminApi($di, 1);
+    expect(fn () => $api->backup_run(['targets' => ['']]))->toThrow(InformationException::class, 'Choose where')
+        ->and(fn () => $api->backup_run(['targets' => ['', 'tape']]))->toThrow(InformationException::class, 'Unknown')
+        ->and(fn () => $api->backup_run(['targets' => ['', 'email', 'cloud_files']]))->toThrow(InformationException::class, 'Cloud copies are off')
+        // Only methods that are off: no backup, no cloud copy.
+        ->and($api->backup_run(['targets' => ['', 'local', 'ftp']]))->toBe(['backup' => null, 'cloud' => []])
+        ->and(fn () => backupsAdminApi($di, 2)->backup_run(['targets' => ['email']]))->toThrow(InformationException::class, 'Only Super Administrators');
+});
+
 test('Health warns with no method on, needs attention after a failure and warns when old', function (): void {
     [$di] = backupsContainer();
     expect(Backups::health($di)[0])->toBe('warn');
@@ -106,6 +176,9 @@ test('Health warns with no method on, needs attention after a failure and warns 
     expect(Backups::health($di)[1])->toContain('being made now');
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => date('Y-m-d H:i:s', time() - 7200)] + $running]);
     expect(Backups::health($di))->toBe(['bad', 'The backup of :time failed (:why).', [':time' => date('Y-m-d H:i:s', time() - 7200), ':why' => 'dump: Started, but did not finish (the process stopped).']]);
+    // A Back up now run keeps the cron's ran_at: it is running by its own time.
+    [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => date('Y-m-d H:i:s', time() - 7200), 'results_at' => ['email' => date('Y-m-d H:i:s')]] + $running]);
+    expect(Backups::health($di)[1])->toContain('being made now');
 });
 
 test('update backups refuse a folder inside the site root', function (): void {

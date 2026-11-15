@@ -1,55 +1,173 @@
 {# ClientFence: the "Backups" tab of System > Settings > System (core patch in
-   mod_system_settings; Controller/Admin.php, Backups.php), as WHMCS's System Settings > Database
-   Backups: a daily dump kept on this server and/or sent by SFTP/FTP and email, each turned on with
-   "Save & Activate" after its test, plus copies to one cloud storage (CloudBackups.php). Super
-   Administrators only; `backups` is clientfence/backup_get. #}
+   mod_system_settings; Controller/Admin.php, Backups.php, CloudBackups.php). On top, one overview of
+   the destinations (this server, SFTP/FTP, one cloud storage, email) with their schedule, last result
+   and switch, and "Back up now", which asks which destinations that are on to use (backup_run
+   targets). Below, one tab per destination with its form; each is turned on with "Save & turn on"
+   after its test (as WHMCS's Save & Activate), and the SFTP/FTP and cloud tabs carry a short setup
+   guide. The tabs are the data-bf-tabset of clientfence-admin.js (no address hash: the page
+   remembers nothing). Super Administrators only; `backups` is clientfence/backup_get. #}
 {% set ftp = backups.ftp %}
 {% set email = backups.email %}
 {% set local = backups.local %}
 {% set status = backups.status %}
 {% set cloud = backups.cloud %}
+{% set services = { 's3': 'S3-compatible storage'|trans, 'bunny': 'Bunny Storage', 'gdrive': 'Google Drive', 'onedrive': 'OneDrive' } %}
+{% set service = services[cloud.provider] ?? cloud.provider %}
+{% set every = { 'hourly': 'Every hour'|trans, 'daily': 'Every day'|trans, 'weekly': 'Every week'|trans } %}
+{% set on = { 'local': local.enabled, 'ftp': ftp.enabled, 'cloud': cloud.enabled, 'email': email.enabled } %}
+{% set any_on = on|filter(v => v)|length > 0 %}
+{% set first_tab = (on|filter(v => v)|keys|first) ?: 'local' %}
+{# Each method's own time is results_at (a Back up now run keeps ran_at, the cron's timer); older statuses only have
+   ran_at. The newest run made the file (its size) and, while marked running for under an hour as on the Health page,
+   is still running. #}
+{% set db_latest = status ? max([status.ran_at]|merge(status.results_at ?? [])) : null %}
+{% set db_running = status and (status.running ?? false) and date(db_latest) > date('-1 hour') %}
+{% set rows = {
+    'local': { 'icon': 'server', 'label': 'This server'|trans, 'schedule': ['Daily, kept :days days'|trans({ ':days': local.days })] },
+    'ftp': { 'icon': 'folder-up', 'label': 'SFTP/FTP'|trans, 'schedule': ['Daily'|trans] },
+    'cloud': { 'icon': 'cloud', 'label': 'Cloud storage'|trans, 'schedule': [
+        'Database: :every, keep the last :count'|trans({ ':every': (every[cloud.db_every] ?? cloud.db_every), ':count': cloud.db_keep }),
+        cloud.files_every == 'never' ? 'Files: never'|trans : 'Files: :every, keep the last :count'|trans({ ':every': (every[cloud.files_every] ?? cloud.files_every), ':count': cloud.files_keep }),
+    ] },
+    'email': { 'icon': 'mail', 'label': 'Email'|trans, 'schedule': ['Daily, up to :mb MB'|trans({ ':mb': backups.max_email_mb })] },
+} %}
 <div class="card">
-    <div class="card-header">
+    <div class="card-header flex-wrap gap-2">
         <div>
-            <h3 class="card-title">{{ 'Database backups'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Once a day the cron makes a backup of the whole database (a gzip SQL file) and keeps it or sends it by each method that is on. Turn a method on with Save & Activate; its connection is tested first. The file is not encrypted and holds all client data: send it only to places you trust. Old backups are not removed from the remote server.'|trans }}</p>
-            <p class="card-subtitle">{{ 'Module settings, server keys and passwords in the database are encrypted with info.salt from config.php, which is not in the backup. Keep a copy of config.php off this server: a restore on a new install without its info.salt loses them.'|trans }}</p>
+            <h3 class="card-title">{{ 'Backups'|trans }}</h3>
+            <p class="card-subtitle">{{ 'Where your backups go and how the last ones went.'|trans }}</p>
+        </div>
+        <div class="card-actions d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-secondary" href="{{ 'clientfence/backups/download'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Download a backup'|trans }}</a>
+            {% if any_on %}
+                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#bk-run">{{ 'Back up now'|trans }}</button>
+            {% endif %}
         </div>
     </div>
-    <div class="card-body">
-        {% if status %}
-            <div class="alert {{ status.ok ? 'alert-success' : 'alert-danger' }} mb-0">
-                <strong>{{ 'Last backup'|trans }}:</strong> {{ status.ran_at|format_datetime }}{% if status.file %}, {{ status.file }} ({{ (status.bytes / 1048576)|number_format(2) }} MB, {{ status.tables }} {{ 'tables'|trans }}){% endif %}.
-                <ul class="mb-0 mt-1">
-                    {% for method, result in status.results %}
-                        <li>{{ { 'ftp': 'SFTP/FTP'|trans, 'email': 'Email'|trans, 'local': 'This server'|trans, 'dump': 'Backup file'|trans, 'none': 'Methods'|trans }[method] ?? method }}: {{ result == 'ok' ? (method == 'local' ? 'kept'|trans : 'sent'|trans) : result }}</li>
-                    {% endfor %}
-                </ul>
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr><th>{{ 'Destination'|trans }}</th><th>{{ 'Schedule'|trans }}</th><th>{{ 'Last backup'|trans }}</th><th></th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for key, row in rows %}
+                    <tr class="cursor-pointer" data-cf-backup-goto="{{ key }}">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <svg class="icon me-2 text-secondary" aria-hidden="true"><use href="#{{ row.icon }}" /></svg>
+                                <div>
+                                    <div>{{ row.label }}</div>
+                                    {% if key == 'cloud' and (cloud.key or cloud.bucket) %}<div class="text-secondary small">{{ service }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-secondary">{% for line in row.schedule %}<div>{{ line }}</div>{% endfor %}</td>
+                        <td>
+                            {% if key == 'cloud' %}
+                                {% if not cloud.enabled and not cloud.status %}
+                                    <span class="text-secondary">{{ 'Not set up'|trans }}</span>
+                                {% else %}
+                                    {% for kind, label in { 'db': 'Database'|trans, 'files': 'Files'|trans } %}
+                                        {% set run = cloud.status[kind] ?? null %}
+                                        {% if run or kind == 'db' or cloud.files_every != 'never' %}
+                                            <div>{{ label }}:
+                                                {% if not run %}<span class="text-secondary">{{ 'No backup yet'|trans }}</span>
+                                                {% elseif (run.running ?? false) and date(run.ran_at) > date('-6 hours') %}<span class="text-info">{{ 'Running (started :time)'|trans({ ':time': run.ran_at|format_datetime }) }}</span>
+                                                {% elseif run.ok %}{{ run.ran_at|format_datetime }}, {{ (run.bytes / 1048576)|number_format(2) }} MB
+                                                {% else %}<span class="text-danger">{{ run.ran_at|format_datetime }}: {{ run.error }}</span>{% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% else %}
+                                {# A failed dump stands for each method that was on. #}
+                                {% set result = status ? (status.results[key] ?? (on[key] ? (status.results.dump ?? null) : null)) : null %}
+                                {% set at = status ? (status.results_at[key] ?? status.ran_at) : null %}
+                                {% if on[key] and db_running and at == db_latest %}
+                                    <span class="text-info">{{ 'Running (started :time)'|trans({ ':time': at|format_datetime }) }}</span>
+                                {% elseif result == 'ok' %}
+                                    {{ at|format_datetime }}{% if at == db_latest %}, {{ (status.bytes / 1048576)|number_format(2) }} MB{% endif %}
+                                {% elseif result %}
+                                    <span class="text-danger">{{ at|format_datetime }}: {{ result }}</span>
+                                {% elseif on[key] %}
+                                    <span class="text-secondary">{{ 'No backup yet'|trans }}</span>
+                                {% else %}
+                                    <span class="text-secondary">{{ 'Not set up'|trans }}</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td><span class="badge {{ on[key] ? 'bg-success-lt' : 'bg-secondary-lt' }}">{{ on[key] ? 'On'|trans : 'Off'|trans }}</span></td>
+                        <td class="text-end"><a href="#bk-destinations">{{ 'Settings'|trans }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-body text-secondary small">
+        <div>{{ 'Keys and passwords in the database are encrypted with info.salt from config.php, which is not in the backup: keep a copy of config.php off this server.'|trans }}</div>
+        <div>{{ 'The database file is not encrypted and holds all client data; only cloud copies can be encrypted.'|trans }}</div>
+    </div>
+
+    {% if any_on %}
+        <div class="modal modal-blur fade" id="bk-run" tabindex="-1" aria-labelledby="bk-run-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form class="modal-content" method="post" action="{{ 'clientfence/backup_run'|api_url }}" {{ fb_api_form({ callback: 'clientfenceBackupRunDone' }) }}
+                      data-cf-backup-run data-done-text="{{ 'Backup made; see the result above.'|trans }}"
+                      data-cloud-text="{{ 'Cloud copies are running; reload in a minute to see them.'|trans }}"
+                      data-both-text="{{ 'Backup made. Cloud copies are running; reload in a minute to see them.'|trans }}">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="bk-run-title">{{ 'Back up now'|trans }}</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        {# Always sent, so a form with nothing ticked is refused instead of backing up by every method. #}
+                        <input type="hidden" name="targets[]" value="">
+                        {% for target, label in {
+                            'local': local.enabled ? 'Database to this server'|trans : null,
+                            'ftp': ftp.enabled ? 'Database to SFTP/FTP'|trans : null,
+                            'email': email.enabled ? 'Database by email'|trans : null,
+                            'cloud_db': cloud.enabled ? 'Database copy to :service'|trans({ ':service': service }) : null,
+                            'cloud_files': cloud.enabled ? 'Files copy to :service'|trans({ ':service': service }) : null,
+                        }|filter(v => v) %}
+                            <label class="form-check">
+                                <input class="form-check-input" type="checkbox" name="targets[]" value="{{ target }}"{% if target != 'cloud_files' %} checked{% endif %}>
+                                <span class="form-check-label">{{ label }}</span>
+                                {% if target == 'cloud_files' and (cloud.status.files.ok ?? false) %}
+                                    <span class="form-text d-block">{{ 'The last one was :size MB.'|trans({ ':size': (cloud.status.files.bytes / 1048576)|number_format(2) }) }}</span>
+                                {% endif %}
+                            </label>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                        <button class="btn btn-primary" type="submit">{{ 'Start backup'|trans }}</button>
+                    </div>
+                </form>
             </div>
-        {% else %}
-            <div class="alert alert-info mb-0">{{ 'No backup has been made yet.'|trans }}</div>
-        {% endif %}
-    </div>
-    <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
-        <a class="btn btn-outline-secondary" href="{{ 'clientfence/backups/download'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Download a backup'|trans }}</a>
-        {% if ftp.enabled or email.enabled or local.enabled %}
-            <a class="btn btn-primary" href="{{ 'clientfence/backup_run'|api_url }}"
-               {{ fb_api_link({ message: 'Backup made; see the result above.'|trans, reload: true }) }}>{{ 'Run backup now'|trans }}</a>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </div>
 
-<div class="card mt-3">
+<div class="card mt-3" id="bk-destinations" data-bf-tabset data-cf-backup-tabs>
     <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ 'Backups on this server'|trans }}
-                <span class="badge {{ local.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ local.enabled ? 'Active'|trans : 'Off'|trans }}</span>
-            </h3>
-            <p class="card-subtitle">{{ 'Keeps each backup in %dir% (outside the website, readable only by its owner) and removes those older than the days below; the newest always stays. They are lost with this server: also send them off it by SFTP/FTP or email.'|trans({ '%dir%': local.dir }) }}</p>
-        </div>
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            {% for key, row in rows %}
+                <li class="nav-item" role="presentation">
+                    <button type="button" class="nav-link{% if key == first_tab %} active is-on{% endif %}" role="tab" data-bf-tab="{{ key }}"
+                            aria-selected="{{ key == first_tab ? 'true' : 'false' }}" tabindex="{{ key == first_tab ? '0' : '-1' }}">
+                        {{ row.label }}
+                        {% if on[key] %}<span class="badge bg-success-lt ms-2">{{ 'On'|trans }}</span>{% endif %}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
-    <form method="post" action="{{ 'clientfence/backup_local_save'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, reload: true }) }}>
+
+    <form method="post" action="{{ 'clientfence/backup_local_save'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, reload: true }) }}
+          data-bf-pane="local"{% if first_tab != 'local' %} hidden{% endif %}>
         <div class="card-body">
+            {# Each pane's name, for screen readers and the settings search (SettingsIndex reads card-title). #}
+            <h4 class="card-title visually-hidden">{{ 'Backups on this server'|trans }}</h4>
             <div class="row">
                 <div class="col-sm-6 col-lg-3">
                     <label class="form-label" for="bk-days">{{ 'Keep backups for'|trans }}</label>
@@ -59,13 +177,14 @@
                     </div>
                 </div>
             </div>
+            <div class="form-text">{{ 'Kept in :folder, outside the website; the newest always stays.'|trans({ ':folder': local.dir }) }}</div>
             {% if local.files %}
                 <div class="table-responsive mt-3">
                     <table class="table table-vcenter card-table">
                         <thead><tr><th>{{ 'Backup'|trans }}</th><th>{{ 'Made'|trans }}</th><th>{{ 'Size'|trans }}</th><th></th></tr></thead>
                         <tbody>
                             {% for kept in local.files %}
-                                <tr>
+                                <tr{% if loop.index > 5 %} hidden data-cf-backup-more{% endif %}>
                                     <td>{{ kept.name }}</td>
                                     <td>{{ kept.made_at|format_datetime }}</td>
                                     <td>{{ (kept.bytes / 1048576)|number_format(2) }} MB</td>
@@ -75,265 +194,323 @@
                         </tbody>
                     </table>
                 </div>
+                {% if local.files|length > 5 %}
+                    <button type="button" class="btn btn-link px-0" data-cf-backup-all>{{ 'Show all (:count)'|trans({ ':count': local.files|length }) }}</button>
+                {% endif %}
             {% endif %}
         </div>
-        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+        <div class="card-footer d-flex flex-wrap gap-2">
             {% if local.enabled %}
                 <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'local' }) }}"
-                   {{ fb_api_link({ message: 'Backups on this server are off; kept files stay.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
-                <button class="btn btn-outline-secondary" type="submit" name="do" value="save">{{ 'Save'|trans }}</button>
+                   {{ fb_api_link({ message: 'Backups on this server are off; kept files stay.'|trans, reload: true }) }}>{{ 'Turn off'|trans }}</a>
             {% endif %}
-            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+            <button class="btn btn-primary ms-auto" type="submit" name="do" value="activate">{{ local.enabled ? 'Save'|trans : 'Save & turn on'|trans }}</button>
         </div>
     </form>
-</div>
 
-<div class="card mt-3">
-    <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ 'SFTP/FTP backups'|trans }}
-                <span class="badge {{ ftp.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ ftp.enabled ? 'Active'|trans : 'Off'|trans }}</span>
-            </h3>
-            <p class="card-subtitle">{{ 'Uploads each backup to a folder on another server.'|trans }}</p>
-        </div>
-    </div>
     <form method="post" action="{{ 'clientfence/backup_ftp_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceBackupFtpSaved' }) }}
+          data-bf-pane="ftp"{% if first_tab != 'ftp' %} hidden{% endif %}
           data-cf-backup-ftp data-tested-text="{{ 'The connection works.'|trans }}" data-saved-text="{{ 'Saved; the connection works.'|trans }}">
         <div class="card-body">
+            <h4 class="card-title visually-hidden">{{ 'SFTP/FTP backups'|trans }}</h4>
             {% if not ftp.ready %}
                 <div class="alert alert-warning">{{ 'This server\'s curl cannot use SFTP (libssh is missing); plain FTP still works.'|trans }}</div>
             {% endif %}
-            <div class="row g-3">
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-host">{{ 'Hostname'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-host" name="host" value="{{ ftp.host }}" placeholder="backup.example.com" autocomplete="off" required>
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label" for="bk-host">{{ 'Hostname'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-host" name="host" value="{{ ftp.host }}" placeholder="backup.example.com" autocomplete="off" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="bk-port">{{ 'Port'|trans }}</label>
+                            <input class="form-control" type="number" min="1" max="65535" id="bk-port" name="port" value="{{ ftp.port }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-user">{{ 'Username'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-user" name="username" value="{{ ftp.username }}" autocomplete="off" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-pass">{{ 'Password'|trans }}</label>
+                            <input class="form-control" type="password" id="bk-pass" name="password" value="" autocomplete="new-password" placeholder="{{ ftp.has_password ? 'Saved; leave empty to keep it'|trans : '' }}">
+                            <div class="form-text">{{ 'Kept encrypted and never shown again.'|trans }}</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="bk-path">{{ 'Destination folder'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-path" name="path" value="{{ ftp.path }}" placeholder="backups/" autocomplete="off">
+                            <div class="form-text">{{ 'Relative to the login folder; it must exist. Empty: the login folder.'|trans }}</div>
+                        </div>
+                        <div class="col-12">
+                            <input type="hidden" name="secure" value="0">
+                            <label class="form-check">
+                                <input class="form-check-input" type="checkbox" name="secure" value="1"{% if ftp.secure %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'Use SFTP (recommended)'|trans }}</span>
+                                <span class="form-text d-block">{{ 'Off: plain FTP, which sends the password and the backup unencrypted. The SFTP server\'s key is not checked (as in WHMCS): use a server you reach over a network you trust.'|trans }}</span>
+                            </label>
+                            <input type="hidden" name="passive" value="0">
+                            <label class="form-check" data-cf-shown-by="!secure">
+                                <input class="form-check-input" type="checkbox" name="passive" value="1"{% if ftp.passive %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'FTP passive mode'|trans }}</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <label class="form-label" for="bk-port">{{ 'Port'|trans }}</label>
-                    <input class="form-control" type="number" min="1" max="65535" id="bk-port" name="port" value="{{ ftp.port }}" required>
-                </div>
-                <div class="col-lg-4">
-                    <label class="form-label" for="bk-path">{{ 'Destination folder'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-path" name="path" value="{{ ftp.path }}" placeholder="backups/" autocomplete="off">
-                    <div class="form-text">{{ 'Relative to the login folder; it must exist. Empty: the login folder.'|trans }}</div>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-user">{{ 'Username'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-user" name="username" value="{{ ftp.username }}" autocomplete="off" required>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-pass">{{ 'Password'|trans }}</label>
-                    <input class="form-control" type="password" id="bk-pass" name="password" value="" autocomplete="new-password" placeholder="{{ ftp.has_password ? 'Saved; leave empty to keep it'|trans : '' }}">
-                    <div class="form-text">{{ 'Kept encrypted and never shown again.'|trans }}</div>
-                </div>
-                <div class="col-12">
-                    <input type="hidden" name="secure" value="0">
-                    <label class="form-check">
-                        <input class="form-check-input" type="checkbox" name="secure" value="1"{% if ftp.secure %} checked{% endif %}>
-                        <span class="form-check-label">{{ 'Use SFTP (recommended)'|trans }}</span>
-                        <span class="form-text d-block">{{ 'Off: plain FTP, which sends the password and the backup unencrypted. The SFTP server\'s key is not checked (as in WHMCS): use a server you reach over a network you trust.'|trans }}</span>
-                    </label>
-                    <input type="hidden" name="passive" value="0">
-                    <label class="form-check">
-                        <input class="form-check-input" type="checkbox" name="passive" value="1"{% if ftp.passive %} checked{% endif %}>
-                        <span class="form-check-label">{{ 'FTP passive mode'|trans }}</span>
-                    </label>
+                <div class="col-lg-5">
+                    <div class="border rounded p-3">
+                        <h4>{{ 'Set up :service'|trans({ ':service': 'SFTP/FTP'|trans }) }}</h4>
+                        <ol class="ps-3 mb-2">
+                            <li>{{ 'On another server, make a user with its own folder for the backups.'|trans }}</li>
+                            <li>{{ 'Use SFTP if you can (port 22); plain FTP uses port 21.'|trans }}</li>
+                            <li>{{ 'Enter the folder relative to the user\'s login folder; it must exist.'|trans }}</li>
+                            <li>{{ 'Select Test connection, then Save & turn on.'|trans }}</li>
+                        </ol>
+                        <div class="text-secondary small mb-2">{{ 'Old backups are not removed from that server.'|trans }}</div>
+                        <a href="https://clientfence.com/docs/maintenance/backups/#turn-on-backups" target="_blank" rel="noopener">{{ 'Full guide'|trans }}</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+        <div class="card-footer d-flex flex-wrap gap-2">
             {% if ftp.enabled %}
                 <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'ftp' }) }}"
-                   {{ fb_api_link({ message: 'SFTP/FTP backups are off.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+                   {{ fb_api_link({ message: 'SFTP/FTP backups are off.'|trans, reload: true }) }}>{{ 'Turn off'|trans }}</a>
             {% endif %}
-            <button class="btn btn-outline-secondary" type="submit" name="do" value="test">{{ 'Test connection'|trans }}</button>
-            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+            <button class="btn btn-outline-secondary ms-auto" type="submit" name="do" value="test">{{ 'Test connection'|trans }}</button>
+            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ ftp.enabled ? 'Save'|trans : 'Save & turn on'|trans }}</button>
         </div>
     </form>
-</div>
 
-{# Cloud storage (CloudBackups.php): one service, own schedules, the last N copies kept there. The service's fields
-   show by the chosen one (the data-cf-chat-* show/hide of clientfence-admin.js); hidden fields are not sent. #}
-<div class="card mt-3">
-    <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ 'Cloud storage'|trans }}
-                <span class="badge {{ cloud.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ cloud.enabled ? 'Active'|trans : 'Off'|trans }}</span>
-            </h3>
-            <p class="card-subtitle">{{ 'Sends copies of the database, and of the site\'s files if you choose, to one cloud storage on their own schedule, after the cron run. The last copies you choose stay there; older ones this site made are removed.'|trans }}</p>
-        </div>
-    </div>
+    {# Cloud storage (CloudBackups.php): one service, own schedules, the last N copies kept there. The service's
+       fields, guide and buttons show by the chosen one (the data-cf-chat-* show/hide of clientfence-admin.js); hidden
+       fields are not sent. Google Drive and OneDrive save first (Connect needs the saved app), then turn on. #}
+    {% set oauth = cloud.provider in ['gdrive', 'onedrive'] %}
+    {% set ready_for = 's3 bunny' ~ (oauth and cloud.connected ? ' ' ~ cloud.provider : '') %}
+    {% set save_first_for = ['gdrive', 'onedrive']|filter(p => not (oauth and cloud.connected and p == cloud.provider))|join(' ') %}
     <form method="post" action="{{ 'clientfence/backup_cloud_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceBackupCloudSaved' }) }}
+          data-bf-pane="cloud"{% if first_tab != 'cloud' %} hidden{% endif %}
           data-cf-backup-cloud data-tested-text="{{ 'The test file was sent and removed: the storage works.'|trans }}" data-saved-text="{{ 'Saved.'|trans }}">
         <div class="card-body">
-            {% for kind, label in { 'db': 'Database'|trans, 'files': 'Files'|trans } %}
-                {% set run = cloud.status[kind] ?? null %}
-                {% if run %}
-                    <div class="alert {{ run.ok ? 'alert-success' : (run.running ? 'alert-info' : 'alert-danger') }}">
-                        <strong>{{ label }}:</strong> {{ run.ran_at|format_datetime }},
-                        {% if run.ok %}{{ run.file }} ({{ (run.bytes / 1048576)|number_format(2) }} MB){% else %}{{ run.error }}{% endif %}
+            <h4 class="card-title visually-hidden">{{ 'Cloud storage'|trans }}</h4>
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="bk-cloud-provider">{{ 'Storage service'|trans }}</label>
+                            <select class="form-select" id="bk-cloud-provider" name="provider" data-cf-chat-type>
+                                <option value="s3"{% if cloud.provider == 's3' %} selected{% endif %}>{{ 'S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)'|trans }}</option>
+                                <option value="bunny"{% if cloud.provider == 'bunny' %} selected{% endif %}>Bunny Storage</option>
+                                <option value="gdrive"{% if cloud.provider == 'gdrive' %} selected{% endif %}>Google Drive</option>
+                                <option value="onedrive"{% if cloud.provider == 'onedrive' %} selected{% endif %}>OneDrive</option>
+                            </select>
+                        </div>
                     </div>
-                {% endif %}
-            {% endfor %}
-            <div class="row g-3">
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-cloud-provider">{{ 'Storage service'|trans }}</label>
-                    <select class="form-select" id="bk-cloud-provider" name="provider" data-cf-chat-type>
-                        <option value="s3"{% if cloud.provider == 's3' %} selected{% endif %}>{{ 'S3-compatible (AWS S3, Backblaze B2, Wasabi, Cloudflare R2, MinIO...)'|trans }}</option>
-                        <option value="bunny"{% if cloud.provider == 'bunny' %} selected{% endif %}>Bunny Storage</option>
-                        <option value="gdrive"{% if cloud.provider == 'gdrive' %} selected{% endif %}>Google Drive</option>
-                        <option value="onedrive"{% if cloud.provider == 'onedrive' %} selected{% endif %}>OneDrive</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row g-3 mt-0" data-cf-chat-for="s3">
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-s3-endpoint">{{ 'Endpoint'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-s3-endpoint" name="endpoint" value="{{ cloud.provider == 's3' ? cloud.endpoint }}" placeholder="https://s3.eu-central-1.amazonaws.com" autocomplete="off" dir="ltr">
-                    <div class="form-text">{{ 'For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket.'|trans }}</div>
-                </div>
-                <div class="col-lg-3">
-                    <label class="form-label" for="bk-s3-region">{{ 'Region'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-s3-region" name="region" value="{{ cloud.provider == 's3' ? cloud.region }}" placeholder="us-east-1" autocomplete="off" dir="ltr">
-                    <div class="form-text">{{ 'Cloudflare R2: auto.'|trans }}</div>
-                </div>
-                <div class="col-lg-3">
-                    <label class="form-label" for="bk-s3-bucket">{{ 'Bucket'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-s3-bucket" name="bucket" value="{{ cloud.provider == 's3' ? cloud.bucket }}" autocomplete="off" dir="ltr">
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-s3-key">{{ 'Access key'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-s3-key" name="key" value="{{ cloud.provider == 's3' ? cloud.key }}" autocomplete="off" dir="ltr">
-                    <div class="form-text">{{ 'Backblaze B2: an application key; the master key does not work with S3.'|trans }}</div>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-s3-secret">{{ 'Secret key'|trans }}</label>
-                    <input class="form-control" type="password" id="bk-s3-secret" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider == 's3' and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
-                    <div class="form-text">{{ 'Kept encrypted and never shown again.'|trans }}</div>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-s3-folder">{{ 'Folder'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-s3-folder" name="folder" value="{{ cloud.provider == 's3' ? cloud.folder }}" placeholder="clientfence" autocomplete="off" dir="ltr">
-                    <div class="form-text">{{ 'Optional. Empty: the top of the bucket.'|trans }}</div>
-                </div>
-            </div>
-            <div class="row g-3 mt-0" data-cf-chat-for="bunny">
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-bunny-endpoint">{{ 'Storage endpoint'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-bunny-endpoint" name="endpoint" value="{{ cloud.provider == 'bunny' ? cloud.endpoint : 'storage.bunnycdn.com' }}" autocomplete="off" dir="ltr">
-                    <div class="form-text">{{ 'The hostname on the zone\'s FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com.'|trans }}</div>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-bunny-zone">{{ 'Storage zone'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-bunny-zone" name="bucket" value="{{ cloud.provider == 'bunny' ? cloud.bucket }}" autocomplete="off" dir="ltr">
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-bunny-password">{{ 'Password'|trans }}</label>
-                    <input class="form-control" type="password" id="bk-bunny-password" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider == 'bunny' and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
-                    <div class="form-text">{{ 'The zone\'s password (not the read-only one). Kept encrypted and never shown again.'|trans }}</div>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-bunny-folder">{{ 'Folder'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-bunny-folder" name="folder" value="{{ cloud.provider == 'bunny' ? cloud.folder }}" placeholder="clientfence" autocomplete="off" dir="ltr">
-                    <div class="form-text">{{ 'Optional. Empty: the top of the zone.'|trans }}</div>
-                </div>
-            </div>
-            <div class="row g-3 mt-0" data-cf-chat-for="gdrive onedrive">
-                <div class="col-12">
-                    <div class="form-text">{{ 'Register your own app (Google Cloud Console with the Google Drive API and the drive.file scope, published "In production"; or Microsoft Entra app registrations with the delegated permissions Files.ReadWrite.AppFolder and offline_access), add this redirect URL to it, enter its client ID and secret, Save, then Connect. Google Drive gets a "ClientFence backups" folder; OneDrive its app folder.'|trans }}</div>
-                </div>
-                <div class="col-12">
-                    <label class="form-label" for="bk-oauth-redirect">{{ 'Redirect URL'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-oauth-redirect" readonly value="{{ 'clientfence/backups/cloud-callback'|url }}" dir="ltr">
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-oauth-key">{{ 'Client ID'|trans }}</label>
-                    <input class="form-control" type="text" id="bk-oauth-key" name="key" value="{{ cloud.provider in ['gdrive', 'onedrive'] ? cloud.key }}" autocomplete="off" dir="ltr">
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-oauth-secret">{{ 'Client secret'|trans }}</label>
-                    <input class="form-control" type="password" id="bk-oauth-secret" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider in ['gdrive', 'onedrive'] and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
-                    <div class="form-text">{{ 'Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time.'|trans }}</div>
-                </div>
-                {% if cloud.provider in ['gdrive', 'onedrive'] and cloud.key and cloud.has_secret %}
-                    <div class="col-12">
-                        <span class="badge {{ cloud.connected ? 'bg-success-lt' : 'bg-secondary-lt' }} me-2">{{ cloud.connected ? 'Connected'|trans : 'Not connected'|trans }}</span>
-                        <a class="btn btn-sm btn-outline-primary" href="{{ 'clientfence/backups/cloud-connect'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Connect'|trans }}</a>
+                    <div class="row g-3 mt-0" data-cf-chat-for="s3">
+                        <div class="col-md-8">
+                            <label class="form-label" for="bk-s3-endpoint">{{ 'Endpoint'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-s3-endpoint" name="endpoint" value="{{ cloud.provider == 's3' ? cloud.endpoint }}" placeholder="https://s3.eu-central-1.amazonaws.com" autocomplete="off" dir="ltr">
+                            <div class="form-text">{{ 'For example s3.REGION.amazonaws.com, s3.REGION.backblazeb2.com, s3.REGION.wasabisys.com or ACCOUNT.r2.cloudflarestorage.com, without the bucket.'|trans }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="bk-s3-region">{{ 'Region'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-s3-region" name="region" value="{{ cloud.provider == 's3' ? cloud.region }}" placeholder="us-east-1" autocomplete="off" dir="ltr">
+                            <div class="form-text">{{ 'Cloudflare R2: auto.'|trans }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-s3-bucket">{{ 'Bucket'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-s3-bucket" name="bucket" value="{{ cloud.provider == 's3' ? cloud.bucket }}" autocomplete="off" dir="ltr">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-s3-folder">{{ 'Folder'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-s3-folder" name="folder" value="{{ cloud.provider == 's3' ? cloud.folder }}" placeholder="clientfence" autocomplete="off" dir="ltr">
+                            <div class="form-text">{{ 'Optional. Empty: the top of the bucket.'|trans }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-s3-key">{{ 'Access key'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-s3-key" name="key" value="{{ cloud.provider == 's3' ? cloud.key }}" autocomplete="off" dir="ltr">
+                            <div class="form-text">{{ 'Backblaze B2: an application key; the master key does not work with S3.'|trans }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-s3-secret">{{ 'Secret key'|trans }}</label>
+                            <input class="form-control" type="password" id="bk-s3-secret" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider == 's3' and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
+                            <div class="form-text">{{ 'Kept encrypted and never shown again.'|trans }}</div>
+                        </div>
                     </div>
-                {% endif %}
-            </div>
-            <div class="row g-3 mt-0">
-                <div class="col-sm-6 col-lg-3">
-                    <label class="form-label" for="bk-db-every">{{ 'Database copy'|trans }}</label>
-                    <select class="form-select" id="bk-db-every" name="db_every">
-                        {% for value, label in { 'hourly': 'Every hour'|trans, 'daily': 'Every day'|trans, 'weekly': 'Every week'|trans } %}
-                            <option value="{{ value }}"{% if cloud.db_every == value %} selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
+                    <div class="row g-3 mt-0" data-cf-chat-for="bunny">
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-bunny-endpoint">{{ 'Storage endpoint'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-bunny-endpoint" name="endpoint" value="{{ cloud.provider == 'bunny' ? cloud.endpoint : 'storage.bunnycdn.com' }}" autocomplete="off" dir="ltr">
+                            <div class="form-text">{{ 'The hostname on the zone\'s FTP & API Access page, for example storage.bunnycdn.com or ny.storage.bunnycdn.com.'|trans }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-bunny-zone">{{ 'Storage zone'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-bunny-zone" name="bucket" value="{{ cloud.provider == 'bunny' ? cloud.bucket }}" autocomplete="off" dir="ltr">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-bunny-password">{{ 'Password'|trans }}</label>
+                            <input class="form-control" type="password" id="bk-bunny-password" name="secret" value="" autocomplete="new-password" placeholder="{{ cloud.provider == 'bunny' and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
+                            <div class="form-text">{{ 'The zone\'s password (not the read-only one). Kept encrypted and never shown again.'|trans }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-bunny-folder">{{ 'Folder'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-bunny-folder" name="folder" value="{{ cloud.provider == 'bunny' ? cloud.folder }}" placeholder="clientfence" autocomplete="off" dir="ltr">
+                            <div class="form-text">{{ 'Optional. Empty: the top of the zone.'|trans }}</div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-0" data-cf-chat-for="gdrive onedrive">
+                        <div class="col-12">
+                            <label class="form-label" for="bk-oauth-redirect">{{ 'Redirect URL'|trans }}</label>
+                            <div class="input-group">
+                                <input class="form-control" type="text" id="bk-oauth-redirect" readonly value="{{ 'clientfence/backups/cloud-callback'|url }}" dir="ltr">
+                                <button type="button" class="btn clipboard-copy" data-clipboard-target="#bk-oauth-redirect">{{ 'Copy'|trans }}</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-oauth-key">{{ 'Client ID'|trans }}</label>
+                            <input class="form-control" type="text" id="bk-oauth-key" name="key" value="{{ oauth ? cloud.key }}" autocomplete="off" dir="ltr">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="bk-oauth-secret">{{ 'Client secret'|trans }}</label>
+                            <input class="form-control" type="password" id="bk-oauth-secret" name="secret" value="" autocomplete="new-password" placeholder="{{ oauth and cloud.has_secret ? 'Saved; leave empty to keep it'|trans : '' }}">
+                            <div class="form-text">{{ 'Kept encrypted and never shown again. A Microsoft client secret expires: make a new one in time.'|trans }}</div>
+                        </div>
+                    </div>
+                    {% if oauth and cloud.key and cloud.has_secret %}
+                        <div class="mt-3" data-cf-chat-for="{{ cloud.provider }}">
+                            {% if cloud.connected %}
+                                <span class="text-success">{{ 'Connected to :service'|trans({ ':service': service }) }}</span>
+                                <a class="ms-2" href="{{ 'clientfence/backups/cloud-connect'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Reconnect'|trans }}</a>
+                            {% else %}
+                                <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2 mb-0">
+                                    <span class="me-auto">{{ 'Not connected yet'|trans }}</span>
+                                    <a class="btn btn-primary" href="{{ 'clientfence/backups/cloud-connect'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Connect'|trans }}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <div class="row g-3 mt-0">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="bk-db-every">{{ 'Database copy'|trans }}</label>
+                            <select class="form-select" id="bk-db-every" name="db_every">
+                                {% for value, label in every %}
+                                    <option value="{{ value }}"{% if cloud.db_every == value %} selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="bk-db-keep">{{ 'Keep the last'|trans }}</label>
+                            <input class="form-control" type="number" min="1" max="1000" id="bk-db-keep" name="db_keep" value="{{ cloud.db_keep }}" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="bk-files-every">{{ 'Files copy'|trans }}</label>
+                            <select class="form-select" id="bk-files-every" name="files_every">
+                                {% for value, label in { 'daily': 'Every day'|trans, 'weekly': 'Every week'|trans, 'never': 'Never'|trans } %}
+                                    <option value="{{ value }}"{% if cloud.files_every == value %} selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="bk-files-keep">{{ 'Keep the last'|trans }}</label>
+                            <input class="form-control" type="number" min="1" max="1000" id="bk-files-keep" name="files_keep" value="{{ cloud.files_keep }}" required>
+                        </div>
+                        <div class="col-12 form-text mt-1">{{ 'The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups.'|trans }}</div>
+                        <div class="col-12">
+                            <input type="hidden" name="encrypt" value="0">
+                            <label class="form-check">
+                                <input class="form-check-input" type="checkbox" name="encrypt" value="1"{% if cloud.encrypted %} checked{% endif %}>
+                                <span class="form-check-label">{{ 'Encrypt the copies with a passphrase'|trans }}</span>
+                            </label>
+                        </div>
+                        <div class="col-12" data-cf-shown-by="encrypt">
+                            <label class="form-label" for="bk-cloud-passphrase">{{ 'Passphrase'|trans }}</label>
+                            <input class="form-control" type="password" id="bk-cloud-passphrase" name="passphrase" value="" autocomplete="new-password" placeholder="{{ cloud.encrypted ? 'Saved; leave empty to keep it'|trans : '' }}">
+                            <div class="form-text">{{ 'A lost passphrase makes the copies useless: keep it somewhere safe, off this server.'|trans }}</div>
+                            <div class="form-text text-break">{{ 'Decrypt a copy with: :command'|trans({ ':command': 'openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -md sha256 -in NAME.enc -out NAME' }) }}</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label class="form-label" for="bk-db-keep">{{ 'Keep the last'|trans }}</label>
-                    <input class="form-control" type="number" min="1" max="1000" id="bk-db-keep" name="db_keep" value="{{ cloud.db_keep }}" required>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label class="form-label" for="bk-files-every">{{ 'Files copy'|trans }}</label>
-                    <select class="form-select" id="bk-files-every" name="files_every">
-                        {% for value, label in { 'daily': 'Every day'|trans, 'weekly': 'Every week'|trans, 'never': 'Never'|trans } %}
-                            <option value="{{ value }}"{% if cloud.files_every == value %} selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label class="form-label" for="bk-files-keep">{{ 'Keep the last'|trans }}</label>
-                    <input class="form-control" type="number" min="1" max="1000" id="bk-files-keep" name="files_keep" value="{{ cloud.files_keep }}" required>
-                </div>
-                <div class="col-12 form-text mt-1">{{ 'The files copy is a zip of the web root (with config.php) and the private upload folders, without the cache, the logs and the backups.'|trans }}</div>
-                <div class="col-12">
-                    <input type="hidden" name="encrypt" value="0">
-                    <label class="form-check">
-                        <input class="form-check-input" type="checkbox" name="encrypt" value="1"{% if cloud.encrypted %} checked{% endif %}>
-                        <span class="form-check-label">{{ 'Encrypt the copies with a passphrase'|trans }}</span>
-                        <span class="form-text d-block">{{ 'A lost passphrase makes the copies useless: keep it somewhere safe, off this server. Decrypt a copy with: :command'|trans({ ':command': 'openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -md sha256 -in NAME.enc -out NAME' }) }}</span>
-                    </label>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label" for="bk-cloud-passphrase">{{ 'Passphrase'|trans }}</label>
-                    <input class="form-control" type="password" id="bk-cloud-passphrase" name="passphrase" value="" autocomplete="new-password" placeholder="{{ cloud.encrypted ? 'Saved; leave empty to keep it'|trans : '' }}">
+                <div class="col-lg-5">
+                    <div class="border rounded p-3" data-cf-chat-for="s3">
+                        <h4>{{ 'Set up :service'|trans({ ':service': services.s3 }) }}</h4>
+                        <ol class="ps-3 mb-2">
+                            <li>{{ 'Create a private bucket.'|trans }}</li>
+                            <li>{{ 'Create an access key that can use only this bucket (Backblaze B2: an application key, not the master key).'|trans }}</li>
+                            <li>{{ 'Enter the endpoint without the bucket, and the region (Cloudflare R2: auto).'|trans }}</li>
+                            <li>{{ 'Enter the bucket and the keys; a folder is optional.'|trans }}</li>
+                            <li>{{ 'Select Send a test file, then Save & turn on.'|trans }}</li>
+                        </ol>
+                        <a href="https://clientfence.com/docs/maintenance/backups/#cloud-storage" target="_blank" rel="noopener">{{ 'Full guide'|trans }}</a>
+                    </div>
+                    <div class="border rounded p-3" data-cf-chat-for="bunny">
+                        <h4>{{ 'Set up :service'|trans({ ':service': 'Bunny Storage' }) }}</h4>
+                        <ol class="ps-3 mb-2">
+                            <li>{{ 'In the Bunny dashboard, create a storage zone.'|trans }}</li>
+                            <li>{{ 'On the zone\'s FTP & API Access page, copy the hostname and the password (not the read-only one).'|trans }}</li>
+                            <li>{{ 'Enter the hostname as the storage endpoint, the zone name and the password; a folder is optional.'|trans }}</li>
+                            <li>{{ 'Select Send a test file, then Save & turn on.'|trans }}</li>
+                        </ol>
+                        <a href="https://clientfence.com/docs/maintenance/backups/#cloud-storage" target="_blank" rel="noopener">{{ 'Full guide'|trans }}</a>
+                    </div>
+                    <div class="border rounded p-3" data-cf-chat-for="gdrive">
+                        <h4>{{ 'Set up :service'|trans({ ':service': 'Google Drive' }) }}</h4>
+                        <ol class="ps-3 mb-2">
+                            <li>{{ 'In the Google Cloud console, create a project.'|trans }}</li>
+                            <li>{{ 'Under APIs & Services > Library, enable the Google Drive API.'|trans }}</li>
+                            <li>{{ 'In Google Auth Platform, set up the consent screen with Audience External.'|trans }}</li>
+                            <li>{{ 'Under Audience, publish the app (In production): in Testing, Google ends the connection after 7 days.'|trans }}</li>
+                            <li>{{ 'Under Clients, create a Web application client and add the Redirect URL from this form.'|trans }}</li>
+                            <li>{{ 'Paste its Client ID and Client secret here and select Save.'|trans }}</li>
+                            <li>{{ 'Select Connect and sign in, then choose the schedule and select Save & turn on.'|trans }}</li>
+                        </ol>
+                        <div class="text-secondary small mb-2">{{ 'The copies go to a "ClientFence backups" folder; ClientFence sees only the files it made.'|trans }}</div>
+                        <a href="https://clientfence.com/docs/maintenance/backups/#google-drive-app" target="_blank" rel="noopener">{{ 'Full guide'|trans }}</a>
+                    </div>
+                    <div class="border rounded p-3" data-cf-chat-for="onedrive">
+                        <h4>{{ 'Set up :service'|trans({ ':service': 'OneDrive' }) }}</h4>
+                        <ol class="ps-3 mb-2">
+                            <li>{{ 'In the Microsoft Entra admin center, open App registrations > New registration.'|trans }}</li>
+                            <li>{{ 'For the account types, choose any organizational directory and personal Microsoft accounts.'|trans }}</li>
+                            <li>{{ 'Add a Redirect URI of platform Web with the Redirect URL from this form.'|trans }}</li>
+                            <li>{{ 'Under API permissions, add the Microsoft Graph delegated permissions Files.ReadWrite.AppFolder and offline_access.'|trans }}</li>
+                            <li>{{ 'Under Certificates & secrets, make a client secret and copy its Value; it expires, so make a new one in time.'|trans }}</li>
+                            <li>{{ 'Paste the Application (client) ID and the secret here and select Save.'|trans }}</li>
+                            <li>{{ 'Select Connect and sign in, then choose the schedule and select Save & turn on.'|trans }}</li>
+                        </ol>
+                        <div class="text-secondary small mb-2">{{ 'The copies go to the app\'s own folder in OneDrive.'|trans }}</div>
+                        <a href="https://clientfence.com/docs/maintenance/backups/#cloud-storage" target="_blank" rel="noopener">{{ 'Full guide'|trans }}</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+        <div class="card-footer d-flex flex-wrap gap-2">
             {% if cloud.enabled %}
                 <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'cloud' }) }}"
-                   {{ fb_api_link({ message: 'Cloud copies are off; the stored ones stay.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+                   {{ fb_api_link({ message: 'Cloud copies are off; the stored ones stay.'|trans, reload: true }) }}>{{ 'Turn off'|trans }}</a>
             {% endif %}
-            <button class="btn btn-outline-secondary" type="submit" name="do" value="save">{{ 'Save'|trans }}</button>
-            <button class="btn btn-outline-secondary" type="submit" name="do" value="test">{{ 'Send a test file'|trans }}</button>
-            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+            <span class="ms-auto" data-cf-chat-for="{{ ready_for }}">
+                <button class="btn btn-outline-secondary" type="submit" name="do" value="test">{{ 'Send a test file'|trans }}</button>
+                <button class="btn btn-primary ms-2" type="submit" name="do" value="activate">{{ cloud.enabled ? 'Save'|trans : 'Save & turn on'|trans }}</button>
+            </span>
+            <span class="ms-auto" data-cf-chat-for="{{ save_first_for }}">
+                <button class="btn btn-primary" type="submit" name="do" value="save">{{ 'Save'|trans }}</button>
+            </span>
         </div>
     </form>
-</div>
 
-<div class="card mt-3">
-    <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ 'Email backups'|trans }}
-                <span class="badge {{ email.enabled ? 'bg-success-lt' : 'bg-secondary-lt' }} ms-2">{{ email.enabled ? 'Active'|trans : 'Off'|trans }}</span>
-            </h3>
-            <p class="card-subtitle">{{ 'Emails each backup as an attachment, through the Email settings\' mailer (not kept in the email log). Backups larger than %mb% MB are not emailed.'|trans({ '%mb%': backups.max_email_mb }) }}</p>
-        </div>
-    </div>
-    <form method="post" action="{{ 'clientfence/backup_email_save'|api_url }}" {{ fb_api_form({ message: 'Email backups are on.'|trans, reload: true }) }}>
+    <form method="post" action="{{ 'clientfence/backup_email_save'|api_url }}" {{ fb_api_form({ message: 'Email backups are on.'|trans, reload: true }) }}
+          data-bf-pane="email"{% if first_tab != 'email' %} hidden{% endif %}>
         <div class="card-body">
+            <h4 class="card-title visually-hidden">{{ 'Email backups'|trans }}</h4>
             <label class="form-label" for="bk-email">{{ 'Email address'|trans }}</label>
             <input class="form-control" type="email" id="bk-email" name="address" value="{{ email.address }}" autocomplete="off" required>
+            <div class="form-text">{{ 'Sent through the Email settings\' mailer and not kept in the email log. Backups larger than :mb MB are not emailed.'|trans({ ':mb': backups.max_email_mb }) }}</div>
         </div>
-        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+        <div class="card-footer d-flex flex-wrap gap-2">
             {% if email.enabled %}
                 <a class="btn btn-outline-danger" href="{{ 'clientfence/backup_deactivate'|api_url(query: { 'method': 'email' }) }}"
-                   {{ fb_api_link({ message: 'Email backups are off.'|trans, reload: true }) }}>{{ 'Deactivate'|trans }}</a>
+                   {{ fb_api_link({ message: 'Email backups are off.'|trans, reload: true }) }}>{{ 'Turn off'|trans }}</a>
             {% endif %}
-            <button class="btn btn-primary" type="submit" name="do" value="activate">{{ 'Save & Activate'|trans }}</button>
+            <button class="btn btn-primary ms-auto" type="submit" name="do" value="activate">{{ email.enabled ? 'Save'|trans : 'Save & turn on'|trans }}</button>
         </div>
     </form>
 </div>

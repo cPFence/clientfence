@@ -289,11 +289,19 @@ final class CloudBackups
         $status = Backups::state($di, self::STATUS) ?? [];
         $now = time();
         $kinds = array_values(array_filter(['db', 'files'], static fn (string $kind): bool => self::due($status[$kind]['ran_at'] ?? null, (string) $settings[$kind . '_every'], $now)));
-        if ($kinds === []) {
-            return;
+        if ($kinds !== []) {
+            self::runAfterResponse($di, $kinds, $now);
         }
+    }
+
+    /** Runs the kinds once the request has ended: a cron started over the web, or Back up now, answers first. */
+    public static function runAfterResponse(\Pimple\Container $di, array $kinds, int $now): void
+    {
         register_shutdown_function(static function () use ($di, $kinds, $now): void {
-            // A cron started over the web answers first.
+            // Saved now, or a page staff open during a long copy would lose its session changes when the copy ends.
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_write_close();
+            }
             if (function_exists('fastcgi_finish_request')) {
                 fastcgi_finish_request();
             } elseif (function_exists('litespeed_finish_request')) {

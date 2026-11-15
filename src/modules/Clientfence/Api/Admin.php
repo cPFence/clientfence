@@ -712,7 +712,7 @@ class Admin extends \ClientFence\Api\AbstractApi
         if (($data['do'] ?? '') !== 'activate') {
             Backups::testFtp($di, Backups::ftpFrom($di, (array) $data, Backups::settings($di)['ftp']));
 
-            // The form stays as typed (no reload), ready for "Save & Activate".
+            // The form stays as typed (no reload), ready for "Save & turn on".
             return ['tested' => true];
         }
         Backups::saveFtp($di, (array) $data, true);
@@ -773,13 +773,40 @@ class Admin extends \ClientFence\Api\AbstractApi
         return true;
     }
 
-    /** Makes a backup now and sends it by every method that is on (the cron does it daily). */
-    public function backup_run(): array
+    /**
+     * Makes a backup now (the cron does it daily). Without `targets`: the database by every method
+     * that is on; answers the run's status. With `targets` ("Back up now": local, ftp, email,
+     * cloud_db, cloud_files): only those. A database method that is off is left out, and no backup
+     * file is made when none is left; the cloud copies are refused while they are off and start
+     * after the answer is sent (a files zip can take minutes). Answers {backup: the run's status or
+     * null, cloud: the copies started (db, files)}.
+     */
+    public function backup_run($data = []): ?array
     {
         $this->requireSuperAdmin();
-        $this->getDi()['logger']->info('ClientFence: database backup run by staff');
+        $di = $this->getDi();
+        $di['logger']->info('ClientFence: database backup run by staff');
+        if (!isset($data['targets'])) {
+            return Backups::run($di);
+        }
+        // The form always sends an empty value too, so nothing ticked is refused instead of meaning every method.
+        $targets = array_values(array_filter((array) $data['targets'], static fn ($target): bool => is_string($target) && $target !== ''));
+        if ($targets === []) {
+            throw new InformationException('Choose where the backup goes.');
+        }
+        if (array_diff($targets, [...Backups::METHODS, 'cloud_db', 'cloud_files']) !== []) {
+            throw new InformationException('Unknown backup method.');
+        }
+        $kinds = array_keys(array_intersect(['db' => 'cloud_db', 'files' => 'cloud_files'], $targets));
+        if ($kinds !== [] && !CloudBackups::settings($di)['enabled']) {
+            throw new InformationException('Cloud copies are off: turn them on first.');
+        }
+        $backup = Backups::run($di, $targets);
+        if ($kinds !== []) {
+            CloudBackups::runAfterResponse($di, $kinds, time());
+        }
 
-        return Backups::run($this->getDi());
+        return ['backup' => $backup, 'cloud' => $kinds];
     }
 
     /**
