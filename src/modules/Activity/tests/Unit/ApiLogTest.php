@@ -74,6 +74,9 @@ test('each source is logged only when ticked', function (string $role, bool $via
     'guest read' => ['guest', false, 'GET', null],
     'client read posted' => ['client', false, 'POST', null, 'profile_get'],
     'client list posted' => ['client', false, 'POST', null, 'invoice_get_list'],
+    'client status posted' => ['client', false, 'POST', null, 'client_id_document_status'],
+    'client quote posted' => ['client', false, 'POST', null, 'order_upgrade_options_quote'],
+    'client quote accepted is a change' => ['client', false, 'POST', 'client', 'invoice_quote_accept'],
     'staff read is logged' => ['admin', false, 'POST', 'staff', 'invoice_get_list'],
 ]);
 

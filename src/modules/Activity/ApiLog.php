@@ -65,8 +65,9 @@ final class ApiLog
     {
         return match (true) {
             $role === 'admin' => $viaKey ? 'api_key' : 'staff',
-            // The client area posts its reads too: a read is named ..._get, ..._list or ..._search (cart_get, invoice_get_list).
-            $post && preg_match('/_(get|list|search)(_|$)/', $call) !== 1 => 'client',
+            // The client area posts its reads too: a read is named ..._get, ..._list or ..._search (cart_get, invoice_get_list) or
+            // ends in _status, _quote, _options or _user_session (id_document_status; not quote_accept).
+            $post && preg_match('/_(get|list|search)(_|$)|_(status|quote|options|user_session)$/', $call) !== 1 => 'client',
             default => null,
         };
     }

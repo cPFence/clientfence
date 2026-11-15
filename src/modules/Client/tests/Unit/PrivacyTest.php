@@ -25,7 +25,10 @@ function privacyDb(): Connection
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, amount REAL, description TEXT, created_at TEXT)',
         'CREATE TABLE client_note (id INTEGER PRIMARY KEY, client_id INTEGER, admin_id INTEGER, note TEXT, pinned INTEGER, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_file (id INTEGER PRIMARY KEY, client_id INTEGER, admin_id INTEGER, name TEXT, stored_name TEXT, size INTEGER, mime TEXT, created_at TEXT)',
-        'CREATE TABLE client_id_document (id INTEGER PRIMARY KEY, client_id INTEGER, name TEXT, stored_name TEXT, status TEXT)',
+        'CREATE TABLE client_id_document (id INTEGER PRIMARY KEY, client_id INTEGER, name TEXT, stored_name TEXT, status TEXT, reason TEXT, created_at TEXT, decided_at TEXT)',
+        'CREATE TABLE client_passkey (id INTEGER PRIMARY KEY, kind TEXT, subject_id INTEGER, credential_id TEXT, public_key TEXT, name TEXT, created_at TEXT, last_used_at TEXT)',
+        'CREATE TABLE client_balance_alert (client_id INTEGER PRIMARY KEY, threshold REAL, currency TEXT, alerted_at TEXT, updated_at TEXT)',
+        'CREATE TABLE client_order_hold (id INTEGER PRIMARY KEY, client_order_id INTEGER, client_id INTEGER, reason TEXT, note TEXT, status TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice_quote (id INTEGER PRIMARY KEY, client_id INTEGER, first_name TEXT, last_name TEXT, company TEXT, email TEXT, country TEXT, currency TEXT, subject TEXT, stage TEXT, valid_until TEXT, customer_notes TEXT, admin_notes TEXT, sent_at TEXT, accepted_at TEXT, declined_at TEXT, created_at TEXT)',
         'CREATE TABLE service_domain (id INTEGER PRIMARY KEY, client_id INTEGER, sld TEXT, tld TEXT, ns1 TEXT, ns2 TEXT, ns3 TEXT, ns4 TEXT, period INTEGER, privacy INTEGER, transfer_code TEXT, contact_email TEXT, contact_company TEXT, contact_first_name TEXT, contact_last_name TEXT, contact_address1 TEXT, contact_address2 TEXT, contact_city TEXT, contact_state TEXT, contact_postcode TEXT, contact_country TEXT, contact_phone_cc TEXT, contact_phone TEXT, registered_at TEXT, expires_at TEXT)',
@@ -35,7 +38,7 @@ function privacyDb(): Connection
         'CREATE TABLE support_ticket_secret (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, kind TEXT NOT NULL, label TEXT NOT NULL, data TEXT NOT NULL, added_by_client_id INTEGER, created_at TEXT NOT NULL)',
         'CREATE TABLE support_ticket_secret_event (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER NOT NULL, secret_label TEXT NOT NULL, action TEXT NOT NULL, admin_id INTEGER, client_id INTEGER, created_at TEXT NOT NULL)',
         'CREATE TABLE activity_system (id INTEGER PRIMARY KEY, client_id INTEGER, message TEXT, ip TEXT)',
-        'CREATE TABLE activity_api (id INTEGER PRIMARY KEY, client_id INTEGER, params TEXT)',
+        'CREATE TABLE activity_api (id INTEGER PRIMARY KEY, client_id INTEGER, method TEXT, api_call TEXT, ip TEXT, status INTEGER, result TEXT, params TEXT, created_at TEXT)',
         'CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT, user_id INTEGER, country TEXT, asn INTEGER, network TEXT, browser TEXT, session_id TEXT)',
         'CREATE TABLE activity_client_email (id INTEGER PRIMARY KEY, client_id INTEGER, sender TEXT, recipients TEXT, subject TEXT, content_text TEXT, created_at TEXT)',
         'CREATE TABLE client_password_reset (id INTEGER PRIMARY KEY, client_id INTEGER)',
@@ -139,6 +142,23 @@ test('the export has the sign-in details and the authorized user, not the sessio
         ->and((string) json_encode($data))->not->toContain('live-session-id');
 });
 
+test('the export has the passkey names, ID document records, the alert and API requests, not the keys or files', function (): void {
+    $db = privacyDb();
+    $db->insert('client_passkey', ['kind' => 'client', 'subject_id' => 7, 'credential_id' => 'cred-secret', 'public_key' => 'key-secret', 'name' => 'Laptop', 'created_at' => '2026-11-15 10:00:00']);
+    $db->insert('client_passkey', ['kind' => 'user', 'subject_id' => 7, 'credential_id' => 'other', 'public_key' => 'other', 'name' => 'Someone else', 'created_at' => '2026-11-15 10:00:00']);
+    $db->insert('client_id_document', ['client_id' => 7, 'name' => 'passport.jpg', 'stored_name' => 'stored-secret', 'status' => 'approved']);
+    $db->insert('client_balance_alert', ['client_id' => 7, 'threshold' => 10, 'currency' => 'USD', 'updated_at' => '2026-11-15 10:00:00']);
+    $db->insert('activity_api', ['client_id' => 7, 'method' => 'POST', 'api_call' => 'client_profile_update', 'status' => 200, 'params' => '{"first_name":"********"}']);
+
+    $data = Privacy::export(privacyDi($db), 7);
+
+    expect(array_column($data['passkeys'], 'name'))->toBe(['Laptop'])
+        ->and($data['id_documents'][0])->toMatchArray(['name' => 'passport.jpg', 'status' => 'approved'])
+        ->and((float) $data['low_balance_alert'][0]['threshold'])->toBe(10.0)
+        ->and($data['api_requests'][0]['api_call'])->toBe('client_profile_update')
+        ->and((string) json_encode($data))->not->toContain('secret');
+});
+
 test('anonymizing erases the person and keeps the money records', function (): void {
     $db = privacyDb();
     $db->insert('client_note', ['client_id' => 7, 'note' => 'Private note']);
@@ -147,6 +167,7 @@ test('anonymizing erases the person and keeps the money records', function (): v
     $db->insert('support_ticket_secret', ['ticket_id' => 9, 'kind' => 'server', 'label' => 'SSH alice.client.test', 'data' => 'encrypted-credentials', 'created_at' => date('Y-m-d H:i:s')]);
     $db->insert('support_ticket_secret_event', ['ticket_id' => 9, 'secret_label' => 'SSH alice.client.test', 'action' => 'opened', 'admin_id' => 1, 'created_at' => date('Y-m-d H:i:s')]);
     $db->insert('activity_api', ['client_id' => 7, 'params' => '{"first_name":"Alice"}']);
+    $db->insert('client_order_hold', ['client_order_id' => 1, 'client_id' => 7, 'reason' => 'fraud', 'note' => 'FraudLabs Pro 54 / 20', 'status' => 'held']);
     Privacy::anonymize(privacyDi($db), 7, 1);
 
     expect((int) $db->fetchOne('SELECT COUNT(*) FROM client_note'))->toBe(0)
@@ -173,7 +194,8 @@ test('anonymizing erases the person and keeps the money records', function (): v
         ->and($db->fetchOne('SELECT transfer_code FROM service_domain'))->toBeNull()
         ->and($db->fetchFirstColumn('SELECT DISTINCT content FROM support_ticket_message'))->toBe(['[Removed: the client was anonymized.]'])
         ->and($db->fetchOne('SELECT subject FROM support_ticket'))->toBe('Ticket (removed)')
-        ->and($db->fetchOne('SELECT note FROM support_ticket_note'))->toBe('[Removed: the client was anonymized.]');
+        ->and($db->fetchOne('SELECT note FROM support_ticket_note'))->toBe('[Removed: the client was anonymized.]')
+        ->and($db->fetchAssociative('SELECT note, status FROM client_order_hold'))->toBe(['note' => '', 'status' => 'held']);
     foreach (['activity_client_history', 'activity_client_email', 'extension_meta', 'support_ticket_secret', 'support_ticket_secret_event', 'client_id_document', 'activity_api'] as $table) {
         expect((int) $db->fetchOne("SELECT COUNT(*) FROM $table"))->toBe(0);
     }

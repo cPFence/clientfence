@@ -1134,6 +1134,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             Files::forgetClient($connection, $clientId, $this->di['filesystem']);
             // ClientFence core patch: the client's ID documents go with it (IdDocuments.php).
             IdDocuments::forgetClient($connection, $clientId, $this->di['filesystem']);
+            // ClientFence core patch: the client's order holds go with its orders (Order/Holds.php).
+            $connection->delete('client_order_hold', ['client_id' => $clientId]);
             // ClientFence core patch: affiliate records of the client (Client/Affiliates/Affiliates.php).
             Affiliates\Affiliates::clientRemoved($connection, $clientId);
 

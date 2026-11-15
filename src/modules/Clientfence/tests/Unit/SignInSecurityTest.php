@@ -817,7 +817,7 @@ test('switching the app on ends the requirement and emails the login once', func
 
     expect($world->session)->not->toHaveKey(TwoFactor::REQUIRED)
         ->and($world->sent)->toHaveCount(1)
-        ->and($world->sent[0])->toMatchArray(['code' => 'mod_client_twofactor_switched_on', 'to' => 'client@example.test', 'to_lang' => 'de_DE', 'name' => 'Ada Lovelace', 'ip' => '198.51.100.1', 'country' => 'Germany']);
+        ->and($world->sent[0])->toMatchArray(['code' => 'mod_client_twofactor_switched_on', 'to' => 'client@example.test', 'to_lang' => 'de_DE', 'name' => 'Ada Lovelace', 'ip' => '198.51.100.1', 'country' => 'Germany', 'c' => ['email' => 'client@example.test']]);
 });
 
 test('the console command also turns the required two-factor sign-in for clients off', function (): void {

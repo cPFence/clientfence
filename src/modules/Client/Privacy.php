@@ -96,6 +96,11 @@ final class Privacy
             'affiliate' => self::rows($db, 'SELECT code, status, commission_type, commission_amount, onetime, created_at FROM client_affiliate WHERE client_id = ?', [$clientId]),
             'affiliate_entries' => self::rows($db, 'SELECT e.type, e.status, e.amount, e.currency, e.note, e.clears_at, e.created_at FROM client_affiliate_entry e JOIN client_affiliate a ON a.id = e.affiliate_id WHERE a.client_id = ? ORDER BY e.id', [$clientId]),
             'affiliate_payouts' => self::rows($db, 'SELECT p.amount, p.currency, p.status, p.method, p.details, p.created_at, p.processed_at FROM client_affiliate_payout p JOIN client_affiliate a ON a.id = p.affiliate_id WHERE a.client_id = ? ORDER BY p.id', [$clientId]),
+            // The security records of the person: passkey names (not the keys), ID document records, the alert, API requests.
+            'passkeys' => self::rows($db, 'SELECT name, created_at, last_used_at FROM client_passkey WHERE kind = ? AND subject_id = ? ORDER BY id', ['client', $clientId]),
+            'id_documents' => self::rows($db, 'SELECT name, status, reason, created_at, decided_at FROM client_id_document WHERE client_id = ? ORDER BY id', [$clientId]),
+            'low_balance_alert' => self::rows($db, 'SELECT threshold, currency, alerted_at, updated_at FROM client_balance_alert WHERE client_id = ?', [$clientId]),
+            'api_requests' => self::rows($db, 'SELECT method, api_call, ip, status, result, params, created_at FROM activity_api WHERE client_id = ? ORDER BY id', [$clientId]),
         ];
         if ($includeStaffData) {
             $data['notes'] = Notes::getList($di, $clientId);
@@ -180,6 +185,8 @@ final class Privacy
             self::quietly($db, 'DELETE FROM client_google_signup WHERE client_id = ?', [$clientId]);
             self::quietly($db, 'DELETE FROM client_google_password WHERE client_id = ?', [$clientId]);
             self::quietly($db, 'DELETE FROM activity_api WHERE client_id = ?', [$clientId]);
+            // Order holds stay with the kept orders (a held order must not go through); their check notes go.
+            self::quietly($db, 'UPDATE client_order_hold SET note = \'\' WHERE client_id = ?', [$clientId]);
             self::quietly($db, 'REPLACE INTO ' . self::OPTOUT_TABLE . ' (client_id, source, opted_out_at) VALUES (?, ?, ?)', [$clientId, 'anonymized', $now]);
             // The affiliate ledger and payouts stay as money records; their visits and payout details go.
             self::quietly($db, 'DELETE FROM client_affiliate_visit WHERE affiliate_id IN (SELECT id FROM client_affiliate WHERE client_id = ?)', [$clientId]);

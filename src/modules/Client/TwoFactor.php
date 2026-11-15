@@ -475,6 +475,7 @@ final class TwoFactor
             'to_name' => $name,
             'to_lang' => $login['lang'] ?? null,
             'name' => $name,
+            'c' => ['email' => (string) ($login['email'] ?? '')], // the footer's sign-in link
             'ip' => $ip,
             'country' => $country !== null ? \Symfony\Component\Intl\Countries::getName($country) : '',
             'send_now' => true,
