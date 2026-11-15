@@ -140,3 +140,19 @@ test('a transport error keeps only the host of the URL (resumable upload URLs ca
 test('the files copy takes every private upload folder, ID documents included', function (): void {
     expect(CloudBackups::fileRoots())->toMatchArray(['id-documents' => ClientFence\Mod\Client\IdDocuments::dir(), 'ticket-files' => ClientFence\Mod\Support\TicketFiles::dir()]);
 });
+
+test('the files copy zip is saved owner-only, whatever the umask', function (): void {
+    $out = tempnam(sys_get_temp_dir(), 'cftest');
+    $umask = umask(0022);
+    try {
+        $zip = new PhpZip\ZipFile();
+        $zip->addFromString('config.php', '<?php return [];');
+        CloudBackups::saveZip($zip, $out);
+        clearstatcache();
+        expect(fileperms($out) & 0777)->toBe(0600)
+            ->and(umask())->toBe(0022);
+    } finally {
+        umask($umask);
+        @unlink($out);
+    }
+});

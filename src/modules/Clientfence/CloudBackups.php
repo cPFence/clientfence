@@ -432,13 +432,21 @@ final class CloudBackups
             throw new InformationException('Not enough free disk space in :dir for the files copy (:size GB needed).', [':dir' => sys_get_temp_dir(), ':size' => round(2 * $total / 1024 ** 3, 1)]);
         }
         $out = self::tempFile();
+        self::saveZip($zip, $out);
+
+        return [$out, 'files_backup_' . date('Y-m-d_His') . '_' . bin2hex(random_bytes(8)) . '.zip'];
+    }
+
+    /** Saves and closes the zip owner-only: it holds config.php, and saveAsFile() writes a new file that it renames over $out. */
+    public static function saveZip(ZipFile $zip, string $out): void
+    {
+        $umask = umask(0077);
         try {
             $zip->saveAsFile($out);
         } finally {
+            umask($umask);
             $zip->close();
         }
-
-        return [$out, 'files_backup_' . date('Y-m-d_His') . '_' . bin2hex(random_bytes(8)) . '.zip'];
     }
 
     private static function tempFile(): string

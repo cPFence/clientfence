@@ -372,6 +372,7 @@ final class Users
         if ($version === false) {
             throw new InformationException('Account not found.', null, 404);
         }
+        TwoFactor::refusePasswordOnly($di, $clientId, 'user', (int) $context['user_id']);
         $session = $di['session'];
         $session->regenerateId();
         $session->set('client_id', $clientId);

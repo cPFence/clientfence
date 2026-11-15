@@ -196,6 +196,17 @@ final class TwoFactor
         }
     }
 
+    /**
+     * Sign-in and switching accounts (Users::switchTo()): a passkey meets "required" only on a passkey sign-in, so a
+     * login with passkeys but no other second factor may not enter a required account with the password alone.
+     */
+    public static function refusePasswordOnly(\Pimple\Container $di, int $clientId, string $kind, int $id): void
+    {
+        if (Passkeys::on($di, 'client') && self::inScope($di, $clientId) && Passkeys::count($di, $kind, $id) > 0 && !self::hasSecondFactor($di, $kind, $id)) {
+            throw new InformationException('Your account requires two-factor sign-in. Please sign in with your passkey.', null, 403);
+        }
+    }
+
     /** Whether the portal requires two-factor sign-in of this account (Security settings, Sign-in tab). */
     private static function inScope(\Pimple\Container $di, int $clientId): bool
     {
@@ -218,10 +229,7 @@ final class TwoFactor
         // A sign-in without a passkey: an earlier passkey sign-in in this browser no longer counts (it survives logout).
         $di['session']->delete(Passkeys::SIGNED_IN);
         if (!self::isOn($di, $kind, $id)) {
-            // A passkey meets "required" only on a passkey sign-in: the password alone must not get in.
-            if (Passkeys::on($di, 'client') && self::inScope($di, $clientId) && Passkeys::count($di, $kind, $id) > 0) {
-                throw new InformationException('Your account requires two-factor sign-in. Please sign in with your passkey.', null, 403);
-            }
+            self::refusePasswordOnly($di, $clientId, $kind, $id);
 
             return false;
         }

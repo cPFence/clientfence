@@ -302,6 +302,18 @@ test('with two-factor sign-in required, the password alone of a passkey holder s
     expect(fn () => TwoFactor::challenge($world->di, 7, null))->toThrow(InformationException::class, 'sign in with your passkey');
 });
 
+test('switching to a required account with the password alone is refused to a passkey holder, not after a passkey sign-in', function (): void {
+    $world = new PasskeysTestWorld();
+    $world->db->update('mod_clientfence_state', ['value' => json_encode(['passkeys' => 'both', 'twofactor' => 'all'])], ['name' => SignInSecurity::STATE]);
+    passkeyAdd($world, 'client', 7, 'cred-client');
+
+    unset($world->session[Passkeys::SIGNED_IN]);
+    expect(fn () => TwoFactor::refusePasswordOnly($world->di, 7, 'client', 7))->toThrow(InformationException::class, 'sign in with your passkey');
+    $world->session[Passkeys::SIGNED_IN] = 'client:7';
+    TwoFactor::refusePasswordOnly($world->di, 7, 'client', 7);
+    expect(true)->toBeTrue();
+});
+
 test('a deleted login leaves no passkeys', function (): void {
     $world = new PasskeysTestWorld();
     passkeyAdd($world, 'client', 7, 'cred-client');
