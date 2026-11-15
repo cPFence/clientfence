@@ -312,6 +312,8 @@ body { font-family: var(--bf-font); }
 .bf-header .bf-icon-btn:hover, .bf-header .bf-icon-btn[aria-expanded="true"] { background: var(--bf-surface-2); color: var(--bf-ink); }
 .bf-header .bf-icon-btn:focus-visible, .bf-profile:focus-visible { outline: 2px solid var(--bf-brand); outline-offset: 2px; }
 .bf-header .bf-icon-btn .icon { width: 20px; height: 20px; }
+/* The theme toggle is a bare icon: less room on both sides of it. */
+.bf-header .js-theme-toggler { min-width: 28px; padding-inline: 4px; margin-inline: -4px; }
 .js-theme-toggler .icon { transition: transform .35s ease; }
 .js-theme-toggler:hover .icon { transform: rotate(-20deg) scale(1.08); }
 @media (prefers-reduced-motion: reduce) { .js-theme-toggler .icon { transition: none; } }
