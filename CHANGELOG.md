@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.54 (2026-11-15)
+
+Updating from 1.0.52 or older? 1.0.53 came out earlier today with the Mollie and GoCardless payment gateways, automatic promotions, several client groups and Slack, Discord and Telegram notifications: read its [release notes](https://github.com/cPFence/clientfence/releases/tag/v1.0.53).
+
+### Fixed
+
+- Upmind import: the read no longer stops with a "UNIQUE constraint failed" error on tickets, and no records are skipped on larger accounts ([#28](https://github.com/cPFence/clientfence/issues/28)).
+
 ## 1.0.53 (2026-11-15)
 
 ### Added
