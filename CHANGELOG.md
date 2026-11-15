@@ -10,8 +10,15 @@
 - **Several client groups:** a client can belong to more than one client group. ([#22](https://github.com/cPFence/clientfence/issues/22))
 - **Slack, Discord and Telegram notifications:** staff alerts, such as new orders, payments, tickets and failures, can be sent to your Slack, Discord or Telegram channels, each channel with the alerts you choose.
 
+### Changed
+
+- A promotion you disable no longer comes off renewals, also for services that already have it; turn it back on to resume. Its end date and last use still do not stop it, as before.
+
 ### Fixed
 
+- With several automatic promotions, the one that saves the client most is now chosen when products have configurable options with setup fees.
+- Staff can apply a Free Setup promotion to an unpaid invoice, and deleting a promotion's discount line gives its use back.
+- The automatic promotion's name now shows on the cart, the first invoice and the service page.
 - The admin search box no longer makes pages wider than the screen on phones.
 - The theme icon in the admin header has less space around it, like the icons next to it.
 
