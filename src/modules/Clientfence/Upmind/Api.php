@@ -27,7 +27,8 @@ final class Api
      */
     public function page(string $path, int $offset, int $limit, array $query = []): array
     {
-        $reply = $this->call($path, ['limit' => $limit, 'offset' => $offset] + $query);
+        // Upmind's default order is not unique (tickets come grouped by status), so pages repeat or skip rows without it.
+        $reply = $this->call($path, ['limit' => $limit, 'offset' => $offset, 'order' => 'id'] + $query);
 
         return [array_values((array) ($reply['data'] ?? [])), (int) ($reply['total'] ?? 0)];
     }

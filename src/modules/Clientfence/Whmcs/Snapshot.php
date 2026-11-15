@@ -195,7 +195,8 @@ abstract class Snapshot
             // Every client's data: readable by this site only.
             touch(static::path());
             chmod(static::path(), 0600);
-            $state = ['started_at' => date('Y-m-d H:i:s'), 'finished_at' => null, 'step' => array_key_first(static::STEPS), 'offset' => 0, 'steps' => []];
+            // sorted: the pages come in a fixed order (Upmind\Snapshot::fetch() restarts an older unfinished read).
+            $state = ['started_at' => date('Y-m-d H:i:s'), 'finished_at' => null, 'sorted' => true, 'step' => array_key_first(static::STEPS), 'offset' => 0, 'steps' => []];
             $di['em']->getConnection()->delete(Run::WARNINGS, ['source' => Map::SOURCE, 'step' => static::STEP]);
             foreach (static::STEPS as $step => $label) {
                 $state['steps'][$step] = ['label' => $label, 'done' => 0, 'finished' => false];

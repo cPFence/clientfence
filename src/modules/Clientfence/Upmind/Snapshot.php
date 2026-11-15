@@ -68,6 +68,10 @@ final class Snapshot extends Base
      */
     public static function fetch(\Pimple\Container $di, #[\SensitiveParameter] string $token, float $seconds = 0.0, bool $restart = false): array
     {
+        // A read left unfinished before pages had a fixed order (1.0.54) cannot go on: its offsets point into another order.
+        $old = $restart ? null : self::state($di);
+        $restart = $restart || ($old !== null && $old['finished_at'] === null && !isset($old['sorted']));
+
         return self::read($di, static fn (Connection $db): self => new self(new Api($di, $token), $db), $seconds, $restart);
     }
 

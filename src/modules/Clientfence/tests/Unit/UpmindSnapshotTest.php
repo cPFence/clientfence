@@ -117,6 +117,11 @@ function upmindDi(): Pimple\Container
         }
         $data = $fake[$path];
         if (array_is_list($data) && isset($query['limit'])) {
+            // As Upmind: without a sort, later pages come in another order.
+            if (($query['order'] ?? null) !== 'id' && (int) $query['offset'] > 0) {
+                $data = array_reverse($data);
+            }
+
             return new MockResponse((string) json_encode(['status' => 'ok', 'data' => array_slice($data, (int) $query['offset'], (int) $query['limit']), 'total' => count($data)]));
         }
 
@@ -219,6 +224,34 @@ test('Upmind is read a page at a time into WHMCS\'s tables, and what cannot come
     $plan = Inventory::plan(new Source($db));
     expect($plan['modules'])->toBe([])
         ->and($plan['version'])->toBe('8.0.0 (Upmind)');
+});
+
+test('an unfinished read saved before pages had a fixed order starts again from nothing', function (): void {
+    $di = upmindDi();
+    $db = $di['em']->getConnection();
+    @mkdir(dirname(Snapshot::path()), 0700, true);
+    touch(Snapshot::path());
+    // Every step but the tickets done, the way 1.0.53 saved it.
+    $steps = [];
+    foreach (Snapshot::STEPS as $step => $label) {
+        $steps[$step] = ['label' => $label, 'done' => 0, 'finished' => $step !== 'tickets'];
+    }
+    $db->insert('mod_clientfence_state', ['name' => 'upmind_fetch', 'value' => json_encode(['started_at' => '2026-11-15 09:00:00', 'finished_at' => null, 'step' => 'tickets', 'offset' => 1, 'steps' => $steps])]);
+
+    $state = Snapshot::fetch($di, 'token');
+
+    expect($state['finished_at'])->not->toBeNull()
+        ->and((int) Snapshot::open()->fetchOne('SELECT COUNT(*) FROM tblclients'))->toBe(11);
+});
+
+test('a finished read saved before pages had a fixed order is kept: an import may already use it', function (): void {
+    $di = upmindDi();
+    @mkdir(dirname(Snapshot::path()), 0700, true);
+    touch(Snapshot::path());
+    $old = ['started_at' => '2026-11-15 09:00:00', 'finished_at' => '2026-11-15 09:10:00', 'step' => null, 'offset' => 0, 'steps' => []];
+    $di['em']->getConnection()->insert('mod_clientfence_state', ['name' => 'upmind_fetch', 'value' => json_encode($old)]);
+
+    expect(Snapshot::fetch($di, 'token'))->toBe($old);
 });
 
 test('a read that has finished is not repeated unless asked', function (): void {

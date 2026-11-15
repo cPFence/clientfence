@@ -165,7 +165,7 @@ function domainSyncLoad(Pimple\Container $di, int $id): Model_ServiceDomain
 }
 
 test('a completed transfer leaves pending once: history, client email, earlier due date, failure closed', function (): void {
-    [$di, $db, $registrar, $log] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-09-01 10:00:00', null, '2026-11-01 10:00:00']]);
+    [$di, $db, $registrar, $log] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-09-01 10:00:00', null, date('Y-m-d H:i:s', time() - 86400)]]);
     ActionFailures::record($db, 1, DomainSync::ACTION, 'stuck', '2026-11-05 10:00:00');
     $registrar->transfer = ['status' => Registrar_TransferStatus::COMPLETED, 'message' => ''];
     $registrar->expiry[1] = '2027-06-30 00:00:00';
@@ -188,7 +188,7 @@ test('a completed transfer leaves pending once: history, client email, earlier d
 });
 
 test('a completed transfer never moves the next due date later', function (): void {
-    [$di, $db, $registrar] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, '2026-11-01 10:00:00']]);
+    [$di, $db, $registrar] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, date('Y-m-d H:i:s', time() - 86400)]]);
     $registrar->transfer = ['status' => Registrar_TransferStatus::COMPLETED, 'message' => ''];
     $registrar->expiry[1] = '2028-03-01 00:00:00';
 
@@ -197,7 +197,7 @@ test('a completed transfer never moves the next due date later', function (): vo
 });
 
 test('a reported completion whose sync fails stays pending', function (): void {
-    [$di, $db, $registrar, $log] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, '2026-11-01 10:00:00']]);
+    [$di, $db, $registrar, $log] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, date('Y-m-d H:i:s', time() - 86400)]]);
     $registrar->transfer = ['status' => Registrar_TransferStatus::COMPLETED, 'message' => ''];
 
     expect(DomainSync::checkOne($di, domainSyncLoad($di, 1)))->toBe(Registrar_TransferStatus::PENDING)
@@ -206,7 +206,7 @@ test('a reported completion whose sync fails stays pending', function (): void {
 });
 
 test('a failed transfer opens one Failed actions entry with the registrar words', function (): void {
-    [$di, $db, $registrar] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, '2026-11-01 10:00:00']]);
+    [$di, $db, $registrar] = domainSyncFixture([[1, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, date('Y-m-d H:i:s', time() - 86400)]]);
     $registrar->transfer = ['status' => Registrar_TransferStatus::FAILED, 'message' => 'Wrong auth code'];
 
     expect(DomainSync::checkOne($di, domainSyncLoad($di, 1)))->toBe(Registrar_TransferStatus::FAILED)
@@ -285,7 +285,7 @@ test('the daily batch syncs a share, oldest first, only active and suspended dom
     $rows[] = [26, null, 'active', '2027-03-01 10:00:00', null, null];
     $rows[] = [27, null, 'suspended', '2027-03-01 10:00:00', '2026-09-01 10:00:00', null];
     $rows[] = [28, null, 'canceled', '2027-03-01 10:00:00', null, null];
-    $rows[] = [29, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, '2026-11-01 10:00:00'];
+    $rows[] = [29, DomainSync::PENDING, 'active', '2027-03-01 10:00:00', null, date('Y-m-d H:i:s', time() - 86400)];
     [$di, $db, $registrar] = domainSyncFixture($rows);
     $registrar->expiry = array_fill(1, 29, '2027-03-01 00:00:00');
     unset($registrar->expiry[3]);
