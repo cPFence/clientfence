@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.0.55 (2026-11-15)
+
+A security release. Every new feature is off until you turn it on, and does no extra work while it is off.
+
+### Added
+
+- **Passkeys:** clients and staff can sign in with a fingerprint, face or device PIN instead of a password. A passkey also counts as the second sign-in step.
+- **Required two-factor sign-in:** require it of every client or of chosen client groups; they set it up at their next sign-in.
+- **Sign-in history:** clients and staff see their recent sign-ins with country, network and browser, and can sign out their other sessions.
+- **Email PIN only from a new place:** the sign-in PIN can be asked only when the country or network is new for that login.
+- **Fraud check on new orders:** MaxMind minFraud or FraudLabs Pro scores each new order, and orders above your limit wait for staff review in Orders → Waiting for review.
+- **ID documents:** ask new clients, chosen client groups or clients with a held order to upload an ID document; their orders wait until staff approve it.
+- **Banned emails and phone numbers:** banned addresses, email domains and phone numbers are refused at sign-up, at checkout and on profile changes.
+- **Hosting and VPN network check:** sign-ups and orders from hosting, data-centre and VPN networks can be held for review or blocked, with exceptions per client.
+- **Cloud backups:** scheduled copies of the database, and of the site's files if you choose, to S3-compatible storage, Bunny Storage, Google Drive or OneDrive, with optional encryption, keeping the last copies.
+- **API request log:** staff API calls, payment gateway notices, staff sessions and client changes can be logged with secrets hidden, kept for the days you choose.
+- **Low balance alert:** clients can ask for an email when their account credit falls below an amount they choose.
+
+### Changed
+
+- The Database Backups tab is now called Backups (System → Settings → System) and also holds the cloud storage settings.
+- The Blocked IP List accepts IP ranges and wildcards, and also applies at checkout.
+- Clients get an email when two-factor sign-in is switched on for their account.
+- Stored payment gateway notices keep only the request headers and basic details, not the server's settings.
+- The client's data download also lists their passkeys, ID document records, low balance alert and logged API requests.
+
 ## 1.0.54 (2026-11-15)
 
 Updating from 1.0.52 or older? 1.0.53 came out earlier today with the Mollie and GoCardless payment gateways, automatic promotions, several client groups and Slack, Discord and Telegram notifications: read its [release notes](https://github.com/cPFence/clientfence/releases/tag/v1.0.53).
