@@ -32,6 +32,7 @@ final class SettingsIndex
         'system#tab-localization' => 'language locale translation',
         'antispam' => 'captcha reCAPTCHA hCaptcha Turnstile spam bots honeypot block IP',
         'email' => 'SMTP mail sendmail mailer sender DKIM',
+        'email#tab-chat' => 'Slack Discord Telegram webhook bot chat notifications',
         'invoice' => 'tax VAT invoice number prefix due',
         'staff' => 'admin team',
         'cron' => 'scheduled tasks cron job',

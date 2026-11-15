@@ -1,0 +1,103 @@
+{# ClientFence: the "Chat alerts" tab of System > Settings > Email (core patch in mod_email_settings;
+   ChatAlerts.php), as WHMCS's Slack notification rules: bell alerts sent to Slack, Discord or Telegram.
+   The list, and the form for a new destination or the one in ?chat=<id> (then this tab opens).
+   Super Administrators only; `chat` is clientfence/chat_alerts_get. #}
+{% set editing = chat.destinations|filter(d => d.id ~ '' == request.chat|default(''))|first %}
+{% set dest = editing ?: { 'id': 0, 'name': '', 'type': 'slack', 'enabled': true, 'hint': '', 'chat_id': '', 'kinds': [] } %}
+{% set types = { 'slack': 'Slack', 'discord': 'Discord', 'telegram': 'Telegram' } %}
+{% set back = 'extension/settings/email'|url ~ '#tab-chat' %}
+<div class="card-body">
+    <h4 class="card-title mb-1">{{ 'Chat alerts'|trans }}</h4>
+    <p class="text-secondary mb-3">{{ 'Sends the alerts of the staff bell to Slack, Discord or Telegram: the alert and a link to its page, right after it happens. Each destination gets the alerts ticked for it.'|trans }}</p>
+    <div class="table-responsive mb-3">
+        <table class="table card-table table-vcenter">
+            <thead>
+                <tr>
+                    <th>{{ 'Name'|trans }}</th>
+                    <th>{{ 'Type'|trans }}</th>
+                    <th>{{ 'Status'|trans }}</th>
+                    <th class="text-end">{{ 'Alerts'|trans }}</th>
+                    <th>{{ 'Last error'|trans }}</th>
+                    <th class="w-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in chat.destinations %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ types[item.type] }}</td>
+                        <td>{% if item.enabled %}<span class="badge bg-green-lt">{{ 'On'|trans }}</span>{% else %}<span class="badge bg-secondary-lt">{{ 'Off'|trans }}</span>{% endif %}</td>
+                        <td class="text-end">{{ item.kinds|length }}</td>
+                        <td class="text-wrap">{% if item.error %}<span class="text-danger">{{ item.error }}</span> <span class="text-secondary">({{ item.error_at|format_datetime }})</span>{% else %}<span class="text-secondary">-</span>{% endif %}</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-sm btn-outline-secondary" href="{{ 'clientfence/chat_alert_test'|api_url(query: { 'id': item.id }) }}"
+                               {{ fb_api_link({ message: 'Test message sent.'|trans, reload: true }) }}>{{ 'Send test'|trans }}</a>
+                            <a class="btn btn-icon" href="{{ 'extension/settings/email'|url(query: { 'chat': item.id }) }}#tab-chat" data-bs-toggle="tooltip" data-bs-title="{{ 'Edit'|trans }}" aria-label="{{ 'Edit'|trans }}"><svg class="icon"><use href="#edit" /></svg></a>
+                            <a class="btn btn-icon" href="{{ 'clientfence/chat_alert_delete'|api_url(query: { 'id': item.id }) }}" data-bs-toggle="tooltip" data-bs-title="{{ 'Delete'|trans }}" aria-label="{{ 'Delete'|trans }}"
+                               {{ fb_api_link({ message: 'Deleted.'|trans, modal: { type: 'confirm', title: 'Delete this chat destination?'|trans }, redirect: back }) }}><svg class="icon"><use href="#trash" /></svg></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6" class="text-secondary">{{ 'No chat destinations yet.'|trans }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <form method="post" action="{{ 'clientfence/chat_alert_save'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, redirect: back }) }}>
+        <input type="hidden" name="id" value="{{ dest.id }}">
+        <h4 class="card-title mb-3">{{ dest.id ? 'Edit destination: :name'|trans({ ':name': dest.name }) : 'New destination'|trans }}</h4>
+        <div class="row g-3">
+            <div class="col-lg-5">
+                <label class="form-label" for="chat-name">{{ 'Name'|trans }}</label>
+                <input class="form-control" id="chat-name" type="text" name="name" maxlength="100" value="{{ dest.name }}" placeholder="{{ 'Sales channel'|trans }}" required>
+            </div>
+            <div class="col-lg-4">
+                <label class="form-label" for="chat-type">{{ 'Type'|trans }}</label>
+                <select class="form-select" id="chat-type" name="type" data-cf-chat-type>
+                    {% for value, label in types %}
+                        <option value="{{ value }}"{% if dest.type == value %} selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-3 d-flex align-items-end">
+                <label class="form-check form-switch form-switch-2 mb-2">
+                    <input name="enabled" type="hidden" value="0">
+                    <input class="form-check-input" name="enabled" type="checkbox" value="1"{% if dest.enabled %} checked{% endif %}>
+                    <span class="form-check-label">{{ 'On'|trans }}</span>
+                </label>
+            </div>
+            <div class="col-12" data-cf-chat-for="slack discord">
+                <label class="form-label" for="chat-webhook">{{ 'Webhook URL'|trans }}</label>
+                <input class="form-control" id="chat-webhook" type="password" name="webhook_url" value="" autocomplete="new-password"
+                       placeholder="{{ dest.hint and dest.type != 'telegram' ? 'Saved (:hint); leave empty to keep it'|trans({ ':hint': dest.hint }) : 'https://hooks.slack.com/services/...' }}">
+                <div class="form-text">{{ 'Slack: an incoming webhook (https://hooks.slack.com/...). Discord: a channel webhook (https://discord.com/api/webhooks/...). Kept encrypted and never shown again.'|trans }}</div>
+            </div>
+            <div class="col-lg-6" data-cf-chat-for="telegram">
+                <label class="form-label" for="chat-token">{{ 'Bot token'|trans }}</label>
+                <input class="form-control" id="chat-token" type="password" name="bot_token" value="" autocomplete="new-password"
+                       placeholder="{{ dest.hint and dest.type == 'telegram' ? 'Saved (:hint); leave empty to keep it'|trans({ ':hint': dest.hint }) : '123456:ABC-DEF...' }}">
+                <div class="form-text">{{ 'From BotFather. Kept encrypted and never shown again.'|trans }}</div>
+            </div>
+            <div class="col-lg-6" data-cf-chat-for="telegram">
+                <label class="form-label" for="chat-id">{{ 'Chat ID'|trans }}</label>
+                <input class="form-control" id="chat-id" type="text" name="chat_id" value="{{ dest.chat_id }}" placeholder="-1001234567890" autocomplete="off">
+                <div class="form-text">{{ 'The group or channel the bot posts to: its number, or @ and the channel name. Add the bot to it first.'|trans }}</div>
+            </div>
+
+            <div class="col-12"><h5 class="mb-0">{{ 'Alerts'|trans }}</h5><div class="form-hint">{{ 'Only the ticked alerts are sent here.'|trans }}</div></div>
+            {% for group, kinds in chat.kinds %}
+                <div class="col-sm-6 col-lg-3">
+                    <div class="form-label">{{ group }}</div>
+                    {% for kind, label in kinds %}
+                        <label class="form-check"><input class="form-check-input" type="checkbox" name="kinds[]" value="{{ kind }}"{% if kind in dest.kinds %} checked{% endif %}><span class="form-check-label">{{ label }}</span></label>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex flex-wrap gap-2 justify-content-end mt-3">
+            {% if dest.id %}<a class="btn btn-outline-secondary" href="{{ back }}">{{ 'Cancel'|trans }}</a>{% endif %}
+            <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+        </div>
+    </form>
+</div>

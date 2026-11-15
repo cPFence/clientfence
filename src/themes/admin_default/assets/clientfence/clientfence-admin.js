@@ -1365,6 +1365,18 @@ window.clientfenceBackupFtpSaved = (result) => {
   window.setTimeout(() => window.location.reload(), 900);
 };
 
+// Chat alerts form (mod_clientfence_chat_alerts_panel): only the fields of the chosen service show and are sent.
+document.querySelectorAll('[data-cf-chat-type]').forEach((type) => {
+  const form = type.closest('form');
+  const show = () => form.querySelectorAll('[data-cf-chat-for]').forEach((part) => {
+    const on = part.dataset.cfChatFor.split(' ').includes(type.value);
+    part.hidden = !on;
+    part.querySelectorAll('input').forEach((field) => { field.disabled = !on; });
+  });
+  type.addEventListener('change', show);
+  show();
+});
+
 // ---- The bell: unread count on load, the newest notifications when opened. Opening an item marks
 // it read, then follows its link; its buttons mark it read or dismiss it without leaving the page.
 const bell = document.querySelector('[data-bf-bell]');

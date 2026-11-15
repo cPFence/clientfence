@@ -6,6 +6,7 @@ namespace ClientFence\Mod\Clientfence\Api;
 
 use ClientFence\Mod\Clientfence\Backups;
 use ClientFence\Mod\Clientfence\Branding;
+use ClientFence\Mod\Clientfence\ChatAlerts;
 use ClientFence\Mod\Clientfence\CspReports;
 use ClientFence\Mod\Clientfence\Customized;
 use ClientFence\Mod\Clientfence\Health;
@@ -732,6 +733,47 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->getDi()['logger']->info('ClientFence: database backup run by staff');
 
         return Backups::run($this->getDi());
+    }
+
+    /**
+     * Chat alerts (ChatAlerts.php): the destinations with a masked hint of their webhook URL or bot
+     * token, their last error, and the bell kinds they can take. Super Administrators only.
+     */
+    public function chat_alerts_get(): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can manage chat alerts.');
+
+        return ChatAlerts::forStaff($this->getDi());
+    }
+
+    /**
+     * Adds or changes a destination (`id` to change): name, type (slack, discord, telegram),
+     * enabled, webhook_url or bot_token and chat_id (empty keeps the saved one), kinds. Answers its id.
+     */
+    public function chat_alert_save($data): int
+    {
+        $this->requireSuperAdmin('Only Super Administrators can manage chat alerts.');
+        $id = ChatAlerts::save($this->getDi(), (array) $data);
+        $this->getDi()['logger']->info('ClientFence: chat alert destination %d saved', $id);
+
+        return $id;
+    }
+
+    public function chat_alert_delete($data): bool
+    {
+        $this->requireSuperAdmin('Only Super Administrators can manage chat alerts.');
+        ChatAlerts::delete($this->getDi(), (int) ($data['id'] ?? 0));
+
+        return true;
+    }
+
+    /** Sends a test message to destination `id` now; a failure answers the service's reason. */
+    public function chat_alert_test($data): bool
+    {
+        $this->requireSuperAdmin('Only Super Administrators can manage chat alerts.');
+        ChatAlerts::test($this->getDi(), (int) ($data['id'] ?? 0));
+
+        return true;
     }
 
     private function requireSuperAdmin(string $message = 'Only Super Administrators can manage database backups.'): void

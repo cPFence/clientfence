@@ -42,9 +42,17 @@ final class Notifications
     public static function staff(\Pimple\Container $di, string $kind, array $params, string $url, string $module, ?array $only = null, ?string $dedupe = null): void
     {
         try {
-            $ids = self::staffWith($di, $module, $only);
-            foreach ($ids as $id) {
-                self::add($di, self::STAFF, $id, $kind, $params, $url, $dedupe);
+            $saved = $repeat = false;
+            foreach (self::staffWith($di, $module, $only) as $id) {
+                if (self::add($di, self::STAFF, $id, $kind, $params, $url, $dedupe)) {
+                    $saved = true;
+                } else {
+                    $repeat = true;
+                }
+            }
+            // Chat gets new alerts only: a repeat that any staff member already had (a new one did not) is not sent again.
+            if ($saved && !$repeat) {
+                ChatAlerts::queue($di, $kind, $params, $url);
             }
         } catch (\Throwable $e) {
             $di['logger']->warning('Staff notification %s not saved: %s', $kind, $e->getMessage());
@@ -238,6 +246,51 @@ final class Notifications
             'ip_request_refused' => __trans('Your IP address change for :title was refused', $v),
             default => __trans('Notification'),
         };
+    }
+
+    /**
+     * The kinds staff get (every kind passed to staff() but ticket_assigned, whose text says "to you"), by
+     * group, with their names: what a chat destination can forward (ChatAlerts). Add a new staff kind here and in text().
+     *
+     * @return array<string, array<string, string>>
+     */
+    public static function staffKinds(): array
+    {
+        return [
+            __trans('Orders') => [
+                'order_new' => __trans('New order'),
+                'client_signup' => __trans('New client'),
+                'cancel_request' => __trans('Cancellation request'),
+                'ip_request' => __trans('IP address change request'),
+                'action_failed' => __trans('Failed action'),
+                'usage_held' => __trans('Drop in reported units waits for approval'),
+                'usage_missing' => __trans('Missing usage report'),
+                'domain_expiring' => __trans('Domain expiring'),
+                'domain_expires_early' => __trans('Domain expires at the registrar before its due date'),
+                'transfer_completed' => __trans('Domain transfer completed'),
+            ],
+            __trans('Billing') => [
+                'payment_received' => __trans('Invoice paid'),
+                'payment_failed' => __trans('Payment failed'),
+                'quote_accepted' => __trans('Quote accepted'),
+                'accounting_stopped' => __trans('Accounting sync gave up on a record'),
+                'accounting_paused' => __trans('Accounting sync paused'),
+            ],
+            __trans('Support') => [
+                'ticket_new' => __trans('New ticket'),
+                'ticket_reply' => __trans('Client reply on a ticket'),
+                'ticket_escalated' => __trans('Ticket escalated'),
+                'rating_low' => __trans('Low reply rating'),
+                'feedback_low' => __trans('Low feedback score'),
+                'mail_import_failed' => __trans('Email import failed'),
+            ],
+            __trans('System') => [
+                'announcement' => __trans('Announcement'),
+                'email_failed' => __trans('Emails could not be sent'),
+                'backup_failed' => __trans('Database backup failed'),
+                'health_bad' => __trans('System health needs attention'),
+            ],
+        ];
     }
 
     // ----- events (Service::on*() hand them over) ----------------------------------------------
@@ -437,7 +490,8 @@ final class Notifications
         return $out;
     }
 
-    private static function add(\Pimple\Container $di, string $audience, int $recipientId, string $kind, array $params, string $url, ?string $dedupe): void
+    /** Whether the row was saved (false: the recipient already had its dedupe key). */
+    private static function add(\Pimple\Container $di, string $audience, int $recipientId, string $kind, array $params, string $url, ?string $dedupe): bool
     {
         $row = [
             'audience' => $audience,
@@ -454,6 +508,7 @@ final class Notifications
             $db->insert(self::TABLE, $row);
         } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException) {
             // Already told about this.
+            return false;
         } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
             // Creating a table inside a transaction would commit it (MySQL): the next one makes it.
             if ($db->isTransactionActive()) {
@@ -462,6 +517,8 @@ final class Notifications
             Service::ensureTables($di, true);
             $db->insert(self::TABLE, $row);
         }
+
+        return true;
     }
 
     /** A deleted ticket's notifications go (staff and client links are both support/ticket/N). */
