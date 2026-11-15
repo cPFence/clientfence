@@ -10,6 +10,10 @@
 - **Several client groups:** a client can belong to more than one client group. ([#22](https://github.com/cPFence/clientfence/issues/22))
 - **Slack, Discord and Telegram notifications:** staff alerts, such as new orders, payments, tickets and failures, can be sent to your Slack, Discord or Telegram channels, each channel with the alerts you choose.
 
+### Fixed
+
+- The admin search box no longer makes pages wider than the screen on phones.
+
 ## 1.0.52 (2026-11-14)
 
 ### Added
