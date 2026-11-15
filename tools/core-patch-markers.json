@@ -6062,5 +6062,29 @@
     {
         "file": "modules/Email/templates/admin/mod_email_settings.html.twig",
         "done": "ClientFence core patch: chat alerts as a tab here (Clientfence ChatAlerts.php; Super Administrators, ClientFence on)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: a promotion's discount is named as on its renewals, so the client sees which one it is."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: a disabled promotion stops at the next renewal, as a Blesta coupon recurs only while active; dates and uses do not stop it."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the reserved uses of a deleted discount line (Invoice\\ServiceInvoiceItem::remove()); true when one was the order's first use."
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch: a deleted promotion discount line gives its reserved use back; the order's first use takes the promotion off the order too."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the promotion's code for the client, and whether it still comes off the renewals: not once disabled (Product\\Service::getRenewalPromoAdjustment())."
+    },
+    {
+        "file": "modules/Order/BulkPrices.php",
+        "done": "ClientFence core patch: a disabled promotion no longer comes off the renewals (Product\\Service::getRenewalPromoAdjustment())."
     }
 ]

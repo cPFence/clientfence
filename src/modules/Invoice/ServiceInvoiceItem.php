@@ -276,6 +276,13 @@ class ServiceInvoiceItem implements InjectionAwareInterface
         // ClientFence core patch: the invoice changed, so the accounting sync sends it again (Invoice/Accounting/Sync.php).
         $this->di['dbal']->executeStatement('UPDATE invoice SET updated_at = ? WHERE id = ?', [date('Y-m-d H:i:s'), (int) $model->invoice_id]);
         $this->di['db']->trash($model);
+        // ClientFence core patch: a deleted promotion discount line gives its reserved use back; the order's first use takes the promotion off the order too.
+        // Not when checkout waived a free setup in the setup line (the order's discount_setup): the promotion is still partly given.
+        if ($model->unit === 'discount' && $model->rel_id
+            && (float) (json_decode((string) $this->di['dbal']->fetchOne('SELECT config FROM client_order WHERE id = ?', [(int) $model->rel_id]), true)['discount_setup'] ?? 0) <= 0
+            && $this->di['mod_service']('Product')->releaseReservedPromoRedemptionsForInvoiceLine((int) $model->invoice_id, (int) $model->rel_id, 'discount line deleted')) {
+            $this->di['dbal']->update('client_order', ['promo_id' => null, 'promo_recurring' => 0, 'promo_used' => 0, 'discount' => 0, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $model->rel_id]);
+        }
         $this->di['logger']->info('Removed invoice item "%s"', $id);
 
         return true;

@@ -150,6 +150,19 @@ test('a promotion never takes the order line below zero', function (): void {
     expect((float) $world->db->fetchOne('SELECT SUM(price) FROM invoice_item'))->toBe(0.0);
 });
 
+test('a free-setup promotion waives the order\'s setup line, the options\' setup only when it covers them', function (array $optionLines, float $waived): void {
+    $world = promoWorld(discount: 0.0);
+    $world->promo->setFreeSetup(true);
+    $world->db->insert('invoice_item', ['invoice_id' => 5, 'type' => 'custom', 'rel_id' => 9, 'unit' => 'service', 'title' => 'Hosting setup', 'price' => 70, 'quantity' => 1, 'taxed' => 0]);
+    $world->order->config = json_encode(['option_lines' => $optionLines]);
+
+    expect(Promotions::apply($world->di, $world->invoice, $world->promo, null))->toBe($waived)
+        ->and((float) $world->db->fetchOne("SELECT price FROM invoice_item WHERE unit = 'discount'"))->toBe(-$waived);
+})->with([
+    'no options: the whole setup' => [[], 70.0],
+    'options not covered: the product\'s 20 of 70' => [[['setup_price' => 50.0]], 20.0],
+]);
+
 test('with prices that include tax the total goes down by the discount the client sees', function (): void {
     $world = promoWorld(discount: 30.0, taxRate: 20.0);
     $invoices = $world->di['mod_service']('Invoice');

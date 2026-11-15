@@ -36,9 +36,10 @@ function bulkDb(): Connection
         'CREATE TABLE currency (code TEXT PRIMARY KEY, conversion_rate REAL, is_default INTEGER DEFAULT 0)',
         'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, title TEXT, status TEXT, period TEXT, price REAL, quantity INTEGER DEFAULT 1,'
-            . ' discount REAL, promo_recurring INTEGER, currency TEXT, expires_at TEXT, unpaid_invoice_id INTEGER, config TEXT, updated_at TEXT)',
+            . ' discount REAL, promo_id INTEGER, promo_recurring INTEGER, currency TEXT, expires_at TEXT, unpaid_invoice_id INTEGER, config TEXT, updated_at TEXT)',
         'CREATE TABLE client_order_status (id INTEGER PRIMARY KEY, client_order_id INTEGER, status TEXT, notes TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)',
+        'CREATE TABLE promo (id INTEGER PRIMARY KEY, active INTEGER)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id TEXT)',
         'CREATE TABLE subscription (id INTEGER PRIMARY KEY, rel_type TEXT, rel_id INTEGER, status TEXT)',
     ] as $sql) {
@@ -77,7 +78,8 @@ function bulkDb(): Connection
     $order(7, ['product_id' => 3, 'title' => 'example.com', 'period' => '1Y', 'price' => 10]);
     $order(8, ['product_id' => 1, 'title' => 'Starter once', 'period' => null, 'price' => 0]);
     $order(9, ['product_id' => 1, 'title' => 'Starter quarterly', 'period' => '3M', 'price' => 14, 'status' => 'pending_setup', 'expires_at' => null]);
-    $order(10, ['client_id' => 6, 'product_id' => 4, 'title' => 'Extra', 'period' => '1M', 'price' => 3, 'quantity' => 2, 'promo_recurring' => 1, 'discount' => 7.5]);
+    $order(10, ['client_id' => 6, 'product_id' => 4, 'title' => 'Extra', 'period' => '1M', 'price' => 3, 'quantity' => 2, 'promo_id' => 3, 'promo_recurring' => 1, 'discount' => 7.5]);
+    $db->insert('promo', ['id' => 3, 'active' => 1]);
 
     $db->insert('invoice', ['id' => 50, 'status' => 'unpaid']);
     $db->insert('invoice', ['id' => 40, 'status' => 'paid']);
@@ -182,6 +184,15 @@ test('a new price matches the chosen products, periods, statuses and currency', 
         ->and($rows[5])->toMatchArray(['state' => 'change', 'unpaid_invoice_id' => 50, 'subscription' => true])
         ->and($preview)->toMatchArray(['matched' => 4, 'change' => 3, 'unchanged' => 1, 'skipped' => 0, 'unpaid_invoices' => 1, 'subscriptions' => 1, 'clients' => 2]);
 });
+
+test('a recurring promotion\'s discount counts only while the promotion is active', function (int $active, float $discount): void {
+    $db = bulkDb();
+    $db->update('promo', ['active' => $active], ['id' => 3]);
+    $di = bulkContainer($db);
+    $rows = bulkRows(BulkPrices::preview($di, bulkFilters($di, ['product_ids' => [4], 'mode' => 'price', 'amount' => '13'])));
+
+    expect($rows[10]['recurring_discount'])->toBe($discount);
+})->with(['active' => [1, 7.5], 'disabled' => [0, 0.0]]);
 
 test('periods and the current price narrow the matches', function (): void {
     $di = bulkContainer(bulkDb());

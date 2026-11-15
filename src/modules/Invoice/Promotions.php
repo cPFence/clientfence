@@ -83,10 +83,21 @@ final class Promotions
             $gross = round($full * $share, 2);
             $net = $taxRate > 0 ? round($gross * 100 / (100 + $taxRate), 2) : $gross;
             $amount = min($net, $lines);
-            if ($amount <= 0) {
+            // A free setup also waives the order's setup line, its options' part only when the promotion covers them, as at checkout.
+            $setup = 0.0;
+            if ($promo->isFreeSetup()) {
+                $setup = (float) $di['dbal']->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND type <> ? AND unit = 'service' AND rel_id = ?", [$invoice->id, \Model_InvoiceItem::TYPE_ORDER, $orderId]);
+                if ($setup > 0 && !\ClientFence\Mod\Product\Options::promoCoversOptions($di, (int) $promo->getId())) {
+                    $optionsSetup = array_sum(array_map(static fn (array $o): float => (float) ($o['setup_price'] ?? 0), is_array($config['option_lines'] ?? null) ? $config['option_lines'] : [])) * (float) $rate;
+                    $setup -= $taxRate > 0 ? $optionsSetup * 100 / (100 + $taxRate) : $optionsSetup;
+                }
+                $setup = max(0.0, round($setup, 2));
+            }
+            if ($amount + $setup <= 0) {
                 throw new InformationException('This promotion takes nothing off this order.');
             }
-            $grossTaken = $amount === $net ? $gross : round($amount * (100 + $taxRate) / 100, 2);
+            $grossTaken = ($amount === $net ? $gross : round($amount * (100 + $taxRate) / 100, 2)) + round($setup * (100 + $taxRate) / 100, 2);
+            $amount += $setup;
             $taxed = (bool) reset($orderLines)['taxed'];
 
             $productService->usePromo($promo);

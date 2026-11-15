@@ -1656,6 +1656,28 @@ test('a recurring promotion credits the days left at the discounted recurring am
     expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -31.0]);
 });
 
+test('a disabled promotion counts as paid only when the last paid invoice took it off', function (bool $discountLine): void {
+    $db = upgradesDb();
+    foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
+        $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
+    }
+    $di = upgradesContainer($db);
+    $db->update('client_order', ['expires_at' => '2027-03-03 12:00:00', 'activated_at' => '2027-01-31 12:00:00', 'promo_id' => 4, 'promo_recurring' => 1], ['id' => 3]);
+    // The last paid renewal: with the promotion's discount line, or at full price (disabled before it was made).
+    $db->insert('invoice', ['id' => 70, 'client_id' => 5, 'status' => 'paid', 'paid_at' => '2027-01-31 12:00:00']);
+    $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'order', 'task' => 'renew', 'rel_id' => '3', 'price' => 45, 'quantity' => 1, 'unit' => 'product']);
+    if ($discountLine) {
+        $db->insert('invoice_item', ['invoice_id' => 70, 'type' => 'custom', 'rel_id' => '3', 'price' => -9, 'quantity' => 1, 'unit' => 'discount']);
+    }
+    $di['mod_service']('product')->shouldReceive('getRenewalPromoAdjustment')->atLeast()->once()->with(Mockery::any(), Mockery::any(), Mockery::any(), $discountLine)->andReturn($discountLine ? ['discount_amount' => 9.0] : null);
+    $di['mod_service']('product')->shouldReceive('findPromoById')->andReturn(new ClientFence\Mod\Product\Entity\Promo());
+    $di['mod_service']('product')->shouldReceive('inCurrency')->andReturnSelf();
+    $di['mod_service']('product')->shouldReceive('getProductDiscountById')->andReturn(1.0);
+
+    // Credited at 36 (45 less 9) or at the full 45 paid, less 5 x 31/31 for Starter.
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-01-31 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => $discountLine ? -31.0 : -40.0]);
+})->with(['the discount was taken off' => [true], 'renewed at full price' => [false]]);
+
 test('days paid through a plan change are credited at the full price, not at the recurring promotion\'s', function (): void {
     $db = upgradesDb();
     foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {

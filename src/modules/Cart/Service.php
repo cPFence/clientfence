@@ -816,8 +816,12 @@ class Service implements InjectionAwareInterface
         if ($client === null || $this->cartPromoId($cart)) {
             return null;
         }
-        // The setup fee counts toward a free-setup promotion's saving (findAutoPromo()).
-        $lines = array_map(fn ($p): array => ['product_id' => (int) $this->cartProductProductId($p), 'config' => $this->getItemConfig($p), 'setup' => (float) ($this->getProductService()->getCartProductViewData($p)['setup_price'])], $this->findCartProducts($cart));
+        // The setup fee counts toward a free-setup promotion's saving, the options' part only where it covers them (findAutoPromo()).
+        $lines = array_map(function ($p): array {
+            $view = $this->getProductService()->getCartProductViewData($p);
+
+            return ['product_id' => (int) $this->cartProductProductId($p), 'config' => $this->getItemConfig($p), 'setup' => (float) $view['setup_price'], 'options_setup' => $view['options_setup_price']];
+        }, $this->findCartProducts($cart));
 
         return $lines === [] ? null : $this->getProductService()->findAutoPromo($client, $lines);
     }
@@ -1161,7 +1165,10 @@ class Service implements InjectionAwareInterface
                     $lineDiscount = $addonFor !== null ? $item['discount_price'] * $currency->getConversionRate() : $order->getDiscount();
                     if ($lineDiscount > 0) {
                         $invoice_items[] = [
-                            'title' => __trans('Discount: :product', [':product' => $order->getTitle()]),
+                            // ClientFence core patch: a promotion's discount is named as on its renewals, so the client sees which one it is.
+                            'title' => $promo instanceof Promo && ($promoId || $promoLine)
+                                ? $this->getProductService()->getPromoDiscountTitle($promo, (string) $order->getCurrency())
+                                : __trans('Discount: :product', [':product' => $order->getTitle()]),
                             'price' => $lineDiscount * -1,
                             'quantity' => 1,
                             'unit' => 'discount',

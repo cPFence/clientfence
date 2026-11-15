@@ -452,6 +452,34 @@ test('removes an item', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('deleting a promotion discount line gives its reserved use back, and the order\'s first use takes the promotion off the order', function (bool $firstUse, float $setupWaived): void {
+    $service = new ServiceInvoiceItem();
+    $line = new Model_InvoiceItem();
+    $line->loadBean(new Tests\Helpers\DummyBean());
+    $line->invoice_id = 5;
+    $line->rel_id = 9;
+    $line->unit = 'discount';
+
+    $db = Mockery::mock('ClientFence\Database');
+    $db->allows('trash');
+    $products = Mockery::mock();
+    // A free setup checkout waived in the setup line keeps the promotion given: nothing is released.
+    $products->expects('releaseReservedPromoRedemptionsForInvoiceLine')->times($setupWaived > 0 ? 0 : 1)->with(5, 9, 'discount line deleted')->andReturn($firstUse);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->allows('executeStatement');
+    $dbal->allows('fetchOne')->with('SELECT config FROM client_order WHERE id = ?', [9])->andReturn(json_encode(['discount_setup' => $setupWaived]));
+    $dbal->expects('update')->times($firstUse && $setupWaived <= 0 ? 1 : 0)->with('client_order', Mockery::on(fn (array $v): bool => $v['promo_id'] === null && $v['discount'] === 0), ['id' => 9]);
+
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = $dbal;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(fn (): object => $products);
+    $service->setDi($di);
+
+    expect($service->remove($line))->toBeTrue();
+})->with(['the order\'s first use' => [true, 0.0], 'a renewal\'s' => [false, 0.0], 'a checkout free setup in the setup line' => [true, 20.0]]);
+
 test('generates for add funds', function (): void {
     $service = new ServiceInvoiceItem();
     $invoiceModel = new Model_Invoice();

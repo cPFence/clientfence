@@ -1556,7 +1556,9 @@ final class Upgrades
         $lastPaid = $db->fetchOne('SELECT MAX(i.paid_at) FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.rel_id = ?', [\Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, (string) $order->id]);
         $promo = $order->promo_recurring && $order->promo_id
             && $db->fetchOne('SELECT 1 FROM ' . self::TABLE . ' WHERE order_id = ? AND status = ? AND (to_product_id <> from_product_id OR to_period <> from_period) AND applied_at >= ?', [(int) $order->id, self::STATUS_APPLIED, (string) ($lastPaid ?: '')]) === false
-            ? $di['mod_service']('Product')->getRenewalPromoAdjustment($order, (float) $order->price, (float) max(1, (int) ($order->quantity ?? 1)))
+            ? $di['mod_service']('Product')->getRenewalPromoAdjustment($order, (float) $order->price, (float) max(1, (int) ($order->quantity ?? 1)),
+                // A promotion disabled since still counts when the last paid invoice took it off (a full-price renewal did not).
+                $db->fetchOne("SELECT 1 FROM invoice_item d WHERE d.unit = 'discount' AND d.rel_id = ? AND d.invoice_id = (SELECT i.id FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = ? AND ii.type = ? AND ii.rel_id = ? ORDER BY i.paid_at DESC, i.id DESC LIMIT 1)", [(string) $order->id, \Model_Invoice::STATUS_PAID, \Model_InvoiceItem::TYPE_ORDER, (string) $order->id]) !== false)
             : null;
         // ClientFence core patch: a first-period promotion lowered what the first period was paid, so its days are credited at
         // that until a change of plan or cycle is paid (a downgrade gave the discount back as credit). After a renewal the

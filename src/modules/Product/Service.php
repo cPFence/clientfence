@@ -1496,7 +1496,7 @@ class Service implements InjectionAwareInterface
      * would discount is skipped, so checkout goes on without it (the client cannot remove it). A cart line is scored on
      * the catalog price plus a free setup's saving ('setup'); an existing order's line ('order') on its own price.
      *
-     * @param list<array{product_id: int, config: array, setup?: float, order?: array{price: float, quantity: float, rate: float}}> $lines
+     * @param list<array{product_id: int, config: array, setup?: float, options_setup?: float, order?: array{price: float, quantity: float, rate: float}}> $lines
      * @param bool                                                                                                                  $recurringOnly renewals: only a recurring one
      */
     public function findAutoPromo(Client|\Model_Client $client, array $lines, bool $recurringOnly = false): ?Promo
@@ -1515,7 +1515,10 @@ class Service implements InjectionAwareInterface
                     $lineDiscount = $this->getOrderPromoDiscount($this->findProductById($line['product_id']), $promo, $line['config'], $line['order']['price'], $line['order']['quantity'], $line['order']['rate']);
                 } else {
                     $lineDiscount = (float) $this->getProductDiscountById($line['product_id'], $promo, $line['config'])
-                        + ($promo->isFreeSetup() && ($line['setup'] ?? 0) > 0 && $this->isPromoApplicableToProductById($line['product_id'], $promo, $line['config']) ? (float) $line['setup'] : 0.0);
+                        + ($promo->isFreeSetup() && ($line['setup'] ?? 0) > 0 && $this->isPromoApplicableToProductById($line['product_id'], $promo, $line['config'])
+                            // As checkout waives it (Cart\Service::getProductDiscount()): the options' setup only when the promotion covers them.
+                            ? max(0.0, (float) $line['setup'] - (\ClientFence\Mod\Product\Options::promoCoversOptions($this->di, (int) $promo->getId()) ? 0.0 : (float) ($line['options_setup'] ?? 0)))
+                            : 0.0);
                 }
                 $discount += $lineDiscount;
                 $discounted += (int) ($lineDiscount > 0);
@@ -1746,7 +1749,7 @@ class Service implements InjectionAwareInterface
      *     currency: string
      * }|null
      */
-    public function getRenewalPromoAdjustment(Order|\Model_ClientOrder $order, float $price, float $quantity): ?array
+    public function getRenewalPromoAdjustment(Order|\Model_ClientOrder $order, float $price, float $quantity, bool $paid = false): ?array
     {
         $promoRecurring = $order instanceof Order ? $order->isPromoRecurring() : (bool) $order->promo_recurring;
         $promoId = $order instanceof Order ? $order->getPromoId() : $order->promo_id;
@@ -1767,6 +1770,11 @@ class Service implements InjectionAwareInterface
             }
         } else {
             $promo = $this->findPromoById((int) $promoId);
+        }
+        // ClientFence core patch: a disabled promotion stops at the next renewal, as a Blesta coupon recurs only while active; dates and uses do not stop it.
+        // $paid: what the current period cost (Order\Upgrades proration), which a later disabling does not change.
+        if (!$paid && !$promo->isActive()) {
+            return null;
         }
 
         if ($product->getType() === self::DOMAIN) {
@@ -1958,6 +1966,19 @@ class Service implements InjectionAwareInterface
         ]);
 
         $this->releasePromoRedemptions($redemptions, $reason);
+    }
+
+    /** ClientFence core patch: the reserved uses of a deleted discount line (Invoice\ServiceInvoiceItem::remove()); true when one was the order's first use. */
+    public function releaseReservedPromoRedemptionsForInvoiceLine(int $invoiceId, int $orderId, string $reason): bool
+    {
+        $redemptions = $this->getPromoRedemptionRepository()->findBy([
+            'invoiceId' => $invoiceId,
+            'clientOrderId' => $orderId,
+            'status' => PromoRedemption::STATUS_RESERVED,
+        ]);
+        $this->releasePromoRedemptions($redemptions, $reason);
+
+        return array_filter($redemptions, static fn (PromoRedemption $r): bool => $r->getPhase() === PromoRedemption::PHASE_CHECKOUT) !== [];
     }
 
     public function releaseReservedPromoRedemptionsForOrder(Order|\Model_ClientOrder $order, string $reason): void

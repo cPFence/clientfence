@@ -1766,7 +1766,8 @@ test('get renewal promo adjustment for domain order', function (): void {
     $promoEntity = productTestCreatePromoEntity(15)
         ->setCode('PROMO')
         ->setType(Promo::ABSOLUTE)
-        ->setValue(5.0);
+        ->setValue(5.0)
+        ->setActive(true);
 
     $promoRepo = Mockery::mock(PromoRepository::class);
     $promoRepo->shouldNotReceive('find');
@@ -1833,6 +1834,18 @@ test('get renewal promo adjustment ignores missing promo for non-domain order', 
         ->andThrow(new ClientFence\InformationException('Promo not found'));
 
     expect($serviceMock->getRenewalPromoAdjustment($order, 20.0, 1.0))->toBeNull();
+});
+
+test('a disabled recurring promotion stops at the next renewal', function (): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $order = createEntity(ClientFence\Mod\Order\Entity\Order::class, ['promo_id' => 15, 'promo_recurring' => true, 'product_id' => 17, 'discount' => 2.0, 'currency' => 'EUR']);
+    $serviceMock->allows('findProductById')->andReturn(productTestCreateProductEntity(17)->setType('service'));
+    $serviceMock->allows('findPromoById')->andReturn(productTestCreatePromoEntity(15)->setActive(false));
+
+    expect($serviceMock->getRenewalPromoAdjustment($order, 20.0, 1.0))->toBeNull();
+    // What the current period was paid (plan-change proration) still counts it.
+    $serviceMock->allows('getPromoDiscountTitle')->andReturn('PROMO');
+    expect($serviceMock->getRenewalPromoAdjustment($order, 20.0, 1.0, true)['discount_amount'])->toBe(2.0);
 });
 
 test('get product discount uses product order line config', function (): void {
@@ -1916,6 +1929,34 @@ test('the automatic promotion is the usable one that takes the most off the line
     'a promotion the client cannot use is skipped' => [[1, 3], [1 => [10 => 5.0], 2 => [10 => 9.0], 3 => [11 => 6.0]], 3],
     'a tie keeps the oldest' => [[1, 2, 3], [1 => [10 => 5.0], 2 => [11 => 5.0]], 1],
     'none discounts the lines' => [[1, 2, 3], [], null],
+]);
+
+test('a free-setup automatic promotion is ranked on the setup it waives: the options\' only when it covers them', function (bool $coversOptions, int $expected): void {
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_option_group_product (id INTEGER PRIMARY KEY)');
+    $db->executeStatement('CREATE TABLE promo_option (promo_id INTEGER, include_options INTEGER, updated_at TEXT)');
+    if ($coversOptions) {
+        $db->insert('promo_option', ['promo_id' => 2, 'include_options' => 1]);
+    }
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->allows('getConnection')->andReturn($db);
+    $repository = Mockery::mock(PromoRepository::class);
+    // 1: 60 off the product; 2: free setup only.
+    $repository->allows('findBy')->andReturn([productTestCreatePromoEntity(1), productTestCreatePromoEntity(2)->setFreeSetup(true)]);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->allows('getPromoRepository')->andReturn($repository);
+    $service->allows(['isPromoAvailableForClientGroup' => true, 'canClientUsePromo' => true, 'isPromoApplicableToProductById' => true]);
+    $service->allows('getProductDiscountById')->andReturnUsing(fn (int $productId, Promo $p): float => $p->getId() === 1 ? 60.0 : 0.0);
+    $di = container();
+    $di['em'] = $em;
+    $service->setDi($di);
+
+    // Setup 70: 20 for the product, 50 for its options.
+    $lines = [['product_id' => 10, 'config' => [], 'setup' => 70.0, 'options_setup' => 50.0]];
+    expect($service->findAutoPromo(createEntity(Client::class, ['id' => 7]), $lines)?->getId())->toBe($expected);
+})->with([
+    'options not covered: saves 20, the 60 off wins' => [false, 1],
+    'options covered: saves 70' => [true, 2],
 ]);
 
 test('a once-per-client automatic promotion is skipped once the client used it on any order, at checkout or renewal', function (?string $status, bool $offered): void {

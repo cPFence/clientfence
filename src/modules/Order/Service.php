@@ -783,6 +783,10 @@ class Service implements InjectionAwareInterface
             'updated_at' => $model instanceof Order ? $model->getUpdatedAt()?->format('Y-m-d H:i:s') : $model->updated_at,
         ];
 
+        // ClientFence core patch: the promotion's code for the client, and whether it still comes off the renewals: not once disabled (Product\Service::getRenewalPromoAdjustment()).
+        $promo = $data['promo_id'] ? $this->di['dbal']->fetchAssociative('SELECT code, active FROM promo WHERE id = ?', [(int) $data['promo_id']]) : false;
+        $data['promo_code'] = $promo ? (string) $promo['code'] : null;
+        $data['promo_renews'] = $data['promo_recurring'] && $promo && (bool) $promo['active'];
         $data['config'] = json_decode($this->orderConfig($model) ?? '', true) ?? [];
         // ClientFence core patch: order responses must not expose provisioning passwords to clients.
         if (!$identity instanceof Admin && !$identity instanceof \Model_Admin) {

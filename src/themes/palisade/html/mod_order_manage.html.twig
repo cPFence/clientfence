@@ -111,7 +111,7 @@
                     <div class="stat-meta">{{ order.created_at|format_date }}</div>
                 {% else %}
                     <div class="stat-label">{{ 'Price'|trans }}</div>
-                    <div class="stat-value">{{ (order.promo_recurring ? order.total - order.discount : order.total)|format_currency(order.currency ?? default_currency) }}</div>
+                    <div class="stat-value">{{ (order.promo_renews ? order.total - order.discount : order.total)|format_currency(order.currency ?? default_currency) }}</div>
                     <div class="stat-meta">{{ order.period ? order.period|period_title : 'One-time payment'|trans }}</div>
                 {% endif %}
             </div>
@@ -171,7 +171,7 @@
                         <div class="bf-fact"><dt>{{ answer.label }}</dt><dd><bdi>{{ answer.value }}</bdi> <button class="bf-copy" type="button" data-bf-copy="{{ answer.value }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button></dd></div>
                     {% endfor %}
                     {% if order.discount > 0 %}
-                        <div class="bf-fact"><dt>{{ 'Order Discount'|trans }}</dt><dd>-{{ order.discount|format_currency(order.currency ?? default_currency) }}</dd></div>
+                        <div class="bf-fact"><dt>{{ 'Order Discount'|trans }}{% if order.promo_code %} (<bdi>{{ order.promo_code }}</bdi>){% endif %}</dt><dd>-{{ order.discount|format_currency(order.currency ?? default_currency) }}</dd></div>
                     {% endif %}
                     <div class="bf-fact"><dt>{{ 'Order Created'|trans }}</dt><dd>{{ order.created_at|format_date }}</dd></div>
                 </dl>

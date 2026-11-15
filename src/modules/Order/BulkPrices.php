@@ -160,7 +160,9 @@ final class BulkPrices
     {
         $db = self::db($di);
         $sql = 'SELECT o.id, o.client_id, o.product_id, o.title, o.period, o.currency, o.price, o.quantity, o.status, o.expires_at, o.unpaid_invoice_id,'
-            . ' o.promo_recurring, o.discount, o.config, c.first_name, c.last_name, c.company, p.title AS product_title,'
+            // ClientFence core patch: a disabled promotion no longer comes off the renewals (Product\Service::getRenewalPromoAdjustment()).
+            . ' (o.promo_recurring = 1 AND EXISTS (SELECT 1 FROM promo pr WHERE pr.id = o.promo_id AND pr.active = 1)) AS promo_recurring,'
+            . ' o.discount, o.config, c.first_name, c.last_name, c.company, p.title AS product_title,'
             . " (SELECT i.id FROM invoice i WHERE i.id = o.unpaid_invoice_id AND i.status = 'unpaid') AS unpaid_invoice"
             . ' FROM client_order o JOIN product p ON p.id = o.product_id LEFT JOIN client c ON c.id = o.client_id'
             . ' WHERE o.product_id IN (' . implode(',', $filters['product_ids']) . ')'
