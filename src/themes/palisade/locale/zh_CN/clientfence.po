@@ -28726,3 +28726,181 @@ msgstr "上传未完成。"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "存储区的密码（不是只读密码）。加密保存，不会再次显示。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "通行密钥使用设备的指纹、面容或 PIN 码登录，代替密码和第二步（验证器应用代码或邮件 PIN 码）。每个人在自己的双重验证登录页面添加通行密钥，并在用密码登录后收到添加建议。通行密钥同样满足“要求双重验证登录”。员工登录仍需要允许的 IP 地址和国家。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "通行密钥使用您手机或电脑的指纹、面容或 PIN 码登录，代替密码和验证码。它同样算作双重验证登录。"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "通行密钥使用您手机或电脑的指纹、面容或 PIN 码登录，代替密码和第二步。允许的 IP 地址和国家仍然适用。"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "您的账户已添加通行密钥"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "您的客户区登录已添加通行密钥。它使用保存它的设备的指纹、面容或 PIN 码登录，无需密码。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "添加通行密钥"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "添加于 %date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "允许使用通行密钥的对象"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "选择谁可以使用通行密钥登录。"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "创建通行密钥"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "创建通行密钥：之后用您的指纹、面容或设备 PIN 码即可登录，无需密码和验证码。"
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "请输入通行密钥的名称。"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "如果这不是您本人，请在您的双重验证登录页面删除该通行密钥，更改密码并立即联系我们。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "上次使用：%date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "尚未使用"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "只有超级管理员可以删除员工的通行密钥。"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "通行密钥"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "未找到通行密钥。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "通行密钥已删除。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "通行密钥已重命名。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "通行密钥已保存。下次请用它登录。"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "通行密钥登录未开启。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "通行密钥"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "通行密钥未开启。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "通行密钥要求门户使用 HTTPS，且只在其地址上有效：迁移到其他域名后将失效，改用密码登录。"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "通行密钥要求门户使用 HTTPS：浏览器在 http:// 地址上会拒绝通行密钥。请先将门户 URL 设为 https://。"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "通行密钥已删除。"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "通行密钥：:count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "删除此登录的所有通行密钥？之后将使用其密码登录。仅在您确定是谁提出请求时才这样做。"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "删除此员工的所有通行密钥？"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "删除通行密钥"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "删除通行密钥"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "重命名"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "重命名或删除"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "下次登录更快"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "使用通行密钥登录"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "通行密钥请求已过期。请重试。"
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "此浏览器无法创建通行密钥。请更新浏览器或使用其他浏览器。"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "此设备已有用于您登录的通行密钥。"
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "此登录没有通行密钥。"
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "此通行密钥已保存。"
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "此通行密钥使用了此处无法使用的密钥类型。请尝试其他通行密钥。"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "此员工可以使用通行密钥登录（:count）。如果设备丢失，请删除它们。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "您的账户要求使用双重验证登录。请使用您的通行密钥登录。"

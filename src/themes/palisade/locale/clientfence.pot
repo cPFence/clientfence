@@ -1182,6 +1182,26 @@ msgstr ""
 msgid "A paid order cannot be deleted. Please contact support."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr ""
+
 #: src/modules/Client/Api/Admin.php
 msgid "A password is required when the welcome email is disabled."
 msgstr ""
@@ -1890,6 +1910,10 @@ msgstr ""
 msgid "Add a hidden form field that bots typically fill out but humans do not. Registration fails when that field is submitted."
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr ""
+
 #: src/modules/Cart/Service.php
 msgid "Add a product or a domain to the order."
 msgstr ""
@@ -2064,6 +2088,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_ip_seats.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
 msgid "Added"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig
@@ -2644,6 +2672,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "Allow moves to every product in this category"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -5650,6 +5682,10 @@ msgstr ""
 msgid "Choose who is asked for an email PIN."
 msgstr ""
 
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Choose your free subdomain"
 msgstr ""
@@ -5910,7 +5946,7 @@ msgstr ""
 msgid "Client not found"
 msgstr ""
 
-#: src/modules/Client/Google.php src/modules/Client/TwoFactor.php src/modules/Client/Users.php
+#: src/modules/Client/Google.php src/modules/Client/Passkeys.php src/modules/Client/TwoFactor.php …
 msgid "Client not found."
 msgstr ""
 
@@ -7244,6 +7280,14 @@ msgstr ""
 
 #: src/modules/Servicecustom/templates/admin/mod_servicecustom_config.html.twig
 msgid "Create a new parameter that will be stored with this product configuration and made available to the custom service."
+msgstr ""
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr ""
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
 msgstr ""
 
 #: src/themes/palisade/html/mod_page_signup.html.twig
@@ -9662,6 +9706,10 @@ msgstr ""
 msgid "Enter a message of up to 2000 characters."
 msgstr ""
 
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr ""
+
 #: src/modules/Clientfence/ChatAlerts.php
 msgid "Enter a name of up to 100 characters."
 msgstr ""
@@ -11090,7 +11138,7 @@ msgstr ""
 msgid "From"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
 msgid "From %ip%"
 msgstr ""
 
@@ -11698,7 +11746,7 @@ msgstr ""
 msgid "Hello"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig …
+#: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Client/templates/email/mod_client_passkey_added.html.twig src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig …
 msgid "Hello %name%,"
 msgstr ""
 
@@ -12420,6 +12468,10 @@ msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_pin.html.twig
 msgid "If this was not you, do not share the PIN with anyone and change your password: someone knows it."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
 msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
@@ -13756,6 +13808,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_link.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig …
 msgid "Last used"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
 msgstr ""
 
 #: src/themes/admin_default/html/partial_dashboard_orders_card.html.twig
@@ -16950,7 +17006,7 @@ msgstr ""
 msgid "Not linked"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
 msgid "Not now"
 msgstr ""
 
@@ -16976,6 +17032,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Not switched on"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -17452,6 +17512,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Controller/Admin.php
 msgid "Only Super Administrators can manage database backups."
+msgstr ""
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
 msgstr ""
 
 #: src/modules/Clientfence/Api/Admin.php src/modules/Clientfence/Controller/Admin.php
@@ -18630,6 +18694,54 @@ msgstr ""
 msgid "Passed"
 msgstr ""
 
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr ""
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr ""
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr ""
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr ""
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Passphrase"
 msgstr ""
@@ -19582,7 +19694,7 @@ msgstr ""
 msgid "Please check this box if you want to proceed."
 msgstr ""
 
-#: src/modules/Client/Api/Guest.php src/modules/Client/TwoFactor.php src/modules/Client/Users.php
+#: src/modules/Client/Api/Guest.php src/modules/Client/Passkeys.php src/modules/Client/TwoFactor.php …
 msgid "Please check your login details."
 msgstr ""
 
@@ -21342,6 +21454,14 @@ msgstr ""
 msgid "Remove credit"
 msgstr ""
 
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr ""
+
 #: src/modules/Order/templates/client/mod_order_addons.html.twig
 msgid "Remove from cart"
 msgstr ""
@@ -21352,6 +21472,14 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Remove line"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr ""
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
@@ -21428,6 +21556,14 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
 msgid "Removing an IP address. Empty: no limit. 0: only staff."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -23802,6 +23938,10 @@ msgstr ""
 msgid "Sign in as the account owner to pay."
 msgstr ""
 
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr ""
+
 #: src/themes/palisade/html/layout_default.html.twig src/themes/palisade/html/layout_public.html.twig src/themes/palisade/html/partials/guest_gate.html.twig
 msgid "Sign in required"
 msgstr ""
@@ -23832,6 +23972,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/widgets/mod_client_google_button.html.twig
 msgid "Sign in with Google"
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/partial_signins.html.twig
@@ -26403,6 +26547,10 @@ msgstr ""
 msgid "The panel subscription :id: of :domain: was not found."
 msgstr ""
 
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr ""
+
 #: src/modules/Clientfence/CloudBackups.php
 msgid "The passphrase needs at least 8 characters."
 msgstr ""
@@ -27063,6 +27211,10 @@ msgstr ""
 msgid "This announcement will be deleted:"
 msgstr ""
 
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "This built-in template is customized. Reset it to use the file-backed default."
 msgstr ""
@@ -27133,6 +27285,10 @@ msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "This database is updated daily and provided free of charge by the FakeFilter project under the BSD 3-Clause License."
+msgstr ""
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
 msgstr ""
 
 #: src/modules/Servicedomain/DomainTickets.php
@@ -27367,6 +27523,10 @@ msgstr ""
 msgid "This list controls which countries appear in signup and profile forms, and which one is preselected for new users."
 msgstr ""
 
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig
 msgid "This message and its delivery report will be deleted:"
 msgstr ""
@@ -27425,6 +27585,14 @@ msgstr ""
 
 #: src/modules/Custompages/templates/admin/mod_custompages_index.html.twig
 msgid "This page will be deleted:"
+msgstr ""
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr ""
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
 msgstr ""
 
 #: src/modules/Redirect/Service.php
@@ -27629,6 +27797,10 @@ msgstr ""
 
 #: src/modules/Client/Google.php
 msgid "This sign-in cannot be used. Please contact support."
+msgstr ""
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
@@ -29611,7 +29783,7 @@ msgstr ""
 msgid "User Type"
 msgstr ""
 
-#: src/modules/Client/Google.php src/modules/Client/TwoFactor.php src/modules/Client/Users.php
+#: src/modules/Client/Google.php src/modules/Client/Passkeys.php src/modules/Client/TwoFactor.php …
 msgid "User not found."
 msgstr ""
 
@@ -31329,6 +31501,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Your account is ready. Sign in to place your order; you come back here."
+msgstr ""
+
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig

@@ -15,12 +15,14 @@
            two-factor page's back: one leading slash, no backslash, space or "://". #}
         {% set back = request.back|default('') %}
         {% set back = back is iterable or not (back matches '#^/(?![/\\\\])[^\\s\\\\]*$#') or '://' in back ? '' : back %}
+        {# ClientFence core patch: passkey sign-in (Client/Passkeys.php), drawn only while on for clients. #}
+        {% set passkey_on = guest.client_passkey_on %}
         <form method="post" action="{{ 'client/login'|api_url(role: 'guest') }}" class="auth" {{ fb_api_form({callback: 'clientfenceSignIn'}) }} data-clientfence-sign-in data-redirect="{{ back ?: redirect_uri|default('/')|url }}" data-twofactor="{{ back ? 'two-factor/code'|url({back: back}) : 'two-factor/code'|url }}">
     {# ClientFence core patch (0.8.9 port): bind guest authentication to this browser session. #}
     <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
             <div class="mb-3">
                 <label class="form-label" for="email">{{ 'Email'|trans }}</label>
-                <input class="form-control" id="email" type="email" name="email" value="{{ request.email }}" autocomplete="username" required autofocus>
+                <input class="form-control" id="email" type="email" name="email" value="{{ request.email }}" autocomplete="{{ passkey_on ? 'username webauthn' : 'username' }}" required autofocus>
             </div>
             <div class="mb-2">
                 <div class="d-flex justify-content-between align-items-baseline">
@@ -35,6 +37,10 @@
             <div class="mt-3">{{ mf.recaptcha }}</div>
             <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">{{ 'Sign in'|trans }}</button>
         </form>
+        {% if passkey_on %}
+            {# passkeys.js shows it where the browser has passkeys. #}
+            <button type="button" class="btn btn-outline-secondary btn-lg w-100 mt-2" data-clientfence-passkey="signin" data-options="client/passkey_signin_options" data-signin="client/passkey_signin" data-redirect="{{ back ?: redirect_uri|default('/')|url }}" hidden>{{ 'Sign in with a passkey'|trans }}</button>
+        {% endif %}
         {{ render_widgets('client.page.login.form.after') }}
         {# Sign-up open (ClientFence: client sign-up on, or the store preview link) and the theme
            setting "Show Signup Link" on: a link to the sign-up page; otherwise accounts are made by

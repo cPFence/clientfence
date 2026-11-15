@@ -132,6 +132,8 @@ $paths = [
     'modules/Client/Files.php',
     'modules/Client/templates/admin/mod_client_summary_cards.html.twig',
     'modules/Client/TwoFactor.php',
+    'modules/Client/Passkeys.php',
+    'modules/Client/templates/email/mod_client_passkey_added.html.twig',
     'modules/Client/Google.php',
     'modules/Client/templates/client/mod_client_users_page.html.twig',
     'modules/Client/templates/client/mod_client_user_profile.html.twig',

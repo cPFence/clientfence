@@ -31,6 +31,7 @@ use ClientFence\Mod\Client\Affiliates\Link;
 use ClientFence\Mod\Client\Affiliates\Payouts;
 use ClientFence\Mod\Client\Contacts;
 use ClientFence\Mod\Client\Google;
+use ClientFence\Mod\Client\Passkeys;
 use ClientFence\Mod\Client\SupportPin;
 use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Client\Users;
@@ -1045,6 +1046,21 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('client', 'change_password');
         $userId = isset($data['user_id']) && (string) $data['user_id'] !== '' ? (int) $data['user_id'] : null;
         TwoFactor::staffDisable($this->getDi(), (int) ($data['client_id'] ?? 0), $userId, (int) $this->adminId());
+
+        return true;
+    }
+
+    /**
+     * ClientFence core patch: removes every passkey of the account owner (`client_id`) or of a user of the account
+     * (`client_id`, `user_id`), for someone who lost the device (Passkeys.php). Same permissions as
+     * twofactor_disable.
+     */
+    public function passkeys_remove($data): bool
+    {
+        $this->checkPermissions('client', 'edit_profile');
+        $this->checkPermissions('client', 'change_password');
+        $userId = isset($data['user_id']) && (string) $data['user_id'] !== '' ? (int) $data['user_id'] : null;
+        Passkeys::staffRemove($this->getDi(), (int) ($data['client_id'] ?? 0), $userId, (int) $this->adminId());
 
         return true;
     }

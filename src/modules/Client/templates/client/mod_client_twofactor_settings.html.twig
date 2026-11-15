@@ -3,7 +3,9 @@
    with an authenticator app (QR code or the key), confirmed with a code and the password; the
    backup code is shown once. On: a new backup code, or switch off with the password and a code.
    The setup and the backup code run in assets/src/js/twofactor.js. twofactor comes from
-   client_twofactor_status (required: the portal requires it and it is not set up yet). #}
+   client_twofactor_status (required: the portal requires it and it is not set up yet).
+   Passkeys (Passkeys.php, while on for clients, or while the login still has some): list, rename, remove with
+   the password, and add (assets/src/js/passkeys.js) with the password. #}
 {% extends "layout_default.html.twig" %}
 {% set active_menu = 'twofactor' %}
 
@@ -114,4 +116,57 @@
         </div>
     {% endif %}
 </div>
+
+{% set passkeys = client.client_passkey_list %}
+{% if passkeys.on or passkeys.passkeys %}
+<div class="card mt-4" data-clientfence-passkey="list" data-role="client" data-options="client/passkey_options" data-add="client/passkey_add"
+     data-saved="{{ 'Passkey saved. Next time, sign in with it.'|trans }}" data-already="{{ 'This device already has a passkey for your sign-in.'|trans }}">
+    <div class="card-header"><h2>{{ 'Passkeys'|trans }}</h2></div>
+    <div class="card-body">
+        <p>{{ 'A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in.'|trans }}</p>
+        {% if passkeys.passkeys %}
+            <ul class="list-group mb-4">
+                {% for passkey in passkeys.passkeys %}
+                    <li class="list-group-item">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div>
+                                <div class="fw-semibold">{{ passkey.name }}</div>
+                                <div class="small text-body-secondary">{{ 'Added %date%'|trans({'%date%': passkey.created_at|format_datetime}) }} &middot; {{ passkey.last_used_at ? 'Last used %date%'|trans({'%date%': passkey.last_used_at|format_datetime}) : 'Not used yet'|trans }}</div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#passkey-{{ passkey.id }}" aria-expanded="false" aria-controls="passkey-{{ passkey.id }}">{{ 'Rename or remove'|trans }}</button>
+                        </div>
+                        <div class="collapse" id="passkey-{{ passkey.id }}">
+                            <div class="row g-3 pt-3">
+                                <form class="col-md-6" action="{{ 'client/passkey_rename'|api_url }}" {{ fb_api_form({reload: true, message: 'Passkey renamed.'|trans}) }}>
+                                    <input type="hidden" name="id" value="{{ passkey.id }}">
+                                    <label class="form-label" for="passkey-name-{{ passkey.id }}">{{ 'Name'|trans }}</label>
+                                    <input class="form-control mb-2" id="passkey-name-{{ passkey.id }}" type="text" name="name" value="{{ passkey.name }}" maxlength="100" required>
+                                    <button type="submit" class="btn btn-outline-primary">{{ 'Rename'|trans }}</button>
+                                </form>
+                                <form class="col-md-6" action="{{ 'client/passkey_remove'|api_url }}" {{ fb_api_form({reload: true, message: 'Passkey removed.'|trans}) }} autocomplete="off">
+                                    <input type="hidden" name="id" value="{{ passkey.id }}">
+                                    <label class="form-label" for="passkey-password-{{ passkey.id }}">{{ 'Password'|trans }}</label>
+                                    <input class="form-control mb-2" id="passkey-password-{{ passkey.id }}" type="password" name="password" autocomplete="current-password" required>
+                                    <button type="submit" class="btn btn-outline-danger">{{ 'Remove passkey'|trans }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if passkeys.on %}
+            <form class="row g-2 align-items-end" data-clientfence-passkey-add autocomplete="off">
+                <div class="col-sm">
+                    <label class="form-label" for="passkey_password">{{ 'Password'|trans }}</label>
+                    <input class="form-control" id="passkey_password" type="password" name="password" autocomplete="current-password" required>
+                </div>
+                <div class="col-sm-auto">
+                    <button type="submit" class="btn btn-primary">{{ 'Add a passkey'|trans }}</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 {% endblock %}

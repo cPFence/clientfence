@@ -29401,3 +29401,181 @@ msgstr "Przesyłanie nie zakończyło się."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "Hasło strefy (nie to tylko do odczytu). Przechowywane zaszyfrowane i nigdy więcej nie pokazywane."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "Klucz dostępu (passkey) loguje odciskiem palca, twarzą lub kodem PIN urządzenia zamiast hasła i drugiego kroku (kod z aplikacji uwierzytelniającej lub PIN z e-maila). Każda osoba dodaje klucze dostępu na swojej stronie logowania dwuskładnikowego, a po zalogowaniu hasłem dostaje propozycję dodania. Klucz dostępu spełnia też wymóg „Wymagaj logowania dwuskładnikowego”. Logowanie pracowników nadal wymaga dozwolonego adresu IP i kraju."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "Klucz dostępu loguje Cię odciskiem palca, twarzą lub kodem PIN telefonu albo komputera zamiast hasła i kodu. Liczy się też jako logowanie dwuskładnikowe."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "Klucz dostępu loguje Cię odciskiem palca, twarzą lub kodem PIN telefonu albo komputera zamiast hasła i drugiego kroku. Dozwolone adresy IP i kraje nadal obowiązują."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "Do Twojego konta dodano klucz dostępu"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "Do Twojego logowania w strefie klienta dodano klucz dostępu. Loguje odciskiem palca, twarzą lub kodem PIN urządzenia, które go przechowuje, bez hasła."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "Dodaj klucz dostępu"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "Dodano %date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "Zezwól na klucze dostępu dla"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "Wybierz, kto może logować się kluczem dostępu."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "Utwórz klucz dostępu"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "Utwórz klucz dostępu: Twój odcisk palca, twarz lub kod PIN urządzenia będzie Cię logować, bez hasła i kodu."
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "Wpisz nazwę klucza dostępu."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "Jeśli to nie Ty, usuń klucz dostępu na swojej stronie logowania dwuskładnikowego, zmień hasło i natychmiast skontaktuj się z nami."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "Ostatnio użyty %date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "Jeszcze nieużywany"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "Tylko superadministratorzy mogą usuwać klucze dostępu pracowników."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "Klucz dostępu"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "Nie znaleziono klucza dostępu."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "Klucz dostępu usunięty."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "Zmieniono nazwę klucza dostępu."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "Klucz dostępu zapisany. Następnym razem zaloguj się nim."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "Logowanie kluczem dostępu nie jest włączone."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "Klucze dostępu"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "Klucze dostępu nie są włączone."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "Klucze dostępu wymagają, aby portal działał przez HTTPS, i działają tylko pod jego adresem: po przeniesieniu na inną domenę przestają działać, a logować można hasłem."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "Klucze dostępu wymagają, aby portal działał przez HTTPS: przeglądarki odrzucają je pod adresem http://. Najpierw ustaw adres URL portalu na https://."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "Klucze dostępu usunięte."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "Klucze dostępu: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "Usunąć wszystkie klucze dostępu tego loginu? Potem logować będzie hasło. Zrób to tylko wtedy, gdy masz pewność, kto o to prosi."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "Usunąć wszystkie klucze dostępu tego pracownika?"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "Usuń klucz dostępu"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "Usuń klucze dostępu"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "Zmień nazwę"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "Zmień nazwę lub usuń"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "Następnym razem loguj się szybciej"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "Zaloguj się kluczem dostępu"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "Żądanie klucza dostępu wygasło. Spróbuj ponownie."
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "Ta przeglądarka nie może utworzyć klucza dostępu. Zaktualizuj ją lub użyj innej przeglądarki."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "To urządzenie ma już klucz dostępu do Twojego logowania."
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "Ten login nie ma kluczy dostępu."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "Ten klucz dostępu jest już zapisany."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "Ten klucz dostępu używa rodzaju klucza, którego nie można tu użyć. Spróbuj innego."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "Ten pracownik może logować się kluczami dostępu (:count). Usuń je, jeśli urządzenie zostało zgubione."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "Twoje konto wymaga logowania dwuskładnikowego. Zaloguj się kluczem dostępu."

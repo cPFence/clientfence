@@ -32898,3 +32898,181 @@ msgstr "ההעלאה לא הסתיימה."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "סיסמת האזור (לא זו לקריאה בלבד). נשמרת מוצפנת ולא מוצגת שוב."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "מפתח גישה (passkey) מתחבר באמצעות טביעת האצבע, הפנים או קוד ה-PIN של המכשיר, במקום הסיסמה והשלב השני (קוד מאפליקציית אימות או PIN בדוא\"ל). כל אדם מוסיף מפתחות גישה בעמוד הכניסה באמצעות אימות דו-שלבי שלו, ומוצע לו אחד לאחר כניסה עם סיסמה. מפתח גישה עונה גם על \"דרישת אימות דו-שלבי\". כניסות צוות עדיין דורשות כתובת IP ומדינה מותרות."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "מפתח גישה מחבר אתכם באמצעות טביעת האצבע, הפנים או קוד ה-PIN של הטלפון או המחשב, במקום הסיסמה והקוד. הוא נחשב גם לכניסה באמצעות אימות דו-שלבי."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "מפתח גישה מחבר אתכם באמצעות טביעת האצבע, הפנים או קוד ה-PIN של הטלפון או המחשב, במקום הסיסמה והשלב השני. כתובות ה-IP והמדינות המותרות עדיין חלות."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "נוסף מפתח גישה לחשבון שלכם"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "נוסף מפתח גישה לכניסה שלכם לאזור הלקוחות. הוא מתחבר באמצעות טביעת האצבע, הפנים או קוד ה-PIN של המכשיר ששומר אותו, בלי הסיסמה שלכם."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "הוספת מפתח גישה"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "נוסף ב-%date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "אפשרו מפתחות גישה עבור"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "בחרו מי רשאי להתחבר עם מפתח גישה."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "יצירת מפתח גישה"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "יצירת מפתח גישה: טביעת האצבע, הפנים או קוד ה-PIN של המכשיר יחברו אתכם אחר כך, בלי סיסמה וקוד."
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "הזינו שם למפתח הגישה."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "אם זה לא היה אתם, הסירו את מפתח הגישה בעמוד הכניסה באמצעות אימות דו-שלבי שלכם, שנו את הסיסמה ופנו אלינו מיד."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "השימוש האחרון ב-%date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "עוד לא נעשה בו שימוש"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "רק מנהלי מערכת ראשיים יכולים להסיר מפתחות גישה של אנשי צוות."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "מפתח גישה"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "מפתח הגישה לא נמצא."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "מפתח הגישה הוסר."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "שם מפתח הגישה שונה."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "מפתח הגישה נשמר. בפעם הבאה התחברו איתו."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "כניסה עם מפתח גישה אינה פעילה."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "מפתחות גישה"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "מפתחות גישה אינם פעילים."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "מפתחות גישה דורשים שהפורטל יפעל ב-HTTPS ופועלים רק בכתובת שלו: לאחר מעבר לדומיין אחר הם מפסיקים לפעול והסיסמה מחברת."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "מפתחות גישה דורשים שהפורטל יפעל ב-HTTPS: דפדפנים דוחים אותם בכתובת http://. הגדירו קודם את כתובת הפורטל ל-https://."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "מפתחות הגישה הוסרו."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "מפתחות גישה: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "להסיר את כל מפתחות הגישה של כניסה זו? אחר כך הסיסמה שלה מחברת. עשו זאת רק אם אתם בטוחים מי מבקש."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "להסיר את כל מפתחות הגישה של איש הצוות הזה?"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "הסרת מפתח גישה"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "הסרת מפתחות גישה"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "שינוי שם"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "שינוי שם או הסרה"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "בפעם הבאה התחברו מהר יותר"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "כניסה עם מפתח גישה"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "בקשת מפתח הגישה פגה. נסו שוב."
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "הדפדפן הזה לא יכול ליצור מפתח גישה. עדכנו אותו או השתמשו בדפדפן אחר."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "במכשיר הזה כבר יש מפתח גישה לכניסה שלכם."
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "לכניסה זו אין מפתחות גישה."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "מפתח הגישה הזה כבר שמור."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "מפתח הגישה הזה משתמש בסוג מפתח שאי אפשר להשתמש בו כאן. נסו אחר."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "איש הצוות הזה יכול להתחבר עם מפתחות גישה (:count). הסירו אותם אם מכשיר אבד."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "החשבון שלכם דורש כניסה באמצעות אימות דו-שלבי. אנא התחברו עם מפתח הגישה שלכם."

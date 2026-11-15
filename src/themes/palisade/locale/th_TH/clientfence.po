@@ -27052,3 +27052,181 @@ msgstr "การอัปโหลดไม่เสร็จสมบูรณ
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "รหัสผ่านของโซน (ไม่ใช่อันที่อ่านได้อย่างเดียว) เก็บแบบเข้ารหัสและไม่แสดงอีก"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "พาสคีย์เข้าสู่ระบบด้วยลายนิ้วมือ ใบหน้า หรือ PIN ของอุปกรณ์ แทนรหัสผ่านและขั้นตอนที่สอง (รหัสจากแอปยืนยันตัวตนหรือ PIN ทางอีเมล) แต่ละคนเพิ่มพาสคีย์ได้ในหน้าการเข้าสู่ระบบสองปัจจัยของตนเอง และจะได้รับข้อเสนอหนึ่งรายการหลังเข้าสู่ระบบด้วยรหัสผ่าน พาสคีย์ยังตรงตาม \"บังคับใช้การเข้าสู่ระบบสองปัจจัย\" ด้วย การเข้าสู่ระบบของพนักงานยังต้องใช้ที่อยู่ IP และประเทศที่อนุญาต"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "พาสคีย์เข้าสู่ระบบให้คุณด้วยลายนิ้วมือ ใบหน้า หรือ PIN ของโทรศัพท์หรือคอมพิวเตอร์ แทนรหัสผ่านและรหัส และนับเป็นการเข้าสู่ระบบสองปัจจัยด้วย"
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "พาสคีย์เข้าสู่ระบบให้คุณด้วยลายนิ้วมือ ใบหน้า หรือ PIN ของโทรศัพท์หรือคอมพิวเตอร์ แทนรหัสผ่านและขั้นตอนที่สอง ที่อยู่ IP และประเทศที่อนุญาตยังคงมีผล"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "เพิ่มพาสคีย์ในบัญชีของคุณแล้ว"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "เพิ่มพาสคีย์ในการเข้าสู่ระบบพื้นที่ลูกค้าของคุณแล้ว พาสคีย์เข้าสู่ระบบด้วยลายนิ้วมือ ใบหน้า หรือ PIN ของอุปกรณ์ที่เก็บไว้ โดยไม่ต้องใช้รหัสผ่านของคุณ"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "เพิ่มพาสคีย์"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "เพิ่มเมื่อ %date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "อนุญาตพาสคีย์สำหรับ"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "เลือกว่าใครเข้าสู่ระบบด้วยพาสคีย์ได้"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "สร้างพาสคีย์"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "สร้างพาสคีย์: จากนั้นลายนิ้วมือ ใบหน้า หรือ PIN ของอุปกรณ์จะเข้าสู่ระบบให้คุณ โดยไม่ต้องใช้รหัสผ่านและรหัส"
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "ป้อนชื่อสำหรับพาสคีย์"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "หากไม่ใช่คุณ ให้ลบพาสคีย์ในหน้าการเข้าสู่ระบบสองปัจจัยของคุณ เปลี่ยนรหัสผ่าน และติดต่อเราทันที"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "ใช้ล่าสุดเมื่อ %date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "ยังไม่เคยใช้"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "เฉพาะผู้ดูแลระบบระดับสูงสุดเท่านั้นที่ลบพาสคีย์ของพนักงานได้"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "พาสคีย์"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "ไม่พบพาสคีย์"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "ลบพาสคีย์แล้ว"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "เปลี่ยนชื่อพาสคีย์แล้ว"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "บันทึกพาสคีย์แล้ว ครั้งหน้าให้เข้าสู่ระบบด้วยพาสคีย์นี้"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "การเข้าสู่ระบบด้วยพาสคีย์ยังไม่เปิด"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "พาสคีย์"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "ยังไม่ได้เปิดพาสคีย์"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "พาสคีย์ต้องให้พอร์ทัลใช้ HTTPS และทำงานได้เฉพาะที่อยู่ของพอร์ทัลเท่านั้น: หลังย้ายไปโดเมนอื่นจะใช้ไม่ได้ และรหัสผ่านจะเป็นตัวเข้าสู่ระบบ"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "พาสคีย์ต้องให้พอร์ทัลใช้ HTTPS: เบราว์เซอร์ปฏิเสธพาสคีย์บนที่อยู่ http:// ตั้ง URL ของพอร์ทัลเป็น https:// ก่อน"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "ลบพาสคีย์แล้ว"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "พาสคีย์: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "ลบพาสคีย์ทั้งหมดของการเข้าสู่ระบบนี้หรือไม่ หลังจากนั้นรหัสผ่านของบัญชีจะเป็นตัวเข้าสู่ระบบ ทำเมื่อคุณแน่ใจว่าใครเป็นผู้ขอเท่านั้น"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "ลบพาสคีย์ทั้งหมดของพนักงานคนนี้หรือไม่"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "ลบพาสคีย์"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "ลบพาสคีย์"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "เปลี่ยนชื่อ"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "เปลี่ยนชื่อหรือลบ"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "ครั้งหน้าเข้าสู่ระบบได้เร็วขึ้น"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "เข้าสู่ระบบด้วยพาสคีย์"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "คำขอพาสคีย์หมดอายุแล้ว โปรดลองอีกครั้ง"
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "เบราว์เซอร์นี้สร้างพาสคีย์ไม่ได้ โปรดอัปเดตหรือใช้เบราว์เซอร์อื่น"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "อุปกรณ์นี้มีพาสคีย์สำหรับการเข้าสู่ระบบของคุณอยู่แล้ว"
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "การเข้าสู่ระบบนี้ไม่มีพาสคีย์"
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "พาสคีย์นี้บันทึกไว้แล้ว"
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "พาสคีย์นี้ใช้คีย์ชนิดที่ใช้ที่นี่ไม่ได้ โปรดลองอันอื่น"
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "พนักงานคนนี้เข้าสู่ระบบด้วยพาสคีย์ได้ (:count) ลบออกหากอุปกรณ์สูญหาย"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "บัญชีของคุณต้องใช้การเข้าสู่ระบบสองปัจจัย โปรดเข้าสู่ระบบด้วยพาสคีย์ของคุณ"

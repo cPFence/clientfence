@@ -26992,3 +26992,181 @@ msgstr "Yükleme tamamlanmadı."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "Bölgenin parolası (salt okunur olan değil). Şifreli saklanır ve bir daha gösterilmez."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "Geçiş anahtarı (passkey), parola ve ikinci adım (kimlik doğrulama uygulaması kodu veya e-posta PIN'i) yerine cihazın parmak izi, yüzü veya PIN'iyle giriş yapar. Her kişi geçiş anahtarlarını kendi iki aşamalı giriş sayfasında ekler ve parolayla girişten sonra kendisine bir tane önerilir. Geçiş anahtarı \"İki aşamalı girişi zorunlu kıl\" koşulunu da karşılar. Personel girişleri yine izin verilen bir IP adresi ve ülke gerektirir."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "Geçiş anahtarı, parolanız ve kod yerine telefonunuzun veya bilgisayarınızın parmak izi, yüzü veya PIN'iyle giriş yapmanızı sağlar. Aynı zamanda iki aşamalı giriş sayılır."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "Geçiş anahtarı, parolanız ve ikinci adım yerine telefonunuzun veya bilgisayarınızın parmak izi, yüzü veya PIN'iyle giriş yapmanızı sağlar. İzin verilen IP adresleri ve ülkeler yine geçerlidir."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "Hesabınıza bir geçiş anahtarı eklendi"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "Müşteri alanına girişinize bir geçiş anahtarı eklendi. Onu saklayan cihazın parmak izi, yüzü veya PIN'iyle, parolanız olmadan giriş yapar."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "Geçiş anahtarı ekle"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "%date% tarihinde eklendi"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "Geçiş anahtarlarına izin verilecekler"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "Geçiş anahtarıyla kimlerin giriş yapabileceğini seçin."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "Geçiş anahtarı oluştur"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "Geçiş anahtarı oluştur: parmak iziniz, yüzünüz veya cihaz PIN'iniz bundan sonra parola ve kod olmadan giriş yapar."
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "Geçiş anahtarı için bir ad girin."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "Bu siz değilseniz, iki aşamalı giriş sayfanızdan geçiş anahtarını kaldırın, parolanızı değiştirin ve hemen bizimle iletişime geçin."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "Son kullanım: %date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "Henüz kullanılmadı"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "Personelin geçiş anahtarlarını yalnızca Süper Yöneticiler kaldırabilir."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "Geçiş anahtarı"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "Geçiş anahtarı bulunamadı."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "Geçiş anahtarı kaldırıldı."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "Geçiş anahtarı yeniden adlandırıldı."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "Geçiş anahtarı kaydedildi. Bir sonraki sefer onunla giriş yapın."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "Geçiş anahtarıyla giriş açık değil."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "Geçiş anahtarları"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "Geçiş anahtarları açık değil."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "Geçiş anahtarları portalın HTTPS üzerinde olmasını gerektirir ve yalnızca portalın adresinde çalışır: başka bir alan adına taşındıktan sonra çalışmaz ve parola giriş yapar."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "Geçiş anahtarları portalın HTTPS üzerinde olmasını gerektirir: tarayıcılar bunları http:// adresinde reddeder. Önce portal URL'sini https:// olarak ayarlayın."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "Geçiş anahtarları kaldırıldı."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "Geçiş anahtarları: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "Bu girişin tüm geçiş anahtarları kaldırılsın mı? Ardından parolası giriş yapar. Bunu yalnızca isteyenin kim olduğundan eminseniz yapın."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "Bu personelin tüm geçiş anahtarları kaldırılsın mı?"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "Geçiş anahtarını kaldır"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "Geçiş anahtarlarını kaldır"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "Yeniden adlandır"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "Yeniden adlandır veya kaldır"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "Bir sonraki sefer daha hızlı giriş yapın"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "Geçiş anahtarıyla giriş yap"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "Geçiş anahtarı isteğinin süresi doldu. Lütfen tekrar deneyin."
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "Bu tarayıcı geçiş anahtarı oluşturamıyor. Lütfen güncelleyin veya başka bir tarayıcı kullanın."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "Bu cihazda girişiniz için zaten bir geçiş anahtarı var."
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "Bu girişin geçiş anahtarı yok."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "Bu geçiş anahtarı zaten kayıtlı."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "Bu geçiş anahtarı burada kullanılamayan bir anahtar türü kullanıyor. Lütfen başka birini deneyin."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "Bu personel geçiş anahtarlarıyla giriş yapabilir (:count). Bir cihaz kaybolduysa kaldırın."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "Hesabınız iki aşamalı giriş gerektiriyor. Lütfen geçiş anahtarınızla giriş yapın."

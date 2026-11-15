@@ -222,6 +222,8 @@
                     <a class="btn btn-sm btn-primary" href="{{ 'client/resend_email_verification'|api_url }}" {{ fb_api_link({message: 'Verification Email Re-sent'|trans}) }}>{{ 'Resend Verification Email'|trans }}</a>
                 </div>
             {% endif %}
+            {# ClientFence core patch: the passkey offer after a sign-in (Client/Passkeys.php); a session read only. #}
+            {% if client and client.client_passkey_offer %}{{ include('partials/passkey_offer.html.twig') }}{% endif %}
             {% block content_before %}{% endblock %}
             {{ render_widgets('client.theme.content.before') }}
             {% block content %}{% endblock %}

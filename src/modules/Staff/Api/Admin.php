@@ -89,6 +89,22 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: removes a staff member's passkeys (Client/Passkeys.php), for one who lost the
+     * device. Super Administrators only.
+     */
+    #[RequiredParams(['id' => 'ID was not passed'])]
+    public function passkeys_remove($data): bool
+    {
+        if (!$this->getService()->isSuperAdministrator()) {
+            throw new \ClientFence\InformationException('Only Super Administrators can remove passkeys of staff.', null, 403);
+        }
+        $model = $this->getDi()['db']->getExistingModelById('Admin', $data['id'], 'Staff member not found');
+        \ClientFence\Mod\Client\Passkeys::adminRemove($this->getDi(), (int) $model->id, (int) $this->getIdentity()->id);
+
+        return true;
+    }
+
+    /**
      * Returns whether the logged-in staff member is a Super Administrator.
      */
     public function is_super_administrator($data): bool

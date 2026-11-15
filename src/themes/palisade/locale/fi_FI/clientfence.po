@@ -29662,3 +29662,181 @@ msgstr "Lähetys ei valmistunut."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "Vyöhykkeen salasana (ei vain luku -salasana). Tallennetaan salattuna eikä näytetä enää."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "Pääsyavain (passkey) kirjaa sisään laitteen sormenjäljellä, kasvoilla tai PIN-koodilla salasanan ja toisen vaiheen (todennussovelluksen koodi tai sähköpostin PIN-koodi) sijaan. Jokainen lisää pääsyavaimet kaksivaiheisen kirjautumisen sivullaan, ja sellainen tarjotaan salasanalla kirjautumisen jälkeen. Pääsyavain täyttää myös vaatimuksen ”Vaadi kaksivaiheinen kirjautuminen”. Henkilökunnan kirjautumiset vaativat edelleen sallitun IP-osoitteen ja maan."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "Pääsyavain kirjaa sinut sisään puhelimesi tai tietokoneesi sormenjäljellä, kasvoilla tai PIN-koodilla salasanan ja koodin sijaan. Se lasketaan myös kaksivaiheiseksi kirjautumiseksi."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "Pääsyavain kirjaa sinut sisään puhelimesi tai tietokoneesi sormenjäljellä, kasvoilla tai PIN-koodilla salasanan ja toisen vaiheen sijaan. Sallitut IP-osoitteet ja maat pätevät edelleen."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "Tilillesi lisättiin pääsyavain"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "Asiakasalueelle kirjautumiseesi lisättiin pääsyavain. Se kirjaa sisään sen laitteen sormenjäljellä, kasvoilla tai PIN-koodilla, joka sitä säilyttää, ilman salasanaasi."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "Lisää pääsyavain"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "Lisätty %date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "Salli pääsyavaimet kohderyhmälle"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "Valitse, kuka saa kirjautua pääsyavaimella."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "Luo pääsyavain"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "Luo pääsyavain: sormenjälkesi, kasvosi tai laitteen PIN-koodi kirjaa sinut sen jälkeen sisään ilman salasanaa ja koodia."
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "Anna pääsyavaimelle nimi."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "Jos se et ollut sinä, poista pääsyavain kaksivaiheisen kirjautumisen sivultasi, vaihda salasanasi ja ota meihin heti yhteyttä."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "Viimeksi käytetty %date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "Ei vielä käytetty"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "Vain pääylläpitäjät voivat poistaa henkilökunnan pääsyavaimia."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "Pääsyavain"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "Pääsyavainta ei löytynyt."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "Pääsyavain poistettu."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "Pääsyavain nimetty uudelleen."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "Pääsyavain tallennettu. Kirjaudu ensi kerralla sillä."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "Kirjautuminen pääsyavaimella ei ole päällä."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "Pääsyavaimet"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "Pääsyavaimet eivät ole päällä."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "Pääsyavaimet edellyttävät, että portaali käyttää HTTPS:ää, ja toimivat vain sen osoitteessa: siirron jälkeen toiseen verkkotunnukseen ne lakkaavat toimimasta, ja salasana kirjaa sisään."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "Pääsyavaimet edellyttävät, että portaali käyttää HTTPS:ää: selaimet hylkäävät ne http://-osoitteessa. Aseta ensin portaalin URL muotoon https://."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "Pääsyavaimet poistettu."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "Pääsyavaimet: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "Poistetaanko tämän tunnuksen kaikki pääsyavaimet? Sen jälkeen sisään kirjaa sen salasana. Tee tämä vain, jos olet varma, kuka sitä pyytää."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "Poistetaanko tämän henkilökunnan jäsenen kaikki pääsyavaimet?"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "Poista pääsyavain"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "Poista pääsyavaimet"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "Nimeä uudelleen"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "Nimeä uudelleen tai poista"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "Kirjaudu ensi kerralla nopeammin"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "Kirjaudu pääsyavaimella"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "Pääsyavainpyyntö on vanhentunut. Yritä uudelleen."
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "Tämä selain ei voi luoda pääsyavainta. Päivitä se tai käytä toista selainta."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "Tällä laitteella on jo pääsyavain kirjautumiseesi."
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "Tällä tunnuksella ei ole pääsyavaimia."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "Tämä pääsyavain on jo tallennettu."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "Tämä pääsyavain käyttää avaintyyppiä, jota ei voi käyttää täällä. Kokeile toista."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "Tämä henkilökunnan jäsen voi kirjautua pääsyavaimilla (:count). Poista ne, jos laite on kadonnut."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "Tilisi vaatii kaksivaiheisen kirjautumisen. Kirjaudu sisään pääsyavaimellasi."

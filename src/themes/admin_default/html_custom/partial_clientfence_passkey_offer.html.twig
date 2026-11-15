@@ -1,0 +1,14 @@
+{# ClientFence admin frame: "Sign in faster next time", once after a staff sign-in without a passkey
+   (Client/Passkeys.php offer()). clientfence-passkeys.js shows it only where the device unlocks passkeys
+   itself; "Not now" keeps it away from this browser for a year (Passkeys::NOT_NOW). #}
+<div class="card mb-3" data-cf-passkey="offer" data-role="admin" data-options="profile/passkey_options" data-add="profile/passkey_add" data-cookie="clientfence_passkey_later_staff"
+     data-saved="{{ 'Passkey saved. Next time, sign in with it.'|trans }}" data-already="{{ 'This device already has a passkey for your sign-in.'|trans }}" hidden>
+    <div class="card-body d-flex flex-wrap align-items-center gap-3">
+        <div class="flex-grow-1">
+            <h3 class="card-title mb-1">{{ 'Sign in faster next time'|trans }}</h3>
+            <p class="text-secondary mb-0">{{ 'Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code.'|trans }}</p>
+        </div>
+        <button type="button" class="btn" data-cf-passkey-later>{{ 'Not now'|trans }}</button>
+        <button type="button" class="btn btn-primary" data-cf-passkey-create>{{ 'Create a passkey'|trans }}</button>
+    </div>
+</div>

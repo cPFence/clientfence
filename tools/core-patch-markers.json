@@ -6262,5 +6262,77 @@
     {
         "file": "themes/palisade/html/mod_order_product.html.twig",
         "done": "doneHeld: 'We review your order before it starts and email you when it is approved. Any invoice follows then.'|trans,"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: the next page may offer a passkey (Client/Passkeys.php)."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "public function passkey_signin($data): bool"
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "public function passkey_add($data): array"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "public function passkeys_remove($data): bool"
+    },
+    {
+        "file": "modules/Staff/Api/Guest.php",
+        "done": "public function passkey_signin($data): array"
+    },
+    {
+        "file": "modules/Staff/Api/Admin.php",
+        "done": "public function passkeys_remove($data): bool"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: how many passkeys the staff member signs in with (Client/Passkeys.php)."
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: the next page may offer a passkey (Client/Passkeys.php); a passkey sign-in has one."
+    },
+    {
+        "file": "modules/Profile/Api/Admin.php",
+        "done": "ClientFence core patch: the staff member's own passkeys (Client/Passkeys.php): {on, passkeys}."
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: passkey sign-in (Client/Passkeys.php) has the password sign-in's limit."
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "'client_passkey_signin', 'staff_passkey_signin',"
+    },
+    {
+        "file": "themes/palisade/html/mod_page_login.html.twig",
+        "done": "ClientFence core patch: passkey sign-in (Client/Passkeys.php), drawn only while on for clients."
+    },
+    {
+        "file": "themes/palisade/html/layout_default.html.twig",
+        "done": "ClientFence core patch: the passkey offer after a sign-in (Client/Passkeys.php); a session read only."
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_login.html.twig",
+        "done": "ClientFence core patch: passkey sign-in (Client/Passkeys.php), drawn and scripted only while on for staff."
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_profile.html.twig",
+        "done": "ClientFence core patch: the staff member's own passkeys (Client/Passkeys.php; clientfence-passkeys.js adds one)."
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_manage.html.twig",
+        "done": "ClientFence core patch: a Super Administrator removes a staff member's passkeys (Staff/Api/Admin.php passkeys_remove)."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: passkeys (Client/Passkeys.php)."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the passkeys migration."
     }
 ]

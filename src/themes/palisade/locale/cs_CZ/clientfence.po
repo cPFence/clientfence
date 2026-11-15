@@ -29024,3 +29024,181 @@ msgstr "Nahrávání nebylo dokončeno."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "Heslo zóny (ne to jen pro čtení). Uloženo šifrovaně a už se nezobrazí."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "Přístupový klíč (passkey) přihlásí otiskem prstu, obličejem nebo kódem PIN zařízení místo hesla a druhého kroku (kód z autentizační aplikace nebo PIN z e-mailu). Každý si přístupové klíče přidává na své stránce dvoufázového přihlášení a po přihlášení heslem mu je jeden nabídnut. Přístupový klíč splňuje i „Vyžadovat dvoufázové přihlášení“. Přihlášení zaměstnanců stále vyžaduje povolenou IP adresu a zemi."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "Přístupový klíč vás přihlásí otiskem prstu, obličejem nebo kódem PIN vašeho telefonu či počítače místo hesla a kódu. Počítá se také jako dvoufázové přihlášení."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "Přístupový klíč vás přihlásí otiskem prstu, obličejem nebo kódem PIN vašeho telefonu či počítače místo hesla a druhého kroku. Povolené IP adresy a země platí i nadále."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "K vašemu účtu byl přidán přístupový klíč"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "K vašemu přihlášení do klientské zóny byl přidán přístupový klíč. Přihlašuje otiskem prstu, obličejem nebo kódem PIN zařízení, které ho uchovává, bez vašeho hesla."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "Přidat přístupový klíč"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "Přidáno %date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "Povolit přístupové klíče pro"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "Vyberte, kdo se smí přihlásit přístupovým klíčem."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "Vytvořit přístupový klíč"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "Vytvořit přístupový klíč: přihlásí vás pak otisk prstu, obličej nebo kód PIN zařízení, bez hesla a kódu."
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "Zadejte název přístupového klíče."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "Pokud jste to nebyli vy, odstraňte přístupový klíč na své stránce dvoufázového přihlášení, změňte heslo a okamžitě nás kontaktujte."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "Naposledy použito %date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "Zatím nepoužito"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "Přístupové klíče zaměstnanců mohou odstraňovat jen superadministrátoři."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "Přístupový klíč"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "Přístupový klíč nebyl nalezen."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "Přístupový klíč byl odstraněn."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "Přístupový klíč byl přejmenován."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "Přístupový klíč byl uložen. Příště se jím přihlaste."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "Přihlášení přístupovým klíčem není zapnuto."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "Přístupové klíče"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "Přístupové klíče nejsou zapnuty."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "Přístupové klíče vyžadují, aby portál běžel na HTTPS, a fungují jen na jeho adrese: po přesunu na jinou doménu přestanou fungovat a přihlásí heslo."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "Přístupové klíče vyžadují, aby portál běžel na HTTPS: prohlížeče je na adrese http:// odmítají. Nejprve nastavte adresu portálu na https://."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "Přístupové klíče byly odstraněny."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "Přístupové klíče: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "Odstranit všechny přístupové klíče tohoto přihlášení? Poté přihlásí jeho heslo. Udělejte to, jen když jste si jisti, kdo o to žádá."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "Odstranit všechny přístupové klíče tohoto zaměstnance?"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "Odstranit přístupový klíč"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "Odstranit přístupové klíče"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "Přejmenovat"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "Přejmenovat nebo odstranit"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "Příště se přihlaste rychleji"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "Přihlásit se přístupovým klíčem"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "Požadavek na přístupový klíč vypršel. Zkuste to prosím znovu."
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "Tento prohlížeč nemůže vytvořit přístupový klíč. Aktualizujte ho nebo použijte jiný prohlížeč."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "Toto zařízení již má přístupový klíč pro vaše přihlášení."
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "Toto přihlášení nemá žádné přístupové klíče."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "Tento přístupový klíč je již uložen."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "Tento přístupový klíč používá druh klíče, který zde nelze použít. Zkuste jiný."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "Tento zaměstnanec se může přihlásit přístupovými klíči (:count). Odstraňte je, pokud se zařízení ztratilo."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "Váš účet vyžaduje dvoufázové přihlášení. Přihlaste se svým přístupovým klíčem."

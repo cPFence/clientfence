@@ -286,6 +286,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'client_group_members',
         // ClientFence core patch: orders held for review (Order/Holds.php).
         'client_order_hold',
+        // Passkeys (Client/Passkeys.php).
+        'client_passkey',
     ];
 
     /**

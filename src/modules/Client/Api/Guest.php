@@ -316,6 +316,8 @@ class Guest extends \ClientFence\Api\AbstractApi
             }
 
             $this->getDi()['mod_service']('cart')->transferFromOtherSession($oldSession);
+            // ClientFence core patch: the next page may offer a passkey (Client/Passkeys.php).
+            \ClientFence\Mod\Client\Passkeys::offer($this->getDi(), ...($clientfenceUser !== null ? ['user', (int) $clientfenceUser['user_id']] : ['client', (int) $client->getId()]));
 
             return $result;
         } finally {
@@ -556,6 +558,41 @@ class Guest extends \ClientFence\Api\AbstractApi
         TwoFactor::signIn($this->getDi(), (int) ($payload['client_id'] ?? 0), is_array($payload['user'] ?? null) ? $payload['user'] : null, (string) $this->getIp());
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch: whether the sign-in page offers passkey sign-in (Client/Passkeys.php).
+     */
+    public function passkey_on(): bool
+    {
+        return \ClientFence\Mod\Client\Passkeys::on($this->getDi(), 'client');
+    }
+
+    /**
+     * ClientFence: the options for the browser's passkey prompt on the sign-in page (Client/Passkeys.php).
+     */
+    public function passkey_signin_options(): array
+    {
+        return \ClientFence\Mod\Client\Passkeys::signInOptions($this->getDi(), 'client');
+    }
+
+    /**
+     * ClientFence: signs in with a passkey, instead of the password and the second step: `id`,
+     * `clientDataJSON`, `authenticatorData`, `signature`, `userHandle` (base64url, the browser's answer).
+     */
+    public function passkey_signin($data): bool
+    {
+        $startedAt = microtime(true);
+
+        try {
+            // The blocked IP addresses (Antispam) as for the password sign-in.
+            $this->getDi()['events_manager']->fire(['event' => 'onBeforeClientLogin', 'params' => ['ip' => $this->getIp()]]);
+            \ClientFence\Mod\Client\Passkeys::signInClient($this->getDi(), is_array($data) ? $data : [], (string) $this->getIp());
+
+            return true;
+        } finally {
+            RandomizedTimeFloor::apply($startedAt);
+        }
     }
 
     /**

@@ -3,7 +3,7 @@
    the client see the account's authorized users and pending invitations; staff with the client
    "edit profile" permission invite, change access (permissions or full access, like the owner),
    switch a user's sign-in off or on (every account), send a password reset link, remove
-   access, and switch off two-factor sign-in of the owner or a user (TwoFactor.php). Every change is in the activity log (filtered by this client). Users.php. #}
+   access, and switch off two-factor sign-in of the owner or a user (TwoFactor.php) or remove its passkeys (Passkeys.php). Every change is in the activity log (filtered by this client). Users.php. #}
 {% set users_page = admin.client_user_page({ client_id: client.id }) %}
 {% set can_twofactor = has_permission('client', 'edit_profile') %}
 {% set can_manage = can_twofactor %}
@@ -59,6 +59,12 @@
                 {% else %}
                     <span class="badge bg-secondary-lt">{{ 'Off'|trans }}</span>
                 {% endif %}
+                {% if users_page.owner_passkeys %}
+                    <span class="badge bg-blue-lt">{{ 'Passkeys: :count'|trans({':count': users_page.owner_passkeys}) }}</span>
+                    {% if can_twofactor %}
+                        <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/passkeys_remove'|api_url(query: { client_id: client.id }), modal: { type: 'confirm', title: 'Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking.'|trans }, reload: true }) }}>{{ 'Remove passkeys'|trans }}</a>
+                    {% endif %}
+                {% endif %}
             </div>
             <div class="card-body border-top py-3 d-flex flex-wrap align-items-center gap-2" data-clientfence-owner-google="{{ users_page.owner_google ? 'linked' : 'none' }}">
                 <span>{{ 'Account owner\'s Google sign-in'|trans }}:</span>
@@ -109,6 +115,7 @@
                                         <span class="badge bg-red-lt">{{ 'Switched off'|trans }}</span>
                                     {% endif %}
                                     {% if user.twofactor %}<span class="badge bg-blue-lt">{{ 'Two-factor on'|trans }}</span>{% endif %}
+                                    {% if user.passkeys %}<span class="badge bg-blue-lt">{{ 'Passkeys: :count'|trans({':count': user.passkeys}) }}</span>{% endif %}
                                     {% if user.google %}<span class="badge bg-azure-lt">{{ 'Google linked'|trans }}</span>{% endif %}
                                 </td>
                                 <td class="text-nowrap">{{ user.last_login_at ? user.last_login_at|format_datetime : 'Never'|trans }}</td>
@@ -124,6 +131,9 @@
                                             {% endif %}
                                             {% if user.twofactor %}
                                                 <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/twofactor_disable'|api_url(query: { client_id: client.id, user_id: user.id }), modal: { type: 'confirm', title: 'Switch off two-factor sign-in for this login? Its password alone will sign in. Do this only when you are sure who is asking.'|trans }, reload: true }) }}>{{ 'Switch off two-factor'|trans }}</a>
+                                            {% endif %}
+                                            {% if user.passkeys %}
+                                                <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/passkeys_remove'|api_url(query: { client_id: client.id, user_id: user.id }), modal: { type: 'confirm', title: 'Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking.'|trans }, reload: true }) }}>{{ 'Remove passkeys'|trans }}</a>
                                             {% endif %}
                                             {% if user.google %}
                                                 <a class="btn btn-sm btn-outline-warning" {{ fb_api_link({ href: 'client/google_unlink'|api_url(query: { client_id: client.id, user_id: user.id }), modal: { type: 'confirm', title: 'Unlink the Google account of this login? It then signs in with its password.'|trans }, reload: true }) }}>{{ 'Unlink Google'|trans }}</a>

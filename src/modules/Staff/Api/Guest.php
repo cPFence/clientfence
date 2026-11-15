@@ -167,6 +167,54 @@ class Guest extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    /**
+     * ClientFence core patch: whether the staff sign-in page offers passkey sign-in (Client/Passkeys.php).
+     */
+    public function passkey_on(): bool
+    {
+        return \ClientFence\Mod\Client\Passkeys::on($this->getDi(), 'staff');
+    }
+
+    /**
+     * ClientFence: the options for the browser's passkey prompt on the staff sign-in page.
+     */
+    public function passkey_signin_options(): array
+    {
+        return \ClientFence\Mod\Client\Passkeys::signInOptions($this->getDi(), 'staff');
+    }
+
+    /**
+     * ClientFence: signs a staff member in with a passkey, instead of the password and the second step (`id`,
+     * `clientDataJSON`, `authenticatorData`, `signature`, `userHandle`). The IP and country rules still apply.
+     */
+    public function passkey_signin($data): array
+    {
+        $startedAt = microtime(true);
+
+        try {
+            $di = $this->getDi();
+            $ip = (string) $this->getIp();
+            $di['events_manager']->fire(['event' => 'onBeforeAdminLogin', 'params' => ['ip' => $ip]]);
+            $settings = \ClientFence\Mod\Clientfence\SignInSecurity::settings($di);
+            if ($settings['ips_on'] && !in_array($ip, $settings['ips'], true)) {
+                throw new \ClientFence\InformationException('You are not allowed to login to admin area from this IP address.', null, 403);
+            }
+            \ClientFence\Mod\Clientfence\SignInSecurity::checkStaffCountry($di, $ip);
+            [, $id] = \ClientFence\Mod\Client\Passkeys::verifySignIn($di, 'staff', is_array($data) ? $data : []);
+            $model = $di['db']->load('Admin', $id);
+            if (!$model instanceof \Model_Admin || $model->status !== \Model_Admin::STATUS_ACTIVE) {
+                throw new \ClientFence\InformationException('Check your login details', null, 403);
+            }
+            \ClientFence\Mod\Client\Passkeys::endWaiting($di);
+            $result = $this->getService()->completeLogin($model, $ip);
+            $di['session']->delete('redirect_uri');
+
+            return $result;
+        } finally {
+            RandomizedTimeFloor::apply($startedAt);
+        }
+    }
+
     public function update_password($data): void
     {
         $startedAt = microtime(true);

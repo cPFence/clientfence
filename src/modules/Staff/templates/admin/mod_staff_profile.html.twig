@@ -165,6 +165,55 @@
                         </div>
                     </div>
                 </div>
+                {# ClientFence core patch: the staff member's own passkeys (Client/Passkeys.php; clientfence-passkeys.js adds one). #}
+                {% set passkeys = admin.profile_passkey_list %}
+                {% if passkeys.on or passkeys.passkeys %}
+                <div class="card mt-3" data-cf-passkey="list" data-role="admin" data-options="profile/passkey_options" data-add="profile/passkey_add"
+                     data-saved="{{ 'Passkey saved. Next time, sign in with it.'|trans }}" data-already="{{ 'This device already has a passkey for your sign-in.'|trans }}">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ 'Passkeys'|trans }}</h3>
+                        <p class="text-secondary">{{ 'A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply.'|trans }}</p>
+                        {% for passkey in passkeys.passkeys %}
+                            <div class="border rounded p-3 mb-3">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div>
+                                        <div class="fw-medium">{{ passkey.name }}</div>
+                                        <div class="text-secondary small">{{ 'Added %date%'|trans({'%date%': passkey.created_at|format_datetime}) }} &middot; {{ passkey.last_used_at ? 'Last used %date%'|trans({'%date%': passkey.last_used_at|format_datetime}) : 'Not used yet'|trans }}</div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm" data-bs-toggle="collapse" data-bs-target="#cf-passkey-{{ passkey.id }}" aria-expanded="false" aria-controls="cf-passkey-{{ passkey.id }}">{{ 'Rename or remove'|trans }}</button>
+                                </div>
+                                <div class="collapse" id="cf-passkey-{{ passkey.id }}">
+                                    <div class="row g-3 pt-3">
+                                        <form class="col-lg-6" method="post" action="{{ 'profile/passkey_rename'|api_url }}" {{ fb_api_form({ message: 'Passkey renamed.'|trans, reload: true }) }}>
+                                            <input type="hidden" name="id" value="{{ passkey.id }}">
+                                            <label class="form-label" for="cf-passkey-name-{{ passkey.id }}">{{ 'Name'|trans }}</label>
+                                            <input class="form-control mb-2" type="text" name="name" id="cf-passkey-name-{{ passkey.id }}" value="{{ passkey.name }}" maxlength="100" required>
+                                            <button class="btn" type="submit">{{ 'Rename'|trans }}</button>
+                                        </form>
+                                        <form class="col-lg-6" method="post" action="{{ 'profile/passkey_remove'|api_url }}" {{ fb_api_form({ message: 'Passkey removed.'|trans, reload: true }) }}>
+                                            <input type="hidden" name="id" value="{{ passkey.id }}">
+                                            <label class="form-label" for="cf-passkey-password-{{ passkey.id }}">{{ 'Password'|trans }}</label>
+                                            <input class="form-control mb-2" type="password" name="password" id="cf-passkey-password-{{ passkey.id }}" autocomplete="current-password" required>
+                                            <button class="btn btn-outline-danger" type="submit">{{ 'Remove passkey'|trans }}</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if passkeys.on %}
+                            <form class="row g-2 align-items-end" data-cf-passkey-add autocomplete="off">
+                                <div class="col-sm">
+                                    <label class="form-label" for="cf-passkey-password">{{ 'Password'|trans }}</label>
+                                    <input class="form-control" type="password" name="password" id="cf-passkey-password" autocomplete="current-password" required>
+                                </div>
+                                <div class="col-sm-auto">
+                                    <button class="btn btn-primary" type="submit">{{ 'Add a passkey'|trans }}</button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
 

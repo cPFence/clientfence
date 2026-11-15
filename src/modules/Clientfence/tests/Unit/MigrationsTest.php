@@ -142,8 +142,9 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, public INTEGER, category TEXT, hash TEXT, created_at TEXT, updated_at TEXT)');
     $db->insert('setting', ['param' => Migrations::SETTING, 'value' => '11', 'public' => 0, 'created_at' => '2026-10-01', 'updated_at' => '2026-10-01']);
-    // Migration 13 (MySQL DDL) then finds its table there.
+    // Migrations 13 and 14 (MySQL DDL) then find their tables there.
     $db->executeStatement('CREATE TABLE client_order_hold (id INTEGER PRIMARY KEY)');
+    $db->executeStatement('CREATE TABLE client_passkey (id INTEGER PRIMARY KEY)');
     $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)');
     $db->executeStatement('CREATE TABLE activity_admin_history (id INTEGER PRIMARY KEY, admin_id INTEGER, ip TEXT, created_at TEXT)');
     $db->insert('activity_client_history', ['client_id' => 7, 'ip' => '203.0.113.7', 'created_at' => '2026-11-01 10:00:00']);
@@ -153,7 +154,7 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $columns = static fn (string $table): array => array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns($table)));
     $details = ['country', 'asn', 'network', 'browser', 'session_id'];
 
-    expect(Migrations::apply($di))->toBe([12, 13])
+    expect(Migrations::apply($di))->toBe([12, 13, 14])
         ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('activity_admin_history'))->toBe(['id', 'admin_id', 'ip', 'created_at', ...$details])
         ->and($db->createSchemaManager()->listTableIndexes('activity_client_history'))->toHaveKey('user_id_idx')

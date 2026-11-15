@@ -189,6 +189,21 @@
 							</div>
 						</div>
 					{% endif %}
+					{# ClientFence core patch: a Super Administrator removes a staff member's passkeys (Staff/Api/Admin.php passkeys_remove). #}
+					{% if staff.passkeys and admin.staff_is_super_administrator %}
+						<div class="card mt-3">
+							<div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+								<div>
+									<h3 class="card-title mb-1">{{ 'Passkeys'|trans }}</h3>
+									<p class="text-secondary mb-0">{{ 'This staff member can sign in with :count passkeys. Remove them if a device was lost.'|trans({':count': staff.passkeys}) }}</p>
+								</div>
+								<a class="btn btn-outline-danger" href="{{ 'staff/passkeys_remove'|api_url(query: { 'id': staff.id }) }}"
+									{{ fb_api_link({modal: {type: 'confirm', title: 'Remove every passkey of this staff member?'|trans}, message: 'Passkeys removed.'|trans, reload: true}) }}>
+									{{ 'Remove passkeys'|trans }}
+								</a>
+							</div>
+						</div>
+					{% endif %}
 				</div>
 			</div>
 		{% endblock %}

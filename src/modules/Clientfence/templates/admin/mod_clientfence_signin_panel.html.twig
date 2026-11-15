@@ -1,6 +1,6 @@
 {# ClientFence: the "Sign-in" tab of Security > Settings (mod_security_settings; SignInSecurity.php): an email
    PIN at sign-in for staff, clients or both (every sign-in or only from a new place), two-factor sign-in required
-   of all clients or chosen client groups (Client/TwoFactor.php checkRequired()), the sign-in history
+   of all clients or chosen client groups (Client/TwoFactor.php checkRequired()), passkeys (Client/Passkeys.php), the sign-in history
    (SignInHistory.php), staff sign-in from listed IP addresses only and staff password
    reset (both stored in the Staff settings), and staff sign-in from chosen countries only. Super Administrators only.
    `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
@@ -60,6 +60,24 @@
                 {% endfor %}
             </select>
             <div class="form-hint">{{ 'With "Chosen client groups": a client in any of these groups must use it.'|trans }}</div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Passkeys'|trans }}</h3>
+                <p class="card-subtitle">{{ 'A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets "Require two-factor sign-in". Staff sign-ins still need an allowed IP address and country.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <label class="form-label" for="cf-signin-passkeys">{{ 'Allow passkeys for'|trans }}</label>
+            <select class="form-select" id="cf-signin-passkeys" name="passkeys">
+                {% for mode, label in { 'off': 'Off'|trans, 'clients': 'Clients only'|trans, 'staff': 'Staff only'|trans, 'both': 'Staff and clients'|trans } %}
+                    <option value="{{ mode }}"{% if signin.passkeys == mode %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <div class="form-hint">{{ 'Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in.'|trans }}</div>
         </div>
     </div>
 

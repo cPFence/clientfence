@@ -44,6 +44,7 @@ use ClientFence\InformationException;
  * every client page goes to /two-factor (core patch in AppClient) and Users::checkCall() refuses every client
  * call but REQUIRED_CALLS, until enable() clears it. Switching it off in scope sets it again. Every switch-on
  * by a client login emails that login (mod_client_twofactor_switched_on). Staff "Login as client" is not asked.
+ * A passkey (Passkeys.php, while passkeys are on for clients) meets the requirement too.
  */
 final class TwoFactor
 {
@@ -54,6 +55,8 @@ final class TwoFactor
     /** Client calls the /two-factor page makes (with its layout) while REQUIRED. */
     public const REQUIRED_CALLS = [
         'client/twofactor_status', 'client/twofactor_setup', 'client/twofactor_enable', 'client/twofactor_disable', 'client/twofactor_backup',
+        // A passkey meets it too (Passkeys.php); the layout asks for the offer card.
+        'client/passkey_list', 'client/passkey_options', 'client/passkey_add', 'client/passkey_offer',
         'client/user_session', 'profile/get', 'profile/logout', 'invoice/card_available',
         // An account made by Google sign-up chooses its first password: enable() asks for it.
         'client/google_status', 'client/google_password',
@@ -172,11 +175,13 @@ final class TwoFactor
     }
 
     /**
-     * Whether a login has a second factor that meets "required" (CF-127 adds passkeys here).
+     * Whether a login has a second factor that meets "required": the app, or a passkey this session signed in (or
+     * enrolled) with while passkeys are on (a password session that switches to another account does not count).
      */
     public static function hasSecondFactor(\Pimple\Container $di, string $kind, int $id): bool
     {
-        return self::isOn($di, $kind, $id);
+        return self::isOn($di, $kind, $id)
+            || ($di['session']->get(Passkeys::SIGNED_IN) === $kind . ':' . $id && Passkeys::count($di, $kind, $id) > 0);
     }
 
     /**
@@ -185,16 +190,22 @@ final class TwoFactor
      */
     public static function checkRequired(\Pimple\Container $di, int $clientId, ?array $user): void
     {
+        [$kind, $id] = $user !== null ? ['user', (int) $user['user_id']] : ['client', $clientId];
+        if (self::inScope($di, $clientId) && !self::hasSecondFactor($di, $kind, $id)) {
+            $di['session']->set(self::REQUIRED, true);
+        }
+    }
+
+    /** Whether the portal requires two-factor sign-in of this account (Security settings, Sign-in tab). */
+    private static function inScope(\Pimple\Container $di, int $clientId): bool
+    {
         $settings = \ClientFence\Mod\Clientfence\SignInSecurity::settings($di);
-        $inScope = match ($settings['twofactor']) {
+
+        return match ($settings['twofactor']) {
             'all' => true,
             'groups' => array_intersect(Groups::ids($di, $clientId), $settings['twofactor_groups']) !== [],
             default => false,
         };
-        [$kind, $id] = $user !== null ? ['user', (int) $user['user_id']] : ['client', $clientId];
-        if ($inScope && !self::hasSecondFactor($di, $kind, $id)) {
-            $di['session']->set(self::REQUIRED, true);
-        }
     }
 
     /**
@@ -204,7 +215,14 @@ final class TwoFactor
     public static function challenge(\Pimple\Container $di, int $clientId, ?array $user): bool
     {
         [$kind, $id] = $user !== null ? ['user', (int) $user['user_id']] : ['client', $clientId];
+        // A sign-in without a passkey: an earlier passkey sign-in in this browser no longer counts (it survives logout).
+        $di['session']->delete(Passkeys::SIGNED_IN);
         if (!self::isOn($di, $kind, $id)) {
+            // A passkey meets "required" only on a passkey sign-in: the password alone must not get in.
+            if (Passkeys::on($di, 'client') && self::inScope($di, $clientId) && Passkeys::count($di, $kind, $id) > 0) {
+                throw new InformationException('Your account requires two-factor sign-in. Please sign in with your passkey.', null, 403);
+            }
+
             return false;
         }
         // One waiting sign-in per session: not also an email PIN step of an earlier one.
@@ -367,6 +385,8 @@ final class TwoFactor
             $di['cookie_queue']->queue(CookieNames::LOCALE, $client->getLang(), strtotime('+1 month'), '/');
         }
         $di['mod_service']('cart')->transferFromOtherSession($oldSession);
+        // The next page may offer a passkey (Passkeys.php); a passkey sign-in has one already.
+        Passkeys::offer($di, ...($user !== null ? ['user', (int) $user['user_id']] : ['client', (int) $client->getId()]));
     }
 
     /**
@@ -438,22 +458,27 @@ final class TwoFactor
         $result = self::enableFor($di, $kind, $id, $clientId, $data, $ip);
         $di['session']->delete(self::REQUIRED);
         // Someone with only the password could switch it on: the login hears of it.
+        self::emailLogin($di, $kind, $id, 'mod_client_twofactor_switched_on', $ip, ['switched_at' => date('Y-m-d H:i:s')]);
+
+        return $result;
+    }
+
+    /** Emails a client login ('client' or 'user') a sign-in change made from $ip (template $code; also Passkeys.php). */
+    public static function emailLogin(\Pimple\Container $di, string $kind, int $id, string $code, string $ip, array $vars): void
+    {
         $login = $di['em']->getConnection()->fetchAssociative('SELECT email, first_name, last_name, lang FROM ' . ($kind === 'user' ? 'client_user' : 'client') . ' WHERE id = ?', [$id]) ?: [];
         $country = \ClientFence\Mod\Clientfence\SignInSecurity::countryOf($di, $ip);
         $name = trim(($login['first_name'] ?? '') . ' ' . ($login['last_name'] ?? ''));
         $di['mod_service']('email')->sendTemplate([
-            'code' => 'mod_client_twofactor_switched_on',
+            'code' => $code,
             'to' => (string) ($login['email'] ?? ''),
             'to_name' => $name,
             'to_lang' => $login['lang'] ?? null,
             'name' => $name,
-            'switched_at' => date('Y-m-d H:i:s'),
             'ip' => $ip,
             'country' => $country !== null ? \Symfony\Component\Intl\Countries::getName($country) : '',
             'send_now' => true,
-        ]);
-
-        return $result;
+        ] + $vars);
     }
 
     public static function enableFor(\Pimple\Container $di, string $kind, int $id, int $clientId, array $data, string $ip): array
@@ -566,7 +591,7 @@ final class TwoFactor
     }
 
     /**
-     * A deleted client, user or staff member leaves no two-factor row (Users::clientDeleted, dropOrphan).
+     * A deleted client, user or staff member leaves no two-factor row and no passkey (Users::clientDeleted, dropOrphan).
      */
     public static function forgetLogin(\Doctrine\DBAL\Connection $db, string $kind, int $id): void
     {
@@ -575,6 +600,7 @@ final class TwoFactor
         } catch (\Throwable) {
             // No table yet.
         }
+        Passkeys::forgetLogin($db, $kind, $id);
     }
 
     public static function checkPassword(\Pimple\Container $di, string $kind, int $id, mixed $password, string $ip): void
@@ -588,7 +614,7 @@ final class TwoFactor
         }
     }
 
-    private static function loginEmail(\Pimple\Container $di, string $kind, int $id): string
+    public static function loginEmail(\Pimple\Container $di, string $kind, int $id): string
     {
         $db = $di['em']->getConnection();
 

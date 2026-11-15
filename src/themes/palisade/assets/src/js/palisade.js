@@ -395,6 +395,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (twoFactor) {
     import('./twofactor.js').then((module) => module.default(twoFactor));
   }
+  // ClientFence passkeys (sign-in page, two-factor page, the offer after sign-in): drawn only while on.
+  if (document.querySelector('[data-clientfence-passkey]')) {
+    import('./passkeys.js').then((module) => module.default());
+  }
   const cards = document.querySelector('[data-clientfence-cards]');
   if (cards) {
     import('./cards.js').then((module) => module.default(cards));

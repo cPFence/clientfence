@@ -37,6 +37,7 @@ final class Migrations
         11 => 'm11GroupsAutoPromos',
         12 => 'm12SignInHistory',
         13 => 'm13OrderHolds',
+        14 => 'm14Passkeys',
     ];
 
     public static function latest(): int
@@ -248,6 +249,14 @@ final class Migrations
     {
         if (!$di['dbal']->createSchemaManager()->tablesExist(['client_order_hold'])) {
             $di['dbal']->executeStatement(Service::tables()['client_order_hold']);
+        }
+    }
+
+    /** 14: client_passkey, the passkeys of client, user and staff logins (Client/Passkeys.php). */
+    private static function m14Passkeys(\Pimple\Container $di): void
+    {
+        if (!$di['dbal']->createSchemaManager()->tablesExist(['client_passkey'])) {
+            $di['dbal']->executeStatement(Service::tables()['client_passkey']);
         }
     }
 }

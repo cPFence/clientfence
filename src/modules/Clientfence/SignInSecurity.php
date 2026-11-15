@@ -43,6 +43,9 @@ use Symfony\Component\Intl\Countries;
  * - Two-factor sign-in for clients (twofactor: off, all, groups with twofactor_groups): a sign-in in scope
  *   without an authenticator app must set one up first (Client/TwoFactor.php checkRequired()).
  *
+ * - Passkeys (passkeys: off, clients, staff, both; Client/Passkeys.php): sign-in with a passkey instead of the
+ *   password and the second step. Saving them on needs an https:// portal URL (localhost passes, as in browsers).
+ *
  * Locked out: `php console.php clientfence:signin-security-off` turns the features off.
  * Settings are kept in mod_clientfence_state (STATE), except the staff IP rule and password reset.
  */
@@ -69,7 +72,7 @@ final class SignInSecurity
      */
     public static ?int $newClientId = null;
 
-    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>, staff_reset: bool, pin_when: string, history: bool, twofactor: string, twofactor_groups: list<int>} */
+    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>, staff_reset: bool, pin_when: string, history: bool, twofactor: string, twofactor_groups: list<int>, passkeys: string} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di) ?? [];
@@ -79,7 +82,8 @@ final class SignInSecurity
         $ips = array_values(array_filter(array_map(trim(...), preg_split('/\R/', (string) ($staff['allowed_ips'] ?? ''))), fn (string $ip): bool => $ip !== ''));
 
         return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries, 'ips_on' => !empty($staff['check_ip']) && $ips !== [], 'ips' => $ips, 'staff_reset' => (string) ($staff['public']['reset_pw'] ?? '1') !== '0', 'pin_when' => ($saved['pin_when'] ?? null) === 'new' ? 'new' : 'every', 'history' => !empty($saved['history']),
-            'twofactor' => in_array($saved['twofactor'] ?? null, self::TWOFACTOR_MODES, true) ? (string) $saved['twofactor'] : 'off', 'twofactor_groups' => array_values(array_map(intval(...), (array) ($saved['twofactor_groups'] ?? [])))];
+            'twofactor' => in_array($saved['twofactor'] ?? null, self::TWOFACTOR_MODES, true) ? (string) $saved['twofactor'] : 'off', 'twofactor_groups' => array_values(array_map(intval(...), (array) ($saved['twofactor_groups'] ?? []))),
+            'passkeys' => in_array($saved['passkeys'] ?? null, \ClientFence\Mod\Client\Passkeys::MODES, true) ? (string) $saved['passkeys'] : 'off'];
     }
 
     /** Whether sign-ins of an area ('staff' or 'client') ask for an email PIN. */
@@ -128,6 +132,13 @@ final class SignInSecurity
         $twofactorGroups = array_key_exists('twofactor_groups', $data) ? \ClientFence\Mod\Client\Groups::valid($di, (array) $data['twofactor_groups']) : $old['twofactor_groups'];
         if ($twofactor === 'groups' && $twofactorGroups === []) {
             throw new InformationException('Choose at least one client group that must use two-factor sign-in.');
+        }
+        $passkeys = (string) ($data['passkeys'] ?? $old['passkeys']);
+        if (!in_array($passkeys, \ClientFence\Mod\Client\Passkeys::MODES, true)) {
+            throw new InformationException('Choose who may sign in with a passkey.');
+        }
+        if ($passkeys !== 'off' && !\ClientFence\Mod\Client\Passkeys::secureUrl(SYSTEM_URL)) {
+            throw new InformationException('Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first.');
         }
         $countries = $data['countries'] ?? [];
         $countries = is_array($countries) ? $countries : preg_split('/[\s,]+/', (string) $countries);
@@ -210,18 +221,21 @@ final class SignInSecurity
             }
             $extension->setConfig(array_merge($staffConfig, $changes));
         }
-        self::saveState($di, ['pin' => $pin, 'pin_when' => $pinWhen, 'countries_on' => $countriesOn, 'countries' => $countries, 'history' => $history, 'twofactor' => $twofactor, 'twofactor_groups' => $twofactorGroups]);
-        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s (%s), sign-in history %s, clients two-factor %s, staff countries %s, staff IPs %s, staff password reset %s', $admin['id'], $pin, $pinWhen, $history ? 'on' : 'off', $twofactor === 'groups' ? 'groups ' . implode(',', $twofactorGroups) : $twofactor, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off', array_key_exists('staff_reset', $data) ? (empty($data['staff_reset']) ? 'off' : 'on') : 'unchanged');
+        self::saveState($di, ['pin' => $pin, 'pin_when' => $pinWhen, 'countries_on' => $countriesOn, 'countries' => $countries, 'history' => $history, 'twofactor' => $twofactor, 'twofactor_groups' => $twofactorGroups, 'passkeys' => $passkeys]);
+        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s (%s), sign-in history %s, clients two-factor %s, passkeys %s, staff countries %s, staff IPs %s, staff password reset %s', $admin['id'], $pin, $pinWhen, $history ? 'on' : 'off', $twofactor === 'groups' ? 'groups ' . implode(',', $twofactorGroups) : $twofactor, $passkeys, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off', array_key_exists('staff_reset', $data) ? (empty($data['staff_reset']) ? 'off' : 'on') : 'unchanged');
 
         return ['saved' => true];
     }
 
-    /** The console command for a locked-out site: turns the email PIN (back to every sign-in), country and/or IP rules and/or the clients' required two-factor sign-in off. */
-    public static function turnOff(\Pimple\Container $di, bool $pin, bool $countries, bool $ips, bool $twofactor): array
+    /** The console command for a locked-out site: turns the email PIN (back to every sign-in), country and/or IP rules, the clients' required two-factor sign-in and/or passkeys off. */
+    public static function turnOff(\Pimple\Container $di, bool $pin, bool $countries, bool $ips, bool $twofactor, bool $passkeys): array
     {
         $settings = self::settings($di);
         if ($twofactor) {
             $settings['twofactor'] = 'off';
+        }
+        if ($passkeys) {
+            $settings['passkeys'] = 'off';
         }
         if ($pin) {
             $settings['pin'] = 'off';
@@ -234,7 +248,7 @@ final class SignInSecurity
             $extension = $di['mod_service']('extension');
             $extension->setConfig(array_merge($extension->getConfig('mod_staff'), ['ext' => 'mod_staff', 'check_ip' => 0]));
         }
-        self::saveState($di, ['pin' => $settings['pin'], 'pin_when' => $settings['pin_when'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries'], 'history' => $settings['history'], 'twofactor' => $settings['twofactor'], 'twofactor_groups' => $settings['twofactor_groups']]);
+        self::saveState($di, ['pin' => $settings['pin'], 'pin_when' => $settings['pin_when'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries'], 'history' => $settings['history'], 'twofactor' => $settings['twofactor'], 'twofactor_groups' => $settings['twofactor_groups'], 'passkeys' => $settings['passkeys']]);
 
         return self::settings($di);
     }

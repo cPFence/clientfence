@@ -29236,3 +29236,181 @@ msgstr "Quá trình tải lên chưa hoàn tất."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "Mật khẩu của vùng (không phải mật khẩu chỉ đọc). Được lưu dạng mã hóa và không hiển thị lại."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "Khóa truy cập (passkey) đăng nhập bằng vân tay, khuôn mặt hoặc mã PIN của thiết bị, thay cho mật khẩu và bước thứ hai (mã ứng dụng xác thực hoặc mã PIN qua email). Mỗi người thêm khóa truy cập trên trang đăng nhập hai yếu tố của mình và được gợi ý một khóa sau khi đăng nhập bằng mật khẩu. Khóa truy cập cũng đáp ứng \"Yêu cầu đăng nhập hai yếu tố\". Đăng nhập của nhân viên vẫn cần địa chỉ IP và quốc gia được cho phép."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "Khóa truy cập đăng nhập cho bạn bằng vân tay, khuôn mặt hoặc mã PIN của điện thoại hoặc máy tính, thay cho mật khẩu và mã. Nó cũng được tính là đăng nhập hai yếu tố."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "Khóa truy cập đăng nhập cho bạn bằng vân tay, khuôn mặt hoặc mã PIN của điện thoại hoặc máy tính, thay cho mật khẩu và bước thứ hai. Các địa chỉ IP và quốc gia được cho phép vẫn áp dụng."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "Một khóa truy cập đã được thêm vào tài khoản của bạn"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "Một khóa truy cập đã được thêm vào đăng nhập khu vực khách hàng của bạn. Nó đăng nhập bằng vân tay, khuôn mặt hoặc mã PIN của thiết bị lưu giữ nó, không cần mật khẩu của bạn."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "Thêm khóa truy cập"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "Đã thêm %date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "Cho phép khóa truy cập cho"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "Chọn ai được đăng nhập bằng khóa truy cập."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "Tạo khóa truy cập"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "Tạo khóa truy cập: sau đó vân tay, khuôn mặt hoặc mã PIN của thiết bị sẽ đăng nhập cho bạn, không cần mật khẩu và mã."
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "Nhập tên cho khóa truy cập."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "Nếu không phải bạn, hãy xóa khóa truy cập trên trang đăng nhập hai yếu tố của bạn, đổi mật khẩu và liên hệ với chúng tôi ngay."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "Dùng lần cuối %date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "Chưa dùng"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "Chỉ Quản trị viên cấp cao mới có thể xóa khóa truy cập của nhân viên."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "Khóa truy cập"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "Không tìm thấy khóa truy cập."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "Đã xóa khóa truy cập."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "Đã đổi tên khóa truy cập."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "Đã lưu khóa truy cập. Lần sau hãy đăng nhập bằng nó."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "Đăng nhập bằng khóa truy cập chưa được bật."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "Khóa truy cập"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "Khóa truy cập chưa được bật."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "Khóa truy cập yêu cầu cổng dùng HTTPS và chỉ hoạt động trên địa chỉ của nó: sau khi chuyển sang tên miền khác chúng ngừng hoạt động và mật khẩu sẽ đăng nhập."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "Khóa truy cập yêu cầu cổng dùng HTTPS: trình duyệt từ chối chúng trên địa chỉ http://. Hãy đặt URL của cổng thành https:// trước."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "Đã xóa các khóa truy cập."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "Khóa truy cập: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "Xóa mọi khóa truy cập của tài khoản này? Sau đó mật khẩu của nó sẽ đăng nhập. Chỉ làm việc này khi bạn chắc chắn ai đang yêu cầu."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "Xóa mọi khóa truy cập của nhân viên này?"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "Xóa khóa truy cập"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "Xóa khóa truy cập"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "Đổi tên"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "Đổi tên hoặc xóa"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "Lần sau đăng nhập nhanh hơn"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "Đăng nhập bằng khóa truy cập"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "Yêu cầu khóa truy cập đã hết hạn. Vui lòng thử lại."
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "Trình duyệt này không thể tạo khóa truy cập. Hãy cập nhật hoặc dùng trình duyệt khác."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "Thiết bị này đã có khóa truy cập cho đăng nhập của bạn."
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "Tài khoản này không có khóa truy cập."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "Khóa truy cập này đã được lưu."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "Khóa truy cập này dùng loại khóa không thể dùng ở đây. Vui lòng thử khóa khác."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "Nhân viên này có thể đăng nhập bằng khóa truy cập (:count). Hãy xóa chúng nếu thiết bị bị mất."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "Tài khoản của bạn yêu cầu đăng nhập hai yếu tố. Vui lòng đăng nhập bằng khóa truy cập của bạn."

@@ -1631,3 +1631,8 @@ if (prices) {
   // A list from earlier opens at once (an unfinished one waits for "Get the price list").
   if (prices.dataset.fetched === '1') load(true);
 }
+
+// Passkeys (Client/Passkeys.php): the profile list and the offer after a sign-in load their script only when drawn.
+if (document.querySelector('[data-cf-passkey]')) {
+  import(new URL('clientfence-passkeys.js' + new URL(import.meta.url).search, import.meta.url).href);
+}

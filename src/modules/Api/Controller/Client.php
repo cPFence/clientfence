@@ -142,7 +142,8 @@ class Client implements InjectionAwareInterface
         // ClientFence core patch: call names are case-insensitive (the dispatcher lowercases the
         // module, PHP method names ignore case), so "Staff_LOGIN" must meet the same limit.
         $call = strtolower((string) $method);
-        if (($call === 'staff_login' || $call === 'client_login') && !$isAuthenticatedAdmin) {
+        // ClientFence core patch: passkey sign-in (Client/Passkeys.php) has the password sign-in's limit.
+        if (in_array($call, ['staff_login', 'client_login', 'staff_passkey_signin', 'client_passkey_signin'], true) && !$isAuthenticatedAdmin) {
             $policy = 'api_login';
         } elseif ($role === 'guest') {
             $policy = 'api_guest';
@@ -249,6 +250,7 @@ class Client implements InjectionAwareInterface
         if ($role !== 'guest' || !in_array(strtolower($method), [
             'client_login', 'client_create', 'staff_login', 'client_user_invite_accept',
             'client_twofactor_verify', 'client_signin_pin', 'staff_login_pin', 'staff_login_code',
+            'client_passkey_signin', 'staff_passkey_signin',
             'cart_add_item', 'cart_remove_item', 'cart_apply_promo',
             'cart_remove_promo', 'cart_reset', 'cart_set_currency',
         ], true)) {

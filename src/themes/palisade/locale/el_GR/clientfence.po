@@ -29326,3 +29326,181 @@ msgstr "Η μεταφόρτωση δεν ολοκληρώθηκε."
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "The zone's password (not the read-only one). Kept encrypted and never shown again."
 msgstr "Ο κωδικός της ζώνης (όχι αυτός μόνο για ανάγνωση). Αποθηκεύεται κρυπτογραφημένος και δεν εμφανίζεται ξανά."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A passkey signs in with the fingerprint, face or PIN of the device, instead of the password and the second step (authenticator code or email PIN). Each person adds passkeys on their two-factor sign-in page, and is offered one after signing in with the password. A passkey also meets \"Require two-factor sign-in\". Staff sign-ins still need an allowed IP address and country."
+msgstr "Ένα κλειδί πρόσβασης (passkey) συνδέει με το δακτυλικό αποτύπωμα, το πρόσωπο ή το PIN της συσκευής, αντί για τον κωδικό και το δεύτερο βήμα (κωδικός εφαρμογής επαλήθευσης ή PIN email). Κάθε άτομο προσθέτει κλειδιά πρόσβασης στη σελίδα σύνδεσης δύο παραγόντων του και του προσφέρεται ένα μετά τη σύνδεση με κωδικό. Ένα κλειδί πρόσβασης καλύπτει και την «Απαίτηση σύνδεσης δύο παραγόντων». Οι συνδέσεις του προσωπικού απαιτούν πάντα επιτρεπόμενη διεύθυνση IP και χώρα."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and code. It also counts as two-factor sign-in."
+msgstr "Ένα κλειδί πρόσβασης σας συνδέει με το δακτυλικό αποτύπωμα, το πρόσωπο ή το PIN του τηλεφώνου ή του υπολογιστή σας, αντί για τον κωδικό και τον κωδικό επαλήθευσης. Μετράει και ως σύνδεση δύο παραγόντων."
+
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "A passkey signs you in with the fingerprint, face or PIN of your phone or computer, instead of your password and the second step. The allowed IP addresses and countries still apply."
+msgstr "Ένα κλειδί πρόσβασης σας συνδέει με το δακτυλικό αποτύπωμα, το πρόσωπο ή το PIN του τηλεφώνου ή του υπολογιστή σας, αντί για τον κωδικό και το δεύτερο βήμα. Οι επιτρεπόμενες διευθύνσεις IP και χώρες εξακολουθούν να ισχύουν."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your account"
+msgstr "Προστέθηκε ένα κλειδί πρόσβασης στον λογαριασμό σας"
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "A passkey was added to your sign-in to the client area. It signs in with the fingerprint, face or PIN of the device that keeps it, without your password."
+msgstr "Προστέθηκε ένα κλειδί πρόσβασης στη σύνδεσή σας στον χώρο πελατών. Συνδέει με το δακτυλικό αποτύπωμα, το πρόσωπο ή το PIN της συσκευής που το φυλάσσει, χωρίς τον κωδικό σας."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Add a passkey"
+msgstr "Προσθήκη κλειδιού πρόσβασης"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Added %date%"
+msgstr "Προστέθηκε στις %date%"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Allow passkeys for"
+msgstr "Να επιτρέπονται κλειδιά πρόσβασης για"
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Choose who may sign in with a passkey."
+msgstr "Επιλέξτε ποιος μπορεί να συνδέεται με κλειδί πρόσβασης."
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey"
+msgstr "Δημιουργία κλειδιού πρόσβασης"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Create a passkey: your fingerprint, face or device PIN then signs you in, without your password and code."
+msgstr "Δημιουργία κλειδιού πρόσβασης: το δακτυλικό σας αποτύπωμα, το πρόσωπο ή το PIN της συσκευής σάς συνδέει στη συνέχεια, χωρίς κωδικό και κωδικό επαλήθευσης."
+
+#: src/modules/Client/Passkeys.php
+msgid "Enter a name for the passkey."
+msgstr "Εισαγάγετε ένα όνομα για το κλειδί πρόσβασης."
+
+#: src/modules/Client/templates/email/mod_client_passkey_added.html.twig
+msgid "If this was not you, remove the passkey on your two-factor sign-in page, change your password and contact us at once."
+msgstr "Αν δεν ήσασταν εσείς, αφαιρέστε το κλειδί πρόσβασης στη σελίδα σύνδεσης δύο παραγόντων, αλλάξτε τον κωδικό σας και επικοινωνήστε μαζί μας αμέσως."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Last used %date%"
+msgstr "Τελευταία χρήση στις %date%"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Not used yet"
+msgstr "Δεν έχει χρησιμοποιηθεί ακόμη"
+
+#: src/modules/Staff/Api/Admin.php
+msgid "Only Super Administrators can remove passkeys of staff."
+msgstr "Μόνο οι Υπερδιαχειριστές μπορούν να αφαιρέσουν κλειδιά πρόσβασης του προσωπικού."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey"
+msgstr "Κλειδί πρόσβασης"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey not found."
+msgstr "Το κλειδί πρόσβασης δεν βρέθηκε."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey removed."
+msgstr "Το κλειδί πρόσβασης αφαιρέθηκε."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Passkey renamed."
+msgstr "Το κλειδί πρόσβασης μετονομάστηκε."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "Passkey saved. Next time, sign in with it."
+msgstr "Το κλειδί πρόσβασης αποθηκεύτηκε. Την επόμενη φορά, συνδεθείτε με αυτό."
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkey sign-in is not on."
+msgstr "Η σύνδεση με κλειδί πρόσβασης δεν είναι ενεργή."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+msgid "Passkeys"
+msgstr "Κλειδιά πρόσβασης"
+
+#: src/modules/Client/Passkeys.php
+msgid "Passkeys are not on."
+msgstr "Τα κλειδιά πρόσβασης δεν είναι ενεργά."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Passkeys need the portal on HTTPS, and work only on its address: after a move to another domain they stop, and the password signs in."
+msgstr "Τα κλειδιά πρόσβασης απαιτούν το portal σε HTTPS και λειτουργούν μόνο στη διεύθυνσή του: μετά από μετακίνηση σε άλλο domain σταματούν και συνδέει ο κωδικός."
+
+#: src/modules/Clientfence/SignInSecurity.php
+msgid "Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first."
+msgstr "Τα κλειδιά πρόσβασης απαιτούν το portal σε HTTPS: τα προγράμματα περιήγησης τα απορρίπτουν σε διεύθυνση http://. Ορίστε πρώτα το URL του portal σε https://."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Passkeys removed."
+msgstr "Τα κλειδιά πρόσβασης αφαιρέθηκαν."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Passkeys: :count"
+msgstr "Κλειδιά πρόσβασης: :count"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
+msgstr "Να αφαιρεθούν όλα τα κλειδιά πρόσβασης αυτής της σύνδεσης; Μετά συνδέει ο κωδικός της. Κάντε το μόνο αν είστε σίγουροι για το ποιος το ζητά."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove every passkey of this staff member?"
+msgstr "Να αφαιρεθούν όλα τα κλειδιά πρόσβασης αυτού του μέλους του προσωπικού;"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Remove passkey"
+msgstr "Αφαίρεση κλειδιού πρόσβασης"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "Remove passkeys"
+msgstr "Αφαίρεση κλειδιών πρόσβασης"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename"
+msgstr "Μετονομασία"
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
+msgid "Rename or remove"
+msgstr "Μετονομασία ή αφαίρεση"
+
+#: src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig src/themes/palisade/html/partials/passkey_offer.html.twig
+msgid "Sign in faster next time"
+msgstr "Συνδεθείτε πιο γρήγορα την επόμενη φορά"
+
+#: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
+msgid "Sign in with a passkey"
+msgstr "Σύνδεση με κλειδί πρόσβασης"
+
+#: src/modules/Client/Passkeys.php
+msgid "The passkey request has expired. Please try again."
+msgstr "Το αίτημα κλειδιού πρόσβασης έληξε. Δοκιμάστε ξανά."
+
+#: src/modules/Client/Passkeys.php
+msgid "This browser cannot create a passkey. Please update it, or use another browser."
+msgstr "Αυτό το πρόγραμμα περιήγησης δεν μπορεί να δημιουργήσει κλειδί πρόσβασης. Ενημερώστε το ή χρησιμοποιήστε άλλο."
+
+#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/admin_default/html_custom/partial_clientfence_passkey_offer.html.twig …
+msgid "This device already has a passkey for your sign-in."
+msgstr "Αυτή η συσκευή έχει ήδη κλειδί πρόσβασης για τη σύνδεσή σας."
+
+#: src/modules/Client/Passkeys.php
+msgid "This login has no passkeys."
+msgstr "Αυτή η σύνδεση δεν έχει κλειδιά πρόσβασης."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey is already saved."
+msgstr "Αυτό το κλειδί πρόσβασης είναι ήδη αποθηκευμένο."
+
+#: src/modules/Client/Passkeys.php
+msgid "This passkey uses a kind of key that cannot be used here. Please try another one."
+msgstr "Αυτό το κλειδί πρόσβασης χρησιμοποιεί είδος κλειδιού που δεν μπορεί να χρησιμοποιηθεί εδώ. Δοκιμάστε άλλο."
+
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+msgid "This staff member can sign in with :count passkeys. Remove them if a device was lost."
+msgstr "Αυτό το μέλος του προσωπικού μπορεί να συνδεθεί με κλειδιά πρόσβασης (:count). Αφαιρέστε τα αν χάθηκε μια συσκευή."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/TwoFactor.php
+msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
+msgstr "Ο λογαριασμός σας απαιτεί σύνδεση δύο παραγόντων. Συνδεθείτε με το κλειδί πρόσβασής σας."

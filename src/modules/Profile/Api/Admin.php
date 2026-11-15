@@ -163,6 +163,49 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: the staff member's own passkeys (Client/Passkeys.php): {on, passkeys}.
+     */
+    public function passkey_list(): array
+    {
+        return \ClientFence\Mod\Client\Passkeys::listFor($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId());
+    }
+
+    /** ClientFence: the options for the browser's "create a passkey" prompt (`password`, except just after a sign-in that offered it). */
+    public function passkey_options($data): array
+    {
+        return \ClientFence\Mod\Client\Passkeys::createOptions($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), is_array($data) ? $data : [], (string) $this->getIp());
+    }
+
+    /** ClientFence: saves the passkey the browser made: {id, name}. */
+    public function passkey_add($data): array
+    {
+        return \ClientFence\Mod\Client\Passkeys::add($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), 0, is_array($data) ? $data : [], (string) $this->getIp());
+    }
+
+    /** ClientFence: renames one of the staff member's passkeys (`id`, `name`). */
+    public function passkey_rename($data): bool
+    {
+        \ClientFence\Mod\Client\Passkeys::rename($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), (int) ($data['id'] ?? 0), $data['name'] ?? null);
+
+        return true;
+    }
+
+    /** ClientFence: removes one of the staff member's passkeys (`id`, `password`). */
+    public function passkey_remove($data): bool
+    {
+        \ClientFence\Mod\Client\Passkeys::remove($this->getDi(), 'staff', (int) $this->getAdminEntity()->getId(), 0, (int) ($data['id'] ?? 0), is_array($data) ? $data : [], (string) $this->getIp());
+
+        return true;
+    }
+
+    /** ClientFence: the layout's "Sign in faster next time" card: true once after a sign-in that offered a passkey. */
+    public function passkey_offer(): bool
+    {
+        // The identity's id: no entity load on every admin page.
+        return \ClientFence\Mod\Client\Passkeys::takeOffer($this->getDi(), 'staff', (int) $this->getIdentity()->id);
+    }
+
+    /**
      * ClientFence core patch: the staff Sign-ins tab (Clientfence/SignInHistory.php): this staff member's last
      * sign-ins, or null while the sign-in history is off.
      */

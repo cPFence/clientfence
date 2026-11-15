@@ -22,6 +22,7 @@ use ClientFence\PaginationOptions;
 use ClientFence\Mod\Client\Affiliates\Affiliates;
 use ClientFence\Mod\Client\Affiliates\Payouts;
 use ClientFence\Mod\Client\Google;
+use ClientFence\Mod\Client\Passkeys;
 use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Client\Contacts;
 use ClientFence\Mod\Client\SupportPin;
@@ -318,6 +319,56 @@ class Client extends \ClientFence\Api\AbstractApi
     public function twofactor_backup($data): array
     {
         return TwoFactor::newBackup($this->getDi(), (int) $this->getIdentity()->id, is_array($data) ? $data : [], (string) $this->getIp());
+    }
+
+    /**
+     * ClientFence core patch: the passkeys of the signed-in login (Passkeys.php): {on, passkeys: [{id, name, created_at, last_used_at}]}.
+     */
+    public function passkey_list(): array
+    {
+        return Passkeys::listFor($this->getDi(), ...TwoFactor::subject($this->getDi(), (int) $this->getIdentity()->id));
+    }
+
+    /**
+     * The options for the browser's "create a passkey" prompt (`password`, except just after a sign-in that offered it).
+     */
+    public function passkey_options($data): array
+    {
+        return Passkeys::createOptions($this->getDi(), ...TwoFactor::subject($this->getDi(), (int) $this->getIdentity()->id), data: is_array($data) ? $data : [], ip: (string) $this->getIp());
+    }
+
+    /**
+     * Saves the passkey the browser made (`id`, `clientDataJSON`, `authenticatorData`, `publicKey`,
+     * `publicKeyAlgorithm`): {id, name}.
+     */
+    public function passkey_add($data): array
+    {
+        $clientId = (int) $this->getIdentity()->id;
+
+        return Passkeys::add($this->getDi(), ...TwoFactor::subject($this->getDi(), $clientId), clientId: $clientId, data: is_array($data) ? $data : [], ip: (string) $this->getIp());
+    }
+
+    /** Renames one of the login's passkeys (`id`, `name`). */
+    public function passkey_rename($data): bool
+    {
+        Passkeys::rename($this->getDi(), ...TwoFactor::subject($this->getDi(), (int) $this->getIdentity()->id), passkeyId: (int) ($data['id'] ?? 0), name: $data['name'] ?? null);
+
+        return true;
+    }
+
+    /** Removes one of the login's passkeys (`id`, `password`). */
+    public function passkey_remove($data): bool
+    {
+        $clientId = (int) $this->getIdentity()->id;
+        Passkeys::remove($this->getDi(), ...TwoFactor::subject($this->getDi(), $clientId), clientId: $clientId, passkeyId: (int) ($data['id'] ?? 0), data: is_array($data) ? $data : [], ip: (string) $this->getIp());
+
+        return true;
+    }
+
+    /** The layout's "Sign in faster next time" card: true once after a sign-in that offered a passkey. */
+    public function passkey_offer(): bool
+    {
+        return Passkeys::takeOffer($this->getDi(), ...TwoFactor::subject($this->getDi(), (int) $this->getIdentity()->id));
     }
 
     private function onClientId(): int
